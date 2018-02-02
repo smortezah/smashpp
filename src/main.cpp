@@ -2,13 +2,21 @@
 // Created by morteza on 02-02-2018.
 //
 
-#include <iostream>
+#define __STDC_FORMAT_MACROS
+#if defined(_MSC_VER)
+#    include <io.h>
+#else
+#    include <unistd.h>
+#endif
 
-using namespace std;
+#include <iostream>
+#include "def.hpp"
+#include "par.hpp"
+using std::cout;
 
 int main (int argc, char* argv[])
 {
-    std::cout<<"hi";
+    auto* p=new Parameters;    p->parse(argc, argv);    delete p;   // Parse cmd
     
     return 0;
 }
