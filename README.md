@@ -1,1 +1,1 @@
-# smashpp
+# Smash++
