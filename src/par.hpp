@@ -5,7 +5,9 @@
 #ifndef SMASHPP_PAR_HPP
 #define SMASHPP_PAR_HPP
 
-#include <cstring>
+//#include <cstring>
+#include <vector>
+#include <algorithm>
 #include "def.hpp"
 
 class Parameters    // Command line
@@ -24,26 +26,47 @@ private:
     inline void guide ();
 };
 
+
 /*
  * Parse
  */
 void Parameters::parse (int& argc, char**& argv)
 {
-    if (argc < 2)
-        guide();
+    if (argc<2) { guide();  return; }
     else {
-        string argvStr[argc];
-        for (int i=argc; i--;)  argvStr[i]=string(argv[i]);
+        std::vector<string> in;    in.reserve((u64) argc);
+        for (int i=0; i<argc; ++i)  in.emplace_back(string(argv[i]));
         
-        for (int i=0; i!=argc; ++i) {
-            if (string(argv[i])=="-h" || string(argv[i])=="--help")
-                guide();
-            else if (string(argv[i])=="-v" || string(argv[i])=="--verbose")
-                verbose = true;
-            else if (string(argv[i])=="-n" || string(argv[i])=="--nthreads") {
-                if (i+1!=argc)    nthr = (u8) stoi(string(argv[i+1]));
-            }
-        }
+        auto pos=std::find(in.begin(), in.end(), "-h");
+        cout<<*(pos+1);
+        
+//        for (int i=0; i!=argc; ++i) {
+//            if (string(argv[i])=="-h" || string(argv[i])=="--help") {
+//                guide();
+//                return;
+//            }
+//            else if (string(argv[i])=="-t" || string(argv[i])=="--tar")
+//            {
+//                if (i+1!=argc)  tar=string(argv[i+1]);
+//                else {
+//                    cout << "Please specify the target file address with "
+//                         << "\"-t fileName\".";
+//                    return;
+//                }
+//            }
+//            else if (string(argv[i])=="-r" || string(argv[i])=="--ref") {
+//                if (i+1!=argc)  ref=string(argv[i+1]);
+//                else {
+//                    cout << "Please specify the reference file address with "
+//                         << "\"-r fileName\".";
+//                    return;
+//                }
+//            }
+//            else if (string(argv[i])=="-v" || string(argv[i])=="--verbose")
+//                verbose = true;
+//            else if ((string(argv[i])=="-n" || string(argv[i])=="--nthreads") && i+1!=argc)
+//                nthr = (u8) stoi(string(argv[i+1]));
+//        }
     }
 }
 
@@ -95,8 +118,6 @@ inline void Parameters::guide ()
         << "      copies of it under the terms of the GNU - General Public   \n"
         << "      License v3 <http://www.gnu.org/licenses/gpl.html>. There   \n"
         << "      is NOT ANY WARRANTY, to the extent permitted by law." << '\n';
-       
-       exit(1);
 }
 
 #endif //SMASHPP_PAR_HPP
