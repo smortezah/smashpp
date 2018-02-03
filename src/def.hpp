@@ -22,7 +22,8 @@ typedef signed long long    i64;
 typedef unsigned long long  u64;
 
 // Constant
-#define DEF_THR  1
+#define DEF_THR   1
+#define BLK_SIZE  65536
 
 // Macro
 //#define LOOP(i,S)     for(const char& (i) : (S))

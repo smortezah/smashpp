@@ -14,12 +14,13 @@
 #include "par.hpp"
 using std::cout;
 
+
 int main (int argc, char* argv[])
 {
-    auto* p=new Parameters;
+    auto* p = new Parameters;
     p->parse(argc, argv);
     
-    cout << p->tar << (int)p->nthr << p->ref;
+    
     
     delete p;   // Parse cmd
     
