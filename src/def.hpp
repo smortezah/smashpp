@@ -6,8 +6,6 @@
 #define SMASHPP_DEF_HPP
 
 #include <iostream>
-using std::cout;
-using std::string;
 
 // Version
 #define VERSION    "18.02"

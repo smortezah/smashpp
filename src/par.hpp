@@ -5,27 +5,27 @@
 #ifndef SMASHPP_PAR_HPP
 #define SMASHPP_PAR_HPP
 
-//#include <cstring>
 #include <vector>
 #include <algorithm>
 #include "def.hpp"
+using std::cerr;
+using std::vector;
+using std::string;
 
-class Parameters    // Command line
+// Command line
+class Parameters
 {
 public:
     string tar;
     string ref;
     bool   verbose;
     u8     nthr;
-    bool   help;
     
-    Parameters () : verbose(false), nthr(DEF_THR), help(false) {};
+    Parameters () : verbose(false), nthr(DEF_THR) {};
     inline void parse (int&, char**&);
 
 private:
-    inline std::vector<string>::iterator where (std::vector<string>, string);
-    inline bool isIn (std::vector<string>, const string &);
-    inline void guide ();
+    inline void help ();
 };
 
 
@@ -34,82 +34,51 @@ private:
  */
 void Parameters::parse (int& argc, char**& argv)
 {
-    if (argc<2) { guide();  return; }
+    if (argc<2) { help();  return; }
     else {
-        std::vector<string> vArgs;   vArgs.reserve((u64) argc);
+        vector<string> vArgs;    vArgs.reserve((u64) argc);
         for (int i=0; i!=argc; ++i)  vArgs.emplace_back(string(argv[i]));
         
-//        auto posShort = std::find(vArgs.begin(), vArgs.end(), "-h");
-//        auto posLong  = std::find(vArgs.begin(), vArgs.end(), "--help");
-//        if (posShort!=vArgs.end() || posLong!=vArgs.end()) {
-//            guide();
-//            return;
-//        }
-////        auto posShort=where(vArgs, "-h");
-////        auto posLong =where(vArgs, "--help");
-////        if (posShort!=vArgs.end() || posLong!=vArgs.end())
-////        {
-//////            cout << *posShort;
-//////            cout << *posLong;
-////        }
-        for (auto i=vArgs.begin(); i!=vArgs.end(); ++i)
-        {
-            if (*i=="-h" || *i=="--help")
-            {
-                guide();
-                return;
+        for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
+            if      (*i=="-h" || *i=="--help") { help();  return; }
+            else if (*i=="-t" || *i=="--tar") {
+                if (i+1!=vArgs.end())
+                    tar = *++i;
+                else
+                    cerr << "Please specify the target file address with "
+                         << "\"-t fileName\".";
+            }
+            else if (*i=="-r" || *i=="--ref") {
+                if (i+1!=vArgs.end())
+                    ref = *++i;
+                else
+                    cerr << "Please specify the reference file address with "
+                         << "\"-r fileName\".";
             }
             else if (*i=="-v" || *i=="--verbose")
-                verbose=true;
+                verbose = true;
+            else if ((*i=="-n" || *i=="--nthreads") && i+1!=vArgs.end())
+                nthr = (u8) stoul(*++i);
         }
         
-//        for (int i=0; i!=argc; ++i) {
-//            if (string(argv[i])=="-h" || string(argv[i])=="--help") {
-//                guide();
-//                return;
-//            }
-//            else if (string(argv[i])=="-t" || string(argv[i])=="--tar")
-//            {
-//                if (i+1!=argc)  tar=string(argv[i+1]);
-//                else {
-//                    cout << "Please specify the target file address with "
-//                         << "\"-t fileName\".";
-//                    return;
-//                }
-//            }
-//            else if (string(argv[i])=="-r" || string(argv[i])=="--ref") {
-//                if (i+1!=argc)  ref=string(argv[i+1]);
-//                else {
-//                    cout << "Please specify the reference file address with "
-//                         << "\"-r fileName\".";
-//                    return;
-//                }
-//            }
-//            else if (string(argv[i])=="-v" || string(argv[i])=="--verbose")
-//                verbose = true;
-//            else if ((string(argv[i])=="-n" || string(argv[i])=="--nthreads") && i+1!=argc)
-//                nthr = (u8) stoi(string(argv[i+1]));
-//        }
+        // Mandatory args
+        if (std::find(vArgs.begin(), vArgs.end(), "-t") == vArgs.end()
+            || std::find(vArgs.begin(), vArgs.end(), "--tar") == vArgs.end())
+            cerr << "Please specify the target file address with "
+                 << "\"-t fileName\".";
+        else if (std::find(vArgs.begin(), vArgs.end(), "-r") == vArgs.end()
+                 || std::find(vArgs.begin(), vArgs.end(), "--ref") == vArgs.end())
+            cerr << "Please specify the reference file address with "
+                 << "\"-r fileName\".";
     }
 }
 
-inline bool Parameters::isIn (std::vector<string> v, const string &s)
-{
-    return std::find(v.begin(), v.end(), s) != v.end();
-}
-
-inline std::vector<string>::iterator Parameters::where ( std::vector<string> v, string s)
-{
-    return std::find(v.begin(), v.end(), s);
-}
-
-
 /*
- * Usage guide
+ * Usage help
  */
-inline void Parameters::guide ()
+inline void Parameters::help ()
 {
-    cout                                                                 << '\n'
+    cerr                                                                 << '\n'
         << "NAME"                                                        << '\n'
         << "      Smash++ v" << VERSION << " - rearrangements finder"    << '\n'
                                                                          << '\n'
@@ -132,7 +101,7 @@ inline void Parameters::guide ()
 //        << "      The KEY_FILE specifies a file including the password." << '\n'
 //                                                                         << '\n'
 //        << "      -h,  --help"                                           << '\n'
-//        << "           usage guide"                                      << '\n'
+//        << "           usage help"                                      << '\n'
 //                                                                         << '\n'
 //        << "      -d,  --dec"                                            << '\n'
 //        << "           decompress & decrypt"                             << '\n'
@@ -149,7 +118,7 @@ inline void Parameters::guide ()
         << "      You may redistribute copies of this Free software"     << '\n'
         << "      under the terms of the GNU - General Public License v3"<< '\n'
         << "      <http://www.gnu.org/licenses/gpl.html>. There is NOT"  << '\n'
-        << "      ANY WARRANTY, to the extent permitted by law."         << '\n';
+        << "      ANY WARRANTY, to the extent permitted by law."         <<'\n';
 }
 
 #endif //SMASHPP_PAR_HPP
