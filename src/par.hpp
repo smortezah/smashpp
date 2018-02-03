@@ -23,6 +23,8 @@ public:
     inline void parse (int&, char**&);
 
 private:
+    inline std::vector<string>::iterator where (std::vector<string>, string);
+    inline bool isIn (std::vector<string>, const string &);
     inline void guide ();
 };
 
@@ -34,11 +36,32 @@ void Parameters::parse (int& argc, char**& argv)
 {
     if (argc<2) { guide();  return; }
     else {
-        std::vector<string> in;    in.reserve((u64) argc);
-        for (int i=0; i<argc; ++i)  in.emplace_back(string(argv[i]));
+        std::vector<string> vArgs;   vArgs.reserve((u64) argc);
+        for (int i=0; i!=argc; ++i)  vArgs.emplace_back(string(argv[i]));
         
-        auto pos=std::find(in.begin(), in.end(), "-h");
-        cout<<*(pos+1);
+//        auto posShort = std::find(vArgs.begin(), vArgs.end(), "-h");
+//        auto posLong  = std::find(vArgs.begin(), vArgs.end(), "--help");
+//        if (posShort!=vArgs.end() || posLong!=vArgs.end()) {
+//            guide();
+//            return;
+//        }
+////        auto posShort=where(vArgs, "-h");
+////        auto posLong =where(vArgs, "--help");
+////        if (posShort!=vArgs.end() || posLong!=vArgs.end())
+////        {
+//////            cout << *posShort;
+//////            cout << *posLong;
+////        }
+        for (auto i=vArgs.begin(); i!=vArgs.end(); ++i)
+        {
+            if (*i=="-h" || *i=="--help")
+            {
+                guide();
+                return;
+            }
+            else if (*i=="-v" || *i=="--verbose")
+                verbose=true;
+        }
         
 //        for (int i=0; i!=argc; ++i) {
 //            if (string(argv[i])=="-h" || string(argv[i])=="--help") {
@@ -70,6 +93,17 @@ void Parameters::parse (int& argc, char**& argv)
     }
 }
 
+inline bool Parameters::isIn (std::vector<string> v, const string &s)
+{
+    return std::find(v.begin(), v.end(), s) != v.end();
+}
+
+inline std::vector<string>::iterator Parameters::where ( std::vector<string> v, string s)
+{
+    return std::find(v.begin(), v.end(), s);
+}
+
+
 /*
  * Usage guide
  */
@@ -88,10 +122,8 @@ inline void Parameters::guide ()
 //        << "      ./smashpp [OPTION]...  [-d] [IN_FILE] > [OUT_FILE]"    << '\n'
 //                                                                         << '\n'
 //        << "SAMPLE"                                                      << '\n'
-//        << "      Compress   & Encrypt:   ./cryfa -k pass.txt in.fq "
-//        <<                                                  "> comp"     << '\n'
-//        << "      Decompress & Decrypt:   ./cryfa -k pass.txt -d comp "
-//        <<                                                  "> orig.fq"  << '\n'
+//        << "      Compress:    ./cryfa -k pass.txt in.fq > comp"         << '\n'
+//        << "      Decompress:  ./cryfa -k pass.txt -d comp > orig.fq"    << '\n'
 //                                                                         << '\n'
 //        << "DESCRIPTION"                                                 << '\n'
 //        << "      Compress and encrypt FASTA/FASTQ files."               << '\n'
@@ -114,10 +146,10 @@ inline void Parameters::guide ()
         << "COPYRIGHT"                                                   << '\n'
         << "      Copyright (C) " << DEV_YEARS
                                   << ", IEETA, University of Aveiro."    << '\n'
-        << "      This is a Free software, under GPLv3. You may redistribute \n"
-        << "      copies of it under the terms of the GNU - General Public   \n"
-        << "      License v3 <http://www.gnu.org/licenses/gpl.html>. There   \n"
-        << "      is NOT ANY WARRANTY, to the extent permitted by law." << '\n';
+        << "      You may redistribute copies of this Free software"     << '\n'
+        << "      under the terms of the GNU - General Public License v3"<< '\n'
+        << "      <http://www.gnu.org/licenses/gpl.html>. There is NOT"  << '\n'
+        << "      ANY WARRANTY, to the extent permitted by law."         << '\n';
 }
 
 #endif //SMASHPP_PAR_HPP
