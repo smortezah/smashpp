@@ -16,7 +16,12 @@ using std::cout;
 
 int main (int argc, char* argv[])
 {
-    auto* p=new Parameters;    p->parse(argc, argv);    delete p;   // Parse cmd
+    auto* p=new Parameters;
+    p->parse(argc, argv);
+    
+//    cout<<(int)p->nthr;
+    
+    delete p;   // Parse cmd
     
     return 0;
 }
