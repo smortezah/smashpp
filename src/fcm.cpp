@@ -4,7 +4,8 @@
 
 #include "fcm.hpp"
 
-void FCM::buildModel (const Parameters& p)
+//void FCM::buildModel (const Parameters& p)
+void FCM::buildModel (Parameters p)
 {
-//    std::cout << p.ir << ' ' << (int) p.ctx << ' ' << p.alpha;
+    std::cout << p.ir << ' ' << (int) p.ctx << ' ' << p.alpha;
 }

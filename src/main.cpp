@@ -18,11 +18,10 @@ using std::cout;
 
 int main (int argc, char* argv[])
 {
-    auto* p = new Parameters;
+    auto* p = new Parameters();
 //    auto* m = new FCM;
     
     p->parse(argc, argv);
-    
     
 //    m->buildModel(*p);
     
