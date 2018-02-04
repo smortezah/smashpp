@@ -11,17 +11,21 @@
 using std::cerr;
 using std::vector;
 using std::string;
+using std::stoi;
+using std::stof;
 
-// Command line
 class Parameters
 {
 public:
     string tar;
     string ref;
+    bool   ir;
+    u8     ctx;
+    float  alpha;
     bool   verbose;
     u8     nthr;
     
-    Parameters () : verbose(false), nthr(DEF_THR) {};
+    Parameters ();
     inline void parse (int&, char**&);
 
 private:
@@ -30,17 +34,33 @@ private:
 
 
 /*
+ * Constructor
+ */
+Parameters::Parameters ()
+{
+    ir      = false;
+    ctx     = 10;
+    alpha   = 0.01;
+    verbose = false;
+    nthr    = DEF_THR;
+}
+
+/*
  * Parse
  */
-void Parameters::parse (int& argc, char**& argv)
+inline void Parameters::parse (int& argc, char**& argv)
 {
-    if (argc<2) { help();  return; }
+    if (argc<2) {
+        help();    return;
+    }
     else {
         vector<string> vArgs;    vArgs.reserve((u64) argc);
         for (int i=0; i!=argc; ++i)  vArgs.emplace_back(string(argv[i]));
         
         for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-            if      (*i=="-h" || *i=="--help") { help();  return; }
+            if (*i=="-h" || *i=="--help") {
+                help();    return;
+            }
             else if (*i=="-t" || *i=="--tar") {
                 if (i+1!=vArgs.end())
                     tar = *++i;
@@ -55,21 +75,38 @@ void Parameters::parse (int& argc, char**& argv)
                     cerr << "Please specify the reference file address with "
                          << "\"-r fileName\".";
             }
+            else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
+                string m = *++i;
+                auto beg = m.begin();
+                vector<string> mPar;    mPar.reserve(3);
+                
+                for (auto j=beg; j!=m.end(); ++j) {
+                    if (*j==',') {
+                        mPar.emplace_back(string(beg, j));
+                        beg = j+1;
+                    }
+                }
+                mPar.emplace_back(string(beg, m.end()));
+                
+                ir    = (bool) stoi(mPar[0]);
+                ctx   = (u8)   stoi(mPar[1]);
+                alpha =        stof(mPar[2]);
+            }
             else if (*i=="-v" || *i=="--verbose")
                 verbose = true;
             else if ((*i=="-n" || *i=="--nthreads") && i+1!=vArgs.end())
                 nthr = (u8) stoul(*++i);
         }
         
-        // Mandatory args
-        if (std::find(vArgs.begin(), vArgs.end(), "-t")    == vArgs.end() ||
-            std::find(vArgs.begin(), vArgs.end(), "--tar") == vArgs.end())
-            cerr << "Please specify the target file address, with "
-                 << "\"-t fileName\".";
-        else if (std::find(vArgs.begin(), vArgs.end(), "-r")    == vArgs.end()||
-                 std::find(vArgs.begin(), vArgs.end(), "--ref") == vArgs.end())
-            cerr << "Please specify the reference file address, with "
-                 << "\"-r fileName\".";
+//        // Mandatory args
+//        if (std::find(vArgs.begin(), vArgs.end(), "-t")    == vArgs.end() ||
+//            std::find(vArgs.begin(), vArgs.end(), "--tar") == vArgs.end())
+//            cerr << "Please specify the target file address, with "
+//                 << "\"-t fileName\".";
+//        else if (std::find(vArgs.begin(), vArgs.end(), "-r")    == vArgs.end()||
+//                 std::find(vArgs.begin(), vArgs.end(), "--ref") == vArgs.end())
+//            cerr << "Please specify the reference file address, with "
+//                 << "\"-r fileName\".";
     }
 }
 
@@ -111,55 +148,6 @@ inline void Parameters::help ()
         << "    under the terms of the GNU - General Public License"     << '\n'
         << "    v3 <http://www.gnu.org/licenses/gpl.html>. There"        << '\n'
         << "    is NOT ANY WARRANTY, to the extent permitted by law."    <<'\n';
-    
-    
-//    cerr                                                                 << '\n'
-//        << "NAME"                                                        << '\n'
-//        << "      Smash++ v" << VERSION << " - rearrangements finder"    << '\n'
-//                                                                         << '\n'
-//        << "AUTHORS"                                                     << '\n'
-//        << "      Morteza Hosseini    seyedmorteza@ua.pt"                << '\n'
-//        << "      Diogo Pratas        pratas@ua.pt"                      << '\n'
-//        << "      Armando J. Pinho    ap@ua.pt"                          << '\n'
-//                                                                         << '\n'
-//        << "SYNOPSIS"                                                    << '\n'
-//        << "      ./smashpp [OPTION]...  -t [TAR_FILE] -r [REF_FILE]"    << '\n'
-//                                                                         << '\n'
-////        << "SAMPLE"                                                      << '\n'
-////        << "      Compress:    ./cryfa -k pass.txt in.fq > comp"         << '\n'
-////        << "      Decompress:  ./cryfa -k pass.txt -d comp > orig.fq"    << '\n'
-////                                                                         << '\n'
-//        << "DESCRIPTION"                                                 << '\n'
-////        << "      Compress and encrypt FASTA/FASTQ files."               << '\n'
-////        << "      Shuffle and encrypt any other text-based files."       << '\n'
-////                                                                         << '\n'
-////        << "      The KEY_FILE specifies a file including the password." << '\n'
-////                                                                         << '\n'
-//        << "      -h,  --help"                                           << '\n'
-//        << "           usage guide"                                      << '\n'
-//                                                                         << '\n'
-//        << "      -t [TAR_FILE],  --tar [TAR_FILE]"                      << '\n'
-//        << "           target file address -- MANDATORY"                 << '\n'
-//                                                                         << '\n'
-//        << "      -r [REF_FILE],  --ref [REF_FILE]"                      << '\n'
-//        << "           reference file address -- MANDATORY"              << '\n'
-//                                                                         << '\n'
-////        << "      -d,  --dec"                                            << '\n'
-////        << "           decompress & decrypt"                             << '\n'
-////                                                                         << '\n'
-//        << "      -v,  --verbose"                                        << '\n'
-//        << "           verbose mode (more information)"                  << '\n'
-//                                                                         << '\n'
-//        << "      -t [NUMBER],  --thread [NUMBER]"                       << '\n'
-//        << "           number of threads"                                << '\n'
-//                                                                         << '\n'
-//        << "COPYRIGHT"                                                   << '\n'
-//        << "      Copyright (C) " << DEV_YEARS
-//                                  << ", IEETA, University of Aveiro."    << '\n'
-//        << "      You may redistribute copies of this Free software"     << '\n'
-//        << "      under the terms of the GNU - General Public License"   << '\n'
-//        << "      v3 <http://www.gnu.org/licenses/gpl.html>. There"      << '\n'
-//        << "      is NOT ANY WARRANTY, to the extent permitted by law."  <<'\n';
 }
 
 #endif //SMASHPP_PAR_HPP

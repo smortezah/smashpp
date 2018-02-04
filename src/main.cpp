@@ -10,19 +10,25 @@
 #endif
 
 #include <iostream>
-#include "def.hpp"
-#include "par.hpp"
+//#include "def.hpp"
+//#include "par.hpp"
+#include "fcm.hpp"
 using std::cout;
 
 
 int main (int argc, char* argv[])
 {
     auto* p = new Parameters;
+//    auto* m = new FCM;
+    
     p->parse(argc, argv);
     
     
+//    m->buildModel(*p);
     
-    delete p;   // Parse cmd
+    
+    delete p;
+//    delete m, p;
     
     return 0;
 }
