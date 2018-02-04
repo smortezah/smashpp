@@ -5,6 +5,5 @@ SET(CMAKE_BUILD_TYPE Release)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 
-#file(GLOB SOURCE_FILES "src/*.hpp" "src/*.cpp" "src/*.h")
-file(GLOB SOURCE_FILES "src/main.cpp" "src/fcm.hpp" "src/fcm.cpp""src/par.hpp" "src/def.hpp")
+file(GLOB SOURCE_FILES "src/*.hpp" "src/*.cpp" "src/*.h")
 add_executable(smashpp ${SOURCE_FILES})
