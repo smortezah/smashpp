@@ -10,7 +10,8 @@
 class FCM
 {
 public:
-    void buildModel (const Parameters&);
+    void buildModel (Parameters);
+//    void buildModel (const Parameters&);
     
 private:
 };
