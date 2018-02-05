@@ -25,7 +25,7 @@ int main (int argc, char* argv[])
 
     m->buildModel(*p);
 
-    m->printTable(*p);
+//    m->printTable(*p);
 
     
     delete m, p;
