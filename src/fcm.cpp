@@ -33,7 +33,7 @@ void FCM::buildModel (const Parameters& p)
                 ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
                 // Update inverted repeat context (integer)
                 ctxIR = ctxIRCurr / ALPH_SZ;
-        
+                
                 // Update table
                 rowIdx = ctxIR * TAB_COL;
                 ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
