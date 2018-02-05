@@ -22,10 +22,11 @@ typedef signed long long    i64;
 typedef unsigned long long  u64;
 
 // Constant
-#define DEF_THR  1
-#define TAB_COL  6
-#define ALPH_SZ  5
-#define BLK_SZ   8192    // 8K
+#define DEF_THR   1
+#define TAB_COL   6
+#define ALPH_SZ   5
+#define IR_MAGIC  4
+#define BLK_SZ    8192    // 8K
 
 // Macro
 //#define LOOP(i,S)     for(const char& (i) : (S))
