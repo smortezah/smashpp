@@ -11,23 +11,24 @@
 
 #include <iostream>
 //#include "def.hpp"
-//#include "par.hpp"
+#include "par.hpp"
 #include "fcm.hpp"
 using std::cout;
 
 
 int main (int argc, char* argv[])
 {
-    auto* p = new Parameters();
-//    auto* m = new FCM;
-    
+    auto* p = new Parameters;
+    auto* m = new FCM;
+
     p->parse(argc, argv);
+
+    m->buildModel(*p);
+
+//    m->printTable(*p);
+
     
-//    m->buildModel(*p);
-    
-    
-    delete p;
-//    delete m, p;
+    delete m, p;
     
     return 0;
 }

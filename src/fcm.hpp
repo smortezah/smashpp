@@ -10,10 +10,13 @@
 class FCM
 {
 public:
-    void buildModel (Parameters);
-//    void buildModel (const Parameters&);
+    FCM () = default;
+    void buildModel (const Parameters&);
+    
+    void printTable (const Parameters&); //todo. test
     
 private:
+    u64* tbl;
 };
 
 #endif //SMASHPP_FCM_HPP
