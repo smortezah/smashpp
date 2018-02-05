@@ -19,15 +19,15 @@ class Parameters
 public:
     string tar;
     string ref;
-    bool   ir;
-    u8     ctx;
+    bool   ir;   // Inverted repeat
+    u8     k;    // Context-order size
     float  alpha;
     bool   verbose;
     u8     nthr;
 
     Parameters () {    // Parameters::Parameters(){} in *.hpp => compile error
         ir      = false;
-        ctx     = 10;
+        k     = 10;
         alpha   = 0.01;
         verbose = false;
         nthr    = DEF_THR;
@@ -83,7 +83,7 @@ inline void Parameters::parse (int argc, char**& argv)
                 mPar.emplace_back(string(beg, m.end()));
                 
                 ir    = (bool) stoi(mPar[0]);
-                ctx   = (u8)   stoi(mPar[1]);
+                k   = (u8)   stoi(mPar[1]);
                 alpha =        stof(mPar[2]);
             }
             else if (*i=="-v" || *i=="--verbose")
