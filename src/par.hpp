@@ -24,9 +24,15 @@ public:
     float  alpha;
     bool   verbose;
     u8     nthr;
-    
-    Parameters ();
-    inline void parse (int&, char**&);
+
+    Parameters () {    // Parameters::Parameters(){} in *.hpp => compile error
+        ir      = false;
+        ctx     = 10;
+        alpha   = 0.01;
+        verbose = false;
+        nthr    = DEF_THR;
+    };
+    inline void parse (int, char**&);
 
 private:
     inline void help ();
@@ -34,21 +40,9 @@ private:
 
 
 /*
- * Constructor
- */
-Parameters::Parameters ()
-{
-    ir      = false;
-    ctx     = 10;
-    alpha   = 0.01;
-    verbose = false;
-    nthr    = DEF_THR;
-}
-
-/*
  * Parse
  */
-inline void Parameters::parse (int& argc, char**& argv)
+inline void Parameters::parse (int argc, char**& argv)
 {
     if (argc<2) {
         help();    return;
@@ -98,15 +92,22 @@ inline void Parameters::parse (int& argc, char**& argv)
                 nthr = (u8) stoul(*++i);
         }
         
-//        // Mandatory args
-//        if (std::find(vArgs.begin(), vArgs.end(), "-t")    == vArgs.end() ||
-//            std::find(vArgs.begin(), vArgs.end(), "--tar") == vArgs.end())
-//            cerr << "Please specify the target file address, with "
-//                 << "\"-t fileName\".";
-//        else if (std::find(vArgs.begin(), vArgs.end(), "-r")    == vArgs.end()||
-//                 std::find(vArgs.begin(), vArgs.end(), "--ref") == vArgs.end())
-//            cerr << "Please specify the reference file address, with "
-//                 << "\"-r fileName\".";
+        // Mandatory args
+        bool tExist =
+                std::find(vArgs.begin(), vArgs.end(), "-t")    != vArgs.end();
+        bool tarExist =
+                std::find(vArgs.begin(), vArgs.end(), "--tar") != vArgs.end();
+        bool rExist =
+                std::find(vArgs.begin(), vArgs.end(), "-r")    != vArgs.end();
+        bool refExist =
+                std::find(vArgs.begin(), vArgs.end(), "--ref") != vArgs.end();
+        
+        if (!tExist && !tarExist)
+            cerr << "Please specify the target file address, with "
+                 << "\"-t fileName\".";
+        else if (!rExist && !refExist)
+            cerr << "Please specify the reference file address, with "
+                 << "\"-r fileName\".";
     }
 }
 
