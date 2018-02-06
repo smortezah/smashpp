@@ -11,12 +11,14 @@ class FCM
 {
 public:
     FCM () = default;
+    ~FCM () { delete tbl; }
     void buildModel (const Parameters&);
     
     void printTable (const Parameters&); //todo. test
     
 private:
-    u64* tbl;
+//    u64* tbl;
+    float* tbl;
 };
 
 #endif //SMASHPP_FCM_HPP

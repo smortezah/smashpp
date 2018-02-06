@@ -18,14 +18,15 @@ using std::cout;
 
 int main (int argc, char* argv[])
 {
+//    cout<<std::numeric_limits<float>::min();
+    
     auto* p = new Parameters;
     auto* m = new FCM;
-
     p->parse(argc, argv);
 
     m->buildModel(*p);
 
-//    m->printTable(*p);
+    m->printTable(*p);
 
     
     delete m, p;
