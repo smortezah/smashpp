@@ -3,6 +3,7 @@
 //
 
 #include <fstream>
+#include <stdlib.h>
 #include "fcm.hpp"
 using std::ifstream;
 using std::cout;
@@ -16,7 +17,8 @@ void FCM::buildModel (const Parameters& p)
     u64 ctxIRCurr;           // Concat of IR context and current symbol
     ifstream rf(p.ref);       // Ref file
     char c;                   // Chars read from ref file
-    tbl = new u64[TAB_COL*maxPV];
+//    tbl = new u64[TAB_COL*maxPV];
+    tbl = new float[TAB_COL*maxPV];
     u64 rowIdx;
     
     
@@ -24,45 +26,28 @@ void FCM::buildModel (const Parameters& p)
     ctxIR = maxPV-1;
     
     // Fill tbl by no. occurrences of symbols A,C,N,G,T
-    for (u32 i=0; rf.get(c) && i!=BLK_SZ; ++i) {
+//    for (u32 i=0; rf.get(c) && i!=BLK_SZ; ++i) {
+    while (rf.get(c)) {
         if (c!='\n') {
             curr = NUM[c];
             
-            if (p.ir) {   // Considering IRs to update table
-                // Concatenation of IR context and current symbol
-                ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
-                // Update inverted repeat context (integer)
-                ctxIR = ctxIRCurr / ALPH_SZ;
-                
-                // Update table
-                rowIdx = ctxIR * TAB_COL;
+            // Inverted repeats
+            if (p.ir) {
+                ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV; //Concat: ctxIR, curr
+                ctxIR     = ctxIRCurr/ALPH_SZ;    // Update ctxIR (integer)
+                rowIdx    = ctxIR*TAB_COL;
                 ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
-                ++tbl[rowIdx+ALPH_SZ];    // 'sum' col
-                // Update 'sum' col, then check for overflow
-//                            if (++table[ rowIndex + ALPH_SIZE ]
-//                                >= MAX_N_BASE_SUM)
-//                            {
-///                                ++n_div;           // Count no. of divisions
-//                                for (u8 j = ALPH_SUM_SIZE; j--;)
-//                                    table[ rowIndex + j ] >>= 1;
-//                            }
+                ++tbl[rowIdx+ALPH_SZ];            // 'sum' col
             }
             
-            rowIdx = ctx * TAB_COL;
+            rowIdx = ctx*TAB_COL;
             ++tbl[rowIdx+curr];
             ++tbl[rowIdx+ALPH_SZ];
-//                        if (++tbl[ rowIdx + ALPH_SIZE ] >= MAX_N_BASE_SUM)
-//                        {
-//                            ++n_div;               // Count no. of divisions
-//                            for (u8 j = ALPH_SUM_SIZE; j--;)
-//                                tbl[ rowIdx + j ] >>= 1;
-//                        }
-    
-            // Update ctx
-            // (rowIdx - k) == (k * ALPH_SIZE)
-///         ctx = (u64) (rowIdx - ctx + curr) % maxPV;
-///         ctx = (u64) (rowIdx - ctx) % maxPV + curr;
-            ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;
+            
+            // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
+            ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
+//            ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
+//            ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
         }
     }
     
