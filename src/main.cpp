@@ -25,8 +25,8 @@ int main (int argc, char* argv[])
     p->parse(argc, argv);
 
     m->buildModel(*p);
-
-    m->printTable(*p);
+//    m->printTable(*p);
+    m->compress(*p);
 
     
     delete m, p;
