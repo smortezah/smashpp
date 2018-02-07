@@ -31,8 +31,26 @@ typedef unsigned int        u32;
 typedef signed long long    i64;
 typedef unsigned long long  u64;
 typedef std::chrono::duration<double>  dur_t;
-typedef std::unordered_map<u64, u64[ALPH_SZ]>  htbl_t;
-//typedef std::unordered_map<u64, double[ALPH_SZ]>  htbl_t;
+//typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
+
+
+
+
+#include <iostream>
+#include <sparsehash/dense_hash_map>
+#include <backward/hash_fun.h>
+#include <cstring>
+
+using google::dense_hash_map;      // namespace where class lives by default
+using std::cout;
+using std::endl;
+using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
+
+struct eq { bool operator()(u64 s1, u64 s2) const { return (s1 == s2); } };
+
+typedef dense_hash_map<u64, std::array<u64,ALPH_SZ>, hash<u64>> htbl_t;
+//typedef dense_hash_map<u64, std::array<u64,ALPH_SZ>, hash<u64>, eq> htbl_t;
+
 
 // Macro
 //#define LOOP(i,S)     for(const char& (i) : (S))
