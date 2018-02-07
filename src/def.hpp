@@ -6,30 +6,33 @@
 #define SMASHPP_DEF_HPP
 
 #include <iostream>
+#include <unordered_map>
 #include <chrono>
 
 // Version
 #define VERSION    "18.02"
 #define DEV_YEARS  "2018"
 
-// Typedef
-typedef signed char                    i8;
-typedef unsigned char                  u8;
-typedef signed short                   i16;
-typedef unsigned short                 u16;
-typedef signed int                     i32;
-typedef unsigned int                   u32;
-typedef signed long long               i64;
-typedef unsigned long long             u64;
-typedef std::chrono::duration<double>  dur_t;
-
 // Constant
 #define DEF_THR    1
 #define TAB_COL    6
 #define ALPH_SZ    5
 #define IR_MAGIC   4
-#define TAB_MAX_K  12      // Max ctx depth to build table
+#define TAB_MAX_K  0//12//      // Max ctx depth to build table
 #define BLK_SZ     8192    // 8K
+
+// Typedef
+typedef signed char         i8;
+typedef unsigned char       u8;
+typedef signed short        i16;
+typedef unsigned short      u16;
+typedef signed int          i32;
+typedef unsigned int        u32;
+typedef signed long long    i64;
+typedef unsigned long long  u64;
+typedef std::chrono::duration<double>  dur_t;
+typedef std::unordered_map<u64, u64[ALPH_SZ]>  htbl_t;
+//typedef std::unordered_map<u64, double[ALPH_SZ]>  htbl_t;
 
 // Macro
 //#define LOOP(i,S)     for(const char& (i) : (S))

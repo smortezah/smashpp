@@ -7,22 +7,24 @@
 
 #include "par.hpp"
 
-class FCM //: public Parameters
+class FCM
 {
 public:
-    explicit FCM (Parameters& p);
+    char    mode;    //todo.test. Table or Hash table
+    
+    
+    explicit FCM (const Parameters& p);
     ~FCM ();
-////    void buildModel (const Parameters&);
-////    void compress (const Parameters&);
-//    void buildModel ();
-//    void compress ();
-//
-//    void printTable (); //todo. test
-////    void printTable (const Parameters&); //todo. test
+    void buildModel (const Parameters&);
+    void compress (const Parameters&);
+    
+    void printTbl (const Parameters &); //todo.test
+    void printHashTbl (); //todo.test
     
 private:
-    char    mode;    // Table or Hash table
+//    char    mode;    // Table or Hash table
     double* tbl;
+    htbl_t  htbl;
 };
 
 #endif //SMASHPP_FCM_HPP
