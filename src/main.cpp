@@ -22,30 +22,29 @@ using std::setprecision;
 
 int main (int argc, char* argv[])
 {
-    auto* p = new Parameters;
-    p->parse(argc, argv);
+    Parameters p;
+    p.parse(argc, argv);
     
-    auto* m = new FCM(*p);    // Uses some parsed values
+    auto* m = new FCM(p);
+    
+    // Build models
+    auto t0 = high_resolution_clock::now(); // Start time
+    m->buildModel(p);
+    auto t1 = high_resolution_clock::now(); // Finish time
+    dur_t e = t1-t0; // Elapsed
+    cout << "in " << std::fixed<< setprecision(3) << e.count() << " seconds.\n";
+    
+    m->mode=='t' ? m->printTbl(p) : m->printHashTbl();
 
-//    // Build models
-//    auto t0 = high_resolution_clock::now(); // Start time
-//    m->buildModel(*p);
-//    auto t1 = high_resolution_clock::now(); // Finish time
-//    dur_t e = t1-t0; // Elapsed
-//    cout << "in " << std::fixed<< setprecision(3) << e.count() << " seconds.\n";
-//
-////    m->printTable(*p);
-//
 //    // Compress
 //    t0 = high_resolution_clock::now();
 //    m->compress(*p);
 //    t1 = high_resolution_clock::now();
 //    e = t1-t0;
 //    cout << "in " << std::fixed<< setprecision(3) << e.count() << " seconds.\n";
-
     
-    delete m, p;
-
+    delete m;
+    
     return 0;
 }
 
