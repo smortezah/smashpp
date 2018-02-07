@@ -47,8 +47,14 @@ using std::endl;
 using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
 
 struct eq { bool operator()(u64 s1, u64 s2) const { return (s1 == s2); } };
+struct eqstr
+{
+    bool operator()(const char* s1, const char* s2) const
+    {
+        return (s1 == s2) || (s1 && s2 && strcmp(s1, s2) == 0);
+    }
+};
 
-typedef dense_hash_map<u64, std::array<u64,ALPH_SZ>, hash<u64>> htbl_t;
 //typedef dense_hash_map<u64, std::array<u64,ALPH_SZ>, hash<u64>, eq> htbl_t;
 
 
