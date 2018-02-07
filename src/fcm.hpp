@@ -7,21 +7,22 @@
 
 #include "par.hpp"
 
-class FCM
+class FCM //: public Parameters
 {
 public:
-    FCM () = default;
-    ~FCM () { delete tbl; }
-    void buildModel (const Parameters&);
-    void compress (const Parameters&);
-    
-    void printTable (const Parameters&); //todo. test
+    explicit FCM (Parameters& p);
+    ~FCM ();
+////    void buildModel (const Parameters&);
+////    void compress (const Parameters&);
+//    void buildModel ();
+//    void compress ();
+//
+//    void printTable (); //todo. test
+////    void printTable (const Parameters&); //todo. test
     
 private:
-    u64* tbl;
-//    double* tbl;
-
-    u64 countSyms (const string &);
+    char    mode;    // Table or Hash table
+    double* tbl;
 };
 
 #endif //SMASHPP_FCM_HPP
