@@ -27,15 +27,15 @@ public:
 
     Parameters () {    // Parameters::Parameters(){} in *.hpp => compile error
         ir      = false;
-        k     = 10;
+        k       = 10;
         alpha   = 0.01;
         verbose = false;
         nthr    = DEF_THR;
     };
-    inline void parse (int, char**&);
+    void parse (int, char**&);
 
 private:
-    inline void help ();
+    void help ();
 };
 
 
@@ -83,7 +83,7 @@ inline void Parameters::parse (int argc, char**& argv)
                 mPar.emplace_back(string(beg, m.end()));
                 
                 ir    = (bool) stoi(mPar[0]);
-                k   = (u8)   stoi(mPar[1]);
+                k     = (u8)   stoi(mPar[1]);
                 alpha =        stof(mPar[2]);
             }
             else if (*i=="-v" || *i=="--verbose")
