@@ -7,6 +7,7 @@
 #include "fcm.hpp"
 using std::ifstream;
 using std::cout;
+using std::array;
 
 /*
  * Constructor and destructor
@@ -96,6 +97,11 @@ void FCM::buildModel (const Parameters& p)
             break;
             
         case 'h':
+//            htbl.set_empty_key(NULL);
+//    months["january"] = 31;
+//    months["february"] = 28;
+//    cout << "september -> " << months["september"] << endl;
+            
             
             ctx   = 0;
             ctxIR = maxPV-1;
@@ -120,7 +126,7 @@ void FCM::buildModel (const Parameters& p)
             break;
         
         default:
-            cerr << "Error.";
+            cerr << "Error.\n";
             break;
     }
 
@@ -134,48 +140,73 @@ void FCM::buildModel (const Parameters& p)
  */
 void FCM::compress (const Parameters& p)
 {
-    double a=p.alpha, sa=ALPH_SZ*a;
-    const string tfName = p.tar;
-    ifstream tf(tfName);
-    char c;
-    u8 curr;           // Current symbol in integer format
-    u64 maxPV=POW5[p.k];
-    u64 ctx=0;// Context(s) (integer) sliding through the dataset
-    u64 rowIdx;                   // Index of a row in the table
-//    double n;                 // No. symbols (n_s). in pr numerator
-//    double sn;      // Sum of no. symbols (sum n_a). in pr denom.
-//    double prR=0;         // Reverse of Probability of a symbol for each model
-    double sEntr=0;   // Sum of entropies for different symbols
-    u64 symsNo=0;  // Number of symbols
-    double avEntr=0;   // Average entropy (H)
-
-    cerr << "Compressing...\n";
-
-    while (tf.get(c)) {
-        if (c!='\n') {
-            ++symsNo;             // No. syms in target file, except \n
-
-            curr   = NUM[c];    // Current symbol (integer)
-            rowIdx = ctx*TAB_COL;
-//            n      = tbl[rowIdx+curr];      // No.syms
-//            sn     = tbl[rowIdx+ALPH_SZ];   // Sum of number of symbols
-//            prR    = sn/n;         // P(s|c^t)
-//            sEntr += log2(prR);             // sum( log_2 P(s|c^t) )
-            sEntr += log2(tbl[rowIdx+ALPH_SZ]/tbl[rowIdx+curr]);             // sum( log_2 P(s|c^t) )
-
-            // Update ctx.  (rowIdx - ctx[i]) = (ctx[i] * ALPH_SIZE)
-            ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
-//            ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
-//            ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
-        }
-    }
-
-    tf.close();                      // Close target file
-
-    avEntr = (double) sEntr/symsNo;
-
-    cerr << "Compression finished ";
-//    cerr << "avEntr="<<avEntr;
+//    double a=p.alpha, sa=ALPH_SZ*a;
+//    const string tfName = p.tar;
+//    ifstream tf(tfName);
+//    char c;
+//    u8 curr;           // Current symbol in integer format
+//    u64 maxPV=POW5[p.k];
+//    u64 ctx=0;// Context(s) (integer) sliding through the dataset
+//    u64 rowIdx;                   // Index of a row in the table
+//    double sEntr=0;   // Sum of entropies for different symbols
+//    u64 symsNo=0;  // Number of symbols
+//    double aveEntr=0;   // Average entropy (H)
+//
+//    cerr << "Compressing...\n";
+//
+//    switch (mode) {
+//        case 't':
+//            while (tf.get(c)) {
+//                if (c!='\n') {
+//                    ++symsNo;             // No. syms in target file, except \n
+//
+//                    curr   = NUM[c];    // Current symbol (integer)
+//                    rowIdx = ctx*TAB_COL;
+//                    sEntr += log2(tbl[rowIdx+ALPH_SZ]/tbl[rowIdx+curr]); // sum( log_2 P(s|c^t) )
+////                    sEntr += log2((tbl[rowIdx+ALPH_SZ]+sa)/(tbl[rowIdx+curr]+a)); // sum( log_2 P(s|c^t) )
+//
+//                    // Update ctx.  (rowIdx - ctx[i]) = (ctx[i] * ALPH_SIZE)
+//                    ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
+////            ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
+////            ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
+//                }
+//            }
+//            break;
+//
+//        case 'h':
+//            u64 sum;
+//            array<u64,ALPH_SZ> ar;
+//
+//            while (tf.get(c)) {
+//                if (c!='\n') {
+//                    ++symsNo;             // No. syms in target file, except \n
+//
+//                    curr = NUM[c];
+//
+//                    ar   = htbl.at(ctx);
+//                    sum  = (ar[0]+ar[1]) + (ar[2]) + (ar[3]+ar[4]);
+////                    sum=0;    for (const auto& e : ar)  sum+=e;
+//
+//                    sEntr += log2((sum+sa)/(ar[curr]+a)); // sum( log_2 P(s|c^t) )
+////                    sEntr += log2((sum+sa)/(htbl[ctx][curr]+a)); // sum( log_2 P(s|c^t) )
+//
+//                    ctx = (ctx*ALPH_SZ)%maxPV + curr; // Update ctx
+//                }
+//            }
+//            break;
+//
+//        default:
+//            cerr << "Error.\n";
+//            break;
+//    }
+//
+//    tf.close();                      // Close target file
+//
+//    aveEntr = sEntr/symsNo;
+//
+//    cerr << "aveEntr=" << aveEntr << '\n';
+//
+//    cerr << "Compression finished ";
 }
 
 /*
