@@ -37,25 +37,43 @@ typedef std::chrono::duration<double>  dur_t;
 
 
 #include <iostream>
-#include <sparsehash/dense_hash_map>
-#include <backward/hash_fun.h>
-#include <cstring>
+#include <sparsepp/sparsepp/spp.h>
+#include <google/dense_hash_map>
+using spp::sparse_hash_map;
 
-using google::dense_hash_map;      // namespace where class lives by default
-using std::cout;
-using std::endl;
-using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
+namespace sparsehash_internal = SPP_NAMESPACE::sparsehash_internal;
+using SPP_NAMESPACE::sparsetable;
+using SPP_NAMESPACE::sparse_hashtable;
+using SPP_NAMESPACE::sparse_hash_map;
+using SPP_NAMESPACE::sparse_hash_set;
 
-struct eq { bool operator()(u64 s1, u64 s2) const { return (s1 == s2); } };
-struct eqstr
-{
-    bool operator()(const char* s1, const char* s2) const
-    {
-        return (s1 == s2) || (s1 && s2 && strcmp(s1, s2) == 0);
-    }
-};
+typedef sparse_hash_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
-//typedef dense_hash_map<u64, std::array<u64,ALPH_SZ>, hash<u64>, eq> htbl_t;
+//#include <sparsehash/dense_hash_map>
+//#include <sparsehash/sparse_hash_map>
+//#include <sparsehash/dense_hash_set>
+//#include <backward/hash_fun.h>
+//#include <cstring>
+//#include <functional>
+
+//using google::dense_hash_set;      // namespace where class lives by default
+//using google::dense_hash_map;      // namespace where class lives by default
+//using google::sparse_hash_map;      // namespace where class lives by default
+//using std::cout;
+//using std::endl;
+//using std::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
+//
+//struct eq { bool operator()(u64 s1, u64 s2) const { return (s1 == s2); } };
+//struct eqstr
+//{
+//    bool operator()(const char* s1, const char* s2) const
+//    {
+//        return (s1 == s2) || (s1 && s2 && strcmp(s1, s2) == 0);
+//    }
+//};
+//typedef sparse_hash_map<const char*, int, hash<const char*>, eqstr> months;
+//typedef sparse_hash_map<u64, std::array<u64,ALPH_SZ>, hash<u64>,eq> htbl_t;
+//typedef dense_hash_set<u64, std::array<u64,ALPH_SZ>, hash<u64>,eq> htbl_t;
 
 
 // Macro

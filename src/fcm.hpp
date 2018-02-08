@@ -16,10 +16,10 @@ public:
     explicit FCM (const Parameters& p);
     ~FCM ();
     void buildModel (const Parameters&);
-    void compress (const Parameters&);
+    void compress (const Parameters&) const;
     
-    void printTbl (const Parameters &); //todo.test
-    void printHashTbl (); //todo.test
+    void printTbl (const Parameters&) const; //todo.test
+    void printHashTbl () const; //todo.test
     
 private:
 //    char    mode;    // Table or Hash table

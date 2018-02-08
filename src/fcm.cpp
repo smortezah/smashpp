@@ -97,11 +97,7 @@ void FCM::buildModel (const Parameters& p)
             break;
             
         case 'h':
-//            htbl.set_empty_key(NULL);
-//    months["january"] = 31;
-//    months["february"] = 28;
-//    cout << "september -> " << months["september"] << endl;
-            
+//            htbl.set_empty_key((u64)NULL);
             
             ctx   = 0;
             ctxIR = maxPV-1;
@@ -138,7 +134,7 @@ void FCM::buildModel (const Parameters& p)
 /*
  * Compress
  */
-void FCM::compress (const Parameters& p)
+void FCM::compress (const Parameters& p) const
 {
 //    double a=p.alpha, sa=ALPH_SZ*a;
 //    const string tfName = p.tar;
@@ -212,7 +208,7 @@ void FCM::compress (const Parameters& p)
 /*
  * Print table
  */
-void FCM::printTbl (const Parameters &p)
+void FCM::printTbl (const Parameters &p) const
 {
     u64 rowSize=POW5[p.k];
     for (u8 i=0; i!=rowSize; ++i) {
@@ -225,7 +221,7 @@ void FCM::printTbl (const Parameters &p)
 /*
  * Print hash table
  */
-void FCM::printHashTbl ()
+void FCM::printHashTbl () const
 {
     for (const auto& e : htbl) {
         for (const auto& v : e.second)
