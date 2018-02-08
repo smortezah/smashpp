@@ -10,17 +10,14 @@
 class FCM
 {
 public:
-    char    mode;    //todo.test. Table or Hash table
+    explicit FCM      (const Param&);
+    ~FCM              ();
+    void buildModel   (const Param&);
+    void compress     (const Param&)  const;
+    void printTbl     (const Param&)  const;
+    void printHashTbl ()              const;
     
-    
-    explicit FCM (const Parameters& p);
-    ~FCM ();
-    void buildModel (const Parameters&);
-    void compress (const Parameters&) const;
-    
-    void printTbl (const Parameters&) const; //todo.test
-    void printHashTbl () const; //todo.test
-    
+    char    mode;     //todo.test. to print in main()
 private:
 //    char    mode;    // Table or Hash table
     double* tbl;

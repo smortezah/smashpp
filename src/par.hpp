@@ -15,7 +15,7 @@ using std::string;
 using std::stoi;
 using std::stof;
 
-class Parameters
+class Param
 {
 public:
     string tar;
@@ -26,7 +26,7 @@ public:
     bool   verbose;
     u8     nthr;
     
-    Parameters () {    // Parameters::Parameters(){} in *.hpp => compile error
+    Param () {         // Define Param::Param(){} in *.hpp => compile error
         ir      = false;
         k       = 10;
         alpha   = 0.01;
@@ -36,14 +36,14 @@ public:
     void parse (int, char**&);
 
 private:
-    void help () const;
+    void help  () const;
 };
 
 
 /*
  * Parse
  */
-inline void Parameters::parse (int argc, char**& argv)
+inline void Param::parse (int argc, char**& argv)
 {
     if (argc<2) { help();    throw EXIT_SUCCESS; }
     else {
@@ -117,41 +117,41 @@ inline void Parameters::parse (int argc, char**& argv)
 /*
  * Usage guide
  */
-inline void Parameters::help () const
+inline void Param::help () const
 {
-    cerr                                                                 << '\n'
-        << "NAME"                                                        << '\n'
-        << "    Smash++ v" << VERSION << " - rearrangements finder"      << '\n'
-                                                                         << '\n'
-        << "AUTHORS"                                                     << '\n'
-        << "    Morteza Hosseini    seyedmorteza@ua.pt"                  << '\n'
-        << "    Diogo Pratas        pratas@ua.pt"                        << '\n'
-        << "    Armando J. Pinho    ap@ua.pt"                            << '\n'
-                                                                         << '\n'
-        << "SYNOPSIS"                                                    << '\n'
-        << "    ./smashpp [OPTION]...  -t [TAR_FILE] -r [REF_FILE]"      << '\n'
-                                                                         << '\n'
-//      << "SAMPLE"                                                      << '\n'
-//      << "      Compress:    ./cryfa -k pass.txt in.fq > comp"         << '\n'
-//      << "      Decompress:  ./cryfa -k pass.txt -d comp > orig.fq"    << '\n'
-//                                                                       << '\n'
-        << "DESCRIPTION"                                                 << '\n'
-//      << "      Compress and encrypt FASTA/FASTQ files."               << '\n'
-//                                                                       << '\n'
-//      << "      The KEY_FILE specifies a file including the password." << '\n'
-//                                                                       << '\n'
-        << "    -t [FILE], --tar          target file    -- MANDATORY"   << '\n'
-        << "    -r [FILE], --ref          reference file -- MANDATORY"   << '\n'
-        << "    -h,        --help         usage guide"                   << '\n'
-        << "    -v,        --verbose      more information"              << '\n'
-        << "    -t [NUM],  --thread       number of threads"             << '\n'
-                                                                         << '\n'
-        << "COPYRIGHT"                                                   << '\n'
-        << "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro.\n"
-        << "    You may redistribute copies of this Free software"       << '\n'
-        << "    under the terms of the GNU - General Public License"     << '\n'
-        << "    v3 <http://www.gnu.org/licenses/gpl.html>. There"        << '\n'
-        << "    is NOT ANY WARRANTY, to the extent permitted by law."    <<endl;
+    cerr                                                                << '\n'
+      << "NAME"                                                         << '\n'
+      << "    Smash++ v" << VERSION << " - rearrangements finder"       << '\n'
+                                                                        << '\n'
+      << "AUTHORS"                                                      << '\n'
+      << "    Morteza Hosseini    seyedmorteza@ua.pt"                   << '\n'
+      << "    Diogo Pratas        pratas@ua.pt"                         << '\n'
+      << "    Armando J. Pinho    ap@ua.pt"                             << '\n'
+                                                                        << '\n'
+      << "SYNOPSIS"                                                     << '\n'
+      << "    ./smashpp [OPTION]...  -t [TAR_FILE] -r [REF_FILE]"       << '\n'
+                                                                        << '\n'
+//    << "SAMPLE"                                                       << '\n'
+//    << "      Compress:    ./cryfa -k pass.txt in.fq > comp"          << '\n'
+//    << "      Decompress:  ./cryfa -k pass.txt -d comp > orig.fq"     << '\n'
+//                                                                      << '\n'
+      << "DESCRIPTION"                                                  << '\n'
+//    << "      Compress and encrypt FASTA/FASTQ files."                << '\n'
+//                                                                      << '\n'
+//    << "      The KEY_FILE specifies a file including the password."  << '\n'
+//                                                                      << '\n'
+      << "    -t [FILE], --tar          target file    -- MANDATORY"    << '\n'
+      << "    -r [FILE], --ref          reference file -- MANDATORY"    << '\n'
+      << "    -h,        --help         usage guide"                    << '\n'
+      << "    -v,        --verbose      more information"               << '\n'
+      << "    -t [NUM],  --thread       number of threads"              << '\n'
+                                                                        << '\n'
+      << "COPYRIGHT"                                                    << '\n'
+      << "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro. \n"
+      << "    You may redistribute copies of this Free software"        << '\n'
+      << "    under the terms of the GNU - General Public License"      << '\n'
+      << "    v3 <http://www.gnu.org/licenses/gpl.html>. There"         << '\n'
+      << "    is NOT ANY WARRANTY, to the extent permitted by law."     << endl;
 }
 
 #endif //SMASHPP_PAR_HPP
