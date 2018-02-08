@@ -5,6 +5,7 @@
 #ifndef SMASHPP_PAR_HPP
 #define SMASHPP_PAR_HPP
 
+#include <fstream>
 #include <vector>
 #include <algorithm>
 #include "def.hpp"
@@ -14,6 +15,7 @@ using std::vector;
 using std::string;
 using std::stoi;
 using std::stof;
+using std::ifstream;
 
 class Param
 {
@@ -27,6 +29,8 @@ public:
     u8     nthr;
     
     Param () {         // Define Param::Param(){} in *.hpp => compile error
+        tar     = "";
+        ref     = "";
         ir      = false;
         k       = 10;
         alpha   = 0.01;
@@ -55,8 +59,18 @@ inline void Param::parse (int argc, char**& argv)
               help();    throw EXIT_SUCCESS;
           }
           else if (*i=="-t" || *i=="--tar") {
-              if (i+1!=vArgs.end())
+              if (i+1!=vArgs.end()) {
                   tar = *++i;
+                  
+                  ifstream f(tar);
+                  if (!f) {
+                      cerr << "Error: the file \"" << tar << "\" "
+                           << "cannot be opened, or it is empty.\n";
+                      f.close();
+                      throw EXIT_FAILURE;
+                  }
+                  f.close();
+              }
               else {
                   cerr << "Please specify the target file address with "
                        << "\"-t fileName\".\n";

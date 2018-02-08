@@ -32,9 +32,17 @@ void FCM::buildModel (const Param& p)
     u64      ctxIR;              // Inverted repeat context (integer)
     u8       curr;               // Current symbol (integer)
     u64      ctxIRCurr;          // Concat IR context - current symbol
-    ifstream rf(p.ref);          // Ref file
+    ifstream rf;                 // Ref file
     char     c;                  // To read from ref file
     double   a=p.alpha, sa=ALPH_SZ*a;
+    
+    rf.open(p.ref);
+    if (!rf) {
+        cerr << "Error: the file \"" << p.ref << "\" cannot be opened, "
+             << "or it is empty.\n";
+        rf.close();
+        throw EXIT_FAILURE;
+    }
     
     cerr << "Building models...\n";
     
@@ -109,14 +117,22 @@ void FCM::buildModel (const Param& p)
 void FCM::compress (const Param& p) const
 {
     double   a=p.alpha, sa=ALPH_SZ*a;
-    ifstream tf(p.tar);
+    ifstream tf;
     char     c;
     u8       curr;           // Current symbol (integer)
     u64      maxPV=POW5[p.k];
     u64      ctx=0;          // Context(s) (integer) sliding through the dataset
     double   sEntr=0;        // Sum of entropies = sum( log_2 P(s|c^t) )
     u64      symsNo=0;       // No. syms in target file, except \n
-
+    
+    tf.open(p.tar);
+//    if (!tf) {
+//        cerr << "Error: the file \"" << p.tar << "\" cannot be opened, "
+//             << "or it is empty.\n";
+//        tf.close();
+//        throw EXIT_FAILURE;
+//    }
+    
     cerr << "Compressing...\n";
 
     switch (mode) {
