@@ -35,7 +35,7 @@ public:
     void parse (int, char**&);
 
 private:
-    void help ();
+    void help () const;
 };
 
 
@@ -114,7 +114,7 @@ inline void Parameters::parse (int argc, char**& argv)
 /*
  * Usage guide
  */
-inline void Parameters::help ()
+inline void Parameters::help () const
 {
     cerr                                                                 << '\n'
         << "NAME"                                                        << '\n'
