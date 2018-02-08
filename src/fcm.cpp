@@ -45,7 +45,8 @@ void FCM::buildModel (const Param& p)
           for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
               tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
           }
-          ctx=0, ctxIR=maxPV-1;
+          ctx   = 0;
+          ctxIR = maxPV-1;
           
           // Fill tbl by no. occurrences of symbols A,C,N,G,T
           while (rf.get(c)) {
@@ -73,7 +74,8 @@ void FCM::buildModel (const Param& p)
           break;
           
       case 'h':
-          ctx=0, ctxIR=maxPV-1;
+          ctx   = 0;
+          ctxIR = maxPV-1;
           
           // Fill tbl by no. occurrences of symbols A,C,N,G,T
           while (rf.get(c)) {
@@ -93,7 +95,7 @@ void FCM::buildModel (const Param& p)
           }
           break;
     
-        default:  cerr << "Error.\n";  break;
+      default:  cerr << "Error.\n";  break;
     }
 
     rf.close();
@@ -107,8 +109,7 @@ void FCM::buildModel (const Param& p)
 void FCM::compress (const Param& p) const
 {
     double   a=p.alpha, sa=ALPH_SZ*a;
-    const    string tfName=p.tar;
-    ifstream tf(tfName);
+    ifstream tf(p.tar);
     char     c;
     u8       curr;           // Current symbol (integer)
     u64      maxPV=POW5[p.k];
@@ -128,38 +129,31 @@ void FCM::compress (const Param& p) const
                   curr   = NUM[c];
                   rowIdx = ctx*TAB_COL;
                   sEntr += log2(tbl[rowIdx+ALPH_SZ]/tbl[rowIdx+curr]);
-                  ctx = (rowIdx-ctx)%maxPV + curr;    // Update ctx
+                  ctx    = (rowIdx-ctx)%maxPV + curr;    // Update ctx
               }
           }
           break;
 
       case 'h':
-          u64 sum;
-          array<u64,ALPH_SZ> ar;
-
           while (tf.get(c)) {
               if (c!='\n') {
                   ++symsNo;
-//                  ar     = htbl.at(ctx);
-//                  auto x=htbl.find(ctx);
-//                  for (int i=0; i!=ALPH_SZ; ++i) {
-//                      ar[i] = *x;
-//                  }
-//                  for (int i=0; i!=ALPH_SZ; ++i) {
-//                      ar[i] = htbl[ctx][i];
-//                  }
-//                  ar     = htbl[ctx];
-                  sum=0;    for (const auto& e : ar)  sum+=e;
+                  curr    = NUM[c];
+                  auto hi = htbl.find(ctx);
+                  
+                  if (hi != htbl.end()) {
+                      auto ar = hi->second;
+                      u64 sum=0;    for (const auto &e : ar)  sum+=e;
 //                  sum    = (ar[0]+ar[1]) + (ar[2]) + (ar[3]+ar[4]);
-                  curr   = NUM[c];
-                  rowIdx = ctx*TAB_COL;//todo
-                  sEntr += log2((sum+sa)/(ar[curr]+a));
-//                  ctx    = (ctx*ALPH_SZ)%maxPV + curr;    // Update ctx
-                  ctx = (rowIdx-ctx)%maxPV + curr;    // Update ctx todo
+                      sEntr += log2((sum+sa)/(ar[curr]+a));
+                  }
+                  else { sEntr += log2(ALPH_SZ); }
+                  
+                  ctx = (ctx*ALPH_SZ)%maxPV + curr;    // Update ctx
               }
           }
           break;
-
+          
       default:  cerr<<"Error.\n";  break;
     }
 
