@@ -18,7 +18,7 @@
 #define TAB_COL    6
 #define ALPH_SZ    5
 #define IR_MAGIC   4
-#define TAB_MAX_K  0//12//      // Max ctx depth to build table
+#define TAB_MAX_K  12//0//      // Max ctx depth to build table
 #define BLK_SZ     8192    // 8K
 
 // Typedef

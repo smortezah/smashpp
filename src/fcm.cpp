@@ -34,7 +34,6 @@ void FCM::buildModel (const Param& p)
     u64      ctxIRCurr;          // Concat IR context - current symbol
     ifstream rf(p.ref);          // Ref file
     char     c;                  // To read from ref file
-    u64      rowIdx=0;
     double   a=p.alpha, sa=ALPH_SZ*a;
     
     cerr << "Building models...\n";
@@ -52,6 +51,7 @@ void FCM::buildModel (const Param& p)
           while (rf.get(c)) {
               if (c!='\n') {
                   curr = NUM[c];
+                  u64 rowIdx;
                   
                   // Inverted repeats
                   if (p.ir) {
@@ -114,10 +114,8 @@ void FCM::compress (const Param& p) const
     u8       curr;           // Current symbol (integer)
     u64      maxPV=POW5[p.k];
     u64      ctx=0;          // Context(s) (integer) sliding through the dataset
-    u64      rowIdx;         // Index of a row in the table
     double   sEntr=0;        // Sum of entropies = sum( log_2 P(s|c^t) )
     u64      symsNo=0;       // No. syms in target file, except \n
-    double   aveEntr=0;      // Average entropy (H)
 
     cerr << "Compressing...\n";
 
@@ -126,10 +124,10 @@ void FCM::compress (const Param& p) const
           while (tf.get(c)) {
               if (c!='\n') {
                   ++symsNo;
-                  curr   = NUM[c];
-                  rowIdx = ctx*TAB_COL;
-                  sEntr += log2(tbl[rowIdx+ALPH_SZ]/tbl[rowIdx+curr]);
-                  ctx    = (rowIdx-ctx)%maxPV + curr;    // Update ctx
+                  curr       = NUM[c];
+                  u64 rowIdx = ctx*TAB_COL;
+                  sEntr     += log2(tbl[rowIdx+ALPH_SZ]/tbl[rowIdx+curr]);
+                  ctx        = (rowIdx-ctx)%maxPV + curr;    // Update ctx
               }
           }
           break;
@@ -140,15 +138,15 @@ void FCM::compress (const Param& p) const
                   ++symsNo;
                   curr    = NUM[c];
                   auto hi = htbl.find(ctx);
-                  
                   if (hi != htbl.end()) {
                       auto ar = hi->second;
                       u64 sum=0;    for (const auto &e : ar)  sum+=e;
 //                  sum    = (ar[0]+ar[1]) + (ar[2]) + (ar[3]+ar[4]);
                       sEntr += log2((sum+sa)/(ar[curr]+a));
                   }
-                  else { sEntr += log2(ALPH_SZ); }
-                  
+                  else {
+                      sEntr += log2(ALPH_SZ);
+                  }
                   ctx = (ctx*ALPH_SZ)%maxPV + curr;    // Update ctx
               }
           }
@@ -158,8 +156,8 @@ void FCM::compress (const Param& p) const
     }
 
     tf.close();
-
-    aveEntr = sEntr/symsNo;
+    
+    double aveEntr = sEntr/symsNo;
     cerr << "Average Entropy (H) = " << aveEntr << '\n';
 
     cerr << "Compression finished ";
