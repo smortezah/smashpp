@@ -35,14 +35,7 @@ void FCM::buildModel (const Param& p)
     ifstream rf;                 // Ref file
     char     c;                  // To read from ref file
     double   a=p.alpha, sa=ALPH_SZ*a;
-    
     rf.open(p.ref);
-    if (!rf) {
-        cerr << "Error: the file \"" << p.ref << "\" cannot be opened, "
-             << "or it is empty.\n";
-        rf.close();
-        throw EXIT_FAILURE;
-    }
     
     cerr << "Building models...\n";
     
@@ -124,14 +117,7 @@ void FCM::compress (const Param& p) const
     u64      ctx=0;          // Context(s) (integer) sliding through the dataset
     double   sEntr=0;        // Sum of entropies = sum( log_2 P(s|c^t) )
     u64      symsNo=0;       // No. syms in target file, except \n
-    
     tf.open(p.tar);
-//    if (!tf) {
-//        cerr << "Error: the file \"" << p.tar << "\" cannot be opened, "
-//             << "or it is empty.\n";
-//        tf.close();
-//        throw EXIT_FAILURE;
-//    }
     
     cerr << "Compressing...\n";
 

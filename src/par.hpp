@@ -61,12 +61,11 @@ inline void Param::parse (int argc, char**& argv)
           else if (*i=="-t" || *i=="--tar") {
               if (i+1!=vArgs.end()) {
                   tar = *++i;
-                  
                   ifstream f(tar);
                   if (!f) {
-                      cerr << "Error: the file \"" << tar << "\" "
-                           << "cannot be opened, or it is empty.\n";
                       f.close();
+                      cerr << "Error: the file \"" << tar << "\" "
+                           << "cannot be opened or is empty.\n";
                       throw EXIT_FAILURE;
                   }
                   f.close();
@@ -78,8 +77,17 @@ inline void Param::parse (int argc, char**& argv)
               }
           }
           else if (*i=="-r" || *i=="--ref") {
-              if (i+1!=vArgs.end())
+              if (i+1!=vArgs.end()) {
                   ref = *++i;
+                  ifstream f(ref);
+                  if (!f) {
+                      f.close();
+                      cerr << "Error: the file \"" << ref << "\" "
+                           << "cannot be opened or is empty.\n";
+                      throw EXIT_FAILURE;
+                  }
+                  f.close();
+              }
               else {
                   cerr << "Please specify the reference file address with "
                        << "\"-r fileName\".\n";
