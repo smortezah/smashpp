@@ -140,7 +140,11 @@ void FCM::compress (const Param& p) const
           while (tf.get(c)) {
               if (c!='\n') {
                   ++symsNo;
-                  ar     = htbl.at(ctx);
+//                  ar     = htbl.at(ctx);
+//                  auto x=htbl.find(ctx);
+//                  for (int i=0; i!=ALPH_SZ; ++i) {
+//                      ar[i] = *x;
+//                  }
 //                  for (int i=0; i!=ALPH_SZ; ++i) {
 //                      ar[i] = htbl[ctx][i];
 //                  }
