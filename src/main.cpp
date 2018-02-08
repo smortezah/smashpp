@@ -23,7 +23,8 @@ using std::setprecision;
 int main (int argc, char* argv[])
 {
     Parameters p;
-    p.parse(argc, argv);
+    try         { p.parse(argc, argv); }
+    catch (...) { return EXIT_FAILURE; }
     
     auto* m = new FCM(p);
     

@@ -16,23 +16,6 @@ FCM::FCM (const Parameters& p)
 {
     // 6*(5^k_1 + 5^k_2 + ...) > 6*5^12 => mode: hash table 'h'
     mode = (POW5[p.k] > POW5[TAB_MAX_K]) ? 'h' : 't';
-
-//    // Initialize vector of tables or hash tables
-//    double a=p.alpha, sa=ALPH_SZ*a;
-//
-//    if (mode=='h') {
-////        htbl = new htbl_t[N_MODELS];
-//    }
-//    else {
-//        tbl = new double;
-//        tbl = new double[TAB_COL*POW5[p.k]];
-//        for (u64 i=0; i!=TAB_COL*POW5[p.k]; ++i) {
-//            if (i%TAB_COL==5)  tbl[i]=sa;
-//            else               tbl[i]=a;
-//        }
-//    }
-//                mode=='h' ? mixModel.initHashTables()
-//                                     : mixModel.initTables();
 }
 FCM::~FCM ()
 {
@@ -97,7 +80,6 @@ void FCM::buildModel (const Parameters& p)
             break;
             
         case 'h':
-//            htbl.set_empty_key((u64)NULL);
             
             ctx   = 0;
             ctxIR = maxPV-1;
