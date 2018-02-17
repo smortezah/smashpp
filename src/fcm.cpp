@@ -80,19 +80,19 @@ void FCM::buildModel (const Param& p)
           
           // Fill tbl by no. occurrences of symbols A,C,N,G,T
           while (rf.get(c)) {
-              if (c!='\n') {
-                  curr = NUM[c];
-                  
-                  // Inverted repeats
-                  if (p.ir) {
-                      ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
-                      ctxIR     = ctxIRCurr/ALPH_SZ;       // Update ctxIR
-                      ++htbl[ctxIR][ctxIRCurr%ALPH_SZ];
-                  }
-                  
-                  ++htbl[ctx][curr];
-                  ctx = (ctx*ALPH_SZ)%maxPV + curr;        // Update ctx
+            if (c!='\n') {
+              curr = NUM[c];
+              
+              // Inverted repeats
+              if (p.ir) {
+                ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
+                ctxIR     = ctxIRCurr/ALPH_SZ;       // Update ctxIR
+                ++htbl[ctxIR][ctxIRCurr%ALPH_SZ];
               }
+              
+              ++htbl[ctx][curr];
+              ctx = (ctx*ALPH_SZ)%maxPV + curr;        // Update ctx
+            }
           }
           break;
     
