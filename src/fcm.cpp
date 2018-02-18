@@ -38,7 +38,6 @@ void FCM::buildModel (const Param& p)
   rf.open(p.ref);
   
   cerr << "Building models...\n";
-  
   switch (mode) {
     case 't':
       tbl = new double[TAB_COL*maxPV];
@@ -100,7 +99,6 @@ void FCM::buildModel (const Param& p)
   }
 
   rf.close();
-  
   cerr << "Models built ";
 }
 
@@ -120,7 +118,6 @@ void FCM::compress (const Param& p) const
   tf.open(p.tar);
   
   cerr << "Compressing...\n";
-
   switch (mode) {
     case 't':
       while (tf.get(c)) {
@@ -140,7 +137,7 @@ void FCM::compress (const Param& p) const
           ++symsNo;
           curr    = NUM[c];
           auto hi = htbl.find(ctx);
-          if (hi != htbl.end()) {
+          if (hi!=htbl.end()) {
             auto ar = hi->second;
             u64 sum=0;    for (const auto &e : ar)  sum+=e;
             sEntr += log2((sum+sa)/(ar[curr]+a));
@@ -157,10 +154,8 @@ void FCM::compress (const Param& p) const
   }
 
   tf.close();
-  
   double aveEntr = sEntr/symsNo;
   cerr << "Average Entropy (H) = " << aveEntr << '\n';
-
   cerr << "Compression finished ";
 }
 
