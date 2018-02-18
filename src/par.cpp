@@ -23,14 +23,14 @@ Param::Param ()
  */
 void Param::parse (int argc, char**& argv)
 {
-  if (argc<2) { help();    throw EXIT_SUCCESS; }
+  if (argc<2) { help();  throw EXIT_SUCCESS; }
   else {
-    vector<string> vArgs;        vArgs.reserve(static_cast<u64>(argc));
+    vector<string> vArgs;    vArgs.reserve(static_cast<u64>(argc));
     for (int i=0; i!=argc; ++i)
       vArgs.emplace_back(static_cast<string>(argv[i]));
 
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-      if (*i=="-h" || *i=="--help") { help();    throw EXIT_SUCCESS; }
+      if (*i=="-h" || *i=="--help") { help();  throw EXIT_SUCCESS; }
       else if (*i=="-t" || *i=="--tar") {
         if (i+1!=vArgs.end()) {
           tar = *++i;
