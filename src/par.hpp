@@ -22,14 +22,15 @@ class Param
  public:
   string tar;
   string ref;
-  vector<bool>  ir;         // Inverted repeat
-  vector<u8>    k;          // Context-order size
+  vector<bool>  ir;     // Inverted repeat
+  vector<u8>    k;      // Context-order size
   vector<float> alpha;
   bool verbose;
   u8   nthr;
   u8   nMdl;
+  char mode;            // Table or Hash table
   
-  Param      ();     // Define Param::Param(){} in *.hpp => compile error
+  Param      ();        // Define Param::Param(){} in *.hpp => compile error
   void parse (int, char**&);
 
  private:

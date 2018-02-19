@@ -10,7 +10,8 @@
 class FCM
 {
  public:
-  explicit FCM      (const Param&);
+//  explicit FCM      (const Param&);
+  FCM               () = default;
   ~FCM              ();
   void buildModel   (const Param&);
   void compress     (const Param&)  const;

@@ -12,11 +12,11 @@ using std::array;
 /*
  * Constructor and destructor
  */
-FCM::FCM (const Param& p)
-{
+//FCM::FCM (const Param& p)
+//{
 //  // 6*(5^k_1 + 5^k_2 + ...) > 6*5^12 => mode: hash table 'h'
 //  mode = (POW5[p.k] > POW5[TAB_MAX_K]) ? 'h' : 't';
-}
+//}
 FCM::~FCM ()
 {
   delete tbl;

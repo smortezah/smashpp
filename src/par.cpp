@@ -10,13 +10,13 @@ using std::array;
  */
 Param::Param ()
 {
-  tar     = "";
-  ref     = "";
-//  ir      = false;
-//  k       = 10;
-//  alpha   = 0.01;
+  tar = "";
+  ref = "";
+  ir.emplace_back(false);
+  k.emplace_back(10);
+  alpha.emplace_back(0.01);
   verbose = false;
-  nthr    = DEF_THR;
+  nthr = DEF_THR;
 };
 
 /*
@@ -130,6 +130,9 @@ void Param::setModelPar (const string& m)
   nMdl = static_cast<u8>(msPar.size());
   
   array<string,3> mPar;
+  ir.clear();
+  k.clear();
+  alpha.clear();
   for (const auto& e : msPar) {
     beg  = e.begin();
     u8 j = 0;
@@ -140,11 +143,13 @@ void Param::setModelPar (const string& m)
       }
     }
     mPar[j] = string(beg, e.end());
-
+    
     ir.emplace_back(static_cast<bool>(stoi(mPar[0])));
     k.emplace_back(static_cast<u8>(stoi(mPar[1])));
     alpha.emplace_back(stof(mPar[2]));
   }
+  
+  cerr<<alpha[1];
 }
 
 /*
