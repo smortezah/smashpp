@@ -22,11 +22,12 @@ class Param
  public:
   string tar;
   string ref;
-  bool   ir;         // Inverted repeat
-  u8     k;          // Context-order size
-  float  alpha;
-  bool   verbose;
-  u8     nthr;
+  vector<bool>  ir;         // Inverted repeat
+  vector<u8>    k;          // Context-order size
+  vector<float> alpha;
+  bool verbose;
+  u8   nthr;
+  u8   nMdl;
   
   Param      ();     // Define Param::Param(){} in *.hpp => compile error
   void parse (int, char**&);

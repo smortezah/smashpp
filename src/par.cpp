@@ -3,6 +3,7 @@
 //
 
 #include "par.hpp"
+using std::array;
 
 /*
  * Constructor
@@ -11,9 +12,9 @@ Param::Param ()
 {
   tar     = "";
   ref     = "";
-  ir      = false;
-  k       = 10;
-  alpha   = 0.01;
+//  ir      = false;
+//  k       = 10;
+//  alpha   = 0.01;
   verbose = false;
   nthr    = DEF_THR;
 };
@@ -25,7 +26,7 @@ void Param::parse (int argc, char**& argv)
 {
   if (argc<2) { help();  throw EXIT_SUCCESS; }
   else {
-    vector<string> vArgs;    vArgs.reserve(static_cast<u64>(argc));
+    vector<string> vArgs(static_cast<u64>(argc));
     for (int i=0; i!=argc; ++i)
       vArgs.emplace_back(static_cast<string>(argv[i]));
 
@@ -116,19 +117,34 @@ void Param::checkFile (const string& s) const
 void Param::setModelPar (const string& m)
 {
   auto beg = m.begin();
-  vector<string> mPar;    mPar.reserve(3);
-  
-  for (auto j=beg; j!=m.end(); ++j) {
-    if (*j==',') {
-      mPar.emplace_back(string(beg, j));
-      beg = j+1;
+  vector<string> msPar;    //msPar.reserve(3);
+
+  for (auto i=beg; i!=m.end(); ++i) {
+    if (*i==':') {
+      msPar.emplace_back(string(beg, i));
+      beg = i+1;
     }
   }
-  mPar.emplace_back(string(beg, m.end()));
+  msPar.emplace_back(string(beg, m.end()));
   
-  ir    = static_cast<bool>(stoi(mPar[0]));
-  k     = static_cast<u8>(stoi(mPar[1]));
-  alpha = stof(mPar[2]);
+  nMdl = static_cast<u8>(msPar.size());
+  
+  array<string,3> mPar;
+  for (const auto& e : msPar) {
+    beg  = e.begin();
+    u8 j = 0;
+    for (auto i=beg; i!=e.end(); ++i) {
+      if (*i==',') {
+        mPar[j++] = string(beg, i);
+        beg = i+1;
+      }
+    }
+    mPar[j] = string(beg, e.end());
+
+    ir.emplace_back(static_cast<bool>(stoi(mPar[0])));
+    k.emplace_back(static_cast<u8>(stoi(mPar[1])));
+    alpha.emplace_back(stof(mPar[2]));
+  }
 }
 
 /*
