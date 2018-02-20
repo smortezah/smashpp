@@ -29,7 +29,8 @@ constexpr u8  DEF_THR   = 1;     // Default # threads
 constexpr u8  TAB_COL   = 6;     // Table columns
 constexpr u8  ALPH_SZ   = 5;     // Alphabet size
 constexpr u8  IR_MAGIC  = 4;
-constexpr u8  TAB_MAX_K = 12;    // Max ctx depth to build table
+//constexpr u8  TAB_MAX_K = 12;    // Max ctx depth to build table
+constexpr u8  TAB_MAX_K = 11;    // Max ctx depth to build table
 constexpr u32 BLK_SZ    = 8192;  // 8K
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
