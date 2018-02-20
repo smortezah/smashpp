@@ -117,8 +117,8 @@ void Param::checkFile (const string& s) const
 void Param::setModelPar (const string& m)
 {
   auto beg = m.begin();
-  vector<string> msPar;    //msPar.reserve(3);
-
+  vector<string> msPar;
+  
   for (auto i=beg; i!=m.end(); ++i) {
     if (*i==':') {
       msPar.emplace_back(string(beg, i));
@@ -126,13 +126,10 @@ void Param::setModelPar (const string& m)
     }
   }
   msPar.emplace_back(string(beg, m.end()));
-  
   nMdl = static_cast<u8>(msPar.size());
   
   array<string,3> mPar;
-  ir.clear();
-  k.clear();
-  alpha.clear();
+  ir.clear();  k.clear();  alpha.clear();
   for (const auto& e : msPar) {
     beg  = e.begin();
     u8 j = 0;
@@ -149,7 +146,9 @@ void Param::setModelPar (const string& m)
     alpha.emplace_back(stof(mPar[2]));
   }
   
-  cerr<<alpha[1];
+  // 6*(5^k_1 + 5^k_2 + ...) > 6*5^12 => mode: hash table='h'
+  u64 sum=0;  for (u8 i=0; i!=nMdl; ++i) sum+=POW5[k[i]];
+  mode = (sum > POW5[TAB_MAX_K]) ? 'h' : 't';
 }
 
 /*
