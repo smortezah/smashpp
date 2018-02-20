@@ -18,9 +18,7 @@ class FCM
   void printTbl     (const Param&)  const;
   void printHashTbl ()              const;
   
-  char    mode;     //todo.test. to print in main()
  private:
-//  char    mode;    // Table or Hash table
   double* tbl;
   htbl_t  htbl;
 };

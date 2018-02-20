@@ -27,20 +27,22 @@ int main (int argc, char* argv[])
     p.parse(argc, argv);
     
 //    auto* m = new FCM(p);
-//    vector<FCM> m;
+    vector<FCM> m;
     
     //todo. multithr: arrThreadSize=std::min(nThr, nModel)
     
 //for (u8 i=0; i!=p.nMdl; ++i) {
-//    m.emplace_back(FCM(p));
-////    // Build models
-////    auto t0 = high_resolution_clock::now();    // Start time
-////    m[0].buildModel(p);
-////    auto t1 = high_resolution_clock::now();    // Finish time
-////    dur_t e = t1-t0;                           // Elapsed time
-////    cerr << "in " << std::fixed << setprecision(3)<< e.count() << " seconds.\n";
+    m.emplace_back(FCM());
+//    // Build models
+//    auto t0 = high_resolution_clock::now();    // Start time
+//    m[0].buildModel(p);
+//    auto t1 = high_resolution_clock::now();    // Finish time
+//    dur_t e = t1-t0;                           // Elapsed time
+//    cerr << "in " << std::fixed << setprecision(3)<< e.count() << " seconds.\n";
 //}
-
+    
+    cerr<<p.mode;
+//    p.mode=='t' ? m[0].printTbl(p) : m[0].printHashTbl();
 //    m->mode=='t' ? m->printTbl(p) : m->printHashTbl();
 
 
