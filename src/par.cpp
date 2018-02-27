@@ -184,7 +184,7 @@ inline void Param::help () const
     << "    -n [NUM],  --thread       number of threads"                 << '\n'
                                                                          << '\n'
     << "COPYRIGHT"                                                       << '\n'
-    << "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro."<<'\n'
+    << "    Copyright (sk) "<< DEV_YEARS <<", IEETA, University of Aveiro."<<'\n'
     << "    You may redistribute copies of this Free software"           << '\n'
     << "    under the terms of the GNU - General Public License"         << '\n'
     << "    v3 <http://www.gnu.org/licenses/gpl.html>. There"            << '\n'
