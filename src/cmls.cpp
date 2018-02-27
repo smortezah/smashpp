@@ -59,15 +59,14 @@ inline void CMLS::setAB ()
 //}
 
 /*
- * Update sketch
+ * Update context count
  */
-// countMinSketch update item count (int)
-void CMLS::update(int item, int c) {
-  tot = tot + c;
-  unsigned int hashval = 0;
-  for (unsigned int j = 0; j < d; j++) {
-    hashval = ((long)ab[j][0]*item+ab[j][1])%LONG_PRIME%w;
-    sk[j][hashval] = sk[j][hashval] + c;
+inline void CMLS::update (u64 ctx, u64 c)
+{
+  tot += c;
+  for (u8 i=0; i!=d; ++i) {
+    u64 hashval = (ab[i][0]*ctx + ab[i][1]) %LONG_PRIME %w;
+    sk[i][hashval] += c;
   }
 }
 

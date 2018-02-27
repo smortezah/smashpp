@@ -17,9 +17,9 @@ class CMLS    // Count-min-log sketch
 {
 public:
   CMLS  ();
+  void update (u64, u64);// update item (int) by count c
   
   
-  void update (int item, int c);// update item (int) by count c
   void update (const char*item, int c);// update item (string) by count c
   u32 estimate (int item);// estimate count of item i and return count
   u32 estimate (const char*item);// estimate count of item i
@@ -31,7 +31,7 @@ private:
   u8  d;                             // Depth of sketch
   vector<vector<u64>> sk;            // Sketch
   vector<array<u32,2>> ab;    // Coefficients of hash functions
-  u32 tot;// tot count so far
+  u64 tot;// tot count so far
   
   void setAB (); // Set a and b coefficients of hash functions
   
