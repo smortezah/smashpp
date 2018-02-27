@@ -70,9 +70,9 @@ int main (int argc, char* argv[])
 //	"' ;count: " << c.estimate(it->first) << endl;
 //    }
 //  }
-//  cout << "c.totalcount()==tot? "
-//       << (c.totalcount() == tot ? "True" : "False")
-//       << "Sketch Total: " << c.totalcount() << endl;
+//  cout << "c.getTotal()==tot? "
+//       << (c.getTotal() == tot ? "True" : "False")
+//       << "Sketch Total: " << c.getTotal() << endl;
 //
 //  // 2. test for items not in ar_str
 //  cout << "Testing for strings not in ar_str..." << endl;
