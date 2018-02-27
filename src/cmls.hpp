@@ -8,6 +8,7 @@
 #include <vector>
 #include "def.hpp"
 using std::vector;
+using std::array;
 
 #define LONG_PRIME 4294967311l
 #define MIN(a,b)  (a < b ? a : b)
@@ -27,15 +28,16 @@ public:
   u32 hashstr (const char*str);// generates a hash value for a string. same as djb2 hash function
 
 private:
-  u32 w;           // Width of sketch
-  u8  d;           // Depth of sketch
-  vector<u64> sk;  // Sketch
+  u32 w;                             // Width of sketch
+  u8  d;                             // Depth of sketch
+  vector<vector<u64>> sk;            // Sketch
+  vector<array<u32,2>> ab;    // Coefficients of hash functions
   
   
-  u32 a, b;// a, b in Z_p. hash generation function
+//  u32 a, b;// a, b in Z_p. hash generation function
   u32 tot;// tot count so far
-  i32 **C;// array of arrays of counters
-  i32 **hashes;// array {a,b} of hash values for a particular item
+//  i32 **sk;// array of arrays of counters
+//  i32 **hashes;// array {a,b} of hash values for a particular item
   void genajbj(int **hashes, int i);// generate "new" a,b
 };
 

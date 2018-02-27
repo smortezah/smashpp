@@ -45,7 +45,7 @@ void FCM::buildModel (const Param& p)
       ctx   = 0;
       ctxIR = maxPV-1;
 
-      // Fill tbl by no. occurrences of symbols A,C,N,G,T
+      // Fill tbl by no. occurrences of symbols A,sk,N,G,T
       while (rf.get(c)) {
         if (c!='\n') {
           curr = NUM[c];
@@ -76,7 +76,7 @@ void FCM::buildModel (const Param& p)
       ctx   = 0;
       ctxIR = maxPV-1;
 
-      // Fill tbl by no. occurrences of symbols A,C,N,G,T
+      // Fill tbl by no. occurrences of symbols A,sk,N,G,T
       while (rf.get(c)) {
         if (c!='\n') {
           curr = NUM[c];

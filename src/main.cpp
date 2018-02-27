@@ -21,16 +21,16 @@ using std::chrono::high_resolution_clock;
 using std::setprecision;
 
 
-//std::minstd_rand0 &randomEngine () {
-//  static std::minstd_rand0 e{};
-//  return e;
-//}
-//void newSrand (u16 s) {
-//  randomEngine().seed(s);
-//}
-//u16 newRand () {
-//  return (u16) (randomEngine()() - randomEngine().min());
-//}
+std::minstd_rand0 &randomEngine () {
+  static std::minstd_rand0 e{};
+  return e;
+}
+void newSrand (u16 s) {
+  randomEngine().seed(s);
+}
+u16 newRand () {
+  return (u16) (randomEngine()() - randomEngine().min());
+}
 
 # include <iostream>
 # include <map>
@@ -41,6 +41,9 @@ using namespace std;
 
 int main (int argc, char* argv[])
 {
+  CMLS q;
+  
+  
   
   // Count for ar_str[i] is i1+i2+...
   // where i's are the positions where ar_str[i] occurs
@@ -51,10 +54,10 @@ int main (int argc, char* argv[])
     "lady", "some", "hello", "none", "pie"
   };
   
-  CMLS c(0.01, 0.1);
-  unsigned int i, total = 0;
-  map<const char *, int> mapitems;
-  map<const char *, int>::const_iterator it;
+//  CMLS c(0.01, 0.1);
+//  unsigned int i, total = 0;
+//  map<const char *, int> mapitems;
+//  map<const char *, int>::const_iterator it;
 
 //  for (i = 0; i < 15; i++) {
 //    if ((it = mapitems.find(ar_str[i]))!=mapitems.end()) {
@@ -97,10 +100,11 @@ int main (int argc, char* argv[])
 
 
 
-//  std::random_device r;// Seed with a real random value, if available
-//  std::default_random_engine e1(r());// Choose a random mean between 1 and 6
-//  std::uniform_int_distribution<u8> uniform_dist(0, 15);
-//  std::cout << (int)uniform_dist(e1) << '\n';
+  std::random_device r;// Seed with a real random value, if available
+  std::default_random_engine e1(r());// Choose a random mean between 1 and 6
+  std::uniform_int_distribution<u32> uniform_dist(0, std::numeric_limits<u32>::max());
+  std::cout << uniform_dist(e1) << '\n';
+  std::cout << uniform_dist(e1) << '\n';
 //
 ////  newSrand(681493);
 ////  cerr<<(randomEngine()());
