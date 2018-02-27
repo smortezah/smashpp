@@ -12,6 +12,7 @@
 
 
 
+#include <random>
 //#include <vector>
 //using std::vector;
 #include "cmls.hpp"
@@ -28,38 +29,38 @@ CMLS::CMLS ()
   tot = 0;
   sk.resize(d, vector<u64>(w));
   ab.reserve(d);
+  setAB();
   
+//  //todo. print a, b
+//  for (int i=0; i<d; i++)
+//    for (int j=0; j<2; j++)
+//      std::cerr << ab[i][j] << ' ';
+}
+
+/*
+ * Set a and b: coefficients of hash functions
+ */
+inline void CMLS::setAB ()
+{
+  std::random_device r;// Seed with a real random value, if available
+  std::default_random_engine e(r());// Choose a random mean between 1 and 6
+  std::uniform_int_distribution<u32> uDist(0, std::numeric_limits<u32>::max());
   
-//  // initialize d pairwise independent hashes
-//  srand(time(NULL));
-//  hashes = new int* [d];
-//  for (i = 0; i < d; i++) {
-//    hashes[i] = new int[2];
-//    genajbj(hashes, i);
-//  }
+  for (u8 i=0; i!=d; ++i) {
+    ab[i][0] = uDist(e);
+    ab[i][1] = uDist(e);
+  }
 }
 
-// CountMinSkectch destructor
-CMLS::~CMLS() {
-//  // free array of hash values
-//  for (i = 0; i < d; i++) {
-//    delete[] hashes[i];
-//  }
-//  delete[] hashes;
-}
+//// generates a,b from field Z_p for use in hashing
+//void CMLS::genajbj(int** hashes, int i) {
+//  hashes[i][0] = int(float(rand())*float(LONG_PRIME)/float(RAND_MAX) + 1);
+//  hashes[i][1] = int(float(rand())*float(LONG_PRIME)/float(RAND_MAX) + 1);
+//}
 
-// generates a,b from field Z_p for use in hashing
-void CMLS::genajbj(int** hashes, int i) {
-  hashes[i][0] = int(float(rand())*float(LONG_PRIME)/float(RAND_MAX) + 1);
-  hashes[i][1] = int(float(rand())*float(LONG_PRIME)/float(RAND_MAX) + 1);
-}
-
-// CMLS totalcount returns the
-// tot count of all items in the sketch
-unsigned int CMLS::totalcount() {
-  return tot;
-}
-
+/*
+ * Update sketch
+ */
 // countMinSketch update item count (int)
 void CMLS::update(int item, int c) {
   tot = tot + c;
@@ -94,6 +95,11 @@ unsigned int CMLS::estimate(const char *str) {
 }
 
 
+// CMLS totalcount returns the
+// tot count of all items in the sketch
+unsigned int CMLS::totalcount() {
+  return tot;
+}
 // generates a hash value for a sting
 // same as djb2 hash function
 unsigned int CMLS::hashstr(const char *str) {

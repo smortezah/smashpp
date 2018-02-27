@@ -12,7 +12,6 @@
 #include <iostream>
 #include <chrono>
 #include <iomanip>      // setw, setprecision
-#include <random>
 //#include "def.hpp"
 #include "par.hpp"
 #include "fcm.hpp"
@@ -20,17 +19,6 @@ using std::cout;
 using std::chrono::high_resolution_clock;
 using std::setprecision;
 
-
-std::minstd_rand0 &randomEngine () {
-  static std::minstd_rand0 e{};
-  return e;
-}
-void newSrand (u16 s) {
-  randomEngine().seed(s);
-}
-u16 newRand () {
-  return (u16) (randomEngine()() - randomEngine().min());
-}
 
 # include <iostream>
 # include <map>
@@ -100,15 +88,6 @@ int main (int argc, char* argv[])
 
 
 
-  std::random_device r;// Seed with a real random value, if available
-  std::default_random_engine e1(r());// Choose a random mean between 1 and 6
-  std::uniform_int_distribution<u32> uniform_dist(0, std::numeric_limits<u32>::max());
-  std::cout << uniform_dist(e1) << '\n';
-  std::cout << uniform_dist(e1) << '\n';
-//
-////  newSrand(681493);
-////  cerr<<(randomEngine()());
-//
 
 
 

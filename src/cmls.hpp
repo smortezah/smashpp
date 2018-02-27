@@ -19,7 +19,6 @@ public:
   CMLS  ();
   
   
-  ~CMLS ();
   void update (int item, int c);// update item (int) by count c
   void update (const char*item, int c);// update item (string) by count c
   u32 estimate (int item);// estimate count of item i and return count
@@ -32,13 +31,16 @@ private:
   u8  d;                             // Depth of sketch
   vector<vector<u64>> sk;            // Sketch
   vector<array<u32,2>> ab;    // Coefficients of hash functions
+  u32 tot;// tot count so far
+  
+  void setAB (); // Set a and b coefficients of hash functions
+  
   
   
 //  u32 a, b;// a, b in Z_p. hash generation function
-  u32 tot;// tot count so far
 //  i32 **sk;// array of arrays of counters
 //  i32 **hashes;// array {a,b} of hash values for a particular item
-  void genajbj(int **hashes, int i);// generate "new" a,b
+//  void genajbj(int **hashes, int i);// generate "new" a,b
 };
 
 #endif //SMASHPP_CMLS_HPP
