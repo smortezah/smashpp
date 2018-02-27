@@ -45,7 +45,7 @@ inline void CMLS::setAB ()
   std::random_device r;// Seed with a real random value, if available
   std::default_random_engine e(r());// Choose a random mean between 1 and 6
   std::uniform_int_distribution<u32> uDist(0, std::numeric_limits<u32>::max());
-  
+
   for (u8 i=0; i!=d; ++i) {
     ab[i][0] = uDist(e);
     ab[i][1] = uDist(e);
@@ -61,13 +61,14 @@ inline void CMLS::setAB ()
 /*
  * Update context count
  */
-inline void CMLS::update (u64 ctx, u64 c)
-{
-  tot += c;
-  for (u8 i=0; i!=d; ++i) {
-    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) %LONG_PRIME %w;
-    sk[i][hashVal] += c;
-  }
+inline void CMLS::update ()
+//inline void CMLS::update (u64 ctx, u64 c)
+{std::cerr<<"hi";
+//  tot += c;
+//  for (u8 i=0; i!=d; ++i) {
+//    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) %LONG_PRIME %w;
+//    sk[i][hashVal] += c;
+//  }
 }
 
 //// countMinSketch update item count (string)
