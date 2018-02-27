@@ -17,7 +17,7 @@ using std::stoi;
 using std::stof;
 using std::ifstream;
 
-class Param
+class Param    // Parameters
 {
  public:
   string tar;

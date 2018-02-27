@@ -181,7 +181,7 @@ inline void Param::help () const
     << "    -r [FILE], --ref          reference file -- MANDATORY"       << '\n'
     << "    -h,        --help         usage guide"                       << '\n'
     << "    -v,        --verbose      more information"                  << '\n'
-    << "    -t [NUM],  --thread       number of threads"                 << '\n'
+    << "    -n [NUM],  --thread       number of threads"                 << '\n'
                                                                          << '\n'
     << "COPYRIGHT"                                                       << '\n'
     << "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro."<<'\n'
