@@ -17,7 +17,8 @@ class CMLS    // Count-min-log sketch
 {
 public:
   CMLS  ();
-  void update (u64, u64);// update item (int) by count c
+  void update ();// update item (int) by count c
+//  void update (u64, u64);// update item (int) by count c
 //  void update (const char*item, int c);// update item (string) by count c
   u64 estimate (u64);// estimate count of item i and return count
 //  u64 estimate (const char*item);// estimate count of item i

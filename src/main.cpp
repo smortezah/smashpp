@@ -29,19 +29,24 @@ using namespace std;
 
 int main (int argc, char* argv[])
 {
-  CMLS q;
+  CMLS m;
+  u64 a[10] = {1, 5, 8, 9, 0, 6, 4, 2, 5, 5};
+  m.update();
+//  for (auto i:a) {
+//    m.update(i, (u64)1);
+//  }
   
   
   
-  // Count for ar_str[i] is i1+i2+...
-  // where i's are the positions where ar_str[i] occurs
-  const char *ar_str[] = {
-    "hello", "some", "one", "hello", "alice",
-    "one", "lady", "let", "us", "lady",
-    "alice", "in", "wonderland", "us", "lady",
-    "lady", "some", "hello", "none", "pie"
-  };
-  
+//  // Count for ar_str[i] is i1+i2+...
+//  // where i's are the positions where ar_str[i] occurs
+//  const char *ar_str[] = {
+//    "hello", "some", "one", "hello", "alice",
+//    "one", "lady", "let", "us", "lady",
+//    "alice", "in", "wonderland", "us", "lady",
+//    "lady", "some", "hello", "none", "pie"
+//  };
+//
 //  CMLS c(0.01, 0.1);
 //  unsigned int i, total = 0;
 //  map<const char *, int> mapitems;
