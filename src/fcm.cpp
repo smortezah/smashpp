@@ -64,7 +64,8 @@ void FCM::buildModel (const Param& p)
           ++tbl[rowIdx+curr];
           ++tbl[rowIdx+ALPH_SZ];
           // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
-          ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
+//          ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
+          ctx = (ctx*ALPH_SZ)%maxPV + curr;             // Fastest
 //          ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
 //          ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
         }

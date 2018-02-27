@@ -7,7 +7,7 @@
 
 #include "par.hpp"
 
-class FCM
+class FCM    // Finite-context model
 {
  public:
 //  explicit FCM      (const Param&);
