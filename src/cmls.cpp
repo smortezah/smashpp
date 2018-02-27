@@ -65,47 +65,47 @@ inline void CMLS::update (u64 ctx, u64 c)
 {
   tot += c;
   for (u8 i=0; i!=d; ++i) {
-    u64 hashval = (ab[i][0]*ctx + ab[i][1]) %LONG_PRIME %w;
-    sk[i][hashval] += c;
+    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) %LONG_PRIME %w;
+    sk[i][hashVal] += c;
   }
 }
 
-// countMinSketch update item count (string)
-void CMLS::update(const char *str, int c) {
-  int hashval = hashstr(str);
-  update(hashval, c);
-}
+//// countMinSketch update item count (string)
+//void CMLS::update(const char *str, int c) {
+//  int hashval = hashstr(str);
+//  update(hashval, c);
+//}
 
 // CMLS estimate item count (int)
-unsigned int CMLS::estimate(int item) {
-  int minval = std::numeric_limits<int>::max();
-  unsigned int hashval = 0;
-  for (unsigned int j = 0; j < d; j++) {
-    hashval = ((long)ab[j][0]*item+ab[j][1])%LONG_PRIME%w;
-    minval = MIN(minval, sk[j][hashval]);
+inline u64 CMLS::estimate(u64 ctx) {
+  u64 min = std::numeric_limits<u64>::max();
+  for (u8 i=0; i!=d; i++) {
+    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) %LONG_PRIME %w;
+    if (sk[i][hashVal] < min)
+      min = sk[i][hashVal];
   }
-  return minval;
+  return min;
 }
 
-// CMLS estimate item count (string)
-unsigned int CMLS::estimate(const char *str) {
-  int hashval = hashstr(str);
-  return estimate(hashval);
-}
+//// CMLS estimate item count (string)
+//unsigned int CMLS::estimate(const char *str) {
+//  int hashval = hashstr(str);
+//  return estimate(hashval);
+//}
 
-
-// CMLS totalcount returns the
+// CMLS getTotal returns the
 // tot count of all items in the sketch
-unsigned int CMLS::totalcount() {
+inline u64 CMLS::getTotal () {
   return tot;
 }
-// generates a hash value for a sting
-// same as djb2 hash function
-unsigned int CMLS::hashstr(const char *str) {
-  unsigned long hash = 5381;
-  int c;
-  while (c = *str++) {
-    hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-  }
-  return hash;
-}
+
+//// generates a hash value for a sting
+//// same as djb2 hash function
+//unsigned int CMLS::hashstr(const char *str) {
+//  unsigned long hash = 5381;
+//  int c;
+//  while (c = *str++) {
+//    hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+//  }
+//  return hash;
+//}

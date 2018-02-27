@@ -18,13 +18,11 @@ class CMLS    // Count-min-log sketch
 public:
   CMLS  ();
   void update (u64, u64);// update item (int) by count c
-  
-  
-  void update (const char*item, int c);// update item (string) by count c
-  u32 estimate (int item);// estimate count of item i and return count
-  u32 estimate (const char*item);// estimate count of item i
-  u32 totalcount ();// tot count
-  u32 hashstr (const char*str);// generates a hash value for a string. same as djb2 hash function
+//  void update (const char*item, int c);// update item (string) by count c
+  u64 estimate (u64);// estimate count of item i and return count
+//  u64 estimate (const char*item);// estimate count of item i
+  u64 getTotal ();// tot count
+//  u32 hashstr (const char*str);// generates a hash value for a string. same as djb2 hash function
 
 private:
   u32 w;                             // Width of sketch
