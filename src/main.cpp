@@ -15,38 +15,36 @@
 //#include "def.hpp"
 #include "par.hpp"
 #include "fcm.hpp"
+#include "cmls.hpp"
 using std::cout;
 using std::chrono::high_resolution_clock;
 using std::setprecision;
 
 
-# include <iostream>
-# include <map>
-# include <cstdlib>
-# include <cmath>
-# include "cmls.hpp"
-using namespace std;
-
 int main (int argc, char* argv[])
 {
-  CMLS m;
+//  CMLS m;
+//
+//
+//  for (int i = 0; i<100000; i++)
+//    m.update(i, 1);
+//  for (int i = 0; i<500000; i++)
+//    m.update(i, 1);
+//
+//  m.printSketch();
+////  std::cerr << m.estimate(200);
+////  std::cerr << m.getTotal();
+
+string s="hi";
+  u8 i=255;
+  u8 j=0;
+//  if(u8(i+1)==u8(0))
+//    cerr<<"of";
+  if(u8(j-1)==u8(255))
+    cerr<<"uf";
   
   
-  for (int i = 0; i<100; i++)
-    m.update(i, 1);
-  for (int i = 0; i<500; i++)
-    m.update(i, 1);
-
-  m.printSketch();
-  std::cerr << m.estimate(200);
-  std::cerr << m.getTotal();
   
-  
-
-
-
-
-
 
 
 //  try {

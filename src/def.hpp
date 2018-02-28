@@ -32,8 +32,9 @@ constexpr u8  IR_MAGIC  = 4;
 //constexpr u8  TAB_MAX_K = 12;    // Max ctx depth to build table
 constexpr u8  TAB_MAX_K = 11;    // Max ctx depth to build table
 constexpr u32 BLK_SZ    = 8192;  // 8K
-constexpr u32 DEF_W     = 256;//512;//   // Default width of CML sketch
+constexpr u32 DEF_W     = 256;//512;//   // Default width of CML sketch (2^...)
 constexpr u8  DEF_D     = 3;     // Default depth of CML sketch
+constexpr u64 G         = 64;    // Machine word size - for universal hash fn
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
