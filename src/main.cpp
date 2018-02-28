@@ -35,14 +35,6 @@ int main (int argc, char* argv[])
 ////  std::cerr << m.estimate(200);
 ////  std::cerr << m.getTotal();
 
-string s="hi";
-  u8 i=255;
-  u8 j=0;
-//  if(u8(i+1)==u8(0))
-//    cerr<<"of";
-  if(u8(j-1)==u8(255))
-    cerr<<"uf";
-  
   
   
 
