@@ -30,68 +30,18 @@ using namespace std;
 int main (int argc, char* argv[])
 {
   CMLS m;
-  u64 a[10] = {1, 5, 8, 9, 0, 6, 4, 2, 5, 5};
-  m.update();
-//  for (auto i:a) {
-//    m.update(i, (u64)1);
-//  }
   
   
-  
-//  // Count for ar_str[i] is i1+i2+...
-//  // where i's are the positions where ar_str[i] occurs
-//  const char *ar_str[] = {
-//    "hello", "some", "one", "hello", "alice",
-//    "one", "lady", "let", "us", "lady",
-//    "alice", "in", "wonderland", "us", "lady",
-//    "lady", "some", "hello", "none", "pie"
-//  };
-//
-//  CMLS c(0.01, 0.1);
-//  unsigned int i, total = 0;
-//  map<const char *, int> mapitems;
-//  map<const char *, int>::const_iterator it;
+  for (int i = 0; i<100; i++)
+    m.update(i, 1);
+  for (int i = 0; i<500; i++)
+    m.update(i, 1);
 
-//  for (i = 0; i < 15; i++) {
-//    if ((it = mapitems.find(ar_str[i]))!=mapitems.end()) {
-//      mapitems[ar_str[i]] += i;
-//    } else {
-//      mapitems[ar_str[i]] = i;
-//    }
-//    c.update(ar_str[i], i);
-//    tot += i;
-//  }
-
-//  // 1. test for items in ar_str
-//  // note: since probablistic (and not deterministic)
-//  // might not be accurate sometimes
-//  for (it = mapitems.begin(); it != mapitems.end(); it++) {
-//    if (c.estimate(it->first) != mapitems[it->first]) {
-//      cout << "Incorrect count for " << it->first <<
-//	";error: " << abs(int(c.estimate(it->first)-mapitems[it->first]))
-//	   << endl;
-//    } else {
-//      cout << "Correct count for '" << it->first <<
-//	"' ;count: " << c.estimate(it->first) << endl;
-//    }
-//  }
-//  cout << "c.getTotal()==tot? "
-//       << (c.getTotal() == tot ? "True" : "False")
-//       << "Sketch Total: " << c.getTotal() << endl;
-//
-//  // 2. test for items not in ar_str
-//  cout << "Testing for strings not in ar_str..." << endl;
-//  cout << c.estimate("blabla") << endl;
-//  cout << c.estimate("yoyo!") << endl;
-
+  m.printSketch();
+  std::cerr << m.estimate(200);
+  std::cerr << m.getTotal();
   
   
-
-
-
-
-
-
 
 
 
