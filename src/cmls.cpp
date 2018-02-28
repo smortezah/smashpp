@@ -2,19 +2,17 @@
 // Created by morteza on 27-02-2018.
 //
 
-#include <iostream>
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
-#include <limits>
+//#include <iostream>
+//#include <cmath>
+//#include <cstdlib>
+//#include <ctime>
+//#include <limits>
 //using namespace std;
 
 
 
 
 #include <random>
-//#include <vector>
-//using std::vector;
 #include "cmls.hpp"
 
 /*
@@ -30,11 +28,6 @@ CMLS::CMLS ()
   sk.resize(d, vector<u64>(w));
   ab.reserve(d);
   setAB();
-  
-//  //todo. print a, b
-//  for (int i=0; i<d; i++)
-//    for (int j=0; j<2; j++)
-//      std::cerr << ab[i][j] << ' ';
 }
 
 /*
@@ -52,33 +45,20 @@ inline void CMLS::setAB ()
   }
 }
 
-//// generates a,b from field Z_p for use in hashing
-//void CMLS::genajbj(int** hashes, int i) {
-//  hashes[i][0] = int(float(rand())*float(LONG_PRIME)/float(RAND_MAX) + 1);
-//  hashes[i][1] = int(float(rand())*float(LONG_PRIME)/float(RAND_MAX) + 1);
-//}
-
 /*
  * Update context count
  */
-inline void CMLS::update ()
-//inline void CMLS::update (u64 ctx, u64 c)
-{std::cerr<<"hi";
-//  tot += c;
-//  for (u8 i=0; i!=d; ++i) {
-//    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) %LONG_PRIME %w;
-//    sk[i][hashVal] += c;
-//  }
+void CMLS::update (u64 ctx, u64 c)
+{
+  tot += c;
+  for (u8 i=0; i!=d; ++i) {
+    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) %LONG_PRIME %w;
+    sk[i][hashVal] += c;
+  }
 }
 
-//// countMinSketch update item count (string)
-//void CMLS::update(const char *str, int c) {
-//  int hashval = hashstr(str);
-//  update(hashval, c);
-//}
-
 // CMLS estimate item count (int)
-inline u64 CMLS::estimate(u64 ctx) {
+u64 CMLS::estimate(u64 ctx) {
   u64 min = std::numeric_limits<u64>::max();
   for (u8 i=0; i!=d; i++) {
     u64 hashVal = (ab[i][0]*ctx + ab[i][1]) %LONG_PRIME %w;
@@ -88,25 +68,20 @@ inline u64 CMLS::estimate(u64 ctx) {
   return min;
 }
 
-//// CMLS estimate item count (string)
-//unsigned int CMLS::estimate(const char *str) {
-//  int hashval = hashstr(str);
-//  return estimate(hashval);
-//}
-
 // CMLS getTotal returns the
 // tot count of all items in the sketch
-inline u64 CMLS::getTotal () {
+u64 CMLS::getTotal () {
   return tot;
 }
 
-//// generates a hash value for a sting
-//// same as djb2 hash function
-//unsigned int CMLS::hashstr(const char *str) {
-//  unsigned long hash = 5381;
-//  int c;
-//  while (c = *str++) {
-//    hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-//  }
-//  return hash;
-//}
+/*
+ * Print sketch
+ */
+void CMLS::printSketch ()
+{
+  for (u64 i=0; i!=d; i++) {
+    for (u64 j=0; j!=w; j++)
+      std::cerr << sk[i][j] << ' ';
+    std::cerr << "\n\n";
+  }
+}

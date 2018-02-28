@@ -5,41 +5,29 @@
 #ifndef SMASHPP_CMLS_HPP
 #define SMASHPP_CMLS_HPP
 
-#include <vector>
 #include "def.hpp"
 using std::vector;
 using std::array;
 
 #define LONG_PRIME 4294967311l
-#define MIN(a,b)  (a < b ? a : b)
 
 class CMLS    // Count-min-log sketch
 {
-public:
-  CMLS  ();
-  void update ();// update item (int) by count c
-//  void update (u64, u64);// update item (int) by count c
-//  void update (const char*item, int c);// update item (string) by count c
-  u64 estimate (u64);// estimate count of item i and return count
-//  u64 estimate (const char*item);// estimate count of item i
-  u64 getTotal ();// tot count
-//  u32 hashstr (const char*str);// generates a hash value for a string. same as djb2 hash function
+ public:
+  CMLS             ();
+  void update      (u64, u64);    // Update ctx by count c
+  u64  estimate    (u64);         // Estimate count of ctx
+  u64  getTotal    ();            // Total count
+  void printSketch ();
 
-private:
-  u32 w;                             // Width of sketch
-  u8  d;                             // Depth of sketch
-  vector<vector<u64>> sk;            // Sketch
-  vector<array<u32,2>> ab;    // Coefficients of hash functions
-  u64 tot;// tot count so far
+ private:
+  u32  w;                         // Width of sketch
+  u8   d;                         // Depth of sketch
+  vector<array<u32,2>> ab;        // Coefficients of hash functions
+  vector<vector<u64>>  sk;        // Sketch
+  u64  tot;
   
-  void setAB (); // Set a and b coefficients of hash functions
-  
-  
-  
-//  u32 a, b;// a, b in Z_p. hash generation function
-//  i32 **sk;// array of arrays of counters
-//  i32 **hashes;// array {a,b} of hash values for a particular item
-//  void genajbj(int **hashes, int i);// generate "new" a,b
+  void setAB ();                  // Set a and b, coeffs of hash functions
 };
 
 #endif //SMASHPP_CMLS_HPP
