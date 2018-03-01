@@ -23,13 +23,13 @@ using std::setprecision;
 
 int main (int argc, char* argv[])
 {
-//  CMLS m;
+  CMLS m;
 //
 //
-//  for (int i = 0; i<100000; i++)
-//    m.update(i, 1);
-//  for (int i = 0; i<500000; i++)
-//    m.update(i, 1);
+  for (int i = 0; i<100000000; i++)
+    m.update(i, 1);
+  for (int i = 0; i<500000000; i++)
+    m.update(i, 1);
 //
 //  m.printSketch();
 ////  std::cerr << m.estimate(200);
