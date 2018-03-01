@@ -22,7 +22,7 @@ class CMLS    // Count-min-log sketch
   u32  w;                         // Width of sketch
   u8   d;                         // Depth of sketch
   vector<array<u64,2>> ab;        // Coefficients of hash functions
-  u64  M;                         // Universal hash function: (a*x+b) >> (G-M)
+  u64  uhashShift;                // Universal hash shift. G-M in (a*x+b)>>(G-M)
   vector<vector<u64>>  sk;        // Sketch
   u64  tot;
   
