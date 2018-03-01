@@ -19,6 +19,7 @@ CMLS::CMLS ()
   M   = static_cast<u64>(std::ceil(std::log2(w)));
   ab.reserve(d);
   setAB();
+//todo. u64 uhShift = G - M; universal hash shift. define in class, private
 }
 
 /*
@@ -43,7 +44,8 @@ void CMLS::update (u64 ctx, u64 c)
 {
   tot += c;
   for (u8 i=0; i!=d; ++i) {
-    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) >> (G-M);
+    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) >> uhShift;
+    //u64 hashVal = (ab[i][0]*ctx + ab[i][1]) >> (G-M);
     sk[i][hashVal] += c;
   }
 }
