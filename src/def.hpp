@@ -35,12 +35,29 @@ constexpr u32 BLK_SZ    = 8192;  // 8K
 constexpr u32 DEF_W     = 256;//512;//   // Default width of CML sketch (2^...)
 constexpr u8  DEF_D     = 3;     // Default depth of CML sketch
 constexpr u64 G         = 64;    // Machine word size - for universal hash fn
+constexpr u8  LOG_BASE  = 2;     // Logarithmic counting
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
 // Macro
 //#define LOOP(i,S)     for(const char& (i) : (S))
 //#define LOOP2(i,j,S)  LOOP(i,S) LOOP(j,S)
+
+//template<u16 N>
+//struct Table
+//{
+//  constexpr Table() : lg()
+//  {
+//    lg[0] = 0;
+//    lg[1] = 0;
+//    for (u16 i=2; i!=N; ++i)
+//      lg[i] = static_cast<u8>(1 + lg[i>>1]);
+//  }
+//  u8 lg[N];
+//};
+// Inside function definition
+//constexpr auto a = Table<256>();
+//cerr << (int) a.lg[3];
 
 // Lookup table
 constexpr u64 POW5[28] = {    // 5^0 to 5^27. Needs < 64 bits
@@ -55,7 +72,7 @@ constexpr u64 POW5[28] = {    // 5^0 to 5^27. Needs < 64 bits
     59604644775390600, 298023223876953000, 1490116119384770000,
   7450580596923830000
 };
-constexpr u8 NUM[123] = {    // a,A=0  c,sk=1  n,N=2  g,G=3  t,T=4
+constexpr u8 NUM[123] = {    // a,A=0  c,C=1  n,N=2  g,G=3  t,T=4
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,             // #20
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -64,7 +81,7 @@ constexpr u8 NUM[123] = {    // a,A=0  c,sk=1  n,N=2  g,G=3  t,T=4
   0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 4, 0, 0, 0,
   0, 0, 0
 };
-constexpr u8 REV[123] = {    // a,A->T  c,sk->G  n,N->N  g,G->sk  t,T->A
+constexpr u8 REV[123] = {    // a,A->T  c,C->G  n,N->N  g,G->C  t,T->A
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0,  0,  0,  0,  0,   // #20
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0,  0,  0,  0,  0,
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0,  0,  0,  0,  0,
