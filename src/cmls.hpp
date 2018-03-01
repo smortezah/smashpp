@@ -24,7 +24,7 @@ class CMLS    // Count-min-log sketch
   vector<array<u64,2>> ab;        // Coefficients of hash functions
   u64  uhashShift;                // Universal hash shift. G-M in (a*x+b)>>(G-M)
   vector<vector<u64>>  sk;        // Sketch
-  u64  tot;
+  u64  tot;                       // Total # elements so far
   
   void setAB ();                  // Set a and b, coeffs of hash functions
 };
