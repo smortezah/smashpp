@@ -26,10 +26,10 @@ int main (int argc, char* argv[])
   CMLS m;
   
   
-  for (int i = 0; i<100000000; ++i) {
+  for (int i = 0; i<1000; ++i) {
     m.update(i);
   }
-  m.printSketch();
+//  m.printSketch();
 //  cout<<"---------------------------\n";
   
 //  for (int i = 0; i<100000000; i++)

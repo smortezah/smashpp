@@ -23,14 +23,14 @@ class CMLS    // Count-min-log sketch
   u8  d;                          // Depth of sketch
   vector<array<u64,2>> ab;        // Coefficients of hash functions
   u64 uhashShift;                 // Universal hash shift. G-M in (a*x+b)>>(G-M)
-  vector<vector<u64>>  sk;        // Sketch
+  vector<vector<u32>>  sk;        // Sketch
   u64 tot;                        // Total # elements so far
-  u64 minLog;                     // Min log value for current ctx
+  u32 minLog;                     // Min log value for current ctx
   
   bool incDecision (u64);         // Increase decision
   void setAB ();                  // Set coeffs a, b of hash funcs (a*x+b) %P %w
   u64  hash  (u8, u64)   const;
-  u64  minLogCount (u64) const;   // Find min log value in the sketch
+  u32  minLogCount (u64) const;   // Find min log value in the sketch
 };
 
 #endif //SMASHPP_CMLS_HPP
