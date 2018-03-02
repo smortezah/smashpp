@@ -25,8 +25,12 @@ class CMLS    // Count-min-log sketch
   u64  uhashShift;                // Universal hash shift. G-M in (a*x+b)>>(G-M)
   vector<vector<u64>>  sk;        // Sketch
   u64  tot;                       // Total # elements so far
+  u64  minLog;                    // Min log value for current ctx
   
-  void setAB ();                  // Set a and b, coeffs of hash functions
+  void setAB       ();            // Set a and b, coeffs of hash functions
+  bool incDecision (u64);         // Increase decision
+  
+  u64 hash (u8, u64);
 };
 
 #endif //SMASHPP_CMLS_HPP

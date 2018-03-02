@@ -28,7 +28,7 @@ class Param    // Parameters
   bool verbose;
   u8   nthr;
   u8   nMdl;
-  char mode;            // Table or Hash table
+  char mode;            // LogInt or Hash table
   
   Param      ();        // Define Param::Param(){} in *.hpp => compile error
   void parse (int, char**&);
