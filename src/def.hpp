@@ -43,18 +43,18 @@ typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 //#define LOOP(i,S)     for(const char& (i) : (S))
 //#define LOOP2(i,j,S)  LOOP(i,S) LOOP(j,S)
 
-//template<u16 N>
-//struct Table
-//{
-//  constexpr Table() : lg()
-//  {
-//    lg[0] = 0;
-//    lg[1] = 0;
-//    for (u16 i=2; i!=N; ++i)
-//      lg[i] = static_cast<u8>(1 + lg[i>>1]);
-//  }
-//  u8 lg[N];
-//};
+template<u32 N>
+struct Table
+{
+  constexpr Table() : lg() {
+    for (u32 i=0; i!=LOG_BASE; ++i)
+      lg[i] = 0;
+    
+    for (u32 i=LOG_BASE; i!=N; ++i)
+      lg[i] = static_cast<u8>(1 + lg[i/LOG_BASE]);
+  }
+  u8 lg[N];
+};
 // Inside function definition
 //constexpr auto a = Table<256>();
 //cerr << (int) a.lg[3];
