@@ -13,7 +13,7 @@ class CMLS    // Count-min-log sketch
 {
  public:
   CMLS             ();
-  void update      (u64, u64);    // Update ctx by count c
+  void update      (u64);         // Update sketch
   u64  estimate    (u64);         // Estimate count of ctx
   u64  getTotal    ();            // Total count of all items in the sketch
   void printSketch ();
