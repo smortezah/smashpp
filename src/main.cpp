@@ -21,23 +21,15 @@ using std::chrono::high_resolution_clock;
 using std::setprecision;
 
 
-constexpr u32 nElem = 256;
-static std::array<u8,nElem> lg;
-void createLogTable ()
-{
-//  lg[0] = -1; // if you want log(0) to return -1
-  
-  for (u32 i=0; i!=LOG_BASE; ++i)
-    lg[i] = 0;
-  for (u32 i=LOG_BASE; i!=nElem; ++i)
-    lg[i] = static_cast<u8>(1 + lg[i/LOG_BASE]);
-}
 
 int main (int argc, char* argv[])
 {
 //  CMLS m;
-  createLogTable();
-cout<<(int)lg[5];
+//  createLogTable();
+//cout<<(int)lg[5];
+
+constexpr auto logTbl = Table<256>();
+cerr << (int) logTbl.lg[17];
 
   
 //  LogTable256[0] = LogTable256[1] = 0;
