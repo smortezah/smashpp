@@ -24,7 +24,13 @@ using std::setprecision;
 int main (int argc, char* argv[])
 {
   CMLS m;
-
+  
+  
+  for (int i = 0; i<100000000; ++i) {
+    m.update(i);
+  }
+  m.printSketch();
+//  cout<<"---------------------------\n";
   
 //  for (int i = 0; i<100000000; i++)
 //    m.update(i, 1);

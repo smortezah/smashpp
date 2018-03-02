@@ -29,8 +29,8 @@ class CMLS    // Count-min-log sketch
   
   bool incDecision (u64);         // Increase decision
   void setAB ();                  // Set coeffs a, b of hash funcs (a*x+b) %P %w
-  u64 hash (u8, u64) const;
-  u64 minLogCount (u64) const;            // Find min log value in the sketch
+  u64  hash  (u8, u64)   const;
+  u64  minLogCount (u64) const;   // Find min log value in the sketch
 };
 
 #endif //SMASHPP_CMLS_HPP
