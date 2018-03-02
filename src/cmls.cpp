@@ -47,10 +47,12 @@ inline bool CMLS::incDecision (u64 ctx) {
 }
 
 void CMLS::update (u64 ctx) {
+//  std::cout<<hash(0, ctx)<<'\t'<<hash(1, ctx)<<'\t'<<hash(2, ctx)<<'\n';//todo.
+  
   if (incDecision(ctx)) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
-      if (sk[i][cellIdx] == minLog)
+      if (sk[i][cellIdx] == minLog)    // Conservative update
         ++sk[i][cellIdx];
     }
   }
@@ -76,6 +78,16 @@ void CMLS::printSketch () {
       std::cerr << sk[i][j] << ' ';
     std::cerr << "\n\n";
   }
+  
+//  for (u64 i=0; i!=d; i++) {
+//    for (u64 j=0; j!=w; j++)
+//      std::cerr << sk[i][j] << ' ';
+//    std::cerr << "\n";
+//  }
+  
+//  for (u64 j=0; j!=w; j++)
+//    std::cerr << sk[0][j] << ' ';
+//  std::cerr << "\n";
 }
 
 //size_t CMLS::read_cell(size_t cell_idx) {
