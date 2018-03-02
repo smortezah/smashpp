@@ -21,26 +21,11 @@ using std::chrono::high_resolution_clock;
 using std::setprecision;
 
 
-
 int main (int argc, char* argv[])
 {
-//  CMLS m;
-//  createLogTable();
-//cout<<(int)lg[5];
-
-constexpr auto logTbl = Table<256>();
-cerr << (int) logTbl.lg[17];
+  CMLS m;
 
   
-//  LogTable256[0] = LogTable256[1] = 0;
-//for (int i = 2; i < 256; i++)
-//{
-//  LogTable256[i] = 1 + LogTable256[i / 2];
-//}
-//LogTable256[0] = -1; // if you want log(0) to return -1
-
-
-
 //  for (int i = 0; i<100000000; i++)
 //    m.update(i, 1);
 //  for (int i = 0; i<500000000; i++)

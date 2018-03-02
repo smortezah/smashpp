@@ -12,9 +12,10 @@
  */
 CMLS::CMLS ()
 {
-  w   = DEF_W;
-  d   = DEF_D;
-  tot = 0;
+  w      = DEF_W;
+  d      = DEF_D;
+  tot    = 0;
+  minLog = 0;
   sk.resize(d, vector<u64>(w));
   uhashShift = G - static_cast<u64>(std::ceil(std::log2(w)));
   ab.reserve(d);
@@ -34,6 +35,15 @@ inline void CMLS::setAB ()
     ab[i][0] = (uDistA(e)<<1) + 1;   // 1 <= a=2k+1 <= 2^64-1, rand odd positive
     ab[i][1] = uDistB(e);            // 0 <= b <= 2^(G-M)-1,   rand positive
   }
+}
+
+/*
+ * Increase decision
+ */
+inline bool CMLS::incDecision (u64 ctx)
+{
+  size_t logCount = get_log_count(ctx);
+  return !(tot++ % expCounter[LOG_BASE][logCount]);
 }
 
 /*
@@ -80,4 +90,14 @@ void CMLS::printSketch ()
       std::cerr << sk[i][j] << ' ';
     std::cerr << "\n\n";
   }
+}
+
+//size_t CMLS::read_cell(size_t cell_idx) {
+//  constexpr auto logCounter = LogInt<1ull<<8>();
+//  return logCounter.lg[cell_idx % 4][data[cell_idx >> 2]];
+//}
+
+inline u64 CMLS::hash (u8 i, u64 ctx)
+{
+  return (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
 }

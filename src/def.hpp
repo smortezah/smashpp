@@ -26,7 +26,7 @@ typedef std::chrono::duration<double>  dur_t;
 
 // Constant
 constexpr u8  DEF_THR   = 1;     // Default # threads
-constexpr u8  TAB_COL   = 6;     // Table columns
+constexpr u8  TAB_COL   = 6;     // LogInt columns
 constexpr u8  ALPH_SZ   = 5;     // Alphabet size
 constexpr u8  IR_MAGIC  = 4;
 //constexpr u8  TAB_MAX_K = 12;    // Max ctx depth to build table
@@ -42,22 +42,6 @@ typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 // Macro
 //#define LOOP(i,S)     for(const char& (i) : (S))
 //#define LOOP2(i,j,S)  LOOP(i,S) LOOP(j,S)
-
-template<u32 N>
-struct Table
-{
-  constexpr Table() : lg() {
-    for (u32 i=0; i!=LOG_BASE; ++i)
-      lg[i] = 0;
-    
-    for (u32 i=LOG_BASE; i!=N; ++i)
-      lg[i] = static_cast<u8>(1 + lg[i/LOG_BASE]);
-  }
-  u8 lg[N];
-};
-// Inside function definition
-//constexpr auto a = Table<256>();
-//cerr << (int) a.lg[3];
 
 // Lookup table
 constexpr u64 POW5[28] = {    // 5^0 to 5^27. Needs < 64 bits
@@ -90,5 +74,20 @@ constexpr u8 REV[123] = {    // a,A->T  c,C->G  n,N->N  g,G->C  t,T->A
   0, 0, 0,'C',  0,  0, 0,  0, 0, 0,'N',  0, 0, 0, 0, 0,'A',  0,  0,  0,
   0, 0, 0
 };
+
+template<u32 N>    // Up to 262144=2^18 elements
+struct LogInt      // 0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,...
+{
+  constexpr LogInt() : lg() {
+    for (u32 i=0; i!=LOG_BASE; ++i)
+      lg[i] = 0;
+    for (u32 i=LOG_BASE; i!=N; ++i)
+      lg[i] = static_cast<u8>(1 + lg[i/LOG_BASE]);
+  }
+  u8 lg[N];
+};
+// Inside function definition
+//constexpr auto a = LogInt<256>();
+//cerr << (int) a.lg[3];
 
 #endif //SMASHPP_DEF_HPP
