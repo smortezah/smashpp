@@ -19,10 +19,10 @@ class CMLS    // Count-min-log sketch
   void printSketch ();
 
  private:
-  u64 w;                          // Width of sketch
+  u32 w;                          // Width of sketch
   u8  d;                          // Depth of sketch
   vector<array<u64,2>> ab;        // Coefficients of hash functions
-  u64 uhashShift;                 // Universal hash shift. G-M in (a*x+b)>>(G-M)
+  u32 uhashShift;                 // Universal hash shift. G-M in (a*x+b)>>(G-M)
   vector<vector<u32>>  sk;        // Sketch
   u64 tot;                        // Total # elements so far
   u32 minLog;                     // Min log value for current ctx
