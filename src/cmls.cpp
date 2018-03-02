@@ -42,15 +42,17 @@ inline u64 CMLS::minLogCount (u64 ctx) const {
 }
 
 inline bool CMLS::incDecision (u64 ctx) {
-  auto lg = minLogCount(ctx);
-  return !(tot++ % POW2[lg]); //todo. base 2
+  minLog = minLogCount(ctx);
+  return !(tot++ % POW2[minLog]); //todo. base 2
 }
 
-void CMLS::update (u64 ctx, u64 c) {
-  tot += c;
-  for (u8 i=0; i!=d; ++i) {
-    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
-    sk[i][hashVal] += c;
+void CMLS::update (u64 ctx) {
+  if (incDecision(ctx)) {
+    for (u8 i=0; i!=d; ++i) {
+      auto cellIdx = hash(i, ctx);
+      if (sk[i][cellIdx] == minLog)
+        ++sk[i][cellIdx];
+    }
   }
 }
 
