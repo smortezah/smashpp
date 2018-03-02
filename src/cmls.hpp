@@ -15,22 +15,22 @@ class CMLS    // Count-min-log sketch
   CMLS             ();
   void update      (u64, u64);    // Update ctx by count c
   u64  estimate    (u64);         // Estimate count of ctx
-  u64  getTotal    ();            // Total count
+  u64  getTotal    ();            // Total count of all items in the sketch
   void printSketch ();
 
  private:
-  u32  w;                         // Width of sketch
-  u8   d;                         // Depth of sketch
+  u64 w;                          // Width of sketch
+  u8  d;                          // Depth of sketch
   vector<array<u64,2>> ab;        // Coefficients of hash functions
-  u64  uhashShift;                // Universal hash shift. G-M in (a*x+b)>>(G-M)
+  u64 uhashShift;                 // Universal hash shift. G-M in (a*x+b)>>(G-M)
   vector<vector<u64>>  sk;        // Sketch
-  u64  tot;                       // Total # elements so far
-  u64  minLog;                    // Min log value for current ctx
+  u64 tot;                        // Total # elements so far
+  u64 minLog;                     // Min log value for current ctx
   
-  void setAB       ();            // Set a and b, coeffs of hash functions
   bool incDecision (u64);         // Increase decision
-  
-  u64 hash (u8, u64);
+  void setAB ();                  // Set coeffs a, b of hash funcs (a*x+b) %P %w
+  u64 hash (u8, u64) const;
+  u64 minLogCount (u64) const;            // Find min log value in the sketch
 };
 
 #endif //SMASHPP_CMLS_HPP
