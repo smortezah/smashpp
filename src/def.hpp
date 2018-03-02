@@ -32,7 +32,7 @@ constexpr u8  IR_MAGIC  = 4;
 //constexpr u8  TAB_MAX_K = 12;    // Max ctx depth to build table
 constexpr u8  TAB_MAX_K = 11;    // Max ctx depth to build table
 constexpr u32 BLK_SZ    = 8192;  // 8K
-constexpr u64 DEF_W     = 2048;//256;//512;//   // Default width of CML sketch (2^...)
+constexpr u64 DEF_W     = 524288;//256;//512;//   // Default width of CML sketch (2^...)
 constexpr u8  DEF_D     = 3;     // Default depth of CML sketch
 constexpr u64 G         = 64;    // Machine word size - for universal hash fn
 constexpr u8  LOG_BASE  = 2;     // Logarithmic counting
@@ -73,7 +73,10 @@ constexpr u64 POW5[23] {
 //    59604644775390600, 298023223876953000, 1490116119384770000,
 //  7450580596923830000
 //};
-constexpr u8 NUM[123] = {    // a,A=0  c,C=1  n,N=2  g,G=3  t,T=4
+constexpr u32 INC[17] {
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16
+};
+constexpr u8 NUM[123] {    // a,A=0  c,C=1  n,N=2  g,G=3  t,T=4
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,             // #20
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -82,7 +85,7 @@ constexpr u8 NUM[123] = {    // a,A=0  c,C=1  n,N=2  g,G=3  t,T=4
   0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 4, 0, 0, 0,
   0, 0, 0
 };
-constexpr u8 REV[123] = {    // a,A->T  c,C->G  n,N->N  g,G->C  t,T->A
+constexpr u8 REV[123] {    // a,A->T  c,C->G  n,N->N  g,G->C  t,T->A
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0,  0,  0,  0,  0,   // #20
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0,  0,  0,  0,  0,
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0,  0,  0,  0,  0,

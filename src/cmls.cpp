@@ -10,7 +10,7 @@ CMLS::CMLS () {
   d      = DEF_D;            // d=[ln 1/delta]. 0 < delta: error probability < 1
   tot    = 0;
   minLog = 0;
-  sk.resize(d, vector<u64>(w));
+  sk.resize(d, vector<u32>(w));
   uhashShift = G - static_cast<u64>(std::ceil(std::log2(w)));
   ab.reserve(d);
   setAB();
@@ -31,10 +31,10 @@ inline u64 CMLS::hash (u8 i, u64 ctx) const {
   return (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
 }
 
-inline u64 CMLS::minLogCount (u64 ctx) const {
-  u64 min = std::numeric_limits<u64>::max();
+inline u32 CMLS::minLogCount (u64 ctx) const {
+  u32 min = std::numeric_limits<u32>::max();
   for (u8 i=0; i!=d && min!=0; i++) {
-    u64 lg = sk[i][hash(i,ctx)];
+    u32 lg = sk[i][hash(i,ctx)];
     if (lg < min)
       min = lg;
   }
@@ -53,13 +53,13 @@ void CMLS::update (u64 ctx) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
       if (sk[i][cellIdx] == minLog)    // Conservative update
-        ++sk[i][cellIdx];
+        sk[i][cellIdx] = INC[minLog];
     }
   }
 }
 
 u64 CMLS::estimate (u64 ctx) {
-  u64 min = std::numeric_limits<u64>::max();
+  u32 min = std::numeric_limits<u32>::max();
   for (u8 i=0; i!=d; i++) {
     u64 hashVal = (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
     if (sk[i][hashVal] < min)
