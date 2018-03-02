@@ -11,7 +11,7 @@ CMLS::CMLS () {
   tot    = 0;
   minLog = 0;
   sk.resize(d, vector<u32>(w));
-  uhashShift = G - static_cast<u64>(std::ceil(std::log2(w)));
+  uhashShift = G - static_cast<u32>(std::ceil(std::log2(w)));
   ab.reserve(d);
   setAB();
 }
@@ -61,9 +61,9 @@ void CMLS::update (u64 ctx) {
 u64 CMLS::estimate (u64 ctx) {
   u32 min = std::numeric_limits<u32>::max();
   for (u8 i=0; i!=d; i++) {
-    u64 hashVal = (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
-    if (sk[i][hashVal] < min)
-      min = sk[i][hashVal];
+    u32 lg = sk[i][hash(i,ctx)];
+    if (lg < min)
+      min = lg;
   }
   return min;
 }
@@ -73,19 +73,19 @@ u64 CMLS::getTotal () {
 }
 
 void CMLS::printSketch () {
-  for (u64 i=0; i!=d; i++) {
-    for (u64 j=0; j!=w; j++)
+  for (u32 i=0; i!=d; i++) {
+    for (u32 j=0; j!=w; j++)
       std::cerr << sk[i][j] << ' ';
     std::cerr << "\n\n";
   }
   
-//  for (u64 i=0; i!=d; i++) {
-//    for (u64 j=0; j!=w; j++)
+//  for (u32 i=0; i!=d; i++) {
+//    for (u32 j=0; j!=w; j++)
 //      std::cerr << sk[i][j] << ' ';
 //    std::cerr << "\n";
 //  }
   
-//  for (u64 j=0; j!=w; j++)
+//  for (u32 j=0; j!=w; j++)
 //    std::cerr << sk[0][j] << ' ';
 //  std::cerr << "\n";
 }
