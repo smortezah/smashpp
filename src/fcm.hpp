@@ -13,7 +13,7 @@ class FCM    // Finite-context model
 //  explicit FCM      (const Param&);
   FCM               () = default;
   ~FCM              ();
-  void buildModel   (const Param&);
+  void buildModel   (const Param&);          // Build FCM (finite-context model)
   void compress     (const Param&)  const;
   void printTbl     (const Param&)  const;
   void printHashTbl ()              const;

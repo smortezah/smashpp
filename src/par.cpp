@@ -5,11 +5,7 @@
 #include "par.hpp"
 using std::array;
 
-/*
- * Constructor
- */
-Param::Param ()
-{
+Param::Param () {
   tar = "";
   ref = "";
   ir.emplace_back(false);
@@ -19,11 +15,7 @@ Param::Param ()
   nthr = DEF_THR;
 };
 
-/*
- * Parse
- */
-void Param::parse (int argc, char**& argv)
-{
+void Param::parse (int argc, char**& argv) {
   if (argc<2) { help();  throw EXIT_SUCCESS; }
   else {
     vector<string> vArgs(static_cast<u64>(argc));
@@ -33,22 +25,20 @@ void Param::parse (int argc, char**& argv)
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
       if (*i=="-h" || *i=="--help") { help();  throw EXIT_SUCCESS; }
       else if (*i=="-t" || *i=="--tar") {
-        if (i+1!=vArgs.end()) {
+        if (i+1 != vArgs.end()) {
           tar = *++i;
           checkFile(tar);
-        }
-        else {
+        } else {
           cerr << "Error: target file address not specified. Use "
                << "\"-t fileName\".\n";
           throw EXIT_FAILURE;
         }
       }
       else if (*i=="-r" || *i=="--ref") {
-        if (i+1!=vArgs.end()) {
+        if (i+1 != vArgs.end()) {
           ref = *++i;
           checkFile(ref);
-        }
-        else {
+        } else {
           cerr << "Error: reference file address not specified. Use "
                << "\"-r fileName\".\n";
           throw EXIT_FAILURE;
@@ -84,13 +74,8 @@ void Param::parse (int argc, char**& argv)
   }
 }
 
-/*
- * Chack if files can be opened and are not empty
- */
-void Param::checkFile (const string& s) const
-{
+void Param::checkFile (const string& s) const {
   ifstream f(s);
-  
   if (!f) {
     f.close();
     cerr << "Error: the file \"" << s << "\" cannot be opened or is empty.\n";
@@ -99,10 +84,10 @@ void Param::checkFile (const string& s) const
   else {
     char c;
     bool foundChar = false;
-    while (f.get(c) && !foundChar)
+    while (f.get(c) && !foundChar) {
       if (c!=' ' && c!='\n' && c!='\t')
         foundChar = true;
-  
+    }
     if (!foundChar) {
       cerr << "Error: the file \"" << s << "\" is empty.\n";
       throw EXIT_FAILURE;
@@ -111,17 +96,12 @@ void Param::checkFile (const string& s) const
   }
 }
 
-/*
- * Set models parameters
- */
-void Param::setModelPar (const string& m)
-{
+void Param::setModelPar (const string& m) {
   auto beg = m.begin();
   vector<string> msPar;
-  
   for (auto i=beg; i!=m.end(); ++i) {
     if (*i==':') {
-      msPar.emplace_back(string(beg, i));
+      msPar.emplace_back(string(beg,i));
       beg = i+1;
     }
   }
@@ -151,11 +131,7 @@ void Param::setModelPar (const string& m)
   mode = (sum > POW5[TAB_MAX_K]) ? 'h' : 't';
 }
 
-/*
- * Usage guide
- */
-inline void Param::help () const
-{
+inline void Param::help () const {
   cerr                                                                   << '\n'
     << "NAME"                                                            << '\n'
     << "    Smash++ v" << VERSION << " - rearrangements finder"          << '\n'
@@ -184,7 +160,7 @@ inline void Param::help () const
     << "    -n [NUM],  --thread       number of threads"                 << '\n'
                                                                          << '\n'
     << "COPYRIGHT"                                                       << '\n'
-    << "    Copyright (sk) "<< DEV_YEARS <<", IEETA, University of Aveiro."<<'\n'
+    << "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro."<<'\n'
     << "    You may redistribute copies of this Free software"           << '\n'
     << "    under the terms of the GNU - General Public License"         << '\n'
     << "    v3 <http://www.gnu.org/licenses/gpl.html>. There"            << '\n'

@@ -11,7 +11,7 @@ CMLS::CMLS () {
   tot    = 0;
   minLog = 0;
   sk.resize(d, vector<u32>(w));
-  uhashShift = G - static_cast<u32>(std::ceil(std::log2(w)));
+  uhashShift = G - static_cast<u64>(std::ceil(std::log2(w)));
   ab.reserve(d);
   setAB();
 }
@@ -48,7 +48,6 @@ inline bool CMLS::incDecision (u64 ctx) {
 
 void CMLS::update (u64 ctx) {
 //  std::cout<<hash(0, ctx)<<'\t'<<hash(1, ctx)<<'\t'<<hash(2, ctx)<<'\n';//todo.
-  
   if (incDecision(ctx)) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
@@ -72,7 +71,7 @@ u64 CMLS::getTotal () {
   return tot;
 }
 
-void CMLS::printSketch () {
+void CMLS::printSketch () const {
   for (u32 i=0; i!=d; i++) {
     for (u32 j=0; j!=w; j++)
       std::cerr << sk[i][j] << ' ';

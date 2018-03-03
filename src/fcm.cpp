@@ -9,22 +9,14 @@ using std::ifstream;
 using std::cout;
 using std::array;
 
-/*
- * Constructor and destructor
- */
 //FCM::FCM (const Param& p)
 //{
 //}
-FCM::~FCM ()
-{
+FCM::~FCM () {
   delete tbl;
 }
 
-/*
- * Build FCM (finite-context model)
- */
-void FCM::buildModel (const Param& p)
-{
+void FCM::buildModel (const Param& p) {
   u64      ctx;                // Context (integer) to slide in the file
   u64      maxPV=POW5[p.k[0]];    // Max Place Value//todo. change k[0]
   u64      ctxIR;              // Inverted repeat context (integer)
@@ -34,7 +26,6 @@ void FCM::buildModel (const Param& p)
   char     c;                  // To read from ref file
   double   a=p.alpha[0], sa=ALPH_SZ*a;//todo. change alpha[0]
   rf.open(p.ref);
-  
   cerr << "Building models...\n";
   switch (p.mode) {
     case 't':
@@ -44,13 +35,11 @@ void FCM::buildModel (const Param& p)
       }
       ctx   = 0;
       ctxIR = maxPV-1;
-
       // Fill tbl by no. occurrences of symbols A,sk,N,G,T
       while (rf.get(c)) {
         if (c!='\n') {
           curr = NUM[c];
           u64 rowIdx;
-
           // Inverted repeats
           if (p.ir[0]) {//todo. change ir[0]
             ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
@@ -59,7 +48,7 @@ void FCM::buildModel (const Param& p)
             ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
             ++tbl[rowIdx+ALPH_SZ];              // 'sum' col
           }
-
+          
           rowIdx = ctx*TAB_COL;
           ++tbl[rowIdx+curr];
           ++tbl[rowIdx+ALPH_SZ];
@@ -75,12 +64,10 @@ void FCM::buildModel (const Param& p)
     case 'h':
       ctx   = 0;
       ctxIR = maxPV-1;
-
       // Fill tbl by no. occurrences of symbols A,sk,N,G,T
       while (rf.get(c)) {
         if (c!='\n') {
           curr = NUM[c];
-
           // Inverted repeats
           if (p.ir[0]) {//todo. change ir[0]
             ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
@@ -93,19 +80,14 @@ void FCM::buildModel (const Param& p)
         }
       }
       break;
-
+      
     default:  cerr << "Error.\n";  break;
   }
-
   rf.close();
   cerr << "Models built ";
 }
 
-/*
- * Compress
- */
-void FCM::compress (const Param& p) const
-{
+void FCM::compress (const Param& p) const {
 //  double   a=p.alpha, sa=ALPH_SZ*a;
 //  ifstream tf;
 //  char     c;
@@ -158,11 +140,7 @@ void FCM::compress (const Param& p) const
 //  cerr << "Compression finished ";
 }
 
-/*
- * Print table
- */
-void FCM::printTbl (const Param &p) const
-{
+void FCM::printTbl (const Param &p) const {
   u64 rowSize = POW5[p.k[0]];//todo. change k[0]
   for (u8 i=0; i!=rowSize; ++i) {
     for (u8 j=0; j!=TAB_COL; ++j)
@@ -171,11 +149,7 @@ void FCM::printTbl (const Param &p) const
   }
 }
 
-/*
- * Print hash table
- */
-void FCM::printHashTbl () const
-{
+void FCM::printHashTbl () const {
   for (const auto& e : htbl) {
     for (const auto& v : e.second)
       cerr << v << '\t';
