@@ -25,10 +25,20 @@ int main (int argc, char* argv[])
 {
   CMLS m;
   
-  for (int i = 0; i<10; ++i) {
+  for (int i = 0; i<500; ++i) {
     m.update(i);
   }
-//  m.printSketch();
+  for (int i = 0; i<1000; ++i) {
+    m.update(i);
+  }
+  for (int i = 0; i<2000; ++i) {
+    m.update(i);
+  }
+  for (int i = 0; i<3000; ++i) {
+    m.update(i);
+  }
+  m.printSketch();
+  cout<<m.query(10);
 //  cout<<"---------------------------\n";
   
 //  for (int i = 0; i<100000000; i++)

@@ -16,22 +16,25 @@ Param::Param () {
 };
 
 void Param::parse (int argc, char**& argv) {
-  if (argc<2) { help();  throw EXIT_SUCCESS; }
+  if (argc < 2) {
+    help();  throw EXIT_SUCCESS;
+  }
   else {
     vector<string> vArgs(static_cast<u64>(argc));
     for (int i=0; i!=argc; ++i)
       vArgs.emplace_back(static_cast<string>(argv[i]));
 
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-      if (*i=="-h" || *i=="--help") { help();  throw EXIT_SUCCESS; }
+      if (*i=="-h" || *i=="--help") {
+        help();  throw EXIT_SUCCESS;
+      }
       else if (*i=="-t" || *i=="--tar") {
         if (i+1 != vArgs.end()) {
           tar = *++i;
           checkFile(tar);
         } else {
           cerr << "Error: target file address not specified. Use "
-               << "\"-t fileName\".\n";
-          throw EXIT_FAILURE;
+               << "\"-t fileName\".\n";    throw EXIT_FAILURE;
         }
       }
       else if (*i=="-r" || *i=="--ref") {
@@ -40,8 +43,7 @@ void Param::parse (int argc, char**& argv) {
           checkFile(ref);
         } else {
           cerr << "Error: reference file address not specified. Use "
-               << "\"-r fileName\".\n";
-          throw EXIT_FAILURE;
+               << "\"-r fileName\".\n";    throw EXIT_FAILURE;
         }
       }
       else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
@@ -63,13 +65,11 @@ void Param::parse (int argc, char**& argv) {
     
     if (!tExist && !tarExist) {
       cerr << "Error: target file address not specified. Use "
-           << "\"-t fileName\".\n";
-      throw EXIT_FAILURE;
+           << "\"-t fileName\".\n";    throw EXIT_FAILURE;
     }
     else if (!rExist && !refExist) {
       cerr << "Error: reference file address not specified. Use "
-           << "\"-r fileName\".\n";
-      throw EXIT_FAILURE;
+           << "\"-r fileName\".\n";    throw EXIT_FAILURE;
     }
   }
 }
@@ -78,8 +78,8 @@ void Param::checkFile (const string& s) const {
   ifstream f(s);
   if (!f) {
     f.close();
-    cerr << "Error: the file \"" << s << "\" cannot be opened or is empty.\n";
-    throw EXIT_FAILURE;
+    cerr << "Error: the file \"" << s
+         << "\" cannot be opened or is empty.\n";    throw EXIT_FAILURE;
   }
   else {
     char c;
@@ -89,8 +89,7 @@ void Param::checkFile (const string& s) const {
         foundChar = true;
     }
     if (!foundChar) {
-      cerr << "Error: the file \"" << s << "\" is empty.\n";
-      throw EXIT_FAILURE;
+      cerr << "Error: the file \"" << s << "\" is empty.\n"; throw EXIT_FAILURE;
     }
     f.close();
   }
@@ -100,7 +99,7 @@ void Param::setModelPar (const string& m) {
   auto beg = m.begin();
   vector<string> msPar;
   for (auto i=beg; i!=m.end(); ++i) {
-    if (*i==':') {
+    if (*i == ':') {
       msPar.emplace_back(string(beg,i));
       beg = i+1;
     }
@@ -114,7 +113,7 @@ void Param::setModelPar (const string& m) {
     beg  = e.begin();
     u8 j = 0;
     for (auto i=beg; i!=e.end(); ++i) {
-      if (*i==',') {
+      if (*i == ',') {
         mPar[j++] = string(beg, i);
         beg = i+1;
       }
