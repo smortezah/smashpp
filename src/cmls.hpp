@@ -12,10 +12,10 @@ using std::array;
 class CMLS    // Count-min-log sketch
 {
  public:
-  CMLS             ();
-  void update      (u64);         // Update sketch
-  u64  estimate    (u64);         // Estimate count of ctx
-  u64  getTotal    ();            // Total count of all items in the sketch
+  CMLS ();
+  void update (u64);              // Update sketch
+  u32  query (u64) const;         // Query count of ctx
+  u64  getTotal ();               // Total count of all items in the sketch
   void printSketch () const;
 
  private:
@@ -25,11 +25,10 @@ class CMLS    // Count-min-log sketch
   u64 uhashShift;                 // Universal hash shift. G-M in (a*x+b)>>(G-M)
   vector<vector<u32>>  sk;        // Sketch
   u64 tot;                        // Total # elements so far
-  u32 minLog;                     // Min log value for current ctx
   
-  bool incDecision (u64);         // Increase decision
+  bool incDecision (u32);         // Increase decision
   void setAB ();                  // Set coeffs a, b of hash funcs (a*x+b) %P %w
-  u64  hash  (u8, u64)   const;
+  u64  hash (u8, u64) const;
   u32  minLogCount (u64) const;   // Find min log value in the sketch
 };
 

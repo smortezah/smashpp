@@ -27,6 +27,7 @@ void FCM::buildModel (const Param& p) {
   double   a=p.alpha[0], sa=ALPH_SZ*a;//todo. change alpha[0]
   rf.open(p.ref);
   cerr << "Building models...\n";
+  
   switch (p.mode) {
     case 't':
       tbl = new double[TAB_COL*maxPV];
@@ -35,9 +36,9 @@ void FCM::buildModel (const Param& p) {
       }
       ctx   = 0;
       ctxIR = maxPV-1;
-      // Fill tbl by no. occurrences of symbols A,sk,N,G,T
+      // Fill tbl by no. occurrences of symbols A,C,N,G,T
       while (rf.get(c)) {
-        if (c!='\n') {
+        if (c != '\n') {
           curr = NUM[c];
           u64 rowIdx;
           // Inverted repeats

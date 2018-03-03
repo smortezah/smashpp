@@ -9,11 +9,40 @@ CMLS::CMLS () {
   w      = DEF_W;            // w=[e/eps].      0 < eps:   error factor      < 1
   d      = DEF_D;            // d=[ln 1/delta]. 0 < delta: error probability < 1
   tot    = 0;
-  minLog = 0;
   sk.resize(d, vector<u32>(w));
   uhashShift = G - static_cast<u64>(std::ceil(std::log2(w)));
   ab.reserve(d);
   setAB();
+}
+
+void CMLS::update (u64 ctx) {
+//  std::cout<<hash(0, ctx)<<'\t'<<hash(1, ctx)<<'\t'<<hash(2, ctx)<<'\n';//todo.
+  u32 c = minLogCount(ctx);
+  if (incDecision(c)) {
+    for (u8 i=0; i!=d; ++i) {
+      auto cellIdx = hash(i, ctx);
+      if (sk[i][cellIdx] == c)    // Conservative update
+        sk[i][cellIdx] = INC[c];
+    }
+  }
+}
+
+inline u32 CMLS::minLogCount (u64 ctx) const {
+  u32 min = std::numeric_limits<u32>::max();
+  for (u8 i=0; i!=d && min!=0; i++) {
+    u32 lg = sk[i][hash(i,ctx)];
+    if (lg < min)
+      min = lg;
+  }
+  return min;
+}
+
+inline bool CMLS::incDecision (u32 c) {
+  return !(tot++ % POW2[c]); //todo. base 2
+}
+
+inline u64 CMLS::hash (u8 i, u64 ctx) const {
+  return (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
 }
 
 inline void CMLS::setAB () {
@@ -27,44 +56,9 @@ inline void CMLS::setAB () {
   }
 }
 
-inline u64 CMLS::hash (u8 i, u64 ctx) const {
-  return (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
-}
-
-inline u32 CMLS::minLogCount (u64 ctx) const {
-  u32 min = std::numeric_limits<u32>::max();
-  for (u8 i=0; i!=d && min!=0; i++) {
-    u32 lg = sk[i][hash(i,ctx)];
-    if (lg < min)
-      min = lg;
-  }
-  return min;
-}
-
-inline bool CMLS::incDecision (u64 ctx) {
-  minLog = minLogCount(ctx);
-  return !(tot++ % POW2[minLog]); //todo. base 2
-}
-
-void CMLS::update (u64 ctx) {
-//  std::cout<<hash(0, ctx)<<'\t'<<hash(1, ctx)<<'\t'<<hash(2, ctx)<<'\n';//todo.
-  if (incDecision(ctx)) {
-    for (u8 i=0; i!=d; ++i) {
-      auto cellIdx = hash(i, ctx);
-      if (sk[i][cellIdx] == minLog)    // Conservative update
-        sk[i][cellIdx] = INC[minLog];
-    }
-  }
-}
-
-u64 CMLS::estimate (u64 ctx) {
-  u32 min = std::numeric_limits<u32>::max();
-  for (u8 i=0; i!=d; i++) {
-    u32 lg = sk[i][hash(i,ctx)];
-    if (lg < min)
-      min = lg;
-  }
-  return min;
+u32 CMLS::query (u64 ctx) const {
+  u32 c = minLogCount(ctx);
+  return POW2[c]-1;  //todo. base 2. otherwise (b^c-1)/(b-1)
 }
 
 u64 CMLS::getTotal () {
