@@ -28,14 +28,14 @@ class Param    // Parameters
   bool verbose;
   u8   nthr;
   u8   nMdl;
-  char mode;            // LogInt or Hash table
+  char mode;            // Table or Hash table
   
   Param      ();        // Define Param::Param(){} in *.hpp => compile error
   void parse (int, char**&);
 
  private:
-  void checkFile   (const string&)  const;
-  void setModelPar (const string&);
+  void checkFile   (const string&)  const;    // Can be opened and not empty
+  void setModelPar (const string&);           // Set models parameters
   void help        ()               const;
 };
 
