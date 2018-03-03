@@ -3,46 +3,49 @@
 //
 
 #include <random>
+#include <cstring>
 #include "cmls.hpp"
 
 CMLS::CMLS () {
-  w      = DEF_W;            // w=[e/eps].      0 < eps:   error factor      < 1
-  d      = DEF_D;            // d=[ln 1/delta]. 0 < delta: error probability < 1
-  tot    = 0;
-  sk.resize(d, vector<u32>(w));
-  uhashShift = G - static_cast<u64>(std::ceil(std::log2(w)));
+  w = DEF_W;    // w=[e/eps].      0 < eps:   error factor      < 1
+  d = DEF_D;    // d=[ln 1/delta]. 0 < delta: error probability < 1
+  tot.fill(0);
+  sk.resize(d, vector<u16>(w));
+  uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
   ab.reserve(d);
   setAB();
 }
 
-void CMLS::update (u64 ctx) {
-//  std::cout<<hash(0, ctx)<<'\t'<<hash(1, ctx)<<'\t'<<hash(2, ctx)<<'\n';//todo.
-  u32 c = minLogCount(ctx);
-  if (incDecision(c)) {
+void CMLS::update (u64 ctx, u8 sym) {
+  auto c = minLogCount(ctx);
+  if (incDecision(c, sym)) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
-      if (sk[i][cellIdx] == c)    // Conservative update
-        sk[i][cellIdx] = INC[c];
+      if (sk[i][cellIdx] == c) {   // Conservative update
+        sk[i][cellIdx] = (c & ~(MASK_CMLS << (sym*MSK_BITNO))) |
+                         INC[c & (MASK_CMLS << (sym*MSK_BITNO))];
+      }
     }
   }
 }
 
-inline u32 CMLS::minLogCount (u64 ctx) const {
-  u32 min = std::numeric_limits<u32>::max();
+inline u16 CMLS::minLogCount (u64 ctx) const {
+  u16 min = std::numeric_limits<u16>::max();
   for (u8 i=0; i!=d && min!=0; i++) {
-    u32 lg = sk[i][hash(i,ctx)];
+    auto lg = sk[i][hash(i,ctx)];
     if (lg < min)
       min = lg;
   }
   return min;
 }
 
-inline bool CMLS::incDecision (u32 c) {
-  return !(tot++ % POW2[c]); //todo. base 2
+inline bool CMLS::incDecision (u16 c, u8 sym) {
+  u8 symPortion = c & (MASK_CMLS << (sym*MSK_BITNO));
+  return !(tot[sym]++ % POW2[]);//todo. base 2
 }
 
-inline u64 CMLS::hash (u8 i, u64 ctx) const {
-  return (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
+inline u32 CMLS::hash (u8 i, u64 ctx) const {
+  return static_cast<u32>((ab[i][0]*ctx + ab[i][1]) >> uhashShift);
 }
 
 inline void CMLS::setAB () {
@@ -56,13 +59,13 @@ inline void CMLS::setAB () {
   }
 }
 
-u32 CMLS::query (u64 ctx) const {
+u16 CMLS::query (u64 ctx) const {
   u32 c = minLogCount(ctx);
   return POW2[c]-1;  //todo. base 2. otherwise (b^c-1)/(b-1)
 }
 
 u64 CMLS::getTotal () {
-  return tot;
+//  return tot;
 }
 
 void CMLS::printSketch () const {
@@ -71,19 +74,14 @@ void CMLS::printSketch () const {
       std::cerr << sk[i][j] << ' ';
     std::cerr << "\n\n";
   }
-  
+
 //  for (u32 i=0; i!=d; i++) {
 //    for (u32 j=0; j!=w; j++)
 //      std::cerr << sk[i][j] << ' ';
 //    std::cerr << "\n";
 //  }
-  
+
 //  for (u32 j=0; j!=w; j++)
 //    std::cerr << sk[0][j] << ' ';
 //  std::cerr << "\n";
 }
-
-//size_t CMLS::read_cell(size_t cell_idx) {
-//  constexpr auto logCounter = LogInt<1ull<<8>();
-//  return logCounter.lg[cell_idx % 4][data[cell_idx >> 2]];
-//}
