@@ -21,7 +21,8 @@ void CMLS::update (u64 ctx) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
       if (sk[i][cellIdx] == c)    // Conservative update
-        sk[i][cellIdx] = INC[c];
+//        sk[i][cellIdx] = INC[c]
+;
     }
   }
 }
@@ -29,19 +30,25 @@ void CMLS::update (u64 ctx) {
 inline u8 CMLS::minLogCount (u64 ctx) const {
   u8 min = std::numeric_limits<u8>::max();
   for (u8 i=0; i!=d && min!=0; i++) {
-    auto lg = sk[i][hash(i,ctx)];
+    auto lg = readCell(i, hash(i,ctx));
+//    auto lg = sk[i][hash(i,ctx)];
     if (lg < min)
       min = lg;
   }
   return min;
 }
 
+inline u8 CMLS::readCell(u8 i, u64 cell_idx) const {
+//  return logCounter[cell_idx % 4][sk[i][cell_idx >> 1]];
+}
+
 inline bool CMLS::incDecision (u8 c) {
   return !(tot++ % POW2[c]); //todo. base 2
 }
 
-inline u32 CMLS::hash (u8 i, u64 ctx) const {
-  return static_cast<u32>((ab[i][0]*ctx + ab[i][1]) >> uhashShift);
+inline u64 CMLS::hash (u8 i, u64 ctx) const {
+  return (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
+//  return i*w + ((ab[i][0]*ctx + ab[i][1]) >> uhashShift);
 }
 
 inline void CMLS::setAB () {
@@ -68,7 +75,7 @@ void CMLS::printSketch () const {
   for (auto i=0; i!=d; i++) {
     for (auto j=0; j!=w; j++)
       std::cerr << static_cast<u16>(sk[i][j]) << ' ';
-    std::cerr << "\n\n";
+    std::cerr << "\n-------------------------------------------\n";
   }
 
 //  for (u32 i=0; i!=d; i++) {
