@@ -3,34 +3,31 @@
 //
 
 #include <random>
-#include <cstring>
 #include "cmls.hpp"
 
 CMLS::CMLS () {
   w = DEF_W;    // w=[e/eps].      0 < eps:   error factor      < 1
   d = DEF_D;    // d=[ln 1/delta]. 0 < delta: error probability < 1
-  tot.fill(0);
-  sk.resize(d, vector<u16>(w));
+  tot = 0;
+  sk.resize(d, vector<u8>(w));
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
   ab.reserve(d);
   setAB();
 }
 
-void CMLS::update (u64 ctx, u8 sym) {
+void CMLS::update (u64 ctx) {
   auto c = minLogCount(ctx);
-  if (incDecision(c, sym)) {
+  if (incDecision(c)) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
-      if (sk[i][cellIdx] == c) {   // Conservative update
-        sk[i][cellIdx] = (c & ~(MASK_CMLS << (sym*MSK_BITNO))) |
-                         INC[c & (MASK_CMLS << (sym*MSK_BITNO))];
-      }
+      if (sk[i][cellIdx] == c)    // Conservative update
+        sk[i][cellIdx] = INC[c];
     }
   }
 }
 
-inline u16 CMLS::minLogCount (u64 ctx) const {
-  u16 min = std::numeric_limits<u16>::max();
+inline u8 CMLS::minLogCount (u64 ctx) const {
+  u8 min = std::numeric_limits<u8>::max();
   for (u8 i=0; i!=d && min!=0; i++) {
     auto lg = sk[i][hash(i,ctx)];
     if (lg < min)
@@ -39,9 +36,8 @@ inline u16 CMLS::minLogCount (u64 ctx) const {
   return min;
 }
 
-inline bool CMLS::incDecision (u16 c, u8 sym) {
-  u8 symPortion = c & (MASK_CMLS << (sym*MSK_BITNO));
-  return !(tot[sym]++ % POW2[]);//todo. base 2
+inline bool CMLS::incDecision (u8 c) {
+  return !(tot++ % POW2[c]); //todo. base 2
 }
 
 inline u32 CMLS::hash (u8 i, u64 ctx) const {
@@ -60,18 +56,18 @@ inline void CMLS::setAB () {
 }
 
 u16 CMLS::query (u64 ctx) const {
-  u32 c = minLogCount(ctx);
-  return POW2[c]-1;  //todo. base 2. otherwise (b^c-1)/(b-1)
+  auto c = minLogCount(ctx);
+  return static_cast<u16>(POW2[c]-1);  //todo. base 2. otherwise (b^c-1)/(b-1)
 }
 
-u64 CMLS::getTotal () {
-//  return tot;
+u64 CMLS::getTotal () const {
+  return tot;
 }
 
 void CMLS::printSketch () const {
-  for (u32 i=0; i!=d; i++) {
-    for (u32 j=0; j!=w; j++)
-      std::cerr << sk[i][j] << ' ';
+  for (auto i=0; i!=d; i++) {
+    for (auto j=0; j!=w; j++)
+      std::cerr << static_cast<u16>(sk[i][j]) << ' ';
     std::cerr << "\n\n";
   }
 
