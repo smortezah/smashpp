@@ -3,6 +3,7 @@
 //
 
 #include <random>
+#include <fstream>
 #include "cmls.hpp"
 
 CMLS::CMLS () {
@@ -20,12 +21,10 @@ void CMLS::update (u64 ctx) {
   if (incDecision(c)) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
-      std::cout<<cellIdx<<' ';//todo
       if (readCell(cellIdx) == c)    // Conservative update
         sk[cellIdx>>1] = INC_CTR[cellIdx&1][sk[cellIdx>>1]];
     }
   }
-  std::cout<<'\n';//todo
 }
 
 inline u8 CMLS::minLogCount (u64 ctx) const {
@@ -70,20 +69,37 @@ u64 CMLS::getTotal () const {
   return tot;
 }
 
+u64 CMLS::countEmptyCells () const {
+  u64 n = 0;
+  for (auto i=w*d; i--;) {
+    if (readCell(i) == 0)
+      ++n;
+	}
+	return n;
+}
+
+u8 CMLS::maxSketchVal () const {
+  u8 c = 0;
+  for (auto i=w*d; i--;) {
+    if (readCell(i) > c)
+      c = readCell(i);
+	}
+	return c;
+}
+
+//void CMLS::dump (ofstream& ofs) const {
+//	ofs.write((const char*) &sk[0], sk.size());
+////  ofs.close();
+//}
+//
+//void CMLS::load (ifstream& ifs) const {
+//	ifs.read((char*) &sk[0], sk.size());
+//}
+
 void CMLS::printSketch () const {
   for (auto i=0; i!=d; i++) {
     for (auto j=0; j!=w; j++)
-      std::cerr << static_cast<u16>(sk[i*w+j]) << ' ';
-    std::cerr << "\n-------------------------------------------\n";
+      std::cerr << static_cast<u16>(readCell(i*w+j)) << ' ';
+    std::cerr << "\n------------------------------------\n";
   }
-
-//  for (u32 i=0; i!=d; i++) {
-//    for (u32 j=0; j!=w; j++)
-//      std::cerr << sk[i][j] << ' ';
-//    std::cerr << "\n";
-//  }
-
-//  for (u32 j=0; j!=w; j++)
-//    std::cerr << sk[0][j] << ' ';
-//  std::cerr << "\n";
 }

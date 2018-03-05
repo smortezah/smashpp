@@ -25,35 +25,14 @@ int main (int argc, char* argv[])
 {
   CMLS m;
   
-//  for (int i = 0; i<16385; ++i) {
-    m.update(3);
+//  for (int i = 0; i<10000000000; ++i) {
+//    m.update(i);
 //  }
-  m.printSketch();
-  
-  
-  
-//  constexpr u8 data[1]={18};
-//  constexpr u8 c[2][19]={{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
-//                         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}};
-//  for (int i = 0; i<2100000000; ++i) {
-//    int a = (int)c[1%2][data[1>>1]];
-//  }
-  
-//  constexpr u8 msk=0xF;
-//  for (int i = 0; i<2200000000; ++i) {
-//    int a = (int) (data[1>>1]>>(4*1)) & msk;
-//  }
-
-
-//  for (int i = 0; i<100000000; i++)
-//    m.update(i, 1);
-//  for (int i = 0; i<500000000; i++)
-//    m.update(i, 1);
+////  m.update(3);
+////  m.printSketch();
 //
-//  m.printSketch();
-////  std::cerr << m.estimate(200);
-////  std::cerr << m.getTotal();
-
+//  cout << m.countEmptyCells() << '\n';
+//  cout << (int) m.maxSketchVal();
   
   
 
@@ -89,7 +68,7 @@ int main (int argc, char* argv[])
 ////    e=t1-t0;
 ////    cerr << "in " << std::fixed << setprecision(3)<< e.count() << " seconds.\n";
 //
-////    delete m;
+//    delete m;
 //  }
 //  catch (...) { return EXIT_FAILURE; }
   

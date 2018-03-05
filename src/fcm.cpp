@@ -29,7 +29,7 @@ void FCM::buildModel (const Param& p) {
   cerr << "Building models...\n";
   
   switch (p.mode) {
-    case 't':
+    case 't':    // Table
       tbl = new double[TAB_COL*maxPV];
       for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
         tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
@@ -61,8 +61,11 @@ void FCM::buildModel (const Param& p) {
         }
       }
       break;
+  
+    case 's':    // Sketch
+      break;
 
-    case 'h':
+    case 'h':    // Hash table todo.remove
       ctx   = 0;
       ctxIR = maxPV-1;
       // Fill tbl by no. occurrences of symbols A,sk,N,G,T
