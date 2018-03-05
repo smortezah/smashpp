@@ -21,12 +21,12 @@ class CMLS    // Count-min-log sketch
  private:
   u64 w;                          // Width of sketch
   u8  d;                          // Depth of sketch
-  vector<array<u64,2>> ab;        // Coefficients of hash functions
+  vector<u64> ab;        // Coefficients of hash functions
   u8  uhashShift;                 // Universal hash shift. G-M in (a*x+b)>>(G-M)
-  vector<vector<u8>>  sk;        // Sketch
+  vector<u8> sk;        // Sketch
   u64 tot;       // Total # elements so far
   
-  u8   readCell (u8, u64) const;     // Read each cell of the sketch
+  u8   readCell (u64) const;     // Read each cell of the sketch
   bool incDecision (u8);         // Increase decision
   void setAB ();                  // Set coeffs a, b of hash funcs (a*x+b) %P %w
   u64  hash (u8, u64) const;

@@ -9,9 +9,10 @@ CMLS::CMLS () {
   w = DEF_W;    // w=[e/eps].      0 < eps:   error factor      < 1
   d = DEF_D;    // d=[ln 1/delta]. 0 < delta: error probability < 1
   tot = 0;
-  sk.resize(d, vector<u8>(w));
+//  sk.resize(d, vector<u8>(w));
+  sk.resize((d*w+1)>>1);
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
-  ab.reserve(d);
+  ab.reserve(d<<1);
   setAB();
 }
 
@@ -20,9 +21,8 @@ void CMLS::update (u64 ctx) {
   if (incDecision(c)) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
-      if (sk[i][cellIdx] == c)    // Conservative update
-//        sk[i][cellIdx] = INC[c]
-;
+      if (readCell(cellIdx) == c)    // Conservative update
+        sk[cellIdx>>1] = INC_CTR[cellIdx&1][sk[cellIdx>>1]];
     }
   }
 }
@@ -30,16 +30,15 @@ void CMLS::update (u64 ctx) {
 inline u8 CMLS::minLogCount (u64 ctx) const {
   u8 min = std::numeric_limits<u8>::max();
   for (u8 i=0; i!=d && min!=0; i++) {
-    auto lg = readCell(i, hash(i,ctx));
-//    auto lg = sk[i][hash(i,ctx)];
+    auto lg = readCell(hash(i,ctx));
     if (lg < min)
       min = lg;
   }
   return min;
 }
 
-inline u8 CMLS::readCell(u8 i, u64 cell_idx) const {
-//  return logCounter[cell_idx % 4][sk[i][cell_idx >> 1]];
+inline u8 CMLS::readCell(u64 idx) const {
+  return CTR[idx&1][sk[idx>>1]];
 }
 
 inline bool CMLS::incDecision (u8 c) {
@@ -47,8 +46,7 @@ inline bool CMLS::incDecision (u8 c) {
 }
 
 inline u64 CMLS::hash (u8 i, u64 ctx) const {
-  return (ab[i][0]*ctx + ab[i][1]) >> uhashShift;
-//  return i*w + ((ab[i][0]*ctx + ab[i][1]) >> uhashShift);
+  return i*w + ((ab[i<<1]*ctx + ab[i<<1+1]) >> uhashShift);
 }
 
 inline void CMLS::setAB () {
@@ -57,8 +55,8 @@ inline void CMLS::setAB () {
   std::uniform_int_distribution<u64> uDistA(0, (1ull<<63)-1);     // k <= 2^63-1
   std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
   for (u8 i=0; i!=d; ++i) {
-    ab[i][0] = (uDistA(e)<<1) + 1;   // 1 <= a=2k+1 <= 2^64-1, rand odd positive
-    ab[i][1] = uDistB(e);            // 0 <= b <= 2^(G-M)-1,   rand positive
+    ab[i<<1]   = (uDistA(e)<<1) + 1; // 1 <= a=2k+1 <= 2^64-1, rand odd positive
+    ab[i<<1+1] = uDistB(e);          // 0 <= b <= 2^(G-M)-1,   rand positive
   }
 }
 

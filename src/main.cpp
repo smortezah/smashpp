@@ -25,12 +25,26 @@ int main (int argc, char* argv[])
 {
   CMLS m;
   
-  for (int i = 0; i<16385; ++i) {
-    m.update(3);
-  }
-  m.printSketch();
-//  cout<<"---------------------------\n";
+//  for (int i = 0; i<16385; ++i) {
+//    m.update(3);
+//  }
+//  m.printSketch();
   
+  
+  
+//  constexpr u8 data[1]={18};
+//  constexpr u8 c[2][19]={{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
+//                         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}};
+//  for (int i = 0; i<2100000000; ++i) {
+//    int a = (int)c[1%2][data[1>>1]];
+//  }
+  
+//  constexpr u8 msk=0xF;
+//  for (int i = 0; i<2200000000; ++i) {
+//    int a = (int) (data[1>>1]>>(4*1)) & msk;
+//  }
+
+
 //  for (int i = 0; i<100000000; i++)
 //    m.update(i, 1);
 //  for (int i = 0; i<500000000; i++)
