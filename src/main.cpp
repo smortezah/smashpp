@@ -26,9 +26,9 @@ int main (int argc, char* argv[])
   CMLS m;
   
 //  for (int i = 0; i<16385; ++i) {
-//    m.update(3);
+    m.update(3);
 //  }
-//  m.printSketch();
+  m.printSketch();
   
   
   
