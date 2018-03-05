@@ -127,7 +127,8 @@ void Param::setModelPar (const string& m) {
   
   // 6*(5^k_1 + 5^k_2 + ...) > 6*5^12 => mode: hash table='h'
   u64 sum=0;  for (u8 i=0; i!=nMdl; ++i) sum+=POW5[k[i]];
-  mode = (sum > POW5[TAB_MAX_K]) ? 'h' : 't';
+//  mode = (sum > POW5[TAB_MAX_K]) ? 'h' : 't';
+  mode = 's';//todo. change
 }
 
 inline void Param::help () const {

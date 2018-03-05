@@ -7,7 +7,8 @@
 
 #include "def.hpp"
 using std::vector;
-using std::array;
+using std::ifstream;
+using std::ofstream;
 
 class CMLS    // Count-min-log sketch
 {
@@ -16,6 +17,10 @@ class CMLS    // Count-min-log sketch
   void update (u64);              // Update sketch
   u16  query (u64) const;         // Query count of ctx
   u64  getTotal () const;         // Total count of all items in the sketch
+  u64  countEmptyCells () const;  // Number of empty cells in the sketch
+  u8   maxSketchVal () const;  // todo
+//	void dump (ofstream&) const;
+//	void load (ifstream&) const;
   void printSketch () const;
 
  private:
