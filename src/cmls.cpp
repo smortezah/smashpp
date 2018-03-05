@@ -9,7 +9,6 @@ CMLS::CMLS () {
   w = DEF_W;    // w=[e/eps].      0 < eps:   error factor      < 1
   d = DEF_D;    // d=[ln 1/delta]. 0 < delta: error probability < 1
   tot = 0;
-//  sk.resize(d, vector<u8>(w));
   sk.resize((d*w+1)>>1);
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
   ab.reserve(d<<1);
@@ -21,10 +20,12 @@ void CMLS::update (u64 ctx) {
   if (incDecision(c)) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
+      std::cout<<cellIdx<<' ';//todo
       if (readCell(cellIdx) == c)    // Conservative update
         sk[cellIdx>>1] = INC_CTR[cellIdx&1][sk[cellIdx>>1]];
     }
   }
+  std::cout<<'\n';//todo
 }
 
 inline u8 CMLS::minLogCount (u64 ctx) const {
@@ -72,7 +73,7 @@ u64 CMLS::getTotal () const {
 void CMLS::printSketch () const {
   for (auto i=0; i!=d; i++) {
     for (auto j=0; j!=w; j++)
-      std::cerr << static_cast<u16>(sk[i][j]) << ' ';
+      std::cerr << static_cast<u16>(sk[i*w+j]) << ' ';
     std::cerr << "\n-------------------------------------------\n";
   }
 
