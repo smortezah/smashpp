@@ -17,8 +17,8 @@ CMLS::CMLS () {
 }
 
 void CMLS::update (u64 ctx) {
-  auto c = minLogCount(ctx);
-  if (incDecision(c)) {
+  auto c = minLogCtr(ctx);
+  if (incDecide(c)) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
       if (readCell(cellIdx) == c)    // Conservative update
@@ -27,7 +27,7 @@ void CMLS::update (u64 ctx) {
   }
 }
 
-inline u8 CMLS::minLogCount (u64 ctx) const {
+inline u8 CMLS::minLogCtr (u64 ctx) const {
   u8 min = std::numeric_limits<u8>::max();
   for (u8 i=0; i!=d && min!=0; i++) {
     auto lg = readCell(hash(i,ctx));
@@ -41,7 +41,7 @@ inline u8 CMLS::readCell(u64 idx) const {
   return CTR[idx&1][sk[idx>>1]];
 }
 
-inline bool CMLS::incDecision (u8 c) {
+inline bool CMLS::incDecide (u8 c) {
   return !(tot++ % POW2[c]); //todo. base 2
 }
 
@@ -61,7 +61,7 @@ inline void CMLS::setAB () {
 }
 
 u16 CMLS::query (u64 ctx) const {
-  auto c = minLogCount(ctx);
+  auto c = minLogCtr(ctx);
   return static_cast<u16>(POW2[c]-1);  //todo. base 2. otherwise (b^c-1)/(b-1)
 }
 
@@ -69,7 +69,7 @@ u64 CMLS::getTotal () const {
   return tot;
 }
 
-u64 CMLS::countEmptyCells () const {
+u64 CMLS::countMty () const {
   u64 n = 0;
   for (auto i=w*d; i--;) {
     if (readCell(i) == 0)
@@ -78,7 +78,7 @@ u64 CMLS::countEmptyCells () const {
 	return n;
 }
 
-u8 CMLS::maxSketchVal () const {
+u8 CMLS::maxSkVal () const {
   u8 c = 0;
   for (auto i=w*d; i--;) {
     if (readCell(i) > c)
@@ -87,16 +87,16 @@ u8 CMLS::maxSketchVal () const {
 	return c;
 }
 
-//void CMLS::dump (ofstream& ofs) const {
-//	ofs.write((const char*) &sk[0], sk.size());
-////  ofs.close();
-//}
-//
-//void CMLS::load (ifstream& ifs) const {
-//	ifs.read((char*) &sk[0], sk.size());
-//}
+void CMLS::dump (ofstream& ofs) const {
+	ofs.write((const char*) &sk[0], sk.size());
+//  ofs.close();
+}
 
-void CMLS::printSketch () const {
+void CMLS::load (ifstream& ifs) const {
+	ifs.read((char*) &sk[0], sk.size());
+}
+
+void CMLS::printSk () const {
   for (auto i=0; i!=d; i++) {
     for (auto j=0; j!=w; j++)
       std::cerr << static_cast<u16>(readCell(i*w+j)) << ' ';
