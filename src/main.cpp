@@ -25,17 +25,16 @@ int main (int argc, char* argv[])
 {
   CMLS m;
   
-//  for (int i = 0; i<10000000000; ++i) {
-//    m.update(i);
-//  }
-////  m.update(3);
-////  m.printSketch();
-//
-//  cout << m.countEmptyCells() << '\n';
-//  cout << (int) m.maxSketchVal();
-  
-  
+  for (int i = 0; i<5; ++i) {
+    m.update(i);
+  }
+//  m.update(3);
+  m.printSk();
 
+  cout << m.countMty() << '\n';
+  cout << (int) m.maxSkVal();
+  
+  
 
 //  try {
 //    Param p;
