@@ -26,7 +26,7 @@ int main (int argc, char* argv[])
   CMLS m;
   
   for (u64 i = 0; i<2147483648; ++i) {//2^31
-//  for (int i = 0; i<1073741824; ++i) {
+//  for (u64 i = 0; i<10; ++i) {
     m.update(i);
   }
 //  m.update(3);
