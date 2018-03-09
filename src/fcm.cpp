@@ -23,90 +23,82 @@ void FCM::buildModel (const Param& p) {
   u64      ctxIR;              // Inverted repeat context (integer)
   u8       curr;               // Current symbol (integer)
   u64      ctxIRCurr;          // Concat IR context - current symbol
+  double   a=p.alpha[0], sa=ALPH_SZ*a;//todo. change alpha[0]
   ifstream rf;                 // Ref file
   char     c;                  // To read from ref file
-  double   a=p.alpha[0], sa=ALPH_SZ*a;//todo. change alpha[0]
   rf.open(p.ref);
   cerr << "Building models...\n";
   
-  switch (p.mode) {
-    case 't':    // Table
-      tbl = new double[TAB_COL*maxPV];
-      for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
-        tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
-      }
-      ctx   = 0;
-      ctxIR = maxPV-1;
-      // Fill tbl by no. occurrences of symbols A,C,N,G,T
-      while (rf.get(c)) {
-        if (c != '\n') {
-          curr = NUM[c];
-          u64 rowIdx;
-          // Inverted repeats
-          if (p.ir[0]) {//todo. change ir[0]
-            ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
-            ctxIR     = ctxIRCurr/ALPH_SZ;      // Update ctxIR
-            rowIdx    = ctxIR*TAB_COL;
-            ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
-            ++tbl[rowIdx+ALPH_SZ];              // 'sum' col
-          }
-          
-          rowIdx = ctx*TAB_COL;
-          ++tbl[rowIdx+curr];
-          ++tbl[rowIdx+ALPH_SZ];
-          // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
-          ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
-//          ctx = (ctx*ALPH_SZ)%maxPV + curr;             // Fastest
-//          ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
-//          ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
+  // Table
+  if (p.mode == 't') {
+    tbl = new double[TAB_COL*maxPV];
+    for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
+      tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
+    }
+    ctx   = 0;
+    ctxIR = maxPV-1;
+    // Fill tbl by no. occurrences of symbols A,C,N,G,T
+    while (rf.get(c)) {
+      if (c != '\n') {
+        curr = NUM[c];
+        u64 rowIdx;
+        
+        // Inverted repeats
+        if (p.ir[0]) {//todo. change ir[0]
+          ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
+          ctxIR     = ctxIRCurr/ALPH_SZ;      // Update ctxIR
+          rowIdx    = ctxIR*TAB_COL;
+          ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
+          ++tbl[rowIdx+ALPH_SZ];              // 'sum' col
         }
+    
+        rowIdx = ctx*TAB_COL;
+        ++tbl[rowIdx+curr];
+        ++tbl[rowIdx+ALPH_SZ];
+        // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
+        ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
+//        ctx = (ctx*ALPH_SZ)%maxPV + curr;             // Fastest
+//        ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
+//        ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
       }
-      break;
-  
-    case 's':    // Sketch
-      CMLS sk;
-      maxPV = POW4[p.k[0]+1];
-//      tbl = new double[TAB_COL*maxPV];
-//      for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
-//        tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
-//      }
-      ctx = 0;
-      // Fill tbl by no. occurrences of symbols A,C,N,G,T
-      while (rf.get(c)) {
-        if (c != '\n') {
-          curr = NUM[c];
-          u64 rowIdx;
-          
-          rowIdx = ctx*TAB_COL;
-          ++tbl[rowIdx+curr];
-          // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
-          ctx = (ctx*ALPH_SZ)%maxPV + curr;             // Fastest
-        }
-      }
-      break;
-
-    case 'h':    // Hash table todo.remove
-      ctx   = 0;
-      ctxIR = maxPV-1;
-      // Fill tbl by no. occurrences of symbols A,sk,N,G,T
-      while (rf.get(c)) {
-        if (c!='\n') {
-          curr = NUM[c];
-          // Inverted repeats
-          if (p.ir[0]) {//todo. change ir[0]
-            ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
-            ctxIR     = ctxIRCurr/ALPH_SZ;       // Update ctxIR
-            ++htbl[ctxIR][ctxIRCurr%ALPH_SZ];
-          }
-
-          ++htbl[ctx][curr];
-          ctx = (ctx*ALPH_SZ)%maxPV + curr;        // Update ctx
-        }
-      }
-      break;
-      
-    default:  cerr << "Error.\n";  break;
+    }
   }
+  // Sketch
+  else if (p.mode == 's') {
+    CMLS sk;
+    ctx = 0;
+    auto mask = static_cast<u64>(std::pow(4, p.k[0]+1) - 1);
+    // Fill the sketch by no. occurrences of A,C,G,T
+    while (rf.get(c)) {
+      if (c != '\n') {
+        ctx = (ctx<<2) & mask + NUM[c];    // Update ctx
+        sk.update(ctx);
+      }
+    }
+  }
+  // Hash table
+  else if (p.mode == 'h') { //todo. remove
+    ctx   = 0;
+    ctxIR = maxPV-1;
+    // Fill tbl by no. occurrences of symbols A,sk,N,G,T
+    while (rf.get(c)) {
+      if (c!='\n') {
+        curr = NUM[c];
+        // Inverted repeats
+        if (p.ir[0]) {//todo. change ir[0]
+          ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
+          ctxIR     = ctxIRCurr/ALPH_SZ;       // Update ctxIR
+          ++htbl[ctxIR][ctxIRCurr%ALPH_SZ];
+        }
+      
+        ++htbl[ctx][curr];
+        ctx = (ctx*ALPH_SZ)%maxPV + curr;        // Update ctx
+      }
+    }
+  }
+  else
+    cerr << "Error.\n";
+  
   rf.close();
   cerr << "Models built ";
 }
