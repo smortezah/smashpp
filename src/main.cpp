@@ -15,28 +15,35 @@
 //#include "def.hpp"
 #include "par.hpp"
 #include "fcm.hpp"
-#include "cmls.hpp"
+//#include "cmls.hpp"
 using std::cout;
 using std::chrono::high_resolution_clock;
 using std::setprecision;
 
 
+//#include <tgmath.h>
 int main (int argc, char* argv[])
 {
-  CMLS m;
-  
-  for (u64 i=0; i<20000000; ++i) {//2^31
-//  for (u64 i=0; i<10; ++i) {
-    m.update(i);
-  }
+//  for (u64 i = 0; i<65; ++i) {
+//    auto q=static_cast<size_t>(std::pow(2,i));
+//    cout<<(q & q)<<",\n";
+//  }
+
+
+//  CMLS m;
+//
+//  for (u64 i=0; i<20000000; ++i) {//2^31
+////  for (u64 i=0; i<10; ++i) {
+//    m.update(i);
+//  }
 ////  m.update(3);
 ////  m.printSk();
 //
 ////  cout << m.countMty() << '\n';
 ////  cout << (int) m.maxSkVal();
   
-  
 
+  
   try {
     Param p;
     p.parse(argc, argv);
