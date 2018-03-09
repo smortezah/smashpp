@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cmath>
 #include "fcm.hpp"
+#include "cmls.hpp"
 using std::ifstream;
 using std::cout;
 using std::array;
@@ -63,6 +64,25 @@ void FCM::buildModel (const Param& p) {
       break;
   
     case 's':    // Sketch
+      CMLS sk;
+      maxPV = POW4[p.k[0]+1];
+//      tbl = new double[TAB_COL*maxPV];
+//      for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
+//        tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
+//      }
+      ctx = 0;
+      // Fill tbl by no. occurrences of symbols A,C,N,G,T
+      while (rf.get(c)) {
+        if (c != '\n') {
+          curr = NUM[c];
+          u64 rowIdx;
+          
+          rowIdx = ctx*TAB_COL;
+          ++tbl[rowIdx+curr];
+          // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
+          ctx = (ctx*ALPH_SZ)%maxPV + curr;             // Fastest
+        }
+      }
       break;
 
     case 'h':    // Hash table todo.remove
