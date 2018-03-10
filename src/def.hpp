@@ -24,6 +24,13 @@ typedef signed long long    i64;
 typedef unsigned long long  u64;
 typedef std::chrono::duration<double>  dur_t;
 
+// Metaprogram
+// Power a^n
+constexpr u64 sqr (u64 a) { return a * a; }
+constexpr u64 power (u64 a, u64 n) {
+  return n==0 ? 1 : sqr(power(a, n>>1)) * (n&1 ? a : 1);
+}
+
 // Constant
 constexpr u8  DEF_THR   = 1;     // Default # threads
 constexpr u8  TAB_COL   = 6;     // LogInt columns
@@ -33,7 +40,7 @@ constexpr u8  IR_MAGIC  = 4;
 //constexpr u8  TAB_MAX_K = 12;    // Max ctx depth to build table
 constexpr u8  TAB_MAX_K = 11;    // Max ctx depth to build table
 constexpr u32 BLK_SZ    = 8192;  // 8K
-constexpr u64 DEF_W     = 4294967296; // Default width of CML sketch (2^...)
+constexpr u64 DEF_W     = power(2,32); // Default width of CML sketch (2^...)
 constexpr u8  DEF_D     = 3;     // Default depth of CML sketch
 constexpr u32 G         = 64;    // Machine word size - for universal hash fn
 constexpr u8  LOG_BASE  = 2;     // Logarithmic counting
@@ -180,6 +187,7 @@ constexpr u8 REV[123] {    // a,A->T  c,C->G  g,G->C  t,T->A
 //  0, 0, 0,'C',  0,  0, 0,  0, 0, 0,'N',  0, 0, 0, 0, 0,'A',  0,  0,  0,
 //  0, 0, 0
 //};
+
 
 //template<u32 N>    // Up to 262144=2^18 elements
 //struct LogInt      // 0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,...

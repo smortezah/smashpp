@@ -21,15 +21,8 @@ using std::chrono::high_resolution_clock;
 using std::setprecision;
 
 
-//#include <tgmath.h>
 int main (int argc, char* argv[])
 {
-//  for (u64 i = 0; i<65; ++i) {
-//    auto q=static_cast<size_t>(std::pow(2,i));
-//    cout<<(q & q)<<",\n";
-//  }
-
-
 //  CMLS m;
 //
 //  for (u64 i=0; i<20000000; ++i) {//2^31
@@ -41,9 +34,8 @@ int main (int argc, char* argv[])
 //
 ////  cout << m.countMty() << '\n';
 ////  cout << (int) m.maxSkVal();
-  
 
-  
+
   try {
     Param p;
     p.parse(argc, argv);
@@ -78,6 +70,6 @@ int main (int argc, char* argv[])
     delete m;
   }
   catch (...) { return EXIT_FAILURE; }
-  
+
   return 0;
 }

@@ -71,7 +71,7 @@ void FCM::buildModel (const Param& p) {
     // Fill the sketch by no. occurrences of A,C,G,T
     while (rf.get(c)) {
       if (c != '\n') {
-        ctx = (ctx<<2) & mask + NUM[c];    // Update ctx
+        ctx = ((ctx<<2) & mask) | NUM[c];    // Update ctx
         sk.update(ctx);
       }
     }
