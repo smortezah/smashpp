@@ -5,12 +5,17 @@
 #include <random>
 #include <fstream>
 #include "cmls.hpp"
+using std::cerr;
 
 CMLS::CMLS () {
   w = DEF_W;    // w=[e/eps].      0 < eps:   error factor      < 1
   d = DEF_D;    // d=[ln 1/delta]. 0 < delta: error probability < 1
   tot = 0;
-  sk.resize((d*w+1)>>1);
+  try { sk.resize((d*w+1)>>1); }
+  catch (std::bad_alloc& b) {
+    cerr << "Error: failed memory allocation.";
+    throw EXIT_FAILURE;
+  }
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
   ab.reserve(d<<1);
   setAB();
@@ -99,7 +104,7 @@ void CMLS::load (ifstream& ifs) const {
 void CMLS::printSk () const {
   for (auto i=0; i!=d; i++) {
     for (auto j=0; j!=w; j++)
-      std::cerr << static_cast<u16>(readCell(i*w+j)) << ' ';
-    std::cerr << "\n------------------------------------\n";
+      cerr << static_cast<u16>(readCell(i*w+j)) << ' ';
+    cerr << "\n------------------------------------\n";
   }
 }
