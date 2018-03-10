@@ -22,7 +22,7 @@ class CMLS    // Count-min-log sketch
 	void dump      (ofstream&) const;
 	void load      (ifstream&) const;
   void printSk   ()          const;
-
+  
  private:
   u64         w;                    // Width of sketch
   u8          d;                    // Depth of sketch
@@ -34,7 +34,7 @@ class CMLS    // Count-min-log sketch
   u8   readCell  (u64)       const; // Read each cell of the sketch
   bool incDecide (u8);              // Increase decision
   void setAB     ();                // Set coeffs a, b of hash fns (a*x+b) %P %w
-  u64  hash      (u8, u64)   const;
+  u64  hash      (u8, u64)   const; // MUST provide pairwise independence
   u8   minLogCtr (u64)       const; // Find min log value in the sketch
 };
 
