@@ -51,6 +51,10 @@ int main (int argc, char* argv[])
     auto t0 = high_resolution_clock::now();    // Start time
 //    m[0].buildModel(p);
     m->buildModel(p);
+    //todo test
+    
+    
+    
     auto t1 = high_resolution_clock::now();    // Finish time
     dur_t e = t1-t0;                           // Elapsed time
     cerr << "in " << std::fixed << setprecision(3)<< e.count() << " seconds.\n";

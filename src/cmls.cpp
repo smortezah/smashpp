@@ -50,7 +50,7 @@ inline bool CMLS::incDecide (u8 c) {
   return !(tot++ % POW2[c]); //todo. base 2
 }
 
-inline u64 CMLS::hash (u8 i, u64 ctx) const {
+inline u64 CMLS::hash (u8 i, u64 ctx) const {    // Strong 2-universal
   return i*w + ((ab[i<<1]*ctx + ab[i<<1+1]) >> uhashShift);
 }
 
