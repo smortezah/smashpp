@@ -36,11 +36,12 @@ constexpr u8  DEF_THR   = 1;     // Default # threads
 constexpr u8  TAB_COL   = 6;     // LogInt columns
 constexpr u8  ALPH_SZ   = 4;     // Alphabet size
 //constexpr u8  ALPH_SZ   = 5;     // Alphabet size
-constexpr u8  IR_MAGIC  = 4;
+//constexpr u8  IR_MAGIC  = 4;
+constexpr u8  IRMAGIC  = 3;
 //constexpr u8  TAB_MAX_K = 12;    // Max ctx depth to build table
 constexpr u8  TAB_MAX_K = 11;    // Max ctx depth to build table
 constexpr u32 BLK_SZ    = 8192;  // 8K
-constexpr u64 DEF_W     = power(2,3); // Default width of CML sketch (2^...)
+constexpr u64 DEF_W     = power(2,20); // Default width of CML sketch (2^...)
 constexpr u8  DEF_D     = 4;     // Default depth of CML sketch
 constexpr u32 G         = 64;    // Machine word size - for universal hash fn
 constexpr u8  LOG_BASE  = 2;     // Logarithmic counting
@@ -160,15 +161,24 @@ constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3
   0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0,
   0, 0, 0
 };
-constexpr u8 REV[123] {    // a,A->T  c,C->G  g,G->C  t,T->A
+constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,  0, 0,  0,     // #20
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,  0, 0,  0,
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,  0, 0,  0,
-  0, 0, 0,  0,  0,'T', 0,'G', 0, 0, 0,'C', 0, 0, 0, 0,  0,  0, 0,  0,
-  0, 0, 0,  0,'A',  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,'T', 0,'G',
-  0, 0, 0,'C',  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,'A',  0, 0,  0,
+  0, 0, 0,  0,  0, 84, 0, 71, 0, 0, 0, 67, 0, 0, 0, 0,  0,  0, 0,  0,
+  0, 0, 0,  0, 65,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 84, 0, 71,
+  0, 0, 0, 67,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0, 65,  0, 0,  0,
   0, 0, 0
 };
+//constexpr u8 REV[123] {    // a,A->T  c,C->G  g,G->C  t,T->A
+//  0, 0, 0,  0,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,  0, 0,  0,     // #20
+//  0, 0, 0,  0,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,  0, 0,  0,
+//  0, 0, 0,  0,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,  0, 0,  0,
+//  0, 0, 0,  0,  0,'T', 0,'G', 0, 0, 0,'C', 0, 0, 0, 0,  0,  0, 0,  0,
+//  0, 0, 0,  0,'A',  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,'T', 0,'G',
+//  0, 0, 0,'C',  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,'A',  0, 0,  0,
+//  0, 0, 0
+//};
 //constexpr u8 NUM[123] {    // a,A=0  c,C=1  n,N=2  g,G=3  t,T=4
 //  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,             // #20
 //  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

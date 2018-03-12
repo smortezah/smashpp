@@ -51,7 +51,7 @@ void FCM::buildModel (const Param& p) {
         
         // Inverted repeats
         if (p.ir[0]) {//todo. change ir[0]
-          ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
+          ctxIRCurr = ctxIR + (IRMAGIC-curr)*maxPV;
           ctxIR     = ctxIRCurr/ALPH_SZ;      // Update ctxIR
           rowIdx    = ctxIR*TAB_COL;
           ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
@@ -115,6 +115,7 @@ void FCM::compress (const Param& p) const {
   u8       curr;           // Current symbol (integer)
   u64      maxPV=POW5[p.k[0]];
   u64      ctx=0;          // Context(s) (integer) sliding through the dataset
+  u64      ctxIR=0;        // Inverted repeat context (integer)
   double   sEntr=0;        // Sum of entropies = sum( log_2 P(s|c^t) )
   u64      symsNo=0;       // No. syms in target file, except \n
   tf.open(p.tar);
@@ -134,34 +135,47 @@ void FCM::compress (const Param& p) const {
   }
   // Sketch
   else if (p.mode == 's') {
-    u64 ctx=0, ctxA=0, ctxC=0, ctxG=0, ctxT=0;
-    auto mask = static_cast<u64>((4<<(p.k[0]<<1)) - 1); // 4<<2k -1 = 4^(k+1) -1
+    u64 ctxA=0, ctxC=0, ctxG=0, ctxT=0;
+    u64 n=0, nA=0, nC=0, nG=0, nT=0;
+    auto shl = static_cast<u64>(2 * p.k[0]);    // 2*k
+    auto mask = static_cast<u64>((4<<shl) - 1); // 4<<2k -1 = 4^(k+1) -1
+    ctxIR = mask;
+    u64 ctxIRA=mask, ctxIRC=mask, ctxIRG=mask, ctxIRT=mask;
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
+        
+        // Inverted repeat
+        if (p.ir[0]) {//todo. change ir[0]
+          ctxIR  = (ctxIR>>2) | (IRMAGIC-NUM[c])<<shl;    // Update ctx
+          ctxIRA = (ctxIR>>2);
+          ctxIRC = (ctxIR>>2) | 1<<shl;
+          ctxIRG = (ctxIR>>2) | 2<<shl;
+          ctxIRT = (ctxIR>>2) | 3<<shl;
+          n  = skch->query(ctxIR);
+          nA = skch->query(ctxIRA);
+          nC = skch->query(ctxIRC);
+          nG = skch->query(ctxIRG);
+          nT = skch->query(ctxIRT);
+        }
+        
         ctx  = ((ctx<<2)  & mask) | NUM[c];    // Update ctx
         ctxA = ((ctxA<<2) & mask);
-        ctxC = ((ctxC<<2) & mask) | 1;
+        ctxC = ((ctxC<<2) & mask) | 1;    // 1 = NUM['C']
         ctxG = ((ctxG<<2) & mask) | 2;
         ctxT = ((ctxT<<2) & mask) | 3;
-        auto n   = skch->query(ctx);
-        auto nA  = skch->query(ctxA);
-        auto nC  = skch->query(ctxC);
-        auto nG  = skch->query(ctxG);
-        auto nT  = skch->query(ctxT);
-        auto sum = nA+nC+nG+nT;
-        auto lg  = log2(static_cast<double>(sum / n));
-        sEntr += lg;
-//        sEntr += log2(static_cast<double>(sum / n));
-//        sEntr += log2((double) (skch->query(ctxA) + skch->query(ctxC)
-//                                + skch->query(ctxG) + skch->query(ctxT))
-//                      / skch->query(ctx));
-        cout<<"nA="<<nA<<'\t'<<"nC="<<nC<<'\t'<<"nG="<<nG<<'\t'<<"nT="<<nT<<'\t'
-            <<"sum="<<sum<<'\n'
-            <<"lg2(sum/"<<c<<")="<<lg<<'\t'<<"sEntr="<<sEntr<<'\n';
+        n   += skch->query(ctx);
+        nA  += skch->query(ctxA);
+        nC  += skch->query(ctxC);
+        nG  += skch->query(ctxG);
+        nT  += skch->query(ctxT);
+        
+        sEntr += log2((nA+nC+nG+nT+sa) / (n+a));
+//        cout<<"nA="<<nA<<'\t'<<"nC="<<nC<<'\t'<<"nG="<<nG<<'\t'<<"nT="<<nT<<'\t'
+//            <<"sum="<<sum<<'\n'
+//            <<"sEntr="<<sEntr<<'\n';
       }
     }
-//    skch->printSk();
   }
   // Hash table
   else if (p.mode == 'h') { //todo. remove
