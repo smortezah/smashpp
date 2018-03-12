@@ -67,7 +67,8 @@ inline void CMLS::setAB () {
 
 u16 CMLS::query (u64 ctx) const {
   auto c = minLogCtr(ctx);
-  return static_cast<u16>(POW2[c]-1);  //todo. base 2. otherwise (b^c-1)/(b-1)
+  return static_cast<u16>(POW2[c]-1); //todo. base 2. otherwise (b^c-1)/(b-1)
+//  return static_cast<u16>(power(2,c)-1);
 }
 
 u64 CMLS::getTotal () const {

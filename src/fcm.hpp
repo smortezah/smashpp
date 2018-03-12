@@ -6,12 +6,13 @@
 #define SMASHPP_FCM_HPP
 
 #include "par.hpp"
+#include "cmls.hpp"
 
 class FCM    // Finite-context model
 {
  public:
-//  explicit FCM      (const Param&);
-  FCM               () = default;
+  explicit FCM      (const Param&);
+//  FCM               () = default;
   ~FCM              ();
   void buildModel   (const Param&);          // Build FCM (finite-context model)
   void compress     (const Param&)  const;
@@ -21,6 +22,7 @@ class FCM    // Finite-context model
  private:
   double* tbl;
   htbl_t  htbl;
+  CMLS*   skch;
 };
 
 #endif //SMASHPP_FCM_HPP

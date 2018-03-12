@@ -5,16 +5,22 @@
 #include <fstream>
 #include <cmath>
 #include "fcm.hpp"
-#include "cmls.hpp"
+//#include "cmls.hpp"
 using std::ifstream;
 using std::cout;
 using std::array;
 
-//FCM::FCM (const Param& p)
-//{
-//}
+FCM::FCM (const Param& p) {
+  switch (p.mode) {
+    case 't':                      break;
+    case 's':  skch = new CMLS();  break;
+    default:                       break;
+  }
+}
+
 FCM::~FCM () {
-  delete tbl;
+//  delete tbl;
+  delete skch;
 }
 
 void FCM::buildModel (const Param& p) {
@@ -65,36 +71,35 @@ void FCM::buildModel (const Param& p) {
   }
   // Sketch
   else if (p.mode == 's') {
-    CMLS sk;
     ctx = 0;
-    auto mask = static_cast<u64>(std::pow(4, p.k[0]+1) - 1);
+    auto mask = static_cast<u64>((4<<(p.k[0]<<1)) - 1); // 4<<2k -1 = 4^(k+1) -1
     // Fill the sketch by no. occurrences of A,C,G,T
     while (rf.get(c)) {
       if (c != '\n') {
         ctx = ((ctx<<2) & mask) | NUM[c];    // Update ctx
-        sk.update(ctx);
+        skch->update(ctx);
       }
     }
   }
   // Hash table
   else if (p.mode == 'h') { //todo. remove
-    ctx   = 0;
-    ctxIR = maxPV-1;
-    // Fill tbl by no. occurrences of symbols A,sk,N,G,T
-    while (rf.get(c)) {
-      if (c!='\n') {
-        curr = NUM[c];
-        // Inverted repeats
-        if (p.ir[0]) {//todo. change ir[0]
-          ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
-          ctxIR     = ctxIRCurr/ALPH_SZ;       // Update ctxIR
-          ++htbl[ctxIR][ctxIRCurr%ALPH_SZ];
-        }
-      
-        ++htbl[ctx][curr];
-        ctx = (ctx*ALPH_SZ)%maxPV + curr;        // Update ctx
-      }
-    }
+//    ctx   = 0;
+//    ctxIR = maxPV-1;
+//    // Fill tbl by no. occurrences of symbols A,sk,N,G,T
+//    while (rf.get(c)) {
+//      if (c!='\n') {
+//        curr = NUM[c];
+//        // Inverted repeats
+//        if (p.ir[0]) {//todo. change ir[0]
+//          ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
+//          ctxIR     = ctxIRCurr/ALPH_SZ;       // Update ctxIR
+//          ++htbl[ctxIR][ctxIRCurr%ALPH_SZ];
+//        }
+//
+//        ++htbl[ctx][curr];
+//        ctx = (ctx*ALPH_SZ)%maxPV + curr;        // Update ctx
+//      }
+//    }
   }
   else
     cerr << "Error.\n";
@@ -104,19 +109,19 @@ void FCM::buildModel (const Param& p) {
 }
 
 void FCM::compress (const Param& p) const {
-//  double   a=p.alpha, sa=ALPH_SZ*a;
-//  ifstream tf;
-//  char     c;
-//  u8       curr;           // Current symbol (integer)
-//  u64      maxPV=POW5[p.k];
-//  u64      ctx=0;          // Context(s) (integer) sliding through the dataset
-//  double   sEntr=0;        // Sum of entropies = sum( log_2 P(s|c^t) )
-//  u64      symsNo=0;       // No. syms in target file, except \n
-//  tf.open(p.tar);
-//
-//  cerr << "Compressing...\n";
-//  switch (mode) {
-//    case 't':
+  double   a=p.alpha[0], sa=ALPH_SZ*a;
+  ifstream tf;
+  char     c;
+  u8       curr;           // Current symbol (integer)
+  u64      maxPV=POW5[p.k[0]];
+  u64      ctx=0;          // Context(s) (integer) sliding through the dataset
+  double   sEntr=0;        // Sum of entropies = sum( log_2 P(s|c^t) )
+  u64      symsNo=0;       // No. syms in target file, except \n
+  tf.open(p.tar);
+  
+  cerr << "Compressing...\n";
+  // Table
+  if (p.mode == 't') {
 //      while (tf.get(c)) {
 //        if (c!='\n') {
 //          ++symsNo;
@@ -126,34 +131,62 @@ void FCM::compress (const Param& p) const {
 //          ctx        = (rowIdx-ctx)%maxPV + curr;    // Update ctx
 //        }
 //      }
-//      break;
-//
-//    case 'h':
-//      while (tf.get(c)) {
-//        if (c!='\n') {
-//          ++symsNo;
-//          curr    = NUM[c];
-//          auto hi = htbl.find(ctx);
-//          if (hi!=htbl.end()) {
-//            auto ar = hi->second;
-//            u64 sum=0;    for (const auto &e : ar)  sum+=e;
-//            sEntr += log2((sum+sa)/(ar[curr]+a));
-//          }
-//          else {
-//            sEntr += log2(ALPH_SZ);
-//          }
-//          ctx = (ctx*ALPH_SZ)%maxPV + curr;    // Update ctx
+  }
+  // Sketch
+  else if (p.mode == 's') {
+    u64 ctx=0, ctxA=0, ctxC=0, ctxG=0, ctxT=0;
+    auto mask = static_cast<u64>((4<<(p.k[0]<<1)) - 1); // 4<<2k -1 = 4^(k+1) -1
+    while (tf.get(c)) {
+      if (c != '\n') {
+        ++symsNo;
+        ctx  = ((ctx<<2)  & mask) | NUM[c];    // Update ctx
+        ctxA = ((ctxA<<2) & mask);
+        ctxC = ((ctxC<<2) & mask) | 1;
+        ctxG = ((ctxG<<2) & mask) | 2;
+        ctxT = ((ctxT<<2) & mask) | 3;
+        auto n   = skch->query(ctx);
+        auto nA  = skch->query(ctxA);
+        auto nC  = skch->query(ctxC);
+        auto nG  = skch->query(ctxG);
+        auto nT  = skch->query(ctxT);
+        auto sum = nA+nC+nG+nT;
+        auto lg  = log2(static_cast<double>(sum / n));
+        sEntr += lg;
+//        sEntr += log2(static_cast<double>(sum / n));
+//        sEntr += log2((double) (skch->query(ctxA) + skch->query(ctxC)
+//                                + skch->query(ctxG) + skch->query(ctxT))
+//                      / skch->query(ctx));
+        cout<<"nA="<<nA<<'\t'<<"nC="<<nC<<'\t'<<"nG="<<nG<<'\t'<<"nT="<<nT<<'\t'
+            <<"sum="<<sum<<'\n'
+            <<"lg2(sum/"<<c<<")="<<lg<<'\t'<<"sEntr="<<sEntr<<'\n';
+      }
+    }
+//    skch->printSk();
+  }
+  // Hash table
+  else if (p.mode == 'h') { //todo. remove
+//    while (tf.get(c)) {
+//      if (c!='\n') {
+//        ++symsNo;
+//        curr    = NUM[c];
+//        auto hi = htbl.find(ctx);
+//        if (hi!=htbl.end()) {
+//          auto ar = hi->second;
+//          u64 sum=0;    for (const auto &e : ar)  sum+=e;
+//          sEntr += log2((sum+sa)/(ar[curr]+a));
 //        }
+//        else {
+//          sEntr += log2(ALPH_SZ);
+//        }
+//        ctx = (ctx*ALPH_SZ)%maxPV + curr;    // Update ctx
 //      }
-//      break;
-//
-//    default:  cerr<<"Error.\n";  break;
-//  }
-//
-//  tf.close();
-//  double aveEntr = sEntr/symsNo;
-//  cerr << "Average Entropy (H) = " << aveEntr << '\n';
-//  cerr << "Compression finished ";
+//    }
+  }
+  
+  tf.close();
+  double aveEntr = sEntr/symsNo;
+  cerr << "Average Entropy (H) = " << aveEntr << '\n';
+  cerr << "Compression finished ";
 }
 
 void FCM::printTbl (const Param &p) const {
