@@ -135,42 +135,31 @@ void FCM::compress (const Param& p) const {
   }
   // Sketch
   else if (p.mode == 's') {
-    u64 ctxA=0, ctxC=0, ctxG=0, ctxT=0;
-    u64 n=0, nA=0, nC=0, nG=0, nT=0;
-    auto shl = static_cast<u64>(2 * p.k[0]);    // 2*k
+    std::array<u64, 4> vN{0}; // Vector of number of elements
+    auto shl  = static_cast<u64>(2 * p.k[0]);    // 2*k
     auto mask = static_cast<u64>((4<<shl) - 1); // 4<<2k -1 = 4^(k+1) -1
     ctxIR = mask;
-    u64 ctxIRA=mask, ctxIRC=mask, ctxIRG=mask, ctxIRT=mask;
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        
         // Inverted repeat
         if (p.ir[0]) {//todo. change ir[0]
-          ctxIR  = (ctxIR>>2) | (IRMAGIC-NUM[c])<<shl;    // Update ctx
-          ctxIRA = (ctxIR>>2);
-          ctxIRC = (ctxIR>>2) | 1<<shl;
-          ctxIRG = (ctxIR>>2) | 2<<shl;
-          ctxIRT = (ctxIR>>2) | 3<<shl;
-          n  = skch->query(ctxIR);
-          nA = skch->query(ctxIRA);
-          nC = skch->query(ctxIRC);
-          nG = skch->query(ctxIRG);
-          nT = skch->query(ctxIRT);
+          u64 r = ctxIR>>2;                  // Update ctx
+          vN[0] = skch->query(r | 3<<shl); // A
+          vN[1] = skch->query(r | 2<<shl); // C
+          vN[2] = skch->query(r | 1<<shl); // G
+          vN[3] = skch->query(r);          // T
+//          ctxIR  = (ctxIR>>2) | (IRMAGIC-NUM[c])<<shl;    // Update ctx
         }
         
-        ctx  = ((ctx<<2)  & mask) | NUM[c];    // Update ctx
-        ctxA = ((ctxA<<2) & mask);
-        ctxC = ((ctxC<<2) & mask) | 1;    // 1 = NUM['C']
-        ctxG = ((ctxG<<2) & mask) | 2;
-        ctxT = ((ctxT<<2) & mask) | 3;
-        n   += skch->query(ctx);
-        nA  += skch->query(ctxA);
-        nC  += skch->query(ctxC);
-        nG  += skch->query(ctxG);
-        nT  += skch->query(ctxT);
+        u64 l  = (ctx<<2) & mask;    // Update ctx
+        vN[0] += skch->query(l);     // A
+        vN[1] += skch->query(l | 1); // C
+        vN[2] += skch->query(l | 2); // G
+        vN[3] += skch->query(l | 3); // T
         
-        sEntr += log2((nA+nC+nG+nT+sa) / (n+a));
+        sEntr += log2((vN[0]+vN[1]+vN[2]+vN[3]+sa) / (vN[NUM[c]]+a));
+        
 //        cout<<"nA="<<nA<<'\t'<<"nC="<<nC<<'\t'<<"nG="<<nG<<'\t'<<"nT="<<nT<<'\t'
 //            <<"sum="<<sum<<'\n'
 //            <<"sEntr="<<sEntr<<'\n';
