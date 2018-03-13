@@ -14,6 +14,7 @@ class CMLS    // Count-min-log sketch
 {
  public:
   CMLS           ();
+  CMLS           (u64, u8);
   void update    (u64);             // Update sketch
   u16  query     (u64)       const; // Query count of ctx
   u64  getTotal  ()          const; // Total count of all items in the sketch
