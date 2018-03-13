@@ -7,9 +7,20 @@
 #include "cmls.hpp"
 using std::cerr;
 
-CMLS::CMLS () {
-  w = DEF_W;    // w=[e/eps].      0 < eps:   error factor      < 1
-  d = DEF_D;    // d=[ln 1/delta]. 0 < delta: error probability < 1
+// W=[e/eps].      0 < eps:   error factor      < 1
+// D=[ln 1/delta]. 0 < delta: error probability < 1
+CMLS::CMLS () : w(DEF_W), d(DEF_D) {
+  tot = 0;
+  try { sk.resize((d*w+1)>>1); }
+  catch (std::bad_alloc& b) {
+    cerr << "Error: failed memory allocation.";
+    throw EXIT_FAILURE;
+  }
+  uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
+  ab.reserve(d<<1);
+  setAB();
+}
+CMLS::CMLS (u64 w_, u8 d_) : w(w_), d(d_) {
   tot = 0;
   try { sk.resize((d*w+1)>>1); }
   catch (std::bad_alloc& b) {
