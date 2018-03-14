@@ -12,11 +12,8 @@ class FCM    // Finite-context model
 {
  public:
   explicit FCM      (const Param&);
-//  FCM               () = default;
   ~FCM              ();
   void buildModel   (const Param&);          // Build FCM (finite-context model)
-//  void buildTable ();
-//  void buildSketch ();
   void compress     (const Param&)  const;
   void printTbl     (const Param&)  const;
   void printHashTbl ()              const;
@@ -25,6 +22,11 @@ class FCM    // Finite-context model
   double* tbl;
   htbl_t  htbl;
   CMLS*   skch;
+  
+//  void buildTbl ();
+//  void buildSkch ();
+//  void compressTbl ();
+//  void compressSkch ();
 };
 
 #endif //SMASHPP_FCM_HPP

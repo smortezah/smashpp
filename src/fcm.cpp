@@ -37,37 +37,37 @@ void FCM::buildModel (const Param& p) {
   
   // Table
   if (p.mode == 't') {
-    tbl = new double[TAB_COL*maxPV];
-    for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
-      tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
-    }
-    ctx   = 0;
-    ctxIR = maxPV-1;
-    // Fill tbl by no. occurrences of symbols A,C,N,G,T
-    while (rf.get(c)) {
-      if (c != '\n') {
-        curr = NUM[c];
-        u64 rowIdx;
-        
-        // Inverted repeats
-        if (p.ir[0]) {//todo. change ir[0]
-          ctxIRCurr = ctxIR + (IRMAGIC-curr)*maxPV;
-          ctxIR     = ctxIRCurr/ALPH_SZ;      // Update ctxIR
-          rowIdx    = ctxIR*TAB_COL;
-          ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
-          ++tbl[rowIdx+ALPH_SZ];              // 'sum' col
-        }
-    
-        rowIdx = ctx*TAB_COL;
-        ++tbl[rowIdx+curr];
-        ++tbl[rowIdx+ALPH_SZ];
-        // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
-        ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
-//        ctx = (ctx*ALPH_SZ)%maxPV + curr;             // Fastest
-//        ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
-//        ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
-      }
-    }
+//    tbl = new double[TAB_COL*maxPV];
+//    for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
+//      tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
+//    }
+//    ctx   = 0;
+//    ctxIR = maxPV-1;
+//    // Fill tbl by no. occurrences of symbols A,C,N,G,T
+//    while (rf.get(c)) {
+//      if (c != '\n') {
+//        curr = NUM[c];
+//        u64 rowIdx;
+//
+//        // Inverted repeats
+//        if (p.ir[0]) {//todo. change ir[0]
+//          ctxIRCurr = ctxIR + (IRMAGIC-curr)*maxPV;
+//          ctxIR     = ctxIRCurr/ALPH_SZ;      // Update ctxIR
+//          rowIdx    = ctxIR*TAB_COL;
+//          ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
+//          ++tbl[rowIdx+ALPH_SZ];              // 'sum' col
+//        }
+//
+//        rowIdx = ctx*TAB_COL;
+//        ++tbl[rowIdx+curr];
+//        ++tbl[rowIdx+ALPH_SZ];
+//        // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
+//        ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
+////        ctx = (ctx*ALPH_SZ)%maxPV + curr;             // Fastest
+////        ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
+////        ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
+//      }
+//    }
   }
   // Sketch
   else if (p.mode == 's') {
@@ -193,12 +193,12 @@ void FCM::compress (const Param& p) const {
 }
 
 void FCM::printTbl (const Param &p) const {
-  u64 rowSize = POW5[p.k[0]];//todo. change k[0]
-  for (u8 i=0; i!=rowSize; ++i) {
-    for (u8 j=0; j!=TAB_COL; ++j)
-      cerr << tbl[i*TAB_COL+j] << '\t';
-    cerr << '\n';
-  }
+//  u64 rowSize = POW5[p.k[0]];//todo. change k[0]
+//  for (u8 i=0; i!=rowSize; ++i) {
+//    for (u8 j=0; j!=TAB_COL; ++j)
+//      cerr << tbl[i*TAB_COL+j] << '\t';
+//    cerr << '\n';
+//  }
 }
 
 void FCM::printHashTbl () const {
