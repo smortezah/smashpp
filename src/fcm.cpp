@@ -11,11 +11,25 @@ using std::cout;
 using std::array;
 
 FCM::FCM (const Param& p) {
-  switch (p.mode) {
-    case 't':  tbl  = new Table();  break;
-    case 's':  skch = new CMLS();   break;
-    default:                        break;
-  }
+//  for (auto i=static_cast<char>(LEVEL[p.level][0]-1); i>=0; --i) {
+//    if (LEVEL[p.level][6*i+4] == 't') {
+//      cout << "t";
+//      tbl  = new Table();
+//      break;
+//    }
+//    else if (LEVEL[p.level][6*i+4] == 's') {
+//      cout << "s";
+//      skch = new CMLS();
+//      break;
+//    }
+//  }
+
+
+//  switch (p.mode) {
+//    case 't':  tbl  = new Table();  break;
+//    case 's':  skch = new CMLS();   break;
+//    default:                        break;
+//  }
 }
 
 FCM::~FCM () {
