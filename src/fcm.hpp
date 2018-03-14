@@ -6,6 +6,7 @@
 #define SMASHPP_FCM_HPP
 
 #include "par.hpp"
+#include "tbl.hpp"
 #include "cmls.hpp"
 
 class FCM    // Finite-context model
@@ -19,9 +20,9 @@ class FCM    // Finite-context model
   void printHashTbl ()              const;
   
  private:
-  double* tbl;
-  htbl_t  htbl;
-  CMLS*   skch;
+  Table* tbl;
+  CMLS*  skch;
+  htbl_t htbl;
   
 //  void buildTbl ();
 //  void buildSkch ();

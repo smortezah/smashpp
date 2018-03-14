@@ -197,9 +197,9 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 //  0, 0, 0,'C',  0,  0, 0,  0, 0, 0,'N',  0, 0, 0, 0, 0,'A',  0,  0,  0,
 //  0, 0, 0
 //};
-constexpr u8 LEVEL[1][4] {
-  // #models, ir0, k0, 100*alpha0, ir1, k1, 100*alpha1, ...
-  {1, 0, 10, 99}    // Level 0
+constexpr u8 LEVEL[1][7] {
+  // #models, ir, k, 100*alpha, mode, w, d
+  {1,0,10,99,'t',0,0}    // Level 0
 };
 
 

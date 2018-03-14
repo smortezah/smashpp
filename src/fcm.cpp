@@ -12,9 +12,9 @@ using std::array;
 
 FCM::FCM (const Param& p) {
   switch (p.mode) {
-    case 't':                      break;
-    case 's':  skch = new CMLS();  break;
-    default:                       break;
+    case 't':  tbl  = new Table();  break;
+    case 's':  skch = new CMLS();   break;
+    default:                        break;
   }
 }
 
