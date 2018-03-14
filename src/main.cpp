@@ -28,7 +28,7 @@ int main (int argc, char* argv[])
 //  }
 //  }
 //  t.printTbl();
-  
+  cout<<(int)*std::begin(LEVEL);
   
   
   try {
@@ -38,7 +38,7 @@ int main (int argc, char* argv[])
     
     // Build models
     auto t0 = high_resolution_clock::now();    // Start time
-    m->buildModel(p);
+//    m->buildModel(p);
     auto t1 = high_resolution_clock::now();    // Finish time
     dur_t e = t1-t0;                           // Elapsed time
     cerr << "in " << std::fixed << setprecision(3)<< e.count() << " seconds.\n";
