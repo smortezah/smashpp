@@ -199,7 +199,7 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 //};
 constexpr u8 LEVEL[1][4] {
   // #models, ir0, k0, 100*alpha0, ir1, k1, 100*alpha1, ...
-  {1, 0, 16, 99}    // Level 0
+  {1, 0, 10, 99}    // Level 0
 };
 
 
