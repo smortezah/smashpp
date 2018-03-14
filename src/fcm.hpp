@@ -27,6 +27,7 @@ class FCM    // Finite-context model
 //  void buildSkch ();
 //  void compressTbl ();
 //  void compressSkch ();
+//void parseLevel ();
 };
 
 #endif //SMASHPP_FCM_HPP

@@ -48,7 +48,7 @@ void Param::parse (int argc, char**& argv) {
         }
       }
       else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
-        level = static_cast<u8>(stoul(*++i));
+        level = static_cast<u8>(stoi(*++i));
       }
 //      else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
 //        setModelPar(*++i);
@@ -57,7 +57,7 @@ void Param::parse (int argc, char**& argv) {
         verbose = true;
       }
       else if ((*i=="-n" || *i=="--nthreads") && i+1!=vArgs.end()) {
-        nthr = static_cast<u8>(stoul(*++i));
+        nthr = static_cast<u8>(stoi(*++i));
       }
     }
     
@@ -159,9 +159,10 @@ inline void Param::help () const {
 //                                                                       << '\n'
     << "    -t [FILE], --tar          target file    -- MANDATORY"       << '\n'
     << "    -r [FILE], --ref          reference file -- MANDATORY"       << '\n'
-    << "    -h,        --help         usage guide"                       << '\n'
-    << "    -v,        --verbose      more information"                  << '\n'
+    << "    -l [NUM],  --level        level"                             << '\n'
     << "    -n [NUM],  --thread       number of threads"                 << '\n'
+    << "    -v,        --verbose      more information"                  << '\n'
+    << "    -h,        --help         usage guide"                       << '\n'
                                                                          << '\n'
     << "COPYRIGHT"                                                       << '\n'
     << "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro."<<'\n'

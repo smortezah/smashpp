@@ -82,7 +82,7 @@ void FCM::buildModel (const Param& p) {
     }
   }
   // Hash table
-  else if (p.mode == 'h') { //todo. remove
+//  else if (p.mode == 'h') { //todo. remove
 //    ctx   = 0;
 //    ctxIR = maxPV-1;
 //    // Fill tbl by no. occurrences of symbols A,sk,N,G,T
@@ -100,7 +100,7 @@ void FCM::buildModel (const Param& p) {
 //        ctx = (ctx*ALPH_SZ)%maxPV + curr;        // Update ctx
 //      }
 //    }
-  }
+//  }
   else
     cerr << "Error.\n";
   
