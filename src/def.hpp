@@ -33,13 +33,13 @@ constexpr u64 power (u64 a, u64 n) {
 
 // Constant
 constexpr u8  DEF_THR   = 1;     // Default # threads
-constexpr u8  TAB_COL   = 6;     // LogInt columns
+constexpr u8  DEF_LVL   = 0;     // Default level
+//constexpr u8  TAB_COL   = 6;     // LogInt columns
 constexpr u8  ALPH_SZ   = 4;     // Alphabet size
 //constexpr u8  ALPH_SZ   = 5;     // Alphabet size
 //constexpr u8  IR_MAGIC  = 4;
-constexpr u8  IRMAGIC  = 3;
-//constexpr u8  TAB_MAX_K = 12;    // Max ctx depth to build table
-constexpr u8  TAB_MAX_K = 11;    // Max ctx depth to build table
+constexpr u8  IRMAGIC   = 3;
+constexpr u8  TBL_MAX_K = 14;    // Max ctx depth to build table (4 GB mem)
 constexpr u32 BLK_SZ    = 8192;  // 8K
 constexpr u64 DEF_W     = power(2,20); // Default width of CML sketch (2^...)
 constexpr u8  DEF_D     = 4;     // Default depth of CML sketch
@@ -197,9 +197,9 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 //  0, 0, 0,'C',  0,  0, 0,  0, 0, 0,'N',  0, 0, 0, 0, 0,'A',  0,  0,  0,
 //  0, 0, 0
 //};
-constexpr u64 LEVEL[2][3] {
-  {},
-  {}
+constexpr u8 LEVEL[1][4] {
+  // #models, ir0, k0, 100*alpha0, ir1, k1, 100*alpha1, ...
+  {1, 0, 16, 99}    // Level 0
 };
 
 
