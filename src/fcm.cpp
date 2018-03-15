@@ -5,25 +5,29 @@
 #include <fstream>
 #include <cmath>
 #include "fcm.hpp"
-//#include "cmls.hpp"
+#include "logtbl8.hpp"
+
 using std::ifstream;
 using std::cout;
 using std::array;
 
 FCM::FCM (const Param& p) {
-  bool tFound = false;
-  bool sFound = false;
-  for (auto i=static_cast<char>(LEVEL[p.level][0]-1); i>=0; --i) {
-    if      (LEVEL[p.level][6*i+4]=='t') { tFound=true;  break; }
-    else if (LEVEL[p.level][6*i+4]=='s') { sFound=true;  break; }
-  }
-  if (tFound)  tbl  = new Table64();
-  if (sFound)  skch = new CMLS();
+//  bool tFound = false;
+//  bool sFound = false;
+//  for (auto i=static_cast<char>(LEVEL[p.level][0]-1); i>=0; --i) {
+//    if      (LEVEL[p.level][6*i+4]=='t') { tFound=true;  break; }
+//    else if (LEVEL[p.level][6*i+4]=='s') { sFound=true;  break; }
+//  }
+//  if (tFound)  tbl  = new Table64();
+//  if (sFound)  skch = new CMLS();
+
+
+
 }
 
 FCM::~FCM () {
-  delete tbl;
-  delete skch;
+//  delete tbl;
+//  delete skch;
 }
 
 void FCM::buildModel (const Param& p) {

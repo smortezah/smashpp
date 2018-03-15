@@ -6,6 +6,7 @@
 #define SMASHPP_FCM_HPP
 
 #include "par.hpp"
+#include "tbl64.hpp"
 #include "tbl32.hpp"
 #include "cmls.hpp"
 
@@ -20,7 +21,7 @@ class FCM    // Finite-context model
   void printHashTbl ()              const;
   
  private:
-  Table64* tbl;
+//  Table64* tbl;
   CMLS*  skch;
   htbl_t htbl;
   
