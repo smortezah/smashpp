@@ -31,7 +31,7 @@ class CMLS    // Count-min-log sketch
   vector<u64> ab;                   // Coefficients of hash functions
   u8          uhashShift;           // Universal hash shift(G-M). (a*x+b)>>(G-M)
   vector<u8>  sk;                   // Sketch
-  u64         tot;                  // Total # elements so far
+  u64         tot;                  // Total # elements, so far
   
   u8   readCell  (u64)       const; // Read each cell of the sketch
   bool incDecide (u8);              // Increase decision

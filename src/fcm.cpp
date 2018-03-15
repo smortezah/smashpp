@@ -17,7 +17,7 @@ FCM::FCM (const Param& p) {
     if      (LEVEL[p.level][6*i+4]=='t') { tFound=true;  break; }
     else if (LEVEL[p.level][6*i+4]=='s') { sFound=true;  break; }
   }
-  if (tFound)  tbl  = new Table();
+  if (tFound)  tbl  = new Table64();
   if (sFound)  skch = new CMLS();
 }
 
@@ -38,7 +38,7 @@ void FCM::buildModel (const Param& p) {
   rf.open(p.ref);
   cerr << "Building models...\n";
   
-  // Table
+  // Table64
   if (p.mode == 't') {
 //    tbl = new double[TAB_COL*maxPV];
 //    for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
@@ -124,7 +124,7 @@ void FCM::compress (const Param& p) const {
   tf.open(p.tar);
   
   cerr << "Compressing...\n";
-  // Table
+  // Table64
   if (p.mode == 't') {
 //      while (tf.get(c)) {
 //        if (c!='\n') {
