@@ -21,14 +21,8 @@ using std::setprecision;
 #include "tbl.hpp"
 int main (int argc, char* argv[])
 {
-//  Table t(0);
-//  for (int j = 0; j<power(2,30); ++j) {
-//  for (int i = 0; i<4; ++i) {
-//    t.update(i);
-//  }
-//  }
-//  t.printTbl();
-//  cout<<(int)*std::begin(LEVEL);
+//  Table* t=new Table(256);
+//  cout<<(int)t->k;
   
   
   try {

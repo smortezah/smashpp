@@ -197,11 +197,11 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 //  0, 0, 0,'C',  0,  0, 0,  0, 0, 0,'N',  0, 0, 0, 0, 0,'A',  0,  0,  0,
 //  0, 0, 0
 //};
-//constexpr u8 LEVEL[1][7] {
-  constexpr u8 LEVEL[1][13] {
+constexpr u8 LEVEL[1][7] {
+//  constexpr u8 LEVEL[1][13] {
   // #models, ir=0|1, k, 100*alpha, mode=t|s, w, d
-  {2,0,10,99,'t',0,0, 0,10,99,'t',0,0}    // Level 0
-//  {1,0,10,99,'t',0,0}    // Level 0
+//  {2,0,10,99,'t',0,0, 0,10,99,'t',0,0}    // Level 0
+  {1,0,10,99,'t',0,0}    // Level 0
 };
 
 

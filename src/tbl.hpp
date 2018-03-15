@@ -16,6 +16,7 @@ class Table
  public:
   Table          () = default;
   explicit Table (u8);
+  void config    (u8);
   void update    (u64);             // Update table
   u32  query     (u64)       const; // Query count of ctx
   u64  getTotal  ()          const; // Total count of all items in the table
@@ -24,7 +25,7 @@ class Table
   void dump      (ofstream&) const;
   void load      (ifstream&) const;
   void printTbl  ()          const;
-
+  
  private:
   vector<u32> tbl;                  // Table
   u8          k;                    // Ctx size
