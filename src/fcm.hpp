@@ -8,6 +8,7 @@
 #include "par.hpp"
 #include "tbl64.hpp"
 #include "tbl32.hpp"
+#include "logtbl8.hpp"
 #include "cmls.hpp"
 
 class FCM    // Finite-context model
@@ -19,7 +20,7 @@ class FCM    // Finite-context model
   void compress     (const Param&)  const;
   void printTbl     (const Param&)  const;
   void printHashTbl ()              const;
-  
+
  private:
 //  Table64* tbl;
   CMLS*  skch;

@@ -22,9 +22,8 @@ void LogTable8::config (u8 k_) {
 }
 
 void LogTable8::update (u32 ctx) {
-  if (!(tot & 1) && !(tot % POW2[tbl[ctx]]))  // tot == even num
+  if (!(tot++ % POW2[tbl[ctx]]))
     ++tbl[ctx];
-  ++tot;
 }
 
 u64 LogTable8::query (u32 ctx) const {

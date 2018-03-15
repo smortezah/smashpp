@@ -2,8 +2,8 @@
 // Created by morteza on 15-03-2018.
 //
 
-#ifndef SMASHPP_TABLE_HPP
-#define SMASHPP_TABLE_HPP
+#ifndef SMASHPP_LOGTABLE_HPP
+#define SMASHPP_LOGTABLE_HPP
 
 #include <vector>
 #include "def.hpp"
@@ -13,7 +13,7 @@ using std::ofstream;
 
 class LogTable8
 {
- public:
+public:
   LogTable8          () = default;
   explicit LogTable8 (u8);
   void config        (u8);
@@ -25,11 +25,11 @@ class LogTable8
   void dump          (ofstream&) const;
   void load          (ifstream&) const;
   void printTbl      ()          const;
-  
- private:
+
+private:
   vector<u8> tbl;                       // Table of 8 bit logarithmic counters
   u8         k;                         // Ctx size
   u64        tot;                       // Total # elements so far
 };
 
-#endif //SMASHPP_TABLE_HPP
+#endif //SMASHPP_LOGTABLE_HPP
