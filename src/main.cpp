@@ -33,7 +33,7 @@ int main (int argc, char* argv[])
 //  }
   
   
-  
+  cout<<MODE::LOGTBL8;
   try {
     Param p;
     p.parse(argc, argv);

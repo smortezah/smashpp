@@ -20,14 +20,6 @@ FCM::FCM (const Param& p) {
 //  }
 //  if (tFound)  tbl  = new Table64();
 //  if (sFound)  skch = new CMLS();
-
-LogTable8 l(1);
-  for (int j = 0; j<100; ++j) {
-    for (int i = 0; i<16; ++i) {
-      l.update(i);
-    }
-  }
-  l.printTbl();
 }
 
 FCM::~FCM () {
