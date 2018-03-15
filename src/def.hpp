@@ -48,6 +48,9 @@ constexpr u8  LOG_BASE  = 2;     // Logarithmic counting
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
+// Enums
+enum MODE {TBL64, TBL32, LOGTBL8, CMLS};
+
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n
 //#define SEQ16      0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
