@@ -8,6 +8,10 @@
 using std::cerr;
 
 Table::Table (u8 k_) {
+  config(k_);
+}
+
+void Table::config (u8 k_) {
   k       = k_;
   nRenorm = 0;
   tot     = 0;

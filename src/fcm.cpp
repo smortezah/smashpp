@@ -22,7 +22,7 @@ FCM::FCM (const Param& p) {
 }
 
 FCM::~FCM () {
-//  delete tbl;
+  delete tbl;
   delete skch;
 }
 
