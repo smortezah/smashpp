@@ -29,14 +29,13 @@ void CMLS::config (u64 w_, u8 d_) {
 
 void CMLS::update (u64 ctx) {
   auto c = minLogCtr(ctx);
-  if (!(tot & 1) && !(tot % POW2[c])) {  // Increase decision //todo. base 2
+  if (!(tot++ % POW2[c])) {  // Increase decision //todo. base 2
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
       if (readCell(cellIdx) == c)          // Conservative update
         sk[cellIdx>>1] = INC_CTR[cellIdx&1][sk[cellIdx>>1]];
     }
   }
-  ++tot;
 }
 
 inline u8 CMLS::minLogCtr (u64 ctx) const {

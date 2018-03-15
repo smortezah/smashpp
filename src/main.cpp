@@ -18,7 +18,10 @@ using std::cout;
 using std::chrono::high_resolution_clock;
 using std::setprecision;
 
+#include "tbl64.hpp"
 #include "tbl32.hpp"
+#include "logtbl8.hpp"
+#include "cmls.hpp"
 int main (int argc, char* argv[])
 {
 //  int n=0;
@@ -28,6 +31,7 @@ int main (int argc, char* argv[])
 //    else
 //      cerr<<"0 ";
 //  }
+  
   
   
   try {

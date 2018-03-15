@@ -2,8 +2,8 @@
 // Created by morteza on 13-03-2018.
 //
 
-#ifndef SMASHPP_TABLE_HPP
-#define SMASHPP_TABLE_HPP
+#ifndef SMASHPP_TABLE32_HPP
+#define SMASHPP_TABLE32_HPP
 
 #include <vector>
 #include "def.hpp"
@@ -13,7 +13,7 @@ using std::ofstream;
 
 class Table32
 {
- public:
+public:
   Table32          () = default;
   explicit Table32 (u8);
   void config      (u8);
@@ -25,8 +25,8 @@ class Table32
   void dump        (ofstream&) const;
   void load        (ifstream&) const;
   void printTbl    ()          const;
-  
- private:
+
+private:
   vector<u32> tbl;                      // Table of 32 bit counters
   u8          k;                        // Ctx size
   u32         nRenorm;                  // Renormalization times
@@ -35,4 +35,4 @@ class Table32
   void renormalize ();
 };
 
-#endif //SMASHPP_TABLE_HPP
+#endif //SMASHPP_TABLE32_HPP
