@@ -18,10 +18,10 @@ using std::cout;
 using std::chrono::high_resolution_clock;
 using std::setprecision;
 
-#include "tbl.hpp"
+#include "tbl32.hpp"
 int main (int argc, char* argv[])
 {
-//  Table* t=new Table(256);
+//  Table64* t=new Table64(256);
 //  cout<<(int)t->k;
   
   
