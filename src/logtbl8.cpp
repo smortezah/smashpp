@@ -12,8 +12,8 @@ LogTable8::LogTable8 (u8 k_) {
 }
 
 void LogTable8::config (u8 k_) {
-  k       = k_;
-  tot     = 0;
+  k   = k_;
+  tot = 0;
   try { tbl.resize(4<<(k<<1)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
   catch (std::bad_alloc& b) {
     cerr << "Error: failed memory allocation.";
@@ -22,8 +22,9 @@ void LogTable8::config (u8 k_) {
 }
 
 void LogTable8::update (u32 ctx) {
-  if (!(tot++ % POW2[tbl[ctx]]))
+  if (!(tot & 1) && !(tot % POW2[tbl[ctx]]))  // tot == even num
     ++tbl[ctx];
+  ++tot;
 }
 
 u64 LogTable8::query (u32 ctx) const {
