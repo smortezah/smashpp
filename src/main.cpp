@@ -28,7 +28,7 @@ int main (int argc, char* argv[])
 //  }
 //  }
 //  t.printTbl();
-  cout<<(int)*std::begin(LEVEL);
+//  cout<<(int)*std::begin(LEVEL);
   
   
   try {
