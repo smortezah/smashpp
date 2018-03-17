@@ -23,10 +23,8 @@ void Table32::config (u8 k_) {
 }
 
 void Table32::update (u32 ctx) {
-  if (tbl[ctx] == 0xFFFFFFFF) {    // 2^32-1
+  if (tbl[ctx] == 0xFFFFFFFF)    // 2^32-1
     renormalize();
-    ++nRenorm;
-  }
   ++tbl[ctx];
   ++tot;
 }
@@ -34,6 +32,7 @@ void Table32::update (u32 ctx) {
 inline void Table32::renormalize () {
   for (auto c : tbl)
     c >>=1;
+  ++nRenorm;
 }
 
 u32 Table32::query (u32 ctx) const {
