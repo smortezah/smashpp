@@ -11,7 +11,7 @@
 #include "logtbl8.hpp"
 #include "cmls4.hpp"
 
-struct Model {
+struct ModelPar {
   u8    ir;      // Inverted repeat
   u8    k;       // Context size
   float alpha;
@@ -31,18 +31,17 @@ class FCM    // Finite-context model
 //  void printHashTbl ()              const;
 
  private:
+  vector<ModelPar> model;
   Table64*   tbl64;
   Table32*   tbl32;
-  LogTable8* lgtbl8;
-  CMLS4*     skch4;
-  Model*     model;
+  LogTable8* logtbl8;
+  CMLS4*     sketch4;
 //  htbl_t htbl;
   
 //  void buildTbl ();
 //  void buildSkch ();
 //  void compressTbl ();
 //  void compressSkch ();
-//void parseLevel ();
 };
 
 #endif //SMASHPP_FCM_HPP

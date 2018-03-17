@@ -32,8 +32,6 @@ int main (int argc, char* argv[])
 //      cerr<<"0 ";
 //  }
   
-//  u8 m=MODE::LOGTBL8;
-//  cout<<int(m);
   
   
   
