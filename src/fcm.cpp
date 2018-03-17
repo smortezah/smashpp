@@ -48,43 +48,56 @@ void FCM::buildModel (const Param& p) {
 //  ifstream rf;                 // Ref file
 //  char     c;                  // To read from ref file
 //  rf.open(p.ref);
-//  cerr << "Building models...\n";
-//
-//  // Table64
+  cerr << "Building models...\n";
+  
+  for (auto m : model) {
+    if      (m.mode==MODE::TABLE_64)     buildTbl64(p.ref, m.k);
+    else if (m.mode==MODE::TABLE_32)     buildTbl32(p.ref, m.k);
+    else if (m.mode==MODE::LOG_TABLE_8)  buildLogTbl8(p.ref, m.k);
+    else                                 buildSketch4(p.ref, m.k);
+  }
+  
+  //todo test
+//  tbl64->printTbl();
+//  cerr<< '\n';
+//  sketch4->printSk();
+
+  
+  // Table64
 //  if (p.mode == 't') {
-////    tbl = new double[TAB_COL*maxPV];
-////    for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
-////      tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
-////    }
-////    ctx   = 0;
-////    ctxIR = maxPV-1;
-////    // Fill tbl by no. occurrences of symbols A,C,N,G,T
-////    while (rf.get(c)) {
-////      if (c != '\n') {
-////        curr = NUM[c];
-////        u64 rowIdx;
-////
-////        // Inverted repeats
-////        if (p.ir[0]) {//todo. change ir[0]
-////          ctxIRCurr = ctxIR + (IRMAGIC-curr)*maxPV;
-////          ctxIR     = ctxIRCurr/ALPH_SZ;      // Update ctxIR
-////          rowIdx    = ctxIR*TAB_COL;
-////          ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
-////          ++tbl[rowIdx+ALPH_SZ];              // 'sum' col
-////        }
-////
-////        rowIdx = ctx*TAB_COL;
-////        ++tbl[rowIdx+curr];
-////        ++tbl[rowIdx+ALPH_SZ];
-////        // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
-////        ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
-//////        ctx = (ctx*ALPH_SZ)%maxPV + curr;             // Fastest
-//////        ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
-//////        ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
-////      }
-////    }
+//    tbl = new double[TAB_COL*maxPV];
+//    for (u64 i=0; i!=TAB_COL*maxPV; ++i) {
+//      tbl[i] = (i%TAB_COL==ALPH_SZ) ? sa : a;
+//    }
+//    ctx   = 0;
+//    ctxIR = maxPV-1;
+//    // Fill tbl by no. occurrences of symbols A,C,N,G,T
+//    while (rf.get(c)) {
+//      if (c != '\n') {
+//        curr = NUM[c];
+//        u64 rowIdx;
+//
+//        // Inverted repeats
+//        if (p.ir[0]) {//todo. change ir[0]
+//          ctxIRCurr = ctxIR + (IRMAGIC-curr)*maxPV;
+//          ctxIR     = ctxIRCurr/ALPH_SZ;      // Update ctxIR
+//          rowIdx    = ctxIR*TAB_COL;
+//          ++tbl[rowIdx+ctxIRCurr%ALPH_SZ];
+//          ++tbl[rowIdx+ALPH_SZ];              // 'sum' col
+//        }
+//
+//        rowIdx = ctx*TAB_COL;
+//        ++tbl[rowIdx+curr];
+//        ++tbl[rowIdx+ALPH_SZ];
+//        // Update ctx.  (rowIdx - k) == (k * ALPH_SIZE)
+//        ctx = (rowIdx-ctx)%maxPV + curr;             // Fastest
+////        ctx = (ctx*ALPH_SZ)%maxPV + curr;             // Fastest
+////        ctx = (rowIdx-ctx+curr)%maxPV;             // Faster
+////        ctx = (ctx%POW5[p.k-1])*ALPH_SZ + curr;    // Fast
+//      }
+//    }
 //  }
-//  // Sketch
+  // Sketch
 //  else if (p.mode == 's') {
 //    ctx = 0;
 //    auto mask = static_cast<u64>((4<<(p.k[0]<<1)) - 1); // 4<<2k -1 = 4^(k+1) -1
@@ -96,31 +109,83 @@ void FCM::buildModel (const Param& p) {
 //      }
 //    }
 //  }
-//  // Hash table
-////  else if (p.mode == 'h') { //todo. remove
-////    ctx   = 0;
-////    ctxIR = maxPV-1;
-////    // Fill tbl by no. occurrences of symbols A,sk,N,G,T
-////    while (rf.get(c)) {
-////      if (c!='\n') {
-////        curr = NUM[c];
-////        // Inverted repeats
-////        if (p.ir[0]) {//todo. change ir[0]
-////          ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
-////          ctxIR     = ctxIRCurr/ALPH_SZ;       // Update ctxIR
-////          ++htbl[ctxIR][ctxIRCurr%ALPH_SZ];
-////        }
-////
-////        ++htbl[ctx][curr];
-////        ctx = (ctx*ALPH_SZ)%maxPV + curr;        // Update ctx
-////      }
-////    }
-////  }
+  // Hash table//todo. remove
+//  else if (p.mode == 'h') {
+//    ctx   = 0;
+//    ctxIR = maxPV-1;
+//    // Fill tbl by no. occurrences of symbols A,sk,N,G,T
+//    while (rf.get(c)) {
+//      if (c!='\n') {
+//        curr = NUM[c];
+//        // Inverted repeats
+//        if (p.ir[0]) {
+//          ctxIRCurr = ctxIR + (IR_MAGIC-curr)*maxPV;
+//          ctxIR     = ctxIRCurr/ALPH_SZ;       // Update ctxIR
+//          ++htbl[ctxIR][ctxIRCurr%ALPH_SZ];
+//        }
+//
+//        ++htbl[ctx][curr];
+//        ctx = (ctx*ALPH_SZ)%maxPV + curr;        // Update ctx
+//      }
+//    }
+//  }
 //  else
 //    cerr << "Error.\n";
-//
+
 //  rf.close();
-//  cerr << "Models built ";
+  cerr << "Models built ";
+}
+
+void FCM::buildTbl64 (const string& ref, u8 k) {
+  ifstream rf(ref);
+  char c;
+  auto mask = static_cast<u32>((4<<(k<<1)) - 1);    // 4<<2k - 1 = 4^(k+1) - 1
+  for (u32 ctx=0; rf.get(c);) {
+    if (c != '\n') {
+      ctx = ((ctx<<2) & mask) | NUM[c];             // Update ctx
+      tbl64->update(ctx);
+    }
+  }
+  rf.close();
+}
+
+void FCM::buildTbl32 (const string& ref, u8 k) {
+  ifstream rf(ref);
+  char c;
+  auto mask = static_cast<u32>((4<<(k<<1)) - 1);
+  for (u32 ctx=0; rf.get(c);) {
+    if (c != '\n') {
+      ctx = ((ctx<<2) & mask) | NUM[c];
+      tbl32->update(ctx);
+    }
+  }
+  rf.close();
+}
+
+void FCM::buildLogTbl8 (const string& ref, u8 k) {
+  ifstream rf(ref);
+  char c;
+  auto mask = static_cast<u32>((4<<(k<<1)) - 1);
+  for (u32 ctx=0; rf.get(c);) {
+    if (c != '\n') {
+      ctx = ((ctx<<2) & mask) | NUM[c];
+      logtbl8->update(ctx);
+    }
+  }
+  rf.close();
+}
+
+void FCM::buildSketch4 (const string& ref, u8 k) {
+  ifstream rf(ref);
+  char c;
+  auto mask = static_cast<u64>((4<<(k<<1)) - 1);
+  for (u64 ctx=0; rf.get(c);) {
+    if (c != '\n') {
+      ctx = ((ctx<<2) & mask) | NUM[c];
+      sketch4->update(ctx);
+    }
+  }
+  rf.close();
 }
 
 void FCM::compress (const Param& p) const {

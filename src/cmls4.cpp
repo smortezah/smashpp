@@ -103,9 +103,13 @@ void CMLS4::load (ifstream& ifs) const {
 }
 
 void CMLS4::printSk () const {
+  u8 cell_width = 3;
   for (auto i=0; i!=d; i++) {
-    for (auto j=0; j!=w; j++)
-      cerr << static_cast<u16>(readCell(i*w+j)) << ' ';
-    cerr << "\n------------------------------------\n";
+    cerr << "d_" << i << ":  ";
+    for (auto j=0; j!=w; j++) {
+      cerr.width(cell_width);
+      cerr << std::left << static_cast<u16>(readCell(i*w+j));
+    }
+    cerr << '\n';
   }
 }

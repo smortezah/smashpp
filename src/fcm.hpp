@@ -38,8 +38,10 @@ class FCM    // Finite-context model
   CMLS4*     sketch4;
 //  htbl_t htbl;
   
-//  void buildTbl ();
-//  void buildSkch ();
+  void buildTbl64 (const string&, u8);
+  void buildTbl32 (const string&, u8);
+  void buildLogTbl8 (const string&, u8);
+  void buildSketch4 (const string&, u8);
 //  void compressTbl ();
 //  void compressSkch ();
 };
