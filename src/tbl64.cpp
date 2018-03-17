@@ -52,6 +52,13 @@ void Table64::load (ifstream& ifs) const {
 }
 
 void Table64::printTbl () const {
-  for (auto c : tbl)
+  u8 context_width = 12;
+  cerr.width(context_width);  cerr<<std::left<<"Context";
+  cerr << "Count\n";
+  cerr << "-------------------\n";
+  u32 i = 0;
+  for (auto c : tbl) {
+    cerr.width(context_width);  cerr<<std::left<<i++;
     cerr << c << '\n';
+  }
 }
