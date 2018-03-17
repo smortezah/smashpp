@@ -9,7 +9,16 @@
 #include "tbl64.hpp"
 #include "tbl32.hpp"
 #include "logtbl8.hpp"
-#include "cmls.hpp"
+#include "cmls4.hpp"
+
+struct Model {
+  u8    ir;      // Inverted repeat
+  u8    k;       // Context size
+  float alpha;
+  u8    mode;    // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  u64   w;       // Width of count-min-log sketch
+  u8    d;       // Depth of count-min-log sketch
+};
 
 class FCM    // Finite-context model
 {
@@ -19,12 +28,15 @@ class FCM    // Finite-context model
   void buildModel   (const Param&);          // Build FCM (finite-context model)
   void compress     (const Param&)  const;
   void printTbl     (const Param&)  const;
-  void printHashTbl ()              const;
+//  void printHashTbl ()              const;
 
  private:
-//  Table64* tbl;
-  CMLS*  skch;
-  htbl_t htbl;
+  Table64*   tbl64;
+  Table32*   tbl32;
+  LogTable8* lgtbl8;
+  CMLS4*     skch4;
+  Model*     model;
+//  htbl_t htbl;
   
 //  void buildTbl ();
 //  void buildSkch ();

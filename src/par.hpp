@@ -22,13 +22,13 @@ class Param    // Parameters
  public:
   string tar;
   string ref;
-  vector<bool>  ir;     // Inverted repeat
-  vector<u8>    k;      // Context-order size
-  vector<float> alpha;
+//  vector<bool>  ir;     // Inverted repeat
+//  vector<u8>    k;      // Context-order size
+//  vector<float> alpha;
   bool verbose;
   u8   nthr;
-  u8   nMdl;
-  char mode;            // Table64 or Hash table
+//  u8   nMdl;
+//  char mode;            // Table64 or Hash table
   u8   level;
   
   Param      ();        // Define Param::Param(){} in *.hpp => compile error

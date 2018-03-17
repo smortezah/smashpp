@@ -21,7 +21,7 @@ using std::setprecision;
 #include "tbl64.hpp"
 #include "tbl32.hpp"
 #include "logtbl8.hpp"
-#include "cmls.hpp"
+#include "cmls4.hpp"
 int main (int argc, char* argv[])
 {
 //  int n=0;
@@ -32,8 +32,11 @@ int main (int argc, char* argv[])
 //      cerr<<"0 ";
 //  }
   
+//  u8 m=MODE::LOGTBL8;
+//  cout<<int(m);
   
-  cout<<MODE::LOGTBL8;
+  
+  
   try {
     Param p;
     p.parse(argc, argv);
