@@ -5,48 +5,37 @@
 #include <fstream>
 #include <cmath>
 #include "fcm.hpp"
-//#include "logtbl8.hpp"
-
 using std::ifstream;
 using std::cout;
 using std::array;
 
 FCM::FCM (const Param& p) {
-  u8 nMdl = LEVEL[p.level][0];
-  model   = new Model[nMdl];
-  
-  for (u8 i=0; i!=nMdl; ++i) {
-    model[i].ir                       = LEVEL[p.level][5*i+1];
-    auto k = model[i].k               = LEVEL[p.level][5*i+2];
-    model[i].alpha = static_cast<float>(LEVEL[p.level][5*i+3])/100;
-    model[i].w                        = LEVEL[p.level][5*i+4];
-    model[i].d                        = LEVEL[p.level][5*i+5];
-    if      (k > K_MAX_LGTBL8)  model[i].mode = MODE::SKETCH_8;
-    else if (k > K_MAX_TBL32)   model[i].mode = MODE::LOG_TABLE_8;
-    else if (k > K_MAX_TBL64)   model[i].mode = MODE::TABLE_32;
-    else                        model[i].mode = MODE::TABLE_64;
+  model.resize(LEVEL[p.level][0]);
+  for (auto m=model.begin(); m!=model.end(); ++m) {
+    auto i   = m - model.begin();
+    m->ir    = LEVEL[p.level][5*i+1];
+    m->k     = LEVEL[p.level][5*i+2];
+    m->alpha = static_cast<float>(LEVEL[p.level][5*i+3])/100;
+    m->w     = LEVEL[p.level][5*i+4];
+    m->d     = LEVEL[p.level][5*i+5];
+    if      (m->k > K_MAX_LGTBL8)         m->mode = MODE::SKETCH_8;
+    else if (m->k > K_MAX_TBL32)          m->mode = MODE::LOG_TABLE_8;
+    else if (m->k > K_MAX_TBL64)          m->mode = MODE::TABLE_32;
+    else                                  m->mode = MODE::TABLE_64;
+    if      (m->mode==MODE::TABLE_64)       tbl64 = new Table64(m->k);
+    else if (m->mode==MODE::TABLE_32)       tbl32 = new Table32(m->k);
+    else if (m->mode==MODE::LOG_TABLE_8)  logtbl8 = new LogTable8(m->k);
+    else                                  sketch4 = new CMLS4(m->w, m->d);
   }
-  
-  
-  
-//  bool tFound = false;
-//  bool sFound = false;
-//  for (auto i=static_cast<char>(LEVEL[p.level][0]-1); i>=0; --i) {
-//    if      (LEVEL[p.level][6*i+4]=='t') { tFound=true;  break; }
-//    else if (LEVEL[p.level][6*i+4]=='s') { sFound=true;  break; }
-//  }
-//  if (tFound)  tbl64  = new Table64();
-//  if (sFound)  skch = new CMLS4();
 }
 
 FCM::~FCM () {
-  delete model;
-//  u8 nMdl = LEVEL[p.level][0];
-//  for (u8 i=0; i!=nMdl; ++i) {
-//  }
-
-//  delete tbl64;
-//  delete skch;
+  for (auto m : model) {
+    if      (m.mode==MODE::TABLE_64)      delete tbl64;
+    else if (m.mode==MODE::TABLE_32)      delete tbl32;
+    else if (m.mode==MODE::LOG_TABLE_8)   delete logtbl8;
+    else                                  delete sketch4;
+  }
 }
 
 void FCM::buildModel (const Param& p) {
