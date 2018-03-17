@@ -4,16 +4,16 @@
 
 #include <random>
 #include <fstream>
-#include "cmls.hpp"
+#include "cmls4.hpp"
 using std::cerr;
 
 // W=[e/eps].      0 < eps:   error factor      < 1
 // D=[ln 1/delta]. 0 < delta: error probability < 1
-CMLS::CMLS (u64 w_, u8 d_) {
+CMLS4::CMLS4 (u64 w_, u8 d_) {
   config(w_, d_);
 }
 
-void CMLS::config (u64 w_, u8 d_) {
+void CMLS4::config (u64 w_, u8 d_) {
   w   = w_;
   d   = d_;
   tot = 0;
@@ -27,18 +27,18 @@ void CMLS::config (u64 w_, u8 d_) {
   setAB();
 }
 
-void CMLS::update (u64 ctx) {
+void CMLS4::update (u64 ctx) {
   auto c = minLogCtr(ctx);
-  if (!(tot++ % POW2[c])) {  // Increase decision //todo. base 2
+  if (!(tot++ % POW2[c])) {          // Increase decision //todo. base 2
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
-      if (readCell(cellIdx) == c)          // Conservative update
+      if (readCell(cellIdx) == c)    // Conservative update
         sk[cellIdx>>1] = INC_CTR[cellIdx&1][sk[cellIdx>>1]];
     }
   }
 }
 
-inline u8 CMLS::minLogCtr (u64 ctx) const {
+inline u8 CMLS4::minLogCtr (u64 ctx) const {
   u8 min = std::numeric_limits<u8>::max();
   for (u8 i=0; i!=d && min!=0; i++) {
     auto lg = readCell(hash(i,ctx));
@@ -48,15 +48,15 @@ inline u8 CMLS::minLogCtr (u64 ctx) const {
   return min;
 }
 
-inline u8 CMLS::readCell(u64 idx) const {
+inline u8 CMLS4::readCell (u64 idx) const {
   return CTR[idx&1][sk[idx>>1]];
 }
 
-inline u64 CMLS::hash (u8 i, u64 ctx) const {    // Strong 2-universal
+inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal
   return i*w + ((ab[i<<1]*ctx + ab[i<<1+1]) >> uhashShift);
 }
 
-inline void CMLS::setAB () {
+inline void CMLS4::setAB () {
   std::random_device r;              // Seed with a real random value, if avail.
   std::default_random_engine e(r());
   std::uniform_int_distribution<u64> uDistA(0, (1ull<<63)-1);     // k <= 2^63-1
@@ -67,44 +67,42 @@ inline void CMLS::setAB () {
   }
 }
 
-u16 CMLS::query (u64 ctx) const {
+u16 CMLS4::query (u64 ctx) const {
   auto c = minLogCtr(ctx);
   return static_cast<u16>(POW2[c]-1); //todo. base 2. otherwise (b^c-1)/(b-1)
 //  return static_cast<u16>(power(2,c)-1);
 }
 
-u64 CMLS::getTotal () const {
+u64 CMLS4::getTotal () const {
   return tot;
 }
 
-u64 CMLS::countMty () const {
+u64 CMLS4::countMty () const {
   u64 n = 0;
-  for (auto i=w*d; i--;) {
+  for (auto i=w*d; i--;)
     if (readCell(i) == 0)
       ++n;
-	}
 	return n;
 }
 
-u8 CMLS::maxSkVal () const {
+u8 CMLS4::maxSkVal () const {
   u8 c = 0;
-  for (auto i=w*d; i--;) {
+  for (auto i=w*d; i--;)
     if (readCell(i) > c)
       c = readCell(i);
-	}
 	return c;
 }
 
-void CMLS::dump (ofstream& ofs) const {
+void CMLS4::dump (ofstream& ofs) const {
 	ofs.write((const char*) &sk[0], sk.size());
 //  ofs.close();
 }
 
-void CMLS::load (ifstream& ifs) const {
+void CMLS4::load (ifstream& ifs) const {
 	ifs.read((char*) &sk[0], sk.size());
 }
 
-void CMLS::printSk () const {
+void CMLS4::printSk () const {
   for (auto i=0; i!=d; i++) {
     for (auto j=0; j!=w; j++)
       cerr << static_cast<u16>(readCell(i*w+j)) << ' ';

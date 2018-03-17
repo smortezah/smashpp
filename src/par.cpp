@@ -8,9 +8,9 @@ using std::array;
 Param::Param () {
   tar = "";
   ref = "";
-  ir.emplace_back(false);
-  k.emplace_back(10);
-  alpha.emplace_back(0.01);
+//  ir.emplace_back(false);
+//  k.emplace_back(10);
+//  alpha.emplace_back(0.01);
   verbose = false;
   nthr    = DEF_THR;
   level   = DEF_LVL;

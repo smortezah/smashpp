@@ -2,19 +2,19 @@
 // Created by morteza on 27-02-2018.
 //
 
-#ifndef SMASHPP_CMLS_HPP
-#define SMASHPP_CMLS_HPP
+#ifndef SMASHPP_CMLS4_HPP
+#define SMASHPP_CMLS4_HPP
 
 #include "def.hpp"
 using std::vector;
 using std::ifstream;
 using std::ofstream;
 
-class CMLS    // Count-min-log sketch
+class CMLS4    // Count-min-log sketch
 {
  public:
-  CMLS           () = default;
-  CMLS           (u64, u8);
+  CMLS4          () = default;
+  CMLS4          (u64, u8);
   void config    (u64, u8);
   void update    (u64);             // Update sketch
   u16  query     (u64)       const; // Query count of ctx
@@ -39,4 +39,4 @@ class CMLS    // Count-min-log sketch
   u8   minLogCtr (u64)       const; // Find min log value in the sketch
 };
 
-#endif //SMASHPP_CMLS_HPP
+#endif //SMASHPP_CMLS4_HPP

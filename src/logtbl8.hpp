@@ -2,8 +2,8 @@
 // Created by morteza on 15-03-2018.
 //
 
-#ifndef SMASHPP_LOGTABLE_HPP
-#define SMASHPP_LOGTABLE_HPP
+#ifndef SMASHPP_LOGTABLE8_HPP
+#define SMASHPP_LOGTABLE8_HPP
 
 #include <vector>
 #include "def.hpp"
@@ -32,4 +32,4 @@ private:
   u64        tot;                       // Total # elements so far
 };
 
-#endif //SMASHPP_LOGTABLE_HPP
+#endif //SMASHPP_LOGTABLE8_HPP

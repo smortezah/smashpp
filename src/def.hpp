@@ -32,24 +32,23 @@ constexpr u64 power (u64 a, u64 n) {
 }
 
 // Constant
-constexpr u8  DEF_THR   = 1;     // Default # threads
-constexpr u8  DEF_LVL   = 0;     // Default level
-//constexpr u8  TAB_COL   = 6;     // LogInt columns
-constexpr u8  ALPH_SZ   = 4;     // Alphabet size
-//constexpr u8  ALPH_SZ   = 5;     // Alphabet size
-//constexpr u8  IR_MAGIC  = 4;
-constexpr u8  IRMAGIC   = 3;
-constexpr u8  TBL_MAX_K = 14;    // Max ctx depth to build table (4 GB mem)
-constexpr u32 BLK_SZ    = 8192;  // 8K
-constexpr u64 DEF_W     = power(2,20); // Default width of CML sketch (2^...)
-constexpr u8  DEF_D     = 4;     // Default depth of CML sketch
-constexpr u32 G         = 64;    // Machine word size - for universal hash fn
-constexpr u8  LOG_BASE  = 2;     // Logarithmic counting
+constexpr u8  DEF_THR      = 1;    // Default # threads
+constexpr u8  DEF_LVL      = 0;    // Default level
+constexpr u8  ALPH_SZ      = 4;    // Alphabet size
+constexpr u8  IRMAGIC      = 3;    // Calc ir syms based on syms
+constexpr u8  K_MAX_TBL64  = 11;   // Max ctx depth for table 64 (128 MB mem)
+constexpr u8  K_MAX_TBL32  = 13;   // Max ...           table 32 (1   GB mem)
+constexpr u8  K_MAX_LGTBL8 = 14;   // Max ...       log table 8  (1   GB mem)
+constexpr u32 BLK_SZ       = 8192; // 8K
+constexpr u64 DEF_W        = power(2,20); // Default width of CML sketch (2^...)
+constexpr u8  DEF_D        = 4;    // Default depth of CML sketch
+constexpr u32 G            = 64;   // Machine word size - for universal hash fn
+constexpr u8  LOG_BASE     = 2;    // Logarithmic counting
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
 // Enums
-enum MODE {TBL64, TBL32, LOGTBL8, CMLS};
+enum MODE {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};    // Data structures
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n
@@ -209,10 +208,10 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 //  0, 0, 0
 //};
 constexpr u8 LEVEL[1][7] {
-//  constexpr u8 LEVEL[1][13] {
-  // #models, ir=0|1, k, 100*alpha, mode=t|s, w, d
-//  {2,0,10,99,'t',0,0, 0,10,99,'t',0,0}    // Level 0
-  {1,0,10,99,'t',0,0}    // Level 0
+  // #models,  ir=0|1, k, 100*alpha, w, d
+  {1,  0, 10, 99, 0, 0}    // Level 0
+//  {2,  0, 10, 99, 0, 0,
+//       0, 10, 99, 0, 0}    // Level 0
 };
 
 
