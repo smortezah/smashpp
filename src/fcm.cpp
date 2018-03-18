@@ -4,10 +4,12 @@
 
 #include <fstream>
 #include <cmath>
+#include <thread>
 #include "fcm.hpp"
 using std::ifstream;
 using std::cout;
 using std::array;
+using std::thread;
 
 FCM::FCM (const Param& p) {
   model.resize(LEVEL[p.level][0]);
@@ -16,7 +18,7 @@ FCM::FCM (const Param& p) {
     m->ir    = LEVEL[p.level][5*i+1];
     m->k     = LEVEL[p.level][5*i+2];
     m->alpha = static_cast<float>(LEVEL[p.level][5*i+3])/100;
-    m->w     = LEVEL[p.level][5*i+4];
+    m->w     = power(2, LEVEL[p.level][5*i+4]);
     m->d     = LEVEL[p.level][5*i+5];
     if      (m->k > K_MAX_LGTBL8)         m->mode = MODE::SKETCH_8;
     else if (m->k > K_MAX_TBL32)          m->mode = MODE::LOG_TABLE_8;
@@ -50,18 +52,33 @@ void FCM::buildModel (const Param& p) {
 //  rf.open(p.ref);
   cerr << "Building models...\n";
   
-  for (auto m : model) {
-    if      (m.mode==MODE::TABLE_64)     buildTbl64(p.ref, m.k);
-    else if (m.mode==MODE::TABLE_32)     buildTbl32(p.ref, m.k);
-    else if (m.mode==MODE::LOG_TABLE_8)  buildLogTbl8(p.ref, m.k);
-    else                                 buildSketch4(p.ref, m.k);
-  }
+//  for (auto m : model) {
+//    if      (m.mode==MODE::TABLE_64)     buildTbl64(p.ref, m.k);
+//    else if (m.mode==MODE::TABLE_32)     buildTbl32(p.ref, m.k);
+//    else if (m.mode==MODE::LOG_TABLE_8)  buildLogTbl8(p.ref, m.k);
+//    else                                 buildSketch4(p.ref, m.k);
+//  }
   
+  vector<thread> thrd;  thrd.resize(4);
+  for (auto m : model) {
+    if (m.mode == MODE::TABLE_64)
+      thrd[0] = thread(&FCM::buildTbl64, this, p.ref, m.k);
+    else if (m.mode == MODE::TABLE_32)
+      thrd[1] = thread(&FCM::buildTbl32, this, p.ref, m.k);
+    else if (m.mode == MODE::LOG_TABLE_8)
+      thrd[2] = thread(&FCM::buildLogTbl8, this, p.ref, m.k);
+    else
+      thrd[3] = thread(&FCM::buildSketch4, this, p.ref, m.k);
+  }
+  for (u8 t=0; t!=4; ++t)  if (thrd[t].joinable()) thrd[t].join();
+    
+    
   //todo test
 //  tbl64->printTbl();
 //  cerr<< '\n';
 //  sketch4->printSk();
 
+  
   
   // Table64
 //  if (p.mode == 't') {
@@ -271,20 +288,3 @@ void FCM::compress (const Param& p) const {
 //  cerr << "Average Entropy (H) = " << aveEntr << '\n';
 //  cerr << "Compression finished ";
 }
-
-void FCM::printTbl (const Param &p) const {
-//  u64 rowSize = POW5[p.k[0]];//todo. change k[0]
-//  for (u8 i=0; i!=rowSize; ++i) {
-//    for (u8 j=0; j!=TAB_COL; ++j)
-//      cerr << tbl64[i*TAB_COL+j] << '\t';
-//    cerr << '\n';
-//  }
-}
-
-//void FCM::printHashTbl () const {
-//  for (const auto& e : htbl) {
-//    for (const auto& v : e.second)
-//      cerr << v << '\t';
-//    cerr << "-> " << e.first << '\n';
-//  }
-//}
