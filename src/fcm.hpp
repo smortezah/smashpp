@@ -40,8 +40,10 @@ class FCM    // Finite-context model
   void buildTbl32 (const string&, u8);
   void buildLogTbl8 (const string&, u8);
   void buildSketch4 (const string&, u8);
-//  void compressTbl ();
-//  void compressSkch ();
+  void compressTbl64 (const string&, u8, u8, float) const;
+  void compressTbl32 (const string&, u8, u8, float) const;
+  void compressLogTbl8 (const string&, u8, u8, float) const;
+  void compressSketch4 (const string&, u8, u8, float) const;
 };
 
 #endif //SMASHPP_FCM_HPP
