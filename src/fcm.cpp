@@ -52,26 +52,30 @@ void FCM::buildModel (const Param& p) {
 //  rf.open(p.ref);
   cerr << "Building models...\n";
   
-//  for (auto m : model) {
-//    if      (m.mode==MODE::TABLE_64)     buildTbl64(p.ref, m.k);
-//    else if (m.mode==MODE::TABLE_32)     buildTbl32(p.ref, m.k);
-//    else if (m.mode==MODE::LOG_TABLE_8)  buildLogTbl8(p.ref, m.k);
-//    else                                 buildSketch4(p.ref, m.k);
-//  }
-  
-  vector<thread> thrd;  thrd.resize(4);
   for (auto m : model) {
-    if (m.mode == MODE::TABLE_64)
-      thrd[0] = thread(&FCM::buildTbl64, this, p.ref, m.k);
-    else if (m.mode == MODE::TABLE_32)
-      thrd[1] = thread(&FCM::buildTbl32, this, p.ref, m.k);
-    else if (m.mode == MODE::LOG_TABLE_8)
-      thrd[2] = thread(&FCM::buildLogTbl8, this, p.ref, m.k);
-    else
-      thrd[3] = thread(&FCM::buildSketch4, this, p.ref, m.k);
+    switch (m.mode) {
+      case MODE::TABLE_64:     buildTbl64(p.ref, m.k);    break;
+      case MODE::TABLE_32:     buildTbl32(p.ref, m.k);    break;
+      case MODE::LOG_TABLE_8:  buildLogTbl8(p.ref, m.k);  break;
+      default:                 buildSketch4(p.ref, m.k);
+    }
   }
-  for (u8 t=0; t!=4; ++t)  if (thrd[t].joinable()) thrd[t].join();
-    
+  
+//  vector<thread> thrd;  thrd.resize(4);
+//  for (auto m : model) {
+//    switch (m.mode) {
+//      case MODE::TABLE_64:
+//        thrd[0] = thread(&FCM::buildTbl64,   this, p.ref, m.k);  break;
+//      case MODE::TABLE_32:
+//        thrd[1] = thread(&FCM::buildTbl32,   this, p.ref, m.k);  break;
+//      case MODE::LOG_TABLE_8:
+//        thrd[2] = thread(&FCM::buildLogTbl8, this, p.ref, m.k);  break;
+//      default:
+//        thrd[3] = thread(&FCM::buildSketch4, this, p.ref, m.k);
+//    }
+//  }
+//  for (u8 t=0; t!=4; ++t)  if (thrd[t].joinable()) thrd[t].join();
+
     
   //todo test
 //  tbl64->printTbl();
