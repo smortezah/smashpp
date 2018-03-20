@@ -6,11 +6,8 @@
 using std::array;
 
 Param::Param () {
-  tar = "";
-  ref = "";
-//  ir.emplace_back(false);
-//  k.emplace_back(10);
-//  alpha.emplace_back(0.01);
+  tar     = "";
+  ref     = "";
   verbose = false;
   nthr    = DEF_THR;
   level   = DEF_LVL;
@@ -50,9 +47,6 @@ void Param::parse (int argc, char**& argv) {
       else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
         level = static_cast<u8>(stoi(*++i));
       }
-//      else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
-//        setModelPar(*++i);
-//      }
       else if (*i=="-v" || *i=="--verbose") {
         verbose = true;
       }
@@ -98,42 +92,6 @@ void Param::checkFile (const string& s) const {
     f.close();
   }
 }
-
-//void Param::setModelPar (const string& m) {
-//  auto beg = m.begin();
-//  vector<string> msPar;
-//  for (auto i=beg; i!=m.end(); ++i) {
-//    if (*i == ':') {
-//      msPar.emplace_back(string(beg,i));
-//      beg = i+1;
-//    }
-//  }
-//  msPar.emplace_back(string(beg, m.end()));
-//  nMdl = static_cast<u8>(msPar.size());
-//
-//  array<string,3> mPar;
-//  ir.clear();  k.clear();  alpha.clear();
-//  for (const auto& e : msPar) {
-//    beg  = e.begin();
-//    u8 j = 0;
-//    for (auto i=beg; i!=e.end(); ++i) {
-//      if (*i == ',') {
-//        mPar[j++] = string(beg, i);
-//        beg = i+1;
-//      }
-//    }
-//    mPar[j] = string(beg, e.end());
-//
-//    ir.emplace_back(static_cast<bool>(stoi(mPar[0])));
-//    k.emplace_back(static_cast<u8>(stoi(mPar[1])));
-//    alpha.emplace_back(stof(mPar[2]));
-//  }
-//
-//  // 6*(5^k_1 + 5^k_2 + ...) > 6*5^12 => mode: hash table='h'
-//  u64 sum=0;  for (u8 i=0; i!=nMdl; ++i) sum+=POW5[k[i]];
-////  mode = (sum > POW5[TAB_MAX_K]) ? 'h' : 't';
-//  mode = 's';//todo. change
-//}
 
 inline void Param::help () const {
   cerr                                                                   << '\n'
