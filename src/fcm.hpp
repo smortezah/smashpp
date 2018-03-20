@@ -34,16 +34,18 @@ class FCM    // Finite-context model
   Table32*   tbl32;
   LogTable8* logtbl8;
   CMLS4*     sketch4;
-//  htbl_t htbl;
-  
-  void buildTbl64 (const string&, u8);
-  void buildTbl32 (const string&, u8);
-  void buildLogTbl8 (const string&, u8);
-  void buildSketch4 (const string&, u8);
-  void compressTbl64 (const string&, u8, u8, float) const;
-  void compressTbl32 (const string&, u8, u8, float) const;
-  void compressLogTbl8 (const string&, u8, u8, float) const;
-  void compressSketch4 (const string&, u8, u8, float) const;
+
+  // Create data structure
+  template <typename T, typename U>
+  void createDS (const string&, T, U&);
+  // Compress data structure
+  template <typename T,
+    typename Y,
+    typename U>
+  void compressDS (const string&, const ModelPar&, T,
+//                   Y&,
+                   Y,
+                   const U&) const;
 };
 
 #endif //SMASHPP_FCM_HPP
