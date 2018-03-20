@@ -114,8 +114,9 @@ void FCM::compress (const Param& p) const {
   
   //todo. test multithreading
   vector<thread> thrd;  thrd.resize(4);
-//  u64 aN64[4]{0,0,0,0};    // Array of number of elements
-  u64 aN64{0};
+  u64 aN64[4]{0,0,0,0};    // Array of number of elements
+//  u64 aN64{0};
+//  u64* aN64=new u64[4];
   u32 aN32[4]{0,0,0,0};
   for (auto m : model) {
     auto mask32 = static_cast<u32>((1<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
@@ -124,8 +125,8 @@ void FCM::compress (const Param& p) const {
       case MODE::TABLE_64:
         thrd[0] = thread(&FCM::compressDS<u32,
 //                           array<u64,4>,
-//                           u64*,
-                           u64,
+                           u64*,
+//                           u64,
                            Table64*>, this,
                          p.tar, m, mask32,
                          aN64,
@@ -154,7 +155,6 @@ template <typename T,
   typename Y,
   typename U>
 inline void FCM::compressDS (const string& tar, const ModelPar& mdl, T mask,
-//                             Y& aN,
                              Y aN,
                              const U& container) const {
 //  auto   shl    = mdl.k<<1;  // Shift left
