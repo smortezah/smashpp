@@ -43,7 +43,6 @@ class FCM    // Finite-context model
     typename Y,
     typename U>
   void compressDS (const string&, const ModelPar&, T,
-//                   Y&,
                    Y,
                    const U&) const;
 };
