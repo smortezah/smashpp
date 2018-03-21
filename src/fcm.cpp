@@ -5,11 +5,13 @@
 #include <fstream>
 #include <cmath>
 #include <thread>
+#include <mutex>
 #include "fcm.hpp"
 using std::ifstream;
 using std::cout;
 using std::array;
 using std::thread;
+std::mutex mutx;
 
 FCM::FCM (const Param& p) {
   model.resize(LEVEL[p.level][0]);
@@ -114,36 +116,28 @@ void FCM::compress (const Param& p) const {
   
   //todo. test multithreading
   vector<thread> thrd;  thrd.resize(4);
-  u64 aN64[4]{0,0,0,0};    // Array of number of elements
-//  u64 aN64{0};
-//  u64* aN64=new u64[4];
-  u32 aN32[4]{0,0,0,0};
+  array<u64, 4> aN64{0};    // Array of number of elements
+  array<u32, 4> aN32{0};
   for (auto m : model) {
     auto mask32 = static_cast<u32>((1<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
     auto mask64 = static_cast<u64>((1<<(m.k<<1))-1);
     switch (m.mode) {
       case MODE::TABLE_64:
-        thrd[0] = thread(&FCM::compressDS<u32,
-//                           array<u64,4>,
-                           u64*,
-//                           u64,
-                           Table64*>, this,
-                         p.tar, m, mask32,
-                         aN64,
-                         tbl64);
+        thrd[0] = thread(&FCM::compressDS<u32,array<u64,4>,Table64*>, this,
+                         p.tar, m, mask32, aN64, tbl64);
         break;
-//      case MODE::TABLE_32:
-//        thrd[1] = thread(&FCM::compressDS<u32,array<u64,4>,Table32*>, this,
-//                         p.tar, m, mask32, aN64, tbl32);
-//        break;
-//      case MODE::LOG_TABLE_8:
-//        thrd[2] = thread(&FCM::compressDS<u32,array<u64,4>,LogTable8*>, this,
-//                         p.tar, m, mask32, aN64, logtbl8);
-//        break;
-//      case MODE::SKETCH_8:
-//        thrd[3] = thread(&FCM::compressDS<u64,array<u32,4>,CMLS4*>, this,
-//                         p.tar, m, mask64, aN32, sketch4);
-//        break;
+      case MODE::TABLE_32:
+        thrd[0] = thread(&FCM::compressDS<u32,array<u64,4>,Table32*>, this,
+                         p.tar, m, mask32, aN64, tbl32);
+        break;
+      case MODE::LOG_TABLE_8:
+        thrd[0] = thread(&FCM::compressDS<u32,array<u64,4>,LogTable8*>, this,
+                         p.tar, m, mask32, aN64, logtbl8);
+        break;
+      case MODE::SKETCH_8:
+        thrd[0] = thread(&FCM::compressDS<u64,array<u32,4>,CMLS4*>, this,
+                         p.tar, m, mask64, aN32, sketch4);
+        break;
       default:    cerr << "Error.";
     }
   }
@@ -151,12 +145,9 @@ void FCM::compress (const Param& p) const {
 //  cerr << "Compression finished ";
 }
 
-template <typename T,
-  typename Y,
-  typename U>
+template <typename T, typename Y, typename U>
 inline void FCM::compressDS (const string& tar, const ModelPar& mdl, T mask,
-                             Y aN,
-                             const U& container) const {
+                             Y aN, const U& container) const {
 //  auto   shl    = mdl.k<<1;  // Shift left
 //  T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
 //  T      ctxIR  = mask;      // Inverted repeat context (integer)
