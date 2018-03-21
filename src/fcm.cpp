@@ -5,7 +5,6 @@
 #include <fstream>
 #include <cmath>
 #include <thread>
-#include <future>//todo
 #include "fcm.hpp"
 using std::ifstream;
 using std::cout;
@@ -97,10 +96,6 @@ inline void FCM::createDS (const string& ref, T mask, U& container) {
   rf.close();
 }
 
-array<u64, 4> a{4,6,3,9};
-u64 f (int i){
-  return a[i];
-}
 void FCM::compress (const Param& p) const {
   cerr << "Compressing...\n";
   array<u64, 4> aN64{0};    // Array of number of elements
@@ -148,6 +143,7 @@ void FCM::compress (const Param& p) const {
 //  cerr << "Compression finished ";
 }
 
+//#include <typeinfo>
 template <typename T, typename Y, typename U>
 inline void FCM::compressDS (const string& tar, const ModelPar& mdl, T mask,
                              Y aN, const U& container) const {
@@ -160,7 +156,7 @@ inline void FCM::compressDS (const string& tar, const ModelPar& mdl, T mask,
   double sEntr  = 0;         // Sum of entropies = sum( log_2 P(s|c^t) )
   ifstream tf(tar);
   char c;
-  vector<thread> thrd;  thrd.resize(4);//todo
+//  if (typeid(container) == typeid(Table64*)) {
   while (tf.get(c)) {
     if (c != '\n') {
       ++symsNo;
@@ -168,31 +164,18 @@ inline void FCM::compressDS (const string& tar, const ModelPar& mdl, T mask,
       // Inverted repeat
       if (mdl.ir) {
         auto r = ctxIR>>2;
-//        for (u8 i=0; i!=ALPH_SZ; ++i)
-//          aN[i] = container->query((IRMAGIC-i)<<shl | r);
-
-
         for (u8 i=0; i!=ALPH_SZ; ++i)
-          aN[i] = std::async(container->query, (IRMAGIC-i) << shl | r).get();
-        
-//        u64 AR=0, CR=0, GR=0, TR=0;
-//        {
-////        #pragma omp parallel
-//          AR = container->query(3 << shl | r);    // A
-//          CR = container->query(2 << shl | r);    // C
-//          GR = container->query(1 << shl | r);    // G
-//          TR = container->query(r);             // T
-//        }
-//        thrd[0]=thread([&AR,&container,&shl,&r](){ AR=container->query(3<<shl | r); });
-////        thrd[1]=thread([&CR,&container,&shl,&r](){ CR=container->query(2<<shl | r); });
-////        thrd[2]=thread([&GR,&container,&shl,&r](){ GR=container->query(1<<shl | r); });
-////        thrd[3]=thread([&TR,&container,&shl,&r](){ TR=container->query(r); });
-//        for (u8 t=0; t!=4; ++t)  if (thrd[t].joinable()) thrd[t].join();
-//        aN[0] = AR;
-//        aN[1] = CR;
-//        aN[2] = GR;
-//        aN[3] = TR;
-
+          aN[i] = container->query((IRMAGIC-i)<<shl | r);
+//
+//        std::thread thr[4];
+//        thr[0] = std::thread(&Table64::query, container, std::ref(aN), 0, 3<<shl | r);
+//        thr[1] = std::thread(&Table64::query, container, std::ref(aN), 1, 2<<shl | r);
+//        thr[2] = std::thread(&Table64::query, container, std::ref(aN), 2, 1<<shl | r);
+//        thr[3] = std::thread(&Table64::query, container, std::ref(aN), 3, 0<<shl | r);
+//        thr[0].join();
+//        thr[1].join();
+//        thr[2].join();
+//        thr[3].join();
 //
 //        aN[0] = container->query(3<<shl | r);    // A
 //        aN[1] = container->query(2<<shl | r);    // C
@@ -213,6 +196,7 @@ inline void FCM::compressDS (const string& tar, const ModelPar& mdl, T mask,
       sEntr += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
     }
   }
+//  }
   tf.close();
   double aveEntr = sEntr/symsNo;
   cerr << "Average Entropy (H) = " << aveEntr << '\n';

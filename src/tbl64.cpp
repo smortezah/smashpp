@@ -26,6 +26,9 @@ void Table64::update (u32 ctx) {
   ++tot;
 }
 
+//void Table64::query (std::array<u64,4>& out, u8 idx, u32 ctx) {
+//  out[idx] = tbl[ctx];
+//}
 u64 Table64::query (u32 ctx) const {
   return tbl[ctx];
 }

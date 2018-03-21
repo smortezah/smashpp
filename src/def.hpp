@@ -211,7 +211,7 @@ constexpr u8 LEVEL[2][11] {
 // #models, ir=0|1,  k,   100*alpha, log2 w,   d
   {1,          1,     1,      99,       0,       0},    // Level 0
   {2,          0,    11,      99,       0,       0,     // Level 1
-               0,    20,      99,      30,   DEF_D}
+               1,    20,      99,      30,   DEF_D}
 };
 
 
