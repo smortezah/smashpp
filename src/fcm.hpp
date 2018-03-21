@@ -23,10 +23,10 @@ struct ModelPar {
 class FCM    // Finite-context model
 {
  public:
-  explicit FCM      (const Param&);
-  ~FCM              ();
-  void buildModel   (const Param&);          // Build FCM (finite-context model)
-  void compress     (const Param&) const;
+  explicit FCM    (const Param&);
+  ~FCM            ();
+  void buildModel (const Param&);          // Build FCM (finite-context model)
+  void compress   (const Param&) const;
   
  private:
   vector<ModelPar> model;
