@@ -5,13 +5,12 @@
 #include <fstream>
 #include <cmath>
 #include <thread>
-#include <mutex>
+#include <future>//todo
 #include "fcm.hpp"
 using std::ifstream;
 using std::cout;
 using std::array;
 using std::thread;
-std::mutex mutx;
 
 FCM::FCM (const Param& p) {
   model.resize(LEVEL[p.level][0]);
@@ -98,96 +97,124 @@ inline void FCM::createDS (const string& ref, T mask, U& container) {
   rf.close();
 }
 
+array<u64, 4> a{4,6,3,9};
+u64 f (int i){
+  return a[i];
+}
 void FCM::compress (const Param& p) const {
   cerr << "Compressing...\n";
-//  array<u64, 4> aN64{0};    // Array of number of elements
-//  array<u32, 4> aN32{0};
-//  for (auto m : model) {
-//    auto mask32 = static_cast<u32>((1<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
-//    auto mask64 = static_cast<u64>((1<<(m.k<<1))-1);
-//    switch (m.mode) {
-//      case MODE::TABLE_64:    compressDS(p.tar, m, mask32, aN64, tbl64);  break;
-//      case MODE::TABLE_32:    compressDS(p.tar, m, mask32, aN64, tbl32);  break;
-//      case MODE::LOG_TABLE_8: compressDS(p.tar, m, mask32, aN64, logtbl8);break;
-//      case MODE::SKETCH_8:    compressDS(p.tar, m, mask64, aN32, sketch4);break;
-//      default:                cerr << "Error";
-//    }
-//  }
-  
-  //todo. test multithreading
-  vector<thread> thrd;  thrd.resize(4);
   array<u64, 4> aN64{0};    // Array of number of elements
   array<u32, 4> aN32{0};
   for (auto m : model) {
     auto mask32 = static_cast<u32>((1<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
     auto mask64 = static_cast<u64>((1<<(m.k<<1))-1);
     switch (m.mode) {
-      case MODE::TABLE_64:
-        thrd[0] = thread(&FCM::compressDS<u32,array<u64,4>,Table64*>, this,
-                         p.tar, m, mask32, aN64, tbl64);
-        break;
-      case MODE::TABLE_32:
-        thrd[0] = thread(&FCM::compressDS<u32,array<u64,4>,Table32*>, this,
-                         p.tar, m, mask32, aN64, tbl32);
-        break;
-      case MODE::LOG_TABLE_8:
-        thrd[0] = thread(&FCM::compressDS<u32,array<u64,4>,LogTable8*>, this,
-                         p.tar, m, mask32, aN64, logtbl8);
-        break;
-      case MODE::SKETCH_8:
-        thrd[0] = thread(&FCM::compressDS<u64,array<u32,4>,CMLS4*>, this,
-                         p.tar, m, mask64, aN32, sketch4);
-        break;
-      default:    cerr << "Error.";
+      case MODE::TABLE_64:    compressDS(p.tar, m, mask32, aN64, tbl64);  break;
+      case MODE::TABLE_32:    compressDS(p.tar, m, mask32, aN64, tbl32);  break;
+      case MODE::LOG_TABLE_8: compressDS(p.tar, m, mask32, aN64, logtbl8);break;
+      case MODE::SKETCH_8:    compressDS(p.tar, m, mask64, aN32, sketch4);break;
+      default:                cerr << "Error";
     }
   }
-  for (u8 t=0; t!=4; ++t)  if (thrd[t].joinable()) thrd[t].join();
+  
+//  //todo. test multithreading
+//  vector<thread> thrd;  thrd.resize(4);
+//  array<u64, 4> aN64{0};    // Array of number of elements
+//  array<u32, 4> aN32{0};
+//  for (auto m : model) {
+//    auto mask32 = static_cast<u32>((1<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
+//    auto mask64 = static_cast<u64>((1<<(m.k<<1))-1);
+//    switch (m.mode) {
+//      case MODE::TABLE_64:
+//        thrd[0] = thread(&FCM::compressDS<u32,array<u64,4>,Table64*>, this,
+//                         p.tar, m, mask32, aN64, tbl64);
+//        break;
+//      case MODE::TABLE_32:
+//        thrd[1] = thread(&FCM::compressDS<u32,array<u64,4>,Table32*>, this,
+//                         p.tar, m, mask32, aN64, tbl32);
+//        break;
+//      case MODE::LOG_TABLE_8:
+//        thrd[2] = thread(&FCM::compressDS<u32,array<u64,4>,LogTable8*>, this,
+//                         p.tar, m, mask32, aN64, logtbl8);
+//        break;
+//      case MODE::SKETCH_8:
+//        thrd[3] = thread(&FCM::compressDS<u64,array<u32,4>,CMLS4*>, this,
+//                         p.tar, m, mask64, aN32, sketch4);
+//        break;
+//      default:    cerr << "Error.";
+//    }
+//  }
+//  for (u8 t=0; t!=4; ++t)  if (thrd[t].joinable()) thrd[t].join();
 //  cerr << "Compression finished ";
 }
 
 template <typename T, typename Y, typename U>
 inline void FCM::compressDS (const string& tar, const ModelPar& mdl, T mask,
                              Y aN, const U& container) const {
-//  auto   shl    = mdl.k<<1;  // Shift left
-//  T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
-//  T      ctxIR  = mask;      // Inverted repeat context (integer)
-//  u64    symsNo = 0;         // No. syms in target file, except \n
-//  float  alpha  = mdl.alpha;
-//  double sAlpha = ALPH_SZ*alpha;  // Sum of alphas
-//  double sEntr  = 0;         // Sum of entropies = sum( log_2 P(s|c^t) )
-//  ifstream tf(tar);
-//  char c;
-//  while (tf.get(c)) {
-//    if (c != '\n') {
-//      ++symsNo;
-//      auto numSym = NUM[c];
-//      // Inverted repeat
-//      if (mdl.ir) {
-//        auto r = ctxIR>>2;
+  auto   shl    = mdl.k<<1;  // Shift left
+  T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
+  T      ctxIR  = mask;      // Inverted repeat context (integer)
+  u64    symsNo = 0;         // No. syms in target file, except \n
+  float  alpha  = mdl.alpha;
+  double sAlpha = ALPH_SZ*alpha;  // Sum of alphas
+  double sEntr  = 0;         // Sum of entropies = sum( log_2 P(s|c^t) )
+  ifstream tf(tar);
+  char c;
+  vector<thread> thrd;  thrd.resize(4);//todo
+  while (tf.get(c)) {
+    if (c != '\n') {
+      ++symsNo;
+      auto numSym = NUM[c];
+      // Inverted repeat
+      if (mdl.ir) {
+        auto r = ctxIR>>2;
 //        for (u8 i=0; i!=ALPH_SZ; ++i)
 //          aN[i] = container->query((IRMAGIC-i)<<shl | r);
-////
-////        aN[0] = container->query(3<<shl | r);    // A
-////        aN[1] = container->query(2<<shl | r);    // C
-////        aN[2] = container->query(1<<shl | r);    // G
-////        aN[3] = container->query(r);             // T
-//        ctxIR = REVNUM[c]<<shl | r;          // Update ctxIR
-//      }
-//      auto l = ctx<<2;
-//      for (u8 i=0; i!=ALPH_SZ; ++i)
-//        aN[i] += container->query(l | i);
-////
-////      aN[0] += container->query(l);        // A
-////      aN[1] += container->query(l | 1);    // C
-////      aN[2] += container->query(l | 2);    // G
-////      aN[3] += container->query(l | 3);    // T
-//      ctx = (l & mask) | numSym;       // Update ctx
+
+
+        for (u8 i=0; i!=ALPH_SZ; ++i)
+          aN[i] = std::async(container->query, (IRMAGIC-i) << shl | r).get();
+        
+//        u64 AR=0, CR=0, GR=0, TR=0;
+//        {
+////        #pragma omp parallel
+//          AR = container->query(3 << shl | r);    // A
+//          CR = container->query(2 << shl | r);    // C
+//          GR = container->query(1 << shl | r);    // G
+//          TR = container->query(r);             // T
+//        }
+//        thrd[0]=thread([&AR,&container,&shl,&r](){ AR=container->query(3<<shl | r); });
+////        thrd[1]=thread([&CR,&container,&shl,&r](){ CR=container->query(2<<shl | r); });
+////        thrd[2]=thread([&GR,&container,&shl,&r](){ GR=container->query(1<<shl | r); });
+////        thrd[3]=thread([&TR,&container,&shl,&r](){ TR=container->query(r); });
+//        for (u8 t=0; t!=4; ++t)  if (thrd[t].joinable()) thrd[t].join();
+//        aN[0] = AR;
+//        aN[1] = CR;
+//        aN[2] = GR;
+//        aN[3] = TR;
+
 //
-//      sEntr += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
-//    }
-//  }
-//  tf.close();
-//  double aveEntr = sEntr/symsNo;
-//  cerr << "Average Entropy (H) = " << aveEntr << '\n';
+//        aN[0] = container->query(3<<shl | r);    // A
+//        aN[1] = container->query(2<<shl | r);    // C
+//        aN[2] = container->query(1<<shl | r);    // G
+//        aN[3] = container->query(r);             // T
+        ctxIR = REVNUM[c]<<shl | r;          // Update ctxIR
+      }
+      auto l = ctx<<2;
+      for (u8 i=0; i!=ALPH_SZ; ++i)
+        aN[i] += container->query(l | i);
+//
+//      aN[0] += container->query(l);        // A
+//      aN[1] += container->query(l | 1);    // C
+//      aN[2] += container->query(l | 2);    // G
+//      aN[3] += container->query(l | 3);    // T
+      ctx = (l & mask) | numSym;       // Update ctx
+      
+      sEntr += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
+    }
+  }
+  tf.close();
+  double aveEntr = sEntr/symsNo;
+  cerr << "Average Entropy (H) = " << aveEntr << '\n';
   cerr << "Compression finished ";
 }
