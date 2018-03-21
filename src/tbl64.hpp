@@ -11,6 +11,7 @@ using std::vector;
 using std::ifstream;
 using std::ofstream;
 
+#include <thread>
 class Table64
 {
 public:
@@ -18,6 +19,7 @@ public:
   explicit Table64 (u8);
   void config      (u8);
   void update      (u32);               // Update table
+//  void  query      (std::array<u64,4>&, u8, u32);   // Query count of ctx
   u64  query       (u32)       const;   // Query count of ctx
   u64  getTotal    ()          const;   // Total count of all items in the table
   u64  countMty    ()          const;   // Number of empty cells in the table
@@ -25,7 +27,7 @@ public:
   void dump        (ofstream&) const;
   void load        (ifstream&) const;
   void printTbl    ()          const;
-
+  
 private:
   vector<u64> tbl;                      // Table of 64 bit counters
   u8          k;                        // Ctx size

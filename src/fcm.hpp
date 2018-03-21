@@ -26,8 +26,8 @@ class FCM    // Finite-context model
   explicit FCM      (const Param&);
   ~FCM              ();
   void buildModel   (const Param&);          // Build FCM (finite-context model)
-  void compress     (const Param&)  const;
-
+  void compress     (const Param&) const;
+  
  private:
   vector<ModelPar> model;
   Table64*   tbl64;
