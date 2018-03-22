@@ -60,7 +60,7 @@ void Table32::load (ifstream& ifs) const {
   ifs.read((char*) &tbl[0], tbl.size());
 }
 
-void Table32::printTbl () const {
+void Table32::print () const {
   u8 context_width = 12;
   cerr.width(context_width);  cerr<<std::left<<"Context";
   cerr << "Count\n";

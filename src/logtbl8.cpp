@@ -51,7 +51,7 @@ void LogTable8::load (ifstream& ifs) const {
   ifs.read((char*) &tbl[0], tbl.size());
 }
 
-void LogTable8::printTbl () const {
+void LogTable8::print () const {
   u8 context_width = 12;
   cerr.width(context_width);  cerr<<std::left<<"Context";
   cerr << "Count\n";

@@ -102,7 +102,7 @@ void CMLS4::load (ifstream& ifs) const {
 	ifs.read((char*) &sk[0], sk.size());
 }
 
-void CMLS4::printSk () const {
+void CMLS4::print () const {
   u8 cell_width = 3;
   for (auto i=0; i!=d; i++) {
     cerr << "d_" << i << ":  ";

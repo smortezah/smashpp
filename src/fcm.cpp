@@ -146,7 +146,7 @@ void FCM::compress (const Param& p) const {
 //#include <typeinfo>
 template <typename T, typename Y, typename U>
 inline void FCM::compressDS (const string& tar, const ModelPar& mdl, T mask,
-                             Y aN, const U& container) const {
+                             Y& aN,/*Y aN,*/ const U& container) const {
   auto   shl    = mdl.k<<1;  // Shift left
   T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
   T      ctxIR  = mask;      // Inverted repeat context (integer)
