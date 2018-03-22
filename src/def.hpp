@@ -230,4 +230,14 @@ constexpr u8 LEVEL[2][11] {
 //constexpr auto a = LogInt<256>();
 //cerr << (int) a.lg[3];
 
+
+
+
+
+class DS {
+public:
+//  virtual ~DS ()= default;
+};
+
+
 #endif //SMASHPP_DEF_HPP
