@@ -39,8 +39,9 @@ class FCM    // Finite-context model
   template <typename T, typename U>
   void createDS (const string&, T, U&);
   // Compress data structure
-  template <typename T, typename Y, typename U>
-  void compressDS (const string&, const ModelPar&, T, Y&, const U&) const;
+  void compressDS (const string&) const;
+//  template <typename T, typename Y, typename U>
+//  void compressDS (const string&, const ModelPar&, T, Y&, const U&) const;
 };
 
 #endif //SMASHPP_FCM_HPP
