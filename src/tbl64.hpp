@@ -26,7 +26,7 @@ public:
   u64  maxTblVal   ()          const;
   void dump        (ofstream&) const;
   void load        (ifstream&) const;
-  void printTbl    ()          const;
+  void print       ()          const;
   
 private:
   vector<u64> tbl;                      // Table of 64 bit counters

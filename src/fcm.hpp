@@ -34,13 +34,13 @@ class FCM    // Finite-context model
   Table32*   tbl32;
   LogTable8* logtbl8;
   CMLS4*     sketch4;
-
+  
   // Create data structure
   template <typename T, typename U>
   void createDS (const string&, T, U&);
   // Compress data structure
   template <typename T, typename Y, typename U>
-  void compressDS (const string&, const ModelPar&, T, Y, const U&) const;
+  void compressDS (const string&, const ModelPar&, T, Y&, const U&) const;
 };
 
 #endif //SMASHPP_FCM_HPP

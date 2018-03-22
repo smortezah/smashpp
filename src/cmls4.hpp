@@ -23,7 +23,7 @@ class CMLS4    // Count-min-log sketch
   u8   maxSkVal  ()          const; // todo. maybe remove
 	void dump      (ofstream&) const;
 	void load      (ifstream&) const;
-  void printSk   ()          const;
+  void print     ()          const;
   
  private:
   u64         w;                    // Width of sketch

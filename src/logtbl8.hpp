@@ -24,7 +24,7 @@ public:
   u32  maxTblVal     ()          const;
   void dump          (ofstream&) const;
   void load          (ifstream&) const;
-  void printTbl      ()          const;
+  void print         ()          const;
 
 private:
   vector<u8> tbl;                       // Table of 8 bit logarithmic counters
