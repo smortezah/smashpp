@@ -153,16 +153,10 @@ void FCM::compress (const Param& p) const {
 #include <tuple>
 #include <typeinfo>
 inline void FCM::compressDS (const string& tar) const {
-  vector<std::unique_ptr<DS>> a;
   for (auto m : model) {
-    switch (m.mode) {
-      case MODE::TABLE_64:  a.push_back(std::make_unique<DS>(tbl64));    break;
-//      case MODE::SKETCH_8:  a.push_back(sketch4);  break;
-      default:                cerr << "Error";
-    }
+//    auto a=dtStruct(m.mode);
+//    prob();
   }
-  
-  
   
 ////  array<u64, 4> aN64{0};    // Array of number of elements
 ////  array<u32, 4> aN32{0};
@@ -276,3 +270,17 @@ inline void FCM::compressDS (const string& tar) const {
 //  cerr << "Average Entropy (H) = " << aveEntr << '\n';
 //  cerr << "Compression finished ";
 //}
+
+template <typename T>
+void FCM::prob (T ds) const {
+  cerr<<"hi";
+//  ds.print();
+}
+
+template <typename T>
+T FCM::dtStruct (u8 mode) const {
+  if      (mode==MODE::TABLE_64)     return tbl64;
+  else if (mode==MODE::TABLE_32)     return tbl32;
+  else if (mode==MODE::LOG_TABLE_8)  return logtbl8;
+  else                               return sketch4;
+}
