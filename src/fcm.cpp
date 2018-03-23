@@ -152,22 +152,48 @@ void FCM::compress (const Param& p) const {
 
 #include <tuple>
 #include <typeinfo>
+#include <variant>
+union U{
+  Table64* t64;
+  CMLS4*   sk;
+//  u16 a;
+//  u32 b;
+};
 inline void FCM::compressDS (const string& tar) const {
-//  Table64* a;
-//  CMLS4* b;
-//  for (auto m : model) {
-//    if(m.mode==MODE::TABLE_64)
-//      a=tbl64;
+//  U u[2];
+//  u[0] = {tbl64};
+//  u[1] = {tbl64};
+//
+//  for (int i = 0; i<model.size(); ++i) {
+//    if (model[i].mode==MODE::TABLE_64)
+//      u[i].t64=tbl64;
 //    else
-//      b=sketch4;
-////    auto a=dtStruct(m.mode);
-////    prob();
+//      u[i].sk=sketch4;
 //  }
-  
-  vector<DS*> v;
-  v.push_back(tbl64);
-for(auto a:v)
-  dynamic_cast<Table64*>(a)->print();
+//  u[0].t64->print();
+std::variant<Table64*, CMLS4*> v[2];
+  v[0]=tbl64;
+  v[1]=sketch4;
+  for (u8 i = 0; i<model.size(); ++i) {
+//  auto a=std::get<0>(v[0]);
+//  auto b=std::get<1>(v[1]);
+    cerr<<v[1].index();
+//  std::get<i>(v[i])->print();
+//    a->print();
+  }
+
+//  for(auto m:model) {
+//    auto a = dtStruct(m.mode);
+//    a.print();
+//  }
+//  auto a=dtStruct<auto>(0);
+//  cerr<< typeid(a).name();
+
+
+//  vector<DS*> v;
+//  v.push_back(tbl64);
+//for(auto a:v)
+//  dynamic_cast<Table64*>(a)->print();
   
   
 ////  array<u64, 4> aN64{0};    // Array of number of elements
@@ -184,6 +210,8 @@ for(auto a:v)
 ////    }
 ////  }
 
+
+  
 //  auto   shl    = mdl.k<<1;  // Shift left
 //  T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
 //  T      ctxIR  = mask;      // Inverted repeat context (integer)
