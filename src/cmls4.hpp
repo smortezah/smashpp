@@ -10,7 +10,7 @@ using std::vector;
 using std::ifstream;
 using std::ofstream;
 
-class CMLS4    // Count-min-log sketch
+class CMLS4: public DS    // Count-min-log sketch
 {
  public:
   CMLS4          () = default;

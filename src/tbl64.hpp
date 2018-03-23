@@ -11,7 +11,7 @@ using std::vector;
 using std::ifstream;
 using std::ofstream;
 
-class Table64
+class Table64:public DS
 {
 public:
   Table64          () = default;

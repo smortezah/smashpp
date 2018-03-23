@@ -153,10 +153,22 @@ void FCM::compress (const Param& p) const {
 #include <tuple>
 #include <typeinfo>
 inline void FCM::compressDS (const string& tar) const {
-  for (auto m : model) {
-//    auto a=dtStruct(m.mode);
-//    prob();
-  }
+//  Table64* a;
+//  CMLS4* b;
+//  for (auto m : model) {
+//    if(m.mode==MODE::TABLE_64)
+//      a=tbl64;
+//    else
+//      b=sketch4;
+////    auto a=dtStruct(m.mode);
+////    prob();
+//  }
+  
+  vector<DS*> v;
+  v.push_back(tbl64);
+for(auto a:v)
+  dynamic_cast<Table64*>(a)->print();
+  
   
 ////  array<u64, 4> aN64{0};    // Array of number of elements
 ////  array<u32, 4> aN32{0};
