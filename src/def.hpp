@@ -232,6 +232,7 @@ constexpr u8 LEVEL[2][11] {
 
 class DS{
 public:
+  virtual void print(){};
   virtual ~DS (){};
 };
 #endif //SMASHPP_DEF_HPP
