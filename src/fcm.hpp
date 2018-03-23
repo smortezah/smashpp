@@ -42,6 +42,7 @@ class FCM    // Finite-context model
   void compressDS (const string&) const;
 //  template <typename T, typename Y, typename U>
 //  void compressDS (const string&, const ModelPar&, T, Y&, const U&) const;
+
   template <typename T>
   void prob(T) const;
   template <typename T>
