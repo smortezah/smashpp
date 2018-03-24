@@ -12,27 +12,13 @@ using std::array;
 using std::thread;
 
 FCM::FCM (const Param& p) {
-  model.resize(LEVEL[p.level][0]);
-  for (auto m=model.begin(); m!=model.end(); ++m) {
-    auto i   = m - model.begin();
-    m->ir    = LEVEL[p.level][5*i+1];
-    m->k     = LEVEL[p.level][5*i+2];
-    m->alpha = static_cast<float>(LEVEL[p.level][5*i+3])/100;
-    m->w     = power(2, LEVEL[p.level][5*i+4]);
-    m->d     = LEVEL[p.level][5*i+5];
-    if      (m->k > K_MAX_LGTBL8)         m->mode = MODE::SKETCH_8;
-    else if (m->k > K_MAX_TBL32)          m->mode = MODE::LOG_TABLE_8;
-    else if (m->k > K_MAX_TBL64)          m->mode = MODE::TABLE_32;
-    else                                  m->mode = MODE::TABLE_64;
-    if      (m->mode==MODE::TABLE_64)       tbl64 = new Table64(m->k);
-    else if (m->mode==MODE::TABLE_32)       tbl32 = new Table32(m->k);
-    else if (m->mode==MODE::LOG_TABLE_8)  logtbl8 = new LogTable8(m->k);
-    else                                  sketch4 = new CMLS4(m->w, m->d);
-  }
+  setModels(p);
+  allocModels();
+  setModesComb();
 }
 
 FCM::~FCM () {
-  for (auto m : model) {
+  for (const auto& m : model) {
     if      (m.mode==MODE::TABLE_64)      delete tbl64;
     else if (m.mode==MODE::TABLE_32)      delete tbl32;
     else if (m.mode==MODE::LOG_TABLE_8)   delete logtbl8;
@@ -49,16 +35,35 @@ inline void FCM::setModels (const Param& p) {
     m->alpha = static_cast<float>(LEVEL[p.level][5*i+3])/100;
     m->w = power(2, LEVEL[p.level][5*i+4]);
     m->d = LEVEL[p.level][5*i+5];
-    if      (m->k>K_MAX_LGTBL8)  m->mode = MODE::SKETCH_8;
-    else if (m->k>K_MAX_TBL32)   m->mode = MODE::LOG_TABLE_8;
-    else if (m->k>K_MAX_TBL64)   m->mode = MODE::TABLE_32;
-    else                         m->mode = MODE::TABLE_64;
+    if      (m->k>K_MAX_LGTBL8)   m->mode = MODE::SKETCH_8;
+    else if (m->k>K_MAX_TBL32)    m->mode = MODE::LOG_TABLE_8;
+    else if (m->k>K_MAX_TBL64)    m->mode = MODE::TABLE_32;
+    else                          m->mode = MODE::TABLE_64;
   }
+}
+
+inline void FCM::allocModels () {
+  for (const auto& m : model)
+    if      (m.mode==MODE::TABLE_64)        tbl64 = new Table64(m.k);
+    else if (m.mode==MODE::TABLE_32)        tbl32 = new Table32(m.k);
+    else if (m.mode==MODE::LOG_TABLE_8)   logtbl8 = new LogTable8(m.k);
+    else                                  sketch4 = new CMLS4(m.w, m.d);
+}
+
+inline void FCM::setModesComb () {
+  u8 isT64=0, isT32=0, isLT=0, isSk=0;
+  for (const auto& m : model) {
+    if      (m.mode==MODE::TABLE_64)      isT64 = 1;
+    else if (m.mode==MODE::TABLE_32)      isT32 = 1<<1;
+    else if (m.mode==MODE::LOG_TABLE_8)   isLT  = 1<<2;
+    else if (m.mode==MODE::SKETCH_8)      isSk  = 1<<3;
+  }
+  MODE_COMB = isSk | isLT | isT32 | isT64;
 }
 
 void FCM::buildModel (const Param& p) {
   cerr << "Building models...\n";
-  for (auto m : model) {
+  for (const auto& m : model) {
     auto mask32 = static_cast<u32>((4<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
     auto mask64 = static_cast<u64>((4<<(m.k<<1))-1);
     switch (m.mode) {
@@ -72,7 +77,7 @@ void FCM::buildModel (const Param& p) {
   
 //  //todo. test multithreading
 //  vector<thread> thrd;  thrd.resize(4);
-//  for (auto m : model) {
+//  for (const auto& m : model) {
 //    auto mask32 = static_cast<u32>((4<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
 //    auto mask64 = static_cast<u64>((4<<(m.k<<1))-1);
 //    switch (m.mode) {
@@ -163,7 +168,7 @@ void FCM::compress (const Param& p) const {
   cerr << "Compressing...\n";
 //  array<u64, 4> aN64{0};    // Array of number of elements
 //  array<u32, 4> aN32{0};
-//  for (auto m : model) {
+//  for (const auto& m : model) {
 //    auto mask32 = static_cast<u32>((1 << (m.k << 1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
 //    auto mask64 = static_cast<u64>((1 << (m.k << 1))-1);
 ////    switch (m.mode) {

@@ -34,8 +34,11 @@ class FCM    // Finite-context model
   Table32*   tbl32;
   LogTable8* logtbl8;
   CMLS4*     sketch4;
+  u8         MODE_COMB;
   
-  void setModels (const Param&);
+  void setModels (const Param&);           // Set models parameters
+  void allocModels ();                     // Allocate memory to models
+  void setModesComb ();                    // Set combination of modes of models
   
   // Create data structure
   template <typename T, typename U>
