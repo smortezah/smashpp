@@ -43,10 +43,10 @@ class FCM    // Finite-context model
 //  template <typename T, typename Y, typename U>
 //  void compressDS (const string&, const ModelPar&, T, Y&, const U&) const;
 
-  template <typename T>
-  void prob(T) const;
-  template <typename T>
-  T dtStruct (u8) const;
+//  template <typename T>
+//  void prob(T) const;
+//  template <typename T>
+//  T dtStruct (u8) const;
 };
 
 #endif //SMASHPP_FCM_HPP

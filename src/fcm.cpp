@@ -145,6 +145,20 @@ inline void FCM::createDS (const string& ref, T mask, U& container) {
 
 void FCM::compress (const Param& p) const {
   cerr << "Compressing...\n";
+//  array<u64, 4> aN64{0};    // Array of number of elements
+//  array<u32, 4> aN32{0};
+//  for (auto m : model) {
+//    auto mask32 = static_cast<u32>((1 << (m.k << 1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
+//    auto mask64 = static_cast<u64>((1 << (m.k << 1))-1);
+////    switch (m.mode) {
+////      case MODE::TABLE_64:    compressDS(p.tar, m, mask32, aN64, tbl64);  break;
+////      case MODE::TABLE_32:    compressDS(p.tar, m, mask32, aN64, tbl32);  break;
+////      case MODE::LOG_TABLE_8: compressDS(p.tar, m, mask32, aN64, logtbl8);break;
+////      case MODE::SKETCH_8:    compressDS(p.tar, m, mask64, aN32, sketch4);break;
+////      default:                cerr << "Error";
+////    }
+//  }
+  
   compressDS(p.tar);
 //  cerr << "Compression finished ";
 }
@@ -153,13 +167,17 @@ void FCM::compress (const Param& p) const {
 #include <tuple>
 #include <typeinfo>
 #include <variant>
-union U{
-  Table64* t64;
-  CMLS4*   sk;
-//  u16 a;
-//  u32 b;
-};
+//union U{
+//  Table64* t64;
+//  CMLS4*   sk;
+////  u16 a;
+////  u32 b;
+//};
 inline void FCM::compressDS (const string& tar) const {
+//template <typename T, typename Y, typename U>
+//inline void FCM::compressDS (const string& tar, const ModelPar& mdl, T mask,
+//                             Y& aN,/*Y aN,*/ const U& container) const {
+
 //  U u[2];
 //  u[0] = {tbl64};
 //  u[1] = {tbl64};
@@ -171,47 +189,21 @@ inline void FCM::compressDS (const string& tar) const {
 //      u[i].sk=sketch4;
 //  }
 //  u[0].t64->print();
-std::variant<Table64*, CMLS4*> v[2];
+std::variant<Table64*, Table32*, LogTable8*, CMLS4*> v[4];
   v[0]=tbl64;
   v[1]=sketch4;
-  for (u8 i = 0; i<model.size(); ++i) {
-//  auto a=std::get<0>(v[0]);
-//  auto b=std::get<1>(v[1]);
-    cerr<<v[1].index();
-//  std::get<i>(v[i])->print();
-//    a->print();
-  }
-
-//  for(auto m:model) {
-//    auto a = dtStruct(m.mode);
-//    a.print();
+  v[2]=logtbl8;
+  v[3]=sketch4;
+//  for (u8 i = 0; i<model.size(); ++i) {
+////  auto a=std::get<0>(v[0]);
+////  auto b=std::get<1>(v[1]);
+//    cerr<<v[1].index();
+////  std::get<i>(v[i])->print();
+////    a->print();
 //  }
-//  auto a=dtStruct<auto>(0);
-//  cerr<< typeid(a).name();
 
+  //todo. if model.size=1 compressDS1(), else if 2 compressDS2(), ...
 
-//  vector<DS*> v;
-//  v.push_back(tbl64);
-//for(auto a:v)
-//  dynamic_cast<Table64*>(a)->print();
-  
-  
-////  array<u64, 4> aN64{0};    // Array of number of elements
-////  array<u32, 4> aN32{0};
-////  for (auto m : model) {
-////    auto mask32 = static_cast<u32>((1<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
-////    auto mask64 = static_cast<u64>((1<<(m.k<<1))-1);
-////    switch (m.mode) {
-////      case MODE::TABLE_64:    compressDS(p.tar, m, mask32, aN64, tbl64);  break;
-////      case MODE::TABLE_32:    compressDS(p.tar, m, mask32, aN64, tbl32);  break;
-////      case MODE::LOG_TABLE_8: compressDS(p.tar, m, mask32, aN64, logtbl8);break;
-////      case MODE::SKETCH_8:    compressDS(p.tar, m, mask64, aN32, sketch4);break;
-////      default:                cerr << "Error";
-////    }
-////  }
-
-
-  
 //  auto   shl    = mdl.k<<1;  // Shift left
 //  T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
 //  T      ctxIR  = mask;      // Inverted repeat context (integer)
@@ -248,7 +240,7 @@ std::variant<Table64*, CMLS4*> v[2];
 //  tf.close();
 //  double aveEntr = sEntr/symsNo;
 //  cerr << "Average Entropy (H) = " << aveEntr << '\n';
-//  cerr << "Compression finished ";
+  cerr << "Compression finished ";
 }
 
 ////#include <typeinfo>
@@ -311,16 +303,16 @@ std::variant<Table64*, CMLS4*> v[2];
 //  cerr << "Compression finished ";
 //}
 
-template <typename T>
-void FCM::prob (T ds) const {
-  cerr<<"hi";
-//  ds.print();
-}
-
-template <typename T>
-T FCM::dtStruct (u8 mode) const {
-  if      (mode==MODE::TABLE_64)     return tbl64;
-  else if (mode==MODE::TABLE_32)     return tbl32;
-  else if (mode==MODE::LOG_TABLE_8)  return logtbl8;
-  else                               return sketch4;
-}
+//template <typename T>
+//void FCM::prob (T ds) const {
+//  cerr<<"hi";
+////  ds.print();
+//}
+//
+//template <typename T>
+//T FCM::dtStruct (u8 mode) const {
+//  if      (mode==MODE::TABLE_64)     return tbl64;
+//  else if (mode==MODE::TABLE_32)     return tbl32;
+//  else if (mode==MODE::LOG_TABLE_8)  return logtbl8;
+//  else                               return sketch4;
+//}
