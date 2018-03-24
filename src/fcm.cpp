@@ -43,11 +43,12 @@ inline void FCM::setModels (const Param& p) {
 }
 
 inline void FCM::allocModels () {
-  for (const auto& m : model)
+  for (const auto& m : model) {
     if      (m.mode==MODE::TABLE_64)        tbl64 = new Table64(m.k);
     else if (m.mode==MODE::TABLE_32)        tbl32 = new Table32(m.k);
     else if (m.mode==MODE::LOG_TABLE_8)   logtbl8 = new LogTable8(m.k);
     else                                  sketch4 = new CMLS4(m.w, m.d);
+  }
 }
 
 inline void FCM::setModesComb () {
@@ -164,60 +165,59 @@ inline void FCM::createDS (const string& ref, T mask, U& container) {
 ////  cerr << "Compression finished ";
 //}
 
+//void FCM::compress (const Param& p) const {
+//  cerr << "Compressing...\n";
+////  array<u64, 4> aN64{0};    // Array of number of elements
+////  array<u32, 4> aN32{0};
+////  for (const auto& m : model) {
+////    auto mask32 = static_cast<u32>((1 << (m.k << 1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
+////    auto mask64 = static_cast<u64>((1 << (m.k << 1))-1);
+//////    switch (m.mode) {
+//////      case MODE::TABLE_64:    compressDS(p.tar, m, mask32, aN64, tbl64);  break;
+//////      case MODE::TABLE_32:    compressDS(p.tar, m, mask32, aN64, tbl32);  break;
+//////      case MODE::LOG_TABLE_8: compressDS(p.tar, m, mask32, aN64, logtbl8);break;
+//////      case MODE::SKETCH_8:    compressDS(p.tar, m, mask64, aN32, sketch4);break;
+//////      default:                cerr << "Error";
+//////    }
+////  }
+////  if (model.size() == 1)
+//
+////  auto mask = 0;
+////  if (typeid(sketch4)==typeid(CMLS4))
+////    mask = const_cast<u64>((1 << (model[0].k << 1))-1);
+////  else
+////    mask = dynamic_cast<u32>((1 << (model[0].k << 1))-1);
+////
+////  cerr << typeid(mask).name();
+//
+//
+////  compressDS1(p.tar);
+////  cerr << "Compression finished ";
+//}
+
 void FCM::compress (const Param& p) const {
   cerr << "Compressing...\n";
-//  array<u64, 4> aN64{0};    // Array of number of elements
-//  array<u32, 4> aN32{0};
-//  for (const auto& m : model) {
-//    auto mask32 = static_cast<u32>((1 << (m.k << 1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
-//    auto mask64 = static_cast<u64>((1 << (m.k << 1))-1);
-////    switch (m.mode) {
-////      case MODE::TABLE_64:    compressDS(p.tar, m, mask32, aN64, tbl64);  break;
-////      case MODE::TABLE_32:    compressDS(p.tar, m, mask32, aN64, tbl32);  break;
-////      case MODE::LOG_TABLE_8: compressDS(p.tar, m, mask32, aN64, logtbl8);break;
-////      case MODE::SKETCH_8:    compressDS(p.tar, m, mask64, aN32, sketch4);break;
-////      default:                cerr << "Error";
-////    }
-//  }
-//  if (model.size() == 1)
+  array<u64, 4> aN64{0};    // Array of number of elements
+  array<u32, 4> aN32{0};
+  const auto mask32=static_cast<u32>((1<<(model[0].k<<1))-1);//4<<2k-1=4^(k+1)-1
+  const auto mask64=static_cast<u64>((1<<(model[0].k<<1))-1);
   
-//  auto mask = 0;
-//  if (typeid(sketch4)==typeid(CMLS4))
-//    mask = const_cast<u64>((1 << (model[0].k << 1))-1);
-//  else
-//    mask = dynamic_cast<u32>((1 << (model[0].k << 1))-1);
-//
-//  cerr << typeid(mask).name();
+  switch (MODE_COMB) {
+    case 1:  compressDS1(p.tar, model[0], mask32, aN64, tbl64);    break;
+    case 2:  compressDS1(p.tar, model[0], mask32, aN64, tbl32);    break;
+    case 4:  compressDS1(p.tar, model[0], mask32, aN64, logtbl8);  break;
+    case 8:  compressDS1(p.tar, model[0], mask64, aN32, sketch4);  break;
+    
+    default: cerr << "Error";
+      break;
+  }
   
-  
-//  compressDS1(p.tar);
 //  cerr << "Compression finished ";
 }
 
-
-#include <tuple>
-#include <typeinfo>
-#include <variant>
-//inline void FCM::compressDS1 (const string& tar) const {
 template <typename T, typename Y, typename U>
 inline void FCM::compressDS1 (const string& tar, const ModelPar& mdl, T mask,
                              Y& aN,/*Y aN,*/ const U& container) const {
-//std::variant<Table64*, Table32*, LogTable8*, CMLS4*> v[4];
-//  v[0]=tbl64;
-//  v[1]=sketch4;
-//  v[2]=logtbl8;
-//  v[3]=sketch4;
-//  for (u8 i = 0; i<model.size(); ++i) {
-////  auto a=std::get<0>(v[0]);
-////  auto b=std::get<1>(v[1]);
-//    cerr<<v[1].index();
-////  std::get<i>(v[i])->print();
-////    a->print();
-//  }
-
-  //todo. if model.size=1 compressDS1(), else if 2 compressDS2(), ...
-  
-
   auto   shl    = mdl.k<<1;  // Shift left
   T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
   T      ctxIR  = mask;      // Inverted repeat context (integer)
@@ -256,6 +256,110 @@ inline void FCM::compressDS1 (const string& tar, const ModelPar& mdl, T mask,
   cerr << "Average Entropy (H) = " << aveEntr << '\n';
   cerr << "Compression finished ";
 }
+
+template <typename T, typename Y, typename U>
+inline void FCM::compressDS2 (const string& tar, const ModelPar& mdl, T mask,
+                              Y& aN,/*Y aN,*/ const U& container) const {
+  auto   shl    = mdl.k<<1;  // Shift left
+  T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
+  T      ctxIR  = mask;      // Inverted repeat context (integer)
+  u64    symsNo = 0;         // No. syms in target file, except \n
+  float  alpha  = mdl.alpha;
+  double sAlpha = ALPH_SZ*alpha;  // Sum of alphas
+  double sEntr  = 0;         // Sum of entropies = sum( log_2 P(s|c^t) )
+  ifstream tf(tar);
+  char c;
+  while (tf.get(c)) {
+    if (c != '\n') {
+      ++symsNo;
+      /*
+       * double prob()
+       */
+      auto numSym = NUM[c];
+      // Inverted repeat
+      if (mdl.ir) {
+        auto r = ctxIR>>2;
+        for (u8 i=0; i!=ALPH_SZ; ++i)
+          aN[i] = container->query((IRMAGIC-i)<<shl | r);
+        ctxIR = REVNUM[c]<<shl | r;          // Update ctxIR
+      }
+      auto l = ctx<<2;
+      for (u8 i=0; i!=ALPH_SZ; ++i)
+        aN[i] += container->query(l | i);
+      ctx = (l & mask) | numSym;       // Update ctx
+      
+      
+      
+      sEntr += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
+    }
+  }
+  tf.close();
+  double aveEntr = sEntr/symsNo;
+  cerr << "Average Entropy (H) = " << aveEntr << '\n';
+  cerr << "Compression finished ";
+}
+
+//#include <tuple>
+//#include <typeinfo>
+//#include <variant>
+////inline void FCM::compressDS1 (const string& tar) const {
+//template <typename T, typename Y, typename U>
+//inline void FCM::compressDS1 (const string& tar, const ModelPar& mdl, T mask,
+//                              Y& aN,/*Y aN,*/ const U& container) const {
+////std::variant<Table64*, Table32*, LogTable8*, CMLS4*> v[4];
+////  v[0]=tbl64;
+////  v[1]=sketch4;
+////  v[2]=logtbl8;
+////  v[3]=sketch4;
+////  for (u8 i = 0; i<model.size(); ++i) {
+//////  auto a=std::get<0>(v[0]);
+//////  auto b=std::get<1>(v[1]);
+////    cerr<<v[1].index();
+//////  std::get<i>(v[i])->print();
+//////    a->print();
+////  }
+//
+//  //todo. if model.size=1 compressDS1(), else if 2 compressDS2(), ...
+//
+//
+//  auto   shl    = mdl.k<<1;  // Shift left
+//  T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
+//  T      ctxIR  = mask;      // Inverted repeat context (integer)
+//  u64    symsNo = 0;         // No. syms in target file, except \n
+//  float  alpha  = mdl.alpha;
+//  double sAlpha = ALPH_SZ*alpha;  // Sum of alphas
+//  double sEntr  = 0;         // Sum of entropies = sum( log_2 P(s|c^t) )
+//  ifstream tf(tar);
+//  char c;
+//  while (tf.get(c)) {
+//    if (c != '\n') {
+//      ++symsNo;
+//      /*
+//       * double prob()
+//       */
+//      auto numSym = NUM[c];
+//      // Inverted repeat
+//      if (mdl.ir) {
+//        auto r = ctxIR>>2;
+//        for (u8 i=0; i!=ALPH_SZ; ++i)
+//          aN[i] = container->query((IRMAGIC-i)<<shl | r);
+//        ctxIR = REVNUM[c]<<shl | r;          // Update ctxIR
+//      }
+//      auto l = ctx<<2;
+//      for (u8 i=0; i!=ALPH_SZ; ++i)
+//        aN[i] += container->query(l | i);
+//      ctx = (l & mask) | numSym;       // Update ctx
+//
+//
+//
+//      sEntr += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
+//    }
+//  }
+//  tf.close();
+//  double aveEntr = sEntr/symsNo;
+//  cerr << "Average Entropy (H) = " << aveEntr << '\n';
+//  cerr << "Compression finished ";
+//}
 
 ////#include <typeinfo>
 //template <typename T, typename Y, typename U>
