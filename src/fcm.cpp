@@ -199,14 +199,20 @@ void FCM::compress (const Param& p) const {
   cerr << "Compressing...\n";
   array<u64, 4> aN64{0};    // Array of number of elements
   array<u32, 4> aN32{0};
-  const auto mask32=static_cast<u32>((1<<(model[0].k<<1))-1);//4<<2k-1=4^(k+1)-1
-  const auto mask64=static_cast<u64>((1<<(model[0].k<<1))-1);
+//  const auto mask32=static_cast<u32>((1<<(model[0].k<<1))-1);//4<<2k-1=4^(k+1)-1
+//  const auto mask64=static_cast<u64>((1<<(model[0].k<<1))-1);
+  vector<u32> mask32;  mask32.resize(model.size());
+  vector<u64> mask64;  mask64.resize(model.size());
+  for (const auto& m : model) {
+    mask32.emplace_back(static_cast<u32>((1<<(m.k<<1))-1));//4<<2k-1=4^(k+1)-1
+    mask64.emplace_back(static_cast<u64>((1<<(m.k<<1))-1));
+  }
   
   switch (MODE_COMB) {
-    case 1:  compressDS1(p.tar, model[0], mask32, aN64, tbl64);    break;
-    case 2:  compressDS1(p.tar, model[0], mask32, aN64, tbl32);    break;
-    case 4:  compressDS1(p.tar, model[0], mask32, aN64, logtbl8);  break;
-    case 8:  compressDS1(p.tar, model[0], mask64, aN32, sketch4);  break;
+    case 1:  compressDS1(p.tar, model[0], mask32[0], aN64, tbl64);    break;
+    case 2:  compressDS1(p.tar, model[0], mask32[0], aN64, tbl32);    break;
+    case 4:  compressDS1(p.tar, model[0], mask32[0], aN64, logtbl8);  break;
+    case 8:  compressDS1(p.tar, model[0], mask64[0], aN32, sketch4);  break;
     
     default: cerr << "Error";
       break;
