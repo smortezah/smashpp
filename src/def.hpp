@@ -44,6 +44,7 @@ constexpr u64 DEF_W        = power(2,20); // Default width of CML sketch (2^...)
 constexpr u8  DEF_D        = 4;    // Default depth of CML sketch
 constexpr u32 G            = 64;   // Machine word size - for universal hash fn
 constexpr u8  LOG_BASE     = 2;    // Logarithmic counting
+constexpr float DEF_GAMMA  = 0.99; // Default gamma for multiple models
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
@@ -207,11 +208,11 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 //  0, 0, 0,'C',  0,  0, 0,  0, 0, 0,'N',  0, 0, 0, 0, 0,'A',  0,  0,  0,
 //  0, 0, 0
 //};
-constexpr u8 LEVEL[2][11] {
-// #models, ir=0|1,  k,   100*alpha, log2 w,   d
-  {1,          1,     1,      99,       0,       0},    // Level 0
-  {2,          0,    11,      99,       0,       0,     // Level 1
-               1,    20,      99,      30,   DEF_D}
+constexpr u8 LEVEL[2][11] {    // Multiple models MUST be in sorted 'k' manner
+// #mdl, ir, k, 100*alpha, log2 w,  d
+  {1,     1,  1,    99,       0,      0},    // Level 0
+  {2,     0, 1,    99,       0,      0,     // Level 1
+          1, 20,    99,      4,  DEF_D},
 };
 
 
