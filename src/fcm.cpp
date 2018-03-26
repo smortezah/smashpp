@@ -197,23 +197,35 @@ inline void FCM::createDS (const string& ref, T mask, U& container) {
 
 void FCM::compress (const Param& p) const {
   cerr << "Compressing...\n";
-  array<u64, 4> aN64{0};    // Array of number of elements
-  array<u32, 4> aN32{0};
-//  const auto mask32=static_cast<u32>((1<<(model[0].k<<1))-1);//4<<2k-1=4^(k+1)-1
-//  const auto mask64=static_cast<u64>((1<<(model[0].k<<1))-1);
+  array<u64, 4> aN64_0{};    // Array of number of elements
+  array<u32, 4> aN32_0{};
+  array<u64, 4> aN64_1{};
+  array<u32, 4> aN32_1{};
   vector<u32> mask32;  mask32.resize(model.size());
-  vector<u64> mask64;  mask64.resize(model.size());
+  u64 mask64 = 0;
   for (const auto& m : model) {
-    mask32.emplace_back(static_cast<u32>((1<<(m.k<<1))-1));//4<<2k-1=4^(k+1)-1
-    mask64.emplace_back(static_cast<u64>((1<<(m.k<<1))-1));
+    mask32.emplace_back(static_cast<u32>((1<<(m.k<<1))-1));//1<<2k-1=4^k-1
+    if (m.mode==MODE::SKETCH_8)  mask64=static_cast<u64>((1<<(m.k<<1))-1);
   }
   
   switch (MODE_COMB) {
-    case 1:  compressDS1(p.tar, model[0], mask32[0], aN64, tbl64);    break;
-    case 2:  compressDS1(p.tar, model[0], mask32[0], aN64, tbl32);    break;
-    case 4:  compressDS1(p.tar, model[0], mask32[0], aN64, logtbl8);  break;
-    case 8:  compressDS1(p.tar, model[0], mask64[0], aN32, sketch4);  break;
-    
+    case 1:  compressDS1(p.tar, mask32[0], aN64_0, tbl64);    break;
+    case 2:  compressDS1(p.tar, mask32[0], aN64_0, tbl32);    break;
+    case 4:  compressDS1(p.tar, mask32[0], aN64_0, logtbl8);  break;
+    case 8:  compressDS1(p.tar, mask64, aN32_0, sketch4);  break;
+    case 3:  compressDS2(p.tar, mask32[0], mask32[1],
+                         aN64_0, aN64_1, tbl64, tbl32);       break;
+    case 5:  compressDS2(p.tar, mask32[0], mask32[1],
+                         aN64_0, aN64_1, tbl64, logtbl8);     break;
+    case 9:  compressDS2(p.tar, mask32[0], mask64,
+                         aN64_0, aN32_0, tbl64, sketch4);     break;
+    case 6:  compressDS2(p.tar, mask32[0], mask32[1],
+                         aN64_0, aN64_1, tbl32, logtbl8);     break;
+    case 10: compressDS2(p.tar, mask32[0], mask64,
+                         aN64_0, aN32_0, tbl32, sketch4);     break;
+    case 12: compressDS2(p.tar, mask32[0], mask64,
+                         aN64_0, aN32_0, logtbl8, sketch4);   break;
+
     default: cerr << "Error";
       break;
   }
@@ -222,13 +234,13 @@ void FCM::compress (const Param& p) const {
 }
 
 template <typename T, typename Y, typename U>
-inline void FCM::compressDS1 (const string& tar, const ModelPar& mdl, T mask,
-                             Y& aN,/*Y aN,*/ const U& container) const {
-  auto   shl    = mdl.k<<1;  // Shift left
+inline void FCM::compressDS1 (const string& tar, T mask, Y& aN,/*Y aN,*/
+                              const U& container) const {
+  auto   shl    = model[0].k<<1;  // Shift left
   T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
   T      ctxIR  = mask;      // Inverted repeat context (integer)
   u64    symsNo = 0;         // No. syms in target file, except \n
-  float  alpha  = mdl.alpha;
+  float  alpha  = model[0].alpha;
   double sAlpha = ALPH_SZ*alpha;  // Sum of alphas
   double sEntr  = 0;         // Sum of entropies = sum( log_2 P(s|c^t) )
   ifstream tf(tar);
@@ -241,7 +253,7 @@ inline void FCM::compressDS1 (const string& tar, const ModelPar& mdl, T mask,
        */
       auto numSym = NUM[c];
       // Inverted repeat
-      if (mdl.ir) {
+      if (model[0].ir) {
         auto r = ctxIR>>2;
         for (u8 i=0; i!=ALPH_SZ; ++i)
           aN[i] = container->query((IRMAGIC-i)<<shl | r);
@@ -253,7 +265,6 @@ inline void FCM::compressDS1 (const string& tar, const ModelPar& mdl, T mask,
       ctx = (l & mask) | numSym;       // Update ctx
 
 
-
       sEntr += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
     }
   }
@@ -263,47 +274,13 @@ inline void FCM::compressDS1 (const string& tar, const ModelPar& mdl, T mask,
   cerr << "Compression finished ";
 }
 
-template <typename T, typename Y, typename U>
-inline void FCM::compressDS2 (const string& tar, const ModelPar& mdl, T mask,
-                              Y& aN,/*Y aN,*/ const U& container) const {
-  auto   shl    = mdl.k<<1;  // Shift left
-  T      ctx    = 0;         // Context(s) (integer) sliding through the dataset
-  T      ctxIR  = mask;      // Inverted repeat context (integer)
-  u64    symsNo = 0;         // No. syms in target file, except \n
-  float  alpha  = mdl.alpha;
-  double sAlpha = ALPH_SZ*alpha;  // Sum of alphas
-  double sEntr  = 0;         // Sum of entropies = sum( log_2 P(s|c^t) )
-  ifstream tf(tar);
-  char c;
-  while (tf.get(c)) {
-    if (c != '\n') {
-      ++symsNo;
-      /*
-       * double prob()
-       */
-      auto numSym = NUM[c];
-      // Inverted repeat
-      if (mdl.ir) {
-        auto r = ctxIR>>2;
-        for (u8 i=0; i!=ALPH_SZ; ++i)
-          aN[i] = container->query((IRMAGIC-i)<<shl | r);
-        ctxIR = REVNUM[c]<<shl | r;          // Update ctxIR
-      }
-      auto l = ctx<<2;
-      for (u8 i=0; i!=ALPH_SZ; ++i)
-        aN[i] += container->query(l | i);
-      ctx = (l & mask) | numSym;       // Update ctx
-      
-      
-      
-      sEntr += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
-    }
-  }
-  tf.close();
-  double aveEntr = sEntr/symsNo;
-  cerr << "Average Entropy (H) = " << aveEntr << '\n';
-  cerr << "Compression finished ";
+template <typename mask0_t, typename mask1_t, typename cnt0_t, typename cnt1_t,
+          typename ds0_t, typename ds1_t>
+inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
+                              cnt0_t& aN0, cnt1_t& aN1, const ds0_t& container0,
+                              const ds1_t& container1) const {
 }
+
 
 //#include <tuple>
 //#include <typeinfo>

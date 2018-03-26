@@ -45,9 +45,11 @@ class FCM    // Finite-context model
   void createDS (const string&, T, U&);
   // Compress data structure
   template <typename T, typename Y, typename U>
-  void compressDS1 (const string&, const ModelPar&, T, Y&, const U&) const;
-  template <typename T, typename Y, typename U>
-  void compressDS2 (const string&, const ModelPar&, T, Y&, const U&) const;
+  void compressDS1 (const string&, T, Y&, const U&) const;
+  template <typename mask0_t, typename mask1_t, typename cnt0_t,
+    typename cnt1_t, typename ds0_t, typename ds1_t>
+  void compressDS2 (const string&, mask0_t, mask1_t, cnt0_t&, cnt1_t&,
+                    const ds0_t&, const ds1_t&) const;
 
 //  template <typename T>
 //  void prob(T) const;
