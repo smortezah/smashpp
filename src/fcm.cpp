@@ -286,25 +286,25 @@ template <typename mask0_t, typename mask1_t, typename cnt0_t, typename cnt1_t,
 inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
                               cnt0_t& aN0, cnt1_t& aN1, const ds0_t& container0,
                               const ds1_t& container1) const {
-  auto     shl0    {model[0].k<<1};   // Shift left
-  auto     shl1    {model[1].k<<1};
-  mask0_t  ctx0    {0};      // Context(s) (integer) sliding through the dataset
-  mask0_t  ctxIR0  {mask0};  // Inverted repeat context (integer)
-  mask1_t  ctx1    {0};
-  mask1_t  ctxIR1  {mask1};
-  u64      symsNo  {0};               // No. syms in target file, except \n
-  float    alpha0  {model[0].alpha};
-  float    alpha1  {model[1].alpha};
-  double   sAlpha0 {ALPH_SZ*alpha0};  // Sum of alphas
-  double   sAlpha1 {ALPH_SZ*alpha1};
-  double   w0      {0.5};
-  double   w1      {0.5};
-  double   Pm0     {};
-  double   Pm1     {};
-  double   P       {};
-  double   sEnt    {0};              // Sum of entropies = sum(log_2 P(s|c^t))
-  const bool ir0 {model[0].ir};
-  const bool ir1 {model[1].ir};
+  const auto   shl0    {model[0].k<<1};   // Shift left
+  const auto   shl1    {model[1].k<<1};
+  mask0_t      ctx0    {0};      // Context(s) (integer) sliding through the dataset
+  mask0_t      ctxIR0  {mask0};  // Inverted repeat context (integer)
+  mask1_t      ctx1    {0};
+  mask1_t      ctxIR1  {mask1};
+  u64          symsNo  {0};               // No. syms in target file, except \n
+  const float  alpha0  {model[0].alpha};
+  const float  alpha1  {model[1].alpha};
+  const double sAlpha0 {ALPH_SZ*alpha0};  // Sum of alphas
+  const double sAlpha1 {ALPH_SZ*alpha1};
+  double       w0      {0.5};
+  double       w1      {0.5};
+  double       Pm0     {};
+  double       Pm1     {};
+  double       P       {};
+  double       sEnt    {0};              // Sum of entropies = sum(log_2 P(s|c^t))
+  const bool   ir0     {model[0].ir};
+  const bool   ir1     {model[1].ir};
   ifstream tf(tar);
   char     c;
   while (tf.get(c)) {
@@ -345,7 +345,7 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
       const auto numSym = NUM[c];
       ctx0 = (l0 & mask0) | numSym;    // Update ctx
       ctx1 = (l1 & mask1) | numSym;
-      
+
       Pm0 = (aN0[numSym]+alpha0) / (aN0[0]+aN0[1]+aN0[2]+aN0[3]+sAlpha0);
       Pm1 = (aN1[numSym]+alpha1) / (aN1[0]+aN1[1]+aN1[2]+aN1[3]+sAlpha1);
       P   = Pm0*w0 + Pm1*w1;
