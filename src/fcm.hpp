@@ -53,8 +53,6 @@ class FCM    // Finite-context model
 
 //  template <typename T>
 //  void prob(T) const;
-//  template <typename T>
-//  T dtStruct (u8) const;
 };
 
 #endif //SMASHPP_FCM_HPP
