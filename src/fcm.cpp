@@ -294,6 +294,20 @@ inline void FCM::compressDS1 (const string& tar, mask_t mask, cnt_t& aN,
   cerr << "Compression finished ";
 }
 
+
+//template <typename mask_t, typename cnt_t, typename ds_t>
+//inline double FCM::prob1D (mask_t mask, cnt_t& aN, char c,
+//                           const ds_t& container) const {
+//  mask_t ctx{0};
+//  auto l = ctx<<2;
+//  for (u8 i=0; i!=ALPH_SZ; ++i)
+//    aN[i] += container->query(l | i);
+//  auto numSym = NUM[c];
+//  ctx = (l & mask) | numSym;       // Update ctx
+//}
+
+
+
 template <typename mask0_t, typename mask1_t, typename cnt0_t, typename cnt1_t,
           typename ds0_t, typename ds1_t>
 inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,

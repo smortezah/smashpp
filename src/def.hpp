@@ -49,7 +49,9 @@ constexpr float DEF_GAMMA  = 0.99; // Default gamma for multiple models
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
 // Enums
-enum MODE {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};    // Data structures
+enum MODE {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
+// Inv. repeats, 2 & 3 models. D: direct, I: inv.
+//enum IR {DD, DI, ID, II, DDD, DDI, DID, DII, IDD, IDI, IID, III};
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n
