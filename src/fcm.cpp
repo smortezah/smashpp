@@ -243,68 +243,75 @@ void FCM::compress (const Param& p) const {
 template <typename mask_t, typename cnt_t, typename ds_t>
 inline void FCM::compressDS1 (const string& tar, mask_t mask, cnt_t& aN,
                               const ds_t& container) const {
+  double aveEnt = 0;
+  if (!model[0].ir)
+    aveEnt = aveEnt1D(tar, mask, aN, container);
+  else
+    aveEnt = aveEnt1I(tar, mask, aN, container);
+  cerr << "Average Entropy (H) = " << aveEnt << '\n';
+  cerr << "Compression finished ";
+}
+
+template <typename mask_t, typename cnt_t, typename ds_t>
+inline double FCM::aveEnt1D (const string &tar, mask_t mask, cnt_t &aN,
+                             const ds_t &container) const {
   const auto shl{model[0].k<<1};    // Shift left
   mask_t ctx{0}, ctxIR{mask};       // Ctx, ir (int) sliding through the dataset
   u64 symsNo{0};                    // No. syms in target file, except \n
   const float alpha{model[0].alpha};
   const double sAlpha{ALPH_SZ*alpha};  // Sum of alphas
-  double sEntr{0};                  // Sum of entropies = sum(log_2 P(s|c^t))
+  double sEnt{0};                  // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);
   char c;
-  if (!model[0].ir) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        /*
-         * double prob()
-         */
-        auto l = ctx<<2;
-        for (u8 i=0; i!=ALPH_SZ; ++i)
-          aN[i] += container->query(l | i);
-        auto numSym = NUM[c];
-        ctx = (l & mask) | numSym;       // Update ctx
-        
-        sEntr += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
-      }
-    }
-  }
-  else {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        // Inverted repeat
-        auto r = ctxIR>>2;
-        for (u8 i=0; i!=ALPH_SZ; ++i)
-          aN[i] = container->query((IRMAGIC-i)<<shl | r);
-        ctxIR = REVNUM[c]<<shl | r;          // Update ctxIR
-        
-        auto l = ctx<<2;
-        for (u8 i=0; i!=ALPH_SZ; ++i)
-          aN[i] += container->query(l | i);
-        auto numSym = NUM[c];
-        ctx = (l & mask) | numSym;       // Update ctx
-        
-        sEntr += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
-      }
+  while (tf.get(c)) {
+    if (c != '\n') {
+      ++symsNo;
+      auto l = ctx<<2;
+      for (u8 i=0; i!=ALPH_SZ; ++i)
+        aN[i] += container->query(l | i);
+      auto numSym = NUM[c];
+      ctx = (l & mask) | numSym;       // Update ctx
+      
+      sEnt += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
     }
   }
   tf.close();
-  double aveEntr = sEntr/symsNo;
-  cerr << "Average Entropy (H) = " << aveEntr << '\n';
-  cerr << "Compression finished ";
+  return sEnt/symsNo;
 }
 
+template <typename mask_t, typename cnt_t, typename ds_t>
+inline double FCM::aveEnt1I (const string &tar, mask_t mask, cnt_t &aN,
+                             const ds_t &container) const {
+  const auto shl{model[0].k<<1};
+  mask_t ctx{0}, ctxIR{mask};
+  u64 symsNo{0};
+  const float alpha{model[0].alpha};
+  const double sAlpha{ALPH_SZ*alpha};
+  double sEnt{0};
+  ifstream tf(tar);
+  char c;
+  while (tf.get(c)) {
+    if (c != '\n') {
+      ++symsNo;
+      // Inverted repeat
+      auto r = ctxIR>>2;
+      for (u8 i=0; i!=ALPH_SZ; ++i)
+        aN[i] = container->query((IRMAGIC-i)<<shl | r);
+      ctxIR = REVNUM[c]<<shl | r;          // Update ctxIR
 
-//template <typename mask_t, typename cnt_t, typename ds_t>
-//inline double FCM::prob1D (mask_t mask, cnt_t& aN, char c,
-//                           const ds_t& container) const {
-//  mask_t ctx{0};
-//  auto l = ctx<<2;
-//  for (u8 i=0; i!=ALPH_SZ; ++i)
-//    aN[i] += container->query(l | i);
-//  auto numSym = NUM[c];
-//  ctx = (l & mask) | numSym;       // Update ctx
-//}
+      auto l = ctx<<2;
+      for (u8 i=0; i!=ALPH_SZ; ++i)
+        aN[i] += container->query(l | i);
+      auto numSym = NUM[c];
+      ctx = (l & mask) | numSym;       // Update ctx
+
+      sEnt += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
+    }
+  }
+  tf.close();
+  return sEnt/symsNo;
+}
+
 
 
 
@@ -356,9 +363,6 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        /*
-         * double prob()
-         */
         // Inverted repeat
         const auto r = ctxIR0>>2;
         for (u8 i=0; i!=ALPH_SZ; ++i)
@@ -390,9 +394,6 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        /*
-         * double prob()
-         */
         // Inverted repeat
         const auto r = ctxIR1>>2;
         for (u8 i=0; i!=ALPH_SZ; ++i)
@@ -424,9 +425,6 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        /*
-         * double prob()
-         */
         // Inverted repeat
         const auto r0 = ctxIR0>>2;
         const auto r1 = ctxIR1>>2;
