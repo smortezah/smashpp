@@ -291,7 +291,7 @@ inline void FCM::compressDS1 (const string& tar, mask_t mask, cnt_t& aN,
   }
   tf.close();
   double aveEnt = sEnt/symsNo;
-  cerr << "Average Entropy (H) = " << aveEnt << '\n';
+  cerr << "Average Entropy (H) = " << aveEnt << "bps" << '\n';
   cerr << "Compression finished ";
 }
 
@@ -491,6 +491,6 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
   }
   tf.close();
   double aveEnt = sEnt/symsNo;
-  cerr << "Average Entropy (H) = " << aveEnt << '\n';
+  cerr << "Average Entropy (H) = " << aveEnt << "bps" << '\n';
   cerr << "Compression finished ";
 }
