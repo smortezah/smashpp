@@ -209,23 +209,23 @@ void FCM::compress (const Param& p) const {
   }
   
   switch (MODE_COMB) {
-    case 1:   compressDS1(p.tar, mask32[0], tbl64);                       break;
 ////    case 1:   compressDS1(p.tar, mask32[0], aN64_0, tbl64);               break;
-//    case 2:   compressDS1(p.tar, mask32[0], aN64_0, tbl32);               break;
-//    case 4:   compressDS1(p.tar, mask32[0], aN64_0, logtbl8);             break;
-//    case 8:   compressDS1(p.tar, mask64,    aN32,   sketch4);             break;
-    case 3:   compressDS2(p.tar, mask32[0], mask32[1], aN64_0, aN64_1,
-                          tbl64, tbl32);                                  break;
-    case 5:   compressDS2(p.tar, mask32[0], mask32[1], aN64_0, aN64_1,
-                          tbl64, logtbl8);                                break;
-    case 9:   compressDS2(p.tar, mask32[0], mask64, aN64_0, aN32,
-                          tbl64, sketch4);                                break;
-    case 6:   compressDS2(p.tar, mask32[0], mask32[1], aN64_0, aN64_1,
-                          tbl32, logtbl8);                                break;
-    case 10:  compressDS2(p.tar, mask32[0], mask64, aN64_0, aN32,
-                          tbl32, sketch4);                                break;
-    case 12:  compressDS2(p.tar, mask32[0], mask64, aN64_0, aN32,
-                          logtbl8, sketch4);                              break;
+    case 1:   compressDS1(p.tar, mask32[0], tbl64);               break;
+    case 2:   compressDS1(p.tar, mask32[0], tbl32);               break;
+    case 4:   compressDS1(p.tar, mask32[0], logtbl8);             break;
+    case 8:   compressDS1(p.tar, mask64,    sketch4);             break;
+//    case 3:   compressDS2(p.tar, mask32[0], mask32[1], aN64_0, aN64_1,
+//                          tbl64, tbl32);                                  break;
+//    case 5:   compressDS2(p.tar, mask32[0], mask32[1], aN64_0, aN64_1,
+//                          tbl64, logtbl8);                                break;
+//    case 9:   compressDS2(p.tar, mask32[0], mask64, aN64_0, aN32,
+//                          tbl64, sketch4);                                break;
+//    case 6:   compressDS2(p.tar, mask32[0], mask32[1], aN64_0, aN64_1,
+//                          tbl32, logtbl8);                                break;
+//    case 10:  compressDS2(p.tar, mask32[0], mask64, aN64_0, aN32,
+//                          tbl32, sketch4);                                break;
+//    case 12:  compressDS2(p.tar, mask32[0], mask64, aN64_0, aN32,
+//                          logtbl8, sketch4);                              break;
 //    case 7:   compressDS3(p.tar, mask32[0], mask32[1], mask32[3], aN64_0,
 //                          aN64_1, aN64_2, tbl64, tbl32, logtbl8);         break;
 //    case 11:  compressDS3(p.tar, mask32[0], mask32[1], mask64, aN64_0,
@@ -241,17 +241,19 @@ void FCM::compress (const Param& p) const {
 //  cerr << "Compression finished ";
 }
 
-template <typename mask_t, typename cnt_t, typename ds_t>
-//inline void FCM::compressDS1 (const string& tar, mask_t mask, cnt_t& aN,
-//                              const ds_t& container) const {
-  inline void FCM::compressDS1 (const string& tar, mask_t mask,
-                                const ds_t& container) const {
+template <typename mask_t, typename ds_t>
+inline void FCM::compressDS1 (const string& tar, mask_t mask,
+                              const ds_t& container) const {
 ////  double aveEnt = 0;
 ////  if (!model[0].ir)
 ////    aveEnt = aveEnt1D(tar, mask, aN, container);
 ////  else
 ////    aveEnt = aveEnt1I(tar, mask, aN, container);
 ////
+  
+  auto mask32 = static_cast<u32>((1<<(m.k<<1))-1);  // 1<<2k - 1 = 4^k - 1
+  
+  
   const auto shl{model[0].k<<1};    // Shift left
   mask_t ctx{0}, ctxIR{mask};       // Ctx, ir (int) sliding through the dataset
   u64 symsNo{0};                    // No. syms in target file, except \n
@@ -268,7 +270,7 @@ template <typename mask_t, typename cnt_t, typename ds_t>
         auto l = ctx<<2;
         auto z0=container->query(l);      auto z1=container->query(l | 1);
         auto z2=container->query(l | 2);  auto z3=container->query(l | 3);
-        ctx    = (l & mask) | numSym;    // Update ctx
+        ctx = (l & mask) | numSym;    // Update ctx
         decltype(z0) z[4] {z0, z1, z2, z3};
         sEnt  += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
       }
@@ -285,8 +287,8 @@ template <typename mask_t, typename cnt_t, typename ds_t>
         auto z1 = container->query(l | 1) + container->query(2<<shl | r);
         auto z2 = container->query(l | 2) + container->query(1<<shl | r);
         auto z3 = container->query(l | 3) + container->query(r);
-        ctx     = (l & mask)     | numSym;    // Update ctx
-        ctxIR   = REVNUM[c]<<shl | r;         // Update ctxIR
+        ctx   = (l & mask) | numSym;    // Update ctx
+        ctxIR = REVNUM[c]<<shl | r;     // Update ctxIR
         decltype(z0) z[4] {z0, z1, z2, z3};
         sEnt += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
 
@@ -371,11 +373,9 @@ template <typename mask_t, typename cnt_t, typename ds_t>
 //  return sEnt/symsNo;
 //}
 
-template <typename mask0_t, typename mask1_t, typename cnt0_t, typename cnt1_t,
-          typename ds0_t, typename ds1_t>
+template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
 inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
-                              cnt0_t& aN0, cnt1_t& aN1, const ds0_t& container0,
-                              const ds1_t& container1) const {
+                       const ds0_t& container0, const ds1_t& container1) const {
   const auto shl0{model[0].k<<1}, shl1{model[1].k<<1};   // Shift left
   mask0_t ctx0{0}, ctxIR0{mask0};   // Ctx, ir (int) sliding through the dataset
   mask1_t ctx1{0}, ctxIR1{mask1};
@@ -383,7 +383,8 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
   const float alpha0{model[0].alpha},  alpha1{model[1].alpha};
   const double sAlpha0{ALPH_SZ*alpha0}, sAlpha1{ALPH_SZ*alpha1};  // Sum of alphas
   double w0{0.5}, w1{0.5};
-  double Pm0{}, Pm1{}, P{};  // P of model 0, ...
+  double Pm0{}, Pm1{};  // P of model 0, model 1
+//  double Pm0{}, Pm1{}, P{};  // P of model 0, ...
   double sEnt{0}; // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);
   char c;
@@ -391,23 +392,24 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        auto l0 = ctx0<<2;
-        auto l1 = ctx1<<2;
-        for (u8 i=0; i!=ALPH_SZ; ++i) {
-          aN0[i] += container0->query(l0 | i);
-          aN1[i] += container1->query(l1 | i);
-        }
         auto numSym = NUM[c];
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        Pm0  = (aN0[numSym]+alpha0) / (aN0[0]+aN0[1]+aN0[2]+aN0[3]+sAlpha0);
-        Pm1  = (aN1[numSym]+alpha1) / (aN1[0]+aN1[1]+aN1[2]+aN1[3]+sAlpha1);
-        P    = Pm0*w0 + Pm1*w1;
+        auto l0  = ctx0<<2;
+        auto l1  = ctx1<<2;
+        auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
+        auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
+        auto z10 = container0->query(l1);    auto z11 = container0->query(l1|1);
+        auto z12 = container0->query(l1|2);  auto z13 = container0->query(l1|3);
+        ctx0     = (l0 & mask0) | numSym;     // Update ctx
+        ctx1     = (l1 & mask1) | numSym;
+        decltype(z00) z0[4] {z00, z01, z02, z03};
+        decltype(z10) z1[4] {z10, z11, z12, z13};
+        Pm0      = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+        Pm1      = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
         auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
         auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        w0   = rawW0 / (rawW0+rawW1);
-        w1   = rawW1 / (rawW0+rawW1);
-        sEnt += log2(1/P);
+        w0       = rawW0 / (rawW0+rawW1);
+        w1       = rawW1 / (rawW0+rawW1);
+        sEnt    += log2(1/(Pm0*w0 + Pm1*w1));
       }
     }
   }
@@ -415,29 +417,30 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        // Inverted repeat
-        auto r = ctxIR0>>2;
-        for (u8 i=0; i!=ALPH_SZ; ++i)
-          aN0[i] = container0->query((IRMAGIC-i)<<shl0 | r);
-        ctxIR0 = REVNUM[c]<<shl0 | r;          // Update ctxIR
-        
-        auto l0 = ctx0<<2;
-        auto l1 = ctx1<<2;
-        for (u8 i=0; i!=ALPH_SZ; ++i) {
-          aN0[i] += container0->query(l0 | i);
-          aN1[i] += container1->query(l1 | i);
-        }
         auto numSym = NUM[c];
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        Pm0  = (aN0[numSym]+alpha0) / (aN0[0]+aN0[1]+aN0[2]+aN0[3]+sAlpha0);
-        Pm1  = (aN1[numSym]+alpha1) / (aN1[0]+aN1[1]+aN1[2]+aN1[3]+sAlpha1);
-        P    = Pm0*w0 + Pm1*w1;
+        auto l0  = ctx0<<2;
+        auto l1  = ctx1<<2;
+        auto r   = ctxIR0>>2;
+        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r);
+        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r);
+        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r);
+        auto z03 = container0->query(l0 | 3) + container0->query(r);
+        auto z10 = container1->query(l1);
+        auto z11 = container1->query(l1 | 1);
+        auto z12 = container1->query(l1 | 2);
+        auto z13 = container1->query(l1 | 3);
+        ctx0     = (l0 & mask0) | numSym;    // Update ctx
+        ctx1     = (l1 & mask1) | numSym;
+        ctxIR0   = REVNUM[c]<<shl0 | r;      // Update ctxIR
+        decltype(z00) z0[4] {z00, z01, z02, z03};
+        decltype(z10) z1[4] {z10, z11, z12, z13};
+        Pm0      = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+        Pm1      = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
         auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
         auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        w0   = rawW0 / (rawW0+rawW1);
-        w1   = rawW1 / (rawW0+rawW1);
-        sEnt += log2(1/P);
+        w0       = rawW0 / (rawW0+rawW1);
+        w1       = rawW1 / (rawW0+rawW1);
+        sEnt    += log2(1/(Pm0*w0 + Pm1*w1));
       }
     }
   }
@@ -445,29 +448,30 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        // Inverted repeat
-        auto r = ctxIR1>>2;
-        for (u8 i=0; i!=ALPH_SZ; ++i)
-          aN1[i] = container1->query((IRMAGIC-i)<<shl1 | r);
-        ctxIR1 = REVNUM[c]<<shl1 | r;          // Update ctxIR
-        
-        auto l0 = ctx0<<2;
-        auto l1 = ctx1<<2;
-        for (u8 i=0; i!=ALPH_SZ; ++i) {
-          aN0[i] += container0->query(l0 | i);
-          aN1[i] += container1->query(l1 | i);
-        }
         auto numSym = NUM[c];
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        Pm0  = (aN0[numSym]+alpha0) / (aN0[0]+aN0[1]+aN0[2]+aN0[3]+sAlpha0);
-        Pm1  = (aN1[numSym]+alpha1) / (aN1[0]+aN1[1]+aN1[2]+aN1[3]+sAlpha1);
-        P    = Pm0*w0 + Pm1*w1;
+        auto l0  = ctx0<<2;
+        auto l1  = ctx1<<2;
+        auto r   = ctxIR1>>2;
+        auto z00 = container0->query(l0);
+        auto z01 = container0->query(l0 | 1);
+        auto z02 = container0->query(l0 | 2);
+        auto z03 = container0->query(l0 | 3);
+        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r);
+        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r);
+        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r);
+        auto z13 = container1->query(l1 | 3) + container1->query(r);
+        ctx0     = (l0 & mask0) | numSym;    // Update ctx
+        ctx1     = (l1 & mask1) | numSym;
+        ctxIR1   = REVNUM[c]<<shl1 | r;      // Update ctxIR
+        decltype(z00) z0[4] {z00, z01, z02, z03};
+        decltype(z10) z1[4] {z10, z11, z12, z13};
+        Pm0      = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+        Pm1      = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
         auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
         auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        w0   = rawW0 / (rawW0+rawW1);
-        w1   = rawW1 / (rawW0+rawW1);
-        sEnt += log2(1/P);
+        w0       = rawW0 / (rawW0+rawW1);
+        w1       = rawW1 / (rawW0+rawW1);
+        sEnt    += log2(1/(Pm0*w0 + Pm1*w1));
       }
     }
   }
@@ -475,33 +479,32 @@ inline void FCM::compressDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        // Inverted repeat
-        auto r0 = ctxIR0>>2;
-        auto r1 = ctxIR1>>2;
-        for (u8 i=0; i!=ALPH_SZ; ++i) {
-          aN0[i] = container0->query((IRMAGIC-i)<<shl0 | r0);
-          aN1[i] = container1->query((IRMAGIC-i)<<shl1 | r1);
-        }
-        ctxIR0 = REVNUM[c]<<shl0 | r0;          // Update ctxIR
-        ctxIR1 = REVNUM[c]<<shl1 | r1;
-        
-        auto l0 = ctx0<<2;
-        auto l1 = ctx1<<2;
-        for (u8 i=0; i!=ALPH_SZ; ++i) {
-          aN0[i] += container0->query(l0 | i);
-          aN1[i] += container1->query(l1 | i);
-        }
         auto numSym = NUM[c];
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        Pm0  = (aN0[numSym]+alpha0) / (aN0[0]+aN0[1]+aN0[2]+aN0[3]+sAlpha0);
-        Pm1  = (aN1[numSym]+alpha1) / (aN1[0]+aN1[1]+aN1[2]+aN1[3]+sAlpha1);
-        P    = Pm0*w0 + Pm1*w1;
+        auto l0  = ctx0<<2;
+        auto l1  = ctx1<<2;
+        auto r0  = ctxIR0>>2;
+        auto r1  = ctxIR1>>2;
+        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
+        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
+        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
+        auto z03 = container0->query(l0 | 3) + container0->query(r0);
+        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
+        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
+        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
+        auto z13 = container1->query(l1 | 3) + container1->query(r1);
+        ctx0     = (l0 & mask0) | numSym;    // Update ctx
+        ctx1     = (l1 & mask1) | numSym;
+        ctxIR0   = REVNUM[c]<<shl0 | r0;     // Update ctxIR
+        ctxIR1   = REVNUM[c]<<shl1 | r1;
+        decltype(z00) z0[4] {z00, z01, z02, z03};
+        decltype(z10) z1[4] {z10, z11, z12, z13};
+        Pm0      = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+        Pm1      = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
         auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
         auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        w0   = rawW0 / (rawW0+rawW1);
-        w1   = rawW1 / (rawW0+rawW1);
-        sEnt += log2(1/P);
+        w0       = rawW0 / (rawW0+rawW1);
+        w1       = rawW1 / (rawW0+rawW1);
+        sEnt    += log2(1/(Pm0*w0 + Pm1*w1));
       }
     }
   }
