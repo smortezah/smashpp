@@ -55,10 +55,10 @@ class FCM    // Finite-context model
   template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
   void compDS2 (const string&, mask0_t, mask1_t, const ds0_t&,
                 const ds1_t&) const;
-  template <typename mask0_t, typename mask1_t, typename mask2_t,
-    typename ds0_t, typename ds1_t, typename ds2_t>
-  void compDS3 (const string&, mask0_t, mask1_t, mask2_t, const ds0_t&,
-                const ds1_t&, const ds2_t&) const;
+//  template <typename mask0_t, typename mask1_t, typename mask2_t,
+//    typename ds0_t, typename ds1_t, typename ds2_t>
+//  void compDS3 (const string&, mask0_t, mask1_t, mask2_t, const ds0_t&,
+//                const ds1_t&, const ds2_t&) const;
 };
 
 #endif //SMASHPP_FCM_HPP

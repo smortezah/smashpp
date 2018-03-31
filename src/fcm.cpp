@@ -123,7 +123,7 @@ inline void FCM::createDS (const string& ref, T mask, U& container) {
   char c;
   for (T ctx=0; rf.get(c);) {
     if (c != '\n') {
-      ctx = ((ctx<<2) & mask) | NUM[c];  // Update ctx
+      ctx = ((ctx<<2) & mask) | NUM[c];    // Update ctx
       container->update(ctx);
     }
   }
@@ -209,10 +209,6 @@ inline void FCM::createDS (const string& ref, T mask, U& container) {
 
 void FCM::compress (const Param& p) const {
   cerr << "Compressing...\n";
-  array<u32, 4> aN32{};    // Array of number of elements
-  array<u64, 4> aN64_0{};
-  array<u64, 4> aN64_1{};
-  array<u64, 4> aN64_2{};
   vector<u32> mask32;  mask32.resize(model.size());
   u64 mask64 = 0;
   for (const auto& m : model) {
@@ -221,26 +217,24 @@ void FCM::compress (const Param& p) const {
   }
   
   switch (MODE_COMB) {
-////    case 1:   compressDS1(p.tar, mask32[0], aN64_0, tbl64);           break;
     case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
     case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
     case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
     case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
-//    case 3:compDS2(p.tar,mask32[0],mask32[1],aN64_0,aN64_1,tbl64,tbl32);break;
     case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
     case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
     case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
     case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
     case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
     case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
-//    case 7:   compressDS3(p.tar, mask32[0], mask32[1], mask32[3], aN64_0,
-//                          aN64_1, aN64_2, tbl64, tbl32, logtbl8);         break;
-//    case 11:  compressDS3(p.tar, mask32[0], mask32[1], mask64, aN64_0,
-//                          aN64_1, aN32, tbl64, tbl32, sketch4);           break;
-//    case 13:  compressDS3(p.tar, mask32[0], mask32[1], mask64, aN64_0,
-//                          aN64_1, aN32, tbl64, logtbl8, sketch4);         break;
-//    case 14:  compressDS3(p.tar, mask32[0], mask32[1], mask64, aN64_0,
-//                          aN64_1, aN32, tbl32, logtbl8, sketch4);         break;
+//    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
+//                      tbl64, tbl32, logtbl8);                          break;
+//    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl64, tbl32, sketch4);                          break;
+//    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl64, logtbl8, sketch4);                        break;
+//    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl32, logtbl8, sketch4);                        break;
 //    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);         break;
     default:  cerr << "Error";                                         break;
   }
@@ -503,315 +497,315 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
   cerr << "Compression finished ";
 }
 
-template <typename mask0_t, typename mask1_t, typename mask2_t,
-  typename ds0_t, typename ds1_t, typename ds2_t>
-inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
-                mask2_t mask2, const ds0_t& container0, const ds1_t& container1,
-                const ds2_t& container2) const {
-  const auto shl0{model[0].k<<1}, shl1{model[1].k<<1}, shl2{model[2].k<<1};
-  mask0_t ctx0{0}, ctxIR0{mask0};   // Ctx, ir (int) sliding through the dataset
-  mask1_t ctx1{0}, ctxIR1{mask1};
-  mask2_t ctx2{0}, ctxIR2{mask2};
-  u64 symsNo{0};               // No. syms in target file, except \n
-  const float alpha0{model[0].alpha}, alpha1{model[1].alpha},
-              alpha2{model[2].alpha};
-  const double sAlpha0{ALPH_SZ*alpha0}, sAlpha1{ALPH_SZ*alpha1},
-               sAlpha2{ALPH_SZ*alpha2};  // Sum of alphas
-  double w0{1/3}, w1{1/3}, w2{1/3};
-  double Pm0{}, Pm1{}, Pm2{};  // P of model 0, model 1, model 2
-  double sEnt{0}; // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);
-  char c;
-  if (IR_COMB==IR::DDDD) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[c];
-        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;
-        auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
-        auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
-        auto z10 = container1->query(l1);    auto z11 = container1->query(l1|1);
-        auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
-        auto z20 = container2->query(l2);    auto z21 = container2->query(l2|1);
-        auto z22 = container2->query(l2|2);  auto z23 = container2->query(l2|3);
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        decltype(z00) z0[4] {z00, z01, z02, z03};
-        decltype(z10) z1[4] {z10, z11, z12, z13};
-        decltype(z20) z2[4] {z20, z21, z22, z23};
-        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
-        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDDI) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[c];
-        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;  auto r0=ctxIR0>>2;
-        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
-        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
-        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
-        auto z03 = container0->query(l0 | 3) + container0->query(r0);
-        auto z10 = container1->query(l1);    auto z11 = container1->query(l1|1);
-        auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
-        auto z20 = container2->query(l2);    auto z21 = container2->query(l2|1);
-        auto z22 = container2->query(l2|2);  auto z23 = container2->query(l2|3);
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR0 = REVNUM[c]<<shl0 | r0;      // Update ctxIR
-        decltype(z00) z0[4] {z00, z01, z02, z03};
-        decltype(z10) z1[4] {z10, z11, z12, z13};
-        decltype(z20) z2[4] {z20, z21, z22, z23};
-        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
-        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDID) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[c];
-        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;  auto r1=ctxIR1>>2;
-        auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
-        auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
-        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
-        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
-        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
-        auto z13 = container1->query(l1 | 3) + container1->query(r1);
-        auto z20 = container2->query(l2);    auto z21 = container2->query(l2|1);
-        auto z22 = container2->query(l2|2);  auto z23 = container2->query(l2|3);
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR1 = REVNUM[c]<<shl1 | r1;      // Update ctxIR
-        decltype(z00) z0[4] {z00, z01, z02, z03};
-        decltype(z10) z1[4] {z10, z11, z12, z13};
-        decltype(z20) z2[4] {z20, z21, z22, z23};
-        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
-        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDII) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[c];
-        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto l2=ctx2<<2;
-        auto r0=ctxIR0>>2;  auto r1=ctxIR1>>2;
-        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
-        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
-        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
-        auto z03 = container0->query(l0 | 3) + container0->query(r0);
-        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
-        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
-        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
-        auto z13 = container1->query(l1 | 3) + container1->query(r1);
-        auto z20 = container2->query(l2);    auto z21 = container2->query(l2|1);
-        auto z22 = container2->query(l2|2);  auto z23 = container2->query(l2|3);
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR0 = REVNUM[c]<<shl0 | r0;     // Update ctxIR
-        ctxIR1 = REVNUM[c]<<shl1 | r1;
-        decltype(z00) z0[4] {z00, z01, z02, z03};
-        decltype(z10) z1[4] {z10, z11, z12, z13};
-        decltype(z20) z2[4] {z20, z21, z22, z23};
-        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
-        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-      }
-    }
-  }
-  else if (IR_COMB==IR::DIDD) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[c];
-        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;  auto r2=ctxIR2>>2;
-        auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
-        auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
-        auto z10 = container1->query(l1);    auto z11 = container1->query(l1|1);
-        auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
-        auto z20 = container2->query(l2)     + container2->query(3<<shl2 | r2);
-        auto z21 = container2->query(l2 | 1) + container2->query(2<<shl2 | r2);
-        auto z22 = container2->query(l2 | 2) + container2->query(1<<shl2 | r2);
-        auto z23 = container2->query(l2 | 3) + container2->query(r2);
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR2 = REVNUM[c]<<shl2 | r2;    // Update ctxIR
-        decltype(z00) z0[4] {z00, z01, z02, z03};
-        decltype(z10) z1[4] {z10, z11, z12, z13};
-        decltype(z20) z2[4] {z20, z21, z22, z23};
-        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
-        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-      }
-    }
-  }
-  else if (IR_COMB==IR::DIDI) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[c];
-        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto l2=ctx2<<2;
-        auto r0=ctxIR0>>2;  auto r2=ctxIR2>>2;
-        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
-        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
-        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
-        auto z03 = container0->query(l0 | 3) + container0->query(r0);
-        auto z10 = container1->query(l1);    auto z11 = container1->query(l1|1);
-        auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
-        auto z20 = container2->query(l2)     + container2->query(3<<shl2 | r2);
-        auto z21 = container2->query(l2 | 1) + container2->query(2<<shl2 | r2);
-        auto z22 = container2->query(l2 | 2) + container2->query(1<<shl2 | r2);
-        auto z23 = container2->query(l2 | 3) + container2->query(r2);
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR0 = REVNUM[c]<<shl0 | r0;    // Update ctxIR
-        ctxIR2 = REVNUM[c]<<shl2 | r2;
-        decltype(z00) z0[4] {z00, z01, z02, z03};
-        decltype(z10) z1[4] {z10, z11, z12, z13};
-        decltype(z20) z2[4] {z20, z21, z22, z23};
-        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
-        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-      }
-    }
-  }
-  else if (IR_COMB==IR::DIID) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[c];
-        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto l2=ctx2<<2;
-        auto r1=ctxIR1>>2;  auto r2=ctxIR2>>2;
-        auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
-        auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
-        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
-        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
-        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
-        auto z13 = container1->query(l1 | 3) + container1->query(r1);
-        auto z20 = container2->query(l2)     + container2->query(3<<shl2 | r2);
-        auto z21 = container2->query(l2 | 1) + container2->query(2<<shl2 | r2);
-        auto z22 = container2->query(l2 | 2) + container2->query(1<<shl2 | r2);
-        auto z23 = container2->query(l2 | 3) + container2->query(r2);
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR1 = REVNUM[c]<<shl1 | r1;    // Update ctxIR
-        ctxIR2 = REVNUM[c]<<shl2 | r2;
-        decltype(z00) z0[4] {z00, z01, z02, z03};
-        decltype(z10) z1[4] {z10, z11, z12, z13};
-        decltype(z20) z2[4] {z20, z21, z22, z23};
-        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
-        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-      }
-    }
-  }
-  else if (IR_COMB==IR::DIII) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[c];
-        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto l2=ctx2<<2;
-        auto r0=ctxIR0>>2;  auto r1=ctxIR1>>2;  auto r2=ctxIR2>>2;
-        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
-        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
-        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
-        auto z03 = container0->query(l0 | 3) + container0->query(r0);
-        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
-        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
-        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
-        auto z13 = container1->query(l1 | 3) + container1->query(r1);
-        auto z20 = container2->query(l2)     + container2->query(3<<shl2 | r2);
-        auto z21 = container2->query(l2 | 1) + container2->query(2<<shl2 | r2);
-        auto z22 = container2->query(l2 | 2) + container2->query(1<<shl2 | r2);
-        auto z23 = container2->query(l2 | 3) + container2->query(r2);
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR0 = REVNUM[c]<<shl0 | r0;    // Update ctxIR
-        ctxIR1 = REVNUM[c]<<shl1 | r1;
-        ctxIR2 = REVNUM[c]<<shl2 | r2;
-        decltype(z00) z0[4] {z00, z01, z02, z03};
-        decltype(z10) z1[4] {z10, z11, z12, z13};
-        decltype(z20) z2[4] {z20, z21, z22, z23};
-        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
-        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-      }
-    }
-  }
-  tf.close();
-  double aveEnt = sEnt/symsNo;
-  cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
-  cerr << "Compression finished ";
-}
+//template <typename mask0_t, typename mask1_t, typename mask2_t,
+//  typename ds0_t, typename ds1_t, typename ds2_t>
+//inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
+//                mask2_t mask2, const ds0_t& container0, const ds1_t& container1,
+//                const ds2_t& container2) const {
+//  const auto shl0{model[0].k<<1}, shl1{model[1].k<<1}, shl2{model[2].k<<1};
+//  mask0_t ctx0{0}, ctxIR0{mask0};   // Ctx, ir (int) sliding through the dataset
+//  mask1_t ctx1{0}, ctxIR1{mask1};
+//  mask2_t ctx2{0}, ctxIR2{mask2};
+//  u64 symsNo{0};               // No. syms in target file, except \n
+//  const float alpha0{model[0].alpha}, alpha1{model[1].alpha},
+//              alpha2{model[2].alpha};
+//  const double sAlpha0{ALPH_SZ*alpha0}, sAlpha1{ALPH_SZ*alpha1},
+//               sAlpha2{ALPH_SZ*alpha2};  // Sum of alphas
+//  double w0{1/3}, w1{1/3}, w2{1/3};
+//  double Pm0{}, Pm1{}, Pm2{};  // P of model 0, model 1, model 2
+//  double sEnt{0}; // Sum of entropies = sum(log_2 P(s|c^t))
+//  ifstream tf(tar);
+//  char c;
+//  if (IR_COMB==IR::DDDD) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[c];
+//        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;
+//        auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
+//        auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
+//        auto z10 = container1->query(l1);    auto z11 = container1->query(l1|1);
+//        auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
+//        auto z20 = container2->query(l2);    auto z21 = container2->query(l2|1);
+//        auto z22 = container2->query(l2|2);  auto z23 = container2->query(l2|3);
+//        ctx0 = (l0 & mask0) | numSym;     // Update ctx
+//        ctx1 = (l1 & mask1) | numSym;
+//        ctx2 = (l2 & mask2) | numSym;
+//        decltype(z00) z0[4] {z00, z01, z02, z03};
+//        decltype(z10) z1[4] {z10, z11, z12, z13};
+//        decltype(z20) z2[4] {z20, z21, z22, z23};
+//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
+//        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
+//        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+//        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+//        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
+//        w0 = rawW0 / (rawW0+rawW1+rawW2);
+//        w1 = rawW1 / (rawW0+rawW1+rawW2);
+//        w2 = rawW2 / (rawW0+rawW1+rawW2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDDI) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[c];
+//        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;  auto r0=ctxIR0>>2;
+//        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
+//        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
+//        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
+//        auto z03 = container0->query(l0 | 3) + container0->query(r0);
+//        auto z10 = container1->query(l1);    auto z11 = container1->query(l1|1);
+//        auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
+//        auto z20 = container2->query(l2);    auto z21 = container2->query(l2|1);
+//        auto z22 = container2->query(l2|2);  auto z23 = container2->query(l2|3);
+//        ctx0 = (l0 & mask0) | numSym;    // Update ctx
+//        ctx1 = (l1 & mask1) | numSym;
+//        ctx2 = (l2 & mask2) | numSym;
+//        ctxIR0 = REVNUM[c]<<shl0 | r0;      // Update ctxIR
+//        decltype(z00) z0[4] {z00, z01, z02, z03};
+//        decltype(z10) z1[4] {z10, z11, z12, z13};
+//        decltype(z20) z2[4] {z20, z21, z22, z23};
+//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
+//        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
+//        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+//        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+//        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
+//        w0 = rawW0 / (rawW0+rawW1+rawW2);
+//        w1 = rawW1 / (rawW0+rawW1+rawW2);
+//        w2 = rawW2 / (rawW0+rawW1+rawW2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDID) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[c];
+//        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;  auto r1=ctxIR1>>2;
+//        auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
+//        auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
+//        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
+//        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
+//        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
+//        auto z13 = container1->query(l1 | 3) + container1->query(r1);
+//        auto z20 = container2->query(l2);    auto z21 = container2->query(l2|1);
+//        auto z22 = container2->query(l2|2);  auto z23 = container2->query(l2|3);
+//        ctx0 = (l0 & mask0) | numSym;    // Update ctx
+//        ctx1 = (l1 & mask1) | numSym;
+//        ctx2 = (l2 & mask2) | numSym;
+//        ctxIR1 = REVNUM[c]<<shl1 | r1;      // Update ctxIR
+//        decltype(z00) z0[4] {z00, z01, z02, z03};
+//        decltype(z10) z1[4] {z10, z11, z12, z13};
+//        decltype(z20) z2[4] {z20, z21, z22, z23};
+//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
+//        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
+//        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+//        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+//        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
+//        w0 = rawW0 / (rawW0+rawW1+rawW2);
+//        w1 = rawW1 / (rawW0+rawW1+rawW2);
+//        w2 = rawW2 / (rawW0+rawW1+rawW2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDII) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[c];
+//        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto l2=ctx2<<2;
+//        auto r0=ctxIR0>>2;  auto r1=ctxIR1>>2;
+//        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
+//        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
+//        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
+//        auto z03 = container0->query(l0 | 3) + container0->query(r0);
+//        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
+//        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
+//        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
+//        auto z13 = container1->query(l1 | 3) + container1->query(r1);
+//        auto z20 = container2->query(l2);    auto z21 = container2->query(l2|1);
+//        auto z22 = container2->query(l2|2);  auto z23 = container2->query(l2|3);
+//        ctx0 = (l0 & mask0) | numSym;    // Update ctx
+//        ctx1 = (l1 & mask1) | numSym;
+//        ctx2 = (l2 & mask2) | numSym;
+//        ctxIR0 = REVNUM[c]<<shl0 | r0;     // Update ctxIR
+//        ctxIR1 = REVNUM[c]<<shl1 | r1;
+//        decltype(z00) z0[4] {z00, z01, z02, z03};
+//        decltype(z10) z1[4] {z10, z11, z12, z13};
+//        decltype(z20) z2[4] {z20, z21, z22, z23};
+//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
+//        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
+//        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+//        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+//        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
+//        w0 = rawW0 / (rawW0+rawW1+rawW2);
+//        w1 = rawW1 / (rawW0+rawW1+rawW2);
+//        w2 = rawW2 / (rawW0+rawW1+rawW2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DIDD) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[c];
+//        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;  auto r2=ctxIR2>>2;
+//        auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
+//        auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
+//        auto z10 = container1->query(l1);    auto z11 = container1->query(l1|1);
+//        auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
+//        auto z20 = container2->query(l2)     + container2->query(3<<shl2 | r2);
+//        auto z21 = container2->query(l2 | 1) + container2->query(2<<shl2 | r2);
+//        auto z22 = container2->query(l2 | 2) + container2->query(1<<shl2 | r2);
+//        auto z23 = container2->query(l2 | 3) + container2->query(r2);
+//        ctx0 = (l0 & mask0) | numSym;     // Update ctx
+//        ctx1 = (l1 & mask1) | numSym;
+//        ctx2 = (l2 & mask2) | numSym;
+//        ctxIR2 = REVNUM[c]<<shl2 | r2;    // Update ctxIR
+//        decltype(z00) z0[4] {z00, z01, z02, z03};
+//        decltype(z10) z1[4] {z10, z11, z12, z13};
+//        decltype(z20) z2[4] {z20, z21, z22, z23};
+//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
+//        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
+//        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+//        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+//        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
+//        w0 = rawW0 / (rawW0+rawW1+rawW2);
+//        w1 = rawW1 / (rawW0+rawW1+rawW2);
+//        w2 = rawW2 / (rawW0+rawW1+rawW2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DIDI) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[c];
+//        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto l2=ctx2<<2;
+//        auto r0=ctxIR0>>2;  auto r2=ctxIR2>>2;
+//        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
+//        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
+//        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
+//        auto z03 = container0->query(l0 | 3) + container0->query(r0);
+//        auto z10 = container1->query(l1);    auto z11 = container1->query(l1|1);
+//        auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
+//        auto z20 = container2->query(l2)     + container2->query(3<<shl2 | r2);
+//        auto z21 = container2->query(l2 | 1) + container2->query(2<<shl2 | r2);
+//        auto z22 = container2->query(l2 | 2) + container2->query(1<<shl2 | r2);
+//        auto z23 = container2->query(l2 | 3) + container2->query(r2);
+//        ctx0 = (l0 & mask0) | numSym;     // Update ctx
+//        ctx1 = (l1 & mask1) | numSym;
+//        ctx2 = (l2 & mask2) | numSym;
+//        ctxIR0 = REVNUM[c]<<shl0 | r0;    // Update ctxIR
+//        ctxIR2 = REVNUM[c]<<shl2 | r2;
+//        decltype(z00) z0[4] {z00, z01, z02, z03};
+//        decltype(z10) z1[4] {z10, z11, z12, z13};
+//        decltype(z20) z2[4] {z20, z21, z22, z23};
+//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
+//        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
+//        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+//        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+//        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
+//        w0 = rawW0 / (rawW0+rawW1+rawW2);
+//        w1 = rawW1 / (rawW0+rawW1+rawW2);
+//        w2 = rawW2 / (rawW0+rawW1+rawW2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DIID) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[c];
+//        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto l2=ctx2<<2;
+//        auto r1=ctxIR1>>2;  auto r2=ctxIR2>>2;
+//        auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
+//        auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
+//        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
+//        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
+//        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
+//        auto z13 = container1->query(l1 | 3) + container1->query(r1);
+//        auto z20 = container2->query(l2)     + container2->query(3<<shl2 | r2);
+//        auto z21 = container2->query(l2 | 1) + container2->query(2<<shl2 | r2);
+//        auto z22 = container2->query(l2 | 2) + container2->query(1<<shl2 | r2);
+//        auto z23 = container2->query(l2 | 3) + container2->query(r2);
+//        ctx0 = (l0 & mask0) | numSym;     // Update ctx
+//        ctx1 = (l1 & mask1) | numSym;
+//        ctx2 = (l2 & mask2) | numSym;
+//        ctxIR1 = REVNUM[c]<<shl1 | r1;    // Update ctxIR
+//        ctxIR2 = REVNUM[c]<<shl2 | r2;
+//        decltype(z00) z0[4] {z00, z01, z02, z03};
+//        decltype(z10) z1[4] {z10, z11, z12, z13};
+//        decltype(z20) z2[4] {z20, z21, z22, z23};
+//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
+//        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
+//        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+//        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+//        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
+//        w0 = rawW0 / (rawW0+rawW1+rawW2);
+//        w1 = rawW1 / (rawW0+rawW1+rawW2);
+//        w2 = rawW2 / (rawW0+rawW1+rawW2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DIII) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[c];
+//        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto l2=ctx2<<2;
+//        auto r0=ctxIR0>>2;  auto r1=ctxIR1>>2;  auto r2=ctxIR2>>2;
+//        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
+//        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
+//        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
+//        auto z03 = container0->query(l0 | 3) + container0->query(r0);
+//        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
+//        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
+//        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
+//        auto z13 = container1->query(l1 | 3) + container1->query(r1);
+//        auto z20 = container2->query(l2)     + container2->query(3<<shl2 | r2);
+//        auto z21 = container2->query(l2 | 1) + container2->query(2<<shl2 | r2);
+//        auto z22 = container2->query(l2 | 2) + container2->query(1<<shl2 | r2);
+//        auto z23 = container2->query(l2 | 3) + container2->query(r2);
+//        ctx0 = (l0 & mask0) | numSym;     // Update ctx
+//        ctx1 = (l1 & mask1) | numSym;
+//        ctx2 = (l2 & mask2) | numSym;
+//        ctxIR0 = REVNUM[c]<<shl0 | r0;    // Update ctxIR
+//        ctxIR1 = REVNUM[c]<<shl1 | r1;
+//        ctxIR2 = REVNUM[c]<<shl2 | r2;
+//        decltype(z00) z0[4] {z00, z01, z02, z03};
+//        decltype(z10) z1[4] {z10, z11, z12, z13};
+//        decltype(z20) z2[4] {z20, z21, z22, z23};
+//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
+//        Pm2 = (z2[numSym]+alpha2) / (z20+z21+z22+z23+sAlpha2);
+//        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+//        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+//        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
+//        w0 = rawW0 / (rawW0+rawW1+rawW2);
+//        w1 = rawW1 / (rawW0+rawW1+rawW2);
+//        w2 = rawW2 / (rawW0+rawW1+rawW2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//      }
+//    }
+//  }
+//  tf.close();
+//  double aveEnt = sEnt/symsNo;
+//  cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
+//  cerr << "Compression finished ";
+//}
