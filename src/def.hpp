@@ -50,8 +50,14 @@ typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
 // Enums
 enum MODE {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
-// Inv. repeats, 2 & 3 models. D: direct, I: inv.
-//enum IR {DD, DI, ID, II, DDD, DDI, DID, DII, IDD, IDI, IID, III};
+// Inv. repeats, 1 & 2 & 3 & 4 models. D: direct(bit 0), I: inv.(bit 1)
+//enum IR0 {   D,    I};
+//enum IR1 {  DD,   DI,   ID,   II};
+//enum IR2 { DDD,  DDI,  DID,  DII,  IDD,  IDI,  IID,  III};
+//enum IR3 {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
+//          IDDD, IDDI, IDID, IDII, IIDD, IIDI, IIID, IIII};
+enum IR {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
+         IDDD, IDDI, IDID, IDII, IIDD, IIDI, IIID, IIII};
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n
