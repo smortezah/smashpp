@@ -45,17 +45,15 @@ class FCM    // Finite-context model
   void createDS (const string&, T, U&);
   // Compress data structure
   template <typename T, typename U>
-//  void compressDS1 (const string&, T, Y&, const U&) const;
   void compressDS1 (const string&, T, const U&) const;
 //  template <typename mask_t, typename cnt_t, typename ds_t>
 //  double aveEnt1D (const string &, mask_t, cnt_t &, const ds_t &) const;
 //  template <typename mask_t, typename cnt_t, typename ds_t>
 //  double aveEnt1I (const string &, mask_t, cnt_t &, const ds_t &) const;
   
-  template <typename mask0_t, typename mask1_t, typename cnt0_t,
-    typename cnt1_t, typename ds0_t, typename ds1_t>
-  void compressDS2 (const string&, mask0_t, mask1_t, cnt0_t&, cnt1_t&,
-                    const ds0_t&, const ds1_t&) const;
+  template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
+  void compressDS2 (const string&, mask0_t, mask1_t, const ds0_t&,
+                    const ds1_t&) const;
 };
 
 #endif //SMASHPP_FCM_HPP
