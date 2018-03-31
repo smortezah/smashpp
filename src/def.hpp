@@ -51,11 +51,6 @@ typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 // Enums
 enum MODE {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
 // Inv. repeats, 1 & 2 & 3 & 4 models. D: direct(bit 0), I: inv.(bit 1)
-//enum IR0 {   D,    I};
-//enum IR1 {  DD,   DI,   ID,   II};
-//enum IR2 { DDD,  DDI,  DID,  DII,  IDD,  IDI,  IID,  III};
-//enum IR3 {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
-//          IDDD, IDDI, IDID, IDII, IIDD, IIDI, IIID, IIII};
 enum IR {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
          IDDD, IDDI, IDID, IDII, IIDD, IIDI, IIID, IIII};
 
@@ -216,11 +211,14 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 //  0, 0, 0,'C',  0,  0, 0,  0, 0, 0,'N',  0, 0, 0, 0, 0,'A',  0,  0,  0,
 //  0, 0, 0
 //};
-constexpr u8 LEVEL[2][11] {    // Multiple models MUST be in sorted 'k' manner
-// #mdl, ir, k, 100*alpha, log2 w,  d
-  {1,     1,  11,    99,       0,      0},    // Level 0
+constexpr u8 LEVEL[3][16] {    // Multiple models MUST be in sorted 'k' manner
+// #mdl, ir,  k, 100*alpha, log2 w,  d
+  {1,     0, 20,    99,       31,      5},    // Level 0
   {2,     0, 11,    99,       0,      0,     // Level 1
           1, 20,    99,      30,  DEF_D},
+  {3,     0,  7,    99,       0,      0,     // Level 2
+          1, 13,    99,       0,      0,
+          1, 20,    99,      30,  DEF_D}
 };
 
 
