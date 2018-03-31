@@ -52,7 +52,7 @@ int main (int argc, char* argv[])
     t1 = high_resolution_clock::now();
     e  = t1 - t0;
     cerr << "in " << std::fixed << setprecision(3)<< e.count() << " seconds.\n";
-
+    
     delete m;
   }
   catch (...) { return EXIT_FAILURE; }
