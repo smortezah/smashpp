@@ -216,26 +216,32 @@ void FCM::compress (const Param& p) const {
     if (m.mode==MODE::SKETCH_8)  mask64=static_cast<u64>((1<<(m.k<<1))-1);
   }
   
+//  std::tuple<u32,u64> m (mask32[0],mask64);
+//  std::tuple<Table64*,CMLS4*> t (tbl64,sketch4);
+//  a(m,t);
+  a(std::tuple<u32,u64>(mask32[0],mask64),
+    std::tuple<Table64*,CMLS4*>(tbl64,sketch4));
+  
   switch (MODE_COMB) {
-    case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
-    case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
-    case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
-    case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
-    case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
-    case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
-    case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
-    case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
-    case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
-    case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
-//    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
-//                      tbl64, tbl32, logtbl8);                          break;
-//    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-//                      tbl64, tbl32, sketch4);                          break;
-//    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-//                      tbl64, logtbl8, sketch4);                        break;
-//    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-//                      tbl32, logtbl8, sketch4);                        break;
-//    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);         break;
+//    case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
+//    case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
+//    case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
+//    case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
+//    case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
+//    case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
+//    case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
+//    case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
+//    case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
+//    case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
+////    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
+////                      tbl64, tbl32, logtbl8);                          break;
+////    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+////                      tbl64, tbl32, sketch4);                          break;
+////    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+////                      tbl64, logtbl8, sketch4);                        break;
+////    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+////                      tbl32, logtbl8, sketch4);                        break;
+////    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);         break;
     default:  cerr << "Error";                                         break;
   }
   
@@ -368,6 +374,15 @@ inline void FCM::compDS1 (const string &tar, mask_t mask,
 //  tf.close();
 //  return sEnt/symsNo;
 //}
+
+template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
+inline void FCM::a (const std::tuple<mask0_t,mask1_t> m,
+                    const std::tuple<ds0_t,ds1_t>& t) const {
+  auto container0 = std::get<0>(t);
+  container0->print();
+};
+
+
 
 template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
 inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
