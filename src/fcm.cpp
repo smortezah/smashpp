@@ -422,10 +422,14 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
         ctxIR0 = REVNUM[c]<<shl0 | r0;    // Update ctxIR
-        decltype(z00) z0[4] {z00, z01, z02, z03};
-        decltype(z10) z1[4] {z10, z11, z12, z13};
-        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
+        { std::array<decltype(z00),4> z {z00, z01, z02, z03};
+          Pm0 = (z[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0); }
+        { std::array<decltype(z10),4> z {z10, z11, z12, z13};
+          Pm1 = (z[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1); }
+//        decltype(z00) z0[4] {z00, z01, z02, z03};
+//        decltype(z10) z1[4] {z10, z11, z12, z13};
+//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
+//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
         auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
         auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
         w0 = rawW0 / (rawW0+rawW1);
