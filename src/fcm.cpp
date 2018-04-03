@@ -30,7 +30,7 @@ FCM::~FCM () {
 inline void FCM::setModels (const Param& p) {
   model.resize(LEVEL[p.level][0]);
   for (auto m=model.begin(); m!=model.end(); ++m) {
-    auto i   = m-model.begin();
+    auto i   = m - model.begin();
     m->ir    = LEVEL[p.level][5*i+1];
     m->k     = LEVEL[p.level][5*i+2];
     m->alpha = static_cast<float>(LEVEL[p.level][5*i+3])/100;
@@ -375,9 +375,9 @@ inline void FCM::compDS1 (const string &tar, mask_t mask,
 //  return sEnt/symsNo;
 //}
 
-//todo
+//todo. not usefull
 template <typename mask0_t, typename mask1_t>
-using Mask = std::tuple<mask0_t,mask1_t>;
+using Mask2 = std::tuple<mask0_t,mask1_t>;
 
 template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
 inline void FCM::a (const std::tuple<mask0_t,mask1_t> m,
