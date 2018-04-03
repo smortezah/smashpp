@@ -23,7 +23,7 @@ void CMLS4::config (u64 w_, u8 d_) {
     throw EXIT_FAILURE;
   }
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
-  ab.reserve(d<<1);
+  ab.resize(d<<1);
   setAB();
 }
 
