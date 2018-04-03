@@ -25,15 +25,6 @@ using std::setprecision;
 #include "cmls4.hpp"
 int main (int argc, char* argv[])
 {
-//  int n=0;
-//  for (int i = 0; i<30; ++i) {
-//    if(!(i % POW2[2]))
-//      cerr<<"1 ";
-//    else
-//      cerr<<"0 ";
-//  }
-  
-  
   try {
     Param p;
     p.parse(argc, argv);

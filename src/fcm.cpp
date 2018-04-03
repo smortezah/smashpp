@@ -128,6 +128,8 @@ inline void FCM::createDS (const string& ref, T mask, U& container) {
     }
   }
   rf.close();
+  //todo
+  container->print();
 }
 
 //void FCM::compress (const Param& p) const {
@@ -212,21 +214,21 @@ void FCM::compress (const Param& p) const {
   vector<u32> mask32;  mask32.resize(model.size());
   u64 mask64 = 0;
   for (const auto& m : model) {
-    mask32.emplace_back(static_cast<u32>((1<<(m.k<<1))-1));//1<<2k-1=4^k-1
-    if (m.mode==MODE::SKETCH_8)  mask64=static_cast<u64>((1<<(m.k<<1))-1);
+    mask32.emplace_back(static_cast<u32>((1<<(m.k<<1)) - 1));  // 1<<2k-1=4^k-1
+    if (m.mode==MODE::SKETCH_8)  mask64=static_cast<u64>((1<<(m.k<<1)) - 1);
   }
   
-//  std::tuple<u32,u64> m (mask32[0],mask64);
-//  std::tuple<Table64*,CMLS4*> t (tbl64,sketch4);
-//  a(m,t);
-  a(std::tuple<u32,u64>(mask32[0],mask64),
-    std::tuple<Table64*,CMLS4*>(tbl64,sketch4));
+////  std::tuple<u32,u64> m (mask32[0],mask64);
+////  std::tuple<Table64*,CMLS4*> t (tbl64,sketch4);
+////  a(m,t);
+//  a(std::tuple<u32,u64>(mask32[0],mask64),
+//    std::tuple<Table64*,CMLS4*>(tbl64,sketch4));
   
   switch (MODE_COMB) {
-//    case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
-//    case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
-//    case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
-//    case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
+    case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
+    case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
+    case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
+    case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
 //    case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
 //    case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
 //    case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
@@ -276,6 +278,8 @@ inline void FCM::compDS1 (const string &tar, mask_t mask,
         ctx = (l & mask) | numSym;    // Update ctx
         decltype(z0) z[4] {z0, z1, z2, z3};
         sEnt  += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
+        //todo
+//        cout<<sEnt<<'\n';
       }
     }
   }
@@ -374,10 +378,6 @@ inline void FCM::compDS1 (const string &tar, mask_t mask,
 //  tf.close();
 //  return sEnt/symsNo;
 //}
-
-//todo. not usefull
-template <typename mask0_t, typename mask1_t>
-using Mask2 = std::tuple<mask0_t,mask1_t>;
 
 template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
 inline void FCM::a (const std::tuple<mask0_t,mask1_t> m,
