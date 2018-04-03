@@ -375,6 +375,10 @@ inline void FCM::compDS1 (const string &tar, mask_t mask,
 //  return sEnt/symsNo;
 //}
 
+//todo
+template <typename mask0_t, typename mask1_t>
+using Mask = std::tuple<mask0_t,mask1_t>;
+
 template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
 inline void FCM::a (const std::tuple<mask0_t,mask1_t> m,
                     const std::tuple<ds0_t,ds1_t>& t) const {

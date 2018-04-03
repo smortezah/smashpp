@@ -10,7 +10,7 @@
 #include <chrono>
 
 // Version
-const std::string VERSION   = "18.03";
+const std::string VERSION   = "18.04";
 const std::string DEV_YEARS = "2018";
 
 // Typedef
