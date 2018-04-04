@@ -23,7 +23,7 @@ FCM::~FCM () {
     if      (m.mode==MODE::TABLE_64)      delete tbl64;
     else if (m.mode==MODE::TABLE_32)      delete tbl32;
     else if (m.mode==MODE::LOG_TABLE_8)   delete logtbl8;
-    else                                  delete sketch4;
+    else if (m.mode==MODE::SKETCH_8)      delete sketch4;
   }
 }
 
@@ -76,52 +76,53 @@ inline void FCM::setIRsComb () {
 
 void FCM::buildModel (const Param& p) {
   cerr << "Building models...\n";
-  for (const auto& m : model) {
-    auto mask32 = static_cast<u32>((4<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
-    auto mask64 = static_cast<u64>((4<<(m.k<<1))-1);
-    switch (m.mode) {
-      case MODE::TABLE_64:     createDS(p.ref, mask32, tbl64);    break;
-      case MODE::TABLE_32:     createDS(p.ref, mask32, tbl32);    break;
-      case MODE::LOG_TABLE_8:  createDS(p.ref, mask32, logtbl8);  break;
-      case MODE::SKETCH_8:     createDS(p.ref, mask64, sketch4);  break;
-      default:                 cerr << "Error.\n";
-    }
-  }
-  
-//  //todo. test multithreading
-//  vector<thread> thrd;  thrd.resize(4);
 //  for (const auto& m : model) {
 //    auto mask32 = static_cast<u32>((4<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
 //    auto mask64 = static_cast<u64>((4<<(m.k<<1))-1);
 //    switch (m.mode) {
-//      case MODE::TABLE_64:
-//        thrd[0] = thread(&FCM::createDS<u32,Table64*>, this,
-//                         p.ref, mask32, tbl64);
-//        break;
-//      case MODE::TABLE_32:
-//        thrd[1] = thread(&FCM::createDS<u32,Table32*>, this,
-//                         p.ref, mask32, tbl32);
-//        break;
-//      case MODE::LOG_TABLE_8:
-//        thrd[2] = thread(&FCM::createDS<u32,LogTable8*>, this,
-//                         p.ref, mask32, logtbl8);
-//        break;
-//      case MODE::SKETCH_8:
-//        thrd[3] = thread(&FCM::createDS<u64,CMLS4*>, this,
-//                         p.ref, mask64, sketch4);
-//        break;
-//      default:    cerr << "Error.";
+//      case MODE::TABLE_64:     createDS(p.ref, mask32, tbl64);    break;
+//      case MODE::TABLE_32:     createDS(p.ref, mask32, tbl32);    break;
+//      case MODE::LOG_TABLE_8:  createDS(p.ref, mask32, logtbl8);  break;
+//      case MODE::SKETCH_8:     createDS(p.ref, mask64, sketch4);  break;
+//      default:                 cerr << "Error.\n";
 //    }
 //  }
-//  for (u8 t=0; t!=4; ++t)  if (thrd[t].joinable()) thrd[t].join();
+  
+  //todo. test multithreading
+  vector<thread> thrd;  thrd.resize(model.size());
+  for (const auto& m : model) {
+    auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
+    auto mask64 = static_cast<u64>((4<<(m.k<<1)) - 1);
+    switch (m.mode) {
+      case MODE::TABLE_64:
+        thrd[0] = thread(&FCM::createDS<u32,Table64*>, this,
+                         p.ref, mask32, std::ref(tbl64));
+        break;
+      case MODE::TABLE_32:
+        thrd[1] = thread(&FCM::createDS<u32,Table32*>, this,
+                         p.ref, mask32, std::ref(tbl32));
+        break;
+      case MODE::LOG_TABLE_8:
+        thrd[2] = thread(&FCM::createDS<u32,LogTable8*>, this,
+                         p.ref, mask32, std::ref(logtbl8));
+        break;
+      case MODE::SKETCH_8:
+        thrd[3] = thread(&FCM::createDS<u64,CMLS4*>, this,
+                         p.ref, mask64, std::ref(sketch4));
+        break;
+      default:    cerr << "Error.";
+    }
+  }
+  for (u8 t=0; t!=model.size(); ++t)  if (thrd[t].joinable()) thrd[t].join();
   cerr << "Models built ";
 }
 
-template <typename T, typename U>
-inline void FCM::createDS (const string& ref, T mask, U& container) {
+template <typename mask_t, typename ds_t>
+inline void FCM::createDS (const string& ref, mask_t mask, ds_t& container) {
   ifstream rf(ref);
   char c;
-  for (T ctx=0; rf.get(c);) {
+  for (u32 ctx=0; rf.get(c);) {
+//    for (mask_t ctx=0; rf.get(c);) {
     if (c != '\n') {
       ctx = ((ctx<<2) & mask) | NUM[c];    // Update ctx
       container->update(ctx);
@@ -129,7 +130,7 @@ inline void FCM::createDS (const string& ref, T mask, U& container) {
   }
   rf.close();
   //todo
-  container->print();
+//  container->print();
 }
 
 //void FCM::compress (const Param& p) const {
@@ -217,24 +218,17 @@ void FCM::compress (const Param& p) const {
     mask32.emplace_back(static_cast<u32>((1<<(m.k<<1)) - 1));  // 1<<2k-1=4^k-1
     if (m.mode==MODE::SKETCH_8)  mask64=static_cast<u64>((1<<(m.k<<1)) - 1);
   }
-  
-////  std::tuple<u32,u64> m (mask32[0],mask64);
-////  std::tuple<Table64*,CMLS4*> t (tbl64,sketch4);
-////  a(m,t);
-//  a(std::tuple<u32,u64>(mask32[0],mask64),
-//    std::tuple<Table64*,CMLS4*>(tbl64,sketch4));
-  
   switch (MODE_COMB) {
     case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
     case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
     case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
     case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
-//    case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
-//    case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
-//    case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
-//    case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
-//    case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
-//    case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
+    case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
+    case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
+    case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
+    case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
+    case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
+    case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
 ////    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
 ////                      tbl64, tbl32, logtbl8);                          break;
 ////    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
@@ -251,8 +245,8 @@ void FCM::compress (const Param& p) const {
 }
 
 template <typename mask_t, typename ds_t>
-inline void FCM::compDS1 (const string &tar, mask_t mask,
-                          const ds_t &container) const {
+inline void FCM::compDS1 (const string& tar, mask_t mask,
+                          const ds_t& container) const {
 ////  double aveEnt = 0;
 ////  if (!model[0].ir)
 ////    aveEnt = aveEnt1D(tar, mask, aN, container);
@@ -278,10 +272,11 @@ inline void FCM::compDS1 (const string &tar, mask_t mask,
         ctx = (l & mask) | numSym;    // Update ctx
         decltype(z0) z[4] {z0, z1, z2, z3};
         sEnt  += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
-  
+        
         //todo
-        cout << "z0=" << z0 << "\tz1=" << z1 << "\tz2=" << z2 << "\tz3=" << z3
-             << "\tc=" << c << "\tn=" << z[numSym] << '\n';
+//        cout << "z = [" << z0 << "\t" << z1 << "\t" << z2 << "\t" << z3
+//             << "]\t" << c << "\tn=" << z[numSym]
+//             << "\t1/P=" << (z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha) << '\n';
         //todo
 //        cout<<sEnt<<'\n';
       }
@@ -382,15 +377,6 @@ inline void FCM::compDS1 (const string &tar, mask_t mask,
 //  tf.close();
 //  return sEnt/symsNo;
 //}
-
-template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
-inline void FCM::a (const std::tuple<mask0_t,mask1_t> m,
-                    const std::tuple<ds0_t,ds1_t>& t) const {
-  auto container0 = std::get<0>(t);
-  container0->print();
-};
-
-
 
 template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
 inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,

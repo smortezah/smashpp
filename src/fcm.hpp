@@ -36,18 +36,18 @@ class FCM    // Finite-context model
   CMLS4*           sketch4;
   u8               MODE_COMB;
   u8               IR_COMB;
-  
+
   void setModels    (const Param&); // Set models parameters
   void allocModels  ();             // Allocate memory to models
   void setModesComb ();             // Set combination of modes of models
   void setIRsComb   ();             // Set combination of inv. repeats of models
-  
+
   // Create data structure
-  template <typename T, typename U>
-  void createDS (const string&, T, U&);
+  template <typename mask_t, typename ds_t>
+  void createDS (const string&, mask_t, ds_t&);
   // Compress data structure
-  template <typename T, typename U>
-  void compDS1 (const string&, T, const U&) const;
+  template <typename mask_t, typename ds_t>
+  void compDS1 (const string&, mask_t, const ds_t&) const;
 //  template <typename mask_t, typename cnt_t, typename ds_t>
 //  double aveEnt1D (const string &, mask_t, cnt_t &, const ds_t &) const;
 //  template <typename mask_t, typename cnt_t, typename ds_t>
@@ -59,9 +59,6 @@ class FCM    // Finite-context model
 //    typename ds0_t, typename ds1_t, typename ds2_t>
 //  void compDS3 (const string&, mask0_t, mask1_t, mask2_t, const ds0_t&,
 //                const ds1_t&, const ds2_t&) const;
-
-template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
-void a(const std::tuple<mask0_t,mask1_t>, const std::tuple<ds0_t,ds1_t>&) const;
 };
 
 #endif //SMASHPP_FCM_HPP
