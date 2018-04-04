@@ -278,6 +278,10 @@ inline void FCM::compDS1 (const string &tar, mask_t mask,
         ctx = (l & mask) | numSym;    // Update ctx
         decltype(z0) z[4] {z0, z1, z2, z3};
         sEnt  += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
+  
+        //todo
+        cout << "z0=" << z0 << "\tz1=" << z1 << "\tz2=" << z2 << "\tz3=" << z3
+             << "\tc=" << c << "\tn=" << z[numSym] << '\n';
         //todo
 //        cout<<sEnt<<'\n';
       }
