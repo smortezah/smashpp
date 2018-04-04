@@ -57,8 +57,8 @@ inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal
 }
 
 inline void CMLS4::setAB () {
-  std::random_device r;              // Seed with a real random value, if avail.
-  std::default_random_engine e(r());
+  u64 seed = 0;
+  std::default_random_engine e(seed);
   std::uniform_int_distribution<u64> uDistA(0, (1ull<<63)-1);     // k <= 2^63-1
   std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
   for (u8 i=0; i!=d; ++i) {
