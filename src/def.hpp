@@ -42,7 +42,7 @@ constexpr u8  K_MAX_LGTBL8 = 14;   // Max ...       log table 8  (1   GB mem)
 constexpr u32 BLK_SZ       = 8192; // 8K
 constexpr u64 DEF_W        = power(2,20); // Default width of CML sketch (2^...)
 constexpr u8  DEF_D        = 5;    // Default depth of CML sketch
-constexpr u32 G            = 64;   // Machine word size - for universal hash fn
+constexpr u32 G            = 64;   // Machine word size -- for universal hash fn
 constexpr u8  LOG_BASE     = 2;    // Logarithmic counting
 constexpr float DEF_GAMMA  = 0.1; // Default gamma for multiple models
 
@@ -213,7 +213,7 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 //};
 constexpr u8 LEVEL[3][16] {    // Multiple models MUST be in sorted 'k' manner
 // #mdl, ir,  k, 100*alpha, log2 w,  d
-  {1,     1, 25,    100,      3,    DEF_D},    // Level 0
+  {1,     1, 25,    100,      5,    DEF_D},    // Level 0
   {2,     1, 1,   100,       0,         0,     // Level 1
           1, 20,   100,      5,    DEF_D},
   {3,     0,  7,    99,       0,         0,     // Level 2
