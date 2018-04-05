@@ -77,7 +77,7 @@ inline void FCM::setIRsComb () {
 void FCM::buildModel (const Param& p) {
   cerr << "Building models...\n";
   
-  int m=2;
+  int m=0;
   if(m==0){
   for (const auto& m : model) {
     auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
@@ -122,32 +122,16 @@ void FCM::buildModel (const Param& p) {
   
   //todo
 //  tbl64->print();
-  
-  auto a=std::ref(sketch4);
-  
-  
+//
 //  vector<thread> t;
 //  t.emplace_back(thread(&FCM::createDS<u64, CMLS4*>, this,
 //                        std::cref(p.ref), static_cast<u64>((4 << (model[0].k << 1))-1), std::ref(sketch4)));
-//  for (auto &m:t)
-//    if (m.joinable())
-//      m.join();
+//  for (auto &m:t)if (m.joinable())m.join();
 //  sketch4->print();
-//
-//  delete (sketch4);
-//  allocModels();
-//  sketch4->print();
-  
-//  vector<thread> t1;
-//  t1.resize(1);
-//  t1.emplace_back(thread(&FCM::createDS<u64, CMLS4*>, this,
-//                        std::cref(p.ref), static_cast<u64>((4 << (model[0].k << 1))-1), std::ref(sketch4)));
-//  for (auto &m:t1)
-//    if (m.joinable())
-//      m.join();
-//  sketch4->print();
+
 //  createDS(p.ref, static_cast<u64>((4<<(model[0].k<<1))-1), sketch4);
 //  sketch4->print();
+  
   cerr << "Models built ";
 }
 
@@ -163,6 +147,7 @@ inline void FCM::createDS (const string& ref, mask_t mask, ds_t& container) {
   }
   rf.close();
   //todo
+//  cout<<"hello\n";
 //  container->print();
 }
 

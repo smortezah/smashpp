@@ -52,8 +52,8 @@ inline u8 CMLS4::readCell (u64 idx) const {
   return CTR[idx&1][sk[idx>>1]];
 }
 
-inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal
-  return i*w + ((ab[i<<1]*ctx + ab[i<<1+1]) >> uhashShift);
+inline u64 CMLS4::hash (u8 i, u64 ctx) const noexcept {    // Strong 2-universal
+  return i*w + ((ab[i<<1]*ctx + ab[(i<<1)+1]) >> uhashShift);
 }
 
 inline void CMLS4::setAB () {
@@ -62,9 +62,9 @@ inline void CMLS4::setAB () {
   std::uniform_int_distribution<u64> uDistA(0, (1ull<<63)-1);     // k <= 2^63-1
   std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
   for (u8 i=0; i!=d; ++i) {
-    ab[i<<1]   = (uDistA(e)<<1) + 1; // 1 <= a=2k+1 <= 2^64-1, rand odd positive
-    ab[i<<1+1] = uDistB(e);          // 0 <= b <= 2^(G-M)-1,   rand positive
-  }
+    ab[i<<1]     = (uDistA(e)<<1) + 1; // 1 <= a=2k+1 <= 2^64-1, rand odd posit.
+    ab[(i<<1)+1] = uDistB(e);          // 0 <= b <= 2^(G-M)-1,   rand posit.
+  } // ab[i<<1+1] makes the wrong results. () in (i<<1)+1 are mandatory
 }
 
 u16 CMLS4::query (u64 ctx) const {
@@ -111,5 +111,20 @@ void CMLS4::print () const {
       cerr << std::left << static_cast<u16>(readCell(i*w+j));
     }
     cerr << '\n';
+  }
+}
+
+inline void CMLS4::printAB () const {
+  u8 w=23, bl=3;
+  cerr.width(w);  cerr<<std::left<<"a";
+  cerr << "b\n";
+  for (u8 i=0; i!=w-bl; ++i)  cerr<<"-";
+  for (u8 i=0; i!=bl;   ++i)  cerr<<" ";
+  for (u8 i=0; i!=w-bl; ++i)  cerr<<"-";
+  cerr << '\n';
+  for (u8 i = 0; i!=ab.size(); ++i) {
+    cerr.width(w);  cerr<<std::left<<ab[i];
+    if (i & 1)
+      cerr << '\n';
   }
 }

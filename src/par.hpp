@@ -81,7 +81,6 @@ class Param    // Parameters
       bool tarExist = std::find(vArgs.begin(),vArgs.end(),"--tar")!=vArgs.end();
       bool rExist   = std::find(vArgs.begin(),vArgs.end(),"-r")   !=vArgs.end();
       bool refExist = std::find(vArgs.begin(),vArgs.end(),"--ref")!=vArgs.end();
-      
       if (!tExist && !tarExist) {
         cerr << "Error: target file address not specified. Use "
              << "\"-t fileName\".\n";    throw EXIT_FAILURE;
