@@ -36,7 +36,7 @@ class CMLS4    // Count-min-log sketch
   u8   readCell  (u64)       const; // Read each cell of the sketch
   void setAB     ();                // Set coeffs a, b of hash fns (a*x+b) %P %w
 	void printAB   ()          const;
-  u64  hash      (u8, u64)   const noexcept ; // MUST provide pairwise independence
+  u64  hash      (u8, u64)   const; // MUST provide pairwise independence
   u8   minLogCtr (u64)       const; // Find min log value in the sketch
 };
 
