@@ -104,9 +104,9 @@ void CMLS4::load (ifstream& ifs) const {
 
 void CMLS4::print () const {
   u8 cell_width = 3;
-  for (auto i=0; i!=d; i++) {
+  for (u8 i=0; i!=d; i++) {
     cerr << "d_" << i << ":  ";
-    for (auto j=0; j!=w; j++) {
+    for (u64 j=0; j!=w; j++) {
       cerr.width(cell_width);
       cerr << std::left << static_cast<u16>(readCell(i*w+j));
     }
