@@ -246,16 +246,12 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
 //            thrd[0].join();
             
             
-        auto z0=ds->query(l);      auto z1=ds->query(l | 1);
-        auto z2=ds->query(l | 2);  auto z3=ds->query(l | 3);
+//        auto z0=ds->query(l);      auto z1=ds->query(l | 1);
+//        auto z2=ds->query(l | 2);  auto z3=ds->query(l | 3);
         ctx = (l & mask) | numSym;    // Update ctx
-        decltype(z0) z[4] {z0, z1, z2, z3};
-        sEnt  += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
-//        ctx = (l & mask) | numSym;    // Update ctx
-//        const decltype(ds->query(l)) n[4] {ds->query(l), ds->query(l|1), ds->query(l|2), ds->query(l|3)};
-//        sEnt += log2Prob(ds->query(l), ds->query(l|1), ds->query(l|2), ds->query(l|3),
-//                         alpha, numSym);
-//        sEnt += log2Prob(coefs, alpha, numSym);
+//        decltype(z0) z[4] {z0, z1, z2, z3};
+//        sEnt += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
+        sEnt += log2(prob(ds, l, alpha, numSym));
         //todo
 //        cout << "z = [" << z0 << "\t" << z1 << "\t" << z2 << "\t" << z3
 //             << "]\t" << c << "\tn=" << z[numSym]
@@ -299,6 +295,16 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
   double aveEnt = sEnt/symsNo;
   cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
   cerr << "Compression finished ";
+}
+
+template <typename ds_t, typename ctx_t>
+inline double FCM::prob (const ds_t& ds, ctx_t l, float alpha, u8 numSym) const {
+  const auto c0 {ds->query(l)};
+  const auto c1 {ds->query(l | 1)};
+  const auto c2 {ds->query(l | 2)};
+  const auto c3 {ds->query(l | 3)};
+  const decltype(c0) c[4] {c0, c1, c2, c3};
+  return (c0+c1+c2+c3+static_cast<double>(ALPH_SZ*alpha)) / (c[numSym]+alpha);
 }
 
 template <typename coef_t>
