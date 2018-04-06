@@ -214,8 +214,8 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 constexpr u8 LEVEL[3][16] {    // Multiple models MUST be in sorted 'k' manner
 // #mdl, ir,  k, 100*alpha, log2 w,  d
   {1,     0, 20,    100,      30,    DEF_D},    // Level 0
-  {2,     0, 10,   99,       0,         0,     // Level 1
-          0, 20,   99,      25,    DEF_D},
+  {2,     0, 11,   100,       0,         0,     // Level 1
+          0, 20,   100,      25,    DEF_D},
   {3,     0,  7,    99,       0,         0,     // Level 2
           1, 13,    99,       0,         0,
           1, 20,    99,      30,    DEF_D}
