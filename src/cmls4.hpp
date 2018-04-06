@@ -20,7 +20,7 @@ class CMLS4    // Count-min-log sketch
   u16  query     (u64)       const; // Query count of ctx
   u64  getTotal  ()          const; // Total count of all items in the sketch
   u64  countMty  ()          const; // Number of empty cells in the sketch
-  u8   maxSkVal  ()          const; // todo. maybe remove
+  u8   maxSkVal  ()          const;
 	void dump      (ofstream&) const;
 	void load      (ifstream&) const;
   void print     ()          const;
