@@ -141,7 +141,8 @@ inline void FCM::createDS (const string& ref, mask_t mask, ds_t& container) {
   char c;
   for (mask_t ctx=0; rf.get(c);) {
     if (c != '\n') {
-      ctx = ((ctx<<2) & mask) | NUM[c];    // Update ctx
+      ctx = ((ctx<<2) & mask) | NUM[static_cast<u8>(c)];    // Update ctx
+//      ctx = ((ctx<<2) & mask) | NUM[c];    // Update ctx
       container->update(ctx);
     }
   }
@@ -213,7 +214,7 @@ void FCM::compress (const Param& p) const {
 
 template <typename mask_t, typename ds_t>
 inline void FCM::compDS1 (const string& tar, mask_t mask,
-                          const ds_t& container) const {
+                          const ds_t& ds) const {
   const auto shl{model[0].k<<1};    // Shift left
   mask_t ctx{0}, ctxIR{mask};       // Ctx, ir (int) sliding through the dataset
   u64 symsNo{0};                    // No. syms in target file, except \n
@@ -226,14 +227,35 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        auto numSym = NUM[c];
+        auto numSym = NUM[static_cast<u8>(c)];
         auto l = ctx<<2;
-        auto z0=container->query(l);      auto z1=container->query(l | 1);
-        auto z2=container->query(l | 2);  auto z3=container->query(l | 3);
+  
+//        vector<std::thread> t;
+//if (typeid(ds)==typeid(CMLS4*)){
+//  t.push_back(std::thread(&CMLS4::query, ds, l));
+//}
+//        std::thread t0(&Table64::query, ds, l);
+//        std::thread t1(&Table32::query, ds, l);
+//        std::thread t2(&LogTable8::query, ds, l);
+//        std::thread t3(&CMLS4::query, ds, l);
+//          t0.join();
+        
+//        std::thread thrd[1];
+//        thrd[0] = std::thread(&FCM::createDS<u32,Table64*>, this,
+//                                           std::cref(p.ref), mask32, std::ref(tbl64));
+//            thrd[0].join();
+            
+            
+        auto z0=ds->query(l);      auto z1=ds->query(l | 1);
+        auto z2=ds->query(l | 2);  auto z3=ds->query(l | 3);
         ctx = (l & mask) | numSym;    // Update ctx
         decltype(z0) z[4] {z0, z1, z2, z3};
         sEnt  += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
-        
+//        ctx = (l & mask) | numSym;    // Update ctx
+//        const decltype(ds->query(l)) n[4] {ds->query(l), ds->query(l|1), ds->query(l|2), ds->query(l|3)};
+//        sEnt += log2Prob(ds->query(l), ds->query(l|1), ds->query(l|2), ds->query(l|3),
+//                         alpha, numSym);
+//        sEnt += log2Prob(coefs, alpha, numSym);
         //todo
 //        cout << "z = [" << z0 << "\t" << z1 << "\t" << z2 << "\t" << z3
 //             << "]\t" << c << "\tn=" << z[numSym]
@@ -247,26 +269,26 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        auto numSym = NUM[c];
+        auto numSym = NUM[static_cast<u8>(c)];
         auto l=ctx<<2;    auto r=ctxIR>>2;
-        auto z0 = container->query(l)     + container->query((3<<shl) | r);
-        auto z1 = container->query(l | 1) + container->query((2<<shl) | r);
-        auto z2 = container->query(l | 2) + container->query((1<<shl) | r);
-        auto z3 = container->query(l | 3) + container->query(r);
+        auto z0 = ds->query(l)     + ds->query((3<<shl) | r);
+        auto z1 = ds->query(l | 1) + ds->query((2<<shl) | r);
+        auto z2 = ds->query(l | 2) + ds->query((1<<shl) | r);
+        auto z3 = ds->query(l | 3) + ds->query(r);
         ctx = (l & mask) | numSym;     // Update ctx
-        ctxIR = REVNUM[c]<<shl | r;    // Update ctxIR
+        ctxIR = REVNUM[static_cast<u8>(c)]<<shl | r;    // Update ctxIR
         decltype(z0) z[4] {z0, z1, z2, z3};
         sEnt += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
 
 //        // Inverted repeat
 //        auto r = ctxIR>>2;
 //        for (u8 i=0; i!=ALPH_SZ; ++i)
-//          aN[i] = container->query((IRMAGIC-i)<<shl | r);
+//          aN[i] = ds->query((IRMAGIC-i)<<shl | r);
 //        ctxIR = REVNUM[c]<<shl | r;          // Update ctxIR
 //
 //        auto l = ctx<<2;
 //        for (u8 i=0; i!=ALPH_SZ; ++i)
-//          aN[i] += container->query(l | i);
+//          aN[i] += ds->query(l | i);
 //        auto numSym = NUM[c];
 //        ctx = (l & mask) | numSym;       // Update ctx
 //        sEnt += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
@@ -278,6 +300,20 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
   cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
   cerr << "Compression finished ";
 }
+
+template <typename coef_t>
+inline double FCM::log2Prob (coef_t c0, coef_t c1, coef_t c2, coef_t c3,
+                             float alpha, char numSym) const {
+//  inline double FCM::log2Prob (const coef_t c[4], float alpha, char numSym) const {
+  double sAlpha {ALPH_SZ*alpha};
+  coef_t z[4] {c0, c1, c2, c3};
+  return log2((c0+c1+c2+c3+sAlpha) / (z[numSym]+alpha));
+//  return log2((c[0]+c[1]+c[2]+c[3]+sAlpha) / (c[numSym]+alpha));
+}
+
+
+
+
 
 template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
 inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
@@ -297,7 +333,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        auto numSym = NUM[c];
+        auto numSym = NUM[static_cast<u8>(c)];
         auto l0=ctx0<<2;    auto l1=ctx1<<2;
         auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
         auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
@@ -321,7 +357,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        auto numSym = NUM[c];
+        auto numSym = NUM[static_cast<u8>(c)];
         auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto r0=ctxIR0>>2;
         auto z00 = container0->query(l0)     + container0->query((3<<shl0) |r0);
         auto z01 = container0->query(l0 | 1) + container0->query((2<<shl0) |r0);
@@ -331,7 +367,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
-        ctxIR0 = REVNUM[c]<<shl0 | r0;    // Update ctxIR
+        ctxIR0 = REVNUM[static_cast<u8>(c)]<<shl0 | r0;    // Update ctxIR
         { decltype(z00) z[4] {z00, z01, z02, z03};
           Pm0 = (z[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0); }
         { decltype(z10) z[4] {z10, z11, z12, z13};
@@ -348,7 +384,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        auto numSym = NUM[c];
+        auto numSym = NUM[static_cast<u8>(c)];
         auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto r1=ctxIR1>>2;
         auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
         auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
@@ -358,7 +394,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         auto z13 = container1->query(l1 | 3) + container1->query(r1);
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
-        ctxIR1 = REVNUM[c]<<shl1 | r1;    // Update ctxIR
+        ctxIR1 = REVNUM[static_cast<u8>(c)]<<shl1 | r1;    // Update ctxIR
         { decltype(z00) z[4] {z00, z01, z02, z03};
           Pm0 = (z[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0); }
         { decltype(z10) z[4] {z10, z11, z12, z13};
@@ -375,7 +411,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        auto numSym = NUM[c];
+        auto numSym = NUM[static_cast<u8>(c)];
         auto l0=ctx0<<2;  auto l1=ctx1<<2; auto r0=ctxIR0>>2; auto r1=ctxIR1>>2;
         auto z00 = container0->query(l0)     + container0->query((3<<shl0) |r0);
         auto z01 = container0->query(l0 | 1) + container0->query((2<<shl0) |r0);
@@ -387,8 +423,8 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         auto z13 = container1->query(l1 | 3) + container1->query(r1);
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
-        ctxIR0 = REVNUM[c]<<shl0 | r0;    // Update ctxIR
-        ctxIR1 = REVNUM[c]<<shl1 | r1;
+        ctxIR0 = REVNUM[static_cast<u8>(c)]<<shl0 | r0;    // Update ctxIR
+        ctxIR1 = REVNUM[static_cast<u8>(c)]<<shl1 | r1;
         { decltype(z00) z[4] {z00, z01, z02, z03};
           Pm0 = (z[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0); }
         { decltype(z10) z[4] {z10, z11, z12, z13};

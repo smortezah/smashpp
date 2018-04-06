@@ -55,6 +55,11 @@ class FCM    // Finite-context model
 //    typename ds0_t, typename ds1_t, typename ds2_t>
 //  void compDS3 (const string&, mask0_t, mask1_t, mask2_t, const ds0_t&,
 //                const ds1_t&, const ds2_t&) const;
+  
+  
+  template <typename coef_t>
+//  double log2Prob (const coef_t[4], float, char) const;
+  double log2Prob (coef_t, coef_t, coef_t, coef_t, float, char) const;
 };
 
 #endif //SMASHPP_FCM_HPP
