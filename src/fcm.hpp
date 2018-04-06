@@ -60,6 +60,9 @@ class FCM    // Finite-context model
   template <typename coef_t>
 //  double log2Prob (const coef_t[4], float, char) const;
   double log2Prob (coef_t, coef_t, coef_t, coef_t, float, char) const;
+  
+  template <typename ds_t, typename ctx_t>
+  double prob(const ds_t&, ctx_t, float, u8) const;
 };
 
 #endif //SMASHPP_FCM_HPP
