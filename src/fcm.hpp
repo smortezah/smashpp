@@ -20,6 +20,11 @@ struct ModelPar {
   u8    d;       // Depth of count-min-log sketch
 };
 
+//todo. maybe not usefull
+struct ProbPar {
+//  ds, l, alpha, numSym
+};
+
 class FCM    // Finite-context model
 {
  public:
@@ -62,7 +67,9 @@ class FCM    // Finite-context model
   double log2Prob (coef_t, coef_t, coef_t, coef_t, float, char) const;
   
   template <typename ds_t, typename ctx_t>
-  double prob(const ds_t&, ctx_t, float, u8) const;
+  double prob(const ds_t&, ctx_t, float, u8) const; // Probability
+  template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
+  double probIR(const ds_t&, ctxL_t, ctxR_t, shift_t, float, u8) const; // Probability consider IR
 };
 
 #endif //SMASHPP_FCM_HPP

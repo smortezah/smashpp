@@ -229,35 +229,12 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
         ++symsNo;
         auto numSym = NUM[static_cast<u8>(c)];
         auto l = ctx<<2;
-  
-//        vector<std::thread> t;
-//if (typeid(ds)==typeid(CMLS4*)){
-//  t.push_back(std::thread(&CMLS4::query, ds, l));
-//}
-//        std::thread t0(&Table64::query, ds, l);
-//        std::thread t1(&Table32::query, ds, l);
-//        std::thread t2(&LogTable8::query, ds, l);
-//        std::thread t3(&CMLS4::query, ds, l);
-//          t0.join();
-        
-//        std::thread thrd[1];
-//        thrd[0] = std::thread(&FCM::createDS<u32,Table64*>, this,
-//                                           std::cref(p.ref), mask32, std::ref(tbl64));
-//            thrd[0].join();
-            
-            
+        sEnt += log2(prob(ds, l, alpha, numSym));
 //        auto z0=ds->query(l);      auto z1=ds->query(l | 1);
 //        auto z2=ds->query(l | 2);  auto z3=ds->query(l | 3);
         ctx = (l & mask) | numSym;    // Update ctx
 //        decltype(z0) z[4] {z0, z1, z2, z3};
 //        sEnt += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
-        sEnt += log2(prob(ds, l, alpha, numSym));
-        //todo
-//        cout << "z = [" << z0 << "\t" << z1 << "\t" << z2 << "\t" << z3
-//             << "]\t" << c << "\tn=" << z[numSym]
-//             << "\t1/P=" << (z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha) << '\n';
-        //todo
-//        cout<<sEnt<<'\n';
       }
     }
   }
@@ -267,14 +244,15 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
         ++symsNo;
         auto numSym = NUM[static_cast<u8>(c)];
         auto l=ctx<<2;    auto r=ctxIR>>2;
-        auto z0 = ds->query(l)     + ds->query((3<<shl) | r);
-        auto z1 = ds->query(l | 1) + ds->query((2<<shl) | r);
-        auto z2 = ds->query(l | 2) + ds->query((1<<shl) | r);
-        auto z3 = ds->query(l | 3) + ds->query(r);
+        sEnt += log2(probIR(ds, l, r, shl, alpha, numSym));
+//        auto z0 = ds->query(l)     + ds->query((3<<shl) | r);
+//        auto z1 = ds->query(l | 1) + ds->query((2<<shl) | r);
+//        auto z2 = ds->query(l | 2) + ds->query((1<<shl) | r);
+//        auto z3 = ds->query(l | 3) + ds->query(r);
         ctx = (l & mask) | numSym;     // Update ctx
         ctxIR = REVNUM[static_cast<u8>(c)]<<shl | r;    // Update ctxIR
-        decltype(z0) z[4] {z0, z1, z2, z3};
-        sEnt += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
+//        decltype(z0) z[4] {z0, z1, z2, z3};
+//        sEnt += log2((z0+z1+z2+z3+sAlpha) / (z[numSym]+alpha));
 
 //        // Inverted repeat
 //        auto r = ctxIR>>2;
@@ -299,10 +277,34 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
 
 template <typename ds_t, typename ctx_t>
 inline double FCM::prob (const ds_t& ds, ctx_t l, float alpha, u8 numSym) const {
+//        vector<std::thread> t;
+//if (typeid(ds)==typeid(CMLS4*)){
+//  t.push_back(std::thread(&CMLS4::query, ds, l));
+//}
+//        std::thread t0(&Table64::query, ds, l);
+//        std::thread t1(&Table32::query, ds, l);
+//        std::thread t2(&LogTable8::query, ds, l);
+//        std::thread t3(&CMLS4::query, ds, l);
+//          t0.join();
+
+//        std::thread thrd[1];
+//        thrd[0] = std::thread(&FCM::createDS<u32,Table64*>, this,
+//                                           std::cref(p.ref), mask32, std::ref(tbl64));
+//            thrd[0].join();
   const auto c0 {ds->query(l)};
   const auto c1 {ds->query(l | 1)};
   const auto c2 {ds->query(l | 2)};
   const auto c3 {ds->query(l | 3)};
+  const decltype(c0) c[4] {c0, c1, c2, c3};
+  return (c0+c1+c2+c3+static_cast<double>(ALPH_SZ*alpha)) / (c[numSym]+alpha);
+}
+
+template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
+inline double FCM::probIR(const ds_t& ds, ctxL_t l, ctxR_t r, shift_t shl, float alpha, u8 numSym) const {
+  const auto c0 {ds->query(l)   + ds->query((3<<shl)|r)};
+  const auto c1 {ds->query(l|1) + ds->query((2<<shl)|r)};
+  const auto c2 {ds->query(l|2) + ds->query((1<<shl)|r)};
+  const auto c3 {ds->query(l|3) + ds->query(r)};
   const decltype(c0) c[4] {c0, c1, c2, c3};
   return (c0+c1+c2+c3+static_cast<double>(ALPH_SZ*alpha)) / (c[numSym]+alpha);
 }
