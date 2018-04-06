@@ -71,7 +71,7 @@ class Param    // Parameters
         else if (*i=="-v" || *i=="--verbose") {
           verbose = true;
         }
-        else if ((*i=="-n" || *i=="--nthreads") && i+1!=vArgs.end()) {
+        else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
           nthr = static_cast<u8>(stoi(*++i));
         }
       }
@@ -139,7 +139,7 @@ class Param    // Parameters
       << "    -t [FILE], --tar          target file    -- MANDATORY"     << '\n'
       << "    -r [FILE], --ref          reference file -- MANDATORY"     << '\n'
       << "    -l [NUM],  --level        level"                           << '\n'
-      << "    -n [NUM],  --thread       number of threads"               << '\n'
+      << "    -n [NUM],  --nthr         number of threads"               << '\n'
       << "    -v,        --verbose      more information"                << '\n'
       << "    -h,        --help         usage guide"                     << '\n'
                                                                          << '\n'

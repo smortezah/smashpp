@@ -32,7 +32,7 @@ constexpr u64 power (u64 a, u64 n) {
 }
 
 // Constant
-constexpr u8  DEF_THR      = 1;    // Default # threads
+constexpr u8  DEF_THR      = 4;    // Default # threads
 constexpr u8  DEF_LVL      = 0;    // Default level
 constexpr u8  ALPH_SZ      = 4;    // Alphabet size
 constexpr u8  IRMAGIC      = 3;    // Calc ir syms based on syms
@@ -213,7 +213,7 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 //};
 constexpr u8 LEVEL[3][16] {    // Multiple models MUST be in sorted 'k' manner
 // #mdl, ir,  k, 100*alpha, log2 w,  d
-  {1,     0, 25,    100,      30,    DEF_D},    // Level 0
+  {1,     0, 20,    100,      30,    DEF_D},    // Level 0
   {2,     0, 10,   99,       0,         0,     // Level 1
           0, 20,   99,      25,    DEF_D},
   {3,     0,  7,    99,       0,         0,     // Level 2

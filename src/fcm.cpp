@@ -75,68 +75,81 @@ inline void FCM::setIRsComb () {
 }
 
 void FCM::buildModel (const Param& p) {
-  cerr << "Building " << model.size()
-       << " model" << (model.size()==1 ? "" : "s") << "...\n";
+  const auto mdlSize = model.size();
+  cerr << "Building " << mdlSize << " model"
+       << (mdlSize==1 ? "" : "s") << "...\n";
   
-  int m=0;
-  if(m==0){
-  for (const auto& m : model) {
-    auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
-    auto mask64 = static_cast<u64>((4<<(m.k<<1)) - 1);
-    switch (m.mode) {
-      case MODE::TABLE_64:     createDS(p.ref, mask32, tbl64);    break;
-      case MODE::TABLE_32:     createDS(p.ref, mask32, tbl32);    break;
-      case MODE::LOG_TABLE_8:  createDS(p.ref, mask32, logtbl8);  break;
-      case MODE::SKETCH_8:     createDS(p.ref, mask64, sketch4);  break;
-      default:                 cerr << "Error.\n";
+  const auto s = (p.nthr < mdlSize) ? p.nthr : mdlSize;
+  if (s==1) {
+    for (const auto& m : model) {
+      auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
+      auto mask64 = static_cast<u64>((4<<(m.k<<1)) - 1);
+      switch (m.mode) {
+        case MODE::TABLE_64:     createDS(p.ref, mask32, tbl64);    break;
+        case MODE::TABLE_32:     createDS(p.ref, mask32, tbl32);    break;
+        case MODE::LOG_TABLE_8:  createDS(p.ref, mask32, logtbl8);  break;
+        case MODE::SKETCH_8:     createDS(p.ref, mask64, sketch4);  break;
+        default:                 cerr << "Error.\n";
+      }
     }
   }
-  }
-  else if(m==1){
-//    arrThread = new thread[arrThrSize];
-//    for (u16 i=0; i<n_models; i+=arrThrSize)
+  else {  // Multithread
+  
+//    arrThread = new thread[s];
+//    for (u16 i=0; i<model.size(); i+=s)
 //    {
 //      //TODO: aya jaygozini vase sharte "i+j < n_models" hast?
-//      for (u16 j=0; j<arrThrSize && i+j<n_models; ++j)
-//        arrThread[j] = thread(&FCM::buildModel, &mixModel,
-//                              InArgs::REF_ADDRS, InArgs::INV_REPS[i+j],
-//                              InArgs::CTX_DEPTHS[i+j], i+j);
-//      for (u16 j=0; j<arrThrSize && i+j<n_models; ++j)
+//      for (u16 j=0; j<s && j<model.size()-i; ++j)
+//        arrThread[j] = thread(&FCM::buildModel, , InArgs::INV_REPS[i+j], i+j);
+//
+//      for (u16 j=0; j<s && i+j<model.size(); ++j)
 //        if (arrThread[j].joinable())
 //          arrThread[j].join();
 //    }
 //    delete[] arrThread;
+  
+    
+    
+    vector<thread> thrd;  thrd.resize(s);
+    for (u8 i=0; i!=mdlSize; ++i) {
+//    thrd[i%s]=model[i]
 
+//      if (i+1)%s == 0
+//        for (auto& t : thrd)    if (t.joinable())  t.join();
+    }
+//  for (auto& t : thrd)    if (t.joinable())  t.join();
     
-    
-    //todo. test multithreading
-  vector<thread> thrd;  thrd.resize(model.size());
-  for (const auto& m : model) {
-    auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
-    auto mask64 = static_cast<u64>((4<<(m.k<<1)) - 1);
-    switch (m.mode) {
+    //todo. multithreading
+//  vector<thread> thrd;  thrd.resize(model.size());
+//  for (const auto& m : model) {
+   for (u8 i=0; i!=mdlSize; ++i) {
+    auto mask32 = static_cast<u32>((4<<(model[i].k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
+    auto mask64 = static_cast<u64>((4<<(model[i].k<<1)) - 1);
+    switch (model[i].mode) {
       case MODE::TABLE_64:
-        thrd.emplace_back(thread(&FCM::createDS<u32,Table64*>, this,
-                                 std::cref(p.ref), mask32, std::ref(tbl64)));
+        thrd[i%s] = thread(&FCM::createDS<u32,Table64*>, this,
+                           std::cref(p.ref), mask32, std::ref(tbl64));
         break;
       case MODE::TABLE_32:
-        thrd.emplace_back(thread(&FCM::createDS<u32,Table32*>, this,
-                                 std::cref(p.ref), mask32, std::ref(tbl32)));
+        thrd[i%s] = thread(&FCM::createDS<u32,Table32*>, this,
+                           std::cref(p.ref), mask32, std::ref(tbl32));
         break;
       case MODE::LOG_TABLE_8:
-        thrd.emplace_back(thread(&FCM::createDS<u32,LogTable8*>, this,
-                                 std::cref(p.ref), mask32, std::ref(logtbl8)));
+        thrd[i%s] = thread(&FCM::createDS<u32,LogTable8*>, this,
+                           std::cref(p.ref), mask32, std::ref(logtbl8));
         break;
       case MODE::SKETCH_8:
-        thrd.emplace_back(thread(&FCM::createDS<u64,CMLS4*>, this,
-                                 std::cref(p.ref), mask64, std::ref(sketch4)));
+        thrd[i%s] = thread(&FCM::createDS<u64,CMLS4*>, this,
+                           std::cref(p.ref), mask64, std::ref(sketch4));
         break;
-      default:    cerr << "Error.";
+      default:      cerr << "Error.";
     }
+    if ((i+1)%s == 0)
+      for (auto& t : thrd)  if (t.joinable()) t.join();
   }
-  for (auto& t : thrd)    if (t.joinable())  t.join();
+  for (auto& t : thrd)  if (t.joinable()) t.join();
   }
-  cerr << "The model" << (model.size()==1 ? " " : "s ") << "built ";
+  cerr << "The model" << (mdlSize==1 ? " " : "s ") << "built ";
 }
 
 template <typename mask_t, typename ds_t>
@@ -151,7 +164,6 @@ inline void FCM::createDS (const string& ref, mask_t mask, ds_t& container) {
   }
   rf.close();
   //todo
-//  cout<<"hello\n";
 //  container->print();
 }
 
