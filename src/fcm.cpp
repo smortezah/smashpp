@@ -9,7 +9,6 @@
 using std::ifstream;
 using std::cout;
 using std::array;
-using std::thread;
 
 FCM::FCM (const Param& p) {
   setModels(p);
@@ -75,81 +74,65 @@ inline void FCM::setIRsComb () {
 }
 
 void FCM::buildModel (const Param& p) {
-  const auto mdlSize = model.size();
-  cerr << "Building " << mdlSize << " model"
-       << (mdlSize==1 ? "" : "s") << "...\n";
-  
-  const auto s = (p.nthr < mdlSize) ? p.nthr : mdlSize;
-  if (s==1) {
-    for (const auto& m : model) {
-      auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
-      auto mask64 = static_cast<u64>((4<<(m.k<<1)) - 1);
-      switch (m.mode) {
-        case MODE::TABLE_64:     createDS(p.ref, mask32, tbl64);    break;
-        case MODE::TABLE_32:     createDS(p.ref, mask32, tbl32);    break;
-        case MODE::LOG_TABLE_8:  createDS(p.ref, mask32, logtbl8);  break;
-        case MODE::SKETCH_8:     createDS(p.ref, mask64, sketch4);  break;
-        default:                 cerr << "Error.\n";
-      }
-    }
-  }
-  else {  // Multithread
-  
-//    arrThread = new thread[s];
-//    for (u16 i=0; i<model.size(); i+=s)
-//    {
-//      //TODO: aya jaygozini vase sharte "i+j < n_models" hast?
-//      for (u16 j=0; j<s && j<model.size()-i; ++j)
-//        arrThread[j] = thread(&FCM::buildModel, , InArgs::INV_REPS[i+j], i+j);
-//
-//      for (u16 j=0; j<s && i+j<model.size(); ++j)
-//        if (arrThread[j].joinable())
-//          arrThread[j].join();
-//    }
-//    delete[] arrThread;
-  
-    
-    
-    vector<thread> thrd;  thrd.resize(s);
-    for (u8 i=0; i!=mdlSize; ++i) {
-//    thrd[i%s]=model[i]
+  cerr << "Building the model" << (model.size()==1 ? "" : "s") << "...\n";
+  if (p.nthr==1 || model.size()==1)  bldMdlOneThr(p);    // No multithread
+  else                               bldMdlMulThr(p);    // Multithread
+  cerr << "The model" << (model.size()==1 ? "" : "s") << " built ";
+}
 
-//      if (i+1)%s == 0
-//        for (auto& t : thrd)    if (t.joinable())  t.join();
+inline void FCM::bldMdlOneThr (const Param &p) {
+  for (const auto& m : model) {
+    if (m.mode == MODE::TABLE_64) {
+      auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
+      createDS(p.ref, mask32, tbl64);
     }
-//  for (auto& t : thrd)    if (t.joinable())  t.join();
-    
-    //todo. multithreading
-//  vector<thread> thrd;  thrd.resize(model.size());
-//  for (const auto& m : model) {
-   for (u8 i=0; i!=mdlSize; ++i) {
-    auto mask32 = static_cast<u32>((4<<(model[i].k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
-    auto mask64 = static_cast<u64>((4<<(model[i].k<<1)) - 1);
-    switch (model[i].mode) {
-      case MODE::TABLE_64:
-        thrd[i%s] = thread(&FCM::createDS<u32,Table64*>, this,
-                           std::cref(p.ref), mask32, std::ref(tbl64));
-        break;
-      case MODE::TABLE_32:
-        thrd[i%s] = thread(&FCM::createDS<u32,Table32*>, this,
-                           std::cref(p.ref), mask32, std::ref(tbl32));
-        break;
-      case MODE::LOG_TABLE_8:
-        thrd[i%s] = thread(&FCM::createDS<u32,LogTable8*>, this,
-                           std::cref(p.ref), mask32, std::ref(logtbl8));
-        break;
-      case MODE::SKETCH_8:
-        thrd[i%s] = thread(&FCM::createDS<u64,CMLS4*>, this,
-                           std::cref(p.ref), mask64, std::ref(sketch4));
-        break;
-      default:      cerr << "Error.";
+    else if (m.mode == MODE::TABLE_32) {
+      auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);
+      createDS(p.ref, mask32, tbl32);
     }
-    if ((i+1)%s == 0)
+    else if (m.mode == MODE::LOG_TABLE_8) {
+      auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);
+      createDS(p.ref, mask32, logtbl8);
+    }
+    else if (m.mode == MODE::SKETCH_8) {
+      auto mask64 = static_cast<u64>((4<<(m.k<<1)) - 1);
+      createDS(p.ref, mask64, sketch4);
+    }
+    else
+      cerr << "Error.\n";
+  }
+}
+
+inline void FCM::bldMdlMulThr (const Param& p) {
+  const auto vThrSz = (p.nthr < model.size()) ? p.nthr : model.size();
+  vector<std::thread> thrd;
+  thrd.resize(vThrSz);
+  for (u8 i=0; i!=model.size(); ++i) {
+    if (model[i].mode == MODE::TABLE_64) {
+      auto mask32 = static_cast<u32>((4<<(model[i].k<<1))-1);//4<<2k-1=4^(k+1)-1
+      thrd[i % vThrSz] = std::thread(&FCM::createDS<u32,Table64*>, this,
+                                     std::cref(p.ref), mask32, std::ref(tbl64));
+    }
+    else if (model[i].mode == MODE::TABLE_32) {
+      auto mask32 = static_cast<u32>((4<<(model[i].k<<1)) - 1);
+      thrd[i % vThrSz] = std::thread(&FCM::createDS<u32,Table32*>, this,
+                                     std::cref(p.ref), mask32, std::ref(tbl32));
+    }
+    else if (model[i].mode == MODE::LOG_TABLE_8) {
+      auto mask32 = static_cast<u32>((4<<(model[i].k<<1)) - 1);
+      thrd[i % vThrSz] = std::thread(&FCM::createDS<u32,LogTable8*>, this,
+                                   std::cref(p.ref), mask32, std::ref(logtbl8));
+    }
+    else if (model[i].mode == MODE::SKETCH_8) {
+      auto mask64 = static_cast<u64>((4<<(model[i].k<<1)) - 1);
+      thrd[i % vThrSz] = std::thread(&FCM::createDS<u64,CMLS4*>, this,
+                                   std::cref(p.ref), mask64, std::ref(sketch4));
+    }
+    // Join
+    if ((i+1) % vThrSz == 0)
       for (auto& t : thrd)  if (t.joinable()) t.join();
   }
-  for (auto& t : thrd)  if (t.joinable()) t.join();
-  }
-  cerr << "The model" << (mdlSize==1 ? " " : "s ") << "built ";
+  for (auto& t : thrd)  if (t.joinable()) t.join();  // Join leftover threads
 }
 
 template <typename mask_t, typename ds_t>
@@ -163,85 +146,35 @@ inline void FCM::createDS (const string& ref, mask_t mask, ds_t& container) {
     }
   }
   rf.close();
-  //todo
-//  container->print();
 }
 
 //void FCM::compress (const Param& p) const {
 //  cerr << "Compressing...\n";
 //  array<u64, 4> aN64{0};    // Array of number of elements
 //  array<u32, 4> aN32{0};
-//  for (auto m : model) {
-//    auto mask32 = static_cast<u32>((1<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
-//    auto mask64 = static_cast<u64>((1<<(m.k<<1))-1);
-//    switch (m.mode) {
-//      case MODE::TABLE_64:    compressDS(p.tar, m, mask32, aN64, tbl64);  break;
-//      case MODE::TABLE_32:    compressDS(p.tar, m, mask32, aN64, tbl32);  break;
-//      case MODE::LOG_TABLE_8: compressDS(p.tar, m, mask32, aN64, logtbl8);break;
-//      case MODE::SKETCH_8:    compressDS(p.tar, m, mask64, aN32, sketch4);break;
-//      default:                cerr << "Error";
-//    }
-//  }
-//
-////  //todo. test multithreading
-////  vector<thread> thrd;  thrd.resize(4);
-////  array<u64, 4> aN64{0};    // Array of number of elements
-////  array<u32, 4> aN32{0};
-////  for (auto m : model) {
-////    auto mask32 = static_cast<u32>((1<<(m.k<<1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
-////    auto mask64 = static_cast<u64>((1<<(m.k<<1))-1);
+//  for (const auto& m : model) {
+//    auto mask32 = static_cast<u32>((1 << (m.k << 1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
+//    auto mask64 = static_cast<u64>((1 << (m.k << 1))-1);
 ////    switch (m.mode) {
-////      case MODE::TABLE_64:
-////        thrd[0] = thread(&FCM::compressDS<u32,array<u64,4>,Table64*>, this,
-////                         p.tar, m, mask32, aN64, tbl64);
-////        break;
-////      case MODE::TABLE_32:
-////        thrd[1] = thread(&FCM::compressDS<u32,array<u64,4>,Table32*>, this,
-////                         p.tar, m, mask32, aN64, tbl32);
-////        break;
-////      case MODE::LOG_TABLE_8:
-////        thrd[2] = thread(&FCM::compressDS<u32,array<u64,4>,LogTable8*>, this,
-////                         p.tar, m, mask32, aN64, logtbl8);
-////        break;
-////      case MODE::SKETCH_8:
-////        thrd[3] = thread(&FCM::compressDS<u64,array<u32,4>,CMLS4*>, this,
-////                         p.tar, m, mask64, aN32, sketch4);
-////        break;
-////      default:    cerr << "Error.";
+////      case MODE::TABLE_64:    compressDS(p.tar, m, mask32, aN64, tbl64);  break;
+////      case MODE::TABLE_32:    compressDS(p.tar, m, mask32, aN64, tbl32);  break;
+////      case MODE::LOG_TABLE_8: compressDS(p.tar, m, mask32, aN64, logtbl8);break;
+////      case MODE::SKETCH_8:    compressDS(p.tar, m, mask64, aN32, sketch4);break;
+////      default:                cerr << "Error";
 ////    }
-////  }
-////  for (u8 t=0; t!=4; ++t)  if (thrd[t].joinable()) thrd[t].join();
-////  cerr << "Compression finished ";
-//}
+//  }
+//  if (model.size() == 1)
 
-//void FCM::compress (const Param& p) const {
-//  cerr << "Compressing...\n";
-////  array<u64, 4> aN64{0};    // Array of number of elements
-////  array<u32, 4> aN32{0};
-////  for (const auto& m : model) {
-////    auto mask32 = static_cast<u32>((1 << (m.k << 1))-1);  // 4<<2k - 1 = 4^(k+1) - 1
-////    auto mask64 = static_cast<u64>((1 << (m.k << 1))-1);
-//////    switch (m.mode) {
-//////      case MODE::TABLE_64:    compressDS(p.tar, m, mask32, aN64, tbl64);  break;
-//////      case MODE::TABLE_32:    compressDS(p.tar, m, mask32, aN64, tbl32);  break;
-//////      case MODE::LOG_TABLE_8: compressDS(p.tar, m, mask32, aN64, logtbl8);break;
-//////      case MODE::SKETCH_8:    compressDS(p.tar, m, mask64, aN32, sketch4);break;
-//////      default:                cerr << "Error";
-//////    }
-////  }
-////  if (model.size() == 1)
+//  auto mask = 0;
+//  if (typeid(sketch4)==typeid(CMLS4))
+//    mask = const_cast<u64>((1 << (model[0].k << 1))-1);
+//  else
+//    mask = dynamic_cast<u32>((1 << (model[0].k << 1))-1);
 //
-////  auto mask = 0;
-////  if (typeid(sketch4)==typeid(CMLS4))
-////    mask = const_cast<u64>((1 << (model[0].k << 1))-1);
-////  else
-////    mask = dynamic_cast<u32>((1 << (model[0].k << 1))-1);
-////
-////  cerr << typeid(mask).name();
-//
-//
-////  compressDS1(p.tar);
-////  cerr << "Compression finished ";
+//  cerr << typeid(mask).name();
+
+//  compressDS1(p.tar);
+//  cerr << "Compression finished ";
 //}
 
 void FCM::compress (const Param& p) const {
@@ -263,15 +196,15 @@ void FCM::compress (const Param& p) const {
     case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
     case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
     case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
-////    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
-////                      tbl64, tbl32, logtbl8);                          break;
-////    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-////                      tbl64, tbl32, sketch4);                          break;
-////    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-////                      tbl64, logtbl8, sketch4);                        break;
-////    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-////                      tbl32, logtbl8, sketch4);                        break;
-////    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);         break;
+//    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
+//                      tbl64, tbl32, logtbl8);                          break;
+//    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl64, tbl32, sketch4);                          break;
+//    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl64, logtbl8, sketch4);                        break;
+//    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl32, logtbl8, sketch4);                        break;
+//    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);         break;
     default:  cerr << "Error";                                         break;
   }
   
@@ -281,12 +214,6 @@ void FCM::compress (const Param& p) const {
 template <typename mask_t, typename ds_t>
 inline void FCM::compDS1 (const string& tar, mask_t mask,
                           const ds_t& container) const {
-////  double aveEnt = 0;
-////  if (!model[0].ir)
-////    aveEnt = aveEnt1D(tar, mask, aN, container);
-////  else
-////    aveEnt = aveEnt1I(tar, mask, aN, container);
-////
   const auto shl{model[0].k<<1};    // Shift left
   mask_t ctx{0}, ctxIR{mask};       // Ctx, ir (int) sliding through the dataset
   u64 symsNo{0};                    // No. syms in target file, except \n
@@ -322,9 +249,9 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
         ++symsNo;
         auto numSym = NUM[c];
         auto l=ctx<<2;    auto r=ctxIR>>2;
-        auto z0 = container->query(l)     + container->query(3<<shl | r);
-        auto z1 = container->query(l | 1) + container->query(2<<shl | r);
-        auto z2 = container->query(l | 2) + container->query(1<<shl | r);
+        auto z0 = container->query(l)     + container->query((3<<shl) | r);
+        auto z1 = container->query(l | 1) + container->query((2<<shl) | r);
+        auto z2 = container->query(l | 2) + container->query((1<<shl) | r);
         auto z3 = container->query(l | 3) + container->query(r);
         ctx = (l & mask) | numSym;     // Update ctx
         ctxIR = REVNUM[c]<<shl | r;    // Update ctxIR
@@ -352,69 +279,9 @@ inline void FCM::compDS1 (const string& tar, mask_t mask,
   cerr << "Compression finished ";
 }
 
-//template <typename mask_t, typename cnt_t, typename ds_t>
-//inline double FCM::aveEnt1D (const string &tar, mask_t mask, cnt_t &aN,
-//                             const ds_t &container) const {
-//  const auto shl{model[0].k<<1};    // Shift left
-//  mask_t ctx{0}, ctxIR{mask};       // Ctx, ir (int) sliding through the dataset
-//  u64 symsNo{0};                    // No. syms in target file, except \n
-//  const float alpha{model[0].alpha};
-//  const double sAlpha{ALPH_SZ*alpha};  // Sum of alphas
-//  double sEnt{0};                  // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(tar);
-//  char c;
-//  while (tf.get(c)) {
-//    if (c != '\n') {
-//      ++symsNo;
-//      auto l = ctx<<2;
-//      for (u8 i=0; i!=ALPH_SZ; ++i)
-//        aN[i] += container->query(l | i);
-//      auto numSym = NUM[c];
-//      ctx = (l & mask) | numSym;       // Update ctx
-//
-//      sEnt += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
-//    }
-//  }
-//  tf.close();
-//  return sEnt/symsNo;
-//}
-//
-//template <typename mask_t, typename cnt_t, typename ds_t>
-//inline double FCM::aveEnt1I (const string &tar, mask_t mask, cnt_t &aN,
-//                             const ds_t &container) const {
-//  const auto shl{model[0].k<<1};
-//  mask_t ctx{0}, ctxIR{mask};
-//  u64 symsNo{0};
-//  const float alpha{model[0].alpha};
-//  const double sAlpha{ALPH_SZ*alpha};
-//  double sEnt{0};
-//  ifstream tf(tar);
-//  char c;
-//  while (tf.get(c)) {
-//    if (c != '\n') {
-//      ++symsNo;
-//      // Inverted repeat
-//      auto r = ctxIR>>2;
-//      for (u8 i=0; i!=ALPH_SZ; ++i)
-//        aN[i] = container->query((IRMAGIC-i)<<shl | r);
-//      ctxIR = REVNUM[c]<<shl | r;          // Update ctxIR
-//
-//      auto l = ctx<<2;
-//      for (u8 i=0; i!=ALPH_SZ; ++i)
-//        aN[i] += container->query(l | i);
-//      auto numSym = NUM[c];
-//      ctx = (l & mask) | numSym;       // Update ctx
-//
-//      sEnt += log2((aN[0]+aN[1]+aN[2]+aN[3]+sAlpha) / (aN[numSym]+alpha));
-//    }
-//  }
-//  tf.close();
-//  return sEnt/symsNo;
-//}
-
 template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
 inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
-                    const ds0_t& container0, const ds1_t& container1) const {
+                       const ds0_t& container0, const ds1_t& container1) const {
   const auto shl0{model[0].k<<1}, shl1{model[1].k<<1};   // Shift left
   mask0_t ctx0{0}, ctxIR0{mask0};   // Ctx, ir (int) sliding through the dataset
   mask1_t ctx1{0}, ctxIR1{mask1};
@@ -456,9 +323,9 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         ++symsNo;
         auto numSym = NUM[c];
         auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto r0=ctxIR0>>2;
-        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
-        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
-        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
+        auto z00 = container0->query(l0)     + container0->query((3<<shl0) |r0);
+        auto z01 = container0->query(l0 | 1) + container0->query((2<<shl0) |r0);
+        auto z02 = container0->query(l0 | 2) + container0->query((1<<shl0) |r0);
         auto z03 = container0->query(l0 | 3) + container0->query(r0);
         auto z10 = container1->query(l1);    auto z11 = container1->query(l1|1);
         auto z12 = container1->query(l1|2);  auto z13 = container1->query(l1|3);
@@ -469,10 +336,6 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
           Pm0 = (z[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0); }
         { decltype(z10) z[4] {z10, z11, z12, z13};
           Pm1 = (z[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1); }
-//        decltype(z00) z0[4] {z00, z01, z02, z03};
-//        decltype(z10) z1[4] {z10, z11, z12, z13};
-//        Pm0 = (z0[numSym]+alpha0) / (z00+z01+z02+z03+sAlpha0);
-//        Pm1 = (z1[numSym]+alpha1) / (z10+z11+z12+z13+sAlpha1);
         auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
         auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
         w0 = rawW0 / (rawW0+rawW1);
@@ -489,9 +352,9 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto r1=ctxIR1>>2;
         auto z00 = container0->query(l0);    auto z01 = container0->query(l0|1);
         auto z02 = container0->query(l0|2);  auto z03 = container0->query(l0|3);
-        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
-        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
-        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
+        auto z10 = container1->query(l1)     + container1->query((3<<shl1) |r1);
+        auto z11 = container1->query(l1 | 1) + container1->query((2<<shl1) |r1);
+        auto z12 = container1->query(l1 | 2) + container1->query((1<<shl1) |r1);
         auto z13 = container1->query(l1 | 3) + container1->query(r1);
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -514,13 +377,13 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         ++symsNo;
         auto numSym = NUM[c];
         auto l0=ctx0<<2;  auto l1=ctx1<<2; auto r0=ctxIR0>>2; auto r1=ctxIR1>>2;
-        auto z00 = container0->query(l0)     + container0->query(3<<shl0 | r0);
-        auto z01 = container0->query(l0 | 1) + container0->query(2<<shl0 | r0);
-        auto z02 = container0->query(l0 | 2) + container0->query(1<<shl0 | r0);
+        auto z00 = container0->query(l0)     + container0->query((3<<shl0) |r0);
+        auto z01 = container0->query(l0 | 1) + container0->query((2<<shl0) |r0);
+        auto z02 = container0->query(l0 | 2) + container0->query((1<<shl0) |r0);
         auto z03 = container0->query(l0 | 3) + container0->query(r0);
-        auto z10 = container1->query(l1)     + container1->query(3<<shl1 | r1);
-        auto z11 = container1->query(l1 | 1) + container1->query(2<<shl1 | r1);
-        auto z12 = container1->query(l1 | 2) + container1->query(1<<shl1 | r1);
+        auto z10 = container1->query(l1)     + container1->query((3<<shl1) |r1);
+        auto z11 = container1->query(l1 | 1) + container1->query((2<<shl1) |r1);
+        auto z12 = container1->query(l1 | 2) + container1->query((1<<shl1) |r1);
         auto z13 = container1->query(l1 | 3) + container1->query(r1);
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
