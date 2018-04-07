@@ -29,7 +29,7 @@ int main (int argc, char* argv[])
     Param p;
     p.parse(argc, argv);
     auto* m = new FCM(p);
-
+    
     // Build models
     auto t0 = high_resolution_clock::now();    // Start time
     m->buildModel(p);

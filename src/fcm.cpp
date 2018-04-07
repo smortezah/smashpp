@@ -85,7 +85,7 @@ void FCM::buildModel (const Param& p) {
   //todo
 //  tbl64->print();
 ////  tbl32->print();
-  sketch4->print();
+//  sketch4->print();
 }
 
 inline void FCM::bldMdlOneThr (const Param &p) {
@@ -192,26 +192,15 @@ void FCM::compress (const Param& p) const {
 }
 
 template <typename mask_t, typename ds_t>
-inline void FCM::compDS1 (const string& tar, mask_t mask,
-//                          const
-ds_t& ds) const{
-  const auto  shl    {model[0].k<<1};    // Shift left
-  mask_t      ctx    {0},              ctxIR{mask};       // Ctx, ir (int) sliding through the dataset
-  u64         symsNo {0};                    // No. syms in target file, except \n
-  const float alpha  {model[0].alpha};
+inline void FCM::compDS1 (const string& tar, mask_t mask, const ds_t& ds) const{
+  const auto shl{model[0].k<<1};    // Shift left
+  mask_t ctx{0}, ctxIR{mask};       // Ctx, ir (int) sliding through the dataset
+  u64 symsNo{0};                    // No. syms in target file, except \n
+  const float alpha{model[0].alpha};
 //  const double sAlpha{ALPH_SZ*alpha}; // Sum of alphas
-  double      sEnt   {0};                   // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream    tf     (tar);
-  char        c;
-  
-  
-  //todo
-//  auto func = std::bind(&CMLS4::query, ds, std::placeholders::_1);
-//  auto fut = std::async(std::launch::async, func, 1);
-
-//  auto fut = std::async(std::launch::async, &CMLS4::query, ds, 1);
-//  cerr<< fut.get();      // waits for is_prime to return
-  
+  double sEnt{0};                   // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(tar);
+  char c;
   if (IR_COMB==IR::DDDD) {
     while (tf.get(c)) {
       if (c != '\n') {
@@ -219,7 +208,7 @@ ds_t& ds) const{
         auto numSym = NUM[static_cast<u8>(c)];
         auto l = ctx<<2;
         sEnt += log2(probR(ds, l, alpha, numSym));
-        ctx = (l & mask) | numSym;    // Update ctx
+        ctx = updateCtx(l, mask, numSym);    // Update ctx
       }
     }
   }
@@ -230,7 +219,7 @@ ds_t& ds) const{
         auto numSym = NUM[static_cast<u8>(c)];
         auto l=ctx<<2;    auto r=ctxIR>>2;
         sEnt += log2(probIrR(ds, l, r, shl, alpha, numSym));
-        ctx   = (l & mask) | numSym;                    // Update ctx
+        ctx = updateCtx(l, mask, numSym);    // Update ctx
         ctxIR = REVNUM[static_cast<u8>(c)]<<shl | r;    // Update ctxIR
       }
     }
@@ -247,12 +236,12 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
   const auto shl0{model[0].k<<1}, shl1{model[1].k<<1};   // Shift left
   mask0_t ctx0{0}, ctxIR0{mask0};   // Ctx, ir (int) sliding through the dataset
   mask1_t ctx1{0}, ctxIR1{mask1};
-  u64 symsNo{0};               // No. syms in target file, except \n
+  u64 symsNo{0};                    // No. syms in target file, except \n
   const float alpha0{model[0].alpha}, alpha1{model[1].alpha};
-//  const double sAlpha0{ALPH_SZ*alpha0}, sAlpha1{ALPH_SZ*alpha1};  // Sum of alphas
+//const double sAlpha0{ALPH_SZ*alpha0}, sAlpha1{ALPH_SZ*alpha1};// Sum of alphas
   double w0{0.5}, w1{0.5};
-  double Pm0{}, Pm1{};  // P of model 0, model 1
-  double sEnt{0}; // Sum of entropies = sum(log_2 P(s|c^t))
+  double Pm0{}, Pm1{};              // P of model 0, model 1
+  double sEnt{0};                   // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);
   char c;
   if (IR_COMB==IR::DDDD) {
@@ -263,10 +252,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         auto l0=ctx0<<2;    auto l1=ctx1<<2;
         Pm0 = prob(ds0, l0, alpha0, numSym);
         Pm1 = prob(ds1, l1, alpha1, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        w0 = rawW0 / (rawW0+rawW1);
-        w1 = rawW1 / (rawW0+rawW1);
+        setWeight(w0, w1, Pm0, Pm1);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1));
 //        print(w0,w1,log2(1/(Pm0*w0 + Pm1*w1)));//todo
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
@@ -282,10 +268,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         auto l0=ctx0<<2;    auto r0=ctxIR0>>2;    auto l1=ctx1<<2;
         Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
         Pm1 = prob(ds1, l1, alpha1, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        w0 = rawW0 / (rawW0+rawW1);
-        w1 = rawW1 / (rawW0+rawW1);
+        setWeight(w0, w1, Pm0, Pm1);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1));
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -301,10 +284,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto r1=ctxIR1>>2;
         Pm0 = prob(ds0, l0, alpha0, numSym);
         Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        w0 = rawW0 / (rawW0+rawW1);
-        w1 = rawW1 / (rawW0+rawW1);
+        setWeight(w0, w1, Pm0, Pm1);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1));
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -320,10 +300,7 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         auto l0=ctx0<<2; auto r0=ctxIR0>>2;  auto l1=ctx1<<2; auto r1=ctxIR1>>2;
         Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
         Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        w0 = rawW0 / (rawW0+rawW1);
-        w1 = rawW1 / (rawW0+rawW1);
+        setWeight(w0, w1, Pm0, Pm1);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1));
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -365,12 +342,7 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0 = prob(ds0, l0, alpha0, numSym);
         Pm1 = prob(ds1, l1, alpha1, numSym);
         Pm2 = prob(ds2, l2, alpha2, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
+        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -387,12 +359,7 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
         Pm1 = prob(ds1, l1, alpha1, numSym);
         Pm2 = prob(ds2, l2, alpha2, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
+        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
         ctx0 = (l0 & mask0) | numSym;    // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -410,12 +377,7 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0 = prob(ds0, l0, alpha0, numSym);
         Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
         Pm2 = prob(ds2, l2, alpha2, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
+        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
         ctx0 = (l0 & mask0) | numSym;    // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -434,12 +396,7 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
         Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
         Pm2 = prob(ds2, l2, alpha2, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
+        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
         ctx0 = (l0 & mask0) | numSym;    // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -458,12 +415,7 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0 = prob(ds0, l0, alpha0, numSym);
         Pm1 = prob(ds1, l1, alpha1, numSym);
         Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
+        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -482,12 +434,7 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
         Pm1 = prob(ds1, l1, alpha1, numSym);
         Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
+        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -507,12 +454,7 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0 = prob(ds0, l0, alpha0, numSym);
         Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
         Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
+        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -532,12 +474,7 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
         Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
         Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
-        auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
-        auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
-        auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
-        w0 = rawW0 / (rawW0+rawW1+rawW2);
-        w1 = rawW1 / (rawW0+rawW1+rawW2);
-        w2 = rawW2 / (rawW0+rawW1+rawW2);
+        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
         ctx0 = (l0 & mask0) | numSym;     // Update ctx
         ctx1 = (l1 & mask1) | numSym;
@@ -566,32 +503,6 @@ inline double FCM::prob (const ds_t& ds, ctx_t l, float a, u8 numSym) const {
 
 template <typename ds_t, typename ctx_t>
 inline double FCM::probR (const ds_t& ds, ctx_t l, float a, u8 numSym) const {
-  //todo. sAlpha ro be onvane input bede be in function ke vase har character
-  //todo. nakhad hesab kone
-//        vector<std::thread> t;
-//if (typeid(ds)==typeid(CMLS4*)){
-//  t.push_back(std::thread(&CMLS4::query, ds, l));
-//}
-//std::thread t0(&Table64::query, ds, l);
-//std::thread t1(&Table32::query, ds, l);
-//std::thread t2(&LogTable8::query, ds, l);
-//std::thread t3(&CMLS4::query, ds, l);
-//  t0.join();
-
-//std::thread thrd[1];
-//thrd[0] = std::thread(&FCM::createDS<u32,Table64*>, this,
-//                      std::cref(p.ref), mask32, std::ref(tbl64));
-//            thrd[0].join();
-
-//  auto q=std::async(m, 6);
-//  cerr<<q.get();
-
-//  std::future<bool> fut = std::async(&FCM::is_prime, *this, 3);
-//  bool ret = fut.get();      // waits for is_prime to return
-//  if (ret) std::cout << "It is prime!\n";
-//  else std::cout << "It is not prime.\n";
-
-  
   const auto c0 {ds->query(l)};
   const auto c1 {ds->query(l|1)};
   const auto c2 {ds->query(l|2)};
@@ -620,6 +531,30 @@ inline double FCM::probIrR (const ds_t& ds, ctxL_t l, ctxR_t r, shift_t shl,
   const auto c3 {ds->query(l|3)+ds->query(r)};
   const decltype(c0) c[4] {c0, c1, c2, c3};
   return (c0+c1+c2+c3+static_cast<double>(ALPH_SZ*a)) / (c[numSym]+a);
+}
+
+inline void FCM::setWeight (double& w0, double& w1,
+                            double Pm0, double Pm1) const{
+  const auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+  const auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+  w0 = rawW0 / (rawW0+rawW1);
+  w1 = rawW1 / (rawW0+rawW1);
+}
+
+inline void FCM::setWeight (double& w0, double& w1, double& w2,
+                            double Pm0, double Pm1, double Pm2) const {
+  const auto rawW0 = pow(w0, DEF_GAMMA) * Pm0;
+  const auto rawW1 = pow(w1, DEF_GAMMA) * Pm1;
+  const auto rawW2 = pow(w2, DEF_GAMMA) * Pm2;
+  const auto sum   = rawW0 + rawW1 + rawW2;
+  w0 = rawW0 / sum;
+  w1 = rawW1 / sum;
+  w2 = rawW2 / sum;
+}
+
+template <typename ctx_t>
+inline ctx_t FCM::updateCtx (ctx_t l, ctx_t mask, u8 numSym) const {
+  return (l & mask) | numSym;
 }
 
 template <typename T>
