@@ -71,6 +71,8 @@ class FCM    // Finite-context model
   
   template <typename ctx_t>
   ctx_t updateCtx (ctx_t, ctx_t, u8) const;
+  template <typename ctx_t>
+  ctx_t updateCtxIr (ctx_t, u8, char) const;
   
   // Print variadic inputs
   template <typename T>                   void print (T)          const;
