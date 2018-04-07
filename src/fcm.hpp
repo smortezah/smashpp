@@ -20,11 +20,7 @@ struct ModelPar {
   u8    d;       // Depth of count-min-log sketch
 };
 
-//todo. maybe not usefull
-struct ProbPar {
-//  ds, l, alpha, numSym
-};
-
+#include <future>
 class FCM    // Finite-context model
 {
  public:
@@ -53,23 +49,28 @@ class FCM    // Finite-context model
   void createDS (const string&, mask_t, ds_t&);
   // Compress data structure
   template <typename mask_t, typename ds_t>
-  void compDS1 (const string&, mask_t, const ds_t&) const;
+  void compDS1 (const string&, mask_t,
+//                const
+                ds_t&) const;
   template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
   void compDS2 (const string&, mask0_t,mask1_t,const ds0_t&,const ds1_t&) const;
-//  template <typename mask0_t, typename mask1_t, typename mask2_t,
-//    typename ds0_t, typename ds1_t, typename ds2_t>
-//  void compDS3 (const string&, mask0_t, mask1_t, mask2_t, const ds0_t&,
-//                const ds1_t&, const ds2_t&) const;
-  
-  
-  template <typename coef_t>
-//  double log2Prob (const coef_t[4], float, char) const;
-  double log2Prob (coef_t, coef_t, coef_t, coef_t, float, char) const;
-  
+  template <typename mask0_t, typename mask1_t, typename mask2_t,
+    typename ds0_t, typename ds1_t, typename ds2_t>
+  void compDS3 (const string&, mask0_t, mask1_t, mask2_t,
+                const ds0_t&, const ds1_t&, const ds2_t&) const;
+  // Probability
   template <typename ds_t, typename ctx_t>
-  double prob(const ds_t&, ctx_t, float, u8) const; // Probability
+  double prob  (const ds_t&, ctx_t, float, u8) const; // Probability
+  template <typename ds_t, typename ctx_t>
+  double probR (const ds_t&, ctx_t, float, u8) const; // Prob. reciprocal
   template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
-  double probIR(const ds_t&, ctxL_t, ctxR_t, shift_t, float, u8) const; // Probability consider IR
+  double probIr  (const ds_t&, ctxL_t, ctxR_t, shift_t, float, u8) const; // Prob. IR
+  template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
+  double probIrR (const ds_t&, ctxL_t, ctxR_t, shift_t, float, u8) const; // Prob. IR recip
+  
+  // Print variadic inputs
+  template <typename T>                   void print (T)          const;
+  template <typename T, typename... Args> void print (T, Args...) const;
 };
 
 #endif //SMASHPP_FCM_HPP
