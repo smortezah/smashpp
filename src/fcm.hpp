@@ -49,9 +49,7 @@ class FCM    // Finite-context model
   void createDS (const string&, mask_t, ds_t&);
   // Compress data structure
   template <typename mask_t, typename ds_t>
-  void compDS1 (const string&, mask_t,
-//                const
-                ds_t&) const;
+  void compDS1 (const string&, mask_t, const ds_t&) const;
   template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
   void compDS2 (const string&, mask0_t,mask1_t,const ds0_t&,const ds1_t&) const;
   template <typename mask0_t, typename mask1_t, typename mask2_t,
@@ -67,6 +65,12 @@ class FCM    // Finite-context model
   double probIr  (const ds_t&, ctxL_t, ctxR_t, shift_t, float, u8) const; // Prob. IR
   template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
   double probIrR (const ds_t&, ctxL_t, ctxR_t, shift_t, float, u8) const; // Prob. IR recip
+  
+  void setWeight (double&, double&, double, double) const;
+  void setWeight (double&, double&, double&, double, double, double) const;
+  
+  template <typename ctx_t>
+  ctx_t updateCtx (ctx_t, ctx_t, u8) const;
   
   // Print variadic inputs
   template <typename T>                   void print (T)          const;
