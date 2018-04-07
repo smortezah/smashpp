@@ -219,8 +219,8 @@ inline void FCM::compDS1 (const string& tar, mask_t mask, const ds_t& ds) const{
         auto numSym = NUM[static_cast<u8>(c)];
         auto l=ctx<<2;    auto r=ctxIR>>2;
         sEnt += log2(probIrR(ds, l, r, shl, alpha, numSym));
-        ctx = updateCtx(l, mask, numSym);    // Update ctx
-        ctxIR = REVNUM[static_cast<u8>(c)]<<shl | r;    // Update ctxIR
+        ctx   = updateCtx(l, mask, numSym);    // Update ctx
+        ctxIR = updateCtxIr(r, shl, c);        // Update ctxIR
       }
     }
   }
@@ -255,8 +255,8 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         setWeight(w0, w1, Pm0, Pm1);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1));
 //        print(w0,w1,log2(1/(Pm0*w0 + Pm1*w1)));//todo
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
+        ctx0 = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1 = updateCtx(l1, mask1, numSym);
       }
     }
   }
@@ -270,9 +270,9 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm1 = prob(ds1, l1, alpha1, numSym);
         setWeight(w0, w1, Pm0, Pm1);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctxIR0 = REVNUM[static_cast<u8>(c)]<<shl0 | r0;    // Update ctxIR
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
       }
     }
   }
@@ -286,9 +286,9 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
         setWeight(w0, w1, Pm0, Pm1);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctxIR1 = REVNUM[static_cast<u8>(c)]<<shl1 | r1;    // Update ctxIR
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctxIR1 = updateCtxIr(r1, shl1, c);        // Update ctxIR
       }
     }
   }
@@ -302,10 +302,10 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
         setWeight(w0, w1, Pm0, Pm1);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctxIR0 = REVNUM[static_cast<u8>(c)]<<shl0 | r0;    // Update ctxIR
-        ctxIR1 = REVNUM[static_cast<u8>(c)]<<shl1 | r1;
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+        ctxIR1 = updateCtxIr(r1, shl1, c);
       }
     }
   }
@@ -344,9 +344,9 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm2 = prob(ds2, l2, alpha2, numSym);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
+        ctx0 = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1 = updateCtx(l1, mask1, numSym);
+        ctx2 = updateCtx(l2, mask2, numSym);
       }
     }
   }
@@ -361,10 +361,10 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm2 = prob(ds2, l2, alpha2, numSym);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR0 = REVNUM[static_cast<u8>(c)]<<shl0 | r0;      // Update ctxIR
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctx2   = updateCtx(l2, mask2, numSym);
+        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
       }
     }
   }
@@ -379,10 +379,10 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm2 = prob(ds2, l2, alpha2, numSym);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR1 = REVNUM[static_cast<u8>(c)]<<shl1 | r1;      // Update ctxIR
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctx2   = updateCtx(l2, mask2, numSym);
+        ctxIR1 = updateCtxIr(r1, shl1, c);        // Update ctxIR
       }
     }
   }
@@ -398,11 +398,11 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm2 = prob(ds2, l2, alpha2, numSym);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0 = (l0 & mask0) | numSym;    // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR0 = REVNUM[static_cast<u8>(c)]<<shl0 | r0;     // Update ctxIR
-        ctxIR1 = REVNUM[static_cast<u8>(c)]<<shl1 | r1;
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctx2   = updateCtx(l2, mask2, numSym);
+        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+        ctxIR1 = updateCtxIr(r1, shl1, c);
       }
     }
   }
@@ -417,10 +417,10 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR2 = REVNUM[static_cast<u8>(c)]<<shl2 | r2;    // Update ctxIR
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctx2   = updateCtx(l2, mask2, numSym);
+        ctxIR2 = updateCtxIr(r2, shl2, c);        // Update ctxIR
       }
     }
   }
@@ -436,11 +436,11 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR0 = REVNUM[static_cast<u8>(c)]<<shl0 | r0;    // Update ctxIR
-        ctxIR2 = REVNUM[static_cast<u8>(c)]<<shl2 | r2;
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctx2   = updateCtx(l2, mask2, numSym);
+        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+        ctxIR2 = updateCtxIr(r2, shl2, c);
       }
     }
   }
@@ -456,11 +456,11 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR1 = REVNUM[static_cast<u8>(c)]<<shl1 | r1;    // Update ctxIR
-        ctxIR2 = REVNUM[static_cast<u8>(c)]<<shl2 | r2;
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctx2   = updateCtx(l2, mask2, numSym);
+        ctxIR1 = updateCtxIr(r1, shl1, c);        // Update ctxIR
+        ctxIR2 = updateCtxIr(r2, shl2, c);
       }
     }
   }
@@ -476,12 +476,12 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0 = (l0 & mask0) | numSym;     // Update ctx
-        ctx1 = (l1 & mask1) | numSym;
-        ctx2 = (l2 & mask2) | numSym;
-        ctxIR0 = REVNUM[static_cast<u8>(c)]<<shl0 | r0;    // Update ctxIR
-        ctxIR1 = REVNUM[static_cast<u8>(c)]<<shl1 | r1;
-        ctxIR2 = REVNUM[static_cast<u8>(c)]<<shl2 | r2;
+        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+        ctx1   = updateCtx(l1, mask1, numSym);
+        ctx2   = updateCtx(l2, mask2, numSym);
+        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+        ctxIR1 = updateCtxIr(r1, shl1, c);
+        ctxIR2 = updateCtxIr(r2, shl2, c);
       }
     }
   }
@@ -555,6 +555,11 @@ inline void FCM::setWeight (double& w0, double& w1, double& w2,
 template <typename ctx_t>
 inline ctx_t FCM::updateCtx (ctx_t l, ctx_t mask, u8 numSym) const {
   return (l & mask) | numSym;
+}
+
+template <typename ctx_t>
+inline ctx_t FCM::updateCtxIr (ctx_t r, u8 shl, char c) const {
+  return (REVNUM[static_cast<u8>(c)]<<shl) | r;
 }
 
 template <typename T>
