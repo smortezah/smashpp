@@ -23,13 +23,18 @@ struct ModelPar {
 template <typename ctx_t>
 struct Prob_s {
   Prob_s () = default;
-  Prob_s (float a, ctx_t m, u8 s) {alpha=a;  mask=m;  shl=s;}
-  ctx_t l;
-  ctx_t r;
+  Prob_s (float a, ctx_t m, u8 s) : alpha(a), mask(m), shl(s) {}
+  void config (char c, ctx_t ctx) { numSym=NUM[static_cast<u8>(c)];  l=ctx<<2; }
+  void config (char c, ctx_t ctx, ctx_t ctxIr) {
+    numSym=NUM[static_cast<u8>(c)];          l=ctx<<2;
+    revNumSym=REVNUM[static_cast<u8>(c)];    r=ctxIr>>2;
+  }
   float alpha;
   ctx_t mask;
   u8    shl;
+  ctx_t l;
   u8    numSym;
+  ctx_t r;
   u8    revNumSym;
 };
 
@@ -79,6 +84,7 @@ class FCM    // Finite-context model
   template <typename ds_t, typename ctx_t>
   double probIrR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR recip
   
+  void setWeight (double*&, const double*&) const;
   void setWeight (double&, double&, double, double) const;
   void setWeight (double&, double&, double&, double, double, double) const;
   
