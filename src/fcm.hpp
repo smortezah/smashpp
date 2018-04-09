@@ -84,14 +84,14 @@ class FCM    // Finite-context model
   template <typename ds_t, typename ctx_t>
   double probIrR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR recip
   
-  void setWeight (double*&, const double*&) const;
+//  void setWeight (double*&, const double*&) const;
   void setWeight (double&, double&, double, double) const;
   void setWeight (double&, double&, double&, double, double, double) const;
   
   template <typename ctx_t>
-  ctx_t updateCtx (const Prob_s<ctx_t>&) const;
+  void updateCtx (ctx_t&, const Prob_s<ctx_t>&) const;
   template <typename ctx_t>
-  ctx_t updateCtxIr (const Prob_s<ctx_t>&) const;
+  void updateCtx (ctx_t&, ctx_t&, const Prob_s<ctx_t>&) const;
   
   // Print variadic inputs
   template <typename T>                   void print (T)          const;
