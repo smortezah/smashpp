@@ -20,6 +20,17 @@ struct ModelPar {
   u8    d;       // Depth of count-min-log sketch
 };
 
+template <typename ctx_t>
+struct Prob_s {
+//  Prob_s (double alpha_, ctx_t mask_, u8 shl_) : alpha(alpha_);
+  ctx_t  l;
+  ctx_t  r;
+  double alpha;
+  ctx_t  mask;
+  u8     shl;
+  u8     numSym;
+};
+
 #include <future>
 class FCM    // Finite-context model
 {
@@ -60,7 +71,8 @@ class FCM    // Finite-context model
   template <typename ds_t, typename ctx_t>
   double prob  (const ds_t&, ctx_t, float, u8) const; // Probability
   template <typename ds_t, typename ctx_t>
-  double probR (const ds_t&, ctx_t, float, u8) const; // Prob. reciprocal
+  double probR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. reciprocal
+//  double probR (const ds_t&, ctx_t, float, u8) const; // Prob. reciprocal
   template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
   double probIr  (const ds_t&, ctxL_t, ctxR_t, shift_t, float, u8) const; // Prob. IR
   template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
@@ -70,7 +82,8 @@ class FCM    // Finite-context model
   void setWeight (double&, double&, double&, double, double, double) const;
   
   template <typename ctx_t>
-  ctx_t updateCtx (ctx_t, ctx_t, u8) const;
+  ctx_t updateCtx (const Prob_s<ctx_t>&) const;
+//  ctx_t updateCtx (ctx_t, ctx_t, u8) const;
   template <typename ctx_t>
   ctx_t updateCtxIr (ctx_t, u8, char) const;
   

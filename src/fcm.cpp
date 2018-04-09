@@ -170,20 +170,20 @@ void FCM::compress (const Param& p) const {
     case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
     case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
     case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
-    case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
-    case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
-    case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
-    case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
-    case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
-    case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
-    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
-                      tbl64, tbl32, logtbl8);                          break;
-    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-                      tbl64, tbl32, sketch4);                          break;
-    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-                      tbl64, logtbl8, sketch4);                        break;
-    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-                      tbl32, logtbl8, sketch4);                        break;
+//    case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
+//    case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
+//    case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
+//    case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
+//    case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
+//    case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
+//    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
+//                      tbl64, tbl32, logtbl8);                          break;
+//    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl64, tbl32, sketch4);                          break;
+//    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl64, logtbl8, sketch4);                        break;
+//    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl32, logtbl8, sketch4);                        break;
 //    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);      break;
     default:  cerr << "Error";                                         break;
   }
@@ -201,14 +201,23 @@ inline void FCM::compDS1 (const string& tar, mask_t mask, const ds_t& ds) const{
   double sEnt{0};                   // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);
   char c;
+  
+  Prob_s<mask_t> pObj{};
+  pObj.alpha=alpha;
+  pObj.mask=mask;
+  pObj.shl=shl;
+  
   if (IR_COMB==IR::DDDD) {
     while (tf.get(c)) {
       if (c != '\n') {
         ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l = ctx<<2;
-        sEnt += log2(probR(ds, l, alpha, numSym));
-        ctx = updateCtx(l, mask, numSym);    // Update ctx
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l = ctx<<2;
+        pObj.l=ctx<<2;  pObj.numSym=NUM[static_cast<u8>(c)];
+        sEnt += log2(probR(ds, pObj));
+//        sEnt += log2(probR(ds, l, alpha, numSym));
+        ctx = updateCtx(pObj);    // Update ctx
+//        ctx = updateCtx(l, mask, numSym);    // Update ctx
       }
     }
   }
@@ -229,267 +238,273 @@ inline void FCM::compDS1 (const string& tar, mask_t mask, const ds_t& ds) const{
   cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
   cerr << "Compression finished ";
 }
+//
+//template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
+//inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
+//                          const ds0_t& ds0, const ds1_t& ds1) const {
+//  const auto shl0{model[0].k<<1}, shl1{model[1].k<<1};   // Shift left
+//  mask0_t ctx0{0}, ctxIR0{mask0};   // Ctx, ir (int) sliding through the dataset
+//  mask1_t ctx1{0}, ctxIR1{mask1};
+//  u64 symsNo{0};                    // No. syms in target file, except \n
+//  const float alpha0{model[0].alpha}, alpha1{model[1].alpha};
+////const double sAlpha0{ALPH_SZ*alpha0}, sAlpha1{ALPH_SZ*alpha1};// Sum of alphas
+//  double w0{0.5}, w1{0.5};
+//  double Pm0{}, Pm1{};              // P of model 0, model 1
+//  double sEnt{0};                   // Sum of entropies = sum(log_2 P(s|c^t))
+//  ifstream tf(tar);
+//  char c;
 
-template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
-inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
-                          const ds0_t& ds0, const ds1_t& ds1) const {
-  const auto shl0{model[0].k<<1}, shl1{model[1].k<<1};   // Shift left
-  mask0_t ctx0{0}, ctxIR0{mask0};   // Ctx, ir (int) sliding through the dataset
-  mask1_t ctx1{0}, ctxIR1{mask1};
-  u64 symsNo{0};                    // No. syms in target file, except \n
-  const float alpha0{model[0].alpha}, alpha1{model[1].alpha};
-//const double sAlpha0{ALPH_SZ*alpha0}, sAlpha1{ALPH_SZ*alpha1};// Sum of alphas
-  double w0{0.5}, w1{0.5};
-  double Pm0{}, Pm1{};              // P of model 0, model 1
-  double sEnt{0};                   // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);
-  char c;
-  if (IR_COMB==IR::DDDD) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;    auto l1=ctx1<<2;
-        Pm0 = prob(ds0, l0, alpha0, numSym);
-        Pm1 = prob(ds1, l1, alpha1, numSym);
-        setWeight(w0, w1, Pm0, Pm1);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-//        print(w0,w1,log2(1/(Pm0*w0 + Pm1*w1)));//todo
-        ctx0 = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1 = updateCtx(l1, mask1, numSym);
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDDI) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;    auto r0=ctxIR0>>2;    auto l1=ctx1<<2;
-        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
-        Pm1 = prob(ds1, l1, alpha1, numSym);
-        setWeight(w0, w1, Pm0, Pm1);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDID) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto r1=ctxIR1>>2;
-        Pm0 = prob(ds0, l0, alpha0, numSym);
-        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
-        setWeight(w0, w1, Pm0, Pm1);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctxIR1 = updateCtxIr(r1, shl1, c);        // Update ctxIR
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDII) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2; auto r0=ctxIR0>>2;  auto l1=ctx1<<2; auto r1=ctxIR1>>2;
-        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
-        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
-        setWeight(w0, w1, Pm0, Pm1);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
-        ctxIR1 = updateCtxIr(r1, shl1, c);
-      }
-    }
-  }
-  tf.close();
-  double aveEnt = sEnt/symsNo;
-  cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
-  cerr << "Compression finished ";
-}
 
-template <typename mask0_t, typename mask1_t, typename mask2_t,
-  typename ds0_t, typename ds1_t, typename ds2_t>
-inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
-    mask2_t mask2, const ds0_t& ds0, const ds1_t& ds1, const ds2_t& ds2) const {
-  const auto shl0{model[0].k<<1}, shl1{model[1].k<<1}, shl2{model[2].k<<1};
-  mask0_t ctx0{0}, ctxIR0{mask0};   // Ctx, ir (int) sliding through the dataset
-  mask1_t ctx1{0}, ctxIR1{mask1};
-  mask2_t ctx2{0}, ctxIR2{mask2};
-  u64 symsNo{0};               // No. syms in target file, except \n
-  const float alpha0{model[0].alpha}, alpha1{model[1].alpha},
-              alpha2{model[2].alpha};
-//  const double sAlpha0{ALPH_SZ*alpha0}, sAlpha1{ALPH_SZ*alpha1},
-//               sAlpha2{ALPH_SZ*alpha2};  // Sum of alphas
-  double w0{1.0/3}, w1{w0}, w2{w0};
-  double Pm0{}, Pm1{}, Pm2{};  // P of model 0, model 1, model 2
-  double sEnt{0}; // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);
-  char c;
-  if (IR_COMB==IR::DDDD) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;
-        Pm0 = prob(ds0, l0, alpha0, numSym);
-        Pm1 = prob(ds1, l1, alpha1, numSym);
-        Pm2 = prob(ds2, l2, alpha2, numSym);
-        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0 = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1 = updateCtx(l1, mask1, numSym);
-        ctx2 = updateCtx(l2, mask2, numSym);
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDDI) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;  auto r0=ctxIR0>>2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;
-        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
-        Pm1 = prob(ds1, l1, alpha1, numSym);
-        Pm2 = prob(ds2, l2, alpha2, numSym);
-        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctx2   = updateCtx(l2, mask2, numSym);
-        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDID) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto r1=ctxIR1>>2;  auto l2=ctx2<<2;
-        Pm0 = prob(ds0, l0, alpha0, numSym);
-        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
-        Pm2 = prob(ds2, l2, alpha2, numSym);
-        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctx2   = updateCtx(l2, mask2, numSym);
-        ctxIR1 = updateCtxIr(r1, shl1, c);        // Update ctxIR
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDII) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;  auto r0=ctxIR0>>2;
-        auto l1=ctx1<<2;  auto r1=ctxIR1>>2;  auto l2=ctx2<<2;
-        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
-        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
-        Pm2 = prob(ds2, l2, alpha2, numSym);
-        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctx2   = updateCtx(l2, mask2, numSym);
-        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
-        ctxIR1 = updateCtxIr(r1, shl1, c);
-      }
-    }
-  }
-  else if (IR_COMB==IR::DIDD) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;  auto r2=ctxIR2>>2;
-        Pm0 = prob(ds0, l0, alpha0, numSym);
-        Pm1 = prob(ds1, l1, alpha1, numSym);
-        Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
-        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctx2   = updateCtx(l2, mask2, numSym);
-        ctxIR2 = updateCtxIr(r2, shl2, c);        // Update ctxIR
-      }
-    }
-  }
-  else if (IR_COMB==IR::DIDI) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;  auto r0=ctxIR0>>2;  auto l1=ctx1<<2;
-        auto l2=ctx2<<2;  auto r2=ctxIR2>>2;
-        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
-        Pm1 = prob(ds1, l1, alpha1, numSym);
-        Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
-        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctx2   = updateCtx(l2, mask2, numSym);
-        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
-        ctxIR2 = updateCtxIr(r2, shl2, c);
-      }
-    }
-  }
-  else if (IR_COMB==IR::DIID) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2;  auto l1=ctx1<<2;    auto r1=ctxIR1>>2;
-        auto l2=ctx2<<2;  auto r2=ctxIR2>>2;
-        Pm0 = prob(ds0, l0, alpha0, numSym);
-        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
-        Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
-        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctx2   = updateCtx(l2, mask2, numSym);
-        ctxIR1 = updateCtxIr(r1, shl1, c);        // Update ctxIR
-        ctxIR2 = updateCtxIr(r2, shl2, c);
-      }
-    }
-  }
-  else if (IR_COMB==IR::DIII) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        auto numSym = NUM[static_cast<u8>(c)];
-        auto l0=ctx0<<2; auto r0=ctxIR0>>2;  auto l1=ctx1<<2; auto r1=ctxIR1>>2;
-        auto l2=ctx2<<2; auto r2=ctxIR2>>2;
-        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
-        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
-        Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
-        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
-        ctx1   = updateCtx(l1, mask1, numSym);
-        ctx2   = updateCtx(l2, mask2, numSym);
-        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
-        ctxIR1 = updateCtxIr(r1, shl1, c);
-        ctxIR2 = updateCtxIr(r2, shl2, c);
-      }
-    }
-  }
-  tf.close();
-  double aveEnt = sEnt/symsNo;
-  cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
-  cerr << "Compression finished ";
-}
+//Prob_s<mask0_t> pObj0{};
+//Prob_s<mask1_t> pObj1{};
+
+
+//  if (IR_COMB==IR::DDDD) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;    auto l1=ctx1<<2;
+//        Pm0 = prob(ds0, l0, alpha0, numSym);
+//        Pm1 = prob(ds1, l1, alpha1, numSym);
+//        setWeight(w0, w1, Pm0, Pm1);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+////        print(w0,w1,log2(1/(Pm0*w0 + Pm1*w1)));//todo
+//        ctx0 = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1 = updateCtx(l1, mask1, numSym);
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDDI) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;    auto r0=ctxIR0>>2;    auto l1=ctx1<<2;
+//        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
+//        Pm1 = prob(ds1, l1, alpha1, numSym);
+//        setWeight(w0, w1, Pm0, Pm1);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDID) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;    auto l1=ctx1<<2;    auto r1=ctxIR1>>2;
+//        Pm0 = prob(ds0, l0, alpha0, numSym);
+//        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
+//        setWeight(w0, w1, Pm0, Pm1);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctxIR1 = updateCtxIr(r1, shl1, c);        // Update ctxIR
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDII) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2; auto r0=ctxIR0>>2;  auto l1=ctx1<<2; auto r1=ctxIR1>>2;
+//        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
+//        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
+//        setWeight(w0, w1, Pm0, Pm1);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+//        ctxIR1 = updateCtxIr(r1, shl1, c);
+//      }
+//    }
+//  }
+//  tf.close();
+//  double aveEnt = sEnt/symsNo;
+//  cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
+//  cerr << "Compression finished ";
+//}
+//
+//template <typename mask0_t, typename mask1_t, typename mask2_t,
+//  typename ds0_t, typename ds1_t, typename ds2_t>
+//inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
+//    mask2_t mask2, const ds0_t& ds0, const ds1_t& ds1, const ds2_t& ds2) const {
+//  const auto shl0{model[0].k<<1}, shl1{model[1].k<<1}, shl2{model[2].k<<1};
+//  mask0_t ctx0{0}, ctxIR0{mask0};   // Ctx, ir (int) sliding through the dataset
+//  mask1_t ctx1{0}, ctxIR1{mask1};
+//  mask2_t ctx2{0}, ctxIR2{mask2};
+//  u64 symsNo{0};               // No. syms in target file, except \n
+//  const float alpha0{model[0].alpha}, alpha1{model[1].alpha},
+//              alpha2{model[2].alpha};
+////  const double sAlpha0{ALPH_SZ*alpha0}, sAlpha1{ALPH_SZ*alpha1},
+////               sAlpha2{ALPH_SZ*alpha2};  // Sum of alphas
+//  double w0{1.0/3}, w1{w0}, w2{w0};
+//  double Pm0{}, Pm1{}, Pm2{};  // P of model 0, model 1, model 2
+//  double sEnt{0}; // Sum of entropies = sum(log_2 P(s|c^t))
+//  ifstream tf(tar);
+//  char c;
+//  if (IR_COMB==IR::DDDD) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;
+//        Pm0 = prob(ds0, l0, alpha0, numSym);
+//        Pm1 = prob(ds1, l1, alpha1, numSym);
+//        Pm2 = prob(ds2, l2, alpha2, numSym);
+//        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//        ctx0 = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1 = updateCtx(l1, mask1, numSym);
+//        ctx2 = updateCtx(l2, mask2, numSym);
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDDI) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;  auto r0=ctxIR0>>2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;
+//        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
+//        Pm1 = prob(ds1, l1, alpha1, numSym);
+//        Pm2 = prob(ds2, l2, alpha2, numSym);
+//        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctx2   = updateCtx(l2, mask2, numSym);
+//        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDID) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto r1=ctxIR1>>2;  auto l2=ctx2<<2;
+//        Pm0 = prob(ds0, l0, alpha0, numSym);
+//        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
+//        Pm2 = prob(ds2, l2, alpha2, numSym);
+//        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctx2   = updateCtx(l2, mask2, numSym);
+//        ctxIR1 = updateCtxIr(r1, shl1, c);        // Update ctxIR
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDII) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;  auto r0=ctxIR0>>2;
+//        auto l1=ctx1<<2;  auto r1=ctxIR1>>2;  auto l2=ctx2<<2;
+//        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
+//        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
+//        Pm2 = prob(ds2, l2, alpha2, numSym);
+//        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctx2   = updateCtx(l2, mask2, numSym);
+//        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+//        ctxIR1 = updateCtxIr(r1, shl1, c);
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DIDD) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;  auto l1=ctx1<<2;  auto l2=ctx2<<2;  auto r2=ctxIR2>>2;
+//        Pm0 = prob(ds0, l0, alpha0, numSym);
+//        Pm1 = prob(ds1, l1, alpha1, numSym);
+//        Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
+//        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctx2   = updateCtx(l2, mask2, numSym);
+//        ctxIR2 = updateCtxIr(r2, shl2, c);        // Update ctxIR
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DIDI) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;  auto r0=ctxIR0>>2;  auto l1=ctx1<<2;
+//        auto l2=ctx2<<2;  auto r2=ctxIR2>>2;
+//        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
+//        Pm1 = prob(ds1, l1, alpha1, numSym);
+//        Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
+//        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctx2   = updateCtx(l2, mask2, numSym);
+//        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+//        ctxIR2 = updateCtxIr(r2, shl2, c);
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DIID) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2;  auto l1=ctx1<<2;    auto r1=ctxIR1>>2;
+//        auto l2=ctx2<<2;  auto r2=ctxIR2>>2;
+//        Pm0 = prob(ds0, l0, alpha0, numSym);
+//        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
+//        Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
+//        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctx2   = updateCtx(l2, mask2, numSym);
+//        ctxIR1 = updateCtxIr(r1, shl1, c);        // Update ctxIR
+//        ctxIR2 = updateCtxIr(r2, shl2, c);
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DIII) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        auto numSym = NUM[static_cast<u8>(c)];
+//        auto l0=ctx0<<2; auto r0=ctxIR0>>2;  auto l1=ctx1<<2; auto r1=ctxIR1>>2;
+//        auto l2=ctx2<<2; auto r2=ctxIR2>>2;
+//        Pm0 = probIr(ds0, l0, r0, shl0, alpha0, numSym);
+//        Pm1 = probIr(ds1, l1, r1, shl1, alpha1, numSym);
+//        Pm2 = probIr(ds2, l2, r2, shl2, alpha2, numSym);
+//        setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
+//        ctx0   = updateCtx(l0, mask0, numSym);    // Update ctx
+//        ctx1   = updateCtx(l1, mask1, numSym);
+//        ctx2   = updateCtx(l2, mask2, numSym);
+//        ctxIR0 = updateCtxIr(r0, shl0, c);        // Update ctxIR
+//        ctxIR1 = updateCtxIr(r1, shl1, c);
+//        ctxIR2 = updateCtxIr(r2, shl2, c);
+//      }
+//    }
+//  }
+//  tf.close();
+//  double aveEnt = sEnt/symsNo;
+//  cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
+//  cerr << "Compression finished ";
+//}
 
 template <typename ds_t, typename ctx_t>
 inline double FCM::prob (const ds_t& ds, ctx_t l, float a, u8 numSym) const {
@@ -502,14 +517,23 @@ inline double FCM::prob (const ds_t& ds, ctx_t l, float a, u8 numSym) const {
 }
 
 template <typename ds_t, typename ctx_t>
-inline double FCM::probR (const ds_t& ds, ctx_t l, float a, u8 numSym) const {
-  const auto c0 {ds->query(l)};
-  const auto c1 {ds->query(l|1)};
-  const auto c2 {ds->query(l|2)};
-  const auto c3 {ds->query(l|3)};
+inline double FCM::probR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
+  const auto c0 {ds->query(p.l)};
+  const auto c1 {ds->query(p.l|1)};
+  const auto c2 {ds->query(p.l|2)};
+  const auto c3 {ds->query(p.l|3)};
   const decltype(c0) c[4] {c0, c1, c2, c3};
-  return (c0+c1+c2+c3+static_cast<double>(ALPH_SZ*a)) / (c[numSym]+a);
+  return (c0+c1+c2+c3+static_cast<double>(ALPH_SZ*p.alpha)) / (c[p.numSym]+p.alpha);
 }
+//template <typename ds_t, typename ctx_t>
+//inline double FCM::probR (const ds_t& ds, ctx_t l, float a, u8 numSym) const {
+//  const auto c0 {ds->query(l)};
+//  const auto c1 {ds->query(l|1)};
+//  const auto c2 {ds->query(l|2)};
+//  const auto c3 {ds->query(l|3)};
+//  const decltype(c0) c[4] {c0, c1, c2, c3};
+//  return (c0+c1+c2+c3+static_cast<double>(ALPH_SZ*a)) / (c[numSym]+a);
+//}
 
 template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
 inline double FCM::probIr (const ds_t& ds, ctxL_t l, ctxR_t r, shift_t shl,
@@ -553,9 +577,12 @@ inline void FCM::setWeight (double& w0, double& w1, double& w2,
 }
 
 template <typename ctx_t>
-inline ctx_t FCM::updateCtx (ctx_t l, ctx_t mask, u8 numSym) const {
-  return (l & mask) | numSym;
+inline ctx_t FCM::updateCtx (const Prob_s<ctx_t>& p) const {
+  return (p.l & p.mask) | p.numSym;
 }
+//inline ctx_t FCM::updateCtx (ctx_t l, ctx_t mask, u8 numSym) const {
+//  return (l & mask) | numSym;
+//}
 
 template <typename ctx_t>
 inline ctx_t FCM::updateCtxIr (ctx_t r, u8 shl, char c) const {
