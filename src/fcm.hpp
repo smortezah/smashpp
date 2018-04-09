@@ -22,13 +22,15 @@ struct ModelPar {
 
 template <typename ctx_t>
 struct Prob_s {
-//  Prob_s (double alpha_, ctx_t mask_, u8 shl_) : alpha(alpha_);
-  ctx_t  l;
-  ctx_t  r;
-  double alpha;
-  ctx_t  mask;
-  u8     shl;
-  u8     numSym;
+  Prob_s () = default;
+  Prob_s (float a, ctx_t m, u8 s) {alpha=a;  mask=m;  shl=s;}
+  ctx_t l;
+  ctx_t r;
+  float alpha;
+  ctx_t mask;
+  u8    shl;
+  u8    numSym;
+  u8    revNumSym;
 };
 
 #include <future>
@@ -69,23 +71,21 @@ class FCM    // Finite-context model
                 const ds0_t&, const ds1_t&, const ds2_t&) const;
   // Probability
   template <typename ds_t, typename ctx_t>
-  double prob  (const ds_t&, ctx_t, float, u8) const; // Probability
+  double prob  (const ds_t&, const Prob_s<ctx_t>&) const; // Probability
   template <typename ds_t, typename ctx_t>
   double probR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. reciprocal
-//  double probR (const ds_t&, ctx_t, float, u8) const; // Prob. reciprocal
-  template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
-  double probIr  (const ds_t&, ctxL_t, ctxR_t, shift_t, float, u8) const; // Prob. IR
-  template <typename ds_t, typename ctxL_t, typename ctxR_t, typename shift_t>
-  double probIrR (const ds_t&, ctxL_t, ctxR_t, shift_t, float, u8) const; // Prob. IR recip
+  template <typename ds_t, typename ctx_t>
+  double probIr  (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR
+  template <typename ds_t, typename ctx_t>
+  double probIrR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR recip
   
   void setWeight (double&, double&, double, double) const;
   void setWeight (double&, double&, double&, double, double, double) const;
   
   template <typename ctx_t>
   ctx_t updateCtx (const Prob_s<ctx_t>&) const;
-//  ctx_t updateCtx (ctx_t, ctx_t, u8) const;
   template <typename ctx_t>
-  ctx_t updateCtxIr (ctx_t, u8, char) const;
+  ctx_t updateCtxIr (const Prob_s<ctx_t>&) const;
   
   // Print variadic inputs
   template <typename T>                   void print (T)          const;
