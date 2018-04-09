@@ -12,6 +12,7 @@
 #include <iostream>
 #include <chrono>
 #include <iomanip>      // setw, setprecision
+#include <tgmath.h>
 #include "par.hpp"
 #include "fcm.hpp"
 using std::cout;
