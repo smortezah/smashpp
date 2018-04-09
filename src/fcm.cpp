@@ -204,7 +204,7 @@ inline void FCM::compDS1 (const string& tar, mask_t mask, const ds_t& ds) const{
         ++symsNo;
         pObj.config(c, ctx);
         sEnt += log2(probR(ds, pObj));
-        ctx   = updateCtx(pObj);    // Update ctx
+        updateCtx(ctx, pObj);    // Update ctx
       }
     }
   }
@@ -214,8 +214,7 @@ inline void FCM::compDS1 (const string& tar, mask_t mask, const ds_t& ds) const{
         ++symsNo;
         pObj.config(c, ctx, ctxIr);
         sEnt += log2(probIrR(ds, pObj));
-        ctx   = updateCtx(pObj);      // Update ctx
-        ctxIr = updateCtxIr(pObj);    // Update ctxIr
+        updateCtx(ctx, ctxIr, pObj);    // Update ctx & ctxIr
       }
     }
   }
@@ -246,47 +245,46 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
         setWeight(w0, w1, Pm0, Pm1);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1));
 //        print(w0,w1,log2(1/(Pm0*w0 + Pm1*w1)));//todo
-        ctx0=updateCtx(pObj0);    ctx1=updateCtx(pObj1);  // Update ctx
+        updateCtx(ctx0, pObj0);    updateCtx(ctx1, pObj1);  // Update ctx
       }
     }
   }
-//  else if (IR_COMB==IR::DDDI) {
-//    while (tf.get(c)) {
-//      if (c != '\n') {
-//        ++symsNo;
-//        pObj0.config(c, ctx0, ctxIr0);    pObj1.config(c, ctx1);
-//        Pm0=probIr(ds0, pObj0);           Pm1=prob(ds1, pObj1);
-//        setWeight(w0, w1, Pm0, Pm1);
-//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-//        ctx0=updateCtx(pObj0); ctxIr0=updateCtxIr(pObj0); ctx1=updateCtx(pObj1);
-//      }
-//    }
-//  }
-//  else if (IR_COMB==IR::DDID) {
-//    while (tf.get(c)) {
-//      if (c != '\n') {
-//        ++symsNo;
-//        pObj0.config(c, ctx0);    pObj1.config(c, ctx1, ctxIr1);
-//        Pm0=prob(ds0, pObj0);     Pm1=probIr(ds1, pObj1);
-//        setWeight(w0, w1, Pm0, Pm1);
-//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-//        ctx0=updateCtx(pObj0); ctx1=updateCtx(pObj1); ctxIr1=updateCtxIr(pObj1);
-//      }
-//    }
-//  }
-//  else if (IR_COMB==IR::DDII) {
-//    while (tf.get(c)) {
-//      if (c != '\n') {
-//        ++symsNo;
-//        pObj0.config(c, ctx0, ctxIr0);    pObj1.config(c, ctx1, ctxIr1);
-//        Pm0=probIr(ds0, pObj0);           Pm1=probIr(ds1, pObj1);
-//        setWeight(w0, w1, Pm0, Pm1);
-//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-//        ctx0=updateCtx(pObj0);            ctxIr0=updateCtxIr(pObj0);
-//        ctx1=updateCtx(pObj1);            ctxIr1=updateCtxIr(pObj1);
-//      }
-//    }
-//  }
+  else if (IR_COMB==IR::DDDI) {
+    while (tf.get(c)) {
+      if (c != '\n') {
+        ++symsNo;
+        pObj0.config(c, ctx0, ctxIr0);    pObj1.config(c, ctx1);
+        Pm0=probIr(ds0, pObj0);           Pm1=prob(ds1, pObj1);
+        setWeight(w0, w1, Pm0, Pm1);
+        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+        updateCtx(ctx0, ctxIr0, pObj0);   updateCtx(ctx1, pObj1);
+      }
+    }
+  }
+  else if (IR_COMB==IR::DDID) {
+    while (tf.get(c)) {
+      if (c != '\n') {
+        ++symsNo;
+        pObj0.config(c, ctx0);    pObj1.config(c, ctx1, ctxIr1);
+        Pm0=prob(ds0, pObj0);     Pm1=probIr(ds1, pObj1);
+        setWeight(w0, w1, Pm0, Pm1);
+        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+        updateCtx(ctx0, pObj0);   updateCtx(ctx1, ctxIr1, pObj1);
+      }
+    }
+  }
+  else if (IR_COMB==IR::DDII) {
+    while (tf.get(c)) {
+      if (c != '\n') {
+        ++symsNo;
+        pObj0.config(c, ctx0, ctxIr0);    pObj1.config(c, ctx1, ctxIr1);
+        Pm0=probIr(ds0, pObj0);           Pm1=probIr(ds1, pObj1);
+        setWeight(w0, w1, Pm0, Pm1);
+        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+        updateCtx(ctx0, ctxIr0, pObj0);   updateCtx(ctx1, ctxIr1, pObj1);
+      }
+    }
+  }
   tf.close();
   double aveEnt = sEnt/symsNo;
   cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
@@ -316,7 +314,7 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0=prob(ds0, pObj0);    Pm1=prob(ds1, pObj1);    Pm2=prob(ds2, pObj2);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0=updateCtx(pObj0);   ctx1=updateCtx(pObj1);   ctx2=updateCtx(pObj2);
+        updateCtx(ctx0, pObj0);  updateCtx(ctx1, pObj1); updateCtx(ctx2, pObj2);
       }
     }
   }
@@ -329,8 +327,8 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0=probIr(ds0, pObj0);   Pm1=prob(ds1, pObj1);   Pm2=prob(ds2, pObj2);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0=updateCtx(pObj0);    ctxIr0=updateCtxIr(pObj0);
-        ctx1=updateCtx(pObj1);    ctx2=updateCtx(pObj2);
+        updateCtx(ctx0, ctxIr0, pObj0);
+        updateCtx(ctx1, pObj1);   updateCtx(ctx2, pObj2);
       }
     }
   }
@@ -343,8 +341,8 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0=prob(ds0, pObj0);   Pm1=probIr(ds1, pObj1);   Pm2=prob(ds2, pObj2);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0=updateCtx(pObj0); ctx1=updateCtx(pObj1); ctxIr1=updateCtxIr(pObj1);
-        ctx2=updateCtx(pObj2);
+        updateCtx(ctx0, pObj0);    updateCtx(ctx1, ctxIr1, pObj1);
+        updateCtx(ctx2, pObj2);
       }
     }
   }
@@ -357,8 +355,8 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0=probIr(ds0, pObj0);  Pm1=probIr(ds1, pObj1);  Pm2=prob(ds2, pObj2);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0=updateCtx(pObj0); ctxIr0=updateCtxIr(pObj0);
-        ctx1=updateCtx(pObj1); ctxIr1=updateCtxIr(pObj1); ctx2=updateCtx(pObj2);
+        updateCtx(ctx0, ctxIr0, pObj0);   updateCtx(ctx1, ctxIr1, pObj1);
+        updateCtx(ctx2, pObj2);
       }
     }
   }
@@ -371,8 +369,8 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0=prob(ds0, pObj0);  Pm1=prob(ds1, pObj1);  Pm2=probIr(ds2, pObj2);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0=updateCtx(pObj0);    ctx1=updateCtx(pObj1);
-        ctx2=updateCtx(pObj2);    ctxIr2=updateCtxIr(pObj2);
+        updateCtx(ctx0, pObj0);   updateCtx(ctx1, pObj1);
+        updateCtx(ctx2, ctxIr2, pObj2);
       }
     }
   }
@@ -385,8 +383,8 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0=probIr(ds0, pObj0);  Pm1=prob(ds1, pObj1);  Pm2=probIr(ds2, pObj2);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0=updateCtx(pObj0); ctxIr0=updateCtxIr(pObj0); ctx1=updateCtx(pObj1);
-        ctx2=updateCtx(pObj2); ctxIr2=updateCtxIr(pObj2);
+        updateCtx(ctx0, ctxIr0, pObj0);   updateCtx(ctx1, pObj1);
+        updateCtx(ctx2, ctxIr2, pObj2);
       }
     }
   }
@@ -399,8 +397,8 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0=prob(ds0, pObj0);  Pm1=probIr(ds1, pObj1);  Pm2=probIr(ds2, pObj2);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0=updateCtx(pObj0); ctx1=updateCtx(pObj1); ctxIr1=updateCtxIr(pObj1);
-        ctx2=updateCtx(pObj2); ctxIr2=updateCtxIr(pObj2);
+        updateCtx(ctx0, pObj0);   updateCtx(ctx1, ctxIr1, pObj1);
+        updateCtx(ctx2, ctxIr2, pObj2);
       }
     }
   }
@@ -413,9 +411,8 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
         Pm0=probIr(ds0, pObj0); Pm1=probIr(ds1, pObj1); Pm2=probIr(ds2, pObj2);
         setWeight(w0, w1, w2, Pm0, Pm1, Pm2);
         sEnt += log2(1/(Pm0*w0 + Pm1*w1 + Pm2*w2));
-        ctx0=updateCtx(pObj0);    ctxIr0=updateCtxIr(pObj0);
-        ctx1=updateCtx(pObj1);    ctxIr1=updateCtxIr(pObj1);
-        ctx2=updateCtx(pObj2);    ctxIr2=updateCtxIr(pObj2);
+        updateCtx(ctx0, ctxIr0, pObj0);   updateCtx(ctx1, ctxIr1, pObj1);
+        updateCtx(ctx2, ctxIr2, pObj2);
       }
     }
   }
@@ -463,13 +460,13 @@ inline double FCM::probIrR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
          / (c[p.numSym]+p.alpha);
 }
 
-inline void FCM::setWeight (vector<double>& w, const vector<double>& Pm) const {
-  double rawW[w.size()];
-  for (u8 i=0; i!=w.size(); ++i)
-    rawW[i] = pow(w[i], DEF_GAMMA) * Pm[i];
-  for (u8 i=0; i!=w.size(); ++i)
-    w[i] = rawW[i] / std::accumulate(rawW, rawW+w.size(), 0);
-}
+//inline void FCM::setWeight (vector<double>& w, const vector<double>& Pm) const {
+//  double rawW[w.size()];
+//  for (u8 i=0; i!=w.size(); ++i)
+//    rawW[i] = pow(w[i], DEF_GAMMA) * Pm[i];
+//  for (u8 i=0; i!=w.size(); ++i)
+//    w[i] = rawW[i] / std::accumulate(rawW, rawW+w.size(), 0);
+//}
 
 inline void FCM::setWeight (double& w0, double& w1,
                             double Pm0, double Pm1) const {
@@ -491,13 +488,14 @@ inline void FCM::setWeight (double& w0, double& w1, double& w2,
 }
 
 template <typename ctx_t>
-inline ctx_t FCM::updateCtx (const Prob_s<ctx_t>& p) const {
-  return (p.l & p.mask) | p.numSym;
+inline void FCM::updateCtx (ctx_t& ctx, const Prob_s<ctx_t>& p) const {
+  ctx = (p.l & p.mask) | p.numSym;
 }
 
 template <typename ctx_t>
-inline ctx_t FCM::updateCtxIr (const Prob_s<ctx_t>& p) const {
-  return (p.revNumSym<<p.shl) | p.r;
+inline void FCM::updateCtx (ctx_t& ctx, ctx_t& ctxIr, const Prob_s<ctx_t>& p) const {
+  ctx   = (p.l & p.mask) | p.numSym;
+  ctxIr = (p.revNumSym<<p.shl) | p.r;
 }
 
 template <typename T>
