@@ -23,7 +23,7 @@ struct ModelPar {
 template <typename ctx_t>
 struct Prob_s {
   Prob_s () = default;
-  Prob_s (float a, ctx_t m, u8 s) : alpha(a), mask(m), shl(s) {}
+  Prob_s (float a, ctx_t m, u8 sh) : alpha(a), mask(m), shl(sh) {}
   void config (char c, ctx_t ctx) { numSym=NUM[static_cast<u8>(c)];  l=ctx<<2; }
   void config (char c, ctx_t ctx, ctx_t ctxIr) {
     numSym=NUM[static_cast<u8>(c)];          l=ctx<<2;
@@ -85,7 +85,7 @@ class FCM    // Finite-context model
   double probIrR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR recip
   
   template <u8 N>
-  double entropy (std::array<double,N>& w, std::array<double,N>&& Pm) const;
+  double entropy (std::array<double,N>& w, const std::array<double,N>& Pm)const;
   
   template <typename ctx_t>
   void updateCtx (ctx_t&, const Prob_s<ctx_t>&) const;
@@ -93,7 +93,7 @@ class FCM    // Finite-context model
   void updateCtx (ctx_t&, ctx_t&, const Prob_s<ctx_t>&) const;
   
   // Print variadic inputs
-  template <typename T>                   void print (T)          const;
+  template <typename T>         void print (T)          const;
   template <typename T, typename... Args> void print (T, Args...) const;
 };
 
