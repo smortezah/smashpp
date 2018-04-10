@@ -22,10 +22,13 @@ FCM::FCM (const Param& p) {
 
 FCM::~FCM () {
   for (const auto& m : model) {
-    if      (m.mode==MODE::TABLE_64)      delete tbl64;
-    else if (m.mode==MODE::TABLE_32)      delete tbl32;
-    else if (m.mode==MODE::LOG_TABLE_8)   delete logtbl8;
-    else if (m.mode==MODE::SKETCH_8)      delete sketch4;
+    switch (m.mode){
+      case MODE::TABLE_64:      delete tbl64;     break;
+      case MODE::TABLE_32:      delete tbl32;     break;
+      case MODE::LOG_TABLE_8:   delete logtbl8;   break;
+      case MODE::SKETCH_8:      delete sketch4;   break;
+      default:  cerr << "Error. Undefined mode " << m.mode << ".\n";
+    }
   }
 }
 
@@ -47,95 +50,82 @@ inline void FCM::setModels (const Param& p) {
 
 inline void FCM::allocModels () {
   for (const auto& m : model) {
-    if      (m.mode==MODE::TABLE_64)        tbl64 = new Table64(m.k);
-    else if (m.mode==MODE::TABLE_32)        tbl32 = new Table32(m.k);
-    else if (m.mode==MODE::LOG_TABLE_8)   logtbl8 = new LogTable8(m.k);
-    else                                  sketch4 = new CMLS4(m.w, m.d);
+    switch (m.mode){
+      case MODE::TABLE_64:      tbl64   = new Table64(m.k);      break;
+      case MODE::TABLE_32:      tbl32   = new Table32(m.k);      break;
+      case MODE::LOG_TABLE_8:   logtbl8 = new LogTable8(m.k);    break;
+      case MODE::SKETCH_8:      sketch4 = new CMLS4(m.w, m.d);   break;
+      default:  cerr << "Error. Undefined mode " << m.mode << ".\n";
+    }
   }
 }
 
 inline void FCM::setModesComb () {
   u8 isT64=0, isT32=0, isLT=0, isSk=0;
   for (const auto& m : model) {
-    if      (m.mode==MODE::TABLE_64)      isT64 = 1;
-    else if (m.mode==MODE::TABLE_32)      isT32 = 1<<1;
-    else if (m.mode==MODE::LOG_TABLE_8)   isLT  = 1<<2;
-    else if (m.mode==MODE::SKETCH_8)      isSk  = 1<<3;
+    switch (m.mode){
+      case MODE::TABLE_64:      isT64 = 1;      break;
+      case MODE::TABLE_32:      isT32 = 1<<1;   break;
+      case MODE::LOG_TABLE_8:   isLT  = 1<<2;   break;
+      case MODE::SKETCH_8:      isSk  = 1<<3;   break;
+      default:  cerr << "Error. Undefined mode " << m.mode << ".\n";
+    }
   }
   MODE_COMB = isSk | isLT | isT32 | isT64;
 }
 
 inline void FCM::setIRsComb () {
   switch (model.size()) {
-    case 1:   IR_COMB =                                   model[0].ir;  break;
-    case 2:   IR_COMB =                  model[1].ir<<1 | model[0].ir;  break;
-    case 3:   IR_COMB = model[2].ir<<2 | model[1].ir<<1 | model[0].ir;  break;
-    case 4:   IR_COMB = model[3].ir<<3 |
-                        model[2].ir<<2 | model[1].ir<<1 | model[0].ir;  break;
-    default:  cerr<<"Error.\n";
+    case 1: IR_COMB=                                        model[0].ir;  break;
+    case 2: IR_COMB=                    (model[1].ir<<1) | (model[0].ir); break;
+    case 3: IR_COMB= (model[2].ir<<2) | (model[1].ir<<1) | (model[0].ir); break;
+    case 4: IR_COMB= (model[3].ir<<3) |
+                     (model[2].ir<<2) | (model[1].ir<<1) | (model[0].ir); break;
+    default:  cerr << "Error. Undefined models size " << model.size() << ".\n";
   }
 }
 
 void FCM::buildModel (const Param& p) {
   cerr << "Building the model" << (model.size()==1 ? "" : "s") << "...\n";
-  if (p.nthr==1 || model.size()==1)  bldMdlOneThr(p);    // No multithread
-  else                               bldMdlMulThr(p);    // Multithread
+  (p.nthr==1 || model.size()==1) ? bldMdlOneThr(p) : bldMdlMulThr(p)/*Mul thr*/;
   cerr << "The model" << (model.size()==1 ? "" : "s") << " built ";
-  
-  //todo
-//  tbl64->print();
-////  tbl32->print();
-//  sketch4->print();
 }
 
 inline void FCM::bldMdlOneThr (const Param &p) {
-  for (const auto& m : model) {
-    if (m.mode == MODE::TABLE_64) {
-      auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);  // 4<<2k-1 = 4^(k+1)-1
-      createDS(p.ref, mask32, tbl64);
-    }
-    else if (m.mode == MODE::TABLE_32) {
-      auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);
-      createDS(p.ref, mask32, tbl32);
-    }
-    else if (m.mode == MODE::LOG_TABLE_8) {
-      auto mask32 = static_cast<u32>((4<<(m.k<<1)) - 1);
-      createDS(p.ref, mask32, logtbl8);
-    }
-    else if (m.mode == MODE::SKETCH_8) {
-      auto mask64 = static_cast<u64>((4<<(m.k<<1)) - 1);
-      createDS(p.ref, mask64, sketch4);
-    }
+  for (const auto& m : model) {  // Mask: 4<<2k-1 = 4^(k+1)-1
+    if (m.mode == MODE::TABLE_64)
+      createDS(p.ref, static_cast<u32>((4<<(m.k<<1))-1)/*Mask 32*/, tbl64);
+    else if (m.mode == MODE::TABLE_32)
+      createDS(p.ref, static_cast<u32>((4<<(m.k<<1))-1)/*Mask 32*/, tbl32);
+    else if (m.mode == MODE::LOG_TABLE_8)
+      createDS(p.ref, static_cast<u32>((4<<(m.k<<1))-1)/*Mask 32*/, logtbl8);
+    else if (m.mode == MODE::SKETCH_8)
+      createDS(p.ref, static_cast<u64>((4<<(m.k<<1))-1)/*Mask 64*/, sketch4);
     else
-      cerr << "Error.\n";
+      cerr << "Error. The model cannot be built.\n";
   }
 }
 
 inline void FCM::bldMdlMulThr (const Param& p) {
   const auto vThrSz = (p.nthr < model.size()) ? p.nthr : model.size();
-  vector<std::thread> thrd;
-  thrd.resize(vThrSz);
-  for (u8 i=0; i!=model.size(); ++i) {
-    if (model[i].mode == MODE::TABLE_64) {
-      auto mask32 = static_cast<u32>((4<<(model[i].k<<1))-1);//4<<2k-1=4^(k+1)-1
-      thrd[i % vThrSz] = std::thread(&FCM::createDS<u32,Table64*>, this,
-                                     std::cref(p.ref), mask32, std::ref(tbl64));
-    }
-    else if (model[i].mode == MODE::TABLE_32) {
-      auto mask32 = static_cast<u32>((4<<(model[i].k<<1)) - 1);
-      thrd[i % vThrSz] = std::thread(&FCM::createDS<u32,Table32*>, this,
-                                     std::cref(p.ref), mask32, std::ref(tbl32));
-    }
-    else if (model[i].mode == MODE::LOG_TABLE_8) {
-      auto mask32 = static_cast<u32>((4<<(model[i].k<<1)) - 1);
-      thrd[i % vThrSz] = std::thread(&FCM::createDS<u32,LogTable8*>, this,
-                                   std::cref(p.ref), mask32, std::ref(logtbl8));
-    }
-    else if (model[i].mode == MODE::SKETCH_8) {
-      auto mask64 = static_cast<u64>((4<<(model[i].k<<1)) - 1);
-      thrd[i % vThrSz] = std::thread(&FCM::createDS<u64,CMLS4*>, this,
-                                   std::cref(p.ref), mask64, std::ref(sketch4));
-    }
+  vector<std::thread> thrd;  thrd.resize(vThrSz);
+  for (u8 i=0; i!=model.size(); ++i) {  // Mask: 4<<2k-1 = 4^(k+1)-1
+    if (model[i].mode == MODE::TABLE_64)
+      thrd[i % vThrSz] =
+        std::thread(&FCM::createDS<u32,Table64*>, this, std::cref(p.ref),
+                    static_cast<u32>((4<<(model[i].k<<1))-1), std::ref(tbl64));
+    else if (model[i].mode == MODE::TABLE_32)
+      thrd[i % vThrSz] =
+        std::thread(&FCM::createDS<u32,Table32*>, this, std::cref(p.ref),
+                    static_cast<u32>((4<<(model[i].k<<1))-1), std::ref(tbl32));
+    else if (model[i].mode == MODE::LOG_TABLE_8)
+      thrd[i % vThrSz] =
+        std::thread(&FCM::createDS<u32,LogTable8*>, this, std::cref(p.ref),
+                    static_cast<u32>((4<<(model[i].k<<1))-1), std::ref(logtbl8));
+    else if (model[i].mode == MODE::SKETCH_8)
+      thrd[i % vThrSz] =
+        std::thread(&FCM::createDS<u64,CMLS4*>, this, std::cref(p.ref),
+                    static_cast<u64>((4<<(model[i].k<<1))-1), std::ref(sketch4));
     // Join
     if ((i+1) % vThrSz == 0)
       for (auto& t : thrd)  if (t.joinable()) t.join();
@@ -144,14 +134,12 @@ inline void FCM::bldMdlMulThr (const Param& p) {
 }
 
 template <typename mask_t, typename ds_t>
-inline void FCM::createDS (const string& ref, mask_t mask, ds_t& container) {
-  ifstream rf(ref);
-  char c;
+inline void FCM::createDS (const string& ref, mask_t mask, ds_t& ds) {
+  ifstream rf(ref);  char c;
   for (mask_t ctx=0; rf.get(c);) {
     if (c != '\n') {
       ctx = ((ctx<<2) & mask) | NUM[static_cast<u8>(c)];    // Update ctx
-//      ctx = ((ctx<<2) & mask) | NUM[c];    // Update ctx//todo
-      container->update(ctx);
+      ds->update(ctx);
     }
   }
   rf.close();
@@ -166,26 +154,26 @@ void FCM::compress (const Param& p) const {
     if (m.mode==MODE::SKETCH_8)  mask64=static_cast<u64>((1<<(m.k<<1)) - 1);
   }
   switch (MODE_COMB) {
-    case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
-    case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
-    case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
-    case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
+//    case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
+//    case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
+//    case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
+//    case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
     case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
     case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
     case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
     case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
     case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
     case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
-    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
-                      tbl64, tbl32, logtbl8);                          break;
-    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-                      tbl64, tbl32, sketch4);                          break;
-    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-                      tbl64, logtbl8, sketch4);                        break;
-    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-                      tbl32, logtbl8, sketch4);                        break;
+//    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
+//                      tbl64, tbl32, logtbl8);                          break;
+//    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl64, tbl32, sketch4);                          break;
+//    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl64, logtbl8, sketch4);                        break;
+//    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+//                      tbl32, logtbl8, sketch4);                        break;
 //    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);      break;
-    default:  cerr << "Error";                                         break;
+    default:  cerr << "Error. The models cannot be built.";            break;
   }
   
 //  cerr << "Compression finished ";
@@ -406,50 +394,51 @@ inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
 
 template <typename ds_t, typename ctx_t>
 inline double FCM::prob (const ds_t& ds, const Prob_s<ctx_t>& p) const {
-  const decltype(ds->query(0)) c[4]
+  const array<decltype(ds->query(0)), 4> c
     {ds->query(p.l), ds->query(p.l|1), ds->query(p.l|2), ds->query(p.l|3)};
-  return (c[p.numSym]+p.alpha) /
-         (c[0]+c[1]+c[2]+c[3]+static_cast<double>(ALPH_SZ*p.alpha));
+  return (c[p.numSym]+p.alpha) / (std::accumulate(c.begin(),c.end(),0) +
+                                  static_cast<double>(ALPH_SZ*p.alpha));
 }
 
 template <typename ds_t, typename ctx_t>
 inline double FCM::probR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
-  const decltype(ds->query(0)) c[4]
+  const array<decltype(ds->query(0)), 4> c
     {ds->query(p.l), ds->query(p.l|1), ds->query(p.l|2), ds->query(p.l|3)};
-  return (c[0]+c[1]+c[2]+c[3]+static_cast<double>(ALPH_SZ*p.alpha))
-         / (c[p.numSym]+p.alpha);
+  return (std::accumulate(c.begin(),c.end(),0) +
+          static_cast<double>(ALPH_SZ*p.alpha)) / (c[p.numSym]+p.alpha);
 }
 
 template <typename ds_t, typename ctx_t>
 inline double FCM::probIr (const ds_t& ds, const Prob_s<ctx_t>& p) const {
-  const decltype(ds->query(0)+ds->query(0)) c[4]
+  const array<decltype(ds->query(0)+ds->query(0)), 4> c
     {ds->query(p.l)  +ds->query((3<<p.shl)|p.r),
      ds->query(p.l|1)+ds->query((2<<p.shl)|p.r),
      ds->query(p.l|2)+ds->query((1<<p.shl)|p.r),
      ds->query(p.l|3)+ds->query(p.r)};
-  return (c[p.numSym]+p.alpha)
-         / (c[0]+c[1]+c[2]+c[3]+static_cast<double>(ALPH_SZ*p.alpha));
+  return (c[p.numSym]+p.alpha) / (std::accumulate(c.begin(),c.end(),0) +
+                                  static_cast<double>(ALPH_SZ*p.alpha));
 }
 
 template <typename ds_t, typename ctx_t>
 inline double FCM::probIrR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
-  const decltype(ds->query(0)+ds->query(0)) c[4]
+  const array<decltype(ds->query(0)+ds->query(0)), 4> c
     {ds->query(p.l)  +ds->query((3<<p.shl)|p.r),
      ds->query(p.l|1)+ds->query((2<<p.shl)|p.r),
      ds->query(p.l|2)+ds->query((1<<p.shl)|p.r),
      ds->query(p.l|3)+ds->query(p.r)};
-  return (c[0]+c[1]+c[2]+c[3]+static_cast<double>(ALPH_SZ*p.alpha))
-         / (c[p.numSym]+p.alpha);
+  return (std::accumulate(c.begin(),c.end(),0) +
+          static_cast<double>(ALPH_SZ*p.alpha)) / (c[p.numSym]+p.alpha);
 }
 
 template <u8 N>
-inline double FCM::entropy (array<double,N>& w, array<double,N>&& Pm) const {
+inline double FCM::entropy (array<double,N>& w,const array<double,N>& Pm) const{
   // Set weights
   array<double,N> rawW {};
-  for (auto i=N; i--;)
-    rawW[i] = pow(w[i], DEF_GAMMA) * Pm[i];
-  for (auto i=N; i--;)
-    w[i] = rawW[i] / std::accumulate(rawW.begin(), rawW.end(), 0.0);
+  for (auto rIt=rawW.begin(), wIt=w.begin(), pIt=Pm.begin(); rIt!=rawW.end();
+       ++rIt, ++wIt, ++pIt)
+    *rIt = pow(*wIt, DEF_GAMMA) * *pIt;
+  for (auto rIt=rawW.begin(), wIt=w.begin(); rIt!=rawW.end(); ++rIt, ++wIt)
+    *wIt = *rIt / std::accumulate(rawW.begin(), rawW.end(), 0.0);
   // log2 1 / (Pm0*w0 + Pm1*w1 + ...)
   return log2(1/std::inner_product(w.begin(), w.end(), Pm.begin(), 0.0));
 }
@@ -460,7 +449,8 @@ inline void FCM::updateCtx (ctx_t& ctx, const Prob_s<ctx_t>& p) const {
 }
 
 template <typename ctx_t>
-inline void FCM::updateCtx (ctx_t& ctx, ctx_t& ctxIr, const Prob_s<ctx_t>& p) const {
+inline void FCM::updateCtx (ctx_t& ctx, ctx_t& ctxIr,
+                            const Prob_s<ctx_t>& p) const {
   ctx   = (p.l & p.mask) | p.numSym;
   ctxIr = (p.revNumSym<<p.shl) | p.r;
 }
