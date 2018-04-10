@@ -230,8 +230,10 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
   mask0_t ctx0{0}, ctxIr0{mask0};   // Ctx, ir (int) sliding through the dataset
   mask1_t ctx1{0}, ctxIr1{mask1};
   u64 symsNo{0};                    // No. syms in target file, except \n
-  double w0{0.5}, w1{0.5};
-  double Pm0{}, Pm1{};              // P of model 0, model 1
+//  double w0{0.5}, w1{0.5};
+  std::array<double, 2> w {0.5, 0.5};
+  std::array<double, 2> Pm {};
+//  double Pm0{}, Pm1{};              // P of model 0, model 1
   double sEnt{0};                   // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
   Prob_s<mask0_t> pObj0 {model[0].alpha, mask0, static_cast<u8>(model[0].k<<1)};
@@ -241,50 +243,53 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
       if (c != '\n') {
         ++symsNo;
         pObj0.config(c, ctx0);    pObj1.config(c, ctx1);
-        Pm0=prob(ds0, pObj0);     Pm1=prob(ds1, pObj1);
-        setWeight(w0, w1, Pm0, Pm1);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-//        print(w0,w1,log2(1/(Pm0*w0 + Pm1*w1)));//todo
+        Pm[0]=prob(ds0, pObj0);     Pm[1]=prob(ds1, pObj1);
+        setWeight<2>(w, Pm);
+        sEnt += log2(1/(Pm[0]*w[0] + Pm[1]*w[1]));
+//        Pm0=prob(ds0, pObj0);     Pm1=prob(ds1, pObj1);
+//        setWeight(w0, w1, Pm0, Pm1);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+//        print(w[0],w[1],log2(1/(Pm[0]*w[0] + Pm[1]*w[1])));//todo
         updateCtx(ctx0, pObj0);    updateCtx(ctx1, pObj1);  // Update ctx
       }
     }
   }
-  else if (IR_COMB==IR::DDDI) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        pObj0.config(c, ctx0, ctxIr0);    pObj1.config(c, ctx1);
-        Pm0=probIr(ds0, pObj0);           Pm1=prob(ds1, pObj1);
-        setWeight(w0, w1, Pm0, Pm1);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-        updateCtx(ctx0, ctxIr0, pObj0);   updateCtx(ctx1, pObj1);
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDID) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        pObj0.config(c, ctx0);    pObj1.config(c, ctx1, ctxIr1);
-        Pm0=prob(ds0, pObj0);     Pm1=probIr(ds1, pObj1);
-        setWeight(w0, w1, Pm0, Pm1);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-        updateCtx(ctx0, pObj0);   updateCtx(ctx1, ctxIr1, pObj1);
-      }
-    }
-  }
-  else if (IR_COMB==IR::DDII) {
-    while (tf.get(c)) {
-      if (c != '\n') {
-        ++symsNo;
-        pObj0.config(c, ctx0, ctxIr0);    pObj1.config(c, ctx1, ctxIr1);
-        Pm0=probIr(ds0, pObj0);           Pm1=probIr(ds1, pObj1);
-        setWeight(w0, w1, Pm0, Pm1);
-        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
-        updateCtx(ctx0, ctxIr0, pObj0);   updateCtx(ctx1, ctxIr1, pObj1);
-      }
-    }
-  }
+//  else if (IR_COMB==IR::DDDI) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        pObj0.config(c, ctx0, ctxIr0);    pObj1.config(c, ctx1);
+//        Pm0=probIr(ds0, pObj0);           Pm1=prob(ds1, pObj1);
+//        setWeight(w0, w1, Pm0, Pm1);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+//        updateCtx(ctx0, ctxIr0, pObj0);   updateCtx(ctx1, pObj1);
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDID) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        pObj0.config(c, ctx0);    pObj1.config(c, ctx1, ctxIr1);
+//        Pm0=prob(ds0, pObj0);     Pm1=probIr(ds1, pObj1);
+//        setWeight(w0, w1, Pm0, Pm1);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+//        updateCtx(ctx0, pObj0);   updateCtx(ctx1, ctxIr1, pObj1);
+//      }
+//    }
+//  }
+//  else if (IR_COMB==IR::DDII) {
+//    while (tf.get(c)) {
+//      if (c != '\n') {
+//        ++symsNo;
+//        pObj0.config(c, ctx0, ctxIr0);    pObj1.config(c, ctx1, ctxIr1);
+//        Pm0=probIr(ds0, pObj0);           Pm1=probIr(ds1, pObj1);
+//        setWeight(w0, w1, Pm0, Pm1);
+//        sEnt += log2(1/(Pm0*w0 + Pm1*w1));
+//        updateCtx(ctx0, ctxIr0, pObj0);   updateCtx(ctx1, ctxIr1, pObj1);
+//      }
+//    }
+//  }
   tf.close();
   double aveEnt = sEnt/symsNo;
   cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
@@ -460,13 +465,15 @@ inline double FCM::probIrR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
          / (c[p.numSym]+p.alpha);
 }
 
-//inline void FCM::setWeight (vector<double>& w, const vector<double>& Pm) const {
-//  double rawW[w.size()];
-//  for (u8 i=0; i!=w.size(); ++i)
-//    rawW[i] = pow(w[i], DEF_GAMMA) * Pm[i];
-//  for (u8 i=0; i!=w.size(); ++i)
-//    w[i] = rawW[i] / std::accumulate(rawW, rawW+w.size(), 0);
-//}
+template <u8 N>
+inline void FCM::setWeight (array<double,N>& w, const array<double,N>& Pm) const {
+  array<double,N> rawW {};
+  for (auto i=N; i--;)
+    rawW[i] = pow(w[i], DEF_GAMMA) * Pm[i];
+  for (auto i=N; i--;)
+    w[i] = rawW[i] / std::accumulate(rawW.begin(), rawW.end(), 0.0);
+  cerr<<rawW[0]<<' '<<rawW[1]<<'\n'<<w[0]<<' '<<w[1]<<"\n\n";
+}
 
 inline void FCM::setWeight (double& w0, double& w1,
                             double Pm0, double Pm1) const {

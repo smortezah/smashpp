@@ -84,7 +84,8 @@ class FCM    // Finite-context model
   template <typename ds_t, typename ctx_t>
   double probIrR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR recip
   
-//  void setWeight (double*&, const double*&) const;
+  template <u8 N>
+  void setWeight (std::array<double,N>&, const std::array<double,N>&) const;
   void setWeight (double&, double&, double, double) const;
   void setWeight (double&, double&, double&, double, double, double) const;
   
