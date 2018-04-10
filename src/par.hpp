@@ -77,15 +77,17 @@ class Param    // Parameters
       }
       
       // Mandatory args
-      bool tExist   = std::find(vArgs.begin(),vArgs.end(),"-t")   !=vArgs.end();
-      bool tarExist = std::find(vArgs.begin(),vArgs.end(),"--tar")!=vArgs.end();
-      bool rExist   = std::find(vArgs.begin(),vArgs.end(),"-r")   !=vArgs.end();
-      bool refExist = std::find(vArgs.begin(),vArgs.end(),"--ref")!=vArgs.end();
-      if (!tExist && !tarExist) {
+      const bool has_t {std::find(vArgs.begin(),vArgs.end(),"-t")!=vArgs.end()};
+      const bool has_tar
+        {std::find(vArgs.begin(),vArgs.end(),"--tar")!=vArgs.end()};
+      const bool has_r {std::find(vArgs.begin(),vArgs.end(),"-r")!=vArgs.end()};
+      const bool has_ref
+        {std::find(vArgs.begin(),vArgs.end(),"--ref")!=vArgs.end()};
+      if (!has_t && !has_tar) {
         cerr << "Error: target file address not specified. Use "
              << "\"-t fileName\".\n";    throw EXIT_FAILURE;
       }
-      else if (!rExist && !refExist) {
+      else if (!has_r && !has_ref) {
         cerr << "Error: reference file address not specified. Use "
              << "\"-r fileName\".\n";    throw EXIT_FAILURE;
       }
@@ -102,7 +104,7 @@ class Param    // Parameters
     }
     else {
       char c;
-      bool foundChar = false;
+      bool foundChar {false};
       while (f.get(c) && !foundChar) {
         if (c!=' ' && c!='\n' && c!='\t')
           foundChar = true;

@@ -27,7 +27,7 @@ FCM::~FCM () {
       case MODE::TABLE_32:      delete tbl32;     break;
       case MODE::LOG_TABLE_8:   delete logtbl8;   break;
       case MODE::SKETCH_8:      delete sketch4;   break;
-      default:  cerr << "Error. Undefined mode " << m.mode << ".\n";
+      default:  cerr << "Error: undefined mode " << m.mode << ".\n";
     }
   }
 }
@@ -55,7 +55,7 @@ inline void FCM::allocModels () {
       case MODE::TABLE_32:      tbl32   = new Table32(m.k);      break;
       case MODE::LOG_TABLE_8:   logtbl8 = new LogTable8(m.k);    break;
       case MODE::SKETCH_8:      sketch4 = new CMLS4(m.w, m.d);   break;
-      default:  cerr << "Error. Undefined mode " << m.mode << ".\n";
+      default:  cerr << "Error: undefined mode " << m.mode << ".\n";
     }
   }
 }
@@ -68,7 +68,7 @@ inline void FCM::setModesComb () {
       case MODE::TABLE_32:      isT32 = 1<<1;   break;
       case MODE::LOG_TABLE_8:   isLT  = 1<<2;   break;
       case MODE::SKETCH_8:      isSk  = 1<<3;   break;
-      default:  cerr << "Error. Undefined mode " << m.mode << ".\n";
+      default:  cerr << "Error: undefined mode " << m.mode << ".\n";
     }
   }
   MODE_COMB = isSk | isLT | isT32 | isT64;
@@ -81,7 +81,7 @@ inline void FCM::setIRsComb () {
     case 3: IR_COMB= (model[2].ir<<2) | (model[1].ir<<1) | (model[0].ir); break;
     case 4: IR_COMB= (model[3].ir<<3) |
                      (model[2].ir<<2) | (model[1].ir<<1) | (model[0].ir); break;
-    default:  cerr << "Error. Undefined models size " << model.size() << ".\n";
+    default:  cerr << "Error: undefined models size " << model.size() << ".\n";
   }
 }
 
@@ -102,7 +102,7 @@ inline void FCM::bldMdlOneThr (const Param &p) {
     else if (m.mode == MODE::SKETCH_8)
       createDS(p.ref, static_cast<u64>((4<<(m.k<<1))-1)/*Mask 64*/, sketch4);
     else
-      cerr << "Error. The model cannot be built.\n";
+      cerr << "Error: the model cannot be built.\n";
   }
 }
 
@@ -147,45 +147,47 @@ inline void FCM::createDS (const string& ref, mask_t mask, ds_t& ds) {
 
 void FCM::compress (const Param& p) const {
   cerr << "Compressing...\n";
-  vector<u32> mask32;  mask32.resize(model.size());
+  vector<u32> mask32;
   u64 mask64 = 0;
   for (const auto& m : model) {
-    mask32.emplace_back(static_cast<u32>((1<<(m.k<<1)) - 1));  // 1<<2k-1=4^k-1
-    if (m.mode==MODE::SKETCH_8)  mask64=static_cast<u64>((1<<(m.k<<1)) - 1);
+    if (m.mode==MODE::SKETCH_8)
+      mask64=static_cast<u64>((1<<(m.k<<1)) - 1);
+    else
+      mask32.emplace_back(static_cast<u32>((1<<(m.k<<1)) - 1)); // 1<<2k-1=4^k-1
   }
   switch (MODE_COMB) {
-//    case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
-//    case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
-//    case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
-//    case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
+    case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
+    case 2:   compDS1(p.tar, mask32[0], tbl32);                        break;
+    case 4:   compDS1(p.tar, mask32[0], logtbl8);                      break;
+    case 8:   compDS1(p.tar, mask64,    sketch4);                      break;
     case 3:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
     case 5:   compDS2(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
     case 9:   compDS2(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
     case 6:   compDS2(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
     case 10:  compDS2(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
     case 12:  compDS2(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
-//    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
-//                      tbl64, tbl32, logtbl8);                          break;
-//    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-//                      tbl64, tbl32, sketch4);                          break;
-//    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-//                      tbl64, logtbl8, sketch4);                        break;
-//    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
-//                      tbl32, logtbl8, sketch4);                        break;
+    case 7:   compDS3(p.tar, mask32[0], mask32[1], mask32[3],
+                      tbl64, tbl32, logtbl8);                          break;
+    case 11:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+                      tbl64, tbl32, sketch4);                          break;
+    case 13:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+                      tbl64, logtbl8, sketch4);                        break;
+    case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
+                      tbl32, logtbl8, sketch4);                        break;
 //    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);      break;
-    default:  cerr << "Error. The models cannot be built.";            break;
+    default:  cerr << "Error: the models cannot be built.";            break;
   }
   
 //  cerr << "Compression finished ";
 }
 
-template <typename mask_t, typename ds_t>
-inline void FCM::compDS1 (const string& tar, mask_t mask, const ds_t& ds) const{
-  mask_t ctx{0}, ctxIr{mask};       // Ctx, ir (int) sliding through the dataset
+template <typename msk_t, typename ds_t>
+inline void FCM::compDS1 (const string& tar, msk_t mask, const ds_t& ds) const {
+  msk_t ctx{0}, ctxIr{mask};       // Ctx, ir (int) sliding through the dataset
   u64 symsNo{0};                    // No. syms in target file, except \n
   double sEnt{0};                   // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  Prob_s<mask_t> pObj {model[0].alpha, mask, static_cast<u8>(model[0].k<<1)};
+  Prob_s<msk_t> pObj {model[0].alpha, mask, static_cast<u8>(model[0].k<<1)};
   if (IR_COMB==IR::DDDD) {
     while (tf.get(c)) {
       if (c != '\n') {
@@ -212,17 +214,17 @@ inline void FCM::compDS1 (const string& tar, mask_t mask, const ds_t& ds) const{
   cerr << "Compression finished ";
 }
 
-template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
-inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
-                          const ds0_t& ds0, const ds1_t& ds1) const {
-  mask0_t ctx0{0}, ctxIr0{mask0};   // Ctx, ir (int) sliding through the dataset
-  mask1_t ctx1{0}, ctxIr1{mask1};
+template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
+  inline void FCM::compDS2 (const string& tar, msk0_t mask0, msk1_t mask1,
+                            const ds0_t& ds0, const ds1_t& ds1) const {
+  msk0_t ctx0{0}, ctxIr0{mask0};   // Ctx, ir (int) sliding through the dataset
+  msk1_t ctx1{0}, ctxIr1{mask1};
   u64 symsNo{0};                    // No. syms in target file, except \n
   array<double,2> w {0.5, 0.5};
   double sEnt{0};                   // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  Prob_s<mask0_t> ps0 {model[0].alpha, mask0, static_cast<u8>(model[0].k<<1)};
-  Prob_s<mask1_t> ps1 {model[1].alpha, mask1, static_cast<u8>(model[1].k<<1)};
+  Prob_s<msk0_t> ps0 {model[0].alpha, mask0, static_cast<u8>(model[0].k<<1)};
+  Prob_s<msk1_t> ps1 {model[1].alpha, mask1, static_cast<u8>(model[1].k<<1)};
   if (IR_COMB==IR::DDDD) {
     while (tf.get(c)) {
       if (c != '\n') {
@@ -270,20 +272,20 @@ inline void FCM::compDS2 (const string& tar, mask0_t mask0, mask1_t mask1,
   cerr << "Compression finished ";
 }
 
-template <typename mask0_t, typename mask1_t, typename mask2_t,
+template <typename msk0_t, typename msk1_t, typename msk2_t,
   typename ds0_t, typename ds1_t, typename ds2_t>
-inline void FCM::compDS3 (const string& tar, mask0_t mask0, mask1_t mask1,
-    mask2_t mask2, const ds0_t& ds0, const ds1_t& ds1, const ds2_t& ds2) const {
-  mask0_t ctx0{0}, ctxIr0{mask0};   // Ctx, ir (int) sliding through the dataset
-  mask1_t ctx1{0}, ctxIr1{mask1};
-  mask2_t ctx2{0}, ctxIr2{mask2};
+inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
+    msk2_t mask2, const ds0_t& ds0, const ds1_t& ds1, const ds2_t& ds2) const {
+  msk0_t ctx0{0}, ctxIr0{mask0};   // Ctx, ir (int) sliding through the dataset
+  msk1_t ctx1{0}, ctxIr1{mask1};
+  msk2_t ctx2{0}, ctxIr2{mask2};
   u64 symsNo{0};               // No. syms in target file, except \n
   array<double,3> w {1.0/3, 1.0/3, 1.0/3};
   double sEnt{0}; // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  Prob_s<mask0_t> ps0 {model[0].alpha, mask0, static_cast<u8>(model[0].k<<1)};
-  Prob_s<mask1_t> ps1 {model[1].alpha, mask1, static_cast<u8>(model[1].k<<1)};
-  Prob_s<mask2_t> ps2 {model[2].alpha, mask2, static_cast<u8>(model[2].k<<1)};
+  Prob_s<msk0_t> ps0 {model[0].alpha, mask0, static_cast<u8>(model[0].k<<1)};
+  Prob_s<msk1_t> ps1 {model[1].alpha, mask1, static_cast<u8>(model[1].k<<1)};
+  Prob_s<msk2_t> ps2 {model[2].alpha, mask2, static_cast<u8>(model[2].k<<1)};
   if (IR_COMB==IR::DDDD) {
     while (tf.get(c)) {
       if (c != '\n') {
@@ -396,16 +398,14 @@ template <typename ds_t, typename ctx_t>
 inline double FCM::prob (const ds_t& ds, const Prob_s<ctx_t>& p) const {
   const array<decltype(ds->query(0)), 4> c
     {ds->query(p.l), ds->query(p.l|1), ds->query(p.l|2), ds->query(p.l|3)};
-  return (c[p.numSym]+p.alpha) / (std::accumulate(c.begin(),c.end(),0) +
-                                  static_cast<double>(ALPH_SZ*p.alpha));
+  return (c[p.numSym]+p.alpha)/ (std::accumulate(c.begin(),c.end(),0)+p.sAlpha);
 }
 
 template <typename ds_t, typename ctx_t>
 inline double FCM::probR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
   const array<decltype(ds->query(0)), 4> c
     {ds->query(p.l), ds->query(p.l|1), ds->query(p.l|2), ds->query(p.l|3)};
-  return (std::accumulate(c.begin(),c.end(),0) +
-          static_cast<double>(ALPH_SZ*p.alpha)) / (c[p.numSym]+p.alpha);
+  return (std::accumulate(c.begin(),c.end(),0)+p.sAlpha) /(c[p.numSym]+p.alpha);
 }
 
 template <typename ds_t, typename ctx_t>
@@ -415,8 +415,7 @@ inline double FCM::probIr (const ds_t& ds, const Prob_s<ctx_t>& p) const {
      ds->query(p.l|1)+ds->query((2<<p.shl)|p.r),
      ds->query(p.l|2)+ds->query((1<<p.shl)|p.r),
      ds->query(p.l|3)+ds->query(p.r)};
-  return (c[p.numSym]+p.alpha) / (std::accumulate(c.begin(),c.end(),0) +
-                                  static_cast<double>(ALPH_SZ*p.alpha));
+  return (c[p.numSym]+p.alpha)/ (std::accumulate(c.begin(),c.end(),0)+p.sAlpha);
 }
 
 template <typename ds_t, typename ctx_t>
@@ -426,8 +425,7 @@ inline double FCM::probIrR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
      ds->query(p.l|1)+ds->query((2<<p.shl)|p.r),
      ds->query(p.l|2)+ds->query((1<<p.shl)|p.r),
      ds->query(p.l|3)+ds->query(p.r)};
-  return (std::accumulate(c.begin(),c.end(),0) +
-          static_cast<double>(ALPH_SZ*p.alpha)) / (c[p.numSym]+p.alpha);
+  return (std::accumulate(c.begin(),c.end(),0)+p.sAlpha) /(c[p.numSym]+p.alpha);
 }
 
 template <u8 N>
