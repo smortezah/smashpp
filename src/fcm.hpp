@@ -80,14 +80,12 @@ class FCM    // Finite-context model
   template <typename ds_t, typename ctx_t>
   double probR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. reciprocal
   template <typename ds_t, typename ctx_t>
-  double probIr  (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR
+  double probIr (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR
   template <typename ds_t, typename ctx_t>
   double probIrR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR recip
   
   template <u8 N>
-  void setWeight (std::array<double,N>&, const std::array<double,N>&) const;
-  void setWeight (double&, double&, double, double) const;
-  void setWeight (double&, double&, double&, double, double, double) const;
+  double entropy (std::array<double,N>& w, std::array<double,N>&& Pm) const;
   
   template <typename ctx_t>
   void updateCtx (ctx_t&, const Prob_s<ctx_t>&) const;
