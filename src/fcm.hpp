@@ -23,28 +23,30 @@ struct ModelPar {
 template <typename ctx_t>
 struct Prob_s {
   Prob_s () = default;
-  Prob_s (float a, ctx_t m, u8 sh) : alpha(a), mask(m), shl(sh) {}
+  Prob_s (float a, ctx_t m, u8 sh)
+    : alpha(a), sAlpha(static_cast<double>(ALPH_SZ*alpha)), mask(m), shl(sh) {}
   void config (char c, ctx_t ctx) { numSym=NUM[static_cast<u8>(c)];  l=ctx<<2; }
   void config (char c, ctx_t ctx, ctx_t ctxIr) {
     numSym=NUM[static_cast<u8>(c)];          l=ctx<<2;
     revNumSym=REVNUM[static_cast<u8>(c)];    r=ctxIr>>2;
   }
-  float alpha;
-  ctx_t mask;
-  u8    shl;
-  ctx_t l;
-  u8    numSym;
-  ctx_t r;
-  u8    revNumSym;
+  float  alpha;
+  double sAlpha;
+  ctx_t  mask;
+  u8     shl;
+  ctx_t  l;
+  u8     numSym;
+  ctx_t  r;
+  u8     revNumSym;
 };
 
-#include <future>
+#include <future>//todo
 class FCM    // Finite-context model
 {
  public:
   explicit FCM    (const Param&);
   ~FCM            ();
-  void buildModel (const Param&);          // Build FCM (finite-context model)
+  void buildModel (const Param&);   // Build FCM (finite-context model)
   void compress   (const Param&) const;
 
  private:
@@ -63,17 +65,17 @@ class FCM    // Finite-context model
   void bldMdlOneThr (const Param&); // Build models one thread
   void bldMdlMulThr (const Param&); // Build models multiple threads
   // Create data structure
-  template <typename mask_t, typename ds_t>
-  void createDS (const string&, mask_t, ds_t&);
+  template <typename msk_t, typename ds_t>
+  void createDS (const string&, msk_t, ds_t&);
   // Compress data structure
-  template <typename mask_t, typename ds_t>
-  void compDS1 (const string&, mask_t, const ds_t&) const;
-  template <typename mask0_t, typename mask1_t, typename ds0_t, typename ds1_t>
-  void compDS2 (const string&, mask0_t,mask1_t,const ds0_t&,const ds1_t&) const;
-  template <typename mask0_t, typename mask1_t, typename mask2_t,
+  template <typename msk_t, typename ds_t>
+  void compDS1 (const string&, msk_t, const ds_t&) const;
+  template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
+  void compDS2 (const string&, msk0_t,msk1_t, const ds0_t&,const ds1_t&) const;
+  template <typename msk0_t, typename msk1_t, typename msk2_t,
     typename ds0_t, typename ds1_t, typename ds2_t>
-  void compDS3 (const string&, mask0_t, mask1_t, mask2_t,
-                const ds0_t&, const ds1_t&, const ds2_t&) const;
+  void compDS3 (const string&, msk0_t,msk1_t,msk2_t,
+                const ds0_t&,const ds1_t&,const ds2_t&) const;
   // Probability
   template <typename ds_t, typename ctx_t>
   double prob  (const ds_t&, const Prob_s<ctx_t>&) const; // Probability

@@ -32,19 +32,19 @@ constexpr u64 power (u64 a, u64 n) {
 }
 
 // Constant
-constexpr u8  DEF_THR      = 4;    // Default # threads
-constexpr u8  DEF_LVL      = 0;    // Default level
-constexpr u8  ALPH_SZ      = 4;    // Alphabet size
-constexpr u8  IRMAGIC      = 3;    // Calc ir syms based on syms
-constexpr u8  K_MAX_TBL64  = 11;   // Max ctx depth for table 64 (128 MB mem)
-constexpr u8  K_MAX_TBL32  = 13;   // Max ...           table 32 (1   GB mem)
-constexpr u8  K_MAX_LGTBL8 = 14;   // Max ...       log table 8  (1   GB mem)
-constexpr u32 BLK_SZ       = 8192; // 8K
-constexpr u64 DEF_W        = power(2,20); // Default width of CML sketch (2^...)
-constexpr u8  DEF_D        = 5;    // Default depth of CML sketch
-constexpr u32 G            = 64;   // Machine word size -- for universal hash fn
-constexpr u8  LOG_BASE     = 2;    // Logarithmic counting
-constexpr float DEF_GAMMA  = 0.1; // Default gamma for multiple models
+constexpr u8  DEF_THR      {4};    // Default # threads
+constexpr u8  DEF_LVL      {0};    // Default level
+constexpr u8  ALPH_SZ      {4};    // Alphabet size
+constexpr u8  IRMAGIC      {3};    // Calc ir syms based on syms
+constexpr u8  K_MAX_TBL64  {11};   // Max ctx depth for table 64 (128 MB mem)
+constexpr u8  K_MAX_TBL32  {13};   // Max ...           table 32 (1   GB mem)
+constexpr u8  K_MAX_LGTBL8 {14};   // Max ...       log table 8  (1   GB mem)
+constexpr u32 BLK_SZ       {8192}; // 8K
+constexpr u64 DEF_W        {power(2,20)}; // Default width of CML sketch (2^...)
+constexpr u8  DEF_D        {5};    // Default depth of CML sketch
+constexpr u32 G            {64};   // Machine word size -- for universal hash fn
+constexpr u8  LOG_BASE     {2};    // Logarithmic counting
+constexpr float DEF_GAMMA  {0.1}; // Default gamma for multiple models
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
@@ -135,7 +135,7 @@ constexpr u8 LEVEL[3][16] {    // Multiple models MUST be in sorted 'k' manner
 // #mdl, ir,  k, 100*alpha, log2 w,  d
   {1,     0, 20,    100,      10,    DEF_D},    // Level 0
   {2,     0, 4,   100,       0,         0,     // Level 1
-          0, 20,   100,      10,    DEF_D},
+          0, 12,   100,      10,    DEF_D},
   {3,     0,  10,    100,       0,         0,     // Level 2
           0, 13,    99,       0,         0,
           0, 20,    99,      15,    DEF_D}
