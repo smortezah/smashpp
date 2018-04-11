@@ -17,6 +17,9 @@ using std::stoi;
 using std::stof;
 using std::ifstream;
 
+#include <stdexcept>
+#include <sstream>
+
 class Param    // Parameters
 {
  public:
@@ -52,8 +55,8 @@ class Param    // Parameters
             tar = *++i;
             checkFile(tar);
           } else {
-            cerr << "Error: target file address not specified. Use "
-                 << "\"-t fileName\".\n";    throw EXIT_FAILURE;
+            throw std::runtime_error
+              ("Error: target file not specified. Use \"-t fileName\".\n");
           }
         }
         else if (*i=="-r" || *i=="--ref") {
@@ -61,8 +64,8 @@ class Param    // Parameters
             ref = *++i;
             checkFile(ref);
           } else {
-            cerr << "Error: reference file address not specified. Use "
-                 << "\"-r fileName\".\n";    throw EXIT_FAILURE;
+            throw std::runtime_error
+              ("Error: reference file not specified. Use \"-r fileName\".\n");
           }
         }
         else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
@@ -84,13 +87,17 @@ class Param    // Parameters
       const bool has_ref
         {std::find(vArgs.begin(),vArgs.end(),"--ref")!=vArgs.end()};
       if (!has_t && !has_tar) {
-        cerr << "Error: target file address not specified. Use "
-             << "\"-t fileName\".\n";    throw EXIT_FAILURE;
+//        string s {"Error: target file"};
+//        s += has_tar;
+//        s += " not specified. Use \"-t fileName\".\n";
+//        const string msg {s};
+//        throw std::runtime_error(ss);
+//        throw std::runtime_error
+//          ("Error: target file not specified. Use \"-t fileName\".\n");
       }
-      else if (!has_r && !has_ref) {
-        cerr << "Error: reference file address not specified. Use "
-             << "\"-r fileName\".\n";    throw EXIT_FAILURE;
-      }
+      else if (!has_r && !has_ref)
+        throw std::runtime_error
+          ("Error: reference file not specified. Use \"-r fileName\".\n");
     }
   }
 
@@ -99,6 +106,9 @@ class Param    // Parameters
     ifstream f(s);
     if (!f) {
       f.close();
+//        throw std::runtime_error
+//          ("Error: reference file not specified. Use \"-r fileName\".\n");
+      
       cerr << "Error: the file \"" << s
            << "\" cannot be opened or is empty.\n";    throw EXIT_FAILURE;
     }
