@@ -87,9 +87,10 @@ inline void FCM::setIRsComb () {
 }
 
 void FCM::buildModel (const Param& p) {
-  cerr << "Building the model" << (model.size()==1 ? "" : "s") << "...\n";
+  cerr << "Building the model" << (model.size()==1 ? "" : "s")
+       << " (level " << static_cast<u16>(p.level) << ")...\n";
   (p.nthr==1 || model.size()==1) ? bldMdlOneThr(p) : bldMdlMulThr(p)/*Mul thr*/;
-  cerr << "The model" << (model.size()==1 ? "" : "s") << " built ";
+  cerr << "Finished";
 }
 
 inline void FCM::bldMdlOneThr (const Param &p) {
