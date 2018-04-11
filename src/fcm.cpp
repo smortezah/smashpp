@@ -12,6 +12,7 @@
 using std::ifstream;
 using std::cout;
 using std::array;
+using std::initializer_list;
 
 FCM::FCM (const Param& p) {
   setModels(p);
@@ -230,7 +231,7 @@ inline void FCM::compDS2 (const string& tar, msk0_t mask0, msk1_t mask1,
       if (c != '\n') {
         ++symsNo;
         ps0.config(c, ctx0);     ps1.config(c, ctx1);
-        sEnt += entropy<2>(w, array<double,2>{prob(ds0,ps0), prob(ds1,ps1)});
+        sEnt += entropy<2>(w, {prob(ds0,ps0), prob(ds1,ps1)});
 //        print(w[0],w[1],log2(1/(Pm[0]*w[0] + Pm[1]*w[1])));//todo
         updateCtx(ctx0, ps0);    updateCtx(ctx1, ps1);  // Update ctx
       }
@@ -241,7 +242,7 @@ inline void FCM::compDS2 (const string& tar, msk0_t mask0, msk1_t mask1,
       if (c != '\n') {
         ++symsNo;
         ps0.config(c, ctx0, ctxIr0);    ps1.config(c, ctx1);
-        sEnt += entropy<2>(w, array<double,2>{probIr(ds0,ps0), prob(ds1,ps1)});
+        sEnt += entropy<2>(w, {probIr(ds0,ps0), prob(ds1,ps1)});
         updateCtx(ctx0, ctxIr0, ps0);   updateCtx(ctx1, ps1);
       }
     }
@@ -251,7 +252,7 @@ inline void FCM::compDS2 (const string& tar, msk0_t mask0, msk1_t mask1,
       if (c != '\n') {
         ++symsNo;
         ps0.config(c, ctx0);    ps1.config(c, ctx1, ctxIr1);
-        sEnt += entropy<2>(w, array<double,2>{prob(ds0,ps0), probIr(ds1,ps1)});
+        sEnt += entropy<2>(w, {prob(ds0,ps0), probIr(ds1,ps1)});
         updateCtx(ctx0, ps0);   updateCtx(ctx1, ctxIr1, ps1);
       }
     }
@@ -261,7 +262,7 @@ inline void FCM::compDS2 (const string& tar, msk0_t mask0, msk1_t mask1,
       if (c != '\n') {
         ++symsNo;
         ps0.config(c, ctx0, ctxIr0);    ps1.config(c, ctx1, ctxIr1);
-        sEnt += entropy<2>(w, array<double,2>{probIr(ds0,ps0),probIr(ds1,ps1)});
+        sEnt += entropy<2>(w, {probIr(ds0,ps0), probIr(ds1,ps1)});
         updateCtx(ctx0, ctxIr0, ps0);   updateCtx(ctx1, ctxIr1, ps1);
       }
     }
@@ -291,8 +292,7 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
       if (c != '\n') {
         ++symsNo;
         ps0.config(c,ctx0);     ps1.config(c,ctx1);     ps2.config(c,ctx2);
-        sEnt += entropy<3>(w, array<double,3>{prob(ds0,ps0), prob(ds1,ps1),
-                                              prob(ds2,ps2)});
+        sEnt += entropy<3>(w, {prob(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2)});
         updateCtx(ctx0,ps0);    updateCtx(ctx1,ps1);    updateCtx(ctx2,ps2);
       }
     }
@@ -302,8 +302,7 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
       if (c != '\n') {
         ++symsNo;
         ps0.config(c,ctx0,ctxIr0);   ps1.config(c,ctx1);   ps2.config(c,ctx2);
-        sEnt += entropy<3>(w, array<double,3>{probIr(ds0,ps0), prob(ds1,ps1),
-                                              prob(ds2,ps2)});
+        sEnt += entropy<3>(w, {probIr(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2)});
         updateCtx(ctx0,ctxIr0,ps0);  updateCtx(ctx1,ps1);  updateCtx(ctx2,ps2);
       }
     }
@@ -313,8 +312,7 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
       if (c != '\n') {
         ++symsNo;
         ps0.config(c,ctx0);   ps1.config(c,ctx1,ctxIr1);   ps2.config(c,ctx2);
-        sEnt += entropy<3>(w, array<double,3>{prob(ds0,ps0), probIr(ds1,ps1),
-                                              prob(ds2,ps2)});
+        sEnt += entropy<3>(w, {prob(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2)});
         updateCtx(ctx0,ps0);  updateCtx(ctx1,ctxIr1,ps1);  updateCtx(ctx2,ps2);
       }
     }
@@ -325,8 +323,7 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
         ++symsNo;
         ps0.config(c,ctx0,ctxIr0);   ps1.config(c,ctx1,ctxIr1);
         ps2.config(c,ctx2);
-        sEnt += entropy<3>(w, array<double,3>{probIr(ds0,ps0), probIr(ds1,ps1),
-                                              prob(ds2,ps2)});
+        sEnt += entropy<3>(w,{probIr(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2)});
         updateCtx(ctx0,ctxIr0,ps0);  updateCtx(ctx1,ctxIr1,ps1);
         updateCtx(ctx2,ps2);
       }
@@ -337,8 +334,7 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
       if (c != '\n') {
         ++symsNo;
         ps0.config(c,ctx0);   ps1.config(c,ctx1);   ps2.config(c,ctx2,ctxIr2);
-        sEnt += entropy<3>(w, array<double,3>{prob(ds0,ps0), prob(ds1,ps1),
-                                              probIr(ds2,ps2)});
+        sEnt += entropy<3>(w, {prob(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2)});
         updateCtx(ctx0,ps0);  updateCtx(ctx1,ps1);  updateCtx(ctx2,ctxIr2,ps2);
       }
     }
@@ -349,8 +345,7 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
         ++symsNo;
         ps0.config(c,ctx0,ctxIr0);   ps1.config(c,ctx1);
         ps2.config(c,ctx2,ctxIr2);
-        sEnt += entropy<3>(w, array<double,3>{probIr(ds0,ps0), prob(ds1,ps1),
-                                              probIr(ds2,ps2)});
+        sEnt += entropy<3>(w,{probIr(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2)});
         updateCtx(ctx0,ctxIr0,ps0);  updateCtx(ctx1,ps1);
         updateCtx(ctx2,ctxIr2,ps2);
       }
@@ -362,8 +357,7 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
         ++symsNo;
         ps0.config(c,ctx0);   ps1.config(c,ctx1,ctxIr1);
         ps2.config(c,ctx2,ctxIr2);
-        sEnt += entropy<3>(w, array<double,3>{prob(ds0,ps0), probIr(ds1,ps1),
-                                              probIr(ds2,ps2)});
+        sEnt += entropy<3>(w,{prob(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2)});
         updateCtx(ctx0,ps0);  updateCtx(ctx1,ctxIr1,ps1);
         updateCtx(ctx2,ctxIr2,ps2);
       }
@@ -375,8 +369,8 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
         ++symsNo;
         ps0.config(c,ctx0,ctxIr0);   ps1.config(c,ctx1,ctxIr1);
         ps2.config(c,ctx2,ctxIr2);
-        sEnt += entropy<3>(w, array<double,3>{probIr(ds0,ps0), probIr(ds1,ps1),
-                                              probIr(ds2,ps2)});
+        sEnt += entropy<3>(w, {probIr(ds0,ps0), probIr(ds1,ps1),
+                               probIr(ds2,ps2)});
         updateCtx(ctx0,ctxIr0,ps0);  updateCtx(ctx1,ctxIr1,ps1);
         updateCtx(ctx2,ctxIr2,ps2);
       }
@@ -423,7 +417,8 @@ inline double FCM::probIrR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
 }
 
 template <u8 N>
-inline double FCM::entropy (array<double,N>& w,const array<double,N>& Pm) const{
+inline double FCM::entropy (array<double,N>& w,
+                            const initializer_list<double>& Pm) const {
   // Set weights
   array<double,N> rawW {};
   for (auto rIt=rawW.begin(), wIt=w.begin(), pIt=Pm.begin(); rIt!=rawW.end();

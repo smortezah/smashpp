@@ -87,7 +87,8 @@ class FCM    // Finite-context model
   double probIrR (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. IR recip
   
   template <u8 N>
-  double entropy (std::array<double,N>& w, const std::array<double,N>& Pm)const;
+  double entropy (std::array<double,N>& w,
+                  const std::initializer_list<double>& Pm) const;
   
   template <typename ctx_t>
   void updateCtx (ctx_t&, const Prob_s<ctx_t>&)         const;
