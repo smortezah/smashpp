@@ -25,6 +25,7 @@ int main (int argc, char* argv[])
 {
 //  std::system("ls -lh");
   cerr << exec("./smashpp -t A -r A -l 0");
+  cerr << exec("./smashpp -t A -r A -l 1");
   
   return 0;
 }
