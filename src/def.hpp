@@ -48,7 +48,7 @@ constexpr float DEF_GAMMA  {0.1};  // Default gamma for multiple models
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
-// Enums
+// Enum
 enum MODE {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
 // Inv. repeats, 1 & 2 & 3 & 4 models. D: direct(bit 0), I: inv.(bit 1)
 enum IR {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
@@ -141,6 +141,21 @@ constexpr u8 LEVEL[3][16] {    // Multiple models MUST be in sorted 'k' manner
           0, 20,    99,      15,    DEF_D}
 };
 
+// Global function
+inline std::chrono::time_point<std::chrono::high_resolution_clock> now () {
+  return std::chrono::high_resolution_clock::now();
+}
+
+template <typename T>
+void hms (T elapsed) {
+//  std::chrono::duration<double, std::milli> ms = elapsed;
+  const auto s =
+    std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+  const auto m = s / 60;
+  const auto h = m / 60;
+  
+  std::cerr << " in " << h << ":" << m << ":" << s << " hour:min:sec.\n";
+}
 
 //template<u32 N>    // Up to 262144=2^18 elements
 //struct LogInt      // 0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,...

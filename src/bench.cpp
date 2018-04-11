@@ -4,10 +4,20 @@
 #include <iostream>
 #include <memory>
 #include <array>
+#include <vector>
+
 using std::string;
+using std::to_string;
+using std::vector;
 using std::array;
 using std::cerr;
+typedef unsigned char  u8;
 typedef unsigned int  u32;
+
+void run (const string& cmd) {
+  if (std::system(cmd.c_str()) != 0)
+    throw std::runtime_error("Error: failed to execute.");
+}
 
 string exec (const char* cmd) {
   const u32 bufSize = 128;
@@ -23,13 +33,25 @@ string exec (const char* cmd) {
   return result;
 }
 
+
 int main (int argc, char* argv[])
 {
-//  std::system("ls -lh");
-  cerr << exec("./smashpp -t A -r A -l 0");
-  cerr << exec("./smashpp -t A -r A -l 1");
-  std::system("./smashpp -t A -r A -l 2");
-  popen("./smashpp -t A -r A -l 0", "r");
+  try {
+    vector<string> vTar {"A"};
+    vector<string> vRef {"m"};
+    vector<string> vLevel {"0"
+//                           , "1"
+    };
+
+    for (u8 tIdx=0; tIdx!=vTar.size(); ++tIdx) {
+      for (u8 lIdx=0; lIdx!=vLevel.size(); ++lIdx)
+        run("./smashpp"
+            " -t " + vTar[tIdx] +
+            " -r " + vRef[tIdx] +
+            " -l " + vLevel[lIdx]);
+    }
+  }
+  catch (std::exception& e) { cerr << e.what(); }
   
   return 0;
 }
