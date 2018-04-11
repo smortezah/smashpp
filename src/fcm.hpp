@@ -64,9 +64,9 @@ class FCM    // Finite-context model
   void setIRsComb   ();             // Set combination of inv. repeats of models
   void bldMdlOneThr (const Param&); // Build models one thread
   void bldMdlMulThr (const Param&); // Build models multiple threads
-  // Create data structure
   template <typename msk_t, typename ds_t>
-  void createDS (const string&, msk_t, ds_t&);
+  void createDS     (const string&, msk_t, ds_t&);    // Create data structure
+  
   // Compress data structure
   template <typename msk_t, typename ds_t>
   void compDS1 (const string&, msk_t, const ds_t&) const;
@@ -74,28 +74,28 @@ class FCM    // Finite-context model
   void compDS2 (const string&, msk0_t,msk1_t, const ds0_t&,const ds1_t&) const;
   template <typename msk0_t, typename msk1_t, typename msk2_t,
     typename ds0_t, typename ds1_t, typename ds2_t>
-  void compDS3 (const string&, msk0_t,msk1_t,msk2_t,
-                const ds0_t&,const ds1_t&,const ds2_t&) const;
-  // Probability
+  void compDS3 (const string&, msk0_t, msk1_t, msk2_t,
+                const ds0_t&, const ds1_t&, const ds2_t&) const;
+  
   template <typename ds_t, typename ctx_t>
-  double prob  (const ds_t&, const Prob_s<ctx_t>&) const; // Probability
+  double prob    (const ds_t&, const Prob_s<ctx_t>&) const;  // Probability
   template <typename ds_t, typename ctx_t>
-  double probR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. reciprocal
+  double probR   (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. reciprocal
   template <typename ds_t, typename ctx_t>
-  double probIr (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR
+  double probIr  (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. IR
   template <typename ds_t, typename ctx_t>
-  double probIrR (const ds_t&, const Prob_s<ctx_t>&) const; // Prob. IR recip
+  double probIrR (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. IR recip
   
   template <u8 N>
   double entropy (std::array<double,N>& w, const std::array<double,N>& Pm)const;
   
   template <typename ctx_t>
-  void updateCtx (ctx_t&, const Prob_s<ctx_t>&) const;
+  void updateCtx (ctx_t&, const Prob_s<ctx_t>&)         const;
   template <typename ctx_t>
   void updateCtx (ctx_t&, ctx_t&, const Prob_s<ctx_t>&) const;
   
   // Print variadic inputs
-  template <typename T>         void print (T)          const;
+  template <typename T> void print (T) const;
   template <typename T, typename... Args> void print (T, Args...) const;
 };
 

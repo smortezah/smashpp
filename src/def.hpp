@@ -44,7 +44,7 @@ constexpr u64 DEF_W        {power(2,20)}; // Default width of CML sketch (2^...)
 constexpr u8  DEF_D        {5};    // Default depth of CML sketch
 constexpr u32 G            {64};   // Machine word size -- for universal hash fn
 constexpr u8  LOG_BASE     {2};    // Logarithmic counting
-constexpr float DEF_GAMMA  {0.1}; // Default gamma for multiple models
+constexpr float DEF_GAMMA  {0.1};  // Default gamma for multiple models
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 

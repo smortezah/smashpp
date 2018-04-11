@@ -29,7 +29,7 @@ void CMLS4::config (u64 w_, u8 d_) {
 
 void CMLS4::update (u64 ctx) {
   auto c {minLogCtr(ctx)};
-  if ((tot++ % POW2[c]) == 0) {          // Increase decision //todo. base 2
+  if ((tot++ % POW2[c]) == 0) {      // Increase decision //todo. base 2
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
       if (readCell(cellIdx) == c)    // Conservative update
@@ -64,7 +64,7 @@ inline void CMLS4::setAB () {
   for (u8 i=0; i!=d; ++i) {
     ab[i<<1]     = (uDistA(e)<<1) + 1; // 1 <= a=2k+1 <= 2^64-1, rand odd posit.
     ab[(i<<1)+1] = uDistB(e);          // 0 <= b <= 2^(G-M)-1,   rand posit.
-  }                                 // Parenthesis in ab[(i<<1)+1] are mandatory
+  }                                 // Parenthesis in ab[(i<<1)+1] are MANDATORY
 }
 
 u16 CMLS4::query (u64 ctx) const {
@@ -80,7 +80,7 @@ u64 CMLS4::getTotal () const {
 u64 CMLS4::countMty () const {
   u64 n {0};
   for (auto i = w*d; i--;)
-    if (readCell(i)==0)
+    if (readCell(i) == 0)
       ++n;
 	return n;
 }
