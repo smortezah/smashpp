@@ -86,15 +86,9 @@ class Param    // Parameters
       const bool has_r {std::find(vArgs.begin(),vArgs.end(),"-r")!=vArgs.end()};
       const bool has_ref
         {std::find(vArgs.begin(),vArgs.end(),"--ref")!=vArgs.end()};
-      if (!has_t && !has_tar) {
-//        string s {"Error: target file"};
-//        s += has_tar;
-//        s += " not specified. Use \"-t fileName\".\n";
-//        const string msg {s};
-//        throw std::runtime_error(ss);
-//        throw std::runtime_error
-//          ("Error: target file not specified. Use \"-t fileName\".\n");
-      }
+      if (!has_t && !has_tar)
+        throw std::runtime_error
+          ("Error: target file not specified. Use \"-t fileName\".\n");
       else if (!has_r && !has_ref)
         throw std::runtime_error
           ("Error: reference file not specified. Use \"-r fileName\".\n");
@@ -106,23 +100,17 @@ class Param    // Parameters
     ifstream f(s);
     if (!f) {
       f.close();
-//        throw std::runtime_error
-//          ("Error: reference file not specified. Use \"-r fileName\".\n");
-      
-      cerr << "Error: the file \"" << s
-           << "\" cannot be opened or is empty.\n";    throw EXIT_FAILURE;
+      throw std::runtime_error
+        ("Error: the file \"" + s + "\" cannot be opened or is empty.\n");
     }
     else {
       char c;
       bool foundChar {false};
-      while (f.get(c) && !foundChar) {
+      while (f.get(c) && !foundChar)
         if (c!=' ' && c!='\n' && c!='\t')
           foundChar = true;
-      }
-      if (!foundChar) {
-        cerr << "Error: the file \"" << s << "\" is empty.\n";
-        throw EXIT_FAILURE;
-      }
+      if (!foundChar)
+        throw std::runtime_error("Error: the file \"" + s + "\" is empty.\n");
       f.close();
     }
   }
