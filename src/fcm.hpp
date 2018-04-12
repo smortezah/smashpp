@@ -44,10 +44,12 @@ struct Prob_s {
 class FCM    // Finite-context model
 {
  public:
+  double          aveEnt = 0;
+  
   explicit FCM    (const Param&);
   ~FCM            ();
   void buildModel (const Param&);   // Build FCM (finite-context model)
-  void compress   (const Param&) const;
+  void compress   (const Param&);
 
  private:
   vector<ModelPar> model;
@@ -69,13 +71,13 @@ class FCM    // Finite-context model
   
   // Compress data structure
   template <typename msk_t, typename ds_t>
-  void compDS1 (const string&, msk_t, const ds_t&) const;
+  void compDS1 (const string&, msk_t, const ds_t&);
   template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
-  void compDS2 (const string&, msk0_t,msk1_t, const ds0_t&,const ds1_t&) const;
+  void compDS2 (const string&, msk0_t,msk1_t, const ds0_t&,const ds1_t&);
   template <typename msk0_t, typename msk1_t, typename msk2_t,
     typename ds0_t, typename ds1_t, typename ds2_t>
   void compDS3 (const string&, msk0_t, msk1_t, msk2_t,
-                const ds0_t&, const ds1_t&, const ds2_t&) const;
+                const ds0_t&, const ds1_t&, const ds2_t&);
   
   template <typename ds_t, typename ctx_t>
   double prob    (const ds_t&, const Prob_s<ctx_t>&) const;  // Probability

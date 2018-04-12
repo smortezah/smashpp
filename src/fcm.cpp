@@ -87,7 +87,10 @@ inline void FCM::setIRsComb () {
 }
 
 void FCM::buildModel (const Param& p) {
-  cerr << "Building the model" << (model.size()==1 ? "" : "s")
+  cerr << "Building ";
+  if (p.verbose)  cerr << model.size();
+  else            cerr << "the";
+  cerr << " model" << (model.size()==1 ? "" : "s")
        << " (level " << static_cast<u16>(p.level) << ")...\n";
   (p.nthr==1 || model.size()==1) ? bldMdlOneThr(p) : bldMdlMulThr(p)/*Mul thr*/;
   cerr << "Finished";
@@ -147,10 +150,10 @@ inline void FCM::createDS (const string& ref, mask_t mask, ds_t& ds) {
   rf.close();
 }
 
-void FCM::compress (const Param& p) const {
+void FCM::compress (const Param& p) {
   cerr << "Compressing...\n";
   vector<u32> mask32 {};
-  u64 mask64 {0};
+  u64         mask64 {};
   for (const auto& m : model) {
     if (m.mode==MODE::SKETCH_8)
       mask64=static_cast<u64>((1<<(m.k<<1)) - 1);
@@ -179,12 +182,11 @@ void FCM::compress (const Param& p) const {
 //    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);      break;
     default:  cerr << "Error: the models cannot be built.";            break;
   }
-  
-//  cerr << "Compression finished ";
+  cerr << "Finished";
 }
 
 template <typename msk_t, typename ds_t>
-inline void FCM::compDS1 (const string& tar, msk_t mask, const ds_t& ds) const {
+inline void FCM::compDS1 (const string& tar, msk_t mask, const ds_t& ds) {
   msk_t ctx{0}, ctxIr{mask};    // Ctx, ir (int) sliding through the dataset
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
@@ -211,14 +213,12 @@ inline void FCM::compDS1 (const string& tar, msk_t mask, const ds_t& ds) const {
     }
   }
   tf.close();
-  double aveEnt = sEnt/symsNo;
-  cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
-  cerr << "Compression finished ";
+  aveEnt = sEnt/symsNo;
 }
 
 template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
 inline void FCM::compDS2 (const string& tar, msk0_t mask0, msk1_t mask1,
-                          const ds0_t& ds0, const ds1_t& ds1) const {
+                          const ds0_t& ds0, const ds1_t& ds1) {
   msk0_t ctx0{0}, ctxIr0{mask0};    // Ctx, ir (int) sliding through the dataset
   msk1_t ctx1{0}, ctxIr1{mask1};
   u64 symsNo {0};                   // No. syms in target file, except \n
@@ -269,15 +269,13 @@ inline void FCM::compDS2 (const string& tar, msk0_t mask0, msk1_t mask1,
     }
   }
   tf.close();
-  double aveEnt = sEnt/symsNo;
-  cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
-  cerr << "Compression finished ";
+  aveEnt = sEnt/symsNo;
 }
 
 template <typename msk0_t, typename msk1_t, typename msk2_t,
   typename ds0_t, typename ds1_t, typename ds2_t>
 inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
-     msk2_t mask2, const ds0_t& ds0, const ds1_t& ds1, const ds2_t& ds2) const {
+     msk2_t mask2, const ds0_t& ds0, const ds1_t& ds1, const ds2_t& ds2) {
   msk0_t ctx0{0}, ctxIr0{mask0};    // Ctx, ir (int) sliding through the dataset
   msk1_t ctx1{0}, ctxIr1{mask1};
   msk2_t ctx2{0}, ctxIr2{mask2};
@@ -378,9 +376,7 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
     }
   }
   tf.close();
-  double aveEnt = sEnt/symsNo;
-  cerr << "Average Entropy (H) = " << aveEnt << " bps" << '\n';
-  cerr << "Compression finished ";
+  aveEnt = sEnt/symsNo;
 }
 
 template <typename ds_t, typename ctx_t>
