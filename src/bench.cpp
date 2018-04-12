@@ -33,12 +33,15 @@ string exec (const char* cmd) {
   return result;
 }
 
+void memUsage (u8 k) {//todo
+
+}
 
 int main (int argc, char* argv[])
 {
   try {
-    constexpr bool           bV {true};//false
-    string      verbose = [](string s=""){ return bV ? (s="-v") : s;};
+    constexpr bool boolVerbose {false};
+    static string verbose="";    if (boolVerbose) verbose=" -v";
     static const vector<string> vTar    {"A"};
     static const vector<string> vRef    {"A"};
     static const vector<string> vLevel  {"0"
