@@ -47,6 +47,40 @@ inline void FCM::setModels (const Param& p) {
     else if (m->k > K_MAX_TBL64)    m->mode = MODE::TABLE_32;
     else                            m->mode = MODE::TABLE_64;
   }
+  
+  //todo
+//  auto beg = m.begin();
+//  vector<string> msPar;
+//  for (auto i=beg; i!=m.end(); ++i) {
+//    if (*i == ':') {
+//      msPar.emplace_back(string(beg,i));
+//      beg = i+1;
+//    }
+//  }
+//  msPar.emplace_back(string(beg, m.end()));
+//  nMdl = static_cast<u8>(msPar.size());
+//
+//  array<string,3> mPar;
+//  ir.clear();  k.clear();  alpha.clear();
+//  for (const auto& e : msPar) {
+//    beg  = e.begin();
+//    u8 j = 0;
+//    for (auto i=beg; i!=e.end(); ++i) {
+//      if (*i == ',') {
+//        mPar[j++] = string(beg, i);
+//        beg = i+1;
+//      }
+//    }
+//    mPar[j] = string(beg, e.end());
+//
+//    ir.emplace_back(static_cast<bool>(stoi(mPar[0])));
+//    k.emplace_back(static_cast<u8>(stoi(mPar[1])));
+//    alpha.emplace_back(stof(mPar[2]));
+//  }
+//
+//  // 6*(5^k_1 + 5^k_2 + ...) > 6*5^12 => mode: hash table='h'
+//  u64 sum=0;  for (u8 i=0; i!=nMdl; ++i) sum+=POW5[k[i]];
+//  mode = (sum > POW5[TAB_MAX_K]) ? 'h' : 't';
 }
 
 inline void FCM::allocModels () {
