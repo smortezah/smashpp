@@ -10,8 +10,8 @@
 #include <chrono>
 
 // Version
-const std::string VERSION   = "18.04";
-const std::string DEV_YEARS = "2018";
+static const std::string VERSION   {"18.04"};
+static const std::string DEV_YEARS {"2018"};
 
 // Typedef
 typedef signed char         i8;
@@ -32,19 +32,19 @@ constexpr u64 power (u64 a, u64 n) {
 }
 
 // Constant
-constexpr u8  DEF_THR      {4};    // Default # threads
-constexpr u8  DEF_LVL      {0};    // Default level
-constexpr u8  ALPH_SZ      {4};    // Alphabet size
-constexpr u8  IRMAGIC      {3};    // Calc ir syms based on syms
-constexpr u8  K_MAX_TBL64  {11};   // Max ctx depth for table 64 (128 MB mem)
-constexpr u8  K_MAX_TBL32  {13};   // Max ...           table 32 (1   GB mem)
-constexpr u8  K_MAX_LGTBL8 {14};   // Max ...       log table 8  (1   GB mem)
-constexpr u32 BLK_SZ       {8192}; // 8K
-constexpr u64 DEF_W        {power(2,20)}; // Default width of CML sketch (2^...)
-constexpr u8  DEF_D        {5};    // Default depth of CML sketch
-constexpr u32 G            {64};   // Machine word size -- for universal hash fn
-constexpr u8  LOG_BASE     {2};    // Logarithmic counting
-constexpr float DEF_GAMMA  {0.1};  // Default gamma for multiple models
+static constexpr u8  DEF_THR      {4};    // Default # threads
+static constexpr u8  DEF_LVL      {0};    // Default level
+static constexpr u8  ALPH_SZ      {4};    // Alphabet size
+static constexpr u8  IRMAGIC      {3};    // Calc ir syms based on syms
+static constexpr u8  K_MAX_TBL64  {11};   // Max ctx depth for table 64 (128 MB mem)
+static constexpr u8  K_MAX_TBL32  {13};   // Max ...           table 32 (1   GB mem)
+static constexpr u8  K_MAX_LGTBL8 {14};   // Max ...       log table 8  (1   GB mem)
+static constexpr u32 BLK_SZ       {8192}; // 8K
+static constexpr u64 DEF_W        {power(2,20)}; // Default width of CML sketch (2^...)
+static constexpr u8  DEF_D        {5};    // Default depth of CML sketch
+static constexpr u32 G            {64};   // Machine word size -- for universal hash fn
+static constexpr u8  LOG_BASE     {2};    // Logarithmic counting
+static constexpr float DEF_GAMMA  {0.1};  // Default gamma for multiple models
 
 typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
 
