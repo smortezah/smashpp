@@ -25,9 +25,9 @@ class Param    // Parameters
  public:
   string tar;
   string ref;
+  u8     level;
   bool   verbose;
   u8     nthr;
-  u8     level;
   
   Param () {    // Define Param::Param(){} in *.hpp => compile error
     tar     = "";

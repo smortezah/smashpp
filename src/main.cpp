@@ -25,25 +25,12 @@ int main (int argc, char* argv[])
     p.parse(argc, argv);
     auto* m = new FCM(p);
     
-    // Build models
-//    auto t0 {high_resolution_clock::now()};    // Start time
-    auto t0 {now()};    // Start time
-    m->buildModel(p);
-    auto t1 {now()};    // Finish time
-//    auto t1 {high_resolution_clock::now()};    // Finish time
-    //todo
-    hms(t1-t0);
-//    dur_t e = t1 - t0;                         // Elapsed time
-//    cerr << "in " << std::fixed << setprecision(3)<< e.count() << " seconds.\n";
-
-//    // Compress
-//    t0 = high_resolution_clock::now();
-//    m->compress(p);
-//    t1 = high_resolution_clock::now();
-//    //todo
-//    hms(t1 - t0);
-////    e  = t1 - t0;
-////    cerr << "in " << std::fixed << setprecision(3)<< e.count() << " seconds.\n";
+    // Build models  // Start time// Finish time// Elapsed time
+    auto t0{now()};  m->buildModel(p);  auto t1{now()};  hms(t1-t0);
+    // Compress
+    t0=now();        m->compress(p);         t1=now();   hms(t1-t0);
+    // Result
+    cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
 
     delete m;
   }

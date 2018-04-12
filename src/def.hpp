@@ -8,6 +8,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <chrono>
+#include <iomanip>      // setw, setprecision
 
 // Version
 static const std::string VERSION   {"18.04"};
@@ -36,13 +37,13 @@ static constexpr u8  DEF_THR      {4};    // Default # threads
 static constexpr u8  DEF_LVL      {0};    // Default level
 static constexpr u8  ALPH_SZ      {4};    // Alphabet size
 static constexpr u8  IRMAGIC      {3};    // Calc ir syms based on syms
-static constexpr u8  K_MAX_TBL64  {11};   // Max ctx depth for table 64 (128 MB mem)
-static constexpr u8  K_MAX_TBL32  {13};   // Max ...           table 32 (1   GB mem)
-static constexpr u8  K_MAX_LGTBL8 {14};   // Max ...       log table 8  (1   GB mem)
+static constexpr u8  K_MAX_TBL64  {11};   // Max ctx dept. table 64 (128 MB mem)
+static constexpr u8  K_MAX_TBL32  {13};   // Max ...       table 32 (1   GB mem)
+static constexpr u8  K_MAX_LGTBL8 {14};   // Max ...   log table 8  (1   GB mem)
 static constexpr u32 BLK_SZ       {8192}; // 8K
-static constexpr u64 DEF_W        {power(2,20)}; // Default width of CML sketch (2^...)
+static constexpr u64 DEF_W        {power(2,20)};  // Default w of CML sketch
 static constexpr u8  DEF_D        {5};    // Default depth of CML sketch
-static constexpr u32 G            {64};   // Machine word size -- for universal hash fn
+static constexpr u32 G            {64};   // Machine word size - univers hash fn
 static constexpr u8  LOG_BASE     {2};    // Logarithmic counting
 static constexpr float DEF_GAMMA  {0.1};  // Default gamma for multiple models
 
@@ -61,7 +62,7 @@ enum IR {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
 //#define LOOP2(i,j,S)  LOOP(i,S) LOOP(j,S)
 
 // Lookup table
-constexpr u64 POW2[36] {
+static constexpr u64 POW2[36] {
            1,          2,           4,           8,
           16,         32,          64,         128,
          256,        512,        1024,        2048,
@@ -75,12 +76,12 @@ constexpr u64 POW2[36] {
 //constexpr u64 pow2 (u8 n) { // Not sure if faster than above, but simpler
 //  return 1ull<<n;
 //}
-constexpr u32 POW3[17] {
+static constexpr u32 POW3[17] {
          1,     3,     9,     27,     81,     243,     729,     2187,      // #8
       6561, 19683, 59049, 177147, 531441, 1594323, 4782969, 14348907,
   43046721
 };
-constexpr u64 POW4[32] {    // Max 4^31 contained in u64
+static constexpr u64 POW4[32] {    // Max 4^31 contained in u64
                     1,                   4,                 16,
                    64,                 256,               1024,
                  4096,               16384,              65536,
@@ -96,7 +97,7 @@ constexpr u64 POW4[32] {    // Max 4^31 contained in u64
 //constexpr u64 pow4 (u8 n) { // Not sure if faster than above, but simpler
 //  return 1ull<<(n<<1);
 //}
-constexpr u64 POW5[23] {
+static constexpr u64 POW5[23] {
                1,               5,               25,            125,
              625,            3125,            15625,          78125,
           390625,         1953125,          9765625,       48828125,
@@ -104,7 +105,7 @@ constexpr u64 POW5[23] {
     152587890625,    762939453125,    3814697265625, 19073486328125,
   95367431640625, 476837158203125, 2384185791015625
 };
-constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3
+static constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,             // #20
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -113,7 +114,7 @@ constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3
   0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0,
   0, 0, 0
 };
-constexpr u8 REVNUM[123] {    // a,A->3  c,C->2  g,G->1  t,T->0
+static constexpr u8 REVNUM[123] {    // a,A->3  c,C->2  g,G->1  t,T->0
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,             // #20
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -122,7 +123,7 @@ constexpr u8 REVNUM[123] {    // a,A->3  c,C->2  g,G->1  t,T->0
   0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0
 };
-constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
+static constexpr u8 REV[123] { // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,  0, 0,  0,     // #20
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,  0, 0,  0,
   0, 0, 0,  0,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0,  0,  0, 0,  0,
@@ -131,7 +132,7 @@ constexpr u8 REV[123] {    // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
   0, 0, 0, 67,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0, 65,  0, 0,  0,
   0, 0, 0
 };
-constexpr u8 LEVEL[3][16] {    // Multiple models MUST be in sorted 'k' manner
+static constexpr u8 LEVEL[3][16] {    // 'k' of multiple models MUST be sorted
 // #mdl, ir,  k, 100*alpha, log2 w,  d
   {1,     0, 20,    100,      10,    DEF_D},    // Level 0
   {2,     0, 4,   100,       0,         0,     // Level 1
@@ -149,10 +150,11 @@ inline std::chrono::time_point<std::chrono::high_resolution_clock> now () {
 template <typename T>
 void hms (T elapsed) {
 //  std::chrono::duration<double, std::milli> ms = elapsed;
-  const auto s =
+  const auto durSec =
     std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
-  const auto m = s / 60;
-  const auto h = m / 60;
+  const auto h = durSec / 3600;
+  const auto m = (durSec % 3600) / 60;
+  const auto s = durSec % 60;
   
   std::cerr << " in " << h << ":" << m << ":" << s << " hour:min:sec.\n";
 }

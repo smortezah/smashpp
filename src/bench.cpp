@@ -37,9 +37,11 @@ string exec (const char* cmd) {
 int main (int argc, char* argv[])
 {
   try {
-    vector<string> vTar {"A"};
-    vector<string> vRef {"m"};
-    vector<string> vLevel {"0"
+    constexpr bool           bV {true};//false
+    string      verbose = [](string s=""){ return bV ? (s="-v") : s;};
+    static const vector<string> vTar    {"A"};
+    static const vector<string> vRef    {"A"};
+    static const vector<string> vLevel  {"0"
 //                           , "1"
     };
 
@@ -48,7 +50,8 @@ int main (int argc, char* argv[])
         run("./smashpp"
             " -t " + vTar[tIdx] +
             " -r " + vRef[tIdx] +
-            " -l " + vLevel[lIdx]);
+            " -l " + vLevel[lIdx] +
+              verbose);
     }
   }
   catch (std::exception& e) { cerr << e.what(); }
