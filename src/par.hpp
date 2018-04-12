@@ -28,6 +28,7 @@ class Param    // Parameters
   u8     level;
   bool   verbose;
   u8     nthr;
+  string modelsPars;//todo
   
   Param () {    // Define Param::Param(){} in *.hpp => compile error
     tar     = "";
@@ -76,6 +77,9 @@ class Param    // Parameters
         }
         else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
           nthr = static_cast<u8>(stoi(*++i));
+        }
+        else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {//todo
+//        setModelPar(*++i);
         }
       }
       

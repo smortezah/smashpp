@@ -20,17 +20,13 @@ using std::setprecision;
 
 void f (std::vector<std::vector<u8>>& level, const std::vector<u8>& vir,
         const std::vector<u8>& vk, const std::vector<u8>& valpha) {
-  for (const auto& ir : vir) {
-    for (const auto& k : vk) {
-      for (const auto& a : valpha) {
+  for (const auto& ir : vir)
+    for (const auto& k : vk)
+      for (const auto& a : valpha)
         level.emplace_back(std::vector<u8>{ir, k, a});
-      }
-    }
-  }
   for (const auto& lv : level) {
-    for (const auto& l : lv) {
+    for (const auto& l : lv)
       cerr << static_cast<u16>(l) << ' ';
-    }
     cerr << '\n';
   }
 }

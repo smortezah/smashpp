@@ -16,8 +16,8 @@ struct ModelPar {
   u8    k;       // Context size
   float alpha;
   u8    mode;    // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-  u64   w;       // Width of count-min-log sketch
-  u8    d;       // Depth of count-min-log sketch
+  u64   w;       // Width of count-min-log sketch//todo. u64 w=0
+  u8    d;       // Depth of count-min-log sketch//todo. u8 d=0
 };
 
 template <typename ctx_t>
