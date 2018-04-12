@@ -87,11 +87,12 @@ inline void FCM::setIRsComb () {
 }
 
 void FCM::buildModel (const Param& p) {
-  cerr << "Building ";
-  if (p.verbose)  cerr << model.size();
-  else            cerr << "the";
-  cerr << " model" << (model.size()==1 ? "" : "s")
-       << " (level " << static_cast<u16>(p.level) << ")...\n";
+  if (p.verbose)
+    cerr << "Building " <<model.size()<< " model"<< (model.size()==1 ? "" : "s")
+         << " based on the reference \"" << p.ref << "\"";
+  else
+    cerr << "Building the model" << (model.size()==1 ? "" : "s");
+  cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
   (p.nthr==1 || model.size()==1) ? bldMdlOneThr(p) : bldMdlMulThr(p)/*Mul thr*/;
   cerr << "Finished";
 }
@@ -151,7 +152,10 @@ inline void FCM::createDS (const string& ref, mask_t mask, ds_t& ds) {
 }
 
 void FCM::compress (const Param& p) {
-  cerr << "Compressing...\n";
+  if (p.verbose)
+    cerr << "Compressing the target \"" << p.tar << "\"...\n";
+  else
+    cerr << "Compressing...\n";
   vector<u32> mask32 {};
   u64         mask64 {};
   for (const auto& m : model) {
