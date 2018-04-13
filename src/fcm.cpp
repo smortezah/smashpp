@@ -10,6 +10,7 @@
 #include <functional>//todo
 #include "fcm.hpp"
 using std::ifstream;
+using std::fstream;
 using std::cout;
 using std::array;
 using std::initializer_list;
@@ -389,6 +390,11 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
   }
   tf.close();
   aveEnt = sEnt/symsNo;
+}
+
+inline void FCM::report (bool CLEAR) const {
+  fstream fs;
+//  CLEAR ? : ;
 }
 
 template <typename ds_t, typename ctx_t>
