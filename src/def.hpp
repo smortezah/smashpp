@@ -73,9 +73,9 @@ static constexpr u64 POW2[36] {
    268435456,  536870912,  1073741824,  2147483648,
   4294967296, 8589934592, 17179869184, 34359738368
 };
-//constexpr u64 pow2 (u8 n) { // Not sure if faster than above, but simpler
-//  return 1ull<<n;
-//}
+constexpr u64 pow2 (u64 n) { // Not sure if faster than above, but simpler
+  return 1ull<<n;
+}
 static constexpr u32 POW3[17] {
          1,     3,     9,     27,     81,     243,     729,     2187,      // #8
       6561, 19683, 59049, 177147, 531441, 1594323, 4782969, 14348907,

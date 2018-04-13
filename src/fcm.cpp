@@ -14,11 +14,11 @@ using std::cout;
 using std::array;
 using std::initializer_list;
 
-FCM::FCM (const Param& p) {
+FCM::FCM (const Param& p) : aveEnt(0.0) {
   setModels(p);
-//  allocModels();
-//  setModesComb();
-//  setIRsComb();
+  allocModels();
+  setModesComb();
+  setIRsComb();
 }
 
 FCM::~FCM () {
@@ -34,64 +34,40 @@ FCM::~FCM () {
 }
 
 inline void FCM::setModels (const Param& p) {
-//  model.resize(LEVEL[p.level][0]);
-//  for (auto m=model.begin(); m!=model.end(); ++m) {
-//    auto i   = m - model.begin();
-//    m->ir    = LEVEL[p.level][5*i+1];
-//    m->k     = LEVEL[p.level][5*i+2];
-//    m->alpha = static_cast<float>(LEVEL[p.level][5*i+3])/100;
-//    m->w     = power(2, LEVEL[p.level][5*i+4]);
-//    m->d     = LEVEL[p.level][5*i+5];
-//    if      (m->k > K_MAX_LGTBL8)   m->mode = MODE::SKETCH_8;
-//    else if (m->k > K_MAX_TBL32)    m->mode = MODE::LOG_TABLE_8;
-//    else if (m->k > K_MAX_TBL64)    m->mode = MODE::TABLE_32;
-//    else                            m->mode = MODE::TABLE_64;
-//  }
-  
-//  //todo
-  auto begVMdls = p.modelsPars.begin();
+  auto begVMs = p.modelsPars.begin();
   vector<string> vMdlsPars;
-  for (auto i=begVMdls; i!=p.modelsPars.end(); ++i) {
-    if (*i == ':') {
-      vMdlsPars.emplace_back(string(begVMdls,i));
-      begVMdls = i+1;
-    }
-  }
-  vMdlsPars.emplace_back(string(begVMdls, p.modelsPars.end()));
+  for (auto i=begVMs; i!=p.modelsPars.end(); ++i)
+    if (*i==':') { vMdlsPars.emplace_back(string(begVMs,i));    begVMs=i+1; }
+  vMdlsPars.emplace_back(string(begVMs, p.modelsPars.end()));
   
-  for (auto m : vMdlsPars) {
-    vector<string> vMPar;  vMPar.resize(m.size());  vMPar.clear();
-    auto begVM = m.begin();
-    u8 nComma = 0;
-    for (auto i=begVM; i!=m.end(); ++i) {
-      if (*i == ',') {
-        ++nComma;
-        vMPar.emplace_back(string(begVM,i));
-        begVM = i+1;
-      }
-    }
-    vMPar.emplace_back(string(begVM,m.end()));
-  
+  // Set each models parameters
+  for (const auto& mp : vMdlsPars) {
+    vector<string> vMPar;  vMPar.resize(mp.size());  vMPar.clear();
+    auto begVM  = mp.begin();
+    u8   nComma = 0;
+    for (auto i=begVM; i!=mp.end(); ++i)
+      if (*i==',') { ++nComma; vMPar.emplace_back(string(begVM,i)); begVM=i+1; }
+    vMPar.emplace_back(string(begVM, mp.end()));
     if (nComma == 2)
-      model.emplace_back(ModelPar(static_cast<u8>(stoi(vMPar[0])),
-             static_cast<u8>(stoi(vMPar[1])), stof(vMPar[2])));
+      model.emplace_back(
+        ModelPar(static_cast<u8>(stoi(vMPar[0])),
+                 static_cast<u8>(stoi(vMPar[1])), stof(vMPar[2])));
     else if (nComma == 4)
-      model.emplace_back(ModelPar(static_cast<u8>(stoi(vMPar[0])),
-             static_cast<u8>(stoi(vMPar[1])), stof(vMPar[2])),
-             static_cast<u64>(stoi(vMPar[3])), static_cast<u8>(stoi(vMPar[4])));
+      model.emplace_back(
+        ModelPar(static_cast<u8>(stoi(vMPar[0])),
+                 static_cast<u8>(stoi(vMPar[1])), stof(vMPar[2]),
+                 pow2(stoull(vMPar[3])), static_cast<u8>(stoi(vMPar[4]))));
   }
-//  for(auto a:vMPar)cerr<<a<<' ';
-  for (auto a: model)
-    cerr<<(int)a.ir<<' '<<(int)a.k <<' '<<a.alpha<<a.w<<(int)a.d<<'\n';
-
-//    ir.emplace_back(static_cast<bool>(stoi(vMPar[0])));
-//    k.emplace_back(static_cast<u8>(stoi(vMPar[1])));
-//    alpha.emplace_back(stof(vMPar[2]));
-//  }
-//
-//  // 6*(5^k_1 + 5^k_2 + ...) > 6*5^12 => mode: hash table='h'
-//  u64 sum=0;  for (u8 i=0; i!=nMdl; ++i) sum+=POW5[k[i]];
-//  mode = (sum > POW5[TAB_MAX_K]) ? 'h' : 't';
+  // Set modes. & is MANDATORY, since we set 'mode'.
+  for (auto& m : model) {
+    if      (m.k > K_MAX_LGTBL8)    m.mode = MODE::SKETCH_8;
+    else if (m.k > K_MAX_TBL32)     m.mode = MODE::LOG_TABLE_8;
+    else if (m.k > K_MAX_TBL64)     m.mode = MODE::TABLE_32;
+    else                            m.mode = MODE::TABLE_64;
+  }
+  // Models MUST be sorted by 'k'=ctx size
+  std::sort(model.begin(), model.end(),
+            [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
 }
 
 inline void FCM::allocModels () {
@@ -106,29 +82,16 @@ inline void FCM::allocModels () {
   }
 }
 
-inline void FCM::setModesComb () {
-  u8 isT64=0, isT32=0, isLT=0, isSk=0;
-  for (const auto& m : model) {
-    switch (m.mode){
-      case MODE::TABLE_64:      isT64 = 1;      break;
-      case MODE::TABLE_32:      isT32 = 1<<1;   break;
-      case MODE::LOG_TABLE_8:   isLT  = 1<<2;   break;
-      case MODE::SKETCH_8:      isSk  = 1<<3;   break;
-      default:  cerr << "Error: undefined mode " << m.mode << ".\n";
-    }
-  }
-  MODE_COMB = isSk | isLT | isT32 | isT64;
+inline void FCM::setModesComb () {  // Models MUST be sorted by 'k'=ctx size
+  MODE_COMB = 0;
+  for (const auto& m : model)
+    MODE_COMB |= 1u<<m.mode;
 }
 
-inline void FCM::setIRsComb () {
-  switch (model.size()) {
-    case 1: IR_COMB=                                        model[0].ir;  break;
-    case 2: IR_COMB=                    (model[1].ir<<1) | (model[0].ir); break;
-    case 3: IR_COMB= (model[2].ir<<2) | (model[1].ir<<1) | (model[0].ir); break;
-    case 4: IR_COMB= (model[3].ir<<3) |
-                     (model[2].ir<<2) | (model[1].ir<<1) | (model[0].ir); break;
-    default:  cerr << "Error: undefined models size " << model.size() << ".\n";
-  }
+inline void FCM::setIRsComb () {    // Models MUST be sorted by 'k'=ctx size
+  IR_COMB = 0;
+  for (u8 i=0; i!=model.size(); ++i)
+    IR_COMB |= model[i].ir<<i;
 }
 
 void FCM::buildModel (const Param& p) {

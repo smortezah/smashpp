@@ -11,8 +11,9 @@ using std::to_string;
 using std::vector;
 using std::array;
 using std::cerr;
-typedef unsigned char  u8;
-typedef unsigned int  u32;
+typedef unsigned char   u8;
+typedef unsigned short  u16;
+typedef unsigned int    u32;
 
 void run (const string& cmd) {
   if (std::system(cmd.c_str()) != 0)
@@ -37,22 +38,44 @@ void memUsage (u8 k) {//todo
 
 }
 
+//todo
+void f (std::vector<std::vector<u8>>& level, const std::vector<u8>& vir,
+        const std::vector<u8>& vk, const std::vector<u8>& valpha) {
+  for (const auto& ir : vir)
+    for (const auto& k : vk)
+      for (const auto& a : valpha)
+        level.emplace_back(std::vector<u8>{ir, k, a});
+  for (const auto& lv : level) {
+    for (const auto& l : lv)
+      cerr << static_cast<u16>(l) << ' ';
+    cerr << '\n';
+  }
+}
 int main (int argc, char* argv[])
 {
+//  static std::vector<std::vector<u8>> level;
+//  std::vector<u8> vir    {0, 1};
+//  std::vector<u8> valpha {100, 10, 1};
+//  std::vector<u8> vk     {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+//  f(level, vir, vk, valpha);
+  
+  
   try {
     constexpr bool boolVerbose {false};
     static string verbose="";    if (boolVerbose) verbose=" -v";
     static const vector<string> vTar    {"A"};
     static const vector<string> vRef    {"A"};
-    static const vector<string> vLevel  {"0"
-//                           , "1"
-    };
+//    static const vector<string> vLevel  {"0", "1"};
     static const string model
-//      {"0,9,12"};
-    {"0,5,0.2:1,20,0.1,15,5"};
+//      {"0,14,0.001"};
+      {"1,20,0.01,26,5"};
+//      {"1,5,0.2:0,16,0.1,20,5"};
+//      {"0,16,0.1,20,5:1,5,0.2"};
+//      {"0,12,0.6:1,14,0.9:0,5,0.2:1,17,0.4,20,5"};
+//    {"0,12,0.6:0,5,0.2:1,17,0.4,20,5:1,14,0.9"};
 
     for (u8 tIdx=0; tIdx!=vTar.size(); ++tIdx) {
-      for (u8 lIdx=0; lIdx!=vLevel.size(); ++lIdx)
+//      for (u8 lIdx=0; lIdx!=vLevel.size(); ++lIdx)
         run("./smashpp"
             " -t " + vTar[tIdx] +
             " -r " + vRef[tIdx] +
