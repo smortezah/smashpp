@@ -49,59 +49,40 @@ inline void FCM::setModels (const Param& p) {
 //  }
   
 //  //todo
-  auto beg = p.modelsPars.begin();
+  auto begVMdls = p.modelsPars.begin();
   vector<string> vMdlsPars;
-  for (auto i=beg; i!=p.modelsPars.end(); ++i) {
+  for (auto i=begVMdls; i!=p.modelsPars.end(); ++i) {
     if (*i == ':') {
-      vMdlsPars.emplace_back(string(beg,i));
-      beg = i+1;
+      vMdlsPars.emplace_back(string(begVMdls,i));
+      begVMdls = i+1;
     }
   }
-  vMdlsPars.emplace_back(string(beg, p.modelsPars.end()));
-//  model.resize(vMdlsPars.size());
-////  nMdl = static_cast<u8>(vMdlsPars.size());
-
-//  ir.clear();  k.clear();  alpha.clear();
+  vMdlsPars.emplace_back(string(begVMdls, p.modelsPars.end()));
+  
   for (auto m : vMdlsPars) {
-//    cerr<<'+';
-    vector<string> vMPar; vMPar.resize(m.size());
-    vMPar.clear();
-    beg = m.begin();
-//    auto nComma = 0;
-    auto end=m.end();
-    for (auto i=beg; i!=m.end(); ++i) {
+    vector<string> vMPar;  vMPar.resize(m.size());  vMPar.clear();
+    auto begVM = m.begin();
+    u8 nComma = 0;
+    for (auto i=begVM; i!=m.end(); ++i) {
       if (*i == ',') {
-//        ++nComma;
-        vMPar.emplace_back(string(beg,i));
-        beg = i+1;
+        ++nComma;
+        vMPar.emplace_back(string(begVM,i));
+        begVM = i+1;
       }
     }
-//    vMPar.emplace_back(string(beg,m.end()));
-//    cerr<<*(m.end()-1)<<' ';
-    cerr<<string(beg,end)<<' ';
-//    cerr<<*beg;
-    
-    
-    for (auto a:vMPar)cerr<<a<<' ';
-    cerr<<'\n';
-    
-//      cerr<<nComma;
-//    cerr<<m<<'\n';
-//    cerr<<*m.begin()<<' '<<*(m.end()-1);
-//    cerr<<'\n';
-    
-//    model.emplace_back()static_cast<u8>(stoi(vMPar[0]))
-//    model.emplace_back(
-//      ModelPar(static_cast<u8>(stoi(vMPar[0])), static_cast<u8>(stoi(vMPar[1])),
-//      stof(vMPar[2]))
-//    );
-//    if (nComma == 2) {
-//    }
+    vMPar.emplace_back(string(begVM,m.end()));
+  
+    if (nComma == 2)
+      model.emplace_back(ModelPar(static_cast<u8>(stoi(vMPar[0])),
+             static_cast<u8>(stoi(vMPar[1])), stof(vMPar[2])));
+    else if (nComma == 4)
+      model.emplace_back(ModelPar(static_cast<u8>(stoi(vMPar[0])),
+             static_cast<u8>(stoi(vMPar[1])), stof(vMPar[2])),
+             static_cast<u64>(stoi(vMPar[3])), static_cast<u8>(stoi(vMPar[4])));
   }
 //  for(auto a:vMPar)cerr<<a<<' ';
-//  for (auto a: model)
-//    cerr<<a.ir<<a.k
-//              <<a.alpha;
+  for (auto a: model)
+    cerr<<(int)a.ir<<' '<<(int)a.k <<' '<<a.alpha<<a.w<<(int)a.d<<'\n';
 
 //    ir.emplace_back(static_cast<bool>(stoi(vMPar[0])));
 //    k.emplace_back(static_cast<u8>(stoi(vMPar[1])));
