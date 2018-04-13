@@ -31,6 +31,9 @@ int main (int argc, char* argv[])
     t0=now();        m->compress(p);         t1=now();   hms(t1-t0);
     // Result
     cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
+    // Report
+    m->report(false);
+    
     delete m;
   }
   catch (std::exception& e) { cout << e.what(); }
