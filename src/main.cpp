@@ -34,11 +34,11 @@ int main (int argc, char* argv[])
 {
 //  for(auto i: f(2))
 //    cerr<<i<<' ';
-  static std::vector<std::vector<u8>> level;
-  std::vector<u8> vir    {0, 1};
-  std::vector<u8> valpha {100, 10, 1};
-  std::vector<u8> vk     {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-  f(level, vir, vk, valpha);
+//  static std::vector<std::vector<u8>> level;
+//  std::vector<u8> vir    {0, 1};
+//  std::vector<u8> valpha {100, 10, 1};
+//  std::vector<u8> vk     {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+//  f(level, vir, vk, valpha);
   
   
   
@@ -52,8 +52,7 @@ int main (int argc, char* argv[])
     // Compress
 //    t0=now();        m->compress(p);         t1=now();   hms(t1-t0);
     // Result
-    cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
-//std::initializer_list<int> a{2,4};cerr<<*(a.begin()+1);
+//    cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
     delete m;
   }
   catch (std::exception& e) { cout << e.what(); }

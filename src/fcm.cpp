@@ -16,9 +16,9 @@ using std::initializer_list;
 
 FCM::FCM (const Param& p) {
   setModels(p);
-  allocModels();
-  setModesComb();
-  setIRsComb();
+//  allocModels();
+//  setModesComb();
+//  setIRsComb();
 }
 
 FCM::~FCM () {
@@ -34,48 +34,78 @@ FCM::~FCM () {
 }
 
 inline void FCM::setModels (const Param& p) {
-  model.resize(LEVEL[p.level][0]);
-  for (auto m=model.begin(); m!=model.end(); ++m) {
-    auto i   = m - model.begin();
-    m->ir    = LEVEL[p.level][5*i+1];
-    m->k     = LEVEL[p.level][5*i+2];
-    m->alpha = static_cast<float>(LEVEL[p.level][5*i+3])/100;
-    m->w     = power(2, LEVEL[p.level][5*i+4]);
-    m->d     = LEVEL[p.level][5*i+5];
-    if      (m->k > K_MAX_LGTBL8)   m->mode = MODE::SKETCH_8;
-    else if (m->k > K_MAX_TBL32)    m->mode = MODE::LOG_TABLE_8;
-    else if (m->k > K_MAX_TBL64)    m->mode = MODE::TABLE_32;
-    else                            m->mode = MODE::TABLE_64;
-  }
-  
-  //todo
-//  auto beg = m.begin();
-//  vector<string> msPar;
-//  for (auto i=beg; i!=m.end(); ++i) {
-//    if (*i == ':') {
-//      msPar.emplace_back(string(beg,i));
-//      beg = i+1;
-//    }
+//  model.resize(LEVEL[p.level][0]);
+//  for (auto m=model.begin(); m!=model.end(); ++m) {
+//    auto i   = m - model.begin();
+//    m->ir    = LEVEL[p.level][5*i+1];
+//    m->k     = LEVEL[p.level][5*i+2];
+//    m->alpha = static_cast<float>(LEVEL[p.level][5*i+3])/100;
+//    m->w     = power(2, LEVEL[p.level][5*i+4]);
+//    m->d     = LEVEL[p.level][5*i+5];
+//    if      (m->k > K_MAX_LGTBL8)   m->mode = MODE::SKETCH_8;
+//    else if (m->k > K_MAX_TBL32)    m->mode = MODE::LOG_TABLE_8;
+//    else if (m->k > K_MAX_TBL64)    m->mode = MODE::TABLE_32;
+//    else                            m->mode = MODE::TABLE_64;
 //  }
-//  msPar.emplace_back(string(beg, m.end()));
-//  nMdl = static_cast<u8>(msPar.size());
-//
-//  array<string,3> mPar;
+  
+//  //todo
+  auto beg = p.modelsPars.begin();
+  vector<string> vMdlsPars;
+  for (auto i=beg; i!=p.modelsPars.end(); ++i) {
+    if (*i == ':') {
+      vMdlsPars.emplace_back(string(beg,i));
+      beg = i+1;
+    }
+  }
+  vMdlsPars.emplace_back(string(beg, p.modelsPars.end()));
+//  model.resize(vMdlsPars.size());
+////  nMdl = static_cast<u8>(vMdlsPars.size());
+
 //  ir.clear();  k.clear();  alpha.clear();
-//  for (const auto& e : msPar) {
-//    beg  = e.begin();
-//    u8 j = 0;
-//    for (auto i=beg; i!=e.end(); ++i) {
-//      if (*i == ',') {
-//        mPar[j++] = string(beg, i);
-//        beg = i+1;
-//      }
+  for (auto m : vMdlsPars) {
+//    cerr<<'+';
+    vector<string> vMPar; vMPar.resize(m.size());
+    vMPar.clear();
+    beg = m.begin();
+//    auto nComma = 0;
+    auto end=m.end();
+    for (auto i=beg; i!=m.end(); ++i) {
+      if (*i == ',') {
+//        ++nComma;
+        vMPar.emplace_back(string(beg,i));
+        beg = i+1;
+      }
+    }
+//    vMPar.emplace_back(string(beg,m.end()));
+//    cerr<<*(m.end()-1)<<' ';
+    cerr<<string(beg,end)<<' ';
+//    cerr<<*beg;
+    
+    
+    for (auto a:vMPar)cerr<<a<<' ';
+    cerr<<'\n';
+    
+//      cerr<<nComma;
+//    cerr<<m<<'\n';
+//    cerr<<*m.begin()<<' '<<*(m.end()-1);
+//    cerr<<'\n';
+    
+//    model.emplace_back()static_cast<u8>(stoi(vMPar[0]))
+//    model.emplace_back(
+//      ModelPar(static_cast<u8>(stoi(vMPar[0])), static_cast<u8>(stoi(vMPar[1])),
+//      stof(vMPar[2]))
+//    );
+//    if (nComma == 2) {
 //    }
-//    mPar[j] = string(beg, e.end());
-//
-//    ir.emplace_back(static_cast<bool>(stoi(mPar[0])));
-//    k.emplace_back(static_cast<u8>(stoi(mPar[1])));
-//    alpha.emplace_back(stof(mPar[2]));
+  }
+//  for(auto a:vMPar)cerr<<a<<' ';
+//  for (auto a: model)
+//    cerr<<a.ir<<a.k
+//              <<a.alpha;
+
+//    ir.emplace_back(static_cast<bool>(stoi(vMPar[0])));
+//    k.emplace_back(static_cast<u8>(stoi(vMPar[1])));
+//    alpha.emplace_back(stof(vMPar[2]));
 //  }
 //
 //  // 6*(5^k_1 + 5^k_2 + ...) > 6*5^12 => mode: hash table='h'

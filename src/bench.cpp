@@ -47,13 +47,17 @@ int main (int argc, char* argv[])
     static const vector<string> vLevel  {"0"
 //                           , "1"
     };
+    static const string model
+//      {"0,9,12"};
+    {"0,5,0.2:1,20,0.1,15,5"};
 
     for (u8 tIdx=0; tIdx!=vTar.size(); ++tIdx) {
       for (u8 lIdx=0; lIdx!=vLevel.size(); ++lIdx)
         run("./smashpp"
             " -t " + vTar[tIdx] +
             " -r " + vRef[tIdx] +
-            " -l " + vLevel[lIdx] +
+            " -m " + model +
+//            " -l " + vLevel[lIdx] +
               verbose);
     }
   }
