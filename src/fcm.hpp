@@ -12,6 +12,8 @@
 #include "cmls4.hpp"
 
 struct ModelPar {
+  ModelPar () = default;    // MANDATORY
+  ModelPar (u8 ir_, u8 k_, float a_) : ir(ir_), k (k_), alpha(a_) {}
   u8    ir;      // Inverted repeat
   u8    k;       // Context size
   float alpha;

@@ -28,16 +28,12 @@ class Param    // Parameters
   u8     level;
   bool   verbose;
   u8     nthr;
-  string modelsPars;//todo
+  string modelsPars;
   
-  Param () {    // Define Param::Param(){} in *.hpp => compile error
-    tar     = "";
-    ref     = "";
-    verbose = false;
-    nthr    = DEF_THR;
-    level   = DEF_LVL;
-  }
-  
+  // Define Param::Param(){} in *.hpp => compile error
+  Param () : tar(""), ref(""), level(DEF_LVL), verbose(false), nthr(DEF_THR),
+             modelsPars("") {}
+             
   void parse (int argc, char**& argv) {
     if (argc < 2) {
       help();  throw EXIT_SUCCESS;
@@ -69,17 +65,17 @@ class Param    // Parameters
               ("Error: reference file not specified. Use \"-r fileName\".\n");
           }
         }
-        else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
+        else if ((*i=="-l" || *i=="--level") && i+1 != vArgs.end()) {
           level = static_cast<u8>(stoi(*++i));
         }
         else if (*i=="-v" || *i=="--verbose") {
           verbose = true;
         }
-        else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
+        else if ((*i=="-n" || *i=="--nthr") && i+1 != vArgs.end()) {
           nthr = static_cast<u8>(stoi(*++i));
         }
-        else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {//todo
-//        setModelPar(*++i);
+        else if ((*i=="-m" || *i=="--model") && i+1 != vArgs.end()) {
+          modelsPars = *++i;
         }
       }
       
@@ -144,6 +140,11 @@ class Param    // Parameters
       << "    -l [NUM],  --level        level"                           << '\n'
       << "    -n [NUM],  --nthr         number of threads"               << '\n'
       << "    -v,        --verbose      more information"                << '\n'
+      << "    -m [ir,k,alpha[,w,d]:...],  --model    parameters of models"<<'\n'//todo
+      << "        ir: inverted repeat"<<'\n'
+      << "        k:  context size"<<'\n'
+      << "        w:  width of sketch"<<'\n'
+      << "        d:  depth of sketch"<<'\n'
       << "    -h,        --help         usage guide"                     << '\n'
                                                                          << '\n'
       << "COPYRIGHT"                                                     << '\n'
