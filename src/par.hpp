@@ -140,10 +140,10 @@ class Param    // Parameters
       << "    -l [NUM],  --level        level"                           << '\n'
       << "    -n [NUM],  --nthr         number of threads"               << '\n'
       << "    -v,        --verbose      more information"                << '\n'
-      << "    -m [ir,k,alpha[,w,d]:...],  --model    parameters of models"<<'\n'//todo
+      << "    -m [ir,k,alpha[,log2(w),d]:...],  --model    parameters of models"<<'\n'//todo
       << "        ir: inverted repeat"<<'\n'
       << "        k:  context size"<<'\n'
-      << "        w:  width of sketch"<<'\n'
+      << "        w:  width of sketch in log2 format, e.g., set 10 for w=2^10=1024"<<'\n'
       << "        d:  depth of sketch"<<'\n'
       << "    -h,        --help         usage guide"                     << '\n'
                                                                          << '\n'

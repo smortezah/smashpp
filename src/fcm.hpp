@@ -12,16 +12,16 @@
 #include "cmls4.hpp"
 
 struct ModelPar {
-  ModelPar () = default;    // MANDATORY
-  ModelPar (u8 ir_, u8 k_, float a_) : ir(ir_), k (k_), alpha(a_) {}
+  ModelPar (u8 ir_, u8 k_, float a_)
+    : ir(ir_), k(k_), alpha(a_), w(0),  d(0) {}
   ModelPar (u8 ir_, u8 k_, float a_, u64 w_, u8 d_)
-    : ir(ir_), k (k_), alpha(a_), w(w_), d(d_) {}
+    : ir(ir_), k(k_), alpha(a_), w(w_), d(d_) {}
   u8    ir;      // Inverted repeat
   u8    k;       // Context size
   float alpha;
+  u64   w;       // Width of count-min-log sketch
+  u8    d;       // Depth of count-min-log sketch
   u8    mode;    // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-  u64   w;       // Width of count-min-log sketch//todo. u64 w=0
-  u8    d;       // Depth of count-min-log sketch//todo. u8 d=0
 };
 
 template <typename ctx_t>
@@ -48,8 +48,8 @@ struct Prob_s {
 class FCM    // Finite-context model
 {
  public:
-  double          aveEnt = 0;
-  
+  double          aveEnt;
+
   explicit FCM    (const Param&);
   ~FCM            ();
   void buildModel (const Param&);   // Build FCM (finite-context model)
