@@ -54,7 +54,7 @@ class FCM    // Finite-context model
   ~FCM            ();
   void buildModel (const Param&);   // Build FCM (finite-context model)
   void compress   (const Param&);
-  void report     (bool)          const;
+  void report     (const Param&, bool) const;
 
  private:
   vector<ModelPar> model;
