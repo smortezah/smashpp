@@ -70,8 +70,10 @@ int main (int argc, char* argv[])
 //    vector<u8>    vir    {0, 1};
 //    vector<u8>    vk;    vk.resize(14);    std::iota(vk.begin(),vk.end(),1);
 //    vector<float> valpha {1, 0.1, 0.01, 0.001};
-    constexpr bool boolVerbose {false};
-    static string verbose="";    if (boolVerbose) verbose=" -v";
+    constexpr bool bVerbose {false};
+    static string verbose="";  if (bVerbose) verbose=" -v";
+    constexpr bool bRep {true};
+    static string report="";  if (bRep) report=" -R";
     static const vector<string> vTar    {"A"};
     static const vector<string> vRef    {"A"};
 //    static const vector<string> vLevel  {"0", "1"};
@@ -96,7 +98,8 @@ int main (int argc, char* argv[])
             " -r " + vRef[tIdx] +
             " -m " + model +
 //            " -l " + vLevel[lIdx] +
-              verbose
+            verbose +
+            report
         );
           }
     }
