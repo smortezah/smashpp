@@ -392,9 +392,10 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
   aveEnt = sEnt/symsNo;
 }
 
-inline void FCM::report (bool CLEAR) const {
-  fstream fs;
+void FCM::report (bool CLEAR) const {
+//  fstream fs;
 //  CLEAR ? : ;
+  cerr<<"repp";
 }
 
 template <typename ds_t, typename ctx_t>

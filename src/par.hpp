@@ -29,10 +29,11 @@ class Param    // Parameters
   bool   verbose;
   u8     nthr;
   string modelsPars;
+  bool   rep;
   
   // Define Param::Param(){} in *.hpp => compile error
   Param () : tar(""), ref(""), level(DEF_LVL), verbose(false), nthr(DEF_THR),
-             modelsPars("") {}
+             modelsPars(""), rep(false) {}
              
   void parse (int argc, char**& argv) {
     if (argc < 2) {
@@ -76,6 +77,9 @@ class Param    // Parameters
         }
         else if ((*i=="-m" || *i=="--model") && i+1 != vArgs.end()) {
           modelsPars = *++i;
+        }
+        else if (*i=="-R" || *i=="--report") {
+          rep = true;
         }
       }
       
@@ -138,13 +142,14 @@ class Param    // Parameters
       << "    -t [FILE], --tar          target file    -- MANDATORY"     << '\n'
       << "    -r [FILE], --ref          reference file -- MANDATORY"     << '\n'
       << "    -l [NUM],  --level        level"                           << '\n'
-      << "    -n [NUM],  --nthr         number of threads"               << '\n'
       << "    -v,        --verbose      more information"                << '\n'
+      << "    -n [NUM],  --nthr         number of threads"               << '\n'
       << "    -m [ir,k,alpha[,log2(w),d]:...],  --model    parameters of models"<<'\n'//todo
       << "        ir: inverted repeat"<<'\n'
       << "        k:  context size"<<'\n'
       << "        w:  width of sketch in log2 format, e.g., set 10 for w=2^10=1024"<<'\n'
       << "        d:  depth of sketch"<<'\n'
+      << "    -R,        --rep       save results in the \"rep\" file"<< '\n'
       << "    -h,        --help         usage guide"                     << '\n'
                                                                          << '\n'
       << "COPYRIGHT"                                                     << '\n'
