@@ -392,10 +392,22 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
   aveEnt = sEnt/symsNo;
 }
 
-void FCM::report (bool CLEAR) const {
-//  fstream fs;
-//  CLEAR ? : ;
-  cerr<<"repp";
+// Called from main -- MUST NOT be inline
+void FCM::report (const Param& p, bool clear) const {
+  fstream fs;
+  if (clear) {
+    fs.open(p.report, fstream::in | fstream::out);
+    fs << "ir\tk\talpha\tH\ttar\tref\n";
+  }
+  else
+    fs.open(p.report, fstream::in | fstream::out | fstream::app);
+  
+  fs << static_cast<u32>(model[0].ir) << '\t' << static_cast<u32>(model[0].k)
+     << '\t' << std::fixed << std::setprecision(3) << model[0].alpha
+     << '\t' << std::fixed << std::setprecision(3) << aveEnt
+     << '\t' << p.tar << '\t' << p.ref << '\n';
+  
+  fs.close();  // Actually done, automatically
 }
 
 template <typename ds_t, typename ctx_t>

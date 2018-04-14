@@ -29,11 +29,11 @@ class Param    // Parameters
   bool   verbose;
   u8     nthr;
   string modelsPars;
-  bool   rep;
+  string report;
   
   // Define Param::Param(){} in *.hpp => compile error
   Param () : tar(""), ref(""), level(DEF_LVL), verbose(false), nthr(DEF_THR),
-             modelsPars(""), rep(false) {}
+             modelsPars(""), report("") {}
              
   void parse (int argc, char**& argv) {
     if (argc < 2) {
@@ -66,20 +66,20 @@ class Param    // Parameters
               ("Error: reference file not specified. Use \"-r fileName\".\n");
           }
         }
-        else if ((*i=="-l" || *i=="--level") && i+1 != vArgs.end()) {
+        else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
           level = static_cast<u8>(stoi(*++i));
         }
         else if (*i=="-v" || *i=="--verbose") {
           verbose = true;
         }
-        else if ((*i=="-n" || *i=="--nthr") && i+1 != vArgs.end()) {
+        else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
           nthr = static_cast<u8>(stoi(*++i));
         }
-        else if ((*i=="-m" || *i=="--model") && i+1 != vArgs.end()) {
+        else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
           modelsPars = *++i;
         }
         else if (*i=="-R" || *i=="--report") {
-          rep = true;
+          report = (i+1!=vArgs.end()) ? *++i : "report.txt";
         }
       }
       
@@ -149,7 +149,7 @@ class Param    // Parameters
       << "        k:  context size"<<'\n'
       << "        w:  width of sketch in log2 format, e.g., set 10 for w=2^10=1024"<<'\n'
       << "        d:  depth of sketch"<<'\n'
-      << "    -R,        --rep       save results in the \"rep\" file"<< '\n'
+      << "    -R,        --report       save results in the \"report\" file"<< '\n'
       << "    -h,        --help         usage guide"                     << '\n'
                                                                          << '\n'
       << "COPYRIGHT"                                                     << '\n'
