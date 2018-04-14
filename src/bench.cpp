@@ -4,10 +4,12 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <memory>
 #include <array>
 #include <vector>
 #include <numeric>
+#include <limits>
 using std::string;
 using std::to_string;
 using std::vector;
@@ -16,9 +18,12 @@ using std::cerr;
 using std::fstream;
 using std::ifstream;
 using std::ofstream;
+using std::istringstream;
 typedef unsigned char   u8;
 typedef unsigned short  u16;
 typedef unsigned int    u32;
+#define IGNORE_LINE(in) \
+        (in).ignore(std::numeric_limits<std::streamsize>::max(), '\n')
 
 // Global
 static const string repName = "report";
@@ -51,33 +56,52 @@ string combine (u8 ir, u8 k, float alpha) {
   return to_string(ir)+","+to_string(k)+","+to_string(alpha);
 }
 
-void loadReport () {
+void plot () {
   ifstream ifs(repName);
   vector<u8>     vir    {};
   vector<u8>     vk     {};
   vector<float>  valpha {};
   vector<double> vent   {};
-  string tar;
-  string ref;
+  vector<string> vtar   {};
+  vector<string> vref   {};
   
-  u8     ir;
-  u8     k;
-  float  alpha;
-  double ent;
+  IGNORE_LINE(ifs);  // Ignore the header line
+  for (string line; getline(ifs, line);) {
+    u8 ir;  u8 k;  float alpha;  double ent;  string tar;  string ref;
+    
+    istringstream ss(line);
+    ss >> tar >> ref >> ir >> k >> alpha >> ent;
+    
+    vir.emplace_back(ir);   vk.emplace_back(k);     valpha.emplace_back(alpha);
+    vent.emplace_back(ent); vtar.emplace_back(tar); vref.emplace_back(ref);
+  }
   
+  for (auto a:vir)     cerr << a << ' ';
+  cerr << '\n';
+  for (auto a:vk)      cerr << a << ' ';
+  cerr << '\n';
+  for (auto a:valpha)  cerr << a << ' ';
+  cerr << '\n';
+  for (auto a:vent)    cerr << a << ' ';
+  cerr << '\n';
   
   
   ifs.close();
 }
 
-void plot () {
-  loadReport();
+void writeHeader (bool append) {
+  ofstream f;
+  if (append)  f.open(repName, ofstream::app);
+  else         f.open(repName);
+  f << "tar\tref\tir\tk\talpha\tH\n";
+  f.close();
 }
 
 
 int main (int argc, char* argv[])
 {
-  try {
+  try {bool writeHdr=false, execute=false, plt=true;
+  
 //  static std::vector<std::vector<u8>> level;
     vector<u8>    vir    {0, 1};
     vector<u8>    vk     {1, 2};
@@ -97,10 +121,11 @@ int main (int argc, char* argv[])
 ////      {"0,12,0.6:1,14,0.9:0,5,0.2:1,17,0.4,20,5"};
 ////    {"0,12,0.6:0,5,0.2:1,17,0.4,20,5:1,14,0.9"};
 
-//    ofstream fs("report");
-//    fs << "ir\tk\talpha\tH\ttar\tref\n";
-//    fs.close();
     
+    if (writeHdr) {
+    writeHeader(false);
+    }
+    if (execute) {
     for (u8 tIdx=0; tIdx!=vTar.size(); ++tIdx) {
 //      for (u8 lIdx=0; lIdx!=vLevel.size(); ++lIdx)
       for (const auto& ir : vir)
@@ -108,20 +133,21 @@ int main (int argc, char* argv[])
           for (const auto& a : valpha) {
             string model {combine(ir, k, a)};
 
-            cerr << model<<'\n';
+//            cerr << model<<'\n';
         run("./smashpp"
             " -t " + vTar[tIdx] +
             " -r " + vRef[tIdx] +
             " -m " + model +
 //            " -l " + vLevel[lIdx] +
-            verbose +
-            report
+            report +
+            verbose
         );
           }
     }
-    
-    // Plot results
-    plot();
+    }
+    if (plt) {
+      plot();// Plot results
+    }
   }
   catch (std::exception& e) { cerr << e.what(); }
   
