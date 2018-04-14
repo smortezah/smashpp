@@ -32,7 +32,7 @@ int main (int argc, char* argv[])
     // Result
     cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
     // Report
-    constexpr bool clear=false;  m->report(p, clear);
+    m->report(p);
     
     delete m;
   }
