@@ -28,9 +28,37 @@ typedef unsigned int    u32;
 // Global
 static const string repName = "report";
 
+class gnuplot
+{
+ public:
+  gnuplot () {
+    gnuplotpipe = popen("gnuplot -persist", "w");
+    if (!gnuplotpipe)
+      cerr << "Gnuplot not found!";
+  }
+  ~gnuplot () {
+    fprintf(gnuplotpipe, "exit\n");
+    pclose(gnuplotpipe);
+  }
+  void operator<< (const string& cmd) {
+    fprintf(gnuplotpipe, "%s\n", cmd.c_str());
+    fflush(gnuplotpipe);
+  }
+  
+ private:
+  FILE* gnuplotpipe;
+};
+
 
 void run (const string& cmd) {
   if (std::system(cmd.c_str()) != 0)
+    throw std::runtime_error("Error: failed to execute.");
+}
+
+void runGnuplot (const string& cmd) {
+  string gnuplotCmd = "gnuplot -p -e ";    // -p=-persist
+  gnuplotCmd += "\"" + cmd + "\"";
+  if (std::system(gnuplotCmd.c_str()) != 0)
     throw std::runtime_error("Error: failed to execute.");
 }
 
@@ -58,8 +86,8 @@ string combine (u8 ir, u8 k, float alpha) {
 
 void plot () {
   ifstream ifs(repName);
-  vector<u8>     vir    {};
-  vector<u8>     vk     {};
+  vector<u16>     vir    {};
+  vector<u16>     vk     {};
   vector<float>  valpha {};
   vector<double> vent   {};
   vector<string> vtar   {};
@@ -67,7 +95,7 @@ void plot () {
   
   IGNORE_LINE(ifs);  // Ignore the header line
   for (string line; getline(ifs, line);) {
-    u8 ir;  u8 k;  float alpha;  double ent;  string tar;  string ref;
+    u16 ir;  u16 k;  float alpha;  double ent;  string tar;  string ref;
     
     istringstream ss(line);
     ss >> tar >> ref >> ir >> k >> alpha >> ent;
@@ -76,14 +104,27 @@ void plot () {
     vent.emplace_back(ent); vtar.emplace_back(tar); vref.emplace_back(ref);
   }
   
-  for (auto a:vir)     cerr << a << ' ';
-  cerr << '\n';
-  for (auto a:vk)      cerr << a << ' ';
-  cerr << '\n';
-  for (auto a:valpha)  cerr << a << ' ';
-  cerr << '\n';
-  for (auto a:vent)    cerr << a << ' ';
-  cerr << '\n';
+  string cmd = "plot '-' using 1:2 with lines\n";
+  for(int i=0;i<3;i+=2) cmd+=to_string(vk[i])+" "+to_string(vent[i])+"\n";
+  cmd+="e\n";
+  cerr<<cmd;
+//  runGnuplot(cmd);
+  std::cin>>"hi";
+//  gnuplot p;
+//  p << "plot '-' using 1:2 with lines";
+//  p << "1 4";
+//  p << "2 5";
+//  p << "e";
+  
+  
+//  for (auto a:vir)     cerr << a << ' ';
+//  cerr << '\n';
+//  for (auto a:vk)      cerr << a << ' ';
+//  cerr << '\n';
+//  for (auto a:valpha)  cerr << a << ' ';
+//  cerr << '\n';
+//  for (auto a:vent)    cerr << a << ' ';
+//  cerr << '\n';
   
   
   ifs.close();
