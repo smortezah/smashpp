@@ -63,7 +63,7 @@ inline void FCM::setModels (const Param& p) {
             [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
 }
 
-template <typename inIter_t, typename vec_t>
+template <typename inIter_t, typename vec_t=vector<string>>
 inline void FCM::split (inIter_t first, inIter_t last, char delim,
                         vec_t& container) const {
   while (true) {
