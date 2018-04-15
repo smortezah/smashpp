@@ -86,8 +86,8 @@ string combine (u8 ir, u8 k, float alpha) {
 
 void plot () {
   ifstream ifs(repName);
-  vector<u16>     vir    {};
-  vector<u16>     vk     {};
+  vector<u16>    vir    {};
+  vector<u16>    vk     {};
   vector<float>  valpha {};
   vector<double> vent   {};
   vector<string> vtar   {};
@@ -104,13 +104,13 @@ void plot () {
     vent.emplace_back(ent); vtar.emplace_back(tar); vref.emplace_back(ref);
   }
   
-  string cmd = "plot '-' using 1:2 with lines\n";
+  string cmd = "plot '-' with lines\n";
   for(int i=0;i<3;i+=2) cmd+=to_string(vk[i])+" "+to_string(vent[i])+"\n";
-  cmd+="e\n";
+  cmd+="e";
   cerr<<cmd;
 //  runGnuplot(cmd);
-  std::cin>>"hi";
-//  gnuplot p;
+  gnuplot p;
+  p << cmd;
 //  p << "plot '-' using 1:2 with lines";
 //  p << "1 4";
 //  p << "2 5";

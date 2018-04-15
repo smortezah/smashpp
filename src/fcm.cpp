@@ -35,25 +35,17 @@ FCM::~FCM () {
 }
 
 inline void FCM::setModels (const Param& p) {
-  auto begVMs = p.modelsPars.begin();
   vector<string> vMdlsPars;
-  for (auto i=begVMs; i!=p.modelsPars.end(); ++i)
-    if (*i==':') { vMdlsPars.emplace_back(string(begVMs,i));    begVMs=i+1; }
-  vMdlsPars.emplace_back(string(begVMs, p.modelsPars.end()));
-  
+  split(p.modelsPars.begin(), p.modelsPars.end(), ':', vMdlsPars);
   // Set each models parameters
   for (const auto& mp : vMdlsPars) {
-    vector<string> vMPar;  vMPar.resize(mp.size());  vMPar.clear();
-    auto begVM  = mp.begin();
-    u8   nComma = 0;
-    for (auto i=begVM; i!=mp.end(); ++i)
-      if (*i==',') { ++nComma; vMPar.emplace_back(string(begVM,i)); begVM=i+1; }
-    vMPar.emplace_back(string(begVM, mp.end()));
-    if (nComma == 2)
+    vector<string> vMPar;
+    split(mp.begin(), mp.end(), ',', vMPar);
+    if (vMPar.size() == 3)
       model.emplace_back(
         ModelPar(static_cast<u8>(stoi(vMPar[0])),
                  static_cast<u8>(stoi(vMPar[1])), stof(vMPar[2])));
-    else if (nComma == 4)
+    else if (vMPar.size() == 5)
       model.emplace_back(
         ModelPar(static_cast<u8>(stoi(vMPar[0])),
                  static_cast<u8>(stoi(vMPar[1])), stof(vMPar[2]),
@@ -69,6 +61,18 @@ inline void FCM::setModels (const Param& p) {
   // Models MUST be sorted by 'k'=ctx size
   std::sort(model.begin(), model.end(),
             [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
+}
+
+template <typename inIter_t, typename vec_t>
+inline void FCM::split (inIter_t first, inIter_t last, char delim,
+                        vec_t& container) const {
+  while (true) {
+    inIter_t found = std::find(first, last, delim);
+    container.emplace_back(string(first,found));
+    if (found == last)
+      break;
+    first = ++found;
+  }
 }
 
 inline void FCM::allocModels () {
