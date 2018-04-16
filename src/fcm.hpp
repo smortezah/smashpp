@@ -66,7 +66,7 @@ class FCM    // Finite-context model
   u8               IR_COMB;
   
   void setModels    (const Param&); // Set models parameters
-  template <typename inIter_t, typename vec_t=vector<string>>  // Split by delim
+  template <typename inIter_t, typename vec_t/*=vector<string>*/>//Split by dlim
   void split        (inIter_t, inIter_t, char, vec_t&) const;
   void allocModels  ();             // Allocate memory to models
   void setModesComb ();             // Set combination of modes of models
