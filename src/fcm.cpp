@@ -108,6 +108,8 @@ void FCM::buildModel (const Param& p) {
   cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
   (p.nthr==1 || model.size()==1) ? bldMdlOneThr(p) : bldMdlMulThr(p)/*Mul thr*/;
   cerr << "Finished";
+  //todo
+  sketch4->print();
 }
 
 inline void FCM::bldMdlOneThr (const Param &p) {
@@ -214,7 +216,12 @@ inline void FCM::compDS1 (const string& tar, msk_t mask, const ds_t& ds) {
       if (c != '\n') {
         ++symsNo;
         pObj.config(c, ctx);
-        sEnt += log2(probR(ds, pObj));
+        
+        double d;//todo
+        sEnt += log2(d=probR(ds, pObj));//todo
+        //todo
+        cerr<<"probR "<<d<<'\n';
+  
         updateCtx(ctx, pObj);    // Update ctx
       }
     }
@@ -421,6 +428,12 @@ template <typename ds_t, typename ctx_t>
 inline double FCM::probR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
   const array<decltype(ds->query(0)), 4> c
     {ds->query(p.l), ds->query(p.l|1), ds->query(p.l|2), ds->query(p.l|3)};
+  //todo
+  cerr<<"z ";
+  for(auto a:c)cerr<<a<<' ';
+  cerr<<'\n';
+  cerr<<"sym "<<int(p.numSym)<<'\n';
+  
   return (std::accumulate(c.begin(),c.end(),0)+p.sAlpha) /(c[p.numSym]+p.alpha);
 }
 
