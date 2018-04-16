@@ -32,9 +32,9 @@ class Gnuplot
 {
  public:
   Gnuplot () {
-    gnuplotpipe = popen("Gnuplot -persist", "w");
+    gnuplotpipe = popen("gnuplot -persist", "w");
     if (!gnuplotpipe)
-      cerr << "Gnuplot not found!";
+      cerr << "gnuplot not found!";
   }
   ~Gnuplot () {
     fprintf(gnuplotpipe, "exit\n");
@@ -102,55 +102,81 @@ string makeCmdQuote (const string& keywords, const string& myCmd) {
   return keywords + " \"" + myCmd + "\"\n";
 }
 
-void plot (const PlotPar& p) {
-  ifstream ifs(repName);
-  vector<u16>    vir    {};
-  vector<u16>    vk     {};
-  vector<float>  valpha {};
-  vector<double> vent   {};
-  vector<string> vtar   {};
-  vector<string> vref   {};
-  
-  IGNORE_LINE(ifs);  // Ignore the header line
-  for (string line; getline(ifs, line);) {
-    u16 ir;  u16 k;  float alpha;  double ent;  string tar;  string ref;
-    
-    istringstream ss(line);
-    ss >> tar >> ref >> ir >> k >> alpha >> ent;
-    
-    vir.emplace_back(ir);   vk.emplace_back(k);     valpha.emplace_back(alpha);
-    vent.emplace_back(ent); vtar.emplace_back(tar); vref.emplace_back(ref);
-  }
-  
+void plot (
+//  const PlotPar& p
+) {
+//  ifstream ifs(repName);
+//  vector<u16>    vir    {};
+//  vector<u16>    vk     {};
+//  vector<float>  valpha {};
+//  vector<double> vent   {};
+//  vector<string> vtar   {};
+//  vector<string> vref   {};
+//
+//  IGNORE_LINE(ifs);  // Ignore the header line
+//  for (string line; getline(ifs, line);) {
+//    u16 ir;  u16 k;  float alpha;  double ent;  string tar;  string ref;
+//
+//    istringstream ss(line);
+//    ss >> tar >> ref >> ir >> k >> alpha >> ent;
+//
+//    vir.emplace_back(ir);   vk.emplace_back(k);     valpha.emplace_back(alpha);
+//    vent.emplace_back(ent); vtar.emplace_back(tar); vref.emplace_back(ref);
+//  }
+//
   string cmd;
-  cmd+=makeCmd("set terminal", p.terminal);
-  cmd+=makeCmdQuote("set output", p.output);
-  cmd+=makeCmdQuote("set title", title);
-  cmd+=makeCmdQuote("set xlabel", xlabel);
-  cmd+=makeCmdQuote("set xlabel", xlabel);
-  cmd+=makeCmdQuote("set ylabel", ylabel);
-  cmd+=makeCmdQuote("set xtics", xtics);
-  cmd+= "plot '-' with lines, '-' with lines\n";
-  for (int i = 0; i<14; i += 1)
-    cmd += to_string(vk[i])+" "+to_string(vent[i])+"\n";
+//  cmd+=makeCmd("set terminal", p.terminal);
+//  cmd+=makeCmdQuote("set output", p.output);
+//  cmd+=makeCmdQuote("set title", title);
+//  cmd+=makeCmdQuote("set xlabel", xlabel);
+//  cmd+=makeCmdQuote("set ylabel", ylabel);
+//  cmd+=makeCmdQuote("set xtics", xtics);
+  
+  cmd+=makeCmd("set terminal", "pdfcairo");
+  cmd+=makeCmdQuote("set output", "plot.pdf");
+//  cmd+=makeCmdQuote("set title", title);
+  cmd+=makeCmdQuote("set xlabel", "Context size (k)");
+  cmd+=makeCmdQuote("set ylabel", "Average entropy (H)");
+  cmd+=makeCmdQuote("set xtics", "1");
+  cmd+="set key off\n";
+  cmd+= "plot [5:21]'-' with lines, '-', '-', '-', '-', '-', '-'\n";
+//  for (int i = 0; i<14; i += 1)
+//    cmd += to_string(vk[i])+" "+to_string(vent[i])+"\n";
+//  cmd+="e\n";
+//  for (int i = 0; i<14; i += 1)
+//    cmd += to_string(vk[i])+" "+to_string(valpha[i])+"\n";
+  cmd+="5 2.000\n";
+  cmd+="10 1.978\n";
+  cmd+="12 1.577\n";
+  cmd+="13 0.807\n";
+  cmd+="14 0.266\n";
   cmd+="e\n";
-  for (int i = 0; i<14; i += 1)
-    cmd += to_string(vk[i])+" "+to_string(valpha[i])+"\n";
-  cmd+="e";
+  cmd+="20 2.678\n";
+  cmd+="e\n";
+  cmd+="20 2.403\n";
+  cmd+="e\n";
+  cmd+="20 2.279\n";
+  cmd+="e\n";
+  cmd+="20 2.195\n";
+  cmd+="e\n";
+  cmd+="20 2.084\n";
+  cmd+="e\n";
+  cmd+="20 2.056\n";
+  cmd+="e\n";
   cerr<<cmd;
   Gnuplot gp;
   gp << cmd;
 
-//  runGnuplot(cmd);
-  
-  ifs.close();
+////  runGnuplot(cmd);
+//
+//  ifs.close();
 }
 
 void writeHeader (bool append) {
   ofstream f;
   if (append)  f.open(repName, ofstream::app);
   else         f.open(repName);
-  f << "tar\tref\tir\tk\talpha\tH\n";
+  f << "tar\tref\tir\tk\talpha\tw\td\tH\n";
   f.close();
 }
 
@@ -204,12 +230,14 @@ int main (int argc, char* argv[])
     }
     }
     if (plt) {// Plot results
-      plot("pdfcairo",
-           "plot.pdf",
-           "Average entropy VS. context size",
-           "Context size (k)",
-           "Average entropy (H)",
-           "1"
+      
+      plot(
+//        "pdfcairo",
+//           "plot.pdf",
+//           "Average entropy VS. context size",
+//           "Context size (k)",
+//           "Average entropy (H)",
+//           "1"
       );
     }
   }

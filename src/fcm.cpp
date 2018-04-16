@@ -399,9 +399,13 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
 // Called from main -- MUST NOT be inline
 void FCM::report (const Param& p) const {
   ofstream f(p.report, ofstream::out | ofstream::app);
-  f << p.tar << '\t' << p.ref << '\t' << static_cast<u32>(model[0].ir)
+  f << p.tar
+    << '\t' << p.ref
+    << '\t' << static_cast<u32>(model[0].ir)
     << '\t' << static_cast<u32>(model[0].k)
     << '\t' << std::fixed << std::setprecision(3) << model[0].alpha
+    << '\t' << (model[0].w==0 ? "" : "2^") << static_cast<u32>(log2(model[0].w))
+    << '\t' << static_cast<u32>(model[0].d)
     << '\t' << std::fixed << std::setprecision(3) << aveEnt << '\n';
   f.close();  // Actually done, automatically
 }
