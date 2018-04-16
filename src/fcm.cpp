@@ -217,7 +217,7 @@ inline void FCM::compDS1 (const string& tar, msk_t mask, const ds_t& ds) {
         ++symsNo;
         pObj.config(c, ctx);
         
-        double d;//todo
+        double d; //todo
         sEnt += log2(d=probR(ds, pObj));//todo
         //todo
         cerr<<"probR "<<d<<'\n';
