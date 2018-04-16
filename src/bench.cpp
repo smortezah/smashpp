@@ -28,15 +28,15 @@ typedef unsigned int    u32;
 // Global
 static const string repName = "report";
 
-class gnuplot
+class Gnuplot
 {
  public:
-  gnuplot () {
-    gnuplotpipe = popen("gnuplot -persist", "w");
+  Gnuplot () {
+    gnuplotpipe = popen("Gnuplot -persist", "w");
     if (!gnuplotpipe)
       cerr << "Gnuplot not found!";
   }
-  ~gnuplot () {
+  ~Gnuplot () {
     fprintf(gnuplotpipe, "exit\n");
     pclose(gnuplotpipe);
   }
@@ -50,13 +50,23 @@ class gnuplot
 };
 
 
+struct PlotPar {
+  PlotPar () : terminal("pdfcairo"), output("plot.pdf") {}
+  
+  string terminal;
+  string output;
+  
+  string data;
+};
+
+
 void run (const string& cmd) {
   if (std::system(cmd.c_str()) != 0)
     throw std::runtime_error("Error: failed to execute.");
 }
 
 void runGnuplot (const string& cmd) {
-  string gnuplotCmd = "gnuplot -p -e ";    // -p=-persist
+  string gnuplotCmd = "Gnuplot -p -e ";    // -p=-persist
   gnuplotCmd += "\"" + cmd + "\"";
   if (std::system(gnuplotCmd.c_str()) != 0)
     throw std::runtime_error("Error: failed to execute.");
@@ -84,7 +94,15 @@ string combine (u8 ir, u8 k, float alpha) {
   return to_string(ir)+","+to_string(k)+","+to_string(alpha);
 }
 
-void plot () {
+string makeCmd (const string& keywords, const string& myCmd) {
+  return keywords + " " + myCmd + "\n";
+}
+
+string makeCmdQuote (const string& keywords, const string& myCmd) {
+  return keywords + " \"" + myCmd + "\"\n";
+}
+
+void plot (const PlotPar& p) {
   ifstream ifs(repName);
   vector<u16>    vir    {};
   vector<u16>    vk     {};
@@ -104,28 +122,26 @@ void plot () {
     vent.emplace_back(ent); vtar.emplace_back(tar); vref.emplace_back(ref);
   }
   
-  string cmd = "plot '-' with lines\n";
-  for(int i=0;i<3;i+=2) cmd+=to_string(vk[i])+" "+to_string(vent[i])+"\n";
+  string cmd;
+  cmd+=makeCmd("set terminal", p.terminal);
+  cmd+=makeCmdQuote("set output", p.output);
+  cmd+=makeCmdQuote("set title", title);
+  cmd+=makeCmdQuote("set xlabel", xlabel);
+  cmd+=makeCmdQuote("set xlabel", xlabel);
+  cmd+=makeCmdQuote("set ylabel", ylabel);
+  cmd+=makeCmdQuote("set xtics", xtics);
+  cmd+= "plot '-' with lines, '-' with lines\n";
+  for (int i = 0; i<14; i += 1)
+    cmd += to_string(vk[i])+" "+to_string(vent[i])+"\n";
+  cmd+="e\n";
+  for (int i = 0; i<14; i += 1)
+    cmd += to_string(vk[i])+" "+to_string(valpha[i])+"\n";
   cmd+="e";
   cerr<<cmd;
+  Gnuplot gp;
+  gp << cmd;
+
 //  runGnuplot(cmd);
-  gnuplot p;
-  p << cmd;
-//  p << "plot '-' using 1:2 with lines";
-//  p << "1 4";
-//  p << "2 5";
-//  p << "e";
-  
-  
-//  for (auto a:vir)     cerr << a << ' ';
-//  cerr << '\n';
-//  for (auto a:vk)      cerr << a << ' ';
-//  cerr << '\n';
-//  for (auto a:valpha)  cerr << a << ' ';
-//  cerr << '\n';
-//  for (auto a:vent)    cerr << a << ' ';
-//  cerr << '\n';
-  
   
   ifs.close();
 }
@@ -141,12 +157,13 @@ void writeHeader (bool append) {
 
 int main (int argc, char* argv[])
 {
-  try {bool writeHdr=false, execute=false, plt=true;
+  try {bool writeHdr= false, execute= false, plt= true;
   
 //  static std::vector<std::vector<u8>> level;
-    vector<u8>    vir    {0, 1};
-    vector<u8>    vk     {1, 2};
-    vector<float> valpha {1, 0.1};
+    vector<u8>    vir    {0};
+//    vector<u8>    vk     {1, 2, 3, 4, 5};
+    vector<u8>    vk;    vk.resize(14);    std::iota(vk.begin(),vk.end(),1);
+    vector<float> valpha {1};
 //    vector<u8>    vir    {0, 1};
 //    vector<u8>    vk;    vk.resize(14);    std::iota(vk.begin(),vk.end(),1);
 //    vector<float> valpha {1, 0.1, 0.01, 0.001};
@@ -186,8 +203,14 @@ int main (int argc, char* argv[])
           }
     }
     }
-    if (plt) {
-      plot();// Plot results
+    if (plt) {// Plot results
+      plot("pdfcairo",
+           "plot.pdf",
+           "Average entropy VS. context size",
+           "Context size (k)",
+           "Average entropy (H)",
+           "1"
+      );
     }
   }
   catch (std::exception& e) { cerr << e.what(); }
