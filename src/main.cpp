@@ -12,10 +12,12 @@
 #include <iostream>
 #include <chrono>
 #include <iomanip>      // setw, setprecision
+//#include <memory>
 #include "par.hpp"
 #include "fcm.hpp"
 using std::cout;
 using std::setprecision;
+using std::make_unique;
 
 
 int main (int argc, char* argv[])
@@ -23,7 +25,8 @@ int main (int argc, char* argv[])
   try {
     Param p;
     p.parse(argc, argv);
-    auto* m = new FCM(p);
+//    auto* m = new FCM(p);
+    auto m = make_unique<FCM>(p);
     
     // Build models  // Start time// Finish time// Elapsed time
     auto t0{now()};  m->buildModel(p);  auto t1{now()};  hms(t1-t0);
@@ -34,7 +37,7 @@ int main (int argc, char* argv[])
     // Report
     m->report(p); // Without "-R" does nothing
     
-    delete m;
+//    delete m;
   }
   catch (std::exception& e) { cout << e.what(); }
   catch (...) { return EXIT_FAILURE; }
