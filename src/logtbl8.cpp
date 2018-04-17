@@ -52,7 +52,7 @@ void LogTable8::load (ifstream& ifs) const {
 }
 
 void LogTable8::print () const {
-  u8 context_width {12};
+  constexpr u8 context_width {12};
   cerr.width(context_width);  cerr<<std::left<<"Context";
   cerr << "Count\n";
   cerr << "-------------------\n";

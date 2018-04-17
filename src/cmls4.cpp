@@ -28,7 +28,7 @@ void CMLS4::config (u64 w_, u8 d_) {
 }
 
 void CMLS4::update (u64 ctx) {
-  auto c {minLogCtr(ctx)};
+  const auto c {minLogCtr(ctx)};
   if ((tot++ % POW2[c]) == 0) {      // Increase decision //todo. base 2
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
@@ -40,7 +40,7 @@ void CMLS4::update (u64 ctx) {
 
 inline u8 CMLS4::minLogCtr (u64 ctx) const {
   u8 min {std::numeric_limits<u8>::max()};
-  for (u8 i=0; i!=d && min!=0; i++) {
+  for (u8 i=0; i!=d && min!=0; ++i) {
     auto lg = readCell(hash(i,ctx));
     if (lg < min)
       min = lg;
@@ -57,7 +57,7 @@ inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal
 }
 
 inline void CMLS4::setAB () {
-  u64 seed {0};
+  constexpr u64 seed {0};
   std::default_random_engine e(seed);
   std::uniform_int_distribution<u64> uDistA(0, (1ull<<63)-1);     // k <= 2^63-1
   std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
@@ -68,9 +68,9 @@ inline void CMLS4::setAB () {
 }
 
 u16 CMLS4::query (u64 ctx) const {
-  auto c {minLogCtr(ctx)};
-  return static_cast<u16>(POW2[c]-1); //todo. base 2. otherwise (b^c-1)/(b-1)
-//  return static_cast<u16>(power(2,c)-1);
+  //todo. base 2. otherwise (b^c-1)/(b-1)
+  return FREQ2[minLogCtr(ctx)];
+//  return static_cast<u16>(POW2[minLogCtr(ctx)]-1);
 }
 
 u64 CMLS4::getTotal () const {
@@ -103,7 +103,7 @@ void CMLS4::load (ifstream& ifs) const {
 }
 
 void CMLS4::print () const {
-  u8 cell_width {3};
+  constexpr u8 cell_width {3};
   for (u8 i=0; i!=d; i++) {
     cerr << "d_" << static_cast<u16>(i) << ":  ";
     for (u64 j=0; j!=w; j++) {
@@ -115,7 +115,7 @@ void CMLS4::print () const {
 }
 
 inline void CMLS4::printAB () const {
-  u8 w{23}, bl{3};
+  constexpr u8 w{23}, bl{3};
   cerr.width(w);  cerr<<std::left<<"a";
   cerr << "b\n";
   for (u8 i=0; i!=w-bl; ++i)  cerr<<"-";

@@ -108,20 +108,18 @@ void FCM::buildModel (const Param& p) {
   cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
   (p.nthr==1 || model.size()==1) ? bldMdlOneThr(p) : bldMdlMulThr(p)/*Mul thr*/;
   cerr << "Finished";
-  //todo
-  sketch4->print();
 }
 
 inline void FCM::bldMdlOneThr (const Param &p) {
   for (const auto& m : model) {  // Mask: 4<<2k-1 = 4^(k+1)-1
     if (m.mode == MODE::TABLE_64)
-      createDS(p.ref, static_cast<u32>((4<<(m.k<<1))-1)/*Mask 32*/, tbl64);
+      createDS(p.ref, (4ul<<(m.k<<1))-1 /*Mask 32*/, tbl64);  // ul is MANDATORY
     else if (m.mode == MODE::TABLE_32)
-      createDS(p.ref, static_cast<u32>((4<<(m.k<<1))-1)/*Mask 32*/, tbl32);
+      createDS(p.ref, (4ul<<(m.k<<1))-1 /*Mask 32*/, tbl32);
     else if (m.mode == MODE::LOG_TABLE_8)
-      createDS(p.ref, static_cast<u32>((4<<(m.k<<1))-1)/*Mask 32*/, logtbl8);
+      createDS(p.ref, (4ul<<(m.k<<1))-1 /*Mask 32*/, logtbl8);
     else if (m.mode == MODE::SKETCH_8)
-      createDS(p.ref, static_cast<u64>((4<<(m.k<<1))-1)/*Mask 64*/, sketch4);
+      createDS(p.ref, (4ull<<(m.k<<1))-1/*Mask 64*/, sketch4);
     else
       cerr << "Error: the model cannot be built.\n";
   }
@@ -154,10 +152,10 @@ inline void FCM::bldMdlMulThr (const Param& p) {
   for (auto& t : thrd)  if (t.joinable()) t.join();  // Join leftover threads
 }
 
-template <typename mask_t, typename ds_t>
-inline void FCM::createDS (const string& ref, mask_t mask, ds_t& ds) {
+template <typename msk_t, typename ds_t>
+inline void FCM::createDS (const string& ref, msk_t mask, ds_t& ds) {
   ifstream rf(ref);  char c;
-  for (mask_t ctx=0; rf.get(c);) {
+  for (msk_t ctx=0; rf.get(c);) {
     if (c != '\n') {
       ctx = ((ctx<<2) & mask) | NUM[static_cast<u8>(c)];    // Update ctx
       ds->update(ctx);
@@ -175,9 +173,9 @@ void FCM::compress (const Param& p) {
   u64         mask64 {};
   for (const auto& m : model) {
     if (m.mode==MODE::SKETCH_8)
-      mask64=static_cast<u64>((1<<(m.k<<1)) - 1);
+      mask64 = (1ull<<(m.k<<1)) - 1;
     else
-      mask32.emplace_back(static_cast<u32>((1<<(m.k<<1)) - 1)); // 1<<2k-1=4^k-1
+      mask32.emplace_back((1ul<<(m.k<<1)) - 1); // 1<<2k-1=4^k-1
   }
   switch (MODE_COMB) {
     case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
@@ -216,13 +214,8 @@ inline void FCM::compDS1 (const string& tar, msk_t mask, const ds_t& ds) {
       if (c != '\n') {
         ++symsNo;
         pObj.config(c, ctx);
-        
-        double d; //todo
-        sEnt += log2(d=probR(ds, pObj));//todo
-        //todo
-        cerr<<"probR "<<d<<'\n';
-  
-        updateCtx(ctx, pObj);    // Update ctx
+        sEnt += log2(probR(ds, pObj));
+        updateCtx(ctx, pObj);
       }
     }
   }
@@ -427,13 +420,7 @@ inline double FCM::prob (const ds_t& ds, const Prob_s<ctx_t>& p) const {
 template <typename ds_t, typename ctx_t>
 inline double FCM::probR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
   const array<decltype(ds->query(0)), 4> c
-    {ds->query(p.l), ds->query(p.l|1), ds->query(p.l|2), ds->query(p.l|3)};
-  //todo
-  cerr<<"z ";
-  for(auto a:c)cerr<<a<<' ';
-  cerr<<'\n';
-  cerr<<"sym "<<int(p.numSym)<<'\n';
-  
+  {ds->query(p.l), ds->query(p.l|1), ds->query(p.l|2), ds->query(p.l|3)};
   return (std::accumulate(c.begin(),c.end(),0)+p.sAlpha) /(c[p.numSym]+p.alpha);
 }
 
