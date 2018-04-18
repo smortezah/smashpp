@@ -85,7 +85,7 @@ class FCM    // Finite-context model
     typename ds0_t, typename ds1_t, typename ds2_t>
   void compDS3 (const string&, msk0_t, msk1_t, msk2_t,
                 const ds0_t&, const ds1_t&, const ds2_t&);
-  //todo. void compDS4
+  void compDS4 (const string&);     // It has all possible models
   
   template <typename ds_t, typename ctx_t>
   double prob    (const ds_t&, const Prob_s<ctx_t>&) const;  // Probability
