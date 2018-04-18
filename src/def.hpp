@@ -15,15 +15,16 @@ static const std::string VERSION   {"18.04"};
 static const std::string DEV_YEARS {"2018"};
 
 // Typedef
-typedef signed char         i8;
-typedef unsigned char       u8;
-typedef signed short        i16;
-typedef unsigned short      u16;
-typedef signed int          i32;
-typedef unsigned int        u32;
-typedef signed long long    i64;
-typedef unsigned long long  u64;
-typedef std::chrono::duration<double>  dur_t;
+//typedef signed char         i8;
+using i8    = signed char;
+using u8    = unsigned char;
+using i16   = signed short;
+using u16   = unsigned short;
+using i32   = signed int;
+using u32   = unsigned int;
+using i64   = signed long long;
+using u64   = unsigned long long;
+using dur_t = std::chrono::duration<double>;
 
 // Metaprogram
 // Power a^n
@@ -47,7 +48,7 @@ static constexpr u32 G            {64};   // Machine word size - univers hash fn
 static constexpr u8  LOG_BASE     {2};    // Logarithmic counting
 static constexpr float DEF_GAMMA  {0.1};  // Default gamma for multiple models
 
-typedef std::unordered_map<u64, std::array<u64,ALPH_SZ>>  htbl_t; //faster t a[]
+//using htbl_t = std::unordered_map<u64, std::array<u64,ALPH_SZ>>; //faster th a[]
 
 // Enum
 enum MODE {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
