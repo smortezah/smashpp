@@ -171,11 +171,13 @@ void FCM::compress (const Param& p) {
     cerr << "Compressing...\n";
   vector<u32> mask32 {};
   u64         mask64 {};
-  for (const auto& m : model) {
-    if (m.mode==MODE::SKETCH_8)
-      mask64 = (1ull<<(m.k<<1)) - 1;
-    else
-      mask32.emplace_back((1ul<<(m.k<<1)) - 1); // 1<<2k-1=4^k-1
+  if (MODE_COMB != 15) {
+    for (const auto &m : model) {
+      if (m.mode == MODE::SKETCH_8)
+        mask64 = (1ull<<(m.k<<1)) - 1;
+      else
+        mask32.emplace_back((1ul<<(m.k<<1)) - 1);  // 1<<2k-1=4^k-1
+    }
   }
   switch (MODE_COMB) {
     case 1:   compDS1(p.tar, mask32[0], tbl64);                        break;
@@ -196,7 +198,7 @@ void FCM::compress (const Param& p) {
                       tbl64, logtbl8, sketch4);                        break;
     case 14:  compDS3(p.tar, mask32[0], mask32[1], mask64,
                       tbl32, logtbl8, sketch4);                        break;
-//    case 15:  compressDS4(p.tar, tbl64, tbl32, logtbl8, sketch4);      break;
+    case 15:  compDS4(p.tar);                                          break;
     default:  cerr << "Error: the models cannot be built.";            break;
   }
   cerr << "Finished";
@@ -396,6 +398,43 @@ inline void FCM::compDS3 (const string& tar, msk0_t mask0, msk1_t mask1,
   aveEnt = sEnt/symsNo;
 }
 
+inline void FCM::compDS4 (const string& tar) {
+  vector<u32> mask32 {};
+  u64         mask64 {};
+  for (const auto &m : model) {
+    if (m.mode == MODE::SKETCH_8)
+      mask64 = (1ull<<(m.k<<1)) - 1;
+    else
+      mask32.emplace_back((1ul<<(m.k<<1)) - 1);  // 1<<2k-1=4^k-1
+  }
+  u32 ctx0{0}, ctxIr0{mask32[0]};   // Ctx, ir (int) sliding through the dataset
+  u32 ctx1{0}, ctxIr1{mask32[1]};
+  u32 ctx2{0}, ctxIr2{mask32[2]};
+  u64 ctx3{0}, ctxIr3{mask64};
+  auto ds0=tbl64;    auto ds1=tbl32;    auto ds2=logtbl8;    auto ds3=sketch4;
+  u64 symsNo {0};                   // No. syms in target file, except \n
+  array<double,4> w {0.25, 0.25, 0.25, 0.25};
+  double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(tar);  char c;
+  Prob_s<u32> ps0 {model[0].alpha, mask32[0], static_cast<u8>(model[0].k<<1)};
+  Prob_s<u32> ps1 {model[1].alpha, mask32[1], static_cast<u8>(model[1].k<<1)};
+  Prob_s<u32> ps2 {model[2].alpha, mask32[2], static_cast<u8>(model[2].k<<1)};
+  Prob_s<u64> ps3 {model[3].alpha, mask64,    static_cast<u8>(model[3].k<<1)};
+  if (IR_COMB==IR::DDDD) {//todo
+    while (tf.get(c)) {
+      if (c != '\n') {
+        ++symsNo;
+        ps0.config(c,ctx0);    ps1.config(c,ctx1);
+        ps2.config(c,ctx2);    ps3.config(c,ctx3);
+        sEnt += entropy<4>(
+          w, {prob(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2), prob(ds3,ps3)});
+        updateCtx(ctx0,ps0);   updateCtx(ctx1,ps1);
+        updateCtx(ctx2,ps2);   updateCtx(ctx3,ps3);
+      }
+    }
+  }
+}
+
 // Called from main -- MUST NOT be inline
 void FCM::report (const Param& p) const {
   ofstream f(p.report, ofstream::out | ofstream::app);
@@ -404,7 +443,7 @@ void FCM::report (const Param& p) const {
     << '\t' << static_cast<u32>(model[0].ir)
     << '\t' << static_cast<u32>(model[0].k)
     << '\t' << std::fixed << std::setprecision(3) << model[0].alpha
-    << '\t' << (model[0].w==0 ? "" : "2^") << static_cast<u32>(log2(model[0].w))
+    << '\t' << (model[0].w==0 ? 0 : static_cast<u32>(log2(model[0].w)))
     << '\t' << static_cast<u32>(model[0].d)
     << '\t' << std::fixed << std::setprecision(3) << aveEnt << '\n';
   f.close();  // Actually done, automatically
