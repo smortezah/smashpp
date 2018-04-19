@@ -400,8 +400,9 @@ inline void FCM::compDS4 (const string& tar) {
   u32 ctx0{0}, ctxIr0{mask32[0]};   // Ctx, ir (int) sliding through the dataset
   u32 ctx1{0}, ctxIr1{mask32[1]};
   u32 ctx2{0}, ctxIr2{mask32[2]};
-  u64 ctx3{0}, ctxIr3{mask64};//todo. auto* ds0=  . akharesh delete
-  auto ds0=tbl64;    auto ds1=tbl32;    auto ds2=logtbl8;    auto ds3=sketch4;
+  u64 ctx3{0}, ctxIr3{mask64};
+  const auto ds0=tbl64;      const auto ds1=tbl32;//todo.auto* ds0=.akharesh delete
+  const auto ds2=logtbl8;    const auto ds3=sketch4;
   u64 symsNo {0};                   // No. syms in target file, except \n
   array<double,4> w {0.25, 0.25, 0.25, 0.25};
   double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
@@ -414,6 +415,7 @@ inline void FCM::compDS4 (const string& tar) {
     while (tf.get(c))
       if (c != '\n') {
         ++symsNo;
+        cerr<<ctx0<<' '<<ctx1<<' '<<ctx2<<' '<<ctx3<<'\n';//todo
         ps0.config(c,ctx0);    ps1.config(c,ctx1);
         ps2.config(c,ctx2);    ps3.config(c,ctx3);
         sEnt += entropy<4>(w,
@@ -422,186 +424,186 @@ inline void FCM::compDS4 (const string& tar) {
         updateCtx(ctx2,ps2);   updateCtx(ctx3,ps3);
       }
   }
-  else if (IR_COMB == IR::DDDI) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
-        ps2.config(c,ctx2);           ps3.config(c,ctx3);
-        sEnt += entropy<4>(w,
-          {probIr(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2), prob(ds3,ps3)});
-        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
-        updateCtx(ctx2,ps2);          updateCtx(ctx3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::DDID) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0);    ps1.config(c,ctx1,ctxIr1);
-        ps2.config(c,ctx2);    ps3.config(c,ctx3);
-        sEnt += entropy<4>(w,
-          {prob(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2), prob(ds3,ps3)});
-        updateCtx(ctx0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-        updateCtx(ctx2,ps2);   updateCtx(ctx3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::DDII) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
-        ps2.config(c,ctx2);           ps3.config(c,ctx3);
-        sEnt += entropy<4>(w,
-          {probIr(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2), prob(ds3,ps3)});
-        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-        updateCtx(ctx2,ps2);          updateCtx(ctx3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::DIDD) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0);           ps1.config(c,ctx1);
-        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
-        sEnt += entropy<4>(w,
-          {prob(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2), prob(ds3,ps3)});
-        updateCtx(ctx0,ps0);          updateCtx(ctx1,ps1);
-        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::DIDI) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
-        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
-        sEnt += entropy<4>(w,
-          {probIr(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2), prob(ds3,ps3)});
-        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
-        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::DIID) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0);           ps1.config(c,ctx1,ctxIr1);
-        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
-        sEnt += entropy<4>(w,
-          {prob(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2), prob(ds3,ps3)});
-        updateCtx(ctx0,ps0);          updateCtx(ctx1,ctxIr1,ps1);
-        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::DIII) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
-        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
-        sEnt += entropy<4>(w,
-          {probIr(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2), prob(ds3,ps3)});
-        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::IDDD) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0);    ps1.config(c,ctx1);
-        ps2.config(c,ctx2);    ps3.config(c,ctx3,ctxIr3);
-        sEnt += entropy<4>(w,
-          {prob(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2), probIr(ds3,ps3)});
-        updateCtx(ctx0,ps0);   updateCtx(ctx1,ps1);
-        updateCtx(ctx2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::IDDI) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
-        ps2.config(c,ctx2);           ps3.config(c,ctx3,ctxIr3);
-        sEnt += entropy<4>(w,
-          {probIr(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2), probIr(ds3,ps3)});
-        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
-        updateCtx(ctx2,ps2);          updateCtx(ctx3,ctxIr3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::IDID) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0);    ps1.config(c,ctx1,ctxIr1);
-        ps2.config(c,ctx2);    ps3.config(c,ctx3,ctxIr3);
-        sEnt += entropy<4>(w,
-          {prob(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2), probIr(ds3,ps3)});
-        updateCtx(ctx0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-        updateCtx(ctx2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::IDII) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
-        ps2.config(c,ctx2);           ps3.config(c,ctx3,ctxIr3);
-        sEnt += entropy<4>(w,
-          {probIr(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2), probIr(ds3,ps3)});
-        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-        updateCtx(ctx2,ps2);          updateCtx(ctx3,ctxIr3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::IIDD) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0);           ps1.config(c,ctx1);
-        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
-        sEnt += entropy<4>(w,
-          {prob(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2), probIr(ds3,ps3)});
-        updateCtx(ctx0,ps0);          updateCtx(ctx1,ps1);
-        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::IIDI) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
-        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
-        sEnt += entropy<4>(w,
-          {probIr(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2), probIr(ds3,ps3)});
-        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
-        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::IIID) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0);           ps1.config(c,ctx1,ctxIr1);
-        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
-        sEnt += entropy<4>(w,
-          {prob(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2), probIr(ds3,ps3)});
-        updateCtx(ctx0,ps0);          updateCtx(ctx1,ctxIr1,ps1);
-        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
-      }
-  }
-  else if (IR_COMB == IR::IIII) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
-        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
-        sEnt += entropy<4>(w,
-          {probIr(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2), probIr(ds3,ps3)});
-        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
-      }
-  }
+//  else if (IR_COMB == IR::DDDI) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
+//        ps2.config(c,ctx2);           ps3.config(c,ctx3);
+//        sEnt += entropy<4>(w,
+//          {probIr(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2), prob(ds3,ps3)});
+//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
+//        updateCtx(ctx2,ps2);          updateCtx(ctx3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::DDID) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0);    ps1.config(c,ctx1,ctxIr1);
+//        ps2.config(c,ctx2);    ps3.config(c,ctx3);
+//        sEnt += entropy<4>(w,
+//          {prob(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2), prob(ds3,ps3)});
+//        updateCtx(ctx0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ps2);   updateCtx(ctx3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::DDII) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
+//        ps2.config(c,ctx2);           ps3.config(c,ctx3);
+//        sEnt += entropy<4>(w,
+//          {probIr(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2), prob(ds3,ps3)});
+//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ps2);          updateCtx(ctx3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::DIDD) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0);           ps1.config(c,ctx1);
+//        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
+//        sEnt += entropy<4>(w,
+//          {prob(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2), prob(ds3,ps3)});
+//        updateCtx(ctx0,ps0);          updateCtx(ctx1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::DIDI) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
+//        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
+//        sEnt += entropy<4>(w,
+//          {probIr(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2), prob(ds3,ps3)});
+//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::DIID) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0);           ps1.config(c,ctx1,ctxIr1);
+//        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
+//        sEnt += entropy<4>(w,
+//          {prob(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2), prob(ds3,ps3)});
+//        updateCtx(ctx0,ps0);          updateCtx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::DIII) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
+//        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
+//        sEnt += entropy<4>(w,
+//          {probIr(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2), prob(ds3,ps3)});
+//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::IDDD) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0);    ps1.config(c,ctx1);
+//        ps2.config(c,ctx2);    ps3.config(c,ctx3,ctxIr3);
+//        sEnt += entropy<4>(w,
+//          {prob(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2), probIr(ds3,ps3)});
+//        updateCtx(ctx0,ps0);   updateCtx(ctx1,ps1);
+//        updateCtx(ctx2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::IDDI) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
+//        ps2.config(c,ctx2);           ps3.config(c,ctx3,ctxIr3);
+//        sEnt += entropy<4>(w,
+//          {probIr(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2), probIr(ds3,ps3)});
+//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
+//        updateCtx(ctx2,ps2);          updateCtx(ctx3,ctxIr3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::IDID) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0);    ps1.config(c,ctx1,ctxIr1);
+//        ps2.config(c,ctx2);    ps3.config(c,ctx3,ctxIr3);
+//        sEnt += entropy<4>(w,
+//          {prob(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2), probIr(ds3,ps3)});
+//        updateCtx(ctx0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::IDII) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
+//        ps2.config(c,ctx2);           ps3.config(c,ctx3,ctxIr3);
+//        sEnt += entropy<4>(w,
+//          {probIr(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2), probIr(ds3,ps3)});
+//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ps2);          updateCtx(ctx3,ctxIr3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::IIDD) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0);           ps1.config(c,ctx1);
+//        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
+//        sEnt += entropy<4>(w,
+//          {prob(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2), probIr(ds3,ps3)});
+//        updateCtx(ctx0,ps0);          updateCtx(ctx1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::IIDI) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
+//        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
+//        sEnt += entropy<4>(w,
+//          {probIr(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2), probIr(ds3,ps3)});
+//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::IIID) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0);           ps1.config(c,ctx1,ctxIr1);
+//        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
+//        sEnt += entropy<4>(w,
+//          {prob(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2), probIr(ds3,ps3)});
+//        updateCtx(ctx0,ps0);          updateCtx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//      }
+//  }
+//  else if (IR_COMB == IR::IIII) {
+//    while (tf.get(c))
+//      if (c != '\n') {
+//        ++symsNo;
+//        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
+//        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
+//        sEnt += entropy<4>(w,
+//          {probIr(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2), probIr(ds3,ps3)});
+//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//      }
+//  }
 }
 
 // Called from main -- MUST NOT be inline
