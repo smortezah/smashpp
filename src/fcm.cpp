@@ -108,6 +108,10 @@ void FCM::buildModel (const Param& p) {
   cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
   (p.nthr==1 || model.size()==1) ? bldMdlOneThr(p) : bldMdlMulThr(p)/*Mul thr*/;
   cerr << "Finished";
+  
+  
+  //todo
+  sketch4->print();
 }
 
 inline void FCM::bldMdlOneThr (const Param &p) {
@@ -140,11 +144,11 @@ inline void FCM::bldMdlMulThr (const Param& p) {
     else if (model[i].mode == MODE::LOG_TABLE_8)
       thrd[i % vThrSz] =
         std::thread(&FCM::createDS<u32,LogTable8*>, this, std::cref(p.ref),
-                    (4ul<<(model[i].k<<1))-1,std::ref(logtbl8));
+                    (4ul<<(model[i].k<<1))-1, std::ref(logtbl8));
     else if (model[i].mode == MODE::SKETCH_8)
       thrd[i % vThrSz] =
         std::thread(&FCM::createDS<u64,CMLS4*>, this, std::cref(p.ref),
-                    (4ull<<(model[i].k<<1))-1,std::ref(sketch4));
+                    (4ull<<(model[i].k<<1))-1, std::ref(sketch4));
     // Join
     if ((i+1) % vThrSz == 0)
       for (auto& t : thrd)  if (t.joinable()) t.join();
