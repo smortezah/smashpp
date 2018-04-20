@@ -30,8 +30,15 @@ using dur_t = std::chrono::duration<double>;
 // Power a^n
 constexpr u64 sqr (u64 a) { return a * a; }
 constexpr u64 power (u64 a, u64 n) {
-  return n==0 ? 1 : sqr(power(a, n>>1)) * (n&1 ? a : 1);
+  return n==0 ? 1 : sqr(power(a, n>>1u)) * (n&1ull ? a : 1);
 }
+
+constexpr u64 pow2 (u64 n) { // Not sure if faster than above, but simpler
+  return 1ull<<n;  // ull is MANDATORY
+}
+//constexpr u64 pow4 (u8 n) { // Not sure if faster than above, but simpler
+//  return 1ull<<(n<<1);
+//}
 
 // Constant
 static constexpr u8  DEF_THR      {4};    // Default # threads
@@ -42,7 +49,7 @@ static constexpr u8  K_MAX_TBL64  {11};   // Max ctx dept. table 64 (128 MB mem)
 static constexpr u8  K_MAX_TBL32  {13};   // Max ...       table 32 (1   GB mem)
 static constexpr u8  K_MAX_LGTBL8 {14};   // Max ...   log table 8  (1   GB mem)
 static constexpr u32 BLK_SZ       {8192}; // 8K
-static constexpr u64 DEF_W        {power(2,20)};  // Default w of CML sketch
+static constexpr u64 DEF_W        {pow2(20)};  // Default w of CML sketch
 static constexpr u8  DEF_D        {5};    // Default depth of CML sketch
 static constexpr u32 G            {64};   // Machine word size - univers hash fn
 static constexpr u8  LOG_BASE     {2};    // Logarithmic counting
@@ -74,9 +81,6 @@ static constexpr u64 POW2[36] {
    268435456,  536870912,  1073741824,  2147483648,
   4294967296, 8589934592, 17179869184, 34359738368
 };
-constexpr u64 pow2 (u64 n) { // Not sure if faster than above, but simpler
-  return 1ull<<n;  // ull is MANDATORY
-}
 static constexpr u16 FREQ2[16] { // 2^n - 1
     0,    1,     3,     7,   15,   31,    63,   127,
   255,  511,  1023,  2047, 4095, 8191, 16383, 32767
@@ -99,9 +103,6 @@ static constexpr u64 POW4[32] {    // Max 4^31 contained in u64
     18014398509481984,   72057594037927936, 288230376151711744,
   1152921504606846976, 4611686018427387904
 };
-//constexpr u64 pow4 (u8 n) { // Not sure if faster than above, but simpler
-//  return 1ull<<(n<<1);
-//}
 static constexpr u64 POW5[23] {
                1,               5,               25,            125,
              625,            3125,            15625,          78125,

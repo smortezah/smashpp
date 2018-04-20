@@ -101,13 +101,13 @@ void FCM::buildModel (const Param& p) {
 inline void FCM::bldMdl1Thr (const Param& p) {
   for (const auto& m : model) {  // Mask: 4<<2k-1 = 4^(k+1)-1
     if (m.mode == MODE::TABLE_64)
-      fillDS(p.ref, (4ul<<(m.k<<1))-1 /*Mask 32*/, tbl64);  // ul is MANDATORY
+      fillDS(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64);  // ul is MANDATORY
     else if (m.mode == MODE::TABLE_32)
-      fillDS(p.ref, (4ul<<(m.k<<1))-1 /*Mask 32*/, tbl32);
+      fillDS(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32);
     else if (m.mode == MODE::LOG_TABLE_8)
-      fillDS(p.ref, (4ul<<(m.k<<1))-1 /*Mask 32*/, logtbl8);
+      fillDS(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, logtbl8);
     else if (m.mode == MODE::SKETCH_8)
-      fillDS(p.ref, (4ull<<(m.k<<1))-1/*Mask 64*/, sketch4);
+      fillDS(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, sketch4);
     else
       cerr << "Error: the model cannot be built.\n";
   }
@@ -119,16 +119,16 @@ inline void FCM::bldMdlNThr (const Param& p) {
   for (u8 i=0; i!=model.size(); ++i) {  // Mask: 4<<2k-1 = 4^(k+1)-1
     if (model[i].mode == MODE::TABLE_64)
       thrd[i % vThrSz] = std::thread(&FCM::fillDS<u32, unique_ptr<Table64>>,
-        this, std::cref(p.ref), (4ul<<(model[i].k<<1))-1, std::ref(tbl64));
+        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(tbl64));
     else if (model[i].mode == MODE::TABLE_32)
       thrd[i % vThrSz] = std::thread(&FCM::fillDS<u32, unique_ptr<Table32>>,
-        this, std::cref(p.ref), (4ul<<(model[i].k<<1))-1, std::ref(tbl32));
+        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(tbl32));
     else if (model[i].mode == MODE::LOG_TABLE_8)
       thrd[i % vThrSz] = std::thread(&FCM::fillDS<u32, unique_ptr<LogTable8>>,
-        this, std::cref(p.ref), (4ul<<(model[i].k<<1))-1, std::ref(logtbl8));
+        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(logtbl8));
     else if (model[i].mode == MODE::SKETCH_8)
       thrd[i % vThrSz] = std::thread(&FCM::fillDS<u64, unique_ptr<CMLS4>>,
-        this, std::cref(p.ref), (4ull<<(model[i].k<<1))-1, std::ref(sketch4));
+        this, std::cref(p.ref), (4ull<<(model[i].k<<1u))-1, std::ref(sketch4));
     // Join
     if ((i+1) % vThrSz == 0)
       for (auto& t : thrd)  if (t.joinable()) t.join();
@@ -141,7 +141,7 @@ inline void FCM::fillDS (const string& ref, msk_t mask, ds_t& ds) {
   ifstream rf(ref);  char c;
   for (msk_t ctx=0; rf.get(c);) {
     if (c != '\n') {
-      ctx = ((ctx<<2) & mask) | NUM[static_cast<u8>(c)];    // Update ctx
+      ctx = ((ctx<<static_cast<msk_t>(2)) & mask) | NUM[static_cast<u8>(c)];
       ds->update(ctx);
     }
   }
@@ -191,7 +191,7 @@ inline void FCM::comp1mdl (const string& tar, msk_t mask, const ds_t& ds) {
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  Prob_s<msk_t> pObj {model[0].alpha, mask, static_cast<u8>(model[0].k<<1)};
+  Prob_s<msk_t> pObj {model[0].alpha, mask, static_cast<u8>(model[0].k<<1u)};
   if (IR_COMB == IR::DDDD) {
     while (tf.get(c))
       if (c != '\n') {
@@ -223,8 +223,8 @@ inline void FCM::comp2mdl (const string& tar, msk0_t mask0, msk1_t mask1,
   array<double,2> w {0.5, 0.5};
   double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  Prob_s<msk0_t> ps0 {model[0].alpha, mask0, static_cast<u8>(model[0].k<<1)};
-  Prob_s<msk1_t> ps1 {model[1].alpha, mask1, static_cast<u8>(model[1].k<<1)};
+  Prob_s<msk0_t> ps0 {model[0].alpha, mask0, static_cast<u8>(model[0].k<<1u)};
+  Prob_s<msk1_t> ps1 {model[1].alpha, mask1, static_cast<u8>(model[1].k<<1u)};
   if (IR_COMB == IR::DDDD) {
     while (tf.get(c))
       if (c != '\n') {
@@ -276,9 +276,9 @@ inline void FCM::comp3mdl (const string& tar, msk0_t mask0, msk1_t mask1,
   array<double,3> w {1.0/3, 1.0/3, 1.0/3};
   double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  Prob_s<msk0_t> ps0 {model[0].alpha, mask0, static_cast<u8>(model[0].k<<1)};
-  Prob_s<msk1_t> ps1 {model[1].alpha, mask1, static_cast<u8>(model[1].k<<1)};
-  Prob_s<msk2_t> ps2 {model[2].alpha, mask2, static_cast<u8>(model[2].k<<1)};
+  Prob_s<msk0_t> ps0 {model[0].alpha, mask0, static_cast<u8>(model[0].k<<1u)};
+  Prob_s<msk1_t> ps1 {model[1].alpha, mask1, static_cast<u8>(model[1].k<<1u)};
+  Prob_s<msk2_t> ps2 {model[2].alpha, mask2, static_cast<u8>(model[2].k<<1u)};
   if (IR_COMB == IR::DDDD) {
     while (tf.get(c))
       if (c != '\n') {
@@ -369,9 +369,9 @@ inline void FCM::comp4mdl (const string& tar) {
   u64         mask64 {};
   for (const auto &m : model) {
     if (m.mode == MODE::SKETCH_8)
-      mask64 = (1ull<<(m.k<<1)) - 1;
+      mask64 = (1ull<<(m.k<<1u)) - 1;
     else
-      mask32.emplace_back((1ul<<(m.k<<1)) - 1);  // 1<<2k-1=4^k-1
+      mask32.emplace_back((1ul<<(m.k<<1u)) - 1);  // 1<<2k-1=4^k-1
   }
   u32 ctx0{0}, ctxIr0{mask32[0]};   // Ctx, ir (int) sliding through the dataset
   u32 ctx1{0}, ctxIr1{mask32[1]};
@@ -381,10 +381,10 @@ inline void FCM::comp4mdl (const string& tar) {
   array<double,4> w {0.25, 0.25, 0.25, 0.25};
   double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  Prob_s<u32> ps0 {model[0].alpha, mask32[0], static_cast<u8>(model[0].k<<1)};
-  Prob_s<u32> ps1 {model[1].alpha, mask32[1], static_cast<u8>(model[1].k<<1)};
-  Prob_s<u32> ps2 {model[2].alpha, mask32[2], static_cast<u8>(model[2].k<<1)};
-  Prob_s<u64> ps3 {model[3].alpha, mask64,    static_cast<u8>(model[3].k<<1)};
+  Prob_s<u32> ps0 {model[0].alpha, mask32[0], static_cast<u8>(model[0].k<<1u)};
+  Prob_s<u32> ps1 {model[1].alpha, mask32[1], static_cast<u8>(model[1].k<<1u)};
+  Prob_s<u32> ps2 {model[2].alpha, mask32[2], static_cast<u8>(model[2].k<<1u)};
+  Prob_s<u64> ps3 {model[3].alpha, mask64,    static_cast<u8>(model[3].k<<1u)};
   if (IR_COMB == IR::DDDD) {
     while (tf.get(c))
       if (c != '\n') {

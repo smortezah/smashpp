@@ -14,10 +14,9 @@ LogTable8::LogTable8 (u8 k_) {
 void LogTable8::config (u8 k_) {
   k   = k_;
   tot = 0;
-  try { tbl.resize(4<<(k<<1)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
+  try { tbl.resize(4ull<<(k<<1u)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
   catch (std::bad_alloc& b) {
-    cerr << "Error: failed memory allocation.";
-    throw EXIT_FAILURE;
+    std::runtime_error("Error: failed memory allocation.\n");
   }
 }
 

@@ -74,7 +74,7 @@ class FCM    // Finite-context model
   void bldMdl1Thr   (const Param&); // Build models one thread
   void bldMdlNThr   (const Param&); // Build models multiple threads
   template <typename msk_t, typename ds_t>
-  void fillDS    (const string&, msk_t, ds_t&);    // Create data structure
+  void fillDS    (const string&, msk_t, ds_t&);    // Fill data structure
   // Compress data structure
   template <typename msk_t, typename ds_t>
   void comp1mdl  (const string&, msk_t, const ds_t &);
