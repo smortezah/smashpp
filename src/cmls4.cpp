@@ -17,13 +17,16 @@ void CMLS4::config (u64 w_, u8 d_) {
   w   = w_;
   d   = d_;
   tot = 0;
-  try { sk.resize((d*w+1)>>1); }
+  try { sk.resize((d*w+1)>>1u); }
   catch (std::bad_alloc& b) {
-    cerr << "Error: failed memory allocation.";
+    cerr << "Error: failed memory allocation.\n";
     throw EXIT_FAILURE;
+    //todo
+//    throw std::runtime_error
+//      ("Error: target file not specified. Use \"-t fileName\".\n");
   }
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
-  ab.resize(d<<1);
+  ab.resize(d<<1u);
   setAB();
 }
 
@@ -33,7 +36,7 @@ void CMLS4::update (u64 ctx) {
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
       if (readCell(cellIdx) == c)    // Conservative update
-        sk[cellIdx>>1] = INC_CTR[cellIdx&1][sk[cellIdx>>1]];
+        sk[cellIdx>>1u] = INC_CTR[cellIdx&1ull][sk[cellIdx>>1u]];
     }
   }
 }
@@ -49,21 +52,21 @@ inline u8 CMLS4::minLogCtr (u64 ctx) const {
 }
 
 inline u8 CMLS4::readCell (u64 idx) const {
-  return CTR[idx&1][sk[idx>>1]];
+  return CTR[idx&1ull][sk[idx>>1u]];
 }
 
 inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal
-  return i*w + ((ab[i<<1]*ctx + ab[(i<<1)+1]) >> uhashShift);
+  return i*w + ((ab[i<<1u]*ctx + ab[(i<<1u)+1]) >> uhashShift);
 }
 
 inline void CMLS4::setAB () {
   constexpr u64 seed {0};
   std::default_random_engine e(seed);
-  std::uniform_int_distribution<u64> uDistA(0, (1ull<<63)-1);     // k <= 2^63-1
+  std::uniform_int_distribution<u64> uDistA(0, (1ull<<63u)-1);    // k <= 2^63-1
   std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
   for (u8 i=0; i!=d; ++i) {
-    ab[i<<1]     = (uDistA(e)<<1) + 1; // 1 <= a=2k+1 <= 2^64-1, rand odd posit.
-    ab[(i<<1)+1] = uDistB(e);          // 0 <= b <= 2^(G-M)-1,   rand posit.
+    ab[i<<1u] = (uDistA(e)<<1u) + 1; // 1 <= a=2k+1 <= 2^64-1, rand odd posit.
+    ab[(i<<1u)+1] = uDistB(e);          // 0 <= b <= 2^(G-M)-1,   rand posit.
   }                                 // Parenthesis in ab[(i<<1)+1] are MANDATORY
 }
 
@@ -120,9 +123,9 @@ inline void CMLS4::printAB () const {
   for (u8 i=0; i!=bl;   ++i)  cerr<<" ";
   for (u8 i=0; i!=w-bl; ++i)  cerr<<"-";
   cerr << '\n';
-  for (u8 i = 0; i!=ab.size(); ++i) {
+  for (u8 i=0; i!=ab.size(); ++i) {
     cerr.width(w);  cerr<<std::left<<ab[i];
-    if (i & 1)
+    if (i & 1u)
       cerr << '\n';
   }
 }

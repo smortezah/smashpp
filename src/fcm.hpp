@@ -10,6 +10,7 @@
 #include "tbl32.hpp"
 #include "logtbl8.hpp"
 #include "cmls4.hpp"
+using std::unique_ptr;
 
 struct ModelPar {
   ModelPar (u8 ir_, u8 k_, float a_)
@@ -48,23 +49,21 @@ struct Prob_s {
 class FCM    // Finite-context model
 {
  public:
-  double           aveEnt;
-
-  explicit FCM     (const Param&);
-  ~FCM             ();
-  void buildModel  (const Param&);   // Build FCM (finite-context model)
-  void compress    (const Param&);
-  void report      (const Param&) const;
+  double          aveEnt;
+  
+  explicit FCM    (const Param&);
+  void buildModel (const Param&);   // Build FCM (finite-context model)
+  void compress   (const Param&);
+  void report     (const Param&) const;
 
  private:
-  vector<ModelPar> model;
-  std::shared_ptr<Table64> tbl64;
-//  Table64*         tbl64;
-  Table32*         tbl32;
-  LogTable8*       logtbl8;
-  CMLS4*           sketch4;
-  u8               MODE_COMB;
-  u8               IR_COMB;
+  vector<ModelPar>      model;
+  unique_ptr<Table64>   tbl64;
+  unique_ptr<Table32>   tbl32;
+  unique_ptr<LogTable8> logtbl8;
+  unique_ptr<CMLS4>     sketch4;
+  u8                    MODE_COMB;
+  u8                    IR_COMB;
   
   void setModels    (const Param&); // Set models parameters
   template <typename inIter_t, typename vec_t/*=vector<string>*/>//Split by dlim
@@ -79,15 +78,16 @@ class FCM    // Finite-context model
   // Compress data structure
   template <typename msk_t, typename ds_t>
   void comp1mdl  (const string&, msk_t, const ds_t &);
-//  template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
-//  void comp2mdl  (const string&, msk0_t, msk1_t, const ds0_t&, const ds1_t&);
-//  template <typename msk0_t, typename msk1_t, typename msk2_t,
-//    typename ds0_t, typename ds1_t, typename ds2_t>
-//  void comp3mdl  (const string&, msk0_t, msk1_t, msk2_t,
-//                  const ds0_t&, const ds1_t&, const ds2_t&);
-//  void comp4mdl  (const string&);   // It has all possible models
+  template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
+  void comp2mdl  (const string&, msk0_t, msk1_t, const ds0_t&, const ds1_t&);
+  template <typename msk0_t, typename msk1_t, typename msk2_t,
+    typename ds0_t, typename ds1_t, typename ds2_t>
+  void comp3mdl  (const string&, msk0_t, msk1_t, msk2_t,
+                  const ds0_t&, const ds1_t&, const ds2_t&);
+  void comp4mdl  (const string&);   // It has all possible models
   template <typename ds_t, typename ctx_t>
   double prob    (const ds_t&, const Prob_s<ctx_t>&) const;  // Probability
+//  double prob    (const ds_t&, const Prob_s<ctx_t>&) const;  // Probability
   template <typename ds_t, typename ctx_t>
   double probR   (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. reciprocal
   template <typename ds_t, typename ctx_t>
