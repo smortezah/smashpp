@@ -52,35 +52,28 @@ class Param    // Parameters
           if (i+1 != vArgs.end()) {
             tar = *++i;
             checkFile(tar);
-          } else {
-            throw std::runtime_error
-              ("Error: target file not specified. Use \"-t fileName\".\n");
           }
+          else throw std::runtime_error
+                 ("Error: target file not specified. Use \"-t fileName\".\n");
         }
         else if (*i=="-r" || *i=="--ref") {
           if (i+1 != vArgs.end()) {
             ref = *++i;
             checkFile(ref);
-          } else {
-            throw std::runtime_error
-              ("Error: reference file not specified. Use \"-r fileName\".\n");
           }
+          else throw std::runtime_error
+                ("Error: reference file not specified. Use \"-r fileName\".\n");
         }
-        else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
+        else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end())
           level = static_cast<u8>(stoi(*++i));
-        }
-        else if (*i=="-v" || *i=="--verbose") {
+        else if (*i=="-v"  || *i=="--verbose")
           verbose = true;
-        }
-        else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
+        else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end())
           nthr = static_cast<u8>(stoi(*++i));
-        }
-        else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
+        else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end())
           modelsPars = *++i;
-        }
-        else if (*i=="-R" || *i=="--report") {
+        else if (*i=="-R"  || *i=="--report")
           report = (i+1!=vArgs.end()) ? *++i : "report.txt";
-        }
       }
       
       // Mandatory args

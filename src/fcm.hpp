@@ -13,9 +13,9 @@
 
 struct ModelPar {
   ModelPar (u8 ir_, u8 k_, float a_)
-    : ir(ir_), k(k_), alpha(a_), w(0),  d(0) {}
+    : ir(ir_), k(k_), alpha(a_), w(0),  d(0),  mode(0) {}
   ModelPar (u8 ir_, u8 k_, float a_, u64 w_, u8 d_)
-    : ir(ir_), k(k_), alpha(a_), w(w_), d(d_) {}
+    : ir(ir_), k(k_), alpha(a_), w(w_), d(d_), mode(0) {}
   u8    ir;      // Inverted repeat
   u8    k;       // Context size
   float alpha;
@@ -44,21 +44,22 @@ struct Prob_s {
   u8     revNumSym;
 };
 
-#include <future>//todo
+#include <memory>
 class FCM    // Finite-context model
 {
  public:
-  double          aveEnt;
+  double           aveEnt;
 
-  explicit FCM    (const Param&);
-  ~FCM            ();
-  void buildModel (const Param&);   // Build FCM (finite-context model)
-  void compress   (const Param&);
-  void report     (const Param&) const;
+  explicit FCM     (const Param&);
+  ~FCM             ();
+  void buildModel  (const Param&);   // Build FCM (finite-context model)
+  void compress    (const Param&);
+  void report      (const Param&) const;
 
  private:
   vector<ModelPar> model;
-  Table64*         tbl64;
+  std::shared_ptr<Table64> tbl64;
+//  Table64*         tbl64;
   Table32*         tbl32;
   LogTable8*       logtbl8;
   CMLS4*           sketch4;
@@ -71,22 +72,20 @@ class FCM    // Finite-context model
   void allocModels  ();             // Allocate memory to models
   void setModesComb ();             // Set combination of modes of models
   void setIRsComb   ();             // Set combination of inv. repeats of models
-  void bldMdlOneThr (const Param&); // Build models one thread
-  void bldMdlMulThr (const Param&); // Build models multiple threads
+  void bldMdl1Thr   (const Param&); // Build models one thread
+  void bldMdlNThr   (const Param&); // Build models multiple threads
   template <typename msk_t, typename ds_t>
-  void createDS     (const string&, msk_t, ds_t&);    // Create data structure
-  
+  void fillDS    (const string&, msk_t, ds_t&);    // Create data structure
   // Compress data structure
   template <typename msk_t, typename ds_t>
-  void compDS1 (const string&, msk_t, const ds_t&);
-  template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
-  void compDS2 (const string&, msk0_t,msk1_t, const ds0_t&,const ds1_t&);
-  template <typename msk0_t, typename msk1_t, typename msk2_t,
-    typename ds0_t, typename ds1_t, typename ds2_t>
-  void compDS3 (const string&, msk0_t, msk1_t, msk2_t,
-                const ds0_t&, const ds1_t&, const ds2_t&);
-  void compDS4 (const string&);     // It has all possible models
-  
+  void comp1mdl  (const string&, msk_t, const ds_t &);
+//  template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
+//  void comp2mdl  (const string&, msk0_t, msk1_t, const ds0_t&, const ds1_t&);
+//  template <typename msk0_t, typename msk1_t, typename msk2_t,
+//    typename ds0_t, typename ds1_t, typename ds2_t>
+//  void comp3mdl  (const string&, msk0_t, msk1_t, msk2_t,
+//                  const ds0_t&, const ds1_t&, const ds2_t&);
+//  void comp4mdl  (const string&);   // It has all possible models
   template <typename ds_t, typename ctx_t>
   double prob    (const ds_t&, const Prob_s<ctx_t>&) const;  // Probability
   template <typename ds_t, typename ctx_t>
@@ -95,19 +94,18 @@ class FCM    // Finite-context model
   double probIr  (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. IR
   template <typename ds_t, typename ctx_t>
   double probIrR (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. IR recip
-  
   template <u8 N>
   double entropy (std::array<double,N>& w,
                   const std::initializer_list<double>& Pm) const;
-  
   template <typename ctx_t>
-  void updateCtx (ctx_t&, const Prob_s<ctx_t>&)         const;
+  void updateCtx (ctx_t&, const Prob_s<ctx_t>&) const;
   template <typename ctx_t>
   void updateCtx (ctx_t&, ctx_t&, const Prob_s<ctx_t>&) const;
-  
   // Print variadic inputs
-  template <typename T> void print (T) const;
-  template <typename T, typename... Args> void print (T, Args...) const;
+  template <typename T>
+  void print (T) const;
+  template <typename T, typename... Args>
+  void print (T, Args...) const;
 };
 
 #endif //SMASHPP_FCM_HPP

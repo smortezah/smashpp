@@ -68,9 +68,7 @@ inline void CMLS4::setAB () {
 }
 
 u16 CMLS4::query (u64 ctx) const {
-  //todo. base 2. otherwise (b^c-1)/(b-1)
-  return FREQ2[minLogCtr(ctx)];
-//  return static_cast<u16>(POW2[minLogCtr(ctx)]-1);
+  return FREQ2[minLogCtr(ctx)];  //todo. base 2. otherwise (b^c-1)/(b-1)
 }
 
 u64 CMLS4::getTotal () const {
