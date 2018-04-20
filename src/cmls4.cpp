@@ -19,11 +19,7 @@ void CMLS4::config (u64 w_, u8 d_) {
   tot = 0;
   try { sk.resize((d*w+1)>>1u); }
   catch (std::bad_alloc& b) {
-    cerr << "Error: failed memory allocation.\n";
-    throw EXIT_FAILURE;
-    //todo
-//    throw std::runtime_error
-//      ("Error: target file not specified. Use \"-t fileName\".\n");
+    throw std::runtime_error("Error: failed memory allocation.\n");
   }
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
   ab.resize(d<<1u);
