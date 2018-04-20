@@ -14,7 +14,7 @@ Table64::Table64 (u8 k_) {
 void Table64::config (u8 k_) {
   k   = k_;
   tot = 0;
-  try { tbl.resize(4<<(k<<1)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
+  try { tbl.resize(4ul<<(k<<1)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
   catch (std::bad_alloc& b) {
     cerr << "Error: failed memory allocation.";
     throw EXIT_FAILURE;
