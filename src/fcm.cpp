@@ -14,6 +14,33 @@ using std::array;
 using std::initializer_list;
 using std::make_unique;
 
+ModelPar::ModelPar (u8 ir_, u8 k_, float a_)
+  : ir(ir_), k(k_), alpha(a_), w(0), d(0), mode(0) {
+}
+
+ModelPar::ModelPar (u8 ir_, u8 k_, float a_, u64 w_, u8 d_)
+  : ir(ir_), k(k_), alpha(a_), w(w_), d(d_), mode(0) {
+}
+  
+template <typename ctx_t>
+Prob_s<ctx_t>::Prob_s (float a, ctx_t m, u8 sh)
+  : alpha(a), sAlpha(static_cast<double>(ALPH_SZ*alpha)), mask(m), shl(sh) {
+}
+
+template <typename ctx_t>
+inline void Prob_s<ctx_t>::config (char c, ctx_t ctx) {
+  numSym = NUM[static_cast<u8>(c)];
+  l      = ctx<<2u;
+}
+
+template <typename ctx_t>
+inline void Prob_s<ctx_t>::config (char c, ctx_t ctx, ctx_t ctxIr) {
+  numSym    = NUM[static_cast<u8>(c)];
+  l         = ctx<<2u;
+  revNumSym = REVNUM[static_cast<u8>(c)];
+  r         = ctxIr>>2u;
+}
+
 FCM::FCM (const Param& p) {
   aveEnt = 0.0;
   setModels(p);
@@ -651,8 +678,9 @@ inline double FCM::entropy (array<double,N>& w,
   for (auto rIt=rawW.begin(), wIt=w.begin(), pIt=Pm.begin(); rIt!=rawW.end();
        ++rIt, ++wIt, ++pIt)
     *rIt = pow(*wIt, DEF_GAMMA) * *pIt;
+  const double sumRawW = std::accumulate(rawW.begin(), rawW.end(), 0.0);
   for (auto rIt=rawW.begin(), wIt=w.begin(); rIt!=rawW.end(); ++rIt, ++wIt)
-    *wIt = *rIt / std::accumulate(rawW.begin(), rawW.end(), 0.0);
+    *wIt = *rIt / sumRawW;
   // log2 1 / (Pm0*w0 + Pm1*w1 + ...)
   return log2(1 / std::inner_product(w.begin(), w.end(), Pm.begin(), 0.0));
 }

@@ -53,7 +53,7 @@ static constexpr u64 DEF_W        {pow2(20)};  // Default w of CML sketch
 static constexpr u8  DEF_D        {5};    // Default depth of CML sketch
 static constexpr u32 G            {64};   // Machine word size - univers hash fn
 static constexpr u8  LOG_BASE     {2};    // Logarithmic counting
-static constexpr float DEF_GAMMA  {0.1};  // Default gamma for multiple models
+static constexpr float DEF_GAMMA  {0.9};  // Default gamma for multiple models
 
 //using htbl_t = std::unordered_map<u64, std::array<u64,ALPH_SZ>>; //faster th a[]
 

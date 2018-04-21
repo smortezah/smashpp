@@ -13,28 +13,18 @@
 using std::unique_ptr;
 
 struct ModelPar {
-  ModelPar (u8 ir_, u8 k_, float a_)
-    : ir(ir_), k(k_), alpha(a_), w(0),  d(0),  mode(0) {}
-  ModelPar (u8 ir_, u8 k_, float a_, u64 w_, u8 d_)
-    : ir(ir_), k(k_), alpha(a_), w(w_), d(d_), mode(0) {}
   u8    ir;      // Inverted repeat
   u8    k;       // Context size
   float alpha;
   u64   w;       // Width of count-min-log sketch
   u8    d;       // Depth of count-min-log sketch
   u8    mode;    // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  ModelPar (u8, u8, float);
+  ModelPar (u8, u8, float, u64, u8);
 };
 
 template <typename ctx_t>
 struct Prob_s {
-  Prob_s () = default;
-  Prob_s (float a, ctx_t m, u8 sh)
-    : alpha(a), sAlpha(static_cast<double>(ALPH_SZ*alpha)), mask(m), shl(sh) {}
-  void config (char c, ctx_t ctx) { numSym=NUM[static_cast<u8>(c)];  l=ctx<<2; }
-  void config (char c, ctx_t ctx, ctx_t ctxIr) {
-    numSym=NUM[static_cast<u8>(c)];          l=ctx<<2;
-    revNumSym=REVNUM[static_cast<u8>(c)];    r=ctxIr>>2;
-  }
   float  alpha;
   double sAlpha;
   ctx_t  mask;
@@ -43,6 +33,10 @@ struct Prob_s {
   u8     numSym;
   ctx_t  r;
   u8     revNumSym;
+  Prob_s () = default;
+  Prob_s (float, ctx_t, u8);
+  void config (char, ctx_t);
+  void config (char, ctx_t, ctx_t);
 };
 
 #include <memory>
