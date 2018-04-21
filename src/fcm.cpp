@@ -218,23 +218,23 @@ inline void FCM::comp1mdl (const string& tar, msk_t mask, const ds_t& ds) {
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  Prob_s<msk_t> pObj {model[0].alpha, mask, static_cast<u8>(model[0].k<<1u)};
+  Prob_s<msk_t> ps {model[0].alpha, mask, static_cast<u8>(model[0].k<<1u)};
   if (IR_COMB == IR::DDDD) {
     while (tf.get(c))
       if (c != '\n') {
         ++symsNo;
-        pObj.config(c, ctx);
-        sEnt += log2(probR(ds, pObj));
-        updateCtx(ctx, pObj);
+        ps.config(c, ctx);
+        sEnt += log2(probR(ds, ps));
+        updateCtx(ctx, ps);
       }
   }
   else if (IR_COMB == IR::DDDI) {
     while (tf.get(c))
       if (c != '\n') {
         ++symsNo;
-        pObj.config(c, ctx, ctxIr);
-        sEnt += log2(probIrR(ds, pObj));
-        updateCtx(ctx, ctxIr, pObj);    // Update ctx & ctxIr
+        ps.config(c, ctx, ctxIr);
+        sEnt += log2(probIrR(ds, ps));
+        updateCtx(ctx, ctxIr, ps);    // Update ctx & ctxIr
       }
   }
   tf.close();
