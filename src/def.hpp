@@ -44,7 +44,7 @@ constexpr u64 pow2 (u64 n) { // Not sure if faster than above, but simpler
 static constexpr u8  DEF_THR      {4};    // Default # threads
 static constexpr u8  DEF_LVL      {0};    // Default level
 static constexpr u8  ALPH_SZ      {4};    // Alphabet size
-static constexpr u8  IRMAGIC      {3};    // Calc ir syms based on syms
+static constexpr u8  IRMAGIC      {3};    // Calc Mir syms based on syms
 static constexpr u8  K_MAX_TBL64  {11};   // Max ctx dept. table 64 (128 MB mem)
 static constexpr u8  K_MAX_TBL32  {13};   // Max ...       table 32 (1   GB mem)
 static constexpr u8  K_MAX_LGTBL8 {14};   // Max ...   log table 8  (1   GB mem)
@@ -53,6 +53,8 @@ static constexpr u64 DEF_W        {pow2(20)};  // Default w of CML sketch
 static constexpr u8  DEF_D        {5};    // Default depth of CML sketch
 static constexpr u32 G            {64};   // Machine word size - univers hash fn
 static constexpr u8  LOG_BASE     {2};    // Logarithmic counting
+static constexpr u8    DEF_IR     {0};// Default inverted repeats for models
+static constexpr float DEF_ALPHA  {0.001};// Default alpha for models
 static constexpr float DEF_GAMMA  {0.9};  // Default gamma for multiple models
 
 //using htbl_t = std::unordered_map<u64, std::array<u64,ALPH_SZ>>; //faster th a[]
@@ -140,7 +142,7 @@ static constexpr u8 REV[123] { // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 };
 static const std::vector<std::vector<u8>> LEVEL {    // 'k' of multiple models MUST be sorted
 //  static constexpr u8 LEVEL[14][16] {    // 'k' of multiple models MUST be sorted
-// #mdl, ir,  k, 100*alpha, log2 w,  d
+// #mdl, Mir,  k, 100*Malpha, log2 w,  d
   {1,     0, 20,    100,      30,    DEF_D},    // Level 0
 //  {1,     0,  1,    100,      0,     0},
 //  {1,     0,  2,    100,      0,     0},
