@@ -26,7 +26,7 @@ int main (int argc, char* argv[])
     p.parse(argc, argv);
 ////    auto* m = new FCM(p);
     auto m = make_unique<FCM>(p);
-    
+
     // Build models  // Start time// Finish time// Elapsed time
     auto t0{now()};  m->buildModel(p);  auto t1{now()};  hms(t1-t0);
     // Compress
@@ -35,7 +35,7 @@ int main (int argc, char* argv[])
     cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
     // Report
     m->report(p); // Without "-R" does nothing
-    
+
 ////    delete m;
   }
   catch (std::exception& e) { cout << e.what(); }

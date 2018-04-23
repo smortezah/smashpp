@@ -28,13 +28,12 @@ void CMLS4::config (u64 w_, u8 d_) {
 
 void CMLS4::update (u64 ctx) {
   const auto c {minLogCtr(ctx)};
-  if ((tot++ % POW2[c]) == 0) {      // Increase decision //todo. base 2
+  if ((tot++ % POW2[c]) == 0)      // Increase decision //todo. base 2
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
       if (readCell(cellIdx) == c)    // Conservative update
         sk[cellIdx>>1u] = INC_CTR[cellIdx&1ull][sk[cellIdx>>1u]];
     }
-  }
 }
 
 inline u8 CMLS4::minLogCtr (u64 ctx) const {
@@ -61,8 +60,8 @@ inline void CMLS4::setAB () {
   std::uniform_int_distribution<u64> uDistA(0, (1ull<<63u)-1);    // k <= 2^63-1
   std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
   for (u8 i=0; i!=d; ++i) {
-    ab[i<<1u] = (uDistA(e)<<1u) + 1; // 1 <= a=2k+1 <= 2^64-1, rand odd posit.
-    ab[(i<<1u)+1] = uDistB(e);          // 0 <= b <= 2^(G-M)-1,   rand posit.
+    ab[i<<1u] = (uDistA(e)<<1u) + 1;  // 1 <= a=2k+1 <= 2^64-1, rand odd posit.
+    ab[(i<<1u)+1] = uDistB(e);        // 0 <= b <= 2^(G-M)-1,   rand posit.
   }                                 // Parenthesis in ab[(i<<1)+1] are MANDATORY
 }
 
@@ -76,7 +75,7 @@ u64 CMLS4::getTotal () const {
 
 u64 CMLS4::countMty () const {
   u64 n {0};
-  for (auto i = w*d; i--;)
+  for (auto i=w*d; i--;)
     if (readCell(i) == 0)
       ++n;
 	return n;
@@ -84,7 +83,7 @@ u64 CMLS4::countMty () const {
 
 u8 CMLS4::maxSkVal () const {
   u8 c {0};
-  for (auto i = w*d; i--;)
+  for (auto i=w*d; i--;)
     if (readCell(i) > c)
       c = readCell(i);
 	return c;
