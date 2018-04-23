@@ -126,10 +126,10 @@ void plot () {
   gp << "set key reverse Left invert bottom left";
   gp << "set size 0.5,1";
 //  gp << "set origin 0,0.55";
-  gp << "plot '-' with linespoints ls 1 ps 0.75 title \"alpha=0.001\", \\";
-  gp << "'-' with linespoints ls 2 ps 0.75 title \"alpha=0.01\", \\";
-  gp << "'-' with linespoints ls 3 ps 0.75 title \"alpha=0.1\", \\";
-  gp << "'-' with linespoints ls 4 title \"alpha=1\"";
+  gp << "plot '-' with linespoints ls 1 ps 0.75 title \"Malpha=0.001\", \\";
+  gp << "'-' with linespoints ls 2 ps 0.75 title \"Malpha=0.01\", \\";
+  gp << "'-' with linespoints ls 3 ps 0.75 title \"Malpha=0.1\", \\";
+  gp << "'-' with linespoints ls 4 title \"Malpha=1\"";
   for (u8 i=0; i!=25; ++i)
     gp << to_string(vk[i]) + " " + to_string(vent[i]);
   gp << "e";
@@ -147,10 +147,10 @@ void plot () {
   gp << "set title \"Ref: A (100 MB), Tar: A4m (100 MB) -- mutation: 5%";
   gp << "set size 0.5,1";
 ////  gp << "set origin 0,0";
-  gp << "plot '-' with linespoints ls 1 ps 0.75 title \"alpha=0.001\", \\";
-  gp << "'-' with linespoints ls 2 ps 0.75 title \"alpha=0.01\", \\";
-  gp << "'-' with linespoints ls 3 ps 0.75 title \"alpha=0.1\", \\";
-  gp << "'-' with linespoints ls 4 title \"alpha=1\"";
+  gp << "plot '-' with linespoints ls 1 ps 0.75 title \"Malpha=0.001\", \\";
+  gp << "'-' with linespoints ls 2 ps 0.75 title \"Malpha=0.01\", \\";
+  gp << "'-' with linespoints ls 3 ps 0.75 title \"Malpha=0.1\", \\";
+  gp << "'-' with linespoints ls 4 title \"Malpha=1\"";
   for (u8 i=4*25; i!=5*25; ++i)
     gp << to_string(vk[i]) + " " + to_string(vent[i]);
   gp << "e";
@@ -176,7 +176,7 @@ void writeHeader (bool append) {
   ofstream f;
   if (append)  f.open(repName, ofstream::app);
   else         f.open(repName);
-  f << "tar\tref\tir\tk\talpha\tlog2w\td\tH\n";
+  f << "tar\tref\tir\tk\tMalpha\tlog2w\td\tH\n";
   f.close();
 }
 
@@ -205,12 +205,12 @@ int main (int argc, char* argv[])
     if (execute) {
       run("./smashpp -r A -t A -m 0,7,0.001:0,12,0.001:0,14,0.001:0,20,0.001,31,5 -R report");
       
-//      for (const auto &ir : {0, 1}) {
+//      for (const auto &Mir : {0, 1}) {
 //        for (u8 rIdx = 0; rIdx!=vRef.size(); ++rIdx) {
 //          for (u8 tIdx = 0; tIdx!=vTar.size(); ++tIdx) {
 //            for (const auto &a : {0.001, 0.01, 0.1, 1.0}) {
 //              for (const auto &k : {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}) {
-//                string model{combine(ir, k, a)};
+//                string model{combine(Mir, k, a)};
 ////            cerr << model<<'\n';
 //                run("./smashpp"
 //                    " -r "+vRef[rIdx]+
@@ -224,7 +224,7 @@ int main (int argc, char* argv[])
 //              for (const auto &k : {15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25}) {
 //                for (const auto &w : {31}) {
 //                  for (const auto &d : {5}) {
-//                    string model{combine(ir, k, a, w, d)};
+//                    string model{combine(Mir, k, a, w, d)};
 ////                  cerr << model<<'\n';
 //                    run("./smashpp"
 //                        " -r "+vRef[rIdx]+
