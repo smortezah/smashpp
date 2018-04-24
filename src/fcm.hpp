@@ -24,10 +24,9 @@ struct ModelPar {
   float TMalpha;
   float TMgamma;
   u8    mode;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-  ModelPar (u8);
-  ModelPar (u8, u8);
-  ModelPar (u8, u8, float);
-  ModelPar (u8, u8, float, float);
+  ModelPar (u8, u64, u8, u8, float, float, u8, u8, float, float);
+  explicit ModelPar (u8);
+  explicit ModelPar (u8, u8);
 };
 
 //template <typename ctx_t>
