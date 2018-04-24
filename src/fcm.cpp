@@ -12,7 +12,7 @@ using std::fstream;
 using std::cout;
 using std::array;
 using std::initializer_list;
-using std::make_unique;
+using std::make_shared;
 
 ModelPar::ModelPar (u8 k_, u64 w_, u8 d_, u8 Mir_, float Ma_, float Mg_,
                     u8 TMt_, u8 TMir_, float TMa_, float TMg_)
@@ -118,14 +118,20 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 inline void FCM::alloc_models () {
   for (const auto& m : model) {
     if (m.mode == Mode::TABLE_64)
-      tbl64.emplace_back(make_unique<Table64>(m.k));
+      tbl64.emplace_back(make_shared<Table64>(m.k));
     else if (m.mode == Mode::TABLE_32)
-      tbl32.emplace_back(make_unique<Table32>(m.k));
+      tbl32.emplace_back(make_shared<Table32>(m.k));
     else if (m.mode == Mode::LOG_TABLE_8)
-      lgtbl8.emplace_back(make_unique<LogTable8>(m.k));
+      lgtbl8.emplace_back(make_shared<LogTable8>(m.k));
     else if (m.mode == Mode::SKETCH_8)
-      cmls4.emplace_back(make_unique<CMLS4>(m.w, m.d));
+      cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));
   }
+  
+  //todo
+//  tbl64[0]->print();
+//  cerr<<'\n';
+//  tbl64[1]->print();
+  
 }
 
 //inline void FCM::setModesComb () {  // Models MUST be sorted by 'k'=ctx size
@@ -140,7 +146,7 @@ inline void FCM::alloc_models () {
 //    IR_COMB |= model[i].Mir<<i;
 //}
 
-void FCM::store (const Param &p) {
+void FCM::store (const Param& p) {
   if (p.verbose)
     cerr << "Building " <<model.size()<< " model"<< (model.size()==1 ? "" : "s")
          << " based on the reference \"" << p.ref << "\"";
@@ -149,42 +155,49 @@ void FCM::store (const Param &p) {
   cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
   (p.nthr==1 || model.size()==1) ? store_1_thr(p) : store_n_thr(p) /*Mult thr*/;
   cerr << "Finished";
+  
+  //todo
+  for(auto a:tbl64)a->print();cerr<<'\n';
 }
 
 inline void FCM::store_1_thr (const Param& p) {
+//  cerr<<"1_thr";//todo
+  auto tbl64_Beg = tbl64.begin();
+//  int i=0;
   for (const auto& m : model) {    // Mask: 4<<2k - 1 = 4^(k+1) - 1
-    auto tbl64_Beg = tbl64.begin();
+//    (*tbl64_Beg++)->print();//todo
     if (m.mode == Mode::TABLE_64)
       store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_Beg++);  // ul MANDATORY
-//    store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64);  // ul MANDATORY
-////    store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64[i++]);  // ul MANDATORY
-//    else if (m.mode == Mode::TABLE_32)
-//      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32);
-//    else if (m.mode == Mode::LOG_TABLE_8)
-//      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, lgtbl8);
-//    else if (m.mode == Mode::SKETCH_8)
-//      store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, cmls4);
-    else
-      cerr << "Error: the model cannot be built.\n";
+////    store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64);  // ul MANDATORY
+//    store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64[i++]);  // ul MANDATORY
+////    else if (m.mode == Mode::TABLE_32)
+////      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32);
+////    else if (m.mode == Mode::LOG_TABLE_8)
+////      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, lgtbl8);
+////    else if (m.mode == Mode::SKETCH_8)
+////      store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, cmls4);
+//    else
+//      cerr << "Error: the model cannot be built.\n";
   }
 //  tbl64[0]->print();//todo
 }
 
 inline void FCM::store_n_thr (const Param& p) {
+  cerr<<"n_thr";//todo
 //  const auto vThrSz = (p.nthr < model.size()) ? p.nthr : model.size();
 //  vector<std::thread> thrd;  thrd.resize(vThrSz);
 //  for (u8 i=0; i!=model.size(); ++i) {  // Mask: 4<<2k-1 = 4^(k+1)-1
 //    if (model[i].mode == Mode::TABLE_64)
-//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, unique_ptr<Table64>>,
+//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, shared_ptr<Table64>>,
 //        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(tbl64));
 //    else if (model[i].mode == Mode::TABLE_32)
-//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, unique_ptr<Table32>>,
+//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, shared_ptr<Table32>>,
 //        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(tbl32));
 //    else if (model[i].mode == Mode::LOG_TABLE_8)
-//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, unique_ptr<LogTable8>>,
+//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, shared_ptr<LogTable8>>,
 //        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(lgtbl8));
 //    else if (model[i].mode == Mode::SKETCH_8)
-//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u64, unique_ptr<CMLS4>>,
+//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u64, shared_ptr<CMLS4>>,
 //        this, std::cref(p.ref), (4ull<<(model[i].k<<1u))-1, std::ref(cmls4));
 //    // Join
 //    if ((i+1) % vThrSz == 0)
