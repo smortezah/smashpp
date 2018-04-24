@@ -14,21 +14,17 @@ using std::array;
 using std::initializer_list;
 using std::make_unique;
 
+ModelPar::ModelPar (u8 k_, u64 w_, u8 d_, u8 Mir_, float Ma_, float Mg_,
+                    u8 TMt_, u8 TMir_, float TMa_, float TMg_)
+  : k(k_), w(w_), d(d_), Mir(Mir_), Malpha(Ma_), Mgamma(Mg_),
+    TMthresh(TMt_), TMir(TMir_), TMalpha(TMa_), TMgamma(TMg_), mode(0) {
+}
 ModelPar::ModelPar (u8 k_)
-  : k(k_), w(0), d(0), Mir(DEF_IR), Malpha(DEF_ALPHA), Mgamma(DEF_GAMMA),
-    TMthresh(0), TMir(0), TMalpha(0), TMgamma(0), mode(0) {
+  : ModelPar(k_, 0, 0, DEF_IR, DEF_ALPHA, DEF_GAMMA, 0, 0, 0, 0) {
 }
-ModelPar::ModelPar (u8 k_, u8 Mir_)
-  : k(k_), w(0), d(0), Mir(Mir_), Malpha(DEF_ALPHA), Mgamma(DEF_GAMMA),
-    TMthresh(0), TMir(0), TMalpha(0), TMgamma(0), mode(0) {
-}
-ModelPar::ModelPar (u8 k_, u8 Mir_, float Malpha_)
-  : k(k_), w(0), d(0), Mir(Mir_), Malpha(Malpha_), Mgamma(DEF_GAMMA),
-    TMthresh(0), TMir(0), TMalpha(0), TMgamma(0), mode(0) {
-}
-ModelPar::ModelPar (u8 k_, u8 Mir_, float Malpha_, float Mgamma_)
-  : k(k_), w(0), d(0), Mir(Mir_), Malpha(Malpha_), Mgamma(Mgamma_),
-    TMthresh(0), TMir(0), TMalpha(0), TMgamma(0), mode(0) {
+ModelPar::ModelPar (u8 k_, u8 TMt_)
+  : ModelPar(k_, 0, 0, DEF_IR, DEF_ALPHA, DEF_GAMMA,
+             TMt_, DEF_IR, DEF_ALPHA, DEF_GAMMA) {
 }
 
 
