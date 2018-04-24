@@ -16,7 +16,7 @@
 #include "fcm.hpp"
 using std::cout;
 using std::setprecision;
-using std::make_unique;
+using std::make_shared;
 
 
 int main (int argc, char* argv[])
@@ -25,10 +25,10 @@ int main (int argc, char* argv[])
     Param p;
     p.parse(argc, argv);
 ////    auto* m = new FCM(p);
-    auto m = make_unique<FCM>(p);
+    auto m = make_shared<FCM>(p);
 
     // Build models  // Start time// Finish time// Elapsed time
-//    auto t0{now()};  m->store(p);     auto t1{now()};  hms(t1-t0);
+    auto t0{now()};  m->store(p);     auto t1{now()};  hms(t1-t0);
     // Compress
 //    t0=now();        m->compress(p);       t1=now();   hms(t1-t0);
     // Result

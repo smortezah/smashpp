@@ -5,12 +5,13 @@
 #ifndef SMASHPP_FCM_HPP
 #define SMASHPP_FCM_HPP
 
+#include <memory>//todo
 #include "par.hpp"
 #include "tbl64.hpp"
 #include "tbl32.hpp"
 #include "logtbl8.hpp"
 #include "cmls4.hpp"
-using std::unique_ptr;
+using std::shared_ptr;
 
 struct ModelPar {
   u8    k;         // Context size
@@ -59,10 +60,10 @@ class FCM    // Finite-context model
 
  private:
   vector<ModelPar>              model;
-  vector<unique_ptr<Table64>>   tbl64;
-  vector<unique_ptr<Table32>>   tbl32;
-  vector<unique_ptr<LogTable8>> lgtbl8;
-  vector<unique_ptr<CMLS4>>     cmls4;
+  vector<shared_ptr<Table64>>   tbl64;
+  vector<shared_ptr<Table32>>   tbl32;
+  vector<shared_ptr<LogTable8>> lgtbl8;
+  vector<shared_ptr<CMLS4>>     cmls4;
 //  u8                    MODE_COMB;
 //  u8                    IR_COMB;
   
