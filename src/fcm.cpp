@@ -62,30 +62,34 @@ inline void FCM::config (const Param& p) {
   vector<string> mdls;
   split(p.modelsPars.begin(), p.modelsPars.end(), ':', mdls);
   for (const auto& mp : mdls) {
-    vector<string> MMnSTMM, M;
-    split(mp.begin(), mp.end(), '/', MMnSTMM);
-    split(MMnSTMM[0].begin(), MMnSTMM[0].end(), ',', M);
-    if (M.size() == 4)
-      model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
-        static_cast<u8>(stoi(M[1])), stof(M[2]), stof(M[3])));
-    else if (M.size() == 6)
-      model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
-        pow2(stoull(M[1])), static_cast<u8>(stoi(M[2])),
-        static_cast<u8>(stoi(M[3])), stof(M[4]), stof(M[5])));
-    
-    if (MMnSTMM.size() == 2) {  // Substitutional tolerant model
-      split(MMnSTMM[1].begin(), MMnSTMM[1].end(), ',', M);
-      if (M.size() == 8)
+    vector<string> MnTM;    // Markov and tolerant models
+    split(mp.begin(), mp.end(), '/', MnTM);
+    if (MnTM.size() == 1) {
+      vector<string> M;
+      split(MnTM[0].begin(), MnTM[0].end(), ',', M);
+      if (M.size() == 4)
+        model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
+          static_cast<u8>(stoi(M[1])), stof(M[2]), stof(M[3])));
+      else if (M.size() == 6)
+        model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
+          pow2(stoull(M[1])), static_cast<u8>(stoi(M[2])),
+          static_cast<u8>(stoi(M[3])), stof(M[4]), stof(M[5])));
+    }
+    else if (MnTM.size() == 2) {  // Including tolerant model
+      vector<string> M, TM;
+      split(MnTM[0].begin(), MnTM[0].end(), ',', M);
+      split(MnTM[1].begin(), MnTM[1].end(), ',', TM);
+      if (M.size() == 4)
         model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
           static_cast<u8>(stoi(M[1])), stof(M[2]), stof(M[3]),
-          static_cast<u8>(stoi(M[4])), static_cast<u8>(stoi(M[5])),
-          stof(M[6]), stof(M[7])));
-      else if (M.size() == 10)
+          static_cast<u8>(stoi(TM[0])), static_cast<u8>(stoi(TM[1])),
+          stof(TM[2]), stof(TM[3])));
+      else if (M.size() == 6)
         model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
           pow2(stoull(M[1])), static_cast<u8>(stoi(M[2])),
           static_cast<u8>(stoi(M[3])), stof(M[4]), stof(M[5]),
-          static_cast<u8>(stoi(M[6])), static_cast<u8>(stoi(M[7])),
-          stof(M[8]), stof(M[9])));
+          static_cast<u8>(stoi(TM[0])), static_cast<u8>(stoi(TM[1])),
+          stof(TM[2]), stof(TM[3])));
     }
   }
   // Set modes. & is MANDATORY, since we set 'mode'.
@@ -112,13 +116,16 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 }
 
 inline void FCM::alloc_models () {
-  for (const auto& m : model)
-    switch (m.mode) {
-      case Mode::TABLE_64:      tbl64   = make_unique<Table64>(m.k);      break;
-      case Mode::TABLE_32:      tbl32   = make_unique<Table32>(m.k);      break;
-      case Mode::LOG_TABLE_8:   logtbl8 = make_unique<LogTable8>(m.k);    break;
-      case Mode::SKETCH_8:      sketch4 = make_unique<CMLS4>(m.w, m.d);   break;
-    }
+  for (const auto& m : model) {
+    if (m.mode == Mode::TABLE_64)
+      tbl64.emplace_back(make_unique<Table64>(m.k));
+    else if (m.mode == Mode::TABLE_32)
+      tbl32.emplace_back(make_unique<Table32>(m.k));
+    else if (m.mode == Mode::LOG_TABLE_8)
+      lgtbl8.emplace_back(make_unique<LogTable8>(m.k));
+    else if (m.mode == Mode::SKETCH_8)
+      cmls4.emplace_back(make_unique<CMLS4>(m.w, m.d));
+  }
 }
 
 //inline void FCM::setModesComb () {  // Models MUST be sorted by 'k'=ctx size
@@ -146,20 +153,24 @@ void FCM::store (const Param &p) {
 
 inline void FCM::store_1_thr (const Param& p) {
   for (const auto& m : model) {    // Mask: 4<<2k - 1 = 4^(k+1) - 1
+    auto tbl64_Beg = tbl64.begin();
     if (m.mode == Mode::TABLE_64)
-      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64);  // ul is MANDATORY
-    else if (m.mode == Mode::TABLE_32)
-      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32);
-    else if (m.mode == Mode::LOG_TABLE_8)
-      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, logtbl8);
-    else if (m.mode == Mode::SKETCH_8)
-      store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, sketch4);
+      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_Beg++);  // ul MANDATORY
+//    store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64);  // ul MANDATORY
+////    store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64[i++]);  // ul MANDATORY
+//    else if (m.mode == Mode::TABLE_32)
+//      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32);
+//    else if (m.mode == Mode::LOG_TABLE_8)
+//      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, lgtbl8);
+//    else if (m.mode == Mode::SKETCH_8)
+//      store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, cmls4);
     else
       cerr << "Error: the model cannot be built.\n";
   }
+//  tbl64[0]->print();//todo
 }
 
-inline void FCM::store_n_thr (const Param &p) {
+inline void FCM::store_n_thr (const Param& p) {
 //  const auto vThrSz = (p.nthr < model.size()) ? p.nthr : model.size();
 //  vector<std::thread> thrd;  thrd.resize(vThrSz);
 //  for (u8 i=0; i!=model.size(); ++i) {  // Mask: 4<<2k-1 = 4^(k+1)-1
@@ -171,10 +182,10 @@ inline void FCM::store_n_thr (const Param &p) {
 //        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(tbl32));
 //    else if (model[i].mode == Mode::LOG_TABLE_8)
 //      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, unique_ptr<LogTable8>>,
-//        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(logtbl8));
+//        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(lgtbl8));
 //    else if (model[i].mode == Mode::SKETCH_8)
 //      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u64, unique_ptr<CMLS4>>,
-//        this, std::cref(p.ref), (4ull<<(model[i].k<<1u))-1, std::ref(sketch4));
+//        this, std::cref(p.ref), (4ull<<(model[i].k<<1u))-1, std::ref(cmls4));
 //    // Join
 //    if ((i+1) % vThrSz == 0)
 //      for (auto& t : thrd)  if (t.joinable()) t.join();
@@ -182,16 +193,17 @@ inline void FCM::store_n_thr (const Param &p) {
 //  for (auto& t : thrd)  if (t.joinable()) t.join();  // Join leftover threads
 }
 
-template <class msk_t, class ds_t>
-inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
-//  ifstream rf(ref);  char c;
-//  for (msk_t ctx=0; rf.get(c);) {
-//    if (c != '\n') {
-//      ctx = ((ctx<<static_cast<msk_t>(2)) & mask) | NUM[static_cast<u8>(c)];
-//      ds->update(ctx);
-//    }
-//  }
-//  rf.close();
+template <class Mask, class Container>
+//inline void FCM::store_impl (const string& ref, Mask mask, Container& cntn) {
+  inline void FCM::store_impl (const string& ref, Mask mask, Container cntn) {
+  ifstream rf(ref);  char c;
+  for (Mask ctx=0; rf.get(c);)
+    if (c != '\n') {
+      ctx = ((ctx<<static_cast<Mask>(2)) & mask) | NUM[static_cast<u8>(c)];
+      (*cntn)->update(ctx);
+//      cntn->update(ctx);
+    }
+  rf.close();
 }
 
 //void FCM::compress (const Param& p) {
@@ -209,28 +221,28 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //  switch (MODE_COMB) {
 //    case 1:   comp1mdl(p.tar, mask32[0], tbl64);                        break;
 //    case 2:   comp1mdl(p.tar, mask32[0], tbl32);                        break;
-//    case 4:   comp1mdl(p.tar, mask32[0], logtbl8);                      break;
-//    case 8:   comp1mdl(p.tar, mask64,    sketch4);                      break;
+//    case 4:   comp1mdl(p.tar, mask32[0], lgtbl8);                      break;
+//    case 8:   comp1mdl(p.tar, mask64,    cmls4);                      break;
 //    case 3:   comp2mdl(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
-//    case 5:   comp2mdl(p.tar, mask32[0], mask32[1], tbl64,   logtbl8);  break;
-//    case 9:   comp2mdl(p.tar, mask32[0], mask64,    tbl64,   sketch4);  break;
-//    case 6:   comp2mdl(p.tar, mask32[0], mask32[1], tbl32,   logtbl8);  break;
-//    case 10:  comp2mdl(p.tar, mask32[0], mask64,    tbl32,   sketch4);  break;
-//    case 12:  comp2mdl(p.tar, mask32[0], mask64,    logtbl8, sketch4);  break;
+//    case 5:   comp2mdl(p.tar, mask32[0], mask32[1], tbl64,   lgtbl8);  break;
+//    case 9:   comp2mdl(p.tar, mask32[0], mask64,    tbl64,   cmls4);  break;
+//    case 6:   comp2mdl(p.tar, mask32[0], mask32[1], tbl32,   lgtbl8);  break;
+//    case 10:  comp2mdl(p.tar, mask32[0], mask64,    tbl32,   cmls4);  break;
+//    case 12:  comp2mdl(p.tar, mask32[0], mask64,    lgtbl8, cmls4);  break;
 //    case 7:   comp3mdl(p.tar, mask32[0], mask32[1], mask32[3],
-//                       tbl64, tbl32, logtbl8);                          break;
+//                       tbl64, tbl32, lgtbl8);                          break;
 //    case 11:  comp3mdl(p.tar, mask32[0], mask32[1], mask64,
-//                       tbl64, tbl32, sketch4);                          break;
+//                       tbl64, tbl32, cmls4);                          break;
 //    case 13:  comp3mdl(p.tar, mask32[0], mask32[1], mask64,
-//                       tbl64, logtbl8, sketch4);                        break;
+//                       tbl64, lgtbl8, cmls4);                        break;
 //    case 14:  comp3mdl(p.tar, mask32[0], mask32[1], mask64,
-//                       tbl32, logtbl8, sketch4);                        break;
+//                       tbl32, lgtbl8, cmls4);                        break;
 //    case 15:  comp4mdl(p.tar);                                          break;
 //    default:  cerr << "Error: the models cannot be built.";             break;
 //  }
 //  cerr << "Finished";
 //}
-//
+
 //template <class msk_t, class ds_t>
 //inline void FCM::comp1mdl (const string& tar, msk_t mask, const ds_t& ds) {
 //  msk_t ctx{0}, ctxIr{mask};    // Ctx, Mir (int) sliding through the dataset
@@ -438,7 +450,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0);    ps1.config(c,ctx1);
 //        ps2.config(c,ctx2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),   prob(tbl32,ps1),
-//                               prob(logtbl8,ps2), prob(sketch4,ps3)});
+//                               prob(lgtbl8,ps2), prob(cmls4,ps3)});
 //        updateCtx(ctx0,ps0);   updateCtx(ctx1,ps1);
 //        updateCtx(ctx2,ps2);   updateCtx(ctx3,ps3);
 //      }
@@ -450,7 +462,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
 //        ps2.config(c,ctx2);           ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0), prob(tbl32,ps1),
-//                               prob(logtbl8,ps2), prob(sketch4,ps3)});
+//                               prob(lgtbl8,ps2), prob(cmls4,ps3)});
 //        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
 //        updateCtx(ctx2,ps2);          updateCtx(ctx3,ps3);
 //      }
@@ -462,7 +474,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0);    ps1.config(c,ctx1,ctxIr1);
 //        ps2.config(c,ctx2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),   probIr(tbl32,ps1),
-//                               prob(logtbl8,ps2), prob(sketch4,ps3)});
+//                               prob(lgtbl8,ps2), prob(cmls4,ps3)});
 //        updateCtx(ctx0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
 //        updateCtx(ctx2,ps2);   updateCtx(ctx3,ps3);
 //      }
@@ -474,7 +486,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
 //        ps2.config(c,ctx2);           ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0), probIr(tbl32,ps1),
-//                               prob(logtbl8,ps2), prob(sketch4,ps3)});
+//                               prob(lgtbl8,ps2), prob(cmls4,ps3)});
 //        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
 //        updateCtx(ctx2,ps2);          updateCtx(ctx3,ps3);
 //      }
@@ -486,7 +498,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0);           ps1.config(c,ctx1);
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),     prob(tbl32,ps1),
-//                               probIr(logtbl8,ps2), prob(sketch4,ps3)});
+//                               probIr(lgtbl8,ps2), prob(cmls4,ps3)});
 //        updateCtx(ctx0,ps0);          updateCtx(ctx1,ps1);
 //        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
 //      }
@@ -498,7 +510,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0),   prob(tbl32,ps1),
-//                               probIr(logtbl8,ps2), prob(sketch4,ps3)});
+//                               probIr(lgtbl8,ps2), prob(cmls4,ps3)});
 //        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
 //        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
 //      }
@@ -510,7 +522,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0);           ps1.config(c,ctx1,ctxIr1);
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),     probIr(tbl32,ps1),
-//                               probIr(logtbl8,ps2), prob(sketch4,ps3)});
+//                               probIr(lgtbl8,ps2), prob(cmls4,ps3)});
 //        updateCtx(ctx0,ps0);          updateCtx(ctx1,ctxIr1,ps1);
 //        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
 //      }
@@ -522,7 +534,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0),   probIr(tbl32,ps1),
-//                               probIr(logtbl8,ps2), prob(sketch4,ps3)});
+//                               probIr(lgtbl8,ps2), prob(cmls4,ps3)});
 //        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
 //        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
 //      }
@@ -534,7 +546,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0);    ps1.config(c,ctx1);
 //        ps2.config(c,ctx2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),   prob(tbl32,ps1),
-//                               prob(logtbl8,ps2), probIr(sketch4,ps3)});
+//                               prob(lgtbl8,ps2), probIr(cmls4,ps3)});
 //        updateCtx(ctx0,ps0);   updateCtx(ctx1,ps1);
 //        updateCtx(ctx2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
 //      }
@@ -546,7 +558,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
 //        ps2.config(c,ctx2);           ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0), prob(tbl32,ps1),
-//                               prob(logtbl8,ps2), probIr(sketch4,ps3)});
+//                               prob(lgtbl8,ps2), probIr(cmls4,ps3)});
 //        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
 //        updateCtx(ctx2,ps2);          updateCtx(ctx3,ctxIr3,ps3);
 //      }
@@ -558,7 +570,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0);    ps1.config(c,ctx1,ctxIr1);
 //        ps2.config(c,ctx2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),   probIr(tbl32,ps1),
-//                               prob(logtbl8,ps2), probIr(sketch4,ps3)});
+//                               prob(lgtbl8,ps2), probIr(cmls4,ps3)});
 //        updateCtx(ctx0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
 //        updateCtx(ctx2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
 //      }
@@ -570,7 +582,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
 //        ps2.config(c,ctx2);           ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0), probIr(tbl32,ps1),
-//                               prob(logtbl8,ps2), probIr(sketch4,ps3)});
+//                               prob(lgtbl8,ps2), probIr(cmls4,ps3)});
 //        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
 //        updateCtx(ctx2,ps2);          updateCtx(ctx3,ctxIr3,ps3);
 //      }
@@ -582,7 +594,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0);           ps1.config(c,ctx1);
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),     prob(tbl32,ps1),
-//                               probIr(logtbl8,ps2), probIr(sketch4,ps3)});
+//                               probIr(lgtbl8,ps2), probIr(cmls4,ps3)});
 //        updateCtx(ctx0,ps0);          updateCtx(ctx1,ps1);
 //        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
 //      }
@@ -594,7 +606,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1);
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0),   prob(tbl32,ps1),
-//                               probIr(logtbl8,ps2), probIr(sketch4,ps3)});
+//                               probIr(lgtbl8,ps2), probIr(cmls4,ps3)});
 //        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
 //        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
 //      }
@@ -606,7 +618,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0);           ps1.config(c,ctx1,ctxIr1);
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),     probIr(tbl32,ps1),
-//                               probIr(logtbl8,ps2), probIr(sketch4,ps3)});
+//                               probIr(lgtbl8,ps2), probIr(cmls4,ps3)});
 //        updateCtx(ctx0,ps0);          updateCtx(ctx1,ctxIr1,ps1);
 //        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
 //      }
@@ -618,7 +630,7 @@ inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //        ps0.config(c,ctx0,ctxIr0);    ps1.config(c,ctx1,ctxIr1);
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0),   probIr(tbl32,ps1),
-//                               probIr(logtbl8,ps2), probIr(sketch4,ps3)});
+//                               probIr(lgtbl8,ps2), probIr(cmls4,ps3)});
 //        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
 //        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
 //      }

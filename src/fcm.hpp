@@ -58,13 +58,13 @@ class FCM    // Finite-context model
 //  void report     (const Param&) const;
 
  private:
-  vector<ModelPar>      model;
-  unique_ptr<Table64>   tbl64;
-  unique_ptr<Table32>   tbl32;
-  unique_ptr<LogTable8> logtbl8;
-  unique_ptr<CMLS4>     sketch4;
-  u8                    MODE_COMB;
-  u8                    IR_COMB;
+  vector<ModelPar>              model;
+  vector<unique_ptr<Table64>>   tbl64;
+  vector<unique_ptr<Table32>>   tbl32;
+  vector<unique_ptr<LogTable8>> lgtbl8;
+  vector<unique_ptr<CMLS4>>     cmls4;
+//  u8                    MODE_COMB;
+//  u8                    IR_COMB;
   
   void config (const Param&); // Set models parameters
   template <class InIter, class Vec>  //Split by dlim
@@ -74,8 +74,9 @@ class FCM    // Finite-context model
 //  void setIRsComb   ();             // Set combination of inv. repeats of models
   void store_1_thr (const Param&); // Build models one thread
   void store_n_thr (const Param&); // Build models multiple threads
-  template <class msk_t, class ds_t>
-  void store_impl (const string&, msk_t, ds_t&);    // Fill data structure
+  template <class Mask, class Container>
+//  void store_impl (const string&, Mask, Container&);    // Fill data structure
+  void store_impl (const string&, Mask, Container);    // Fill data structure
 //  // Compress data structure
 //  template <class msk_t, class ds_t>
 //  void comp1mdl  (const string&, msk_t, const ds_t &);
