@@ -16,9 +16,8 @@ using std::make_unique;
 
 ModelPar::ModelPar (u8 k_, u64 w_, u8 d_, u8 Mir_, float Ma_, float Mg_,
                     u8 TMt_, u8 TMir_, float TMa_, float TMg_)
-  : k(k_), w(w_), d(d_), Mir(Mir_), Malpha(Ma_), Mgamma(Mg_),
-    TMthresh(TMt_), TMir(TMir_), TMalpha(TMa_), TMgamma(TMg_), mode(0) {
-print(k_,w_,d_,Mir_,Ma_,Mg_,TMt_,TMir_,TMa_,TMg_);
+  : k(k_), w(w_), d(d_), Mir(Mir_), Malpha(Ma_), Mgamma(Mg_), TMthresh(TMt_),
+    TMir(TMir_), TMalpha(TMa_), TMgamma(TMg_), mode(Mode::TABLE_64) {
 }
 ModelPar::ModelPar (u8 k_, u8 Mir_, float Ma_, float Mg_)
   : ModelPar(k_, 0, 0, Mir_, Ma_, Mg_, 0, 0, 0, 0) {
@@ -32,18 +31,18 @@ ModelPar::ModelPar (u8 k_, u8 Mir_, float Ma_, float Mg_,
 }
 
 
-//template <typename ctx_t>
+//template <class ctx_t>
 //Prob_s<ctx_t>::Prob_s (float a, ctx_t m, u8 sh)
 //  : alpha(a), sAlpha(static_cast<double>(ALPH_SZ*alpha)), mask(m), shl(sh) {
 //}
 //
-//template <typename ctx_t>
+//template <class ctx_t>
 //inline void Prob_s<ctx_t>::config (char c, ctx_t ctx) {
 //  numSym = NUM[static_cast<u8>(c)];
 //  l      = ctx<<2u;
 //}
 //
-//template <typename ctx_t>
+//template <class ctx_t>
 //inline void Prob_s<ctx_t>::config (char c, ctx_t ctx, ctx_t ctxIr) {
 //  numSym    = NUM[static_cast<u8>(c)];
 //  l         = ctx<<2u;
@@ -54,56 +53,54 @@ ModelPar::ModelPar (u8 k_, u8 Mir_, float Ma_, float Mg_,
 FCM::FCM (const Param& p) {
   aveEnt = 0.0;
   config(p);
-//  allocModels();
+  alloc_models();
 //  setModesComb();
 //  setIRsComb();
 }
 
 inline void FCM::config (const Param& p) {
-  vector<string> mdlsPars;
-  split(p.modelsPars.begin(), p.modelsPars.end(), ':', mdlsPars);
-  for (const auto& mp : mdlsPars) {
-    vector<string> MMnSTMMPars;
-    split(mp.begin(), mp.end(), '/', MMnSTMMPars);
-    vector<string> MPars;
-    split(MMnSTMMPars[0].begin(), MMnSTMMPars[0].end(), ',', MPars);
-//    for(auto a: MPars)cerr<<a<<' ';
-    if (MPars.size() == 4)
-      model.emplace_back(ModelPar(static_cast<u8>(stoi(MPars[0])),
-        static_cast<u8>(stoi(MPars[1])), stof(MPars[2]), stof(MPars[3])));
-    else if (MPars.size() == 6)
-      model.emplace_back(ModelPar(static_cast<u8>(stoi(MPars[0])),
-        pow2(stoull(MPars[1])), static_cast<u8>(stoi(MPars[2])),
-        static_cast<u8>(stoi(MPars[3])), stof(MPars[4]), stof(MPars[5])));
-
-//    if (MMnSTMMPars.size() == 2) {
-//      split(MMnSTMMPars[1].begin(), MMnSTMMPars[1].end(), ',', MPars);
-//      if (MPars.size() == 8)
-//        model.emplace_back(ModelPar(static_cast<u8>(stoi(MPars[0])),
-//          static_cast<u8>(stoi(MPars[1])), stof(MPars[2]), stof(MPars[3]),
-//          static_cast<u8>(stoi(MPars[4])), static_cast<u8>(stoi(MPars[5])),
-//          stof(MPars[6]), stof(MPars[7])));
-//      else if (MPars.size() == 10)
-//        model.emplace_back(ModelPar(static_cast<u8>(stoi(MPars[0])),
-//          pow2(stoull(MPars[1])), static_cast<u8>(stoi(MPars[2])),
-//          static_cast<u8>(stoi(MPars[3])), stof(MPars[4]), stof(MPars[5]),
-//          static_cast<u8>(stoi(MPars[6])), static_cast<u8>(stoi(MPars[7])),
-//          stof(MPars[8]), stof(MPars[9])));
-//    }
+  vector<string> mdls;
+  split(p.modelsPars.begin(), p.modelsPars.end(), ':', mdls);
+  for (const auto& mp : mdls) {
+    vector<string> MMnSTMM, M;
+    split(mp.begin(), mp.end(), '/', MMnSTMM);
+    split(MMnSTMM[0].begin(), MMnSTMM[0].end(), ',', M);
+    if (M.size() == 4)
+      model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
+        static_cast<u8>(stoi(M[1])), stof(M[2]), stof(M[3])));
+    else if (M.size() == 6)
+      model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
+        pow2(stoull(M[1])), static_cast<u8>(stoi(M[2])),
+        static_cast<u8>(stoi(M[3])), stof(M[4]), stof(M[5])));
+    
+    if (MMnSTMM.size() == 2) {  // Substitutional tolerant model
+      split(MMnSTMM[1].begin(), MMnSTMM[1].end(), ',', M);
+      if (M.size() == 8)
+        model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
+          static_cast<u8>(stoi(M[1])), stof(M[2]), stof(M[3]),
+          static_cast<u8>(stoi(M[4])), static_cast<u8>(stoi(M[5])),
+          stof(M[6]), stof(M[7])));
+      else if (M.size() == 10)
+        model.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
+          pow2(stoull(M[1])), static_cast<u8>(stoi(M[2])),
+          static_cast<u8>(stoi(M[3])), stof(M[4]), stof(M[5]),
+          static_cast<u8>(stoi(M[6])), static_cast<u8>(stoi(M[7])),
+          stof(M[8]), stof(M[9])));
+    }
   }
-//  // Set modes. & is MANDATORY, since we set 'mode'.
-//  for (auto& m : model) {
-//    if      (m.k > K_MAX_LGTBL8)    m.mode = MODE::SKETCH_8;
-//    else if (m.k > K_MAX_TBL32)     m.mode = MODE::LOG_TABLE_8;
-//    else if (m.k > K_MAX_TBL64)     m.mode = MODE::TABLE_32;
-//    else                            m.mode = MODE::TABLE_64;
-//  }
-//  // Models MUST be sorted by 'k'=ctx size
+  // Set modes. & is MANDATORY, since we set 'mode'.
+  for (auto& m : model) {
+    if      (m.k > K_MAX_LGTBL8)    m.mode = Mode::SKETCH_8;
+    else if (m.k > K_MAX_TBL32)     m.mode = Mode::LOG_TABLE_8;
+    else if (m.k > K_MAX_TBL64)     m.mode = Mode::TABLE_32;
+    else                            m.mode = Mode::TABLE_64;
+  }
+//  // Models MUST be sorted by 'k'=ctx size//todo check if a MUST
 //  std::sort(model.begin(), model.end(),
 //            [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
 }
 
-template <typename InIter, typename Vec>
+template <class InIter, class Vec>
 inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
   while (true) {
     InIter found = std::find(first, last, delim);
@@ -114,18 +111,16 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
   }
 }
 
-//inline void FCM::allocModels () {
-//  for (const auto& m : model) {
-//    switch (m.mode) {
-//      case MODE::TABLE_64:      tbl64   = make_unique<Table64>(m.k);      break;
-//      case MODE::TABLE_32:      tbl32   = make_unique<Table32>(m.k);      break;
-//      case MODE::LOG_TABLE_8:   logtbl8 = make_unique<LogTable8>(m.k);    break;
-//      case MODE::SKETCH_8:      sketch4 = make_unique<CMLS4>(m.w, m.d);   break;
-//      default:  cerr << "Error: undefined mode " << m.mode << ".\n";
-//    }
-//  }
-//}
-//
+inline void FCM::alloc_models () {
+  for (const auto& m : model)
+    switch (m.mode) {
+      case Mode::TABLE_64:      tbl64   = make_unique<Table64>(m.k);      break;
+      case Mode::TABLE_32:      tbl32   = make_unique<Table32>(m.k);      break;
+      case Mode::LOG_TABLE_8:   logtbl8 = make_unique<LogTable8>(m.k);    break;
+      case Mode::SKETCH_8:      sketch4 = make_unique<CMLS4>(m.w, m.d);   break;
+    }
+}
+
 //inline void FCM::setModesComb () {  // Models MUST be sorted by 'k'=ctx size
 //  MODE_COMB = 0;
 //  for (const auto& m : model)
@@ -137,58 +132,58 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  for (u8 i=0; i!=model.size(); ++i)
 //    IR_COMB |= model[i].Mir<<i;
 //}
-//
-//void FCM::buildModel (const Param& p) {//todo rename store_model
-//  if (p.verbose)
-//    cerr << "Building " <<model.size()<< " model"<< (model.size()==1 ? "" : "s")
-//         << " based on the reference \"" << p.ref << "\"";
-//  else
-//    cerr << "Building the model" << (model.size()==1 ? "" : "s");
-//  cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
-//  (p.nthr==1 || model.size()==1) ? bldMdl1Thr(p) : bldMdlNThr(p)/*Mul thr*/;
-//  cerr << "Finished";
-//}
-//
-//inline void FCM::bldMdl1Thr (const Param& p) {
-//  for (const auto& m : model) {  // Mask: 4<<2k-1 = 4^(k+1)-1
-//    if (m.mode == MODE::TABLE_64)
-//      fillDS(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64);  // ul is MANDATORY
-//    else if (m.mode == MODE::TABLE_32)
-//      fillDS(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32);
-//    else if (m.mode == MODE::LOG_TABLE_8)
-//      fillDS(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, logtbl8);
-//    else if (m.mode == MODE::SKETCH_8)
-//      fillDS(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, sketch4);
-//    else
-//      cerr << "Error: the model cannot be built.\n";
-//  }
-//}
-//
-//inline void FCM::bldMdlNThr (const Param& p) {
+
+void FCM::store (const Param &p) {
+  if (p.verbose)
+    cerr << "Building " <<model.size()<< " model"<< (model.size()==1 ? "" : "s")
+         << " based on the reference \"" << p.ref << "\"";
+  else
+    cerr << "Building the model" << (model.size()==1 ? "" : "s");
+  cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
+  (p.nthr==1 || model.size()==1) ? store_1_thr(p) : store_n_thr(p) /*Mult thr*/;
+  cerr << "Finished";
+}
+
+inline void FCM::store_1_thr (const Param& p) {
+  for (const auto& m : model) {    // Mask: 4<<2k - 1 = 4^(k+1) - 1
+    if (m.mode == Mode::TABLE_64)
+      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64);  // ul is MANDATORY
+    else if (m.mode == Mode::TABLE_32)
+      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32);
+    else if (m.mode == Mode::LOG_TABLE_8)
+      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, logtbl8);
+    else if (m.mode == Mode::SKETCH_8)
+      store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, sketch4);
+    else
+      cerr << "Error: the model cannot be built.\n";
+  }
+}
+
+inline void FCM::store_n_thr (const Param &p) {
 //  const auto vThrSz = (p.nthr < model.size()) ? p.nthr : model.size();
 //  vector<std::thread> thrd;  thrd.resize(vThrSz);
 //  for (u8 i=0; i!=model.size(); ++i) {  // Mask: 4<<2k-1 = 4^(k+1)-1
-//    if (model[i].mode == MODE::TABLE_64)
-//      thrd[i % vThrSz] = std::thread(&FCM::fillDS<u32, unique_ptr<Table64>>,
+//    if (model[i].mode == Mode::TABLE_64)
+//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, unique_ptr<Table64>>,
 //        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(tbl64));
-//    else if (model[i].mode == MODE::TABLE_32)
-//      thrd[i % vThrSz] = std::thread(&FCM::fillDS<u32, unique_ptr<Table32>>,
+//    else if (model[i].mode == Mode::TABLE_32)
+//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, unique_ptr<Table32>>,
 //        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(tbl32));
-//    else if (model[i].mode == MODE::LOG_TABLE_8)
-//      thrd[i % vThrSz] = std::thread(&FCM::fillDS<u32, unique_ptr<LogTable8>>,
+//    else if (model[i].mode == Mode::LOG_TABLE_8)
+//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, unique_ptr<LogTable8>>,
 //        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(logtbl8));
-//    else if (model[i].mode == MODE::SKETCH_8)
-//      thrd[i % vThrSz] = std::thread(&FCM::fillDS<u64, unique_ptr<CMLS4>>,
+//    else if (model[i].mode == Mode::SKETCH_8)
+//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u64, unique_ptr<CMLS4>>,
 //        this, std::cref(p.ref), (4ull<<(model[i].k<<1u))-1, std::ref(sketch4));
 //    // Join
 //    if ((i+1) % vThrSz == 0)
 //      for (auto& t : thrd)  if (t.joinable()) t.join();
 //  }
 //  for (auto& t : thrd)  if (t.joinable()) t.join();  // Join leftover threads
-//}
-//
-//template <typename msk_t, typename ds_t>
-//inline void FCM::fillDS (const string& ref, msk_t mask, ds_t& ds) {
+}
+
+template <class msk_t, class ds_t>
+inline void FCM::store_impl (const string& ref, msk_t mask, ds_t& ds) {
 //  ifstream rf(ref);  char c;
 //  for (msk_t ctx=0; rf.get(c);) {
 //    if (c != '\n') {
@@ -197,15 +192,15 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //    }
 //  }
 //  rf.close();
-//}
-//
+}
+
 //void FCM::compress (const Param& p) {
 //  if (p.verbose)  cerr << "Compressing the target \"" << p.tar << "\"...\n";
 //  else            cerr << "Compressing...\n";
 //  vector<u32> mask32{};  u64 mask64{};
 //  if (MODE_COMB != 15) {
 //    for (const auto &m : model) {
-//      if (m.mode == MODE::SKETCH_8)
+//      if (m.mode == Mode::SKETCH_8)
 //        mask64 = (1ull<<(m.k<<1)) - 1;
 //      else
 //        mask32.emplace_back((1ul<<(m.k<<1)) - 1);  // 1<<2k-1=4^k-1
@@ -236,7 +231,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  cerr << "Finished";
 //}
 //
-//template <typename msk_t, typename ds_t>
+//template <class msk_t, class ds_t>
 //inline void FCM::comp1mdl (const string& tar, msk_t mask, const ds_t& ds) {
 //  msk_t ctx{0}, ctxIr{mask};    // Ctx, Mir (int) sliding through the dataset
 //  u64 symsNo{0};                // No. syms in target file, except \n
@@ -265,7 +260,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  aveEnt = sEnt/symsNo;
 //}
 //
-//template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
+//template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
 //inline void FCM::comp2mdl (const string& tar, msk0_t mask0, msk1_t mask1,
 //                           const ds0_t& ds0, const ds1_t& ds1) {
 //  msk0_t ctx0{0}, ctxIr0{mask0};    // Ctx, Mir (int) sliding through the dataset
@@ -316,8 +311,8 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  aveEnt = sEnt/symsNo;
 //}
 //
-//template <typename msk0_t, typename msk1_t, typename msk2_t,
-//  typename ds0_t, typename ds1_t, typename ds2_t>
+//template <class msk0_t, class msk1_t, class msk2_t,
+//  class ds0_t, class ds1_t, class ds2_t>
 //inline void FCM::comp3mdl (const string& tar, msk0_t mask0, msk1_t mask1,
 //           msk2_t mask2, const ds0_t& ds0, const ds1_t& ds1, const ds2_t& ds2) {
 //  msk0_t ctx0{0}, ctxIr0{mask0};    // Ctx, Mir (int) sliding through the dataset
@@ -419,7 +414,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  vector<u32> mask32 {};
 //  u64         mask64 {};
 //  for (const auto &m : model) {
-//    if (m.mode == MODE::SKETCH_8)
+//    if (m.mode == Mode::SKETCH_8)
 //      mask64 = (1ull<<(m.k<<1u)) - 1;
 //    else
 //      mask32.emplace_back((1ul<<(m.k<<1u)) - 1);  // 1<<2k-1=4^k-1
@@ -646,7 +641,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  f.close();  // Actually done, automatically
 //}
 //
-//template <typename ds_t, typename ctx_t>
+//template <class ds_t, class ctx_t>
 //inline double FCM::prob (const ds_t& ds, const Prob_s<ctx_t>& p) const {
 //  const array<decltype(ds->query(0)), 4> c
 //    {ds->query(p.l),
@@ -657,7 +652,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //         / (std::accumulate(c.begin(),c.end(),0ull) + p.sAlpha);
 //}
 //
-//template <typename ds_t, typename ctx_t>
+//template <class ds_t, class ctx_t>
 //inline double FCM::probR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
 //  const array<decltype(ds->query(0)), 4> c
 //    {ds->query(p.l),
@@ -668,7 +663,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //         / (c[p.numSym] + p.Malpha);
 //}
 //
-//template <typename ds_t, typename ctx_t>
+//template <class ds_t, class ctx_t>
 //inline double FCM::probIr (const ds_t& ds, const Prob_s<ctx_t>& p) const {
 //  const array<decltype(ds->query(0)+ds->query(0)), 4> c
 //    {ds->query(p.l) + ds->query((static_cast<ctx_t>(3)<<p.shl) | p.r),
@@ -681,7 +676,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //         / (std::accumulate(c.begin(),c.end(),0ull) + p.sAlpha);
 //}
 //
-//template <typename ds_t, typename ctx_t>
+//template <class ds_t, class ctx_t>
 //inline double FCM::probIrR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
 //  const array<decltype(ds->query(0)+ds->query(0)), 4> c
 //    {ds->query(p.l) + ds->query((static_cast<ctx_t>(3)<<p.shl) | p.r),
@@ -709,12 +704,12 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  return log2(1 / std::inner_product(w.begin(), w.end(), Pm.begin(), 0.0));
 //}
 //
-//template <typename ctx_t>
+//template <class ctx_t>
 //inline void FCM::updateCtx (ctx_t& ctx, const Prob_s<ctx_t>& p) const {
 //  ctx = (p.l & p.mask) | p.numSym;
 //}
 //
-//template <typename ctx_t>
+//template <class ctx_t>
 //inline void FCM::updateCtx (ctx_t& ctx, ctx_t& ctxIr, const Prob_s<ctx_t>& p)
 //                           const {
 //  ctx   = (p.l & p.mask) | p.numSym;

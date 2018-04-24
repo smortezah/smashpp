@@ -23,14 +23,14 @@ struct ModelPar {
   u8    TMir;
   float TMalpha;
   float TMgamma;
-  u8    mode;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  Mode  mode;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
   ModelPar (u8, u64, u8, u8, float, float, u8, u8, float, float);
   ModelPar (u8, u8, float, float);
   ModelPar (u8, u64, u8, u8, float, float);
   ModelPar (u8, u8, float, float, u8, u8, float, float);
 };
 
-//template <typename ctx_t>
+//template <class ctx_t>
 //struct Prob_s {
 //  float  alpha;
 //  double sAlpha;
@@ -52,8 +52,8 @@ class FCM    // Finite-context model
  public:
   double          aveEnt;
   
-  explicit FCM    (const Param&);
-//  void buildModel (const Param&);   // Build FCM (finite-context model)
+  explicit FCM (const Param&);
+  void store   (const Param&);   // Build FCM (finite-context model)
 //  void compress   (const Param&);
 //  void report     (const Param&) const;
 
@@ -67,40 +67,40 @@ class FCM    // Finite-context model
   u8                    IR_COMB;
   
   void config (const Param&); // Set models parameters
-  template <typename inIter_t, typename vec_t/*=vector<string>*/>//Split by dlim
-  void split        (inIter_t, inIter_t, char, vec_t&) const;
-//  void allocModels  ();             // Allocate memory to models
+  template <class InIter, class Vec>  //Split by dlim
+  void split        (InIter, InIter, char, Vec&) const;
+  void alloc_models ();             // Allocate memory to models
 //  void setModesComb ();             // Set combination of modes of models
 //  void setIRsComb   ();             // Set combination of inv. repeats of models
-//  void bldMdl1Thr   (const Param&); // Build models one thread
-//  void bldMdlNThr   (const Param&); // Build models multiple threads
-//  template <typename msk_t, typename ds_t>
-//  void fillDS    (const string&, msk_t, ds_t&);    // Fill data structure
+  void store_1_thr (const Param&); // Build models one thread
+  void store_n_thr (const Param&); // Build models multiple threads
+  template <class msk_t, class ds_t>
+  void store_impl (const string&, msk_t, ds_t&);    // Fill data structure
 //  // Compress data structure
-//  template <typename msk_t, typename ds_t>
+//  template <class msk_t, class ds_t>
 //  void comp1mdl  (const string&, msk_t, const ds_t &);
-//  template <typename msk0_t, typename msk1_t, typename ds0_t, typename ds1_t>
+//  template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
 //  void comp2mdl  (const string&, msk0_t, msk1_t, const ds0_t&, const ds1_t&);
-//  template <typename msk0_t, typename msk1_t, typename msk2_t,
-//    typename ds0_t, typename ds1_t, typename ds2_t>
+//  template <class msk0_t, class msk1_t, class msk2_t,
+//    class ds0_t, class ds1_t, class ds2_t>
 //  void comp3mdl  (const string&, msk0_t, msk1_t, msk2_t,
 //                  const ds0_t&, const ds1_t&, const ds2_t&);
 //  void comp4mdl  (const string&);   // It has all possible models
-//  template <typename ds_t, typename ctx_t>
+//  template <class ds_t, class ctx_t>
 //  double prob    (const ds_t&, const Prob_s<ctx_t>&) const;  // Probability
 ////  double prob    (const ds_t&, const Prob_s<ctx_t>&) const;  // Probability
-//  template <typename ds_t, typename ctx_t>
+//  template <class ds_t, class ctx_t>
 //  double probR   (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. reciprocal
-//  template <typename ds_t, typename ctx_t>
+//  template <class ds_t, class ctx_t>
 //  double probIr  (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. IR
-//  template <typename ds_t, typename ctx_t>
+//  template <class ds_t, class ctx_t>
 //  double probIrR (const ds_t&, const Prob_s<ctx_t>&) const;  // Prob. IR recip
 //  template <u8 N>
 //  double entropy (std::array<double,N>& w,
 //                  const std::initializer_list<double>& Pm) const;
-//  template <typename ctx_t>
+//  template <class ctx_t>
 //  void updateCtx (ctx_t&, const Prob_s<ctx_t>&) const;
-//  template <typename ctx_t>
+//  template <class ctx_t>
 //  void updateCtx (ctx_t&, ctx_t&, const Prob_s<ctx_t>&) const;
 };
 
