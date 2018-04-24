@@ -25,8 +25,9 @@ struct ModelPar {
   float TMgamma;
   u8    mode;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
   ModelPar (u8, u64, u8, u8, float, float, u8, u8, float, float);
-  explicit ModelPar (u8);
-  explicit ModelPar (u8, u8);
+  ModelPar (u8, u8, float, float);
+  ModelPar (u8, u64, u8, u8, float, float);
+  ModelPar (u8, u8, float, float, u8, u8, float, float);
 };
 
 //template <typename ctx_t>
@@ -101,11 +102,6 @@ class FCM    // Finite-context model
 //  void updateCtx (ctx_t&, const Prob_s<ctx_t>&) const;
 //  template <typename ctx_t>
 //  void updateCtx (ctx_t&, ctx_t&, const Prob_s<ctx_t>&) const;
-//  // Print variadic inputs
-//  template <typename T>
-//  void print (T) const;
-//  template <typename T, typename... Args>
-//  void print (T, Args...) const;
 };
 
 #endif //SMASHPP_FCM_HPP

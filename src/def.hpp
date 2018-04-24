@@ -15,7 +15,7 @@ static const std::string VERSION   {"18.04"};
 static const std::string DEV_YEARS {"2018"};
 
 // Typedef
-//typedef signed char         i8;
+////typedef signed char         i8;
 using i8    = signed char;
 using u8    = unsigned char;
 using i16   = signed short;
@@ -166,12 +166,13 @@ static const std::vector<std::vector<u8>> LEVEL {    // 'k' of multiple models M
 };
 
 // Global function
+// "inline" is a MUST -- not to get "multiple definition of `now()'" error
 inline std::chrono::time_point<std::chrono::high_resolution_clock> now () {
   return std::chrono::high_resolution_clock::now();
 }
 
 template <typename T>
-void hms (T elapsed) {
+constexpr void hms (T elapsed) {
 //  std::chrono::duration<double, std::milli> ms = elapsed;
   const auto durSec =
     std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
@@ -180,6 +181,17 @@ void hms (T elapsed) {
   const auto s = durSec % 60;
   
   std::cerr << " in " << h << ":" << m << ":" << s << " hour:min:sec.\n";
+}
+
+// Print variadic inputs
+template <typename Input>
+constexpr void print (Input in) {
+  std::cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\n';
+}
+template <typename Input, typename... Args>
+constexpr void print (Input in, Args... args) {
+  std::cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\t';
+  print(args...);
 }
 
 //template<u32 N>    // Up to 262144=2^18 elements

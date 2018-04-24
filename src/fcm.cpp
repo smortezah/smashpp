@@ -18,15 +18,18 @@ ModelPar::ModelPar (u8 k_, u64 w_, u8 d_, u8 Mir_, float Ma_, float Mg_,
                     u8 TMt_, u8 TMir_, float TMa_, float TMg_)
   : k(k_), w(w_), d(d_), Mir(Mir_), Malpha(Ma_), Mgamma(Mg_),
     TMthresh(TMt_), TMir(TMir_), TMalpha(TMa_), TMgamma(TMg_), mode(0) {
+print(k_,w_,d_,Mir_,Ma_,Mg_,TMt_,TMir_,TMa_,TMg_);
 }
-ModelPar::ModelPar (u8 k_)
-  : ModelPar(k_, 0, 0, DEF_IR, DEF_ALPHA, DEF_GAMMA, 0, 0, 0, 0) {
+ModelPar::ModelPar (u8 k_, u8 Mir_, float Ma_, float Mg_)
+  : ModelPar(k_, 0, 0, Mir_, Ma_, Mg_, 0, 0, 0, 0) {
 }
-ModelPar::ModelPar (u8 k_, u8 TMt_)
-  : ModelPar(k_, 0, 0, DEF_IR, DEF_ALPHA, DEF_GAMMA,
-             TMt_, DEF_IR, DEF_ALPHA, DEF_GAMMA) {
+ModelPar::ModelPar (u8 k_, u64 w_, u8 d_, u8 Mir_, float Ma_, float Mg_)
+  : ModelPar(k_, w_, d_, Mir_, Ma_, Mg_, 0, 0, 0, 0) {
 }
-
+ModelPar::ModelPar (u8 k_, u8 Mir_, float Ma_, float Mg_,
+                    u8 TMt_, u8 TMir_, float TMa_, float TMg_)
+  : ModelPar(k_, 0, 0, Mir_, Ma_, Mg_, TMt_, TMir_, TMa_, TMg_) {
+}
 
 
 //template <typename ctx_t>
@@ -57,24 +60,36 @@ FCM::FCM (const Param& p) {
 }
 
 inline void FCM::config (const Param& p) {
-  vector<string> vMdlsPars;
-  split(p.modelsPars.begin(), p.modelsPars.end(), ':', vMdlsPars);
-  for (const auto& mp : vMdlsPars) {
-    vector<string> vMMnSTMMPars;
-    split(mp.begin(), mp.end(), '/', vMMnSTMMPars);
-    vector<string> vMPars;
-    split(vMMnSTMMPars[0].begin(), vMMnSTMMPars[0].end(), ',', vMPars);
-//    if (vMPars.size() == 3)
-//      model.emplace_back(ModelPar(static_cast<u8>(stoi(vMPars[0])),
-//                      static_cast<u8>(stoi(vMPars[1])), stof(vMPars[2])));
-//    else if (vMPars.size() == 5)
-//      model.emplace_back(ModelPar(static_cast<u8>(stoi(vMPars[0])),
-//                      static_cast<u8>(stoi(vMPars[1])), stof(vMPars[2]),
-//                      pow2(stoull(vMPars[3])), static_cast<u8>(stoi(vMPars[4]))));
-    if (vMMnSTMMPars.size() == 2) {
-      vMPars.clear();
-      split(vMMnSTMMPars[1].begin(), vMMnSTMMPars[1].end(), ',', vMPars);
-    }
+  vector<string> mdlsPars;
+  split(p.modelsPars.begin(), p.modelsPars.end(), ':', mdlsPars);
+  for (const auto& mp : mdlsPars) {
+    vector<string> MMnSTMMPars;
+    split(mp.begin(), mp.end(), '/', MMnSTMMPars);
+    vector<string> MPars;
+    split(MMnSTMMPars[0].begin(), MMnSTMMPars[0].end(), ',', MPars);
+//    for(auto a: MPars)cerr<<a<<' ';
+    if (MPars.size() == 4)
+      model.emplace_back(ModelPar(static_cast<u8>(stoi(MPars[0])),
+        static_cast<u8>(stoi(MPars[1])), stof(MPars[2]), stof(MPars[3])));
+    else if (MPars.size() == 6)
+      model.emplace_back(ModelPar(static_cast<u8>(stoi(MPars[0])),
+        pow2(stoull(MPars[1])), static_cast<u8>(stoi(MPars[2])),
+        static_cast<u8>(stoi(MPars[3])), stof(MPars[4]), stof(MPars[5])));
+
+//    if (MMnSTMMPars.size() == 2) {
+//      split(MMnSTMMPars[1].begin(), MMnSTMMPars[1].end(), ',', MPars);
+//      if (MPars.size() == 8)
+//        model.emplace_back(ModelPar(static_cast<u8>(stoi(MPars[0])),
+//          static_cast<u8>(stoi(MPars[1])), stof(MPars[2]), stof(MPars[3]),
+//          static_cast<u8>(stoi(MPars[4])), static_cast<u8>(stoi(MPars[5])),
+//          stof(MPars[6]), stof(MPars[7])));
+//      else if (MPars.size() == 10)
+//        model.emplace_back(ModelPar(static_cast<u8>(stoi(MPars[0])),
+//          pow2(stoull(MPars[1])), static_cast<u8>(stoi(MPars[2])),
+//          static_cast<u8>(stoi(MPars[3])), stof(MPars[4]), stof(MPars[5]),
+//          static_cast<u8>(stoi(MPars[6])), static_cast<u8>(stoi(MPars[7])),
+//          stof(MPars[8]), stof(MPars[9])));
+//    }
   }
 //  // Set modes. & is MANDATORY, since we set 'mode'.
 //  for (auto& m : model) {
@@ -704,14 +719,4 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //                           const {
 //  ctx   = (p.l & p.mask) | p.numSym;
 //  ctxIr = (p.revNumSym<<p.shl) | p.r;
-//}
-//
-//template <typename T>
-//inline void FCM::print (T in) const {
-//  cerr << in << '\n';
-//}
-//template <typename T, typename... Args>
-//inline void FCM::print (T in, Args... args) const {
-//  cerr << in << '\t';
-//  print(args...);
 //}
