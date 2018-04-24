@@ -60,10 +60,10 @@ static constexpr float DEF_GAMMA  {0.9};  // Default gamma for multiple models
 //using htbl_t = std::unordered_map<u64, std::array<u64,ALPH_SZ>>; //faster th a[]
 
 // Enum
-enum MODE {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
+enum class Mode {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
 // Inv. repeats, 1 & 2 & 3 & 4 models. D: direct(bit 0), I: inv.(bit 1)
-enum IR {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
-         IDDD, IDDI, IDID, IDII, IIDD, IIDI, IIID, IIII};
+enum class IR {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
+               IDDD, IDDI, IDID, IDII, IIDD, IIDI, IIID, IIII};
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n
@@ -171,7 +171,7 @@ inline std::chrono::time_point<std::chrono::high_resolution_clock> now () {
   return std::chrono::high_resolution_clock::now();
 }
 
-template <typename T>
+template <class T>
 constexpr void hms (T elapsed) {
 //  std::chrono::duration<double, std::milli> ms = elapsed;
   const auto durSec =
@@ -184,12 +184,12 @@ constexpr void hms (T elapsed) {
 }
 
 // Print variadic inputs
-template <typename Input>
-constexpr void print (Input in) {
+template <class Input>
+constexpr void print (Input in) noexcept {
   std::cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\n';
 }
-template <typename Input, typename... Args>
-constexpr void print (Input in, Args... args) {
+template <class Input, class... Args>
+constexpr void print (Input in, Args... args) noexcept {
   std::cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\t';
   print(args...);
 }

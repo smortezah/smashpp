@@ -137,11 +137,11 @@ class Param    // Parameters
       << "    -l [NUM],  --level        level"                           << '\n'
       << "    -v,        --verbose      more information"                << '\n'
       << "    -n [NUM],  --nthr         number of threads"               << '\n'
-      << "    -m [Mir,k,Malpha[,log2(w),d]:...],  --model    parameters of models"<<'\n'//todo
-      << "        Mir: inverted repeat"<<'\n'
+      << "    -m [k,w,d,ir,alpha,gamma[,log2(w),d]:...],  --model    parameters of models"<<'\n'//todo
       << "        k:  context size"<<'\n'
       << "        w:  width of sketch in log2 format, e.g., set 10 for w=2^10=1024"<<'\n'
       << "        d:  depth of sketch"<<'\n'
+      << "        ir: inverted repeat"<<'\n'
       << "    -R,        --report       save results in the \"report\" file"<< '\n'
       << "    -h,        --help         usage guide"                     << '\n'
                                                                          << '\n'
