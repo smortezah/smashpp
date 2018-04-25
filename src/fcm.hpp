@@ -5,7 +5,7 @@
 #ifndef SMASHPP_FCM_HPP
 #define SMASHPP_FCM_HPP
 
-#include <memory>//todo
+#include <memory>
 #include "par.hpp"
 #include "tbl64.hpp"
 #include "tbl32.hpp"
@@ -47,7 +47,6 @@ struct ModelPar {
 //  void config (char, ctx_t, ctx_t);
 //};
 
-//#include <memory>//todo check if needed
 class FCM    // Finite-context model
 {
  public:
@@ -70,14 +69,14 @@ class FCM    // Finite-context model
   void config (const Param&); // Set models parameters
   template <class InIter, class Vec>  //Split by dlim
   void split        (InIter, InIter, char, Vec&) const;
+  void set_modes    ();
   void alloc_models ();             // Allocate memory to models
 //  void setModesComb ();             // Set combination of modes of models
 //  void setIRsComb   ();             // Set combination of inv. repeats of models
   void store_1_thr (const Param&); // Build models one thread
   void store_n_thr (const Param&); // Build models multiple threads
-  template <class Mask, class Container>
-//  void store_impl (const string&, Mask, Container&);    // Fill data structure
-  void store_impl (const string&, Mask, Container);    // Fill data structure
+  template <class Mask, class ContIter>
+  void store_impl (const string&, Mask, ContIter);    // Fill data structure
 //  // Compress data structure
 //  template <class msk_t, class ds_t>
 //  void comp1mdl  (const string&, msk_t, const ds_t &);

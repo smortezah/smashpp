@@ -92,13 +92,7 @@ inline void FCM::config (const Param& p) {
           stof(TM[2]), stof(TM[3])));
     }
   }
-  // Set modes. & is MANDATORY, since we set 'mode'.
-  for (auto& m : model) {
-    if      (m.k > K_MAX_LGTBL8)    m.mode = Mode::SKETCH_8;
-    else if (m.k > K_MAX_TBL32)     m.mode = Mode::LOG_TABLE_8;
-    else if (m.k > K_MAX_TBL64)     m.mode = Mode::TABLE_32;
-    else                            m.mode = Mode::TABLE_64;
-  }
+  set_modes();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
 //  // Models MUST be sorted by 'k'=ctx size//todo check if a MUST
 //  std::sort(model.begin(), model.end(),
 //            [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
@@ -115,6 +109,15 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
   }
 }
 
+inline void FCM::set_modes () {
+  for (auto& m : model) {
+    if      (m.k > K_MAX_LGTBL8)    m.mode = Mode::SKETCH_8;
+    else if (m.k > K_MAX_TBL32)     m.mode = Mode::LOG_TABLE_8;
+    else if (m.k > K_MAX_TBL64)     m.mode = Mode::TABLE_32;
+    else                            m.mode = Mode::TABLE_64;
+  }
+}
+
 inline void FCM::alloc_models () {
   for (const auto& m : model) {
     if (m.mode == Mode::TABLE_64)
@@ -126,12 +129,6 @@ inline void FCM::alloc_models () {
     else if (m.mode == Mode::SKETCH_8)
       cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));
   }
-  
-  //todo
-//  tbl64[0]->print();
-//  cerr<<'\n';
-//  tbl64[1]->print();
-  
 }
 
 //inline void FCM::setModesComb () {  // Models MUST be sorted by 'k'=ctx size
@@ -158,63 +155,60 @@ void FCM::store (const Param& p) {
   
   //todo
   for(auto a:tbl64)a->print();cerr<<'\n';
+  for(auto a:cmls4)a->print();cerr<<'\n';
 }
 
 inline void FCM::store_1_thr (const Param& p) {
-//  cerr<<"1_thr";//todo
-  auto tbl64_Beg = tbl64.begin();
-//  int i=0;
+  auto tbl64_iter  = tbl64.begin();     auto tbl32_iter = tbl32.begin();
+  auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
   for (const auto& m : model) {    // Mask: 4<<2k - 1 = 4^(k+1) - 1
-//    (*tbl64_Beg++)->print();//todo
     if (m.mode == Mode::TABLE_64)
-      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_Beg++);  // ul MANDATORY
-////    store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64);  // ul MANDATORY
-//    store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64[i++]);  // ul MANDATORY
-////    else if (m.mode == Mode::TABLE_32)
-////      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32);
-////    else if (m.mode == Mode::LOG_TABLE_8)
-////      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, lgtbl8);
-////    else if (m.mode == Mode::SKETCH_8)
-////      store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, cmls4);
-//    else
-//      cerr << "Error: the model cannot be built.\n";
+      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);
+    else if (m.mode == Mode::TABLE_32)
+      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32_iter++);
+    else if (m.mode == Mode::LOG_TABLE_8)
+      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, lgtbl8_iter++);
+    else if (m.mode == Mode::SKETCH_8)
+      store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, cmls4_iter++);
+    else
+      cerr << "Error: the model cannot be built.\n";
   }
-//  tbl64[0]->print();//todo
 }
 
 inline void FCM::store_n_thr (const Param& p) {
-  cerr<<"n_thr";//todo
-//  const auto vThrSz = (p.nthr < model.size()) ? p.nthr : model.size();
-//  vector<std::thread> thrd;  thrd.resize(vThrSz);
-//  for (u8 i=0; i!=model.size(); ++i) {  // Mask: 4<<2k-1 = 4^(k+1)-1
-//    if (model[i].mode == Mode::TABLE_64)
-//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, shared_ptr<Table64>>,
-//        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(tbl64));
-//    else if (model[i].mode == Mode::TABLE_32)
-//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, shared_ptr<Table32>>,
-//        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(tbl32));
-//    else if (model[i].mode == Mode::LOG_TABLE_8)
-//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32, shared_ptr<LogTable8>>,
-//        this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, std::ref(lgtbl8));
-//    else if (model[i].mode == Mode::SKETCH_8)
-//      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u64, shared_ptr<CMLS4>>,
-//        this, std::cref(p.ref), (4ull<<(model[i].k<<1u))-1, std::ref(cmls4));
-//    // Join
-//    if ((i+1) % vThrSz == 0)
-//      for (auto& t : thrd)  if (t.joinable()) t.join();
-//  }
-//  for (auto& t : thrd)  if (t.joinable()) t.join();  // Join leftover threads
+  auto tbl64_iter  = tbl64.begin();     auto tbl32_iter = tbl32.begin();
+  auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
+  const auto vThrSz = (p.nthr < model.size()) ? p.nthr : model.size();
+  vector<std::thread> thrd;  thrd.resize(vThrSz);
+  for (u8 i=0; i!=model.size(); ++i) {    // Mask: 4<<2k-1 = 4^(k+1)-1
+    if (model[i].mode == Mode::TABLE_64)
+      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>,
+          this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, tbl64_iter++);
+    else if (model[i].mode == Mode::TABLE_32)
+      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32,decltype(tbl32_iter)>,
+          this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, tbl32_iter++);
+    else if (model[i].mode == Mode::LOG_TABLE_8)
+      thrd[i % vThrSz] =std::thread(&FCM::store_impl<u32,decltype(lgtbl8_iter)>,
+          this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, lgtbl8_iter++);
+    else if (model[i].mode == Mode::SKETCH_8)
+      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u64,decltype(cmls4_iter)>,
+          this, std::cref(p.ref), (4ull<<(model[i].k<<1u))-1, cmls4_iter++);
+    else
+      cerr << "Error: the model cannot be built.\n";
+    // Join
+    if ((i+1) % vThrSz == 0)
+      for (auto& t : thrd)  if (t.joinable()) t.join();
+  }
+  for (auto& t : thrd)  if (t.joinable()) t.join();  // Join leftover threads
 }
 
-template <class Mask, class Container>
-//inline void FCM::store_impl (const string& ref, Mask mask, Container& cntn) {
-  inline void FCM::store_impl (const string& ref, Mask mask, Container cntn) {
+template <class Mask, class ContIter /*Container iterator*/>
+inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
   ifstream rf(ref);  char c;
   for (Mask ctx=0; rf.get(c);)
     if (c != '\n') {
-      ctx = ((ctx<<static_cast<Mask>(2)) & mask) | NUM[static_cast<u8>(c)];
-      (*cntn)->update(ctx);
-//      cntn->update(ctx);
+      ctx = ((ctx<<2u) & mask) | NUM[static_cast<u8>(c)];
+      (*contElem)->update(ctx);
     }
   rf.close();
 }
