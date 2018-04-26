@@ -14,23 +14,46 @@
 using std::shared_ptr;
 using std::initializer_list;
 
-struct ModelPar {
+//todo
+class ModelPar {
+ public:
   u8         k;         // Context size
+  u8         ir;       // Markov models Inverted repeat
+  float      alpha;
+  float      gamma;
+  Container  cner;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+//  ModelPar (u8, u64, u8, u8, float, float, u8, u8, float, float);
+//  ModelPar (u8, u8, float, float);
+//  ModelPar (u8, u64, u8, u8, float, float);
+//  ModelPar (u8, u8, float, float, u8, u8, float, float);
+};
+class MMPar : public ModelPar {
+ public:
   u64        w;         // Width of count-min-log sketch
   u8         d;         // Depth of count-min-log sketch
-  u8         Mir;       // Markov models Inverted repeat
-  float      Malpha;
-  float      Mgamma;
-  u8         TMthresh;  // Substitutional tolerant Markov models threshold
-  u8         TMir;
-  float      TMalpha;
-  float      TMgamma;
-  Container  cner;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-  ModelPar (u8, u64, u8, u8, float, float, u8, u8, float, float);
-  ModelPar (u8, u8, float, float);
-  ModelPar (u8, u64, u8, u8, float, float);
-  ModelPar (u8, u8, float, float, u8, u8, float, float);
 };
+class STMMPar : public ModelPar {
+ public:
+  u8         thresh;  // Substitutional tolerant Markov models threshold
+};
+
+//struct ModelPar {
+//  u8         k;         // Context size
+//  u64        w;         // Width of count-min-log sketch
+//  u8         d;         // Depth of count-min-log sketch
+//  u8         Mir;       // Markov models Inverted repeat
+//  float      Malpha;
+//  float      Mgamma;
+//  u8         TMthresh;  // Substitutional tolerant Markov models threshold
+//  u8         TMir;
+//  float      TMalpha;
+//  float      TMgamma;
+//  Container  cner;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+//  ModelPar (u8, u64, u8, u8, float, float, u8, u8, float, float);
+//  ModelPar (u8, u8, float, float);
+//  ModelPar (u8, u64, u8, u8, float, float);
+//  ModelPar (u8, u8, float, float, u8, u8, float, float);
+//};
 
 template <class Ctx>//todo. if always use u64, replace Ctx with u64
 struct ProbPar {
