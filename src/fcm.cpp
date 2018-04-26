@@ -303,36 +303,27 @@ inline void FCM::compress_1_MM (const string& tar,
   for (const auto& m : models)
     ctxIr.emplace_back((1ull<<(m.k<<1)) - 1);
   
+  vector<double> w (models.size(), 1.0/models.size());
   u64 symsNo{0};                // No. syms in target file, except \n
-    double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-    ifstream tf(
+  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(
 //      p.
       tar);  char c;
   vector<ProbPar<u64>> pp;    pp.resize(models.size());
   for (u8 i=0; i!=models.size(); ++i)
     pp.emplace_back(models[i].Malpha, ctxIr[i] /* mask: 1<<2k-1=4^k-1 */,
                     static_cast<u8>(models[i].k<<1u));
-    
-  //todo
-//  msk_t ctx{0}, ctxIr{mask};    // Ctx, Mir (int) sliding through the dataset
-  if (models[0].Mir == 0) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        pp.config(c, ctx);
-        sEnt += entropy(prob(cnerIt, pp));
-        update_ctx(ctx, pp);
-      }
-  }
-  else if (models[0].Mir == 1) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        pp.config(c, ctx, ctxIr);
-        sEnt += entropy(probIr(cnerIt, pp));
-        update_ctx(ctx, ctxIr, pp);    // Update ctx & ctxIr
-      }
-  }
+  
+//  while (tf.get(c))
+//    if (c != '\n') {
+//      ++symsNo;
+//      for (u8 i = 0; i != models.size(); ++i) {
+//        (models[i].Mir == 0) ? pp[i].config(c, ctx[i])
+//                             : pp[i].config(c, ctx[i], ctxIr[0]);
+//      }
+////        sEnt += entropy(prob(cnerIt, pp));
+////        update_ctx(ctx, pp);
+//    }
   tf.close();
   aveEnt = sEnt/symsNo;
 }
