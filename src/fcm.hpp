@@ -12,15 +12,16 @@
 #include "logtbl8.hpp"
 #include "cmls4.hpp"
 using std::shared_ptr;
+using std::initializer_list;
 
 struct ModelPar {
   u8         k;         // Context size
   u64        w;         // Width of count-min-log sketch
   u8         d;         // Depth of count-min-log sketch
-  u8         Mir;       // Markov model Inverted repeat
+  u8         Mir;       // Markov models Inverted repeat
   float      Malpha;
   float      Mgamma;
-  u8         TMthresh;  // Substitutional tolerant Markov model threshold
+  u8         TMthresh;  // Substitutional tolerant Markov models threshold
   u8         TMir;
   float      TMalpha;
   float      TMgamma;
@@ -31,7 +32,7 @@ struct ModelPar {
   ModelPar (u8, u8, float, float, u8, u8, float, float);
 };
 
-template <class Ctx>
+template <class Ctx>//todo. if always use u64, replace Ctx with u64
 struct ProbPar {
   float  alpha;
   double sAlpha;
@@ -47,18 +48,18 @@ struct ProbPar {
   void config (char, Ctx, Ctx);
 };
 
-class FCM    // Finite-context model
+class FCM    // Finite-context models
 {
  public:
   double          aveEnt;
   
   explicit FCM (const Param&);
-  void store (const Param&);   // Build FCM (finite-context model)
+  void store (const Param&);   // Build FCM (finite-context models)
   void compress (const Param&);
 //  void report     (const Param&) const;
 
  private:
-  vector<ModelPar>              model;
+  vector<ModelPar>              models;
   vector<shared_ptr<Table64>>   tbl64;
   vector<shared_ptr<Table32>>   tbl32;
   vector<shared_ptr<LogTable8>> lgtbl8;
@@ -75,11 +76,11 @@ class FCM    // Finite-context model
 //  void setIRsComb   ();             // Set combination of inv. repeats of models
   void store_1_thr (const Param&); // Build models one thread
   void store_n_thr (const Param&); // Build models multiple threads
-  template <class Mask, class ContIter>
-  void store_impl (const string&, Mask, ContIter);    // Fill data structure
+  template <class Mask, class CnerIter>
+  void store_impl (const string&, Mask, CnerIter);    // Fill data structure
   // Compress data structure
-  template <class msk_t, class ds_t>
-  void compress_1_MM (const string&, msk_t, const ds_t&);
+//  template <class msk_t, class CnerIter>
+//  void compress_1_MM (const string&, msk_t, const CnerIter&);  // 1 Markov models
 //  template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
 //  void comp2mdl  (const string&, msk0_t, msk1_t, const ds0_t&, const ds1_t&);
 //  template <class msk0_t, class msk1_t, class msk2_t,
@@ -87,8 +88,8 @@ class FCM    // Finite-context model
 //  void comp3mdl  (const string&, msk0_t, msk1_t, msk2_t,
 //                  const ds0_t&, const ds1_t&, const ds2_t&);
 //  void comp4mdl  (const string&);   // It has all possible models
-//  template <class ds_t, class Ctx>
-//  double prob    (const ds_t&, const ProbPar<Ctx>&) const;  // Probability
+  template <class CnerIter, class Ctx>
+  double prob    (CnerIter, const ProbPar<Ctx>&) const;  // Probability
 ////  double prob    (const ds_t&, const Prob_s<ctx_t>&) const;  // Probability
 //  template <class ds_t, class Ctx>
 //  double probR   (const ds_t&, const ProbPar<Ctx>&) const;  // Prob. reciprocal
@@ -99,6 +100,7 @@ class FCM    // Finite-context model
 //  template <u8 N>
 //  double entropy (std::array<double,N>& w,
 //                  const std::initializer_list<double>& Pm) const;
+  double entropy (double) const;
 //  template <class Ctx>
 //  void updateCtx (Ctx&, const ProbPar<Ctx>&) const;
 //  template <class Ctx>

@@ -185,11 +185,11 @@ constexpr void hms (T elapsed) {
 
 // Print variadic inputs
 template <class Input>
-constexpr void print (Input in) noexcept {
+void print (Input&& in) noexcept {
   std::cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\n';
 }
 template <class Input, class... Args>
-constexpr void print (Input in, Args... args) noexcept {
+void print (Input&& in, Args&&... args) noexcept {
   std::cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\t';
   print(args...);
 }
