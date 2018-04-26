@@ -70,7 +70,7 @@ class Param    // Parameters
           verbose = true;
         else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end())
           nthr = static_cast<u8>(stoi(*++i));
-        else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end())
+        else if ((*i=="-m" || *i=="--models") && i+1!=vArgs.end())
           modelsPars = *++i;
         else if (*i=="-R"  || *i=="--report")
           report = (i+1!=vArgs.end()) ? *++i : "report.txt";
@@ -137,7 +137,7 @@ class Param    // Parameters
       << "    -l [NUM],  --level        level"                           << '\n'
       << "    -v,        --verbose      more information"                << '\n'
       << "    -n [NUM],  --nthr         number of threads"               << '\n'
-      << "    -m [k,w,d,ir,alpha,gamma[,log2(w),d]:...],  --model    parameters of models"<<'\n'//todo
+      << "    -m [k,w,d,ir,alpha,gamma[,log2(w),d]:...],  --models    parameters of models"<<'\n'//todo
       << "        k:  context size"<<'\n'
       << "        w:  width of sketch in log2 format, e.g., set 10 for w=2^10=1024"<<'\n'
       << "        d:  depth of sketch"<<'\n'
