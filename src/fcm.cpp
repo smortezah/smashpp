@@ -17,7 +17,7 @@ using std::make_shared;
 ModelPar::ModelPar (u8 k_, u64 w_, u8 d_, u8 Mir_, float Ma_, float Mg_,
                     u8 TMt_, u8 TMir_, float TMa_, float TMg_)
   : k(k_), w(w_), d(d_), Mir(Mir_), Malpha(Ma_), Mgamma(Mg_), TMthresh(TMt_),
-    TMir(TMir_), TMalpha(TMa_), TMgamma(TMg_), mode(Mode::TABLE_64) {
+    TMir(TMir_), TMalpha(TMa_), TMgamma(TMg_), cner(Container::TABLE_64) {
 }
 ModelPar::ModelPar (u8 k_, u8 Mir_, float Ma_, float Mg_)
   : ModelPar(k_, 0, 0, Mir_, Ma_, Mg_, 0, 0, 0, 0) {
@@ -30,30 +30,29 @@ ModelPar::ModelPar (u8 k_, u8 Mir_, float Ma_, float Mg_,
   : ModelPar(k_, 0, 0, Mir_, Ma_, Mg_, TMt_, TMir_, TMa_, TMg_) {
 }
 
+template <class Ctx>
+ProbPar<Ctx>::ProbPar (float a, Ctx m, u8 sh)
+  : alpha(a), sAlpha(static_cast<double>(ALPH_SZ*alpha)), mask(m), shl(sh) {
+}
 
-//template <class ctx_t>
-//Prob_s<ctx_t>::Prob_s (float a, ctx_t m, u8 sh)
-//  : alpha(a), sAlpha(static_cast<double>(ALPH_SZ*alpha)), mask(m), shl(sh) {
-//}
-//
-//template <class ctx_t>
-//inline void Prob_s<ctx_t>::config (char c, ctx_t ctx) {
-//  numSym = NUM[static_cast<u8>(c)];
-//  l      = ctx<<2u;
-//}
-//
-//template <class ctx_t>
-//inline void Prob_s<ctx_t>::config (char c, ctx_t ctx, ctx_t ctxIr) {
-//  numSym    = NUM[static_cast<u8>(c)];
-//  l         = ctx<<2u;
-//  revNumSym = REVNUM[static_cast<u8>(c)];
-//  r         = ctxIr>>2u;
-//}
+template <class Ctx>
+inline void ProbPar<Ctx>::config (char c, Ctx ctx) {
+  numSym = NUM[static_cast<u8>(c)];
+  l      = ctx<<2u;
+}
+
+template <class Ctx>
+inline void ProbPar<Ctx>::config (char c, Ctx ctx, Ctx ctxIr) {
+  numSym    = NUM[static_cast<u8>(c)];
+  l         = ctx<<2u;
+  revNumSym = REVNUM[static_cast<u8>(c)];
+  r         = ctxIr>>2u;
+}
 
 FCM::FCM (const Param& p) {
   aveEnt = 0.0;
   config(p);
-  alloc_models();
+  alloc_model();
 //  setModesComb();
 //  setIRsComb();
 }
@@ -92,7 +91,7 @@ inline void FCM::config (const Param& p) {
           stof(TM[2]), stof(TM[3])));
     }
   }
-  set_modes();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
+  set_container();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
 //  // Models MUST be sorted by 'k'=ctx size//todo check if a MUST
 //  std::sort(model.begin(), model.end(),
 //            [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
@@ -109,24 +108,24 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
   }
 }
 
-inline void FCM::set_modes () {
+inline void FCM::set_container () {
   for (auto& m : model) {
-    if      (m.k > K_MAX_LGTBL8)    m.mode = Mode::SKETCH_8;
-    else if (m.k > K_MAX_TBL32)     m.mode = Mode::LOG_TABLE_8;
-    else if (m.k > K_MAX_TBL64)     m.mode = Mode::TABLE_32;
-    else                            m.mode = Mode::TABLE_64;
+    if      (m.k > K_MAX_LGTBL8)    m.cner = Container::SKETCH_8;
+    else if (m.k > K_MAX_TBL32)     m.cner = Container::LOG_TABLE_8;
+    else if (m.k > K_MAX_TBL64)     m.cner = Container::TABLE_32;
+    else                            m.cner = Container::TABLE_64;
   }
 }
 
-inline void FCM::alloc_models () {
+inline void FCM::alloc_model () {
   for (const auto& m : model) {
-    if (m.mode == Mode::TABLE_64)
+    if (m.cner == Container::TABLE_64)
       tbl64.emplace_back(make_shared<Table64>(m.k));
-    else if (m.mode == Mode::TABLE_32)
+    else if (m.cner == Container::TABLE_32)
       tbl32.emplace_back(make_shared<Table32>(m.k));
-    else if (m.mode == Mode::LOG_TABLE_8)
+    else if (m.cner == Container::LOG_TABLE_8)
       lgtbl8.emplace_back(make_shared<LogTable8>(m.k));
-    else if (m.mode == Mode::SKETCH_8)
+    else if (m.cner == Container::SKETCH_8)
       cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));
   }
 }
@@ -134,7 +133,7 @@ inline void FCM::alloc_models () {
 //inline void FCM::setModesComb () {  // Models MUST be sorted by 'k'=ctx size
 //  MODE_COMB = 0;
 //  for (const auto& m : model)
-//    MODE_COMB |= 1u<<m.mode;
+//    MODE_COMB |= 1u<<m.cner;
 //}
 //
 //inline void FCM::setIRsComb () {    // Models MUST be sorted by 'k'=ctx size
@@ -153,22 +152,22 @@ void FCM::store (const Param& p) {
   (p.nthr==1 || model.size()==1) ? store_1_thr(p) : store_n_thr(p) /*Mult thr*/;
   cerr << "Finished";
   
-  //todo
-  for(auto a:tbl64)a->print();cerr<<'\n';
-  for(auto a:cmls4)a->print();cerr<<'\n';
+//  //todo
+//  for(auto a:tbl64)a->print();cerr<<'\n';
+//  for(auto a:cmls4)a->print();cerr<<'\n';
 }
 
 inline void FCM::store_1_thr (const Param& p) {
   auto tbl64_iter  = tbl64.begin();     auto tbl32_iter = tbl32.begin();
   auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
   for (const auto& m : model) {    // Mask: 4<<2k - 1 = 4^(k+1) - 1
-    if (m.mode == Mode::TABLE_64)
+    if (m.cner == Container::TABLE_64)
       store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);
-    else if (m.mode == Mode::TABLE_32)
+    else if (m.cner == Container::TABLE_32)
       store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32_iter++);
-    else if (m.mode == Mode::LOG_TABLE_8)
+    else if (m.cner == Container::LOG_TABLE_8)
       store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, lgtbl8_iter++);
-    else if (m.mode == Mode::SKETCH_8)
+    else if (m.cner == Container::SKETCH_8)
       store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, cmls4_iter++);
     else
       cerr << "Error: the model cannot be built.\n";
@@ -181,16 +180,16 @@ inline void FCM::store_n_thr (const Param& p) {
   const auto vThrSz = (p.nthr < model.size()) ? p.nthr : model.size();
   vector<std::thread> thrd;  thrd.resize(vThrSz);
   for (u8 i=0; i!=model.size(); ++i) {    // Mask: 4<<2k-1 = 4^(k+1)-1
-    if (model[i].mode == Mode::TABLE_64)
+    if (model[i].cner == Container::TABLE_64)
       thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>,
           this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, tbl64_iter++);
-    else if (model[i].mode == Mode::TABLE_32)
+    else if (model[i].cner == Container::TABLE_32)
       thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32,decltype(tbl32_iter)>,
           this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, tbl32_iter++);
-    else if (model[i].mode == Mode::LOG_TABLE_8)
+    else if (model[i].cner == Container::LOG_TABLE_8)
       thrd[i % vThrSz] =std::thread(&FCM::store_impl<u32,decltype(lgtbl8_iter)>,
           this, std::cref(p.ref), (4ul<<(model[i].k<<1u))-1, lgtbl8_iter++);
-    else if (model[i].mode == Mode::SKETCH_8)
+    else if (model[i].cner == Container::SKETCH_8)
       thrd[i % vThrSz] = std::thread(&FCM::store_impl<u64,decltype(cmls4_iter)>,
           this, std::cref(p.ref), (4ull<<(model[i].k<<1u))-1, cmls4_iter++);
     else
@@ -213,23 +212,23 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
   rf.close();
 }
 
-//void FCM::compress (const Param& p) {
-//  if (p.verbose)  cerr << "Compressing the target \"" << p.tar << "\"...\n";
-//  else            cerr << "Compressing...\n";
+void FCM::compress (const Param& p) {
+  if (p.verbose)  cerr << "Compressing the target \"" << p.tar << "\"...\n";
+  else            cerr << "Compressing...\n";
 //  vector<u32> mask32{};  u64 mask64{};
 //  if (MODE_COMB != 15) {
 //    for (const auto &m : model) {
-//      if (m.mode == Mode::SKETCH_8)
+//      if (m.cner == Container::SKETCH_8)
 //        mask64 = (1ull<<(m.k<<1)) - 1;
 //      else
 //        mask32.emplace_back((1ul<<(m.k<<1)) - 1);  // 1<<2k-1=4^k-1
 //    }
 //  }
 //  switch (MODE_COMB) {
-//    case 1:   comp1mdl(p.tar, mask32[0], tbl64);                        break;
-//    case 2:   comp1mdl(p.tar, mask32[0], tbl32);                        break;
-//    case 4:   comp1mdl(p.tar, mask32[0], lgtbl8);                      break;
-//    case 8:   comp1mdl(p.tar, mask64,    cmls4);                      break;
+//    case 1:   compress_1_MM(p.tar, mask32[0], tbl64);                        break;
+//    case 2:   compress_1_MM(p.tar, mask32[0], tbl32);                        break;
+//    case 4:   compress_1_MM(p.tar, mask32[0], lgtbl8);                      break;
+//    case 8:   compress_1_MM(p.tar, mask64,    cmls4);                      break;
 //    case 3:   comp2mdl(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
 //    case 5:   comp2mdl(p.tar, mask32[0], mask32[1], tbl64,   lgtbl8);  break;
 //    case 9:   comp2mdl(p.tar, mask32[0], mask64,    tbl64,   cmls4);  break;
@@ -248,15 +247,15 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
 //    default:  cerr << "Error: the models cannot be built.";             break;
 //  }
 //  cerr << "Finished";
-//}
+}
 
-//template <class msk_t, class ds_t>
-//inline void FCM::comp1mdl (const string& tar, msk_t mask, const ds_t& ds) {
-//  msk_t ctx{0}, ctxIr{mask};    // Ctx, Mir (int) sliding through the dataset
-//  u64 symsNo{0};                // No. syms in target file, except \n
-//  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(tar);  char c;
-//  Prob_s<msk_t> ps {model[0].Malpha, mask, static_cast<u8>(model[0].k<<1u)};
+template <class msk_t, class ds_t>
+inline void FCM::compress_1_MM (const string& tar, msk_t mask, const ds_t& ds) {
+  msk_t ctx{0}, ctxIr{mask};    // Ctx, Mir (int) sliding through the dataset
+  u64 symsNo{0};                // No. syms in target file, except \n
+  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(tar);  char c;
+  ProbPar<msk_t> ps {model[0].Malpha, mask, static_cast<u8>(model[0].k<<1u)};
 //  if (IR_COMB == IR::DDDD) {
 //    while (tf.get(c))
 //      if (c != '\n') {
@@ -275,9 +274,9 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
 //        updateCtx(ctx, ctxIr, ps);    // Update ctx & ctxIr
 //      }
 //  }
-//  tf.close();
-//  aveEnt = sEnt/symsNo;
-//}
+  tf.close();
+  aveEnt = sEnt/symsNo;
+}
 //
 //template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
 //inline void FCM::comp2mdl (const string& tar, msk0_t mask0, msk1_t mask1,
@@ -288,8 +287,8 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
 //  array<double,2> w {0.5, 0.5};
 //  double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
 //  ifstream tf(tar);  char c;
-//  Prob_s<msk0_t> ps0 {model[0].Malpha, mask0, static_cast<u8>(model[0].k<<1u)};
-//  Prob_s<msk1_t> ps1 {model[1].Malpha, mask1, static_cast<u8>(model[1].k<<1u)};
+//  ProbPar<msk0_t> ps0 {model[0].Malpha, mask0, static_cast<u8>(model[0].k<<1u)};
+//  ProbPar<msk1_t> ps1 {model[1].Malpha, mask1, static_cast<u8>(model[1].k<<1u)};
 //  if (IR_COMB == IR::DDDD) {
 //    while (tf.get(c))
 //      if (c != '\n') {
@@ -341,9 +340,9 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
 //  array<double,3> w {1.0/3, 1.0/3, 1.0/3};
 //  double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
 //  ifstream tf(tar);  char c;
-//  Prob_s<msk0_t> ps0 {model[0].Malpha, mask0, static_cast<u8>(model[0].k<<1u)};
-//  Prob_s<msk1_t> ps1 {model[1].Malpha, mask1, static_cast<u8>(model[1].k<<1u)};
-//  Prob_s<msk2_t> ps2 {model[2].Malpha, mask2, static_cast<u8>(model[2].k<<1u)};
+//  ProbPar<msk0_t> ps0 {model[0].Malpha, mask0, static_cast<u8>(model[0].k<<1u)};
+//  ProbPar<msk1_t> ps1 {model[1].Malpha, mask1, static_cast<u8>(model[1].k<<1u)};
+//  ProbPar<msk2_t> ps2 {model[2].Malpha, mask2, static_cast<u8>(model[2].k<<1u)};
 //  if (IR_COMB == IR::DDDD) {
 //    while (tf.get(c))
 //      if (c != '\n') {
@@ -433,7 +432,7 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
 //  vector<u32> mask32 {};
 //  u64         mask64 {};
 //  for (const auto &m : model) {
-//    if (m.mode == Mode::SKETCH_8)
+//    if (m.cner == Container::SKETCH_8)
 //      mask64 = (1ull<<(m.k<<1u)) - 1;
 //    else
 //      mask32.emplace_back((1ul<<(m.k<<1u)) - 1);  // 1<<2k-1=4^k-1
@@ -446,10 +445,10 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
 //  array<double,4> w {0.25, 0.25, 0.25, 0.25};
 //  double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
 //  ifstream tf(tar);  char c;
-//  Prob_s<u32> ps0 {model[0].Malpha, mask32[0], static_cast<u8>(model[0].k<<1u)};
-//  Prob_s<u32> ps1 {model[1].Malpha, mask32[1], static_cast<u8>(model[1].k<<1u)};
-//  Prob_s<u32> ps2 {model[2].Malpha, mask32[2], static_cast<u8>(model[2].k<<1u)};
-//  Prob_s<u64> ps3 {model[3].Malpha, mask64,    static_cast<u8>(model[3].k<<1u)};
+//  ProbPar<u32> ps0 {model[0].Malpha, mask32[0], static_cast<u8>(model[0].k<<1u)};
+//  ProbPar<u32> ps1 {model[1].Malpha, mask32[1], static_cast<u8>(model[1].k<<1u)};
+//  ProbPar<u32> ps2 {model[2].Malpha, mask32[2], static_cast<u8>(model[2].k<<1u)};
+//  ProbPar<u64> ps3 {model[3].Malpha, mask64,    static_cast<u8>(model[3].k<<1u)};
 //  if (IR_COMB == IR::DDDD) {
 //    while (tf.get(c))
 //      if (c != '\n') {
@@ -660,50 +659,50 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
 //  f.close();  // Actually done, automatically
 //}
 //
-//template <class ds_t, class ctx_t>
-//inline double FCM::prob (const ds_t& ds, const Prob_s<ctx_t>& p) const {
+//template <class ds_t, class Ctx>
+//inline double FCM::prob (const ds_t& ds, const ProbPar<Ctx>& p) const {
 //  const array<decltype(ds->query(0)), 4> c
 //    {ds->query(p.l),
-//     ds->query(p.l | static_cast<ctx_t>(1)),
-//     ds->query(p.l | static_cast<ctx_t>(2)),
-//     ds->query(p.l | static_cast<ctx_t>(3))};
+//     ds->query(p.l | static_cast<Ctx>(1)),
+//     ds->query(p.l | static_cast<Ctx>(2)),
+//     ds->query(p.l | static_cast<Ctx>(3))};
 //  return (c[p.numSym] + p.Malpha)
 //         / (std::accumulate(c.begin(),c.end(),0ull) + p.sAlpha);
 //}
 //
-//template <class ds_t, class ctx_t>
-//inline double FCM::probR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
+//template <class ds_t, class Ctx>
+//inline double FCM::probR (const ds_t& ds, const ProbPar<Ctx>& p) const {
 //  const array<decltype(ds->query(0)), 4> c
 //    {ds->query(p.l),
-//     ds->query(p.l | static_cast<ctx_t>(1)),
-//     ds->query(p.l | static_cast<ctx_t>(2)),
-//     ds->query(p.l | static_cast<ctx_t>(3))};
+//     ds->query(p.l | static_cast<Ctx>(1)),
+//     ds->query(p.l | static_cast<Ctx>(2)),
+//     ds->query(p.l | static_cast<Ctx>(3))};
 //  return (std::accumulate(c.begin(),c.end(),0ull) + p.sAlpha)
 //         / (c[p.numSym] + p.Malpha);
 //}
 //
-//template <class ds_t, class ctx_t>
-//inline double FCM::probIr (const ds_t& ds, const Prob_s<ctx_t>& p) const {
+//template <class ds_t, class Ctx>
+//inline double FCM::probIr (const ds_t& ds, const ProbPar<Ctx>& p) const {
 //  const array<decltype(ds->query(0)+ds->query(0)), 4> c
-//    {ds->query(p.l) + ds->query((static_cast<ctx_t>(3)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<ctx_t>(1)) +
-//       ds->query((static_cast<ctx_t>(2)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<ctx_t>(2)) +
-//       ds->query((static_cast<ctx_t>(1)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<ctx_t>(3)) + ds->query(p.r)};
+//    {ds->query(p.l) + ds->query((static_cast<Ctx>(3)<<p.shl) | p.r),
+//     ds->query(p.l | static_cast<Ctx>(1)) +
+//       ds->query((static_cast<Ctx>(2)<<p.shl) | p.r),
+//     ds->query(p.l | static_cast<Ctx>(2)) +
+//       ds->query((static_cast<Ctx>(1)<<p.shl) | p.r),
+//     ds->query(p.l | static_cast<Ctx>(3)) + ds->query(p.r)};
 //  return (c[p.numSym] + p.Malpha)
 //         / (std::accumulate(c.begin(),c.end(),0ull) + p.sAlpha);
 //}
 //
-//template <class ds_t, class ctx_t>
-//inline double FCM::probIrR (const ds_t& ds, const Prob_s<ctx_t>& p) const {
+//template <class ds_t, class Ctx>
+//inline double FCM::probIrR (const ds_t& ds, const ProbPar<Ctx>& p) const {
 //  const array<decltype(ds->query(0)+ds->query(0)), 4> c
-//    {ds->query(p.l) + ds->query((static_cast<ctx_t>(3)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<ctx_t>(1)) +
-//       ds->query((static_cast<ctx_t>(2)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<ctx_t>(2)) +
-//       ds->query((static_cast<ctx_t>(1)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<ctx_t>(3)) + ds->query(p.r)};
+//    {ds->query(p.l) + ds->query((static_cast<Ctx>(3)<<p.shl) | p.r),
+//     ds->query(p.l | static_cast<Ctx>(1)) +
+//       ds->query((static_cast<Ctx>(2)<<p.shl) | p.r),
+//     ds->query(p.l | static_cast<Ctx>(2)) +
+//       ds->query((static_cast<Ctx>(1)<<p.shl) | p.r),
+//     ds->query(p.l | static_cast<Ctx>(3)) + ds->query(p.r)};
 //  return (std::accumulate(c.begin(),c.end(),0ull) + p.sAlpha)
 //         / (c[p.numSym] + p.Malpha);
 //}
@@ -723,13 +722,13 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter contElem) {
 //  return log2(1 / std::inner_product(w.begin(), w.end(), Pm.begin(), 0.0));
 //}
 //
-//template <class ctx_t>
-//inline void FCM::updateCtx (ctx_t& ctx, const Prob_s<ctx_t>& p) const {
+//template <class Ctx>
+//inline void FCM::updateCtx (Ctx& ctx, const ProbPar<Ctx>& p) const {
 //  ctx = (p.l & p.mask) | p.numSym;
 //}
 //
-//template <class ctx_t>
-//inline void FCM::updateCtx (ctx_t& ctx, ctx_t& ctxIr, const Prob_s<ctx_t>& p)
+//template <class Ctx>
+//inline void FCM::updateCtx (Ctx& ctx, Ctx& ctxIr, const ProbPar<Ctx>& p)
 //                           const {
 //  ctx   = (p.l & p.mask) | p.numSym;
 //  ctxIr = (p.revNumSym<<p.shl) | p.r;

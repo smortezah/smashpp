@@ -60,7 +60,7 @@ static constexpr float DEF_GAMMA  {0.9};  // Default gamma for multiple models
 //using htbl_t = std::unordered_map<u64, std::array<u64,ALPH_SZ>>; //faster th a[]
 
 // Enum
-enum class Mode {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
+enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
 // Inv. repeats, 1 & 2 & 3 & 4 models. D: direct(bit 0), I: inv.(bit 1)
 enum class IR {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
                IDDD, IDDI, IDID, IDII, IIDD, IIDI, IIID, IIII};
