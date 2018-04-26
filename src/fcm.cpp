@@ -218,37 +218,13 @@ void FCM::compress (const Param& p) {
   
   // todo 1 MM
   if (models.size()==1 && models[0].TMthresh==0) {
-    u64 ctx{0}, ctxIr{(1ull<<(models[0].k<<1)) - 1}; // Ctx, Mir (int) sliding through the dataset
-    u64 symsNo{0};                // No. syms in target file, except \n
-    double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-    ifstream tf(p.tar);  char c;
-    ProbPar<u64> pp {models[0].Malpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
-                     static_cast<u8>(models[0].k<<1u)};
-//    const auto ds=std::move();
-  if (models[0].Mir == 0) {
-    while (tf.get(c))
-      if (c != '\n') {
-        ++symsNo;
-        pp.config(c, ctx);
-        sEnt += entropy(prob(tbl64.begin(),pp));
-//        sEnt += log2(probR(ds, pp));
-////        sEnt += entropy<2>(w, {prob(ds0,ps0), prob(ds1,ps1)});
-//        updateCtx(ctx, pp);
-      }
+    switch (models[0].cner) {
+      case Container::TABLE_64:     compress_1_MM(p.tar, tbl64.begin());  break;
+      case Container::TABLE_32:     compress_1_MM(p.tar, tbl32.begin());  break;
+      case Container::LOG_TABLE_8:  compress_1_MM(p.tar, lgtbl8.begin()); break;
+      case Container::SKETCH_8:     compress_1_MM(p.tar, cmls4.begin());  break;
+    }
   }
-//  else if (IR_COMB == IR::DDDI) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        pp.config(c, ctx, ctxIr);
-//        sEnt += log2(probIrR(ds, pp));
-//        updateCtx(ctx, ctxIr, pp);    // Update ctx & ctxIr
-//      }
-//  }
-//    tf.close();
-//    aveEnt = sEnt/symsNo;
-  }
-  
   
   
 //  vector<u32> mask32{};  u64 mask64{};
@@ -271,49 +247,96 @@ void FCM::compress (const Param& p) {
 //    case 6:   comp2mdl(p.tar, mask32[0], mask32[1], tbl32,   lgtbl8);  break;
 //    case 10:  comp2mdl(p.tar, mask32[0], mask64,    tbl32,   cmls4);  break;
 //    case 12:  comp2mdl(p.tar, mask32[0], mask64,    lgtbl8, cmls4);  break;
-//    case 7:   comp3mdl(p.tar, mask32[0], mask32[1], mask32[3],
-//                       tbl64, tbl32, lgtbl8);                          break;
-//    case 11:  comp3mdl(p.tar, mask32[0], mask32[1], mask64,
-//                       tbl64, tbl32, cmls4);                          break;
-//    case 13:  comp3mdl(p.tar, mask32[0], mask32[1], mask64,
-//                       tbl64, lgtbl8, cmls4);                        break;
-//    case 14:  comp3mdl(p.tar, mask32[0], mask32[1], mask64,
-//                       tbl32, lgtbl8, cmls4);                        break;
 //    case 15:  comp4mdl(p.tar);                                          break;
 //    default:  cerr << "Error: the models cannot be built.";             break;
 //  }
-//  cerr << "Finished";
+  cerr << "Finished";
 }
 
-//template <class msk_t, class ds_t>
-//inline void FCM::compress_1_MM (const string& tar, msk_t mask, const ds_t& ds) {
-//  msk_t ctx{0}, ctxIr{mask};    // Ctx, Mir (int) sliding through the dataset
-//  u64 symsNo{0};                // No. syms in target file, except \n
-//  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(tar);  char c;
-//  ProbPar<msk_t> ps {models[0].Malpha, mask, static_cast<u8>(models[0].k<<1u)};
-//  if (IR_COMB == IR::DDDD) {
+//template <
+////  class msk_t,
+//    class CnerIter>
+//inline void FCM::compress_1_MM (const string& tar,
+////                                msk_t mask,
+//                                CnerIter cnerIt) {
+//    u64 ctx{0}, ctxIr{(1ull<<(models[0].k<<1)) - 1}; // Ctx, Mir (int) sliding through the dataset
+//    u64 symsNo{0};                // No. syms in target file, except \n
+//    double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
+//    ifstream tf(
+////      p.
+//      tar);  char c;
+//    ProbPar<u64> pp {models[0].Malpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
+//                     static_cast<u8>(models[0].k<<1u)};
+//
+////  msk_t ctx{0}, ctxIr{mask};    // Ctx, Mir (int) sliding through the dataset
+//  if (models[0].Mir == 0) {
 //    while (tf.get(c))
 //      if (c != '\n') {
 //        ++symsNo;
-//        ps.config(c, ctx);
-//        sEnt += log2(probR(ds, ps));
-//        updateCtx(ctx, ps);
+//        pp.config(c, ctx);
+//        sEnt += entropy(prob(cnerIt, pp));
+//        update_ctx(ctx, pp);
 //      }
 //  }
-//  else if (IR_COMB == IR::DDDI) {
+//  else if (models[0].Mir == 1) {
 //    while (tf.get(c))
 //      if (c != '\n') {
 //        ++symsNo;
-//        ps.config(c, ctx, ctxIr);
-//        sEnt += log2(probIrR(ds, ps));
-//        updateCtx(ctx, ctxIr, ps);    // Update ctx & ctxIr
+//        pp.config(c, ctx, ctxIr);
+//        sEnt += entropy(probIr(cnerIt, pp));
+//        update_ctx(ctx, ctxIr, pp);    // Update ctx & ctxIr
 //      }
 //  }
 //  tf.close();
 //  aveEnt = sEnt/symsNo;
 //}
-//
+
+template <
+//  class msk_t,
+    class CnerIter>
+inline void FCM::compress_1_MM (const string& tar,
+//                                msk_t mask,
+                                CnerIter cnerIt) {
+  // Ctx, Mir (int) sliding through the dataset
+  vector<u64> ctx;      ctx.resize(models.size());
+  vector<u64> ctxIr;    ctxIr.resize(models.size());
+  for (const auto& m : models)
+    ctxIr.emplace_back((1ull<<(m.k<<1)) - 1);
+  
+  u64 symsNo{0};                // No. syms in target file, except \n
+    double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
+    ifstream tf(
+//      p.
+      tar);  char c;
+  vector<ProbPar<u64>> pp;    pp.resize(models.size());
+  for (u8 i=0; i!=models.size(); ++i)
+    pp.emplace_back(models[i].Malpha, ctxIr[i] /* mask: 1<<2k-1=4^k-1 */,
+                    static_cast<u8>(models[i].k<<1u));
+    
+  //todo
+//  msk_t ctx{0}, ctxIr{mask};    // Ctx, Mir (int) sliding through the dataset
+  if (models[0].Mir == 0) {
+    while (tf.get(c))
+      if (c != '\n') {
+        ++symsNo;
+        pp.config(c, ctx);
+        sEnt += entropy(prob(cnerIt, pp));
+        update_ctx(ctx, pp);
+      }
+  }
+  else if (models[0].Mir == 1) {
+    while (tf.get(c))
+      if (c != '\n') {
+        ++symsNo;
+        pp.config(c, ctx, ctxIr);
+        sEnt += entropy(probIr(cnerIt, pp));
+        update_ctx(ctx, ctxIr, pp);    // Update ctx & ctxIr
+      }
+  }
+  tf.close();
+  aveEnt = sEnt/symsNo;
+}
+
 //template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
 //inline void FCM::comp2mdl (const string& tar, msk0_t mask0, msk1_t mask1,
 //                           const ds0_t& ds0, const ds1_t& ds1) {
@@ -331,7 +354,7 @@ void FCM::compress (const Param& p) {
 //        ++symsNo;
 //        ps0.config(c, ctx0);     ps1.config(c, ctx1);
 //        sEnt += entropy<2>(w, {prob(ds0,ps0), prob(ds1,ps1)});
-//        updateCtx(ctx0, ps0);    updateCtx(ctx1, ps1);  // Update ctx
+//        updateCtx(ctx0, ps0);    update_ctx(ctx1, ps1);  // Update ctx
 //      }
 //  }
 //  else if (IR_COMB == IR::DDDI) {
@@ -340,7 +363,7 @@ void FCM::compress (const Param& p) {
 //        ++symsNo;
 //        ps0.config(c, ctx0, ctxIr0);    ps1.config(c, ctx1);
 //        sEnt += entropy<2>(w, {probIr(ds0,ps0), prob(ds1,ps1)});
-//        updateCtx(ctx0, ctxIr0, ps0);   updateCtx(ctx1, ps1);
+//        updateCtx(ctx0, ctxIr0, ps0);   update_ctx(ctx1, ps1);
 //      }
 //  }
 //  else if (IR_COMB == IR::DDID) {
@@ -349,7 +372,7 @@ void FCM::compress (const Param& p) {
 //        ++symsNo;
 //        ps0.config(c, ctx0);    ps1.config(c, ctx1, ctxIr1);
 //        sEnt += entropy<2>(w, {prob(ds0,ps0), probIr(ds1,ps1)});
-//        updateCtx(ctx0, ps0);   updateCtx(ctx1, ctxIr1, ps1);
+//        updateCtx(ctx0, ps0);   update_ctx(ctx1, ctxIr1, ps1);
 //      }
 //  }
 //  else if (IR_COMB == IR::DDII) {
@@ -358,112 +381,13 @@ void FCM::compress (const Param& p) {
 //        ++symsNo;
 //        ps0.config(c, ctx0, ctxIr0);    ps1.config(c, ctx1, ctxIr1);
 //        sEnt += entropy<2>(w, {probIr(ds0,ps0), probIr(ds1,ps1)});
-//        updateCtx(ctx0, ctxIr0, ps0);   updateCtx(ctx1, ctxIr1, ps1);
+//        updateCtx(ctx0, ctxIr0, ps0);   update_ctx(ctx1, ctxIr1, ps1);
 //      }
 //  }
 //  tf.close();
 //  aveEnt = sEnt/symsNo;
 //}
-//
-//template <class msk0_t, class msk1_t, class msk2_t,
-//  class ds0_t, class ds1_t, class ds2_t>
-//inline void FCM::comp3mdl (const string& tar, msk0_t mask0, msk1_t mask1,
-//           msk2_t mask2, const ds0_t& ds0, const ds1_t& ds1, const ds2_t& ds2) {
-//  msk0_t ctx0{0}, ctxIr0{mask0};    // Ctx, Mir (int) sliding through the dataset
-//  msk1_t ctx1{0}, ctxIr1{mask1};
-//  msk2_t ctx2{0}, ctxIr2{mask2};
-//  u64 symsNo {0};                   // No. syms in target file, except \n
-//  array<double,3> w {1.0/3, 1.0/3, 1.0/3};
-//  double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(tar);  char c;
-//  ProbPar<msk0_t> ps0 {models[0].Malpha, mask0, static_cast<u8>(models[0].k<<1u)};
-//  ProbPar<msk1_t> ps1 {models[1].Malpha, mask1, static_cast<u8>(models[1].k<<1u)};
-//  ProbPar<msk2_t> ps2 {models[2].Malpha, mask2, static_cast<u8>(models[2].k<<1u)};
-//  if (IR_COMB == IR::DDDD) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c,ctx0);     ps1.config(c,ctx1);     ps2.config(c,ctx2);
-//        sEnt += entropy<3>(w, {prob(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2)});
-//        updateCtx(ctx0,ps0);    updateCtx(ctx1,ps1);    updateCtx(ctx2,ps2);
-//      }
-//  }
-//  else if (IR_COMB == IR::DDDI) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c,ctx0,ctxIr0);   ps1.config(c,ctx1);   ps2.config(c,ctx2);
-//        sEnt += entropy<3>(w, {probIr(ds0,ps0), prob(ds1,ps1), prob(ds2,ps2)});
-//        updateCtx(ctx0,ctxIr0,ps0);  updateCtx(ctx1,ps1);  updateCtx(ctx2,ps2);
-//      }
-//  }
-//  else if (IR_COMB == IR::DDID) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c,ctx0);   ps1.config(c,ctx1,ctxIr1);   ps2.config(c,ctx2);
-//        sEnt += entropy<3>(w, {prob(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2)});
-//        updateCtx(ctx0,ps0);  updateCtx(ctx1,ctxIr1,ps1);  updateCtx(ctx2,ps2);
-//      }
-//  }
-//  else if (IR_COMB == IR::DDII) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c,ctx0,ctxIr0);   ps1.config(c,ctx1,ctxIr1);
-//        ps2.config(c,ctx2);
-//        sEnt += entropy<3>(w,{probIr(ds0,ps0), probIr(ds1,ps1), prob(ds2,ps2)});
-//        updateCtx(ctx0,ctxIr0,ps0);  updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ps2);
-//      }
-//  }
-//  else if (IR_COMB == IR::DIDD) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c,ctx0);   ps1.config(c,ctx1);   ps2.config(c,ctx2,ctxIr2);
-//        sEnt += entropy<3>(w, {prob(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2)});
-//        updateCtx(ctx0,ps0);  updateCtx(ctx1,ps1);  updateCtx(ctx2,ctxIr2,ps2);
-//      }
-//  }
-//  else if (IR_COMB == IR::DIDI) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c,ctx0,ctxIr0);   ps1.config(c,ctx1);
-//        ps2.config(c,ctx2,ctxIr2);
-//        sEnt += entropy<3>(w,{probIr(ds0,ps0), prob(ds1,ps1), probIr(ds2,ps2)});
-//        updateCtx(ctx0,ctxIr0,ps0);  updateCtx(ctx1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);
-//      }
-//  }
-//  else if (IR_COMB == IR::DIID) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c,ctx0);   ps1.config(c,ctx1,ctxIr1);
-//        ps2.config(c,ctx2,ctxIr2);
-//        sEnt += entropy<3>(w,{prob(ds0,ps0), probIr(ds1,ps1), probIr(ds2,ps2)});
-//        updateCtx(ctx0,ps0);  updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);
-//      }
-//  }
-//  else if (IR_COMB == IR::DIII) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c,ctx0,ctxIr0);   ps1.config(c,ctx1,ctxIr1);
-//        ps2.config(c,ctx2,ctxIr2);
-//        sEnt += entropy<3>(w, {probIr(ds0,ps0), probIr(ds1,ps1),
-//                               probIr(ds2,ps2)});
-//        updateCtx(ctx0,ctxIr0,ps0);  updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);
-//      }
-//  }
-//  tf.close();
-//  aveEnt = sEnt/symsNo;
-//}
-//
+
 //inline void FCM::comp4mdl (const string& tar) {
 //  vector<u32> mask32 {};
 //  u64         mask64 {};
@@ -493,8 +417,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),   prob(tbl32,ps1),
 //                               prob(lgtbl8,ps2), prob(cmls4,ps3)});
-//        updateCtx(ctx0,ps0);   updateCtx(ctx1,ps1);
-//        updateCtx(ctx2,ps2);   updateCtx(ctx3,ps3);
+//        update_ctx(ctx0,ps0);   updateCtx(ctx1,ps1);
+//        updateCtx(ctx2,ps2);   update_ctx(ctx3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::DDDI) {
@@ -505,8 +429,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2);           ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0), prob(tbl32,ps1),
 //                               prob(lgtbl8,ps2), prob(cmls4,ps3)});
-//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
-//        updateCtx(ctx2,ps2);          updateCtx(ctx3,ps3);
+//        updateCtx(ctx0,ctxIr0,ps0);   update_ctx(ctx1,ps1);
+//        update_ctx(ctx2,ps2);          updateCtx(ctx3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::DDID) {
@@ -517,8 +441,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),   probIr(tbl32,ps1),
 //                               prob(lgtbl8,ps2), prob(cmls4,ps3)});
-//        updateCtx(ctx0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ps2);   updateCtx(ctx3,ps3);
+//        update_ctx(ctx0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ps2);   update_ctx(ctx3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::DDII) {
@@ -529,8 +453,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2);           ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0), probIr(tbl32,ps1),
 //                               prob(lgtbl8,ps2), prob(cmls4,ps3)});
-//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ps2);          updateCtx(ctx3,ps3);
+//        update_ctx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
+//        update_ctx(ctx2,ps2);          updateCtx(ctx3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::DIDD) {
@@ -541,8 +465,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),     prob(tbl32,ps1),
 //                               probIr(lgtbl8,ps2), prob(cmls4,ps3)});
-//        updateCtx(ctx0,ps0);          updateCtx(ctx1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
+//        updateCtx(ctx0,ps0);          update_ctx(ctx1,ps1);
+//        update_ctx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::DIDI) {
@@ -553,8 +477,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0),   prob(tbl32,ps1),
 //                               probIr(lgtbl8,ps2), prob(cmls4,ps3)});
-//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
+//        update_ctx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
+//        update_ctx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::DIID) {
@@ -565,8 +489,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),     probIr(tbl32,ps1),
 //                               probIr(lgtbl8,ps2), prob(cmls4,ps3)});
-//        updateCtx(ctx0,ps0);          updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
+//        updateCtx(ctx0,ps0);          update_ctx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   update_ctx(ctx3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::DIII) {
@@ -577,8 +501,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0),   probIr(tbl32,ps1),
 //                               probIr(lgtbl8,ps2), prob(cmls4,ps3)});
-//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
+//        updateCtx(ctx0,ctxIr0,ps0);   update_ctx(ctx1,ctxIr1,ps1);
+//        update_ctx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::IDDD) {
@@ -589,8 +513,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),   prob(tbl32,ps1),
 //                               prob(lgtbl8,ps2), probIr(cmls4,ps3)});
-//        updateCtx(ctx0,ps0);   updateCtx(ctx1,ps1);
-//        updateCtx(ctx2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//        update_ctx(ctx0,ps0);   updateCtx(ctx1,ps1);
+//        update_ctx(ctx2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::IDDI) {
@@ -601,8 +525,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2);           ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0), prob(tbl32,ps1),
 //                               prob(lgtbl8,ps2), probIr(cmls4,ps3)});
-//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
-//        updateCtx(ctx2,ps2);          updateCtx(ctx3,ctxIr3,ps3);
+//        update_ctx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
+//        updateCtx(ctx2,ps2);          update_ctx(ctx3,ctxIr3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::IDID) {
@@ -613,8 +537,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),   probIr(tbl32,ps1),
 //                               prob(lgtbl8,ps2), probIr(cmls4,ps3)});
-//        updateCtx(ctx0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//        updateCtx(ctx0,ps0);   update_ctx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ps2);   update_ctx(ctx3,ctxIr3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::IDII) {
@@ -625,8 +549,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2);           ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0), probIr(tbl32,ps1),
 //                               prob(lgtbl8,ps2), probIr(cmls4,ps3)});
-//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ps2);          updateCtx(ctx3,ctxIr3,ps3);
+//        updateCtx(ctx0,ctxIr0,ps0);   update_ctx(ctx1,ctxIr1,ps1);
+//        update_ctx(ctx2,ps2);          updateCtx(ctx3,ctxIr3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::IIDD) {
@@ -637,8 +561,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),     prob(tbl32,ps1),
 //                               probIr(lgtbl8,ps2), probIr(cmls4,ps3)});
-//        updateCtx(ctx0,ps0);          updateCtx(ctx1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//        updateCtx(ctx0,ps0);          update_ctx(ctx1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   update_ctx(ctx3,ctxIr3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::IIDI) {
@@ -649,8 +573,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0),   prob(tbl32,ps1),
 //                               probIr(lgtbl8,ps2), probIr(cmls4,ps3)});
-//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//        update_ctx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ps1);
+//        update_ctx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::IIID) {
@@ -661,8 +585,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {prob(tbl64,ps0),     probIr(tbl32,ps1),
 //                               probIr(lgtbl8,ps2), probIr(cmls4,ps3)});
-//        updateCtx(ctx0,ps0);          updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//        update_ctx(ctx0,ps0);          updateCtx(ctx1,ctxIr1,ps1);
+//        update_ctx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
 //      }
 //  }
 //  else if (IR_COMB == IR::IIII) {
@@ -673,8 +597,8 @@ void FCM::compress (const Param& p) {
 //        ps2.config(c,ctx2,ctxIr2);    ps3.config(c,ctx3,ctxIr3);
 //        sEnt += entropy<4>(w, {probIr(tbl64,ps0),   probIr(tbl32,ps1),
 //                               probIr(lgtbl8,ps2), probIr(cmls4,ps3)});
-//        updateCtx(ctx0,ctxIr0,ps0);   updateCtx(ctx1,ctxIr1,ps1);
-//        updateCtx(ctx2,ctxIr2,ps2);   updateCtx(ctx3,ctxIr3,ps3);
+//        updateCtx(ctx0,ctxIr0,ps0);   update_ctx(ctx1,ctxIr1,ps1);
+//        updateCtx(ctx2,ctxIr2,ps2);   update_ctx(ctx3,ctxIr3,ps3);
 //      }
 //  }
 //  tf.close();
@@ -706,42 +630,20 @@ inline double FCM::prob (CnerIter cnerIt, const ProbPar<Ctx>& pp) const {
          / (std::accumulate(c.begin(),c.end(),0ull) + pp.sAlpha);
 }
 
-//template <class ds_t, class Ctx>
-//inline double FCM::probR (const ds_t& ds, const ProbPar<Ctx>& p) const {
-//  const array<decltype(ds->query(0)), 4> c
-//    {ds->query(p.l),
-//     ds->query(p.l | static_cast<Ctx>(1)),
-//     ds->query(p.l | static_cast<Ctx>(2)),
-//     ds->query(p.l | static_cast<Ctx>(3))};
-//  return (std::accumulate(c.begin(),c.end(),0ull) + p.sAlpha)
-//         / (c[p.numSym] + p.Malpha);
-//}
-//
-//template <class ds_t, class Ctx>
-//inline double FCM::probIr (const ds_t& ds, const ProbPar<Ctx>& p) const {
-//  const array<decltype(ds->query(0)+ds->query(0)), 4> c
-//    {ds->query(p.l) + ds->query((static_cast<Ctx>(3)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<Ctx>(1)) +
-//       ds->query((static_cast<Ctx>(2)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<Ctx>(2)) +
-//       ds->query((static_cast<Ctx>(1)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<Ctx>(3)) + ds->query(p.r)};
-//  return (c[p.numSym] + p.Malpha)
-//         / (std::accumulate(c.begin(),c.end(),0ull) + p.sAlpha);
-//}
-//
-//template <class ds_t, class Ctx>
-//inline double FCM::probIrR (const ds_t& ds, const ProbPar<Ctx>& p) const {
-//  const array<decltype(ds->query(0)+ds->query(0)), 4> c
-//    {ds->query(p.l) + ds->query((static_cast<Ctx>(3)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<Ctx>(1)) +
-//       ds->query((static_cast<Ctx>(2)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<Ctx>(2)) +
-//       ds->query((static_cast<Ctx>(1)<<p.shl) | p.r),
-//     ds->query(p.l | static_cast<Ctx>(3)) + ds->query(p.r)};
-//  return (std::accumulate(c.begin(),c.end(),0ull) + p.sAlpha)
-//         / (c[p.numSym] + p.Malpha);
-//}
+template <class CnerIter, class Ctx>
+inline double FCM::probIr (CnerIter cnerIt, const ProbPar<Ctx>& pp) const {
+  const array<decltype((*cnerIt)->query(0)+(*cnerIt)->query(0)), 4> c
+    {(*cnerIt)->query(pp.l) +
+       (*cnerIt)->query((static_cast<Ctx>(3)<<pp.shl) | pp.r),
+     (*cnerIt)->query(pp.l | static_cast<Ctx>(1)) +
+       (*cnerIt)->query((static_cast<Ctx>(2)<<pp.shl) | pp.r),
+     (*cnerIt)->query(pp.l | static_cast<Ctx>(2)) +
+       (*cnerIt)->query((static_cast<Ctx>(1)<<pp.shl) | pp.r),
+     (*cnerIt)->query(pp.l | static_cast<Ctx>(3)) +
+       (*cnerIt)->query(pp.r)};
+  return (c[pp.numSym] + pp.alpha)
+         / (std::accumulate(c.begin(),c.end(),0ull) + pp.sAlpha);
+}
 
 inline double FCM::entropy (double P) const {
   return -log2(P);
@@ -761,15 +663,15 @@ inline double FCM::entropy (double P) const {
 //  // log2 1 / (Pm0*w0 + Pm1*w1 + ...)
 //  return log2(1 / std::inner_product(w.begin(), w.end(), Pm.begin(), 0.0));
 //}
-//
-//template <class Ctx>
-//inline void FCM::updateCtx (Ctx& ctx, const ProbPar<Ctx>& p) const {
-//  ctx = (p.l & p.mask) | p.numSym;
-//}
-//
-//template <class Ctx>
-//inline void FCM::updateCtx (Ctx& ctx, Ctx& ctxIr, const ProbPar<Ctx>& p)
-//                           const {
-//  ctx   = (p.l & p.mask) | p.numSym;
-//  ctxIr = (p.revNumSym<<p.shl) | p.r;
-//}
+
+template <class Ctx>
+inline void FCM::update_ctx (Ctx& ctx, const ProbPar<Ctx>& pp) const {
+  ctx = (pp.l & pp.mask) | pp.numSym;
+}
+
+template <class Ctx>
+inline void FCM::update_ctx (Ctx& ctx, Ctx& ctxIr, const ProbPar<Ctx>& pp)
+const {
+  ctx   = (pp.l & pp.mask) | pp.numSym;
+  ctxIr = (pp.revNumSym<<pp.shl) | pp.r;
+}
