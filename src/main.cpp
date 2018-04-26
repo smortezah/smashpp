@@ -32,7 +32,7 @@ int main (int argc, char* argv[])
     // Compress
     t0=now();        m->compress(p);       t1=now();   hms(t1-t0);
     // Result
-//    cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
+    cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
     // Report
 //    m->report(p); // Without "-R" does nothing
 
