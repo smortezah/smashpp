@@ -24,6 +24,7 @@ class MMPar {
   float     alpha;
   float     gamma;
   Container cner;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  u8        cnerIdx; // Index of the container
   MMPar (u8, u64, u8, u8, float, float);
   MMPar (u8, u8, float, float);
 };

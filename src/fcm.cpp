@@ -122,7 +122,14 @@ inline void FCM::set_cner () {
 }
 
 inline void FCM::set_cner_idx () {
-  u8 tbl64Idx{}, tbl32Idx{}, lgtbl8Idx{}, cmls4Idx{};
+  u8 tbl64Idx{0}, tbl32Idx{0}, lgtbl8Idx{0}, cmls4Idx{0};
+  for (auto& m : MMs) {
+    if      (m.cner==Container::TABLE_64)       m.cnerIdx = tbl64Idx++;
+    else if (m.cner==Container::TABLE_32)       m.cnerIdx = tbl32Idx++;
+    else if (m.cner==Container::LOG_TABLE_8)    m.cnerIdx = lgtbl8Idx++;
+    else if (m.cner==Container::SKETCH_8)       m.cnerIdx = cmls4Idx++;
+  }
+  tbl64Idx = tbl32Idx = lgtbl8Idx = cmls4Idx = 0;
   for (auto& m : STMMs) {
     if      (m.cner==Container::TABLE_64)       m.cnerIdx = tbl64Idx++;
     else if (m.cner==Container::TABLE_32)       m.cnerIdx = tbl32Idx++;
@@ -253,10 +260,10 @@ void FCM::compress (const Param& p) {
 //    }
 //  }
 //  switch (MODE_COMB) {
-//    case 1:   compress_1_MM(p.tar, mask32[0], tbl64);                        break;
-//    case 2:   compress_1_MM(p.tar, mask32[0], tbl32);                        break;
-//    case 4:   compress_1_MM(p.tar, mask32[0], lgtbl8);                      break;
-//    case 8:   compress_1_MM(p.tar, mask64,    cmls4);                      break;
+//    case 1:   compress_1_MM(p.tar, mask32[0], tbl64);                 break;
+//    case 2:   compress_1_MM(p.tar, mask32[0], tbl32);                break;
+//    case 4:   compress_1_MM(p.tar, mask32[0], lgtbl8);             break;
+//    case 8:   compress_1_MM(p.tar, mask64,    cmls4);              break;
 //    case 3:   comp2mdl(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
 //    case 5:   comp2mdl(p.tar, mask32[0], mask32[1], tbl64,   lgtbl8);  break;
 //    case 9:   comp2mdl(p.tar, mask32[0], mask64,    tbl64,   cmls4);  break;
@@ -330,12 +337,29 @@ inline void FCM::compress_n (const string& tar,
     pp.emplace_back(MMs[i].alpha, ctxIr[i] /* mask: 1<<2k-1=4^k-1 */,
                     static_cast<u8>(MMs[i].k<<1u));
 
+  vector<double> probs;
   while (tf.get(c))
     if (c != '\n') {
       ++symsNo;
       for (u8 i=0; i!=MMs.size(); ++i) {
         (MMs[i].ir==0) ? pp[i].config(c, ctx[i])
-                       : pp[i].config(c, ctx[i], ctxIr[0]);
+                       : pp[i].config(c, ctx[i], ctxIr[i]);
+      }
+      //todo
+//      for (auto i=static_cast<u8>(MMs.size()); i!=MMs.size()+STMMs.size(); ++i) {
+//        (STMMs[i-MMs.size()].ir==0) ? pp[i].config(c, ctx[i])
+//                                    : pp[i].config(c, ctx[i], ctxIr[i]);
+//      }
+      for (u8 i=0; i!=MMs.size(); ++i) {
+        if (MMs[i].ir==0) {
+          if(MMs[i].cner==Container::TABLE_64){
+//            probs.emplace_back(,pp[i]);
+          }
+          
+        }
+        else{
+        
+        }
       }
 //        sEnt += entropy(prob(cnerIt, pp));
 //        update_ctx(ctx, pp);
