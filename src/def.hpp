@@ -61,6 +61,7 @@ static constexpr float DEF_GAMMA  {0.9};  // Default gamma for multiple models
 
 // Enum
 enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
+enum class Mode {MM, STMM};
 // Inv. repeats, 1 & 2 & 3 & 4 models. D: direct(bit 0), I: inv.(bit 1)
 enum class IR {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
                IDDD, IDDI, IDID, IDII, IIDD, IIDI, IIID, IIII};
