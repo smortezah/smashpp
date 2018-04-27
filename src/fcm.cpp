@@ -14,16 +14,18 @@ using std::array;
 using std::initializer_list;
 using std::make_shared;
 
-MMPar::MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
-  : k(k_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
-    cner(Container::TABLE_64) {
+ModelPar::ModelPar (u8 k_, u8 t_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
+  : k(k_), thresh(t_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
+    cner(Container::TABLE_64), mode(Mode::MM) {
 }
-MMPar::MMPar (u8 k_, u8 ir_, float a_, float g_)
-  : MMPar(k_, 0, 0, ir_, a_, g_) {
+ModelPar::ModelPar (u8 k_, u8 ir_, float a_, float g_)
+  : ModelPar(k_, 0, 0, 0, ir_, a_, g_) {
 }
-STMMPar::STMMPar (u8 k_, u8 t_, u8 ir_, float a_, float g_)
-  : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_),
-    cner(Container::TABLE_64), cnerIdx(0) {
+ModelPar::ModelPar (u8 k_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
+  : ModelPar(k_, 0, w_, d_, ir_, a_, g_) {
+}
+ModelPar::ModelPar (u8 k_, u8 t_, u8 ir_, float a_, float g_)
+  : ModelPar(k_, t_, 0, 0, ir_, a_, g_) {
 }
 
 template <class Ctx>
@@ -47,65 +49,60 @@ inline void ProbPar<Ctx>::config (char c, Ctx ctx, Ctx ctxIr) {
 
 FCM::FCM (const Param& p) {
   aveEnt = 0.0;
-//  config(p);
+  config(p);
 //  alloc_model();
 //  setModesComb();
 //  setIRsComb();
 }
 
-//inline void FCM::config (const Param& p) {
-//  vector<string> mdls;
-//  split(p.modelsPars.begin(), p.modelsPars.end(), ':', mdls);
-//  for (const auto& mp : mdls) {
-//    // Markov and tolerant models
-//    vector<string> MnTM;    split(mp.begin(), mp.end(), '/', MnTM);
-//    vector<string> M;       split(MnTM[0].begin(), MnTM[0].end(), ',', M);
-//    if (M.size() == 4)
-//      MMs.emplace_back(MMPar(static_cast<u8>(stoi(M[0])),
-//        static_cast<u8>(stoi(M[1])), stof(M[2]), stof(M[3])));
-//    else if (M.size() == 6)
-//      MMs.emplace_back(MMPar(static_cast<u8>(stoi(M[0])), pow2(stoull(M[1])),
-//        static_cast<u8>(stoi(M[2])), static_cast<u8>(stoi(M[3])), stof(M[4]),
-//        stof(M[5])));
-//
-//    // Tolerant models
-//    if (MnTM.size() == 2) {
-//      vector<string> TM;    split(MnTM[1].begin(), MnTM[1].end(), ',', TM);
-//      STMMs.emplace_back(STMMPar(static_cast<u8>(stoi(M[0])),
-//        static_cast<u8>(stoi(TM[0])), static_cast<u8>(stoi(TM[1])), stof(TM[2]),
-//        stof(TM[3])));
-//    }
-//  }
+inline void FCM::config (const Param& p) {
+  vector<string> mdls;
+  split(p.modelsPars.begin(), p.modelsPars.end(), ':', mdls);
+  for (const auto& mp : mdls) {
+    // Markov and tolerant models
+    vector<string> MnTM;    split(mp.begin(), mp.end(), '/', MnTM);
+    vector<string> M;       split(MnTM[0].begin(), MnTM[0].end(), ',', M);
+    if (M.size() == 4)
+      models.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
+        static_cast<u8>(stoi(M[1])), stof(M[2]), stof(M[3])));
+    else if (M.size() == 6)
+      models.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
+        pow2(stoull(M[1])), static_cast<u8>(stoi(M[2])),
+        static_cast<u8>(stoi(M[3])), stof(M[4]), stof(M[5])));
+
+    // Tolerant models
+    if (MnTM.size() == 2) {
+      vector<string> TM;    split(MnTM[1].begin(), MnTM[1].end(), ',', TM);
+      models.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),
+        static_cast<u8>(stoi(TM[0])), static_cast<u8>(stoi(TM[1])), stof(TM[2]),
+        stof(TM[3])));
+    }
+  }
 //  set_cner();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
 //  set_cner_idx();
-//
-////  for (auto a:MMs) {//todo
-////    print(a.k, a.w, a.d, a.ir, a.alpha, a.gamma);
-////    if (a.cner==Container::TABLE_64)cerr<<"yep";
-////cerr<< static_cast<int>(a.cner);
-////  }
-////  for (auto a:STMMs) {//todo
-////////    if (a.cner==Container::TABLE_64)cerr<<"yep";
-////////    print(a.k, a.thresh,a.ir, a.alpha, a.gamma);
-////    cerr<< static_cast<int>(a.cner)<<' '<<static_cast<int>(a.cnerIdx)<<'\n';
-////  }
-//
-////  // Models MUST be sorted by 'k'=ctx size//todo check if a MUST
-////  std::sort(models.begin(), models.end(),
-////            [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
-//}
 
-//template <class InIter, class Vec>
-//inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
-//  while (true) {
-//    InIter found = std::find(first, last, delim);
-//    vOut.emplace_back(string(first,found));
-//    if (found == last)
-//      break;
-//    first = ++found;
-//  }
-//}
-//
+  for (auto a:models) {//todo
+//////    if (a.cner==Container::TABLE_64)cerr<<"yep";
+    print(a.k, a.thresh,a.w,a.d,a.ir, a.alpha, a.gamma);
+//    cerr<< static_cast<int>(a.cner)<<' '<<static_cast<int>(a.cnerIdx)<<'\n';
+  }
+
+//  // Models MUST be sorted by 'k'=ctx size//todo check if a MUST
+//  std::sort(models.begin(), models.end(),
+//            [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
+}
+
+template <class InIter, class Vec>
+inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
+  while (true) {
+    InIter found = std::find(first, last, delim);
+    vOut.emplace_back(string(first,found));
+    if (found == last)
+      break;
+    first = ++found;
+  }
+}
+
 //inline void FCM::set_cner () {
 //  for (auto& m : MMs) {
 //    if      (m.k > K_MAX_LGTBL8)    m.cner = Container::SKETCH_8;

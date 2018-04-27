@@ -15,29 +15,22 @@ using std::shared_ptr;
 using std::initializer_list;
 
 //todo
-class MMPar {
+class ModelPar {
  public:
   u8        k;         // Context size
+  u8        thresh;  // Substitutional tolerant Markov models threshold
   u64       w;         // Width of count-min-log sketch
   u8        d;         // Depth of count-min-log sketch
   u8        ir;       // Markov models Inverted repeat
   float     alpha;
   float     gamma;
   Container cner;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-  u8        cnerIdx; // Index of the container
-  MMPar (u8, u64, u8, u8, float, float);
-  MMPar (u8, u8, float, float);
-};
-class STMMPar {
- public:
-  u8        k;         // Context size
-  u8        thresh;  // Substitutional tolerant Markov models threshold
-  u8        ir;       // Markov models Inverted repeat
-  float     alpha;
-  float     gamma;
-  Container cner;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-  u8        cnerIdx; // Index of the container
-  STMMPar (u8, u8, u8, float, float);
+//  u8        cnerIdx; // Index of the container
+  Mode      mode;
+  ModelPar (u8, u8, u64, u8, u8, float, float);
+  ModelPar (u8, u64, u8, u8, float, float);
+  ModelPar (u8, u8, float, float);
+  ModelPar (u8, u8, u8, float, float);
 };
 
 //struct ModelPar {
@@ -85,9 +78,9 @@ class FCM    // Finite-context models
 //  void report     (const Param&) const;
 
  private:
-//  vector<ModelPar>              models;
-  vector<MMPar>                 MMs;
-  vector<STMMPar>               STMMs;
+  vector<ModelPar>              models;
+//  vector<ModelPar>              MMs;
+//  vector<STMMPar>               STMMs;
   vector<shared_ptr<Table64>>   tbl64;
   vector<shared_ptr<Table32>>   tbl32;
   vector<shared_ptr<LogTable8>> lgtbl8;
@@ -95,9 +88,9 @@ class FCM    // Finite-context models
 //  u8                    MODE_COMB;
 //  u8                    IR_COMB;
   
-//  void config (const Param&); // Set models parameters
-//  template <class InIter, class Vec>  //Split by dlim
-//  void split (InIter, InIter, char, Vec&) const;
+  void config (const Param&); // Set models parameters
+  template <class InIter, class Vec>  //Split by dlim
+  void split (InIter, InIter, char, Vec&) const;
 //  void set_cner ();
 //  void set_cner_idx ();
 //  void alloc_model ();             // Allocate memory to models
