@@ -12,7 +12,8 @@
 #include "logtbl8.hpp"
 #include "cmls4.hpp"
 using std::shared_ptr;
-using std::initializer_list;
+//using std::initializer_list;
+using std::vector;
 
 //todo
 class ModelPar {
@@ -101,26 +102,27 @@ class FCM    // Finite-context models
   template <
 //    class msk_t,
       class CnerIter>
-  void compress_1_MM (const string&,
+  void compress_1_MM (const string&
+    ,
 //                      msk_t,
-                      CnerIter);  // 1 Markov models
-  template <
-//    class msk_t,
-    class CnerIter>
-  void compress_n (const string&,
+                      CnerIter
+  );  // 1 Markov models
+//  template <
+////    class msk_t,
+//    class CnerIter>
+  void compress_n (const string&
+//    ,
 //                      msk_t,
-                      CnerIter);  // 1 Markov models
+//                      CnerIter
+  );  // 1 Markov models
 //  template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
 //  void comp2mdl  (const string&, msk0_t, msk1_t, const ds0_t&, const ds1_t&);
-//  void comp4mdl  (const string&);   // It has all possible models
   template <class CnerIter, class Ctx>
   double prob    (CnerIter, const ProbPar<Ctx>&) const;  // Probability
   template <class CnerIter, class Ctx>
   double probIr  (CnerIter, const ProbPar<Ctx>&) const;  // Prob. IR
   double entropy (double) const;
-//  template <u8 N>
-//  double entropy (std::array<double,N>& w,
-//                  const std::initializer_list<double>& Pm) const;
+  double entropy (vector<double>&, const vector<double>&) const;
   template <class Ctx>
   void update_ctx (Ctx&, const ProbPar<Ctx>&) const;
   template <class Ctx>
