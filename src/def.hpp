@@ -201,7 +201,7 @@ void print (Input&& in, Args&&... args) noexcept {
 
 // Assertions
 template <class Container>
-void assert_empty_lm (Container cner, string&& msg) {
+void assert_empty_lm (Container cner, string&& msg) {  // Empty element
   for (const auto& e : cner)
     if (e.size() == 0)
       throw std::runtime_error(msg + "\n");
