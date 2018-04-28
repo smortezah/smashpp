@@ -314,52 +314,67 @@ template <
 inline void FCM::compress_n (const string& tar,
 //                                msk_t mask,
                                 CnerIter cnerIt) {
-//  // Ctx, Mir (int) sliding through the dataset
-//  vector<u64> ctx;      ctx.resize(models.size());
-//  vector<u64> ctxIr;    ctxIr.resize(models.size());
-//  for (const auto& m : models)
-//    ctxIr.emplace_back((1ull<<(m.k<<1)) - 1);  // Mask
-//
-//  vector<double> w (models.size(), 1.0/models.size());
-//  u64 symsNo{0};                // No. syms in target file, except \n
-//  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(
-////      p.
-//      tar);  char c;
-//  vector<ProbPar<u64>> pp;    pp.resize(models.size());
-//  for (u8 i=0; i!=models.size(); ++i)
-//    pp.emplace_back(models[i].alpha, ctxIr[i] /* mask: 1<<2k-1=4^k-1 */,
-//                    static_cast<u8>(models[i].k<<1u));
-//
-//  vector<double> probs;
-//  while (tf.get(c))
-//    if (c != '\n') {
-//      ++symsNo;
-//      for (u8 i=0; i!=models.size(); ++i) {
-//        (models[i].ir==0) ? pp[i].config(c, ctx[i])
-//                       : pp[i].config(c, ctx[i], ctxIr[i]);
+  // Ctx, Mir (int) sliding through the dataset
+  vector<u64> ctx;      ctx.resize(models.size());
+  vector<u64> ctxIr;    ctxIr.resize(models.size());
+  for (const auto& m : models)
+    ctxIr.emplace_back((1ull<<(m.k<<1)) - 1);  // Mask
+
+  vector<double> w (models.size(), 1.0/models.size());
+  u64 symsNo{0};                // No. syms in target file, except \n
+  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(
+//      p.
+      tar);  char c;
+  vector<ProbPar<u64>> pp;    pp.resize(models.size());
+  for (u8 i=0; i!=models.size(); ++i)
+    pp.emplace_back(models[i].alpha, ctxIr[i] /* mask: 1<<2k-1=4^k-1 */,
+                    static_cast<u8>(models[i].k<<1u));
+  
+  vector<double> probs;
+  auto tbl64_idx=0; auto tbl32_idx=0; auto lgtbl8_idx=0; auto cmls4_idx=0;
+  while (tf.get(c))
+    if (c != '\n') {
+      ++symsNo;
+      for (u8 i = 0; i != models.size(); ++i) {
+        (models[i].ir == 0) ? pp[i].config(c, ctx[i])
+                            : pp[i].config(c, ctx[i], ctxIr[i]);
+      }
+      //todo. STMM
+//      for (auto i=static_cast<u8>(MMs.size()); i!=MMs.size()+STMMs.size(); ++i) {
+//        (STMMs[i-MMs.size()].ir==0) ? pp[i].config(c, ctx[i])
+//                                    : pp[i].config(c, ctx[i], ctxIr[i]);
 //      }
-//      //todo
-////      for (auto i=static_cast<u8>(MMs.size()); i!=MMs.size()+STMMs.size(); ++i) {
-////        (STMMs[i-MMs.size()].ir==0) ? pp[i].config(c, ctx[i])
-////                                    : pp[i].config(c, ctx[i], ctxIr[i]);
-////      }
-//      for (u8 i=0; i!=models.size(); ++i) {
+      //todo.entropy
+      for (u8 i=0; i!=models.size(); ++i) {
+        if (models[i].cner == Container::TABLE_64)
+          (models[i].ir==0)
+            ? probs.emplace_back(prob(tbl64[tbl64_idx++], pp[i]))
+            : probs.emplace_back(probIr(tbl64[tbl64_idx++], pp[i]));
+        else if (models[i].cner == Container::TABLE_32)
+          probs.emplace_back(prob(tbl32[tbl32_idx++], pp[i]));
+        else if (models[i].cner == Container::LOG_TABLE_8)
+          probs.emplace_back(prob(lgtbl8[lgtbl8_idx++], pp[i]));
+        else if (models[i].cner == Container::SKETCH_8)
+          probs.emplace_back(prob(cmls4[cmls4_idx++], pp[i]));
+
 //        if (models[i].ir==0) {
 //          if(models[i].cner==Container::TABLE_64){
 ////            probs.emplace_back(tbl64[models[i].cnerIdx],pp[i]);
 //          }
 //
 //        }
-//        else{
-//
+//        else {
 //        }
-//      }
-////        sEnt += entropy(prob(cnerIt, pp));
-////        update_ctx(ctx, pp);
-//    }
-//  tf.close();
-//  aveEnt = sEnt/symsNo;
+      }
+  
+      for (u8 i = 0; i != models.size(); ++i) {
+        (models[i].ir == 0) ? update_ctx(ctx[i], pp[i])
+                            : update_ctx(ctx[i], ctxIr[i], pp[i]);
+      }
+    }
+  tf.close();
+  aveEnt = sEnt/symsNo;
 }
 
 //template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
