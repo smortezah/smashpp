@@ -52,7 +52,8 @@ class ModelPar {
 //};
 
 template <class Ctx>//todo. if always use u64, replace Ctx with u64
-struct ProbPar {
+class ProbPar {
+ public:
   float  alpha;
   double sAlpha;
   Ctx    mask;
@@ -73,14 +74,12 @@ class FCM    // Finite-context models
   double          aveEnt;
   
   explicit FCM (const Param&);
-//  void store (const Param&);   // Build FCM (finite-context models)
-//  void compress (const Param&);
+  void store (const Param&);   // Build FCM (finite-context models)
+  void compress (const Param&);
 //  void report     (const Param&) const;
 
  private:
   vector<ModelPar>              models;
-//  vector<ModelPar>              MMs;
-//  vector<STMMPar>               STMMs;
   vector<shared_ptr<Table64>>   tbl64;
   vector<shared_ptr<Table32>>   tbl32;
   vector<shared_ptr<LogTable8>> lgtbl8;
@@ -91,43 +90,41 @@ class FCM    // Finite-context models
   void config (const Param&); // Set models parameters
   template <class InIter, class Vec>  //Split by dlim
   void split (InIter, InIter, char, Vec&) const;
-//  void set_cner ();
+  void set_mode_cner ();
 //  void set_cner_idx ();
-//  void alloc_model ();             // Allocate memory to models
-//  void setModesComb ();             // Set combination of modes of models
-//  void setIRsComb   ();             // Set combination of inv. repeats of models
-//  void store_1_thr (const Param&); // Build models one thread
-//  void store_n_thr (const Param&); // Build models multiple threads
-//  template <class Mask, class CnerIter>
-//  void store_impl (const string&, Mask, CnerIter);    // Fill data structure
-//  // Compress data structure
-//  template <
-////    class msk_t,
-//      class CnerIter>
-//  void compress_1_MM (const string&,
-////                      msk_t,
-//                      CnerIter);  // 1 Markov models
-//  template <
-////    class msk_t,
-//    class CnerIter>
-//  void compress_n (const string&,
-////                      msk_t,
-//                      CnerIter);  // 1 Markov models
+  void alloc_model ();             // Allocate memory to models
+  void store_1_thr (const Param&); // Build models one thread
+  void store_n_thr (const Param&); // Build models multiple threads
+  template <class Mask, class CnerIter>
+  void store_impl (const string&, Mask, CnerIter);    // Fill data structure
+  // Compress data structure
+  template <
+//    class msk_t,
+      class CnerIter>
+  void compress_1_MM (const string&,
+//                      msk_t,
+                      CnerIter);  // 1 Markov models
+  template <
+//    class msk_t,
+    class CnerIter>
+  void compress_n (const string&,
+//                      msk_t,
+                      CnerIter);  // 1 Markov models
 //  template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
 //  void comp2mdl  (const string&, msk0_t, msk1_t, const ds0_t&, const ds1_t&);
 //  void comp4mdl  (const string&);   // It has all possible models
-//  template <class CnerIter, class Ctx>
-//  double prob    (CnerIter, const ProbPar<Ctx>&) const;  // Probability
-//  template <class CnerIter, class Ctx>
-//  double probIr  (CnerIter, const ProbPar<Ctx>&) const;  // Prob. IR
-//  double entropy (double) const;
+  template <class CnerIter, class Ctx>
+  double prob    (CnerIter, const ProbPar<Ctx>&) const;  // Probability
+  template <class CnerIter, class Ctx>
+  double probIr  (CnerIter, const ProbPar<Ctx>&) const;  // Prob. IR
+  double entropy (double) const;
 //  template <u8 N>
 //  double entropy (std::array<double,N>& w,
 //                  const std::initializer_list<double>& Pm) const;
-//  template <class Ctx>
-//  void update_ctx (Ctx&, const ProbPar<Ctx>&) const;
-//  template <class Ctx>
-//  void update_ctx (Ctx&, Ctx&, const ProbPar<Ctx>&) const;
+  template <class Ctx>
+  void update_ctx (Ctx&, const ProbPar<Ctx>&) const;
+  template <class Ctx>
+  void update_ctx (Ctx&, Ctx&, const ProbPar<Ctx>&) const;
 };
 
 #endif //SMASHPP_FCM_HPP

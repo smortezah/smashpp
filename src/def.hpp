@@ -9,10 +9,14 @@
 #include <unordered_map>
 #include <chrono>
 #include <iomanip>      // setw, setprecision
+#include <vector>
+using std::vector;
+using std::string;
+using std::cerr;
 
 // Version
-static const std::string VERSION   {"18.04"};
-static const std::string DEV_YEARS {"2018"};
+static const string VERSION   {"18.04"};
+static const string DEV_YEARS {"2018"};
 
 // Typedef
 ////typedef signed char         i8;
@@ -141,7 +145,7 @@ static constexpr u8 REV[123] { // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
   0, 0, 0, 67,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0, 65,  0, 0,  0,
   0, 0, 0
 };
-static const std::vector<std::vector<u8>> LEVEL {    // 'k' of multiple models MUST be sorted
+static const vector<vector<u8>> LEVEL {    // 'k' of multiple models MUST be sorted
 //  static constexpr u8 LEVEL[14][16] {    // 'k' of multiple models MUST be sorted
 // #mdl, Mir,  k, 100*Malpha, log2 w,  d
   {1,     0, 20,    100,      30,    DEF_D},    // Level 0
@@ -181,18 +185,26 @@ constexpr void hms (T elapsed) {
   const auto m = (durSec % 3600) / 60;
   const auto s = durSec % 60;
   
-  std::cerr << " in " << h << ":" << m << ":" << s << " hour:min:sec.\n";
+  cerr << " in " << h << ":" << m << ":" << s << " hour:min:sec.\n";
 }
 
 // Print variadic inputs
 template <class Input>
 void print (Input&& in) noexcept {
-  std::cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\n';
+  cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\n';
 }
 template <class Input, class... Args>
 void print (Input&& in, Args&&... args) noexcept {
-  std::cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\t';
+  cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\t';
   print(args...);
+}
+
+// Assertions
+template <class Container>
+void assert_empty_lm (Container cner, string&& msg) {
+  for (const auto& e : cner)
+    if (e.size() == 0)
+      throw std::runtime_error(msg + "\n");
 }
 
 //template<u32 N>    // Up to 262144=2^18 elements
