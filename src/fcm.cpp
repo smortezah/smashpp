@@ -476,7 +476,7 @@ inline double FCM::entropy (double P) const {
 
 inline double FCM::entropy (vector<double>& w, const vector<double>& Pm) const {
   // Set weights
-  vector<double> rawW {};  rawW.resize(w.size());
+  vector<double> rawW {};  rawW.resize(w.size());  rawW.clear();
   for (u8 i=0; i!=models.size(); ++i)
     rawW[i] = pow(w[i], models[i].gamma) * Pm[i];
   const double sumRawW = std::accumulate(rawW.begin(), rawW.end(), 0.0);
