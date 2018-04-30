@@ -32,13 +32,11 @@ template <class Ctx>
 ProbPar<Ctx>::ProbPar (float a, Ctx m, u8 sh)
   : alpha(a), sAlpha(static_cast<double>(ALPH_SZ*alpha)), mask(m), shl(sh) {
 }
-
 template <class Ctx>
 inline void ProbPar<Ctx>::config (char c, Ctx ctx) {
   numSym = NUM[static_cast<u8>(c)];
   l      = ctx<<2u;
 }
-
 template <class Ctx>
 inline void ProbPar<Ctx>::config (char c, Ctx ctx, Ctx ctxIr) {
   numSym    = NUM[static_cast<u8>(c)];
@@ -78,15 +76,14 @@ inline void FCM::config (const Param& p) {
     }
   }
   set_mode_cner();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
-//  set_cner_idx();
 
 //  for (auto a:models) {//todo
 //    print(a.k, a.thresh,a.w,a.d,a.ir, a.alpha, a.gamma);
 //  }
 
-//  // Models MUST be sorted by 'k'=ctx size//todo check if a MUST
-//  std::sort(models.begin(), models.end(),
-//            [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
+////  // Models MUST be sorted by 'k'=ctx size//todo check if a MUST
+////  std::sort(models.begin(), models.end(),
+////            [](const auto& lhs, const auto& rhs){ return lhs.k < rhs.k; });
 }
 
 template <class InIter, class Vec>
@@ -113,23 +110,6 @@ inline void FCM::set_mode_cner () {
   }
 }
 
-//inline void FCM::set_cner_idx () {
-//  u8 tbl64Idx{0}, tbl32Idx{0}, lgtbl8Idx{0}, cmls4Idx{0};
-//  for (auto& m : MMs) {
-//    if      (m.cner==Container::TABLE_64)       m.cnerIdx = tbl64Idx++;
-//    else if (m.cner==Container::TABLE_32)       m.cnerIdx = tbl32Idx++;
-//    else if (m.cner==Container::LOG_TABLE_8)    m.cnerIdx = lgtbl8Idx++;
-//    else if (m.cner==Container::SKETCH_8)       m.cnerIdx = cmls4Idx++;
-//  }
-//  tbl64Idx = tbl32Idx = lgtbl8Idx = cmls4Idx = 0;
-//  for (auto& m : STMMs) {
-//    if      (m.cner==Container::TABLE_64)       m.cnerIdx = tbl64Idx++;
-//    else if (m.cner==Container::TABLE_32)       m.cnerIdx = tbl32Idx++;
-//    else if (m.cner==Container::LOG_TABLE_8)    m.cnerIdx = lgtbl8Idx++;
-//    else if (m.cner==Container::SKETCH_8)       m.cnerIdx = cmls4Idx++;
-//  }
-//}
-
 inline void FCM::alloc_model () {
   for (const auto& m : models)
     if (m.mode == Mode::MM) {
@@ -150,13 +130,15 @@ void FCM::store (const Param& p) {
          << (models.size()==1 ? "" : "s") << " based on the reference \""
          << p.ref << "\"";
   else
-    cerr << "Building the models" << (models.size()==1 ? "" : "s");
+    cerr << "Building the model" << (models.size()==1 ? "" : "s");
   cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
   (p.nthr==1 || models.size()==1) ? store_1_thr(p) : store_n_thr(p)/*Mult thr*/;
   cerr << "Finished";
   
-//  //todo
+  //todo
 //  for(auto a:tbl64)a->print();cerr<<'\n';
+//  for(auto a:tbl32)a->print();cerr<<'\n';
+//  for(auto a:lgtbl8)a->print();cerr<<'\n';
 //  for(auto a:cmls4)a->print();cerr<<'\n';
 }
 
@@ -182,7 +164,7 @@ inline void FCM::store_n_thr (const Param& p) {
   auto tbl64_iter  = tbl64.begin();     auto tbl32_iter = tbl32.begin();
   auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
   const auto vThrSz = (p.nthr < models.size()) ? p.nthr : models.size();
-  vector<std::thread> thrd;  thrd.resize(vThrSz);
+  vector<std::thread> thrd(vThrSz);
   for (u8 i=0; i!=models.size(); ++i) {    // Mask: 4<<2k-1 = 4^(k+1)-1
     if (models[i].mode == Mode::MM) {
       switch (models[i].cner) {
@@ -230,60 +212,24 @@ inline void FCM::store_impl (const string& ref, Mask mask, CnerIter cnerIt) {
 void FCM::compress (const Param& p) {
   if (p.verbose)  cerr << "Compressing the target \"" << p.tar << "\"...\n";
   else            cerr << "Compressing...\n";
-
-  // todo 1 MM
-  if (models.size() == 1) {
+  if (models.size() == 1)  // 1 MM
     switch (models[0].cner) {
       case Container::TABLE_64:     compress_1_MM(p.tar, tbl64.begin());  break;
       case Container::TABLE_32:     compress_1_MM(p.tar, tbl32.begin());  break;
       case Container::LOG_TABLE_8:  compress_1_MM(p.tar, lgtbl8.begin()); break;
       case Container::SKETCH_8:     compress_1_MM(p.tar, cmls4.begin());  break;
     }
-  }
-  else {
+  else
     compress_n(p.tar);
-  }
-
-//  vector<u32> mask32{};  u64 mask64{};
-//  if (MODE_COMB != 15) {
-//    for (const auto &m : models) {
-//      if (m.cner == Container::SKETCH_8)
-//        mask64 = (1ull<<(m.k<<1)) - 1;
-//      else
-//        mask32.emplace_back((1ul<<(m.k<<1)) - 1);  // 1<<2k-1=4^k-1
-//    }
-//  }
-//  switch (MODE_COMB) {
-//    case 1:   compress_1_MM(p.tar, mask32[0], tbl64);                 break;
-//    case 2:   compress_1_MM(p.tar, mask32[0], tbl32);                break;
-//    case 4:   compress_1_MM(p.tar, mask32[0], lgtbl8);             break;
-//    case 8:   compress_1_MM(p.tar, mask64,    cmls4);              break;
-//    case 3:   comp2mdl(p.tar, mask32[0], mask32[1], tbl64,   tbl32);    break;
-//    case 5:   comp2mdl(p.tar, mask32[0], mask32[1], tbl64,   lgtbl8);  break;
-//    case 9:   comp2mdl(p.tar, mask32[0], mask64,    tbl64,   cmls4);  break;
-//    case 6:   comp2mdl(p.tar, mask32[0], mask32[1], tbl32,   lgtbl8);  break;
-//    case 10:  comp2mdl(p.tar, mask32[0], mask64,    tbl32,   cmls4);  break;
-//    case 12:  comp2mdl(p.tar, mask32[0], mask64,    lgtbl8, cmls4);  break;
-//    case 15:  comp4mdl(p.tar);                                          break;
-//    default:  cerr << "Error: the models cannot be built.";             break;
-//  }
   cerr << "Finished";
 }
 
-template <
-//  class msk_t,
-    class CnerIter>
-inline void FCM::compress_1_MM (const string& tar
-  ,
-//                                msk_t mask,
-                                CnerIter cnerIt
-) {
+template <class CnerIter>
+inline void FCM::compress_1_MM (const string& tar, CnerIter cnerIt) {
     u64 ctx{0}, ctxIr{(1ull<<(models[0].k<<1)) - 1}; // Ctx, Mir (int) sliding through the dataset
     u64 symsNo{0};                // No. syms in target file, except \n
     double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-    ifstream tf(
-//      p.
-      tar);  char c;
+    ifstream tf(tar);  char c;
     ProbPar<u64> pp {models[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
                      static_cast<u8>(models[0].k<<1u)};
 
@@ -310,125 +256,59 @@ inline void FCM::compress_1_MM (const string& tar
   aveEnt = sEnt/symsNo;
 }
 
-//template <
-////  class msk_t,
-//    class CnerIter>
-inline void FCM::compress_n (const string& tar
-//  ,
-//                                msk_t mask,
-//                                CnerIter cnerIt
-) {
+inline void FCM::compress_n (const string& tar) {
   // Ctx, Mir (int) sliding through the dataset
-  vector<u64> ctx;      ctx.resize(models.size());      ctx.clear();
-  vector<u64> ctxIr;    ctxIr.resize(models.size());    ctxIr.clear();
-  for (const auto& m : models)
-    ctxIr.emplace_back((1ull<<(m.k<<1)) - 1);  // Mask
-
-//  vector<double> w (models.size(), 1.0/models.size());
-//  u64 symsNo{0};                // No. syms in target file, except \n
-//  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(
-////      p.
-//      tar);  char c;
-//  vector<ProbPar<u64>> pp;    pp.resize(models.size());
-//  for (u8 i=0; i!=models.size(); ++i)
-//    pp.emplace_back(models[i].alpha, ctxIr[i] /* mask: 1<<2k-1=4^k-1 */,
-//                    static_cast<u8>(models[i].k<<1u));
-//
-////  vector<double> probs;    probs.resize(models.size());
-//  while (tf.get(c))
-//    if (c != '\n') {
-//      ++symsNo;
-//      for (u8 i = 0; i != models.size(); ++i) {
-//        (models[i].ir == 0) ? pp[i].config(c, ctx[i])
-//                            : pp[i].config(c, ctx[i], ctxIr[i]);
-//      }
-////      //todo. STMM
-//////      for (auto i=static_cast<u8>(MMs.size()); i!=MMs.size()+STMMs.size(); ++i) {
-//////        (STMMs[i-MMs.size()].ir==0) ? pp[i].config(c, ctx[i])
-//////                                    : pp[i].config(c, ctx[i], ctxIr[i]);
-//////      }
-//      //todo.entropy
-//      auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
-//      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
-////      probs.clear();
-//      vector<double> probs;    probs.resize(models.size());
-//      for (u8 i=0; i!=models.size(); ++i) {
-//        if (models[i].cner == Container::TABLE_64)
-//          (models[i].ir==0) ? probs.emplace_back(prob(tbl64_iter++, pp[i]))
-//                            : probs.emplace_back(probIr(tbl64_iter++, pp[i]));
-//        else if (models[i].cner == Container::TABLE_32)
-//          (models[i].ir==0) ? probs.emplace_back(prob(tbl32_iter++, pp[i]))
-//                            : probs.emplace_back(probIr(tbl32_iter++, pp[i]));
-//        else if (models[i].cner == Container::LOG_TABLE_8)
-//          (models[i].ir==0) ? probs.emplace_back(prob(lgtbl8_iter++, pp[i]))
-//                            : probs.emplace_back(probIr(lgtbl8_iter++, pp[i]));
-//        else if (models[i].cner == Container::SKETCH_8)
-//          (models[i].ir==0) ? probs.emplace_back(prob(cmls4_iter++, pp[i]))
-//                            : probs.emplace_back(probIr(cmls4_iter++, pp[i]));
-//      }
-//
-//      sEnt += entropy(w, probs);
-//
-//      for (u8 i = 0; i != models.size(); ++i) {
-//        (models[i].ir == 0) ? update_ctx(ctx[i], pp[i])
-//                            : update_ctx(ctx[i], ctxIr[i], pp[i]);
-//      }
-//    }
-//  tf.close();
-//  aveEnt = sEnt/symsNo;
+  const auto nMdl = models.size();
+  vector<u64> ctx;      ctx.reserve(nMdl);
+  vector<u64> ctxIr;    ctxIr.reserve(nMdl);
+  for (const auto& m : models)  // Mask: 1<<2k - 1 = 4^k - 1
+    ctxIr.emplace_back((1ull<<(m.k<<1)) - 1);
+  vector<double> w (nMdl, 1.0/nMdl);
+  u64 symsNo{0};                // No. syms in target file, except \n
+  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(tar);  char c;
+  vector<ProbPar<u64>> pp;    pp.reserve(nMdl);
+  for (u8 i=0; i!=nMdl; ++i)
+    pp.emplace_back(models[i].alpha, ctxIr[i],static_cast<u8>(models[i].k<<1u));
+  
+  while (tf.get(c))
+    if (c != '\n') {
+      ++symsNo;
+      for (u8 i=0; i!=nMdl; ++i)
+        (models[i].ir == 0) ? pp[i].config(c, ctx[i])
+                            : pp[i].config(c, ctx[i], ctxIr[i]);
+//      //todo. STMM
+////      for (auto i=static_cast<u8>(MMs.size()); i!=MMs.size()+STMMs.size(); ++i) {
+////        (STMMs[i-MMs.size()].ir==0) ? pp[i].config(c, ctx[i])
+////                                    : pp[i].config(c, ctx[i], ctxIr[i]);
+////      }
+      // Entropy
+      auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
+      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
+      vector<double> probs;    probs.reserve(models.size());
+      for (u8 i=0; i!=nMdl; ++i) {
+        if (models[i].cner == Container::TABLE_64)
+          (models[i].ir==0) ? probs.emplace_back(prob(tbl64_iter++, pp[i]))
+                            : probs.emplace_back(probIr(tbl64_iter++, pp[i]));
+        else if (models[i].cner == Container::TABLE_32)
+          (models[i].ir==0) ? probs.emplace_back(prob(tbl32_iter++, pp[i]))
+                            : probs.emplace_back(probIr(tbl32_iter++, pp[i]));
+        else if (models[i].cner == Container::LOG_TABLE_8)
+          (models[i].ir==0) ? probs.emplace_back(prob(lgtbl8_iter++, pp[i]))
+                            : probs.emplace_back(probIr(lgtbl8_iter++, pp[i]));
+        else if (models[i].cner == Container::SKETCH_8)
+          (models[i].ir==0) ? probs.emplace_back(prob(cmls4_iter++, pp[i]))
+                            : probs.emplace_back(probIr(cmls4_iter++, pp[i]));
+      }
+      sEnt += entropy(w.begin(), w.end(), probs.begin());
+      
+      for (u8 i=0; i!=nMdl; ++i)
+        (models[i].ir == 0) ? update_ctx(ctx[i], pp[i])
+                            : update_ctx(ctx[i], ctxIr[i], pp[i]);
+    }
+  tf.close();
+  aveEnt = sEnt/symsNo;
 }
-
-//template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
-//inline void FCM::comp2mdl (const string& tar, msk0_t mask0, msk1_t mask1,
-//                           const ds0_t& ds0, const ds1_t& ds1) {
-//  msk0_t ctx0{0}, ctxIr0{mask0};    // Ctx, Mir (int) sliding through the dataset
-//  msk1_t ctx1{0}, ctxIr1{mask1};
-//  u64 symsNo {0};                   // No. syms in target file, except \n
-//  array<double,2> w {0.5, 0.5};
-//  double sEnt {0};                  // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(tar);  char c;
-//  ProbPar<msk0_t> ps0 {models[0].Malpha, mask0, static_cast<u8>(models[0].k<<1u)};
-//  ProbPar<msk1_t> ps1 {models[1].Malpha, mask1, static_cast<u8>(models[1].k<<1u)};
-//  if (IR_COMB == IR::DDDD) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c, ctx0);     ps1.config(c, ctx1);
-//        sEnt += entropy<2>(w, {prob(ds0,ps0), prob(ds1,ps1)});
-//        updateCtx(ctx0, ps0);    update_ctx(ctx1, ps1);  // Update ctx
-//      }
-//  }
-//  else if (IR_COMB == IR::DDDI) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c, ctx0, ctxIr0);    ps1.config(c, ctx1);
-//        sEnt += entropy<2>(w, {probIr(ds0,ps0), prob(ds1,ps1)});
-//        updateCtx(ctx0, ctxIr0, ps0);   update_ctx(ctx1, ps1);
-//      }
-//  }
-//  else if (IR_COMB == IR::DDID) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c, ctx0);    ps1.config(c, ctx1, ctxIr1);
-//        sEnt += entropy<2>(w, {prob(ds0,ps0), probIr(ds1,ps1)});
-//        updateCtx(ctx0, ps0);   update_ctx(ctx1, ctxIr1, ps1);
-//      }
-//  }
-//  else if (IR_COMB == IR::DDII) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        ps0.config(c, ctx0, ctxIr0);    ps1.config(c, ctx1, ctxIr1);
-//        sEnt += entropy<2>(w, {probIr(ds0,ps0), probIr(ds1,ps1)});
-//        updateCtx(ctx0, ctxIr0, ps0);   update_ctx(ctx1, ctxIr1, ps1);
-//      }
-//  }
-//  tf.close();
-//  aveEnt = sEnt/symsNo;
-//}
 
 //// Called from main -- MUST NOT be inline
 //void FCM::report (const Param& p) const {
@@ -474,16 +354,37 @@ inline double FCM::entropy (double P) const {
   return -log2(P);
 }
 
-inline double FCM::entropy (vector<double>& w, const vector<double>& Pm) const {
+template <class InOutIter, class InIter>
+inline double FCM::entropy (InOutIter wFirst, InOutIter wLast, InIter pFirst)
+const {
+  cerr<<*wFirst<<'\t';
   // Set weights
-  vector<double> rawW {};  rawW.resize(w.size());  rawW.clear();
-  for (u8 i=0; i!=models.size(); ++i)
-    rawW[i] = pow(w[i], models[i].gamma) * Pm[i];
-  const double sumRawW = std::accumulate(rawW.begin(), rawW.end(), 0.0);
-  for (auto rIt=rawW.begin(), wIt=w.begin(); rIt!=rawW.end(); ++rIt, ++wIt)
-    *wIt = *rIt / sumRawW;
+  vector<double> rawW;    rawW.reserve(models.size());
+  raw_weights(rawW.begin(), wFirst, wLast, pFirst);
+//  auto PmFirstIt = pFirst;
+//  auto wFirstIt  = wFirst;
+//  for (auto mIt=models.begin(); wFirstIt!=wLast; ++wFirstIt, ++mIt, ++PmFirstIt)
+//    rawW.emplace_back(pow(*wFirstIt, mIt->gamma) * *PmFirstIt);
+  normalize(wFirst, rawW.begin(), rawW.end());
+  cerr<<*wFirst<<'\n';
+
   // log2 1 / (Pm0*w0 + Pm1*w1 + ...)
-  return log2(1 / std::inner_product(w.begin(), w.end(), Pm.begin(), 0.0));
+  return log2(1 / std::inner_product(wFirst, wLast, pFirst, 0.0));
+}
+
+template <class InOutIter, class InIter1, class InIter2>
+inline void FCM::raw_weights
+  (InOutIter rawWFirst, InIter1 wFirst, InIter1 wLast, InIter2 pFirst) const {
+  for (auto mIt=models.begin(); wFirst!=wLast;
+       ++wFirst, ++rawWFirst, ++mIt, ++pFirst)
+    *rawWFirst = pow(*wFirst, mIt->gamma) * *pFirst;
+}
+
+template <class InOutIter, class InIter>
+inline void FCM::normalize (InOutIter ioFirst, InIter first, InIter last) const{
+  for (const double sum = std::accumulate(first, last, 0.0);
+       first != last; ++first, ++ioFirst)
+    *ioFirst = *first / sum;
 }
 
 template <class Ctx>
