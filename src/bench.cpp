@@ -188,7 +188,7 @@ int main (int argc, char* argv[])
 //    bool writeHdr= false, execute= true, plt= false;
     bool writeHdr= true, execute= true, plt= false;
   
-//    vector<u8>    vk;    vk.resize(14);    std::iota(vk.begin(),vk.end(),1);
+//    vector<u8>    vk;    vk.reserve(14);    std::iota(vk.begin(),vk.end(),1);
     constexpr bool bVerbose {false};
     static string verbose="";  if (bVerbose) verbose=" -v";
     constexpr bool bRep {true};
