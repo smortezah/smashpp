@@ -51,6 +51,7 @@ void Table64::load (ifstream& ifs) const {
 }
 
 void Table64::print () const {
+//  cerr<<"pr";//todo
   constexpr u8 context_width {12};
   cerr.width(context_width);  cerr<<std::left<<"Context";
   cerr << "Count\n";

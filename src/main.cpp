@@ -30,9 +30,9 @@ int main (int argc, char* argv[])
     // Build models  // Start time// Finish time// Elapsed time
     auto t0{now()};  m->store(p);     auto t1{now()};  hms(t1-t0);
     // Compress
-    t0=now();        m->compress(p);       t1=now();   hms(t1-t0);
+//    t0=now();        m->compress(p);       t1=now();   hms(t1-t0);
     // Result
-    cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
+//    cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
     // Report
 //    m->report(p); // Without "-R" does nothing
 

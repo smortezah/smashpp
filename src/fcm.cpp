@@ -51,6 +51,8 @@ FCM::FCM (const Param& p) {
   aveEnt = 0.0;
   config(p);
   alloc_model();
+  
+//  cerr<< sizeof(tbl64[0]);//todo
 }
 
 inline void FCM::config (const Param& p) {
@@ -78,7 +80,6 @@ inline void FCM::config (const Param& p) {
     }
   }
   set_mode_cner();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
-//  set_cner_idx();
 
 //  for (auto a:models) {//todo
 //    print(a.k, a.thresh,a.w,a.d,a.ir, a.alpha, a.gamma);
@@ -113,23 +114,6 @@ inline void FCM::set_mode_cner () {
   }
 }
 
-//inline void FCM::set_cner_idx () {
-//  u8 tbl64Idx{0}, tbl32Idx{0}, lgtbl8Idx{0}, cmls4Idx{0};
-//  for (auto& m : MMs) {
-//    if      (m.cner==Container::TABLE_64)       m.cnerIdx = tbl64Idx++;
-//    else if (m.cner==Container::TABLE_32)       m.cnerIdx = tbl32Idx++;
-//    else if (m.cner==Container::LOG_TABLE_8)    m.cnerIdx = lgtbl8Idx++;
-//    else if (m.cner==Container::SKETCH_8)       m.cnerIdx = cmls4Idx++;
-//  }
-//  tbl64Idx = tbl32Idx = lgtbl8Idx = cmls4Idx = 0;
-//  for (auto& m : STMMs) {
-//    if      (m.cner==Container::TABLE_64)       m.cnerIdx = tbl64Idx++;
-//    else if (m.cner==Container::TABLE_32)       m.cnerIdx = tbl32Idx++;
-//    else if (m.cner==Container::LOG_TABLE_8)    m.cnerIdx = lgtbl8Idx++;
-//    else if (m.cner==Container::SKETCH_8)       m.cnerIdx = cmls4Idx++;
-//  }
-//}
-
 inline void FCM::alloc_model () {
   for (const auto& m : models)
     if (m.mode == Mode::MM) {
@@ -155,9 +139,11 @@ void FCM::store (const Param& p) {
   (p.nthr==1 || models.size()==1) ? store_1_thr(p) : store_n_thr(p)/*Mult thr*/;
   cerr << "Finished";
   
-//  //todo
-//  for(auto a:tbl64)a->print();cerr<<'\n';
-//  for(auto a:cmls4)a->print();cerr<<'\n';
+  //todo
+  for(auto a:tbl64)a->print();cerr<<'\n';
+  for(auto a:tbl32)a->print();cerr<<'\n';
+  for(auto a:lgtbl8)a->print();cerr<<'\n';
+  for(auto a:cmls4)a->print();cerr<<'\n';
 }
 
 inline void FCM::store_1_thr (const Param& p) {
@@ -182,7 +168,7 @@ inline void FCM::store_n_thr (const Param& p) {
   auto tbl64_iter  = tbl64.begin();     auto tbl32_iter = tbl32.begin();
   auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
   const auto vThrSz = (p.nthr < models.size()) ? p.nthr : models.size();
-  vector<std::thread> thrd;  thrd.resize(vThrSz);
+  vector<std::thread> thrd;    thrd.reserve(vThrSz);
   for (u8 i=0; i!=models.size(); ++i) {    // Mask: 4<<2k-1 = 4^(k+1)-1
     if (models[i].mode == Mode::MM) {
       switch (models[i].cner) {
@@ -319,8 +305,8 @@ inline void FCM::compress_n (const string& tar
 //                                CnerIter cnerIt
 ) {
   // Ctx, Mir (int) sliding through the dataset
-  vector<u64> ctx;      ctx.resize(models.size());      ctx.clear();
-  vector<u64> ctxIr;    ctxIr.resize(models.size());    ctxIr.clear();
+  vector<u64> ctx;      ctx.reserve(models.size());
+  vector<u64> ctxIr;    ctxIr.reserve(models.size());
   for (const auto& m : models)
     ctxIr.emplace_back((1ull<<(m.k<<1)) - 1);  // Mask
 
@@ -330,12 +316,12 @@ inline void FCM::compress_n (const string& tar
 //  ifstream tf(
 ////      p.
 //      tar);  char c;
-//  vector<ProbPar<u64>> pp;    pp.resize(models.size());
+//  vector<ProbPar<u64>> pp;    pp.reserve(models.size());
 //  for (u8 i=0; i!=models.size(); ++i)
 //    pp.emplace_back(models[i].alpha, ctxIr[i] /* mask: 1<<2k-1=4^k-1 */,
 //                    static_cast<u8>(models[i].k<<1u));
 //
-////  vector<double> probs;    probs.resize(models.size());
+////  vector<double> probs;    probs.reserve(models.size());
 //  while (tf.get(c))
 //    if (c != '\n') {
 //      ++symsNo;
@@ -352,7 +338,7 @@ inline void FCM::compress_n (const string& tar
 //      auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
 //      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
 ////      probs.clear();
-//      vector<double> probs;    probs.resize(models.size());
+//      vector<double> probs;    probs.reserve(models.size());
 //      for (u8 i=0; i!=models.size(); ++i) {
 //        if (models[i].cner == Container::TABLE_64)
 //          (models[i].ir==0) ? probs.emplace_back(prob(tbl64_iter++, pp[i]))
@@ -476,7 +462,7 @@ inline double FCM::entropy (double P) const {
 
 inline double FCM::entropy (vector<double>& w, const vector<double>& Pm) const {
   // Set weights
-  vector<double> rawW {};  rawW.resize(w.size());
+  vector<double> rawW {};  rawW.reserve(w.size());
   for (u8 i=0; i!=models.size(); ++i)
     rawW[i] = pow(w[i], models[i].gamma) * Pm[i];
   const double sumRawW = std::accumulate(rawW.begin(), rawW.end(), 0.0);
