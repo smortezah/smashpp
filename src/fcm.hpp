@@ -15,7 +15,6 @@ using std::shared_ptr;
 //using std::initializer_list;
 using std::vector;
 
-//todo
 class ModelPar {
  public:
   u8        k;         // Context size
@@ -33,24 +32,6 @@ class ModelPar {
   ModelPar (u8, u8, float, float);
   ModelPar (u8, u8, u8, float, float);
 };
-
-//struct ModelPar {
-//  u8         k;         // Context size
-//  u64        w;         // Width of count-min-log sketch
-//  u8         d;         // Depth of count-min-log sketch
-//  u8         Mir;       // Markov models Inverted repeat
-//  float      Malpha;
-//  float      Mgamma;
-//  u8         TMthresh;  // Substitutional tolerant Markov models threshold
-//  u8         TMir;
-//  float      TMalpha;
-//  float      TMgamma;
-//  Container  cner;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-//  ModelPar (u8, u64, u8, u8, float, float, u8, u8, float, float);
-//  ModelPar (u8, u8, float, float);
-//  ModelPar (u8, u64, u8, u8, float, float);
-//  ModelPar (u8, u8, float, float, u8, u8, float, float);
-//};
 
 template <class Ctx>//todo. if always use u64, replace Ctx with u64
 class ProbPar {
@@ -85,8 +66,6 @@ class FCM    // Finite-context models
   vector<shared_ptr<Table32>>   tbl32;
   vector<shared_ptr<LogTable8>> lgtbl8;
   vector<shared_ptr<CMLS4>>     cmls4;
-//  u8                    MODE_COMB;
-//  u8                    IR_COMB;
   
   void config (const Param&); // Set models parameters
   template <class InIter, class Vec>  //Split by dlim
@@ -98,30 +77,20 @@ class FCM    // Finite-context models
   template <class Mask, class CnerIter>
   void store_impl (const string&, Mask, CnerIter);    // Fill data structure
   // Compress data structure
-  template <
-//    class msk_t,
-      class CnerIter>
-  void compress_1_MM (const string&
-    ,
-//                      msk_t,
-                      CnerIter
-  );  // 1 Markov models
-//  template <
-////    class msk_t,
-//    class CnerIter>
-  void compress_n (const string&
-//    ,
-//                      msk_t,
-//                      CnerIter
-  );  // 1 Markov models
-//  template <class msk0_t, class msk1_t, class ds0_t, class ds1_t>
-//  void comp2mdl  (const string&, msk0_t, msk1_t, const ds0_t&, const ds1_t&);
+  template <class CnerIter>
+  void compress_1_MM (const string&, CnerIter);  // 1 Markov models
+  void compress_n (const string&);  // 1 Markov models
   template <class CnerIter, class Ctx>
   double prob    (CnerIter, const ProbPar<Ctx>&) const;  // Probability
   template <class CnerIter, class Ctx>
   double probIr  (CnerIter, const ProbPar<Ctx>&) const;  // Prob. IR
   double entropy (double) const;
-  double entropy (vector<double>&, const vector<double>&) const;
+  template <class InOutIter, class InIter>
+  double entropy (InOutIter, InOutIter, InIter) const;
+  template <class InOutIter, class InIter1, class InIter2>
+  void raw_weights (InOutIter, InIter1, InIter1, InIter2) const;
+  template <class InOutIter, class InIter>
+  void normalize (InOutIter, InIter, InIter) const;
   template <class Ctx>
   void update_ctx (Ctx&, const ProbPar<Ctx>&) const;
   template <class Ctx>
