@@ -92,7 +92,6 @@ class FCM    // Finite-context models
   template <class InIter, class Vec>  //Split by dlim
   void split (InIter, InIter, char, Vec&) const;
   void set_mode_cner ();
-//  void set_cner_idx ();
   void alloc_model ();             // Allocate memory to models
   void store_1_thr (const Param&); // Build models one thread
   void store_n_thr (const Param&); // Build models multiple threads
