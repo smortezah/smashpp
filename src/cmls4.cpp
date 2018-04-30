@@ -22,7 +22,7 @@ void CMLS4::config (u64 w_, u8 d_) {
     throw std::runtime_error("Error: failed memory allocation.\n");
   }
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
-  ab.reserve(d<<1u);
+  ab.resize(d<<1u);
   setAB();
 }
 
