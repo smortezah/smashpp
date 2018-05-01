@@ -300,9 +300,9 @@ inline void FCM::compress_n (const string& tar) {
           (models[i].ir==0) ? probs.emplace_back(prob(cmls4_iter++, pp[i]))
                             : probs.emplace_back(probIr(cmls4_iter++, pp[i]));
       }
-      for(auto e:w)cerr<<e<<'\t';cerr<<"\t\t";//todo
+//      for(auto e:w)cerr<<e<<'\t';cerr<<"\t\t";//todo
       sEnt += entropy(w.begin(), probs.begin(), probs.end());
-      for(auto e:w)cerr<<e<<'\t';cerr<<'\n';//todo
+//      for(auto e:w)cerr<<e<<'\t';cerr<<'\n';//todo
       
       for (u8 i=0; i!=nMdl; ++i)
         (models[i].ir == 0) ? update_ctx(ctx[i], pp[i])
@@ -358,7 +358,7 @@ inline double FCM::entropy (double P) const {
 
 template <class OutIter, class InIter>
 inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
-  update_weights(wFirst, PFirst, PFirst+models.size());
+  update_weights(wFirst, PFirst, PLast);
   // log2 1 / (Pm0*w0 + Pm1*w1 + ...)
 //  return log2(1 / std::inner_product(wFirst, PFirst, PLast, 0.0));
 }
@@ -366,10 +366,25 @@ inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
 template <class OutIter, class InIter>
 inline void FCM::update_weights (OutIter wFirst, InIter PFirst, InIter PLast)
 const {
-//  for (auto mIt=models.begin(); wFirst!=wLast;
-//       ++wFirst, ++rawWFirst, ++mIt, ++pFirst)
-//    *rawWFirst = pow(*wFirst, mIt->gamma) * *pFirst;
-//    normalize(wFirst, rawW.begin(), rawW.end());
+  auto wFirst_copy = wFirst;
+  
+  vector<double> rawW;  rawW.reserve(models.size());
+  for (auto mIt=models.begin();
+       PFirst!=PLast;
+       ++PFirst, ++wFirst, ++mIt) {
+    rawW.emplace_back(pow(*wFirst, mIt->gamma)**PFirst);
+    print(*wFirst, mIt->gamma, *PFirst);
+  }
+  for(auto a:rawW)
+    cerr<<a<<' ';
+  cerr<<'\n';
+  
+  wFirst = wFirst_copy;
+  const double sum = std::accumulate(rawW.begin(), rawW.end(), 0.0);
+  for(auto&& r : rawW)
+    *wFirst++ = r / sum;
+
+////  normalize(wFirst, rawW.begin(), rawW.end());
 }
 
 template <class OutIter, class InIter>

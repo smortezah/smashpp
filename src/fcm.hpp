@@ -90,7 +90,7 @@ class FCM    // Finite-context models
   template <class OutIter, class InIter>
   void update_weights (OutIter, InIter, InIter) const;
   template <class OutIter, class InIter>
-  void normalize (OutIter, OutIter, InIter) const;
+  void normalize (OutIter, InIter, InIter) const;
   template <class Ctx>
   void update_ctx (Ctx&, const ProbPar<Ctx>&) const;
   template <class Ctx>
