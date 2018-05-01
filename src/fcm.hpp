@@ -85,12 +85,12 @@ class FCM    // Finite-context models
   template <class CnerIter, class Ctx>
   double probIr  (CnerIter, const ProbPar<Ctx>&) const;  // Prob. IR
   double entropy (double) const;
-  template <class InOutIter, class InIter>
-  double entropy (InOutIter, InOutIter, InIter) const;
-  template <class InOutIter, class InIter1, class InIter2>
-  void raw_weights (InOutIter, InIter1, InIter1, InIter2) const;
-  template <class InOutIter, class InIter>
-  void normalize (InOutIter, InIter, InIter) const;
+  template <class OutIter, class InIter>
+  double entropy (OutIter, InIter, InIter) const;
+  template <class OutIter, class InIter>
+  void update_weights (OutIter, InIter, InIter) const;
+  template <class OutIter, class InIter>
+  void normalize (OutIter, OutIter, InIter) const;
   template <class Ctx>
   void update_ctx (Ctx&, const ProbPar<Ctx>&) const;
   template <class Ctx>

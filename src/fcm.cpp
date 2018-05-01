@@ -300,7 +300,9 @@ inline void FCM::compress_n (const string& tar) {
           (models[i].ir==0) ? probs.emplace_back(prob(cmls4_iter++, pp[i]))
                             : probs.emplace_back(probIr(cmls4_iter++, pp[i]));
       }
-      sEnt += entropy(w.begin(), w.end(), probs.begin());
+      for(auto e:w)cerr<<e<<'\t';cerr<<"\t\t";//todo
+      sEnt += entropy(w.begin(), probs.begin(), probs.end());
+      for(auto e:w)cerr<<e<<'\t';cerr<<'\n';//todo
       
       for (u8 i=0; i!=nMdl; ++i)
         (models[i].ir == 0) ? update_ctx(ctx[i], pp[i])
@@ -354,37 +356,27 @@ inline double FCM::entropy (double P) const {
   return -log2(P);
 }
 
-template <class InOutIter, class InIter>
-inline double FCM::entropy (InOutIter wFirst, InOutIter wLast, InIter pFirst)
-const {
-  cerr<<*wFirst<<'\t';
-  // Set weights
-  vector<double> rawW;    rawW.reserve(models.size());
-  raw_weights(rawW.begin(), wFirst, wLast, pFirst);
-//  auto PmFirstIt = pFirst;
-//  auto wFirstIt  = wFirst;
-//  for (auto mIt=models.begin(); wFirstIt!=wLast; ++wFirstIt, ++mIt, ++PmFirstIt)
-//    rawW.emplace_back(pow(*wFirstIt, mIt->gamma) * *PmFirstIt);
-  normalize(wFirst, rawW.begin(), rawW.end());
-  cerr<<*wFirst<<'\n';
-
+template <class OutIter, class InIter>
+inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
+  update_weights(wFirst, PFirst, PFirst+models.size());
   // log2 1 / (Pm0*w0 + Pm1*w1 + ...)
-  return log2(1 / std::inner_product(wFirst, wLast, pFirst, 0.0));
+//  return log2(1 / std::inner_product(wFirst, PFirst, PLast, 0.0));
 }
 
-template <class InOutIter, class InIter1, class InIter2>
-inline void FCM::raw_weights
-  (InOutIter rawWFirst, InIter1 wFirst, InIter1 wLast, InIter2 pFirst) const {
-  for (auto mIt=models.begin(); wFirst!=wLast;
-       ++wFirst, ++rawWFirst, ++mIt, ++pFirst)
-    *rawWFirst = pow(*wFirst, mIt->gamma) * *pFirst;
+template <class OutIter, class InIter>
+inline void FCM::update_weights (OutIter wFirst, InIter PFirst, InIter PLast)
+const {
+//  for (auto mIt=models.begin(); wFirst!=wLast;
+//       ++wFirst, ++rawWFirst, ++mIt, ++pFirst)
+//    *rawWFirst = pow(*wFirst, mIt->gamma) * *pFirst;
+//    normalize(wFirst, rawW.begin(), rawW.end());
 }
 
-template <class InOutIter, class InIter>
-inline void FCM::normalize (InOutIter ioFirst, InIter first, InIter last) const{
-  for (const double sum = std::accumulate(first, last, 0.0);
-       first != last; ++first, ++ioFirst)
-    *ioFirst = *first / sum;
+template <class OutIter, class InIter>
+inline void FCM::normalize (OutIter oFirst, InIter iFirst, InIter iLast) const {
+  for (const double sum = std::accumulate(iFirst, iLast, 0.0);
+       iFirst != iLast; ++iFirst, ++oFirst)
+    *oFirst = *iFirst / sum;
 }
 
 template <class Ctx>
