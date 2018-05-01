@@ -358,33 +358,27 @@ inline double FCM::entropy (double P) const {
 
 template <class OutIter, class InIter>
 inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
+  cerr<<*wFirst<<' '<<*(wFirst+1)<<'\t'<<*PFirst<<' '<<*(PLast-1)<<'\n';
   update_weights(wFirst, PFirst, PLast);
+  cerr<<*wFirst<<' '<<*(wFirst+1)<<'\t'<<*PFirst<<' '<<*(PLast-1)<<"\n\n";
   // log2 1 / (Pm0*w0 + Pm1*w1 + ...)
-//  return log2(1 / std::inner_product(wFirst, PFirst, PLast, 0.0));
+  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
 
 template <class OutIter, class InIter>
 inline void FCM::update_weights (OutIter wFirst, InIter PFirst, InIter PLast)
 const {
-  auto wFirst_copy = wFirst;
+  auto wFirst_tmp = wFirst;
   
   vector<double> rawW;  rawW.reserve(models.size());
-  for (auto mIt=models.begin();
-       PFirst!=PLast;
-       ++PFirst, ++wFirst, ++mIt) {
-    rawW.emplace_back(pow(*wFirst, mIt->gamma)**PFirst);
-    print(*wFirst, mIt->gamma, *PFirst);
-  }
-  for(auto a:rawW)
-    cerr<<a<<' ';
-  cerr<<'\n';
+  for (auto mIt=models.begin(); PFirst!=PLast; ++PFirst, ++wFirst, ++mIt)
+    rawW.emplace_back(pow(*wFirst, mIt->gamma) * *PFirst);
   
-  wFirst = wFirst_copy;
-  const double sum = std::accumulate(rawW.begin(), rawW.end(), 0.0);
-  for(auto&& r : rawW)
-    *wFirst++ = r / sum;
-
-////  normalize(wFirst, rawW.begin(), rawW.end());
+  wFirst = wFirst_tmp;
+//  const double sum = std::accumulate(rawW.begin(), rawW.end(), 0.0);
+//  for(auto&& r : rawW)
+//    *wFirst++ = r / sum;
+  normalize(wFirst, rawW.begin(), rawW.end());
 }
 
 template <class OutIter, class InIter>
