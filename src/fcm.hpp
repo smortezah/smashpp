@@ -33,21 +33,27 @@ class ModelPar {
   ModelPar (u8, u8, u8, float, float);
 };
 
-template <class Ctx>//todo. if always use u64, replace Ctx with u64
+//template <class Ctx>//todo. if always use u64, replace Ctx with u64
 class ProbPar {
  public:
   float  alpha;
   double sAlpha;
-  Ctx    mask;
+//  Ctx    mask;
+  u64    mask;
   u8     shl;
-  Ctx    l;
+//  Ctx    l;
+  u64    l;
   u8     numSym;
-  Ctx    r;
+//  Ctx    r;
+  u64    r;
   u8     revNumSym;
   ProbPar () = default;
-  ProbPar (float, Ctx, u8);
-  void config (char, Ctx);
-  void config (char, Ctx, Ctx);
+//  ProbPar (float, Ctx, u8);
+//  void config (char, Ctx);
+//  void config (char, Ctx, Ctx);
+  ProbPar (float, u64, u8);
+  void config (char, u64);
+  void config (char, u64, u64);
 };
 
 class FCM    // Finite-context models
@@ -79,11 +85,11 @@ class FCM    // Finite-context models
   // Compress data structure
   template <class CnerIter>
   void compress_1_MM (const string&, CnerIter);  // 1 Markov models
-  void compress_n (const string&);  // 1 Markov models
-  template <class CnerIter, class Ctx>
-  double prob    (CnerIter, const ProbPar<Ctx>&) const;  // Probability
-  template <class CnerIter, class Ctx>
-  double probIr  (CnerIter, const ProbPar<Ctx>&) const;  // Prob. IR
+  void compress_n (const string&);
+  template <class CnerIter>
+  double prob    (CnerIter, const ProbPar&) const;  // Probability
+  template <class CnerIter>
+  double probIr  (CnerIter, const ProbPar&) const;  // Prob. IR
   double entropy (double) const;
   template <class OutIter, class InIter>
   double entropy (OutIter, InIter, InIter) const;
@@ -91,10 +97,8 @@ class FCM    // Finite-context models
   void update_weights (OutIter, InIter, InIter) const;
   template <class OutIter, class InIter>
   void normalize (OutIter, InIter, InIter) const;
-  template <class Ctx>
-  void update_ctx (Ctx&, const ProbPar<Ctx>&) const;
-  template <class Ctx>
-  void update_ctx (Ctx&, Ctx&, const ProbPar<Ctx>&) const;
+  void update_ctx (u64&, const ProbPar&) const;
+  void update_ctx (u64&, u64&, const ProbPar&) const;
 };
 
 #endif //SMASHPP_FCM_HPP
