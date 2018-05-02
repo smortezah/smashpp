@@ -33,24 +33,17 @@ class ModelPar {
   ModelPar (u8, u8, u8, float, float);
 };
 
-//template <class Ctx>//todo. if always use u64, replace Ctx with u64
 class ProbPar {
  public:
   float  alpha;
   double sAlpha;
-//  Ctx    mask;
   u64    mask;
   u8     shl;
-//  Ctx    l;
   u64    l;
   u8     numSym;
-//  Ctx    r;
   u64    r;
   u8     revNumSym;
   ProbPar () = default;
-//  ProbPar (float, Ctx, u8);
-//  void config (char, Ctx);
-//  void config (char, Ctx, Ctx);
   ProbPar (float, u64, u8);
   void config (char, u64);
   void config (char, u64, u64);
@@ -59,7 +52,7 @@ class ProbPar {
 class FCM    // Finite-context models
 {
  public:
-  double          aveEnt;
+  double aveEnt;
   
   explicit FCM (const Param&);
   void store (const Param&);   // Build FCM (finite-context models)
@@ -77,14 +70,14 @@ class FCM    // Finite-context models
   template <class InIter, class Vec>  //Split by dlim
   void split (InIter, InIter, char, Vec&) const;
   void set_mode_cner ();
-  void alloc_model ();             // Allocate memory to models
-  void store_1_thr (const Param&); // Build models one thread
-  void store_n_thr (const Param&); // Build models multiple threads
+  void alloc_model ();            // Allocate memory to models
+  void store_1 (const Param&);    // Build models one thread
+  void store_n (const Param&);    // Build models multiple threads
   template <class Mask, class CnerIter>
-  void store_impl (const string&, Mask, CnerIter);    // Fill data structure
+  void store_impl (const string&, Mask, CnerIter);  // Fill data structure
   // Compress data structure
   template <class CnerIter>
-  void compress_1_MM (const string&, CnerIter);  // 1 Markov models
+  void compress_1 (const string&, CnerIter);        // 1 Markov models
   void compress_n (const string&);
   template <class CnerIter>
   double prob    (CnerIter, const ProbPar&) const;  // Probability

@@ -28,19 +28,13 @@ ModelPar::ModelPar (u8 k_, u8 t_, u8 ir_, float a_, float g_)
   : ModelPar(k_, t_, 0, 0, ir_, a_, g_) {
 }
 
-//template <class Ctx>
-//ProbPar<Ctx>::ProbPar (float a, Ctx m, u8 sh)
 ProbPar::ProbPar (float a, u64 m, u8 sh)
   : alpha(a), sAlpha(static_cast<double>(ALPH_SZ*alpha)), mask(m), shl(sh) {
 }
-//template <class Ctx>
-//inline void ProbPar<Ctx>::config (char c, Ctx ctx) {
 inline void ProbPar::config (char c, u64 ctx) {
   numSym = NUM[static_cast<u8>(c)];
   l      = ctx<<2u;
 }
-//template <class Ctx>
-//inline void ProbPar<Ctx>::config (char c, Ctx ctx, Ctx ctxIr) {
 inline void ProbPar::config (char c, u64 ctx, u64 ctxIr) {
   numSym    = NUM[static_cast<u8>(c)];
   l         = ctx<<2u;
@@ -135,7 +129,7 @@ void FCM::store (const Param& p) {
   else
     cerr << "Building the model" << (models.size()==1 ? "" : "s");
   cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
-  (p.nthr==1 || models.size()==1) ? store_1_thr(p) : store_n_thr(p)/*Mult thr*/;
+  (p.nthr==1 || models.size()==1) ? store_1(p) : store_n(p)/*Mult thr*/;
   cerr << "Finished";
   
   //todo
@@ -145,7 +139,7 @@ void FCM::store (const Param& p) {
 //  for(auto a:cmls4)a->print();cerr<<'\n';
 }
 
-inline void FCM::store_1_thr (const Param& p) {
+inline void FCM::store_1 (const Param& p) {
   auto tbl64_iter  = tbl64.begin();     auto tbl32_iter = tbl32.begin();
   auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
   for (const auto& m : models)    // Mask: 4<<2k - 1 = 4^(k+1) - 1
@@ -163,7 +157,7 @@ inline void FCM::store_1_thr (const Param& p) {
     }
 }
 
-inline void FCM::store_n_thr (const Param& p) {
+inline void FCM::store_n (const Param& p) {
   auto tbl64_iter  = tbl64.begin();     auto tbl32_iter = tbl32.begin();
   auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
   const auto vThrSz = (p.nthr < models.size()) ? p.nthr : models.size();
@@ -217,10 +211,14 @@ void FCM::compress (const Param& p) {
   else            cerr << "Compressing...\n";
   if (models.size() == 1)  // 1 MM
     switch (models[0].cner) {
-      case Container::TABLE_64:     compress_1_MM(p.tar, tbl64.begin());  break;
-      case Container::TABLE_32:     compress_1_MM(p.tar, tbl32.begin());  break;
-      case Container::LOG_TABLE_8:  compress_1_MM(p.tar, lgtbl8.begin()); break;
-      case Container::SKETCH_8:     compress_1_MM(p.tar, cmls4.begin());  break;
+      case Container::TABLE_64:
+        compress_1(p.tar, tbl64.begin());  break;
+      case Container::TABLE_32:
+        compress_1(p.tar, tbl32.begin());  break;
+      case Container::LOG_TABLE_8:
+        compress_1(p.tar, lgtbl8.begin()); break;
+      case Container::SKETCH_8:
+        compress_1(p.tar, cmls4.begin());  break;
     }
   else
     compress_n(p.tar);
@@ -228,7 +226,7 @@ void FCM::compress (const Param& p) {
 }
 
 template <class CnerIter>
-inline void FCM::compress_1_MM (const string& tar, CnerIter cnerIt) {
+inline void FCM::compress_1 (const string& tar, CnerIter cnerIt) {
   u64 ctx{0}, ctxIr{(1ull << (models[0].k << 1))-1}; // Ctx, Mir (int) sliding through the dataset
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
