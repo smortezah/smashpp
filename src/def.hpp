@@ -15,7 +15,7 @@ using std::string;
 using std::cerr;
 
 // Version
-static const string VERSION   {"18.04"};
+static const string VERSION   {"18.05"};
 static const string DEV_YEARS {"2018"};
 
 // Typedef
