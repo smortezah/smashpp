@@ -79,8 +79,14 @@ class FCM    // Finite-context models
   template <class CnerIter>
   void compress_1 (const string&, CnerIter);        // 1 Markov models
   void compress_n (const string&);
-  template <class CnerIter>
-  double prob    (CnerIter, const ProbPar&) const;  // Probability
+  template <class CnerIter
+    , class ProbParIter
+      >
+  double prob    (CnerIter,
+                  ProbParIter
+//  const ProbPar&
+  ) const;  // Probability
+//  double prob    (CnerIter, const ProbPar&) const;  // Probability
   template <class CnerIter>
   double probIr  (CnerIter, const ProbPar&) const;  // Prob. IR
   double entropy (double) const;
