@@ -79,16 +79,10 @@ class FCM    // Finite-context models
   template <class CnerIter>
   void compress_1 (const string&, CnerIter);        // 1 Markov models
   void compress_n (const string&);
-  template <class CnerIter
-    , class ProbParIter
-      >
-  double prob    (CnerIter,
-                  ProbParIter
-//  const ProbPar&
-  ) const;  // Probability
-//  double prob    (CnerIter, const ProbPar&) const;  // Probability
-  template <class CnerIter>
-  double probIr  (CnerIter, const ProbPar&) const;  // Prob. IR
+  template <class CnerIter, class ProbParIter>
+  double prob    (CnerIter, ProbParIter) const;  // Probability
+  template <class CnerIter, class ProbParIter>
+  double probIr  (CnerIter, ProbParIter) const;  // Prob. IR
   double entropy (double) const;
   template <class OutIter, class InIter>
   double entropy (OutIter, InIter, InIter) const;
@@ -96,8 +90,10 @@ class FCM    // Finite-context models
   void update_weights (OutIter, InIter, InIter) const;
   template <class OutIter, class InIter>
   void normalize (OutIter, InIter, InIter) const;
-  void update_ctx (u64&, const ProbPar&) const;
-  void update_ctx (u64&, u64&, const ProbPar&) const;
+  template <class ProbParIter>
+  void update_ctx (u64&, ProbParIter) const;
+  template <class ProbParIter>
+  void update_ctx (u64&, u64&, ProbParIter) const;
 };
 
 #endif //SMASHPP_FCM_HPP

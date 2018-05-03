@@ -227,34 +227,33 @@ void FCM::compress (const Param& p) {
 
 template <class CnerIter>
 inline void FCM::compress_1 (const string& tar, CnerIter cnerIt) {
-  //todo uncomment
-//  u64 ctx{0}, ctxIr{(1ull << (models[0].k << 1))-1}; // Ctx, Mir (int) sliding through the dataset
-//  u64 symsNo{0};                // No. syms in target file, except \n
-//  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(tar);  char c;
-//  ProbPar pp{models[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
-//             static_cast<u8>(models[0].k << 1u)};
-//
-//  if (models[0].ir == 0) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        pp.config(c, ctx);
-//        sEnt += entropy(prob(cnerIt, pp));
-//        update_ctx(ctx, pp);
-//      }
-//  }
-//  else if (models[0].ir == 1) {
-//    while (tf.get(c))
-//      if (c != '\n') {
-//        ++symsNo;
-//        pp.config(c, ctx, ctxIr);
-//        sEnt += entropy(probIr(cnerIt, pp));
-//        update_ctx(ctx, ctxIr, pp);    // Update ctx & ctxIr
-//      }
-//  }
-//  tf.close();
-//  aveEnt = sEnt/symsNo;
+  u64 ctx{0}, ctxIr{(1ull << (models[0].k << 1))-1}; // Ctx, Mir (int) sliding through the dataset
+  u64 symsNo{0};                // No. syms in target file, except \n
+  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(tar);  char c;
+  ProbPar pp{models[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
+             static_cast<u8>(models[0].k << 1u)};
+
+  if (models[0].ir == 0) {
+    while (tf.get(c))
+      if (c != '\n') {
+        ++symsNo;
+        pp.config(c, ctx);
+        sEnt += entropy(prob(cnerIt, &pp));
+        update_ctx(ctx, &pp);
+      }
+  }
+  else if (models[0].ir == 1) {
+    while (tf.get(c))
+      if (c != '\n') {
+        ++symsNo;
+        pp.config(c, ctx, ctxIr);
+        sEnt += entropy(probIr(cnerIt, &pp));
+        update_ctx(ctx, ctxIr, &pp);    // Update ctx & ctxIr
+      }
+  }
+  tf.close();
+  aveEnt = sEnt/symsNo;
 }
 
 inline void FCM::compress_n (const string& tar) {
@@ -271,10 +270,9 @@ inline void FCM::compress_n (const string& tar) {
   vector<ProbPar> pp;    pp.reserve(nMdl);
   for (u8 i=0; i!=nMdl; ++i)
     pp.emplace_back(models[i].alpha, ctxIr[i],static_cast<u8>(models[i].k<<1u));
-  
+
   while (tf.get(c))
     if (c != '\n') {
-      auto ppIter = pp.begin();//todo
       ++symsNo;
       for (u8 i=0; i!=nMdl; ++i)
         (models[i].ir == 0) ? pp[i].config(c, ctx[i])
@@ -287,34 +285,32 @@ inline void FCM::compress_n (const string& tar) {
       // Entropy
       auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
       auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
+      auto ppIter = pp.begin();
       vector<double> probs;    probs.reserve(models.size());
       for (u8 i=0; i!=nMdl; ++i) {
         if (models[i].cner == Container::TABLE_64)
-          (models[i].ir==0) ? probs.emplace_back(prob(tbl64_iter++, ppIter++))
-                            : probs.emplace_back(probIr(tbl64_iter++, pp[i]));
-//          (models[i].ir==0) ? probs.emplace_back(prob(tbl64_iter++, pp[i]))
-//                            : probs.emplace_back(probIr(tbl64_iter++, pp[i]));
+          (models[i].ir == 0)
+            ? probs.emplace_back(prob(tbl64_iter++, ppIter++))
+            : probs.emplace_back(probIr(tbl64_iter++, ppIter++));
         else if (models[i].cner == Container::TABLE_32)
-          (models[i].ir==0) ? probs.emplace_back(prob(tbl32_iter++, ppIter++))
-                            : probs.emplace_back(probIr(tbl32_iter++, pp[i]));
-//          (models[i].ir==0) ? probs.emplace_back(prob(tbl32_iter++, pp[i]))
-//                            : probs.emplace_back(probIr(tbl32_iter++, pp[i]));
+          (models[i].ir == 0)
+            ? probs.emplace_back(prob(tbl32_iter++, ppIter++))
+            : probs.emplace_back(probIr(tbl32_iter++, ppIter++));
         else if (models[i].cner == Container::LOG_TABLE_8)
-          (models[i].ir==0) ? probs.emplace_back(prob(lgtbl8_iter++, ppIter++))
-                            : probs.emplace_back(probIr(lgtbl8_iter++, pp[i]));
-//          (models[i].ir==0) ? probs.emplace_back(prob(lgtbl8_iter++, pp[i]))
-//                            : probs.emplace_back(probIr(lgtbl8_iter++, pp[i]));
+          (models[i].ir == 0)
+            ? probs.emplace_back(prob(lgtbl8_iter++, ppIter++))
+            : probs.emplace_back(probIr(lgtbl8_iter++, ppIter++));
         else if (models[i].cner == Container::SKETCH_8)
-          (models[i].ir==0) ? probs.emplace_back(prob(cmls4_iter++, ppIter++))
-                            : probs.emplace_back(probIr(cmls4_iter++, pp[i]));
-//          (models[i].ir==0) ? probs.emplace_back(prob(cmls4_iter++, pp[i]))
-//                            : probs.emplace_back(probIr(cmls4_iter++, pp[i]));
+          (models[i].ir == 0)
+            ? probs.emplace_back(prob(cmls4_iter++, ppIter++))
+            : probs.emplace_back(probIr(cmls4_iter++, ppIter++));
       }
       sEnt += entropy(w.begin(), probs.begin(), probs.end());
       
+      ppIter = pp.begin();
       for (u8 i=0; i!=nMdl; ++i)
-        (models[i].ir == 0) ? update_ctx(ctx[i], pp[i])
-                            : update_ctx(ctx[i], ctxIr[i], pp[i]);
+        (models[i].ir==0) ? update_ctx(ctx[i], ppIter++)
+                          : update_ctx(ctx[i], ctxIr[i], ppIter++);
     }
   tf.close();
   aveEnt = sEnt/symsNo;
@@ -334,14 +330,8 @@ inline void FCM::compress_n (const string& tar) {
 //  f.close();  // Actually done, automatically
 //}
 
-template <class CnerIter
-  , class ProbParIter
-    >
-//inline double FCM::prob (CnerIter cnerIt, const ProbPar& pp) const {
-  inline double FCM::prob (CnerIter cnerIt,
-                           ProbParIter
-//                           vector<ProbPar>::iterator
-                           pp) const {
+template <class CnerIter, class ProbParIter>
+inline double FCM::prob (CnerIter cnerIt, ProbParIter pp) const {
   const array<decltype((*cnerIt)->query(0)), 4> c
     {(*cnerIt)->query(pp->l),
      (*cnerIt)->query(pp->l | 1ull),
@@ -349,24 +339,17 @@ template <class CnerIter
      (*cnerIt)->query(pp->l | 3ull)};
   return (c[pp->numSym] + pp->alpha)
          / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
-//  const array<decltype((*cnerIt)->query(0)), 4> c
-//    {(*cnerIt)->query(pp.l),
-//     (*cnerIt)->query(pp.l | 1ull),
-//     (*cnerIt)->query(pp.l | 2ull),
-//     (*cnerIt)->query(pp.l | 3ull)};
-//  return (c[pp.numSym] + pp.alpha)
-//         / (std::accumulate(c.begin(),c.end(),0ull) + pp.sAlpha);
 }
 
-template <class CnerIter>
-inline double FCM::probIr (const CnerIter cnerIt, const ProbPar& pp) const {
+template <class CnerIter, class ProbParIter>
+inline double FCM::probIr (const CnerIter cnerIt, ProbParIter pp) const {
   const array<decltype((*cnerIt)->query(0)+(*cnerIt)->query(0)), 4> c
-    {(*cnerIt)->query(pp.l)        + (*cnerIt)->query((3ull<<pp.shl) | pp.r),
-     (*cnerIt)->query(pp.l | 1ull) + (*cnerIt)->query((2ull<<pp.shl) | pp.r),
-     (*cnerIt)->query(pp.l | 2ull) + (*cnerIt)->query((1ull<<pp.shl) | pp.r),
-     (*cnerIt)->query(pp.l | 3ull) + (*cnerIt)->query(pp.r)};
-  return (c[pp.numSym] + pp.alpha)
-         / (std::accumulate(c.begin(),c.end(),0ull) + pp.sAlpha);
+    {(*cnerIt)->query(pp->l)        + (*cnerIt)->query((3ull<<pp->shl) | pp->r),
+     (*cnerIt)->query(pp->l | 1ull) + (*cnerIt)->query((2ull<<pp->shl) | pp->r),
+     (*cnerIt)->query(pp->l | 2ull) + (*cnerIt)->query((1ull<<pp->shl) | pp->r),
+     (*cnerIt)->query(pp->l | 3ull) + (*cnerIt)->query(pp->r)};
+  return (c[pp->numSym] + pp->alpha)
+         / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
 }
 
 inline double FCM::entropy (double P) const {
@@ -396,11 +379,13 @@ inline void FCM::normalize (OutIter oFirst, InIter iFirst, InIter iLast) const {
     *oFirst++ = *iFirst++ / sum;
 }
 
-inline void FCM::update_ctx (u64& ctx, const ProbPar& pp) const {
-  ctx = (pp.l & pp.mask) | pp.numSym;
+template <class ProbParIter>
+inline void FCM::update_ctx (u64& ctx, ProbParIter pp) const {
+  ctx = (pp->l & pp->mask) | pp->numSym;
 }
 
-inline void FCM::update_ctx (u64& ctx, u64& ctxIr, const ProbPar& pp) const {
-  ctx   = (pp.l & pp.mask) | pp.numSym;
-  ctxIr = (pp.revNumSym<<pp.shl) | pp.r;
+template <class ProbParIter>
+inline void FCM::update_ctx (u64& ctx, u64& ctxIr, ProbParIter pp) const {
+  ctx   = (pp->l & pp->mask) | pp->numSym;
+  ctxIr = (pp->revNumSym<<pp->shl) | pp->r;
 }
