@@ -23,14 +23,22 @@ using std::make_shared;
 #include <cstring>//todo. debug
 int main (int argc, char* argv[])
 {
+  //todo test
+  vector<int> parent{5,7,3};
+//  int* i=&parent[0];
+  std::unique_ptr<int> i;
+  i=std::make_unique<int>(parent[0]);
+  cerr<<*i;
+  
+  
   try {
     Param p;
     p.parse(argc, argv);
 ////    auto* m = new FCM(p);
-    auto m = make_shared<FCM>(p);
+//    auto m = make_shared<FCM>(p);
     
     // Build models  // Start time// Finish time// Elapsed time
-    auto t0{now()};  m->store(p);     auto t1{now()};  hms(t1-t0);
+//    auto t0{now()};  m->store(p);     auto t1{now()};  hms(t1-t0);
     // Compress
 //    t0=now();        m->compress(p);       t1=now();   hms(t1-t0);
     // Result

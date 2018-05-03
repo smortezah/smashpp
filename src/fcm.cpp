@@ -18,7 +18,7 @@ using std::make_shared;
 
 ModelPar::ModelPar (u8 k_, u8 t_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
   : k(k_), thresh(t_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
-    cner(Container::TABLE_64), mode(Mode::MM) {
+    cner(Container::TABLE_64), mode(Mode::MM), enable(true)/*todo*/ {
 }
 ModelPar::ModelPar (u8 k_, u8 ir_, float a_, float g_)
   : ModelPar(k_, 0, 0, 0, ir_, a_, g_) {
@@ -264,31 +264,26 @@ inline void FCM::compress_n (const string& tar) {
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-//  vector<ProbPar> pp;    pp.reserve(nMdl);
-//  for (u8 i=0; i!=nMdl; ++i)
-//    pp.emplace_back(models[i].alpha, ctxIr[i],static_cast<u8>(models[i].k<<1u));
-//
-//  while (tf.get(c))
-//    if (c != '\n') {
-//      ++symsNo;
-//      for (u8 i=0; i!=nMdl; ++i)
-//        (models[i].ir == 0) ? pp[i].config(c, ctx[i])
-//                            : pp[i].config(c, ctx[i], ctxIr[i]);
-////  //todo. STMM
-////// for (auto i=static_cast<u8>(MMs.size()); i!=MMs.size()+STMMs.size(); ++i) {
-//////   (STMMs[i-MMs.size()].ir==0) ? pp[i].config(c, ctx[i])
-//////                               : pp[i].config(c, ctx[i], ctxIr[i]);
-////// }
-//      // Entropy
-//      auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
-//      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
-//      auto ppIter = pp.begin();
-//      vector<double> probs;    probs.reserve(models.size());
-//      for (u8 i=0; i!=nMdl; ++i) {
-//        if (models[i].cner == Container::TABLE_64)
-//          (models[i].ir == 0)
-//            ? probs.emplace_back(prob(tbl64_iter++, ppIter++))
-//            : probs.emplace_back(probIr(tbl64_iter++, ppIter++));
+  vector<ProbPar> pp;    pp.reserve(nMdl);
+  for (u8 i=0; i!=nMdl; ++i)
+    pp.emplace_back(models[i].alpha, ctxIr[i],static_cast<u8>(models[i].k<<1u));
+
+  while (tf.get(c))
+    if (c != '\n') {
+      ++symsNo;
+      for (u8 i=0; i!=nMdl; ++i)
+        (models[i].ir==0) ? pp[i].config(c, ctx[i])
+                          : pp[i].config(c, ctx[i], ctxIr[i]);
+      // Entropy
+      auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
+      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
+      auto ppIter = pp.begin();
+      vector<double> probs;    probs.reserve(models.size());
+      for (u8 i=0; i!=nMdl; ++i) {
+        if (models[i].cner == Container::TABLE_64)
+          (models[i].ir == 0)
+            ? probs.emplace_back(prob(tbl64_iter++, ppIter++))
+            : probs.emplace_back(probIr(tbl64_iter++, ppIter++));
 //        else if (models[i].cner == Container::TABLE_32)
 //          (models[i].ir == 0)
 //            ? probs.emplace_back(prob(tbl32_iter++, ppIter++))
@@ -301,14 +296,14 @@ inline void FCM::compress_n (const string& tar) {
 //          (models[i].ir == 0)
 //            ? probs.emplace_back(prob(cmls4_iter++, ppIter++))
 //            : probs.emplace_back(probIr(cmls4_iter++, ppIter++));
-//      }
+      }
 //      sEnt += entropy(w.begin(), probs.begin(), probs.end());
 //
 //      ppIter = pp.begin();
 //      for (u8 i=0; i!=nMdl; ++i)
 //        (models[i].ir==0) ? update_ctx(ctx[i], ppIter++)
 //                          : update_ctx(ctx[i], ctxIr[i], ppIter++);
-//    }
+    }
   tf.close();
   aveEnt = sEnt/symsNo;
 }
