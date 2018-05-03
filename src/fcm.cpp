@@ -7,6 +7,8 @@
 #include <thread>
 #include <numeric>  // std::accumulate
 #include "fcm.hpp"
+#include "assert.hpp"
+#include "fn.hpp"
 using std::ifstream;
 using std::fstream;
 using std::cout;
@@ -54,7 +56,7 @@ inline void FCM::config (const Param& p) {
   for (const auto& mp : mdls) {
     // Markov and tolerant models
     vector<string> MnTM;    split(mp.begin(), mp.end(), '/', MnTM);
-    assert_empty_lm(MnTM, "Error: incorrect model parameters.");
+    assert_empty_elem(MnTM, "Error: incorrect model parameters.");
     vector<string> M;       split(MnTM[0].begin(), MnTM[0].end(), ',', M);
     if (M.size() == 4)
       models.emplace_back(ModelPar(static_cast<u8>(stoi(M[0])),

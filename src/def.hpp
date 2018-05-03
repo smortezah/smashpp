@@ -66,9 +66,6 @@ static constexpr float DEF_GAMMA  {0.9};  // Default gamma for multiple models
 // Enum
 enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
 enum class Mode {MM, STMM};
-// Inv. repeats, 1 & 2 & 3 & 4 models. D: direct(bit 0), I: inv.(bit 1)
-enum class IR {DDDD, DDDI, DDID, DDII, DIDD, DIDI, DIID, DIII,
-               IDDD, IDDI, IDID, IDII, IIDD, IIDI, IIID, IIII};
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n
@@ -169,57 +166,5 @@ static const vector<vector<u8>> LEVEL {    // 'k' of multiple models MUST be sor
 //          0, 13,    99,       0,         0,
 //          0, 20,    99,      15,    DEF_D}
 };
-
-// Global function
-// "inline" is a MUST -- not to get "multiple definition of `now()'" error
-inline std::chrono::time_point<std::chrono::high_resolution_clock> now () {
-  return std::chrono::high_resolution_clock::now();
-}
-
-template <class T>
-constexpr void hms (T elapsed) {
-//  std::chrono::duration<double, std::milli> ms = elapsed;
-  const auto durSec =
-    std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
-  const auto h = durSec / 3600;
-  const auto m = (durSec % 3600) / 60;
-  const auto s = durSec % 60;
-  
-  cerr << " in " << h << ":" << m << ":" << s << " hour:min:sec.\n";
-}
-
-// Print variadic inputs
-template <class Input>
-void print (Input&& in) noexcept {
-  cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\n';
-}
-template <class Input, class... Args>
-void print (Input&& in, Args&&... args) noexcept {
-  cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\t';
-  print(args...);
-}
-
-// Assertions
-template <class Container>
-void assert_empty_lm (Container cner, string&& msg) {  // Empty element
-  for (const auto& e : cner)
-    if (e.size() == 0)
-      throw std::runtime_error(msg + "\n");
-}
-
-//template<u32 N>    // Up to 262144=2^18 elements
-//struct LogInt      // 0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,...
-//{
-//  constexpr LogInt() : lg() {
-//    for (u32 i=0; i!=LOG_BASE; ++i)
-//      lg[i] = 0;
-//    for (u32 i=LOG_BASE; i!=N; ++i)
-//      lg[i] = static_cast<u8>(1 + lg[i/LOG_BASE]);
-//  }
-//  u8 lg[N];
-//};
-// Inside function definition
-//constexpr auto a = LogInt<256>();
-//cerr << (int) a.lg[3];
 
 #endif //SMASHPP_DEF_HPP
