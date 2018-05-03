@@ -43,7 +43,7 @@ class Param    // Parameters
       vector<string> vArgs(static_cast<u64>(argc));
       for (int i=0; i!=argc; ++i)
         vArgs.emplace_back(static_cast<string>(argv[i]));
-      
+
       for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
         if (*i=="-h" || *i=="--help") {
           help();  throw EXIT_SUCCESS;

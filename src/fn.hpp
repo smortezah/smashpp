@@ -21,8 +21,8 @@ void print (Input&& in, Args&&... args) /*noexcept*/ {
 }
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
-inline std::chrono::time_point<std::chrono::high_resolution_clock>
-  now () noexcept {
+inline std::chrono::time_point<std::chrono::high_resolution_clock> now ()
+noexcept {
   return std::chrono::high_resolution_clock::now();
 }
 
@@ -37,20 +37,5 @@ constexpr void hms (Time elapsed) {
   
   cerr << " in " << h << ":" << m << ":" << s << " hour:min:sec.\n";
 }
-
-////template<u32 N>    // Up to 262144=2^18 elements
-////struct LogInt      // 0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,...
-////{
-////  constexpr LogInt() : lg() {
-////    for (u32 i=0; i!=LOG_BASE; ++i)
-////      lg[i] = 0;
-////    for (u32 i=LOG_BASE; i!=N; ++i)
-////      lg[i] = static_cast<u8>(1 + lg[i/LOG_BASE]);
-////  }
-////  u8 lg[N];
-////};
-//// Inside function definition
-////constexpr auto a = LogInt<256>();
-////cerr << (int) a.lg[3];
 
 #endif //PROJECT_FN_HPP

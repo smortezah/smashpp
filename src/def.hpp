@@ -37,7 +37,7 @@ constexpr u64 power (u64 a, u64 n) {
   return n==0 ? 1 : sqr(power(a, n>>1u)) * (n&1ull ? a : 1);
 }
 
-constexpr u64 pow2 (u64 n) { // Not sure if faster than above, but simpler
+constexpr u64 pow2 (u64 n) noexcept { // Not sure if faster than above, but simpler
   return 1ull<<n;  // ull is MANDATORY
 }
 //constexpr u64 pow4 (u8 n) { // Not sure if faster than above, but simpler
@@ -166,5 +166,20 @@ static const vector<vector<u8>> LEVEL {    // 'k' of multiple models MUST be sor
 //          0, 13,    99,       0,         0,
 //          0, 20,    99,      15,    DEF_D}
 };
+
+////template<u32 N>    // Up to 262144=2^18 elements
+////struct LogInt      // 0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,...
+////{
+////  constexpr LogInt() : lg() {
+////    for (u32 i=0; i!=LOG_BASE; ++i)
+////      lg[i] = 0;
+////    for (u32 i=LOG_BASE; i!=N; ++i)
+////      lg[i] = static_cast<u8>(1 + lg[i/LOG_BASE]);
+////  }
+////  u8 lg[N];
+////};
+//// Inside function definition
+////constexpr auto a = LogInt<256>();
+////cerr << (int) a.lg[3];
 
 #endif //SMASHPP_DEF_HPP
