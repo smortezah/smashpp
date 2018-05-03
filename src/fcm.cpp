@@ -98,9 +98,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 
 inline void FCM::set_mode_cner () {
   for (auto& m : models) {
-    // Mode
-    if (m.thresh != 0)              m.mode = Mode::STMM;
-    else                            m.mode = Mode::MM;
+    m.mode = (m.thresh!=0) ? Mode::STMM : Mode::MM;
     // Container
     if      (m.k > K_MAX_LGTBL8)    m.cner = Container::SKETCH_8;
     else if (m.k > K_MAX_TBL32)     m.cner = Container::LOG_TABLE_8;
@@ -213,14 +211,10 @@ void FCM::compress (const Param& p) {
   else            cerr << "Compressing...\n";
   if (models.size() == 1)  // 1 MM
     switch (models[0].cner) {
-      case Container::TABLE_64:
-        compress_1(p.tar, tbl64.begin());  break;
-      case Container::TABLE_32:
-        compress_1(p.tar, tbl32.begin());  break;
-      case Container::LOG_TABLE_8:
-        compress_1(p.tar, lgtbl8.begin()); break;
-      case Container::SKETCH_8:
-        compress_1(p.tar, cmls4.begin());  break;
+      case Container::TABLE_64:     compress_1(p.tar, tbl64.begin());   break;
+      case Container::TABLE_32:     compress_1(p.tar, tbl32.begin());   break;
+      case Container::LOG_TABLE_8:  compress_1(p.tar, lgtbl8.begin());  break;
+      case Container::SKETCH_8:     compress_1(p.tar, cmls4.begin());   break;
     }
   else
     compress_n(p.tar);
@@ -229,7 +223,8 @@ void FCM::compress (const Param& p) {
 
 template <class CnerIter>
 inline void FCM::compress_1 (const string& tar, CnerIter cnerIt) {
-  u64 ctx{0}, ctxIr{(1ull << (models[0].k << 1))-1}; // Ctx, Mir (int) sliding through the dataset
+  // Ctx, Mir (int) sliding through the dataset
+  u64 ctx{0}, ctxIr{(1ull << (models[0].k << 1))-1};
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
@@ -269,51 +264,51 @@ inline void FCM::compress_n (const string& tar) {
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  vector<ProbPar> pp;    pp.reserve(nMdl);
-  for (u8 i=0; i!=nMdl; ++i)
-    pp.emplace_back(models[i].alpha, ctxIr[i],static_cast<u8>(models[i].k<<1u));
-
-  while (tf.get(c))
-    if (c != '\n') {
-      ++symsNo;
-      for (u8 i=0; i!=nMdl; ++i)
-        (models[i].ir == 0) ? pp[i].config(c, ctx[i])
-                            : pp[i].config(c, ctx[i], ctxIr[i]);
-//      //todo. STMM
-////      for (auto i=static_cast<u8>(MMs.size()); i!=MMs.size()+STMMs.size(); ++i) {
-////        (STMMs[i-MMs.size()].ir==0) ? pp[i].config(c, ctx[i])
-////                                    : pp[i].config(c, ctx[i], ctxIr[i]);
-////      }
-      // Entropy
-      auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
-      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
-      auto ppIter = pp.begin();
-      vector<double> probs;    probs.reserve(models.size());
-      for (u8 i=0; i!=nMdl; ++i) {
-        if (models[i].cner == Container::TABLE_64)
-          (models[i].ir == 0)
-            ? probs.emplace_back(prob(tbl64_iter++, ppIter++))
-            : probs.emplace_back(probIr(tbl64_iter++, ppIter++));
-        else if (models[i].cner == Container::TABLE_32)
-          (models[i].ir == 0)
-            ? probs.emplace_back(prob(tbl32_iter++, ppIter++))
-            : probs.emplace_back(probIr(tbl32_iter++, ppIter++));
-        else if (models[i].cner == Container::LOG_TABLE_8)
-          (models[i].ir == 0)
-            ? probs.emplace_back(prob(lgtbl8_iter++, ppIter++))
-            : probs.emplace_back(probIr(lgtbl8_iter++, ppIter++));
-        else if (models[i].cner == Container::SKETCH_8)
-          (models[i].ir == 0)
-            ? probs.emplace_back(prob(cmls4_iter++, ppIter++))
-            : probs.emplace_back(probIr(cmls4_iter++, ppIter++));
-      }
-      sEnt += entropy(w.begin(), probs.begin(), probs.end());
-      
-      ppIter = pp.begin();
-      for (u8 i=0; i!=nMdl; ++i)
-        (models[i].ir==0) ? update_ctx(ctx[i], ppIter++)
-                          : update_ctx(ctx[i], ctxIr[i], ppIter++);
-    }
+//  vector<ProbPar> pp;    pp.reserve(nMdl);
+//  for (u8 i=0; i!=nMdl; ++i)
+//    pp.emplace_back(models[i].alpha, ctxIr[i],static_cast<u8>(models[i].k<<1u));
+//
+//  while (tf.get(c))
+//    if (c != '\n') {
+//      ++symsNo;
+//      for (u8 i=0; i!=nMdl; ++i)
+//        (models[i].ir == 0) ? pp[i].config(c, ctx[i])
+//                            : pp[i].config(c, ctx[i], ctxIr[i]);
+////  //todo. STMM
+////// for (auto i=static_cast<u8>(MMs.size()); i!=MMs.size()+STMMs.size(); ++i) {
+//////   (STMMs[i-MMs.size()].ir==0) ? pp[i].config(c, ctx[i])
+//////                               : pp[i].config(c, ctx[i], ctxIr[i]);
+////// }
+//      // Entropy
+//      auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
+//      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
+//      auto ppIter = pp.begin();
+//      vector<double> probs;    probs.reserve(models.size());
+//      for (u8 i=0; i!=nMdl; ++i) {
+//        if (models[i].cner == Container::TABLE_64)
+//          (models[i].ir == 0)
+//            ? probs.emplace_back(prob(tbl64_iter++, ppIter++))
+//            : probs.emplace_back(probIr(tbl64_iter++, ppIter++));
+//        else if (models[i].cner == Container::TABLE_32)
+//          (models[i].ir == 0)
+//            ? probs.emplace_back(prob(tbl32_iter++, ppIter++))
+//            : probs.emplace_back(probIr(tbl32_iter++, ppIter++));
+//        else if (models[i].cner == Container::LOG_TABLE_8)
+//          (models[i].ir == 0)
+//            ? probs.emplace_back(prob(lgtbl8_iter++, ppIter++))
+//            : probs.emplace_back(probIr(lgtbl8_iter++, ppIter++));
+//        else if (models[i].cner == Container::SKETCH_8)
+//          (models[i].ir == 0)
+//            ? probs.emplace_back(prob(cmls4_iter++, ppIter++))
+//            : probs.emplace_back(probIr(cmls4_iter++, ppIter++));
+//      }
+//      sEnt += entropy(w.begin(), probs.begin(), probs.end());
+//
+//      ppIter = pp.begin();
+//      for (u8 i=0; i!=nMdl; ++i)
+//        (models[i].ir==0) ? update_ctx(ctx[i], ppIter++)
+//                          : update_ctx(ctx[i], ctxIr[i], ppIter++);
+//    }
   tf.close();
   aveEnt = sEnt/symsNo;
 }
