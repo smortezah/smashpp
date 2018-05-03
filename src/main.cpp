@@ -14,6 +14,7 @@
 #include <iomanip>      // setw, setprecision
 #include "par.hpp"
 #include "fcm.hpp"
+#include "fn.hpp"
 using std::cout;
 using std::setprecision;
 using std::make_shared;

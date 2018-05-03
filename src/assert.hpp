@@ -8,9 +8,8 @@
 #include <stdexcept>
 using std::string;
 
-// Assertions
 template <class Container>
-void assert_empty_lm (Container cner, string&& msg) {  // Empty element
+void assert_empty_elem (Container cner, string&& msg) {  // Empty element
   for (const auto& e : cner)
     if (e.size() == 0)
       throw std::runtime_error(msg + "\n");
