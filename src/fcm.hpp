@@ -91,6 +91,10 @@ class FCM    // Finite-context models
   double prob    (CnerIter, ProbParIter) const;  // Probability
   template <class CnerIter, class ProbParIter>
   double probIr  (CnerIter, ProbParIter) const;  // Prob. IR
+  template <class CnerIter, class ProbParIter>
+  double prob_best (CnerIter, ProbParIter) const;  // Probability
+  template <class CnerIter, class ProbParIter>
+  double probIr_best (CnerIter, ProbParIter) const;  // Prob. IR
   double entropy (double) const;
   template <class OutIter, class InIter>
   double entropy (OutIter, InIter, InIter) const;

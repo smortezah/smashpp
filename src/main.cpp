@@ -20,35 +20,12 @@ using std::setprecision;
 using std::make_shared;
 
 
-//struct B
-//{
-//  int b;
-//  B (int _b) : b(_b) {};
-//};
-//
-//struct A
-//{
-//  int a;
-//  A (int _a) : a(_a) {};
-//  std::unique_ptr<B> child;
-//};
-
-
 int main (int argc, char* argv[])
 {
-//  vector<A> va;
-//  vector<B> vb;
-//  va.emplace_back(A(3));
-//  va.emplace_back(A(9));
-//  vb.emplace_back(B(7));
-//  va[0].child=std::make_unique<B>(vb[0]);
-//  cerr<<va[0].child->b;
-  
-  
   try {
     Param p;
     p.parse(argc, argv);
-//    auto* m = new FCM(p);
+///    auto* m = new FCM(p);
     auto m = make_shared<FCM>(p);
 
     // Build models  // Start time// Finish time// Elapsed time
