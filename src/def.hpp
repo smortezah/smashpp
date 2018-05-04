@@ -47,7 +47,7 @@ constexpr u64 pow2 (u64 n) noexcept { // Not sure if faster than above, but simp
 // Constant
 static constexpr u8  DEF_THR      {4};    // Default # threads
 static constexpr u8  DEF_LVL      {0};    // Default level
-static constexpr u8  ALPH_SZ      {4};    // Alphabet size
+static constexpr u8  CARDINALITY  {4};    // CARDINALITYality = Alphabet size
 static constexpr u8  IRMAGIC      {3};    // Calc Mir syms based on syms
 static constexpr u8  K_MAX_TBL64  {11};   // Max ctx dept. table 64 (128 MB mem)
 static constexpr u8  K_MAX_TBL32  {13};   // Max ...       table 32 (1   GB mem)
@@ -61,7 +61,7 @@ static constexpr u8    DEF_IR     {0};// Default inverted repeats for models
 static constexpr float DEF_ALPHA  {0.001};// Default alpha for models
 static constexpr float DEF_GAMMA  {0.9};  // Default gamma for multiple models
 
-//using htbl_t = std::unordered_map<u64, std::array<u64,ALPH_SZ>>; //faster th a[]
+//using htbl_t = std::unordered_map<u64, std::array<u64,CARDINALITY>>; //faster th a[]
 
 // Enum
 enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
