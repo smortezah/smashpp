@@ -11,9 +11,7 @@
 #include "tbl32.hpp"
 #include "logtbl8.hpp"
 #include "cmls4.hpp"
-using std::unique_ptr;
 using std::shared_ptr;
-using std::make_unique;
 using std::vector;
 
 struct STMMPar;
@@ -26,7 +24,7 @@ struct MMPar {
   float alpha;
   float gamma;
   Container cont;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-  unique_ptr<STMMPar> child;
+  shared_ptr<STMMPar> child;
   MMPar (u8, u64, u8, u8, float, float);
   MMPar (u8, u8, float, float);
 };
@@ -38,7 +36,7 @@ struct STMMPar {
   float alpha;
   float gamma;
   bool  enable;
-//  unique_ptr<MMPar> parent; //todo. check if necessary
+//  shared_ptr<MMPar> parent; //todo. check if necessary
   STMMPar (u8, u8, u8, float, float);
 };
 
