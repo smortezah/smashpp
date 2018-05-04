@@ -88,18 +88,18 @@ class FCM    // Finite-context models
   // Compress data structure
   template <class CnerIter>
   void compress_1 (const string&, CnerIter);        // 1 Markov models
-//  void compress_n (const string&);
+  void compress_n (const string&);
   template <class CnerIter, class ProbParIter>
   double prob    (CnerIter, ProbParIter) const;  // Probability
   template <class CnerIter, class ProbParIter>
   double probIr  (CnerIter, ProbParIter) const;  // Prob. IR
   double entropy (double) const;
-//  template <class OutIter, class InIter>
-//  double entropy (OutIter, InIter, InIter) const;
-//  template <class OutIter, class InIter>
-//  void update_weights (OutIter, InIter, InIter) const;
-//  template <class OutIter, class InIter>
-//  void normalize (OutIter, InIter, InIter) const;
+  template <class OutIter, class InIter>
+  double entropy (OutIter, InIter, InIter) const;
+  template <class OutIter, class InIter>
+  void update_weights (OutIter, InIter, InIter) const;
+  template <class OutIter, class InIter>
+  void normalize (OutIter, InIter, InIter) const;
   template <class ProbParIter>
   void update_ctx (u64&, ProbParIter) const;
   template <class ProbParIter>

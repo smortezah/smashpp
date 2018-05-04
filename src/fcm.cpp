@@ -205,7 +205,7 @@ void FCM::compress (const Param& p) {
       case Container::SKETCH_8:     compress_1(p.tar, cmls4.begin());   break;
     }
   else
-//    compress_n(p.tar);//todo uncomment
+    compress_n(p.tar);
   cerr << "Finished";
 }
 
@@ -241,7 +241,7 @@ inline void FCM::compress_1 (const string& tar, CnerIter cnerIt) {
   aveEnt = sEnt/symsNo;
 }
 
-//inline void FCM::compress_n (const string& tar) {
+inline void FCM::compress_n (const string& tar) {
 //  // Ctx, Mir (int) sliding through the dataset
 //  const auto nMdl = models.size();
 //  vector<u64> ctx;      ctx.resize(nMdl);    // Fill with zeros (resize)
@@ -294,7 +294,7 @@ inline void FCM::compress_1 (const string& tar, CnerIter cnerIt) {
 //    }
 //  tf.close();
 //  aveEnt = sEnt/symsNo;
-//}
+}
 
 //// Called from main -- MUST NOT be inline
 //void FCM::report (const Param& p) const {
@@ -336,28 +336,28 @@ inline double FCM::entropy (double P) const {
   return -log2(P);
 }
 
-//template <class OutIter, class InIter>
-//inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
-//  update_weights(wFirst, PFirst, PLast);
-//  // log2 1 / (P0*w0 + P1*w1 + ...)
-//  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
-//}
-//
-//template <class OutIter, class InIter>
-//inline void FCM::update_weights (OutIter wFirst, InIter PFirst, InIter PLast)
-//const {
+template <class OutIter, class InIter>
+inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
+  update_weights(wFirst, PFirst, PLast);
+  // log2 1 / (P0*w0 + P1*w1 + ...)
+  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
+}
+//todo
+template <class OutIter, class InIter>
+inline void FCM::update_weights (OutIter wFirst, InIter PFirst, InIter PLast)
+const {
 //  vector<double> rawW;    rawW.reserve(models.size());
 //  for (auto mIt=models.begin(), wFst=wFirst; PFirst!=PLast; ++mIt)
 //    rawW.emplace_back(pow(*wFst++, mIt->gamma) * *PFirst++);
 //
 //  normalize(wFirst, rawW.begin(), rawW.end());
-//}
-//
-//template <class OutIter, class InIter>
-//inline void FCM::normalize (OutIter oFirst, InIter iFirst, InIter iLast) const {
-//  for (const double sum=std::accumulate(iFirst, iLast, 0.0); iFirst != iLast;)
-//    *oFirst++ = *iFirst++ / sum;
-//}
+}
+
+template <class OutIter, class InIter>
+inline void FCM::normalize (OutIter oFirst, InIter iFirst, InIter iLast) const {
+  for (const double sum=std::accumulate(iFirst, iLast, 0.0); iFirst != iLast;)
+    *oFirst++ = *iFirst++ / sum;
+}
 
 template <class ProbParIter>
 inline void FCM::update_ctx (u64& ctx, ProbParIter pp) const {
