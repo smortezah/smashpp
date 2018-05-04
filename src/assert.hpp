@@ -9,8 +9,8 @@
 using std::string;
 
 template <class Container>
-void assert_empty_elem (Container cner, string&& msg) {  // Empty element
-  for (const auto& e : cner)
+void assert_empty_elem (Container cont, string&& msg) {  // Empty element
+  for (const auto& e : cont)
     if (e.size() == 0)
       throw std::runtime_error(msg + "\n");
 }

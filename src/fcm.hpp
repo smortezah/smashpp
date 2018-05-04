@@ -26,7 +26,7 @@ using std::vector;
 //  u8        ir;       // Markov models Inverted repeat
 //  float     alpha;
 //  float     gamma;
-//  Container cner;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+//  Container cont;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
 ////  u8        cnerIdx; // Index of the container
 //  Mode      mode;
 //  bool      enable; // For STMM only
@@ -46,7 +46,7 @@ struct MMPar {
   u8    ir;       // Inverted repeat
   float alpha;
   float gamma;
-  Container cner;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  Container cont;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
   unique_ptr<STMMPar> child;
   MMPar (u8, u64, u8, u8, float, float);
   MMPar (u8, u8, float, float);
@@ -100,8 +100,8 @@ class FCM    // Finite-context models
   void config (const Param&); // Set models parameters
   template <class InIter, class Vec>  //Split by dlim
   void split (InIter, InIter, char, Vec&) const;
-//  void set_mode_cner ();
-//  void alloc_model ();            // Allocate memory to models
+  void set_cont ();
+  void alloc_model ();            // Allocate memory to models
 //  void store_1 (const Param&);    // Build models one thread
 //  void store_n (const Param&);    // Build models multiple threads
 //  template <class Mask, class CnerIter>
