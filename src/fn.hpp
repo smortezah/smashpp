@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include "def.hpp"
-using std::cerr;
 
 // Print variadic inputs
 template <class Input>

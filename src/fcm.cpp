@@ -9,12 +9,6 @@
 #include "fcm.hpp"
 #include "assert.hpp"
 #include "fn.hpp"
-using std::ifstream;
-using std::fstream;
-using std::cout;
-using std::array;
-using std::initializer_list;
-using std::make_shared;
 
 MMPar::MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
   : k(k_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
@@ -262,6 +256,7 @@ inline void FCM::compress_n (const string& tar) {
       pp.emplace_back(Ms[i].child->alpha, ctxIr[j++],
                       static_cast<u8>(Ms[i].k<<1u));
   }
+  
   while (tf.get(c))
     if (c != '\n') {
       ++symsNo;

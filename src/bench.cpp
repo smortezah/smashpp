@@ -11,16 +11,7 @@
 #include <numeric>
 #include <limits>
 #include <tgmath.h>
-
-using std::string;
-using std::to_string;
-using std::vector;
-using std::array;
-using std::cerr;
-using std::fstream;
-using std::ifstream;
-using std::ofstream;
-using std::istringstream;
+using namespace std;
 using u8  = unsigned char;
 using u16 = unsigned short;
 using u32 = unsigned int;

@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <fstream>
 #include "logtbl8.hpp"
-using std::cerr;
 
 LogTable8::LogTable8 (u8 k_) {
   config(k_);

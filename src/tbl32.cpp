@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <fstream>
 #include "tbl32.hpp"
-using std::cerr;
 
 Table32::Table32 (u8 k_) {
   config(k_);

@@ -7,9 +7,6 @@
 
 #include <vector>
 #include "def.hpp"
-using std::vector;
-using std::ifstream;
-using std::ofstream;
 
 class LogTable8
 {
