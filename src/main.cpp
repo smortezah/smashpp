@@ -45,13 +45,12 @@ int main (int argc, char* argv[])
 //  cerr<<va[0].child->b;
   
   
-  
   try {
     Param p;
     p.parse(argc, argv);
 //    auto* m = new FCM(p);
     auto m = make_shared<FCM>(p);
-    
+
     // Build models  // Start time// Finish time// Elapsed time
     auto t0{now()};  m->store(p);     auto t1{now()};  hms(t1-t0);
     // Compress
