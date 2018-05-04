@@ -10,9 +10,7 @@
 #include <chrono>
 #include <iomanip>      // setw, setprecision
 #include <vector>
-using std::vector;
-using std::string;
-using std::cerr;
+using namespace std;
 
 // Version
 static const string VERSION   {"18.05"};

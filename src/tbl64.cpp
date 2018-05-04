@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <fstream>
 #include "tbl64.hpp"
-using std::cerr;
 
 Table64::Table64 (u8 k_) {
   config(k_);

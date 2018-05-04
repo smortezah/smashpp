@@ -11,8 +11,6 @@
 #include "tbl32.hpp"
 #include "logtbl8.hpp"
 #include "cmls4.hpp"
-using std::shared_ptr;
-using std::vector;
 
 struct STMMPar;
 

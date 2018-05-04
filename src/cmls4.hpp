@@ -6,9 +6,6 @@
 #define SMASHPP_CMLS4_HPP
 
 #include "def.hpp"
-using std::vector;
-using std::ifstream;
-using std::ofstream;
 
 class CMLS4    // Count-min-log sketch, 4 bits per counter
 {

@@ -9,16 +9,6 @@
 #include <vector>
 #include <algorithm>
 #include "def.hpp"
-using std::cerr;
-using std::endl;
-using std::vector;
-using std::string;
-using std::stoi;
-using std::stof;
-using std::ifstream;
-
-#include <stdexcept>
-#include <sstream>
 
 class Param    // Parameters
 {

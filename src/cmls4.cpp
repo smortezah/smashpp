@@ -5,7 +5,6 @@
 #include <random>
 #include <fstream>
 #include "cmls4.hpp"
-using std::cerr;
 
 // W=[e/eps].      0 < eps:   error factor      < 1
 // D=[ln 1/delta]. 0 < delta: error probability < 1
