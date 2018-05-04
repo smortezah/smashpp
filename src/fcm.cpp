@@ -18,7 +18,7 @@ using std::make_shared;
 
 //ModelPar::ModelPar (u8 k_, u8 t_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
 //  : k(k_), thresh(t_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
-//    cner(Container::TABLE_64), mode(Mode::MM), enable(true)/*todo*/ {
+//    cont(Container::TABLE_64), mode(Mode::MM), enable(true)/*todo*/ {
 //}
 //ModelPar::ModelPar (u8 k_, u8 ir_, float a_, float g_)
 //  : ModelPar(k_, 0, 0, 0, ir_, a_, g_) {
@@ -34,7 +34,7 @@ using std::make_shared;
 //todo
 MMPar::MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
   : k(k_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
-    cner(Container::TABLE_64), child(nullptr) {
+    cont(Container::TABLE_64), child(nullptr) {
 }
 MMPar::MMPar (u8 k_, u8 ir_, float a_, float g_)
   : MMPar(k_, 0, 0, ir_, a_, g_) {
@@ -62,15 +62,15 @@ inline void ProbPar::config (char c, u64 ctx, u64 ctxIr) {
 FCM::FCM (const Param& p) {
   aveEnt = 0.0;
   config(p);
-//  alloc_model();
+  alloc_model();
 }
 
 inline void FCM::config (const Param& p) {
   vector<string> mdls;
   split(p.modelsPars.begin(), p.modelsPars.end(), ':', mdls);
-  for (const auto& mp : mdls) {
+  for (const auto& e : mdls) {
     // Markov and tolerant models
-    vector<string> m_tm;    split(mp.begin(), mp.end(), '/', m_tm);
+    vector<string> m_tm;    split(e.begin(), e.end(), '/', m_tm);
     assert_empty_elem(m_tm, "Error: incorrect model parameters.");
     vector<string> m;       split(m_tm[0].begin(), m_tm[0].end(), ',', m);
     if (m.size() == 4)
@@ -103,7 +103,7 @@ inline void FCM::config (const Param& p) {
 //        stof(tm[3])));
     }
   }
-//  set_mode_cner();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
+  set_cont();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
 }
 
 template <class InIter, class Vec>
@@ -117,30 +117,26 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
   }
 }
 
-//inline void FCM::set_mode_cner () {
-//  for (auto& m : models) {
-//    m.mode = (m.thresh!=0) ? Mode::STMM : Mode::MM;
-//    // Container
-//    if      (m.k > K_MAX_LGTBL8)    m.cner = Container::SKETCH_8;
-//    else if (m.k > K_MAX_TBL32)     m.cner = Container::LOG_TABLE_8;
-//    else if (m.k > K_MAX_TBL64)     m.cner = Container::TABLE_32;
-//    else                            m.cner = Container::TABLE_64;
-//  }
-//}
-//
-//inline void FCM::alloc_model () {
-//  for (const auto& m : models)
-//    if (m.mode == Mode::MM) {
-//      if (m.cner == Container::TABLE_64)
-//        tbl64.emplace_back(make_shared<Table64>(m.k));
-//      else if (m.cner == Container::TABLE_32)
-//        tbl32.emplace_back(make_shared<Table32>(m.k));
-//      else if (m.cner == Container::LOG_TABLE_8)
-//        lgtbl8.emplace_back(make_shared<LogTable8>(m.k));
-//      else if (m.cner == Container::SKETCH_8)
-//        cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));
-//    }
-//}
+inline void FCM::set_cont () {
+  for (auto& m : Ms) {
+    if      (m.k > K_MAX_LGTBL8)    m.cont = Container::SKETCH_8;
+    else if (m.k > K_MAX_TBL32)     m.cont = Container::LOG_TABLE_8;
+    else if (m.k > K_MAX_TBL64)     m.cont = Container::TABLE_32;
+    else                            m.cont = Container::TABLE_64;
+  }
+}
+
+inline void FCM::alloc_model () {
+  for (const auto& m : Ms)
+    if (m.cont == Container::TABLE_64)
+      tbl64.emplace_back(make_shared<Table64>(m.k));
+    else if (m.cont == Container::TABLE_32)
+      tbl32.emplace_back(make_shared<Table32>(m.k));
+    else if (m.cont == Container::LOG_TABLE_8)
+      lgtbl8.emplace_back(make_shared<LogTable8>(m.k));
+    else if (m.cont == Container::SKETCH_8)
+      cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));
+}
 
 //void FCM::store (const Param& p) {
 //  if (p.verbose)
@@ -165,13 +161,13 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
 //  for (const auto& m : models)    // Mask: 4<<2k - 1 = 4^(k+1) - 1
 //    if (m.mode == Mode::MM) {
-//      if (m.cner == Container::TABLE_64)
+//      if (m.cont == Container::TABLE_64)
 //        store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);
-//      else if (m.cner == Container::TABLE_32)
+//      else if (m.cont == Container::TABLE_32)
 //        store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32_iter++);
-//      else if (m.cner == Container::LOG_TABLE_8)
+//      else if (m.cont == Container::LOG_TABLE_8)
 //        store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, lgtbl8_iter++);
-//      else if (m.cner == Container::SKETCH_8)
+//      else if (m.cont == Container::SKETCH_8)
 //        store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, cmls4_iter++);
 //      else
 //        cerr << "Error: the models cannot be built.\n";
@@ -185,7 +181,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  vector<std::thread> thrd(vThrSz);
 //  for (u8 i=0; i!=models.size(); ++i) {    // Mask: 4<<2k-1 = 4^(k+1)-1
 //    if (models[i].mode == Mode::MM) {
-//      switch (models[i].cner) {
+//      switch (models[i].cont) {
 //        case Container::TABLE_64:
 //          thrd[i % vThrSz] =
 //            std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>, this,
@@ -231,7 +227,7 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //  if (p.verbose)  cerr << "Compressing the target \"" << p.tar << "\"...\n";
 //  else            cerr << "Compressing...\n";
 //  if (models.size() == 1)  // 1 MM
-//    switch (models[0].cner) {
+//    switch (models[0].cont) {
 //      case Container::TABLE_64:     compress_1(p.tar, tbl64.begin());   break;
 //      case Container::TABLE_32:     compress_1(p.tar, tbl32.begin());   break;
 //      case Container::LOG_TABLE_8:  compress_1(p.tar, lgtbl8.begin());  break;
@@ -301,19 +297,19 @@ inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
 //      auto ppIter = pp.begin();
 //      vector<double> probs;    probs.reserve(models.size());
 //      for (u8 i=0; i!=nMdl; ++i) {
-//        if (models[i].cner == Container::TABLE_64)
+//        if (models[i].cont == Container::TABLE_64)
 //          (models[i].ir == 0)
 //            ? probs.emplace_back(prob(tbl64_iter++, ppIter++))
 //            : probs.emplace_back(probIr(tbl64_iter++, ppIter++));
-////        else if (models[i].cner == Container::TABLE_32)
+////        else if (models[i].cont == Container::TABLE_32)
 ////          (models[i].ir == 0)
 ////            ? probs.emplace_back(prob(tbl32_iter++, ppIter++))
 ////            : probs.emplace_back(probIr(tbl32_iter++, ppIter++));
-////        else if (models[i].cner == Container::LOG_TABLE_8)
+////        else if (models[i].cont == Container::LOG_TABLE_8)
 ////          (models[i].ir == 0)
 ////            ? probs.emplace_back(prob(lgtbl8_iter++, ppIter++))
 ////            : probs.emplace_back(probIr(lgtbl8_iter++, ppIter++));
-////        else if (models[i].cner == Container::SKETCH_8)
+////        else if (models[i].cont == Container::SKETCH_8)
 ////          (models[i].ir == 0)
 ////            ? probs.emplace_back(prob(cmls4_iter++, ppIter++))
 ////            : probs.emplace_back(probIr(cmls4_iter++, ppIter++));
