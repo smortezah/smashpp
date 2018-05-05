@@ -285,11 +285,16 @@ inline void FCM::compress_n (const string& tar) {
         if (mm.cont == Container::TABLE_64) {
           (mm.ir==0) ? probs.emplace_back(prob(tbl64_iter, ppIter))
                      : probs.emplace_back(probIr(tbl64_iter, ppIter));
-          if (mm.child->enabled) {
+          if (mm.child) {
             ++ppIter;
-            (mm.child->ir==0)
-              ? probs.emplace_back(prob_best(tbl64_iter, ppIter))
-              : probs.emplace_back(probIr_best(tbl64_iter, ppIter));
+            if (is_tm_enabled()) {
+              if (mm.child->ir == 0) {
+                probs.emplace_back(prob_best(tbl64_iter, ppIter));
+              }
+              else {
+                probs.emplace_back(probIr_best(tbl64_iter, ppIter));
+              }
+            }
           }
           ++tbl64_iter;
         }
@@ -396,6 +401,10 @@ inline double FCM::probIr (const CnerIter cnerIt, ProbParIter pp) const {
      (*cnerIt)->query(pp->l | 3ull) + (*cnerIt)->query(pp->r)};
   return (c[pp->numSym] + pp->alpha)
          / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
+}
+
+inline bool FCM::is_tm_enabled () {
+
 }
 
 template <class CnerIter, class ProbParIter>
