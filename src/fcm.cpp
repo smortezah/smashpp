@@ -278,7 +278,7 @@ inline void FCM::compress_n (const string& tar) {
       auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
       auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
       auto ppIter = pp.begin();
-      vector<double> probs;    probs.reserve(nMdl);
+      vector<double> probs;    //todo probs.reserve(nMdl);
       for (const auto& mm : Ms) {
         
         
@@ -287,13 +287,16 @@ inline void FCM::compress_n (const string& tar) {
                      : probs.emplace_back(probIr(tbl64_iter, ppIter));
           if (mm.child) {
             ++ppIter;
-            if (is_tm_enabled()) {
+            if (is_tm_enabled(tbl64_iter, ppIter)) {//todo
               if (mm.child->ir == 0) {
                 probs.emplace_back(prob_best(tbl64_iter, ppIter));
               }
               else {
                 probs.emplace_back(probIr_best(tbl64_iter, ppIter));
               }
+            }
+            else {
+              probs.emplace_back(0.0);
             }
           }
           ++tbl64_iter;
@@ -403,8 +406,20 @@ inline double FCM::probIr (const CnerIter cnerIt, ProbParIter pp) const {
          / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
 }
 
-inline bool FCM::is_tm_enabled () {
+template <class CnerIter, class ProbParIter>
+inline bool FCM::is_tm_enabled (CnerIter cnerIt, ProbParIter pp) {
+  const array<decltype((*cnerIt)->query(0)), 4> c
+    {(*cnerIt)->query(pp->l),
+     (*cnerIt)->query(pp->l | 1ull),
+     (*cnerIt)->query(pp->l | 2ull),
+     (*cnerIt)->query(pp->l | 3ull)};
+  
+//  if (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym)
+//  if (*std::max_element(c.begin(),c.end()) == c[pp->numSym])
+//    return true;
+//    cerr << "best\n";
 
+  return false;
 }
 
 template <class CnerIter, class ProbParIter>
