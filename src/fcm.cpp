@@ -191,7 +191,7 @@ inline void FCM::store_impl (const string& ref, Mask mask, CnerIter cnerIt) {
 void FCM::compress (const Param& p) {
   if (p.verbose)  cerr << "Compressing the target \"" << p.tar << "\"...\n";
   else            cerr << "Compressing...\n";
-  if (Ms.size()==1 && TMs.size()==0)  // 1 MM
+  if (Ms.size()==1 && TMs.empty())  // 1 MM
     switch (Ms[0].cont) {
       case Container::TABLE_64:     compress_1(p.tar, tbl64.begin());   break;
       case Container::TABLE_32:     compress_1(p.tar, tbl32.begin());   break;
@@ -277,40 +277,55 @@ inline void FCM::compress_n (const string& tar) {
       auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
       auto ppIter = pp.begin();
       vector<double> probs;    probs.reserve(nMdl);
-      for (u8 i=0; i!=Ms.size(); ++i, ++ppIter, ++tbl64_iter) {
-        if (Ms[i].cont == Container::TABLE_64) {
-          (Ms[i].ir == 0)
-            ? probs.emplace_back(prob(tbl64_iter, ppIter))
-            : probs.emplace_back(probIr(tbl64_iter, ppIter));
-          if (Ms[i].child) {
+      for (const auto& mm : Ms) {
+        if (mm.cont == Container::TABLE_64) {
+          (mm.ir==0) ? probs.emplace_back(prob(tbl64_iter, ppIter))
+                     : probs.emplace_back(probIr(tbl64_iter, ppIter));
+          if (mm.child) {
             ++ppIter;
-            (Ms[i].child->ir==0)
+            (mm.child->ir==0)
               ? probs.emplace_back(prob_best(tbl64_iter, ppIter))
               : probs.emplace_back(probIr_best(tbl64_iter, ppIter));
           }
+          ++tbl64_iter;
         }
+        else if (mm.cont == Container::TABLE_32) {
+          (mm.ir==0) ? probs.emplace_back(prob(tbl32_iter, ppIter))
+                     : probs.emplace_back(probIr(tbl32_iter, ppIter));
+          if (mm.child) {
+            ++ppIter;
+            (mm.child->ir==0)
+              ? probs.emplace_back(prob_best(tbl32_iter, ppIter))
+              : probs.emplace_back(probIr_best(tbl32_iter, ppIter));
+          }
+          ++tbl32_iter;
+        }
+        else if (mm.cont == Container::LOG_TABLE_8) {
+          (mm.ir==0) ? probs.emplace_back(prob(lgtbl8_iter, ppIter))
+                     : probs.emplace_back(probIr(lgtbl8_iter, ppIter));
+          if (mm.child) {
+            ++ppIter;
+            (mm.child->ir==0)
+              ? probs.emplace_back(prob_best(lgtbl8_iter, ppIter))
+              : probs.emplace_back(probIr_best(lgtbl8_iter, ppIter));
+          }
+          ++lgtbl8_iter;
+        }
+        else if (mm.cont == Container::SKETCH_8) {
+          (mm.ir==0) ? probs.emplace_back(prob(cmls4_iter, ppIter))
+                     : probs.emplace_back(probIr(cmls4_iter, ppIter));
+          if (mm.child) {
+            ++ppIter;
+            (mm.child->ir==0)
+              ? probs.emplace_back(prob_best(cmls4_iter, ppIter))
+              : probs.emplace_back(probIr_best(cmls4_iter, ppIter));
+          }
+          ++cmls4_iter;
+        }
+        ++ppIter;
       }
-      
-//      for (u8 i=0; i!=nMdl; ++i) {
-//        if (Ms[i].cont == Container::TABLE_64)
-//          (Ms[i].ir == 0)
-//            ? probs.emplace_back(prob(tbl64_iter++, ppIter++))
-//            : probs.emplace_back(probIr(tbl64_iter++, ppIter++));
-//        else if (models[i].cont == Container::TABLE_32)
-//          (models[i].ir == 0)
-//            ? probs.emplace_back(prob(tbl32_iter++, ppIter++))
-//            : probs.emplace_back(probIr(tbl32_iter++, ppIter++));
-//        else if (models[i].cont == Container::LOG_TABLE_8)
-//          (models[i].ir == 0)
-//            ? probs.emplace_back(prob(lgtbl8_iter++, ppIter++))
-//            : probs.emplace_back(probIr(lgtbl8_iter++, ppIter++));
-//        else if (models[i].cont == Container::SKETCH_8)
-//          (models[i].ir == 0)
-//            ? probs.emplace_back(prob(cmls4_iter++, ppIter++))
-//            : probs.emplace_back(probIr(cmls4_iter++, ppIter++));
-//      }
       sEnt += entropy(w.begin(), probs.begin(), probs.end());
-
+      
       // Update context
       ppIter = pp.begin();
       for (u8 i=0, j=0; i!=Ms.size(); ++i, ++j) {
