@@ -90,7 +90,8 @@ class FCM    // Finite-context models
   template <class CnerIter, class ProbParIter>
   double probIr (CnerIter, ProbParIter) const;  // Prob. IR
   
-  bool is_tm_enabled() /*const*/;
+  template <class CnerIter, class ProbParIter>
+  bool is_tm_enabled(CnerIter, ProbParIter);//todo const
   
   template <class CnerIter, class ProbParIter>
   double prob_best (CnerIter, ProbParIter) const;  // Probability
