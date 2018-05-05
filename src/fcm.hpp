@@ -18,10 +18,10 @@ struct MMPar {
   u8    k;         // Context size
   u64   w;         // Width of count-min-log sketch
   u8    d;         // Depth of count-min-log sketch
-  u8    ir;       // Inverted repeat
+  u8    ir;        // Inverted repeat
   float alpha;
   float gamma;
-  Container cont;      // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  Container cont;  // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
   shared_ptr<STMMPar> child;
   MMPar (u8, u64, u8, u8, float, float);
   MMPar (u8, u8, float, float);
@@ -33,7 +33,8 @@ struct STMMPar {
   u8    ir;
   float alpha;
   float gamma;
-  bool  enable;
+  u8    miss;
+  bool  enabled;
 //  shared_ptr<MMPar> parent; //todo. check if necessary
   STMMPar (u8, u8, u8, float, float);
 };
@@ -64,7 +65,6 @@ class FCM    // Finite-context models
 ////  void report     (const Param&) const;
 
  private:
-///  vector<ModelPar>              models;
   vector<MMPar>                 Ms;     // Markov models
   vector<STMMPar>               TMs;    // Tolerant Markov models
   vector<shared_ptr<Table64>>   tbl64;
@@ -86,9 +86,9 @@ class FCM    // Finite-context models
   void compress_1 (const string&, CnerIter);        // 1 Markov models
   void compress_n (const string&);
   template <class CnerIter, class ProbParIter>
-  double prob    (CnerIter, ProbParIter) const;  // Probability
+  double prob (CnerIter, ProbParIter) const;  // Probability
   template <class CnerIter, class ProbParIter>
-  double probIr  (CnerIter, ProbParIter) const;  // Prob. IR
+  double probIr (CnerIter, ProbParIter) const;  // Prob. IR
   template <class CnerIter, class ProbParIter>
   double prob_best (CnerIter, ProbParIter) const;  // Probability
   template <class CnerIter, class ProbParIter>

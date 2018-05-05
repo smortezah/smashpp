@@ -19,7 +19,7 @@ MMPar::MMPar (u8 k_, u8 ir_, float a_, float g_)
 }
 
 STMMPar::STMMPar (u8 k_, u8 t_, u8 ir_, float a_, float g_)
-  : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), enable(true) {
+  : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), miss(0), enabled(true) {
 }
 
 ProbPar::ProbPar (float a, u64 m, u8 sh)
@@ -240,37 +240,39 @@ inline void FCM::compress_n (const string& tar) {
   const auto nMdl = Ms.size() + TMs.size();
   vector<u64> ctx(nMdl);    // Fill with zeros (resize)
   vector<u64> ctxIr;    ctxIr.reserve(nMdl);
-  for (const auto& m : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
-    ctxIr.emplace_back((1ull<<(m.k<<1))-1);
-    if (m.child)
-      ctxIr.emplace_back((1ull<<(m.k<<1))-1);
+  for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
+    ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+    if (mm.child)
+      ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
   }
   vector<double> w (nMdl, 1.0/nMdl);
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
   vector<ProbPar> pp;    pp.reserve(nMdl);
-  for (u8 i=0, j=0; i!=Ms.size(); ++i) {
-    pp.emplace_back(Ms[i].alpha, ctxIr[j++], static_cast<u8>(Ms[i].k<<1u));
-    if (Ms[i].child)
-      pp.emplace_back(Ms[i].child->alpha, ctxIr[j++],
-                      static_cast<u8>(Ms[i].k<<1u));
-  }
+  {auto maskIter = ctxIr.begin();
+  for (const auto& mm : Ms) {
+    pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+    if (mm.child)
+      pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+  }}
   
   while (tf.get(c))
     if (c != '\n') {
       ++symsNo;
       
       // Config
-      for (u8 i=0, j=0; i!=Ms.size(); ++i, ++j) {
-        (Ms[i].ir==0) ? pp[j].config(c, ctx[j])
-                      : pp[j].config(c, ctx[j], ctxIr[j]);
-        if (Ms[i].child) {
-          ++j;
-          (Ms[i].child->ir==0) ? pp[j].config(c, ctx[j])
-                               : pp[j].config(c, ctx[j], ctxIr[j]);
+      {u8 mIdx = 0;
+      for (const auto& mm : Ms) {
+        (mm.ir==0) ? pp[mIdx].config(c, ctx[mIdx])
+                   : pp[mIdx].config(c, ctx[mIdx], ctxIr[mIdx]);
+        if (mm.child) {
+          ++mIdx;
+          (mm.child->ir==0) ? pp[mIdx].config(c, ctx[mIdx])
+                            : pp[mIdx].config(c, ctx[mIdx], ctxIr[mIdx]);
         }
-      }
+        ++mIdx;
+      }}
       
       // Entropy
       auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
@@ -278,10 +280,12 @@ inline void FCM::compress_n (const string& tar) {
       auto ppIter = pp.begin();
       vector<double> probs;    probs.reserve(nMdl);
       for (const auto& mm : Ms) {
+        
+        
         if (mm.cont == Container::TABLE_64) {
           (mm.ir==0) ? probs.emplace_back(prob(tbl64_iter, ppIter))
                      : probs.emplace_back(probIr(tbl64_iter, ppIter));
-          if (mm.child) {
+          if (mm.child->enabled) {
             ++ppIter;
             (mm.child->ir==0)
               ? probs.emplace_back(prob_best(tbl64_iter, ppIter))
@@ -289,54 +293,70 @@ inline void FCM::compress_n (const string& tar) {
           }
           ++tbl64_iter;
         }
-        else if (mm.cont == Container::TABLE_32) {
-          (mm.ir==0) ? probs.emplace_back(prob(tbl32_iter, ppIter))
-                     : probs.emplace_back(probIr(tbl32_iter, ppIter));
-          if (mm.child) {
-            ++ppIter;
-            (mm.child->ir==0)
-              ? probs.emplace_back(prob_best(tbl32_iter, ppIter))
-              : probs.emplace_back(probIr_best(tbl32_iter, ppIter));
-          }
-          ++tbl32_iter;
-        }
-        else if (mm.cont == Container::LOG_TABLE_8) {
-          (mm.ir==0) ? probs.emplace_back(prob(lgtbl8_iter, ppIter))
-                     : probs.emplace_back(probIr(lgtbl8_iter, ppIter));
-          if (mm.child) {
-            ++ppIter;
-            (mm.child->ir==0)
-              ? probs.emplace_back(prob_best(lgtbl8_iter, ppIter))
-              : probs.emplace_back(probIr_best(lgtbl8_iter, ppIter));
-          }
-          ++lgtbl8_iter;
-        }
-        else if (mm.cont == Container::SKETCH_8) {
-          (mm.ir==0) ? probs.emplace_back(prob(cmls4_iter, ppIter))
-                     : probs.emplace_back(probIr(cmls4_iter, ppIter));
-          if (mm.child) {
-            ++ppIter;
-            (mm.child->ir==0)
-              ? probs.emplace_back(prob_best(cmls4_iter, ppIter))
-              : probs.emplace_back(probIr_best(cmls4_iter, ppIter));
-          }
-          ++cmls4_iter;
-        }
+        
+        
+        
+//        if (mm.cont == Container::TABLE_64) {
+//          (mm.ir==0) ? probs.emplace_back(prob(tbl64_iter, ppIter))
+//                     : probs.emplace_back(probIr(tbl64_iter, ppIter));
+//          if (mm.child) {
+//            ++ppIter;
+//            (mm.child->ir==0)
+//              ? probs.emplace_back(prob_best(tbl64_iter, ppIter))
+//              : probs.emplace_back(probIr_best(tbl64_iter, ppIter));
+//          }
+//          ++tbl64_iter;
+//        }
+//        else if (mm.cont == Container::TABLE_32) {
+//          (mm.ir==0) ? probs.emplace_back(prob(tbl32_iter, ppIter))
+//                     : probs.emplace_back(probIr(tbl32_iter, ppIter));
+//          if (mm.child) {
+//            ++ppIter;
+//            (mm.child->ir==0)
+//              ? probs.emplace_back(prob_best(tbl32_iter, ppIter))
+//              : probs.emplace_back(probIr_best(tbl32_iter, ppIter));
+//          }
+//          ++tbl32_iter;
+//        }
+//        else if (mm.cont == Container::LOG_TABLE_8) {
+//          (mm.ir==0) ? probs.emplace_back(prob(lgtbl8_iter, ppIter))
+//                     : probs.emplace_back(probIr(lgtbl8_iter, ppIter));
+//          if (mm.child) {
+//            ++ppIter;
+//            (mm.child->ir==0)
+//              ? probs.emplace_back(prob_best(lgtbl8_iter, ppIter))
+//              : probs.emplace_back(probIr_best(lgtbl8_iter, ppIter));
+//          }
+//          ++lgtbl8_iter;
+//        }
+//        else if (mm.cont == Container::SKETCH_8) {
+//          (mm.ir==0) ? probs.emplace_back(prob(cmls4_iter, ppIter))
+//                     : probs.emplace_back(probIr(cmls4_iter, ppIter));
+//          if (mm.child) {
+//            ++ppIter;
+//            (mm.child->ir==0)
+//              ? probs.emplace_back(prob_best(cmls4_iter, ppIter))
+//              : probs.emplace_back(probIr_best(cmls4_iter, ppIter));
+//          }
+//          ++cmls4_iter;
+//        }
         ++ppIter;
       }
       sEnt += entropy(w.begin(), probs.begin(), probs.end());
       
       // Update context
       ppIter = pp.begin();
-      for (u8 i=0, j=0; i!=Ms.size(); ++i, ++j) {
-        (Ms[i].ir==0) ? update_ctx(ctx[j], ppIter++)
-                      : update_ctx(ctx[j], ctxIr[j], ppIter++);
-        if (Ms[i].child) {
-          ++j;
-          (Ms[i].child->ir==0) ? update_ctx(ctx[j], ppIter++)
-                               : update_ctx(ctx[j], ctxIr[j], ppIter++);
+      {u8 mIdx = 0;
+      for (const auto& mm : Ms) {
+        (mm.ir==0) ? update_ctx(ctx[mIdx], ppIter++)
+                   : update_ctx(ctx[mIdx], ctxIr[mIdx], ppIter++);
+        if (mm.child) {
+          ++mIdx;
+          (mm.child->ir==0) ? update_ctx(ctx[mIdx], ppIter++)
+                            : update_ctx(ctx[mIdx], ctxIr[mIdx], ppIter++);
         }
-      }
+        ++mIdx;
+      }}
     }
   tf.close();
   aveEnt = sEnt/symsNo;
