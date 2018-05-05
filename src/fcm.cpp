@@ -257,6 +257,7 @@ inline void FCM::compress_n (const string& tar) {
       pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
   }}
   
+  int nbest=0;//todo
   while (tf.get(c))
     if (c != '\n') {
       ++symsNo;
@@ -275,8 +276,9 @@ inline void FCM::compress_n (const string& tar) {
       }}
       
       // Entropy
-      auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
-      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
+      auto tbl64_iter=tbl64.begin();
+//    auto tbl32_iter=tbl32.begin();
+//      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
       auto ppIter = pp.begin();
       vector<double> probs;    //todo probs.reserve(nMdl);
       for (const auto& mm : Ms) {
@@ -288,12 +290,13 @@ inline void FCM::compress_n (const string& tar) {
           if (mm.child) {
             ++ppIter;
             if (is_tm_enabled(tbl64_iter, ppIter)) {//todo
-              if (mm.child->ir == 0) {
+              ++nbest;//todo
+//              if (mm.child->ir == 0) {
                 probs.emplace_back(prob_best(tbl64_iter, ppIter));
-              }
-              else {
-                probs.emplace_back(probIr_best(tbl64_iter, ppIter));
-              }
+//              }
+//              else {
+//                probs.emplace_back(probIr_best(tbl64_iter, ppIter));
+//              }
             }
             else {
               probs.emplace_back(0.0);
@@ -366,6 +369,7 @@ inline void FCM::compress_n (const string& tar) {
         ++mIdx;
       }}
     }
+    cerr<<nbest;//todo
   tf.close();
   aveEnt = sEnt/symsNo;
 }
@@ -414,11 +418,9 @@ inline bool FCM::is_tm_enabled (CnerIter cnerIt, ProbParIter pp) {
      (*cnerIt)->query(pp->l | 2ull),
      (*cnerIt)->query(pp->l | 3ull)};
   
-//  if (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym)
 //  if (*std::max_element(c.begin(),c.end()) == c[pp->numSym])
-//    return true;
-//    cerr << "best\n";
-
+//  return (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym);
+//  return true;
   return false;
 }
 
@@ -450,7 +452,9 @@ inline double FCM::entropy (double P) const {
 
 template <class OutIter, class InIter>
 inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
+  print(*wFirst,*(wFirst+1));//todo
   update_weights(wFirst, PFirst, PLast);
+  print(*wFirst,*(wFirst+1));//todo
   // log2 1 / (P0*w0 + P1*w1 + ...)
   return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
