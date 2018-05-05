@@ -419,9 +419,9 @@ inline bool FCM::is_tm_enabled (CnerIter cnerIt, ProbParIter pp) {
      (*cnerIt)->query(pp->l | 3ull)};
   
 //  if (*std::max_element(c.begin(),c.end()) == c[pp->numSym])
-//  return (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym);
+  return (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym);
 //  return true;
-  return false;
+//  return false;
 }
 
 template <class CnerIter, class ProbParIter>
@@ -465,7 +465,7 @@ const {
   vector<double> rawW;    rawW.reserve(Ms.size()+TMs.size());
   for (auto mIt=Ms.begin(), wFst=wFirst; PFirst!=PLast; ++mIt) {
     rawW.emplace_back(pow(*wFst++, mIt->gamma) * *PFirst++);
-    if (mIt->child)
+    if (mIt->child)//todo check enabled
       rawW.emplace_back(pow(*wFst++, mIt->child->gamma) * *PFirst++);
   }
   normalize(wFirst, rawW.begin(), rawW.end());
