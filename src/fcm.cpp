@@ -452,9 +452,9 @@ inline double FCM::entropy (double P) const {
 
 template <class OutIter, class InIter>
 inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
-  print(*wFirst,*(wFirst+1));//todo
+  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
   update_weights(wFirst, PFirst, PLast);
-  print(*wFirst,*(wFirst+1));//todo
+  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
   // log2 1 / (P0*w0 + P1*w1 + ...)
   return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
@@ -462,19 +462,21 @@ inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
 template <class OutIter, class InIter>
 inline void FCM::update_weights (OutIter wFirst, InIter PFirst, InIter PLast)
 const {
-  vector<double> rawW;    rawW.reserve(Ms.size()+TMs.size());
-  for (auto mIt=Ms.begin(), wFst=wFirst; PFirst!=PLast; ++mIt) {
-    rawW.emplace_back(pow(*wFst++, mIt->gamma) * *PFirst++);
-    if (mIt->child)//todo check enabled
-      rawW.emplace_back(pow(*wFst++, mIt->child->gamma) * *PFirst++);
+  const auto wFirstKeep = wFirst;
+  for (auto mIter=Ms.begin(); PFirst!=PLast; ++mIter, ++wFirst, ++PFirst) {
+    *wFirst = pow(*wFirst, mIter->gamma) * *PFirst;
+    if (mIter->child) {//todo check enabled
+      ++wFirst;  ++PFirst;
+      *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
+    }
   }
-  normalize(wFirst, rawW.begin(), rawW.end());
+  normalize(wFirstKeep, wFirst);
 }
 
-template <class OutIter, class InIter>
-inline void FCM::normalize (OutIter oFirst, InIter iFirst, InIter iLast) const {
-  for (const double sum=std::accumulate(iFirst, iLast, 0.0); iFirst != iLast;)
-    *oFirst++ = *iFirst++ / sum;
+template <class Iter>
+inline void FCM::normalize (Iter first, Iter last) const {
+  for (const double sum=std::accumulate(first,last,0.0); first!=last; ++first)
+    *first /= sum;    // *first = *first / sum;
 }
 
 template <class ProbParIter>
