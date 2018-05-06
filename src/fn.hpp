@@ -9,11 +9,11 @@
 #include "def.hpp"
 
 // Print variadic inputs
-template <class Input>
+template <typename Input>
 void print (Input&& in) /*noexcept*/ {
   cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\n';
 }
-template <class Input, class... Args>
+template <typename Input, typename... Args>
 void print (Input&& in, Args&&... args) /*noexcept*/ {
   cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\t';
   print(args...);
@@ -25,7 +25,7 @@ noexcept {
   return std::chrono::high_resolution_clock::now();
 }
 
-template <class Time>
+template <typename Time>
 constexpr void hms (Time elapsed) {
 //  std::chrono::duration<double, std::milli> ms = elapsed;
   const auto durSec =
