@@ -28,6 +28,7 @@ u64 LogTable8::query (u32 ctx) const {
   return POW2[tbl[ctx]] - 1;
 }
 
+#ifdef DEBUG
 u64 LogTable8::getTotal () const {
   return tot;
 }
@@ -39,6 +40,7 @@ u64 LogTable8::countMty () const {
 u32 LogTable8::maxTblVal () const {
   return *std::max_element(tbl.begin(), tbl.end());
 }
+#endif
 
 void LogTable8::dump (ofstream& ofs) const {
   ofs.write((const char*) &tbl[0], tbl.size());
@@ -49,6 +51,7 @@ void LogTable8::load (ifstream& ifs) const {
   ifs.read((char*) &tbl[0], tbl.size());
 }
 
+#ifdef DEBUG
 void LogTable8::print () const {
   constexpr u8 context_width {12};
   cerr.width(context_width);  cerr<<std::left<<"Context";
@@ -60,3 +63,4 @@ void LogTable8::print () const {
     cerr << static_cast<u16>(c) << '\n';
   }
 }
+#endif

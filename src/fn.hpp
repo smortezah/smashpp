@@ -8,16 +8,23 @@
 #include <iostream>
 #include "def.hpp"
 
-// Print variadic inputs
 template <typename Input>
-void print (Input&& in) /*noexcept*/ {
-  cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\n';
+bool is_u8 (Input&& in) {
+  return typeid(in)==typeid(u8);
 }
-template <typename Input, typename... Args>
-void print (Input&& in, Args&&... args) /*noexcept*/ {
-  cerr << (typeid(in)==typeid(u8) ? static_cast<u32>(in) : in) << '\t';
+
+#ifdef DEBUG
+// Print variadic inputs
+template <typename Integral>
+void print (Integral&& in) /*noexcept*/ {
+  cerr << (is_u8(in) ? static_cast<u32>(in) : in) << '\n';
+}
+template <typename Integral, typename... Args>
+void print (Integral&& in, Args&&... args) /*noexcept*/ {
+  cerr << (is_u8(in) ? static_cast<u32>(in) : in) << '\t';
   print(args...);
 }
+#endif
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
 inline std::chrono::time_point<std::chrono::high_resolution_clock> now ()
@@ -26,7 +33,7 @@ noexcept {
 }
 
 template <typename Time>
-constexpr void hms (Time elapsed) {
+void hms (Time elapsed) {
 //  std::chrono::duration<double, std::milli> ms = elapsed;
   const auto durSec =
     std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();

@@ -2,6 +2,9 @@
 // Created by morteza on 02-02-2018.
 //
 
+#define DEBUG 1  //todo. remove finally
+
+
 #ifndef SMASHPP_DEF_HPP
 #define SMASHPP_DEF_HPP
 
