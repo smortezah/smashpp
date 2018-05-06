@@ -75,7 +75,7 @@ inline void FCM::config (const Param& p) {
   set_cont();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
 }
 
-template <class InIter, class Vec>
+template <typename InIter, typename Vec>
 inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
   while (true) {
     InIter found = std::find(first, last, delim);
@@ -177,7 +177,7 @@ inline void FCM::store_n (const Param& p) {
   for (auto& t : thrd)  if (t.joinable()) t.join();  // Join leftover threads
 }
 
-template <class Mask, class CnerIter /*Container iterator*/>
+template <typename Mask, typename CnerIter /*Container iterator*/>
 inline void FCM::store_impl (const string& ref, Mask mask, CnerIter cnerIt) {
   ifstream rf(ref);  char c;
   for (Mask ctx=0; rf.get(c);)
@@ -203,7 +203,7 @@ void FCM::compress (const Param& p) {
   cerr << "Finished";
 }
 
-template <class CnerIter>
+template <typename CnerIter>
 inline void FCM::compress_1 (const string& tar, CnerIter cnerIt) {
   // Ctx, Mir (int) sliding through the dataset
   u64 ctx{0}, ctxIr{(1ull<<(Ms[0].k<<1u))-1};
@@ -388,7 +388,7 @@ inline void FCM::compress_n (const string& tar) {
 //  f.close();  // Actually done, automatically
 //}
 
-template <class CnerIter, class ProbParIter>
+template <typename CnerIter, typename ProbParIter>
 inline double FCM::prob (CnerIter cnerIt, ProbParIter pp) const {
   const array<decltype((*cnerIt)->query(0)), 4> c
     {(*cnerIt)->query(pp->l),
@@ -399,7 +399,7 @@ inline double FCM::prob (CnerIter cnerIt, ProbParIter pp) const {
          / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
 }
 
-template <class CnerIter, class ProbParIter>
+template <typename CnerIter, typename ProbParIter>
 inline double FCM::probIr (const CnerIter cnerIt, ProbParIter pp) const {
   const array<decltype((*cnerIt)->query(0)+(*cnerIt)->query(0)), 4> c
     {(*cnerIt)->query(pp->l)        + (*cnerIt)->query((3ull<<pp->shl) | pp->r),
@@ -410,7 +410,7 @@ inline double FCM::probIr (const CnerIter cnerIt, ProbParIter pp) const {
          / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
 }
 
-template <class CnerIter, class ProbParIter>
+template <typename CnerIter, typename ProbParIter>
 inline bool FCM::is_tm_enabled (CnerIter cnerIt, ProbParIter pp) {
   const array<decltype((*cnerIt)->query(0)), 4> c
     {(*cnerIt)->query(pp->l),
@@ -424,7 +424,7 @@ inline bool FCM::is_tm_enabled (CnerIter cnerIt, ProbParIter pp) {
 //  return false;
 }
 
-template <class CnerIter, class ProbParIter>
+template <typename CnerIter, typename ProbParIter>
 inline double FCM::prob_best (CnerIter cnerIt, ProbParIter pp) const {
   const array<decltype((*cnerIt)->query(0)), 4> c
     {(*cnerIt)->query(pp->l),
@@ -435,7 +435,7 @@ inline double FCM::prob_best (CnerIter cnerIt, ProbParIter pp) const {
          / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
 }
 
-template <class CnerIter, class ProbParIter>
+template <typename CnerIter, typename ProbParIter>
 inline double FCM::probIr_best (const CnerIter cnerIt, ProbParIter pp) const {
   const array<decltype((*cnerIt)->query(0)+(*cnerIt)->query(0)), 4> c
     {(*cnerIt)->query(pp->l)        + (*cnerIt)->query((3ull<<pp->shl) | pp->r),
@@ -450,7 +450,7 @@ inline double FCM::entropy (double P) const {
   return -log2(P);
 }
 
-template <class OutIter, class InIter>
+template <typename OutIter, typename InIter>
 inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
   print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
   update_weights(wFirst, PFirst, PLast);
@@ -459,7 +459,7 @@ inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
   return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
 
-template <class OutIter, class InIter>
+template <typename OutIter, typename InIter>
 inline void FCM::update_weights (OutIter wFirst, InIter PFirst, InIter PLast)
 const {
   const auto wFirstKeep = wFirst;
@@ -473,18 +473,18 @@ const {
   normalize(wFirstKeep, wFirst);
 }
 
-template <class Iter>
+template <typename Iter>
 inline void FCM::normalize (Iter first, Iter last) const {
   for (const double sum=std::accumulate(first,last,0.0); first!=last; ++first)
     *first /= sum;    // *first = *first / sum;
 }
 
-template <class ProbParIter>
+template <typename ProbParIter>
 inline void FCM::update_ctx (u64& ctx, ProbParIter pp) const {
   ctx = (pp->l & pp->mask) | pp->numSym;
 }
 
-template <class ProbParIter>
+template <typename ProbParIter>
 inline void FCM::update_ctx (u64& ctx, u64& ctxIr, ProbParIter pp) const {
   ctx   = (pp->l & pp->mask) | pp->numSym;
   ctxIr = (pp->revNumSym<<pp->shl) | pp->r;

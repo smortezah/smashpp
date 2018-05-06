@@ -73,42 +73,42 @@ class FCM    // Finite-context models
   vector<shared_ptr<CMLS4>>     cmls4;
   
   void config (const Param&); // Set models parameters
-  template <class InIter, class Vec>  //Split by dlim
+  template <typename InIter, typename Vec>  //Split by dlim
   void split (InIter, InIter, char, Vec&) const;
   void set_cont ();
   void alloc_model ();            // Allocate memory to models
   void store_1 (const Param&);    // Build models one thread
   void store_n (const Param&);    // Build models multiple threads
-  template <class Mask, class CnerIter>
+  template <typename Mask, typename CnerIter>
   void store_impl (const string&, Mask, CnerIter);  // Fill data structure
   // Compress data structure
-  template <class CnerIter>
+  template <typename CnerIter>
   void compress_1 (const string&, CnerIter);        // 1 Markov models
   void compress_n (const string&);
-  template <class CnerIter, class ProbParIter>
+  template <typename CnerIter, typename ProbParIter>
   double prob (CnerIter, ProbParIter) const;  // Probability
-  template <class CnerIter, class ProbParIter>
+  template <typename CnerIter, typename ProbParIter>
   double probIr (CnerIter, ProbParIter) const;  // Prob. IR
   
-  template <class CnerIter, class ProbParIter>
+  template <typename CnerIter, typename ProbParIter>
   bool is_tm_enabled(CnerIter, ProbParIter);//todo const
   
-  template <class CnerIter, class ProbParIter>
+  template <typename CnerIter, typename ProbParIter>
   double prob_best (CnerIter, ProbParIter) const;  // Probability
-  template <class CnerIter, class ProbParIter>
+  template <typename CnerIter, typename ProbParIter>
   double probIr_best (CnerIter, ProbParIter) const;  // Prob. IR
   
   
   double entropy (double) const;
-  template <class OutIter, class InIter>
+  template <typename OutIter, typename InIter>
   double entropy (OutIter, InIter, InIter) const;
-  template <class OutIter, class InIter>
+  template <typename OutIter, typename InIter>
   void update_weights (OutIter, InIter, InIter) const;
-  template <class Iter>
+  template <typename Iter>
   void normalize (Iter, Iter) const;
-  template <class ProbParIter>
+  template <typename ProbParIter>
   void update_ctx (u64&, ProbParIter) const;
-  template <class ProbParIter>
+  template <typename ProbParIter>
   void update_ctx (u64&, u64&, ProbParIter) const;
 };
 
