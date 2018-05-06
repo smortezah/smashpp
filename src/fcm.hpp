@@ -104,8 +104,8 @@ class FCM    // Finite-context models
   double entropy (OutIter, InIter, InIter) const;
   template <class OutIter, class InIter>
   void update_weights (OutIter, InIter, InIter) const;
-  template <class OutIter, class InIter>
-  void normalize (OutIter, InIter, InIter) const;
+  template <class Iter>
+  void normalize (Iter, Iter) const;
   template <class ProbParIter>
   void update_ctx (u64&, ProbParIter) const;
   template <class ProbParIter>
