@@ -28,6 +28,7 @@ u64 Table64::query (u32 ctx) const {
   return tbl[ctx];
 }
 
+#ifdef DEBUG
 u64 Table64::getTotal () const {
   return tot;
 }
@@ -39,6 +40,7 @@ u64 Table64::countMty () const {
 u64 Table64::maxTblVal () const {
   return *std::max_element(tbl.begin(), tbl.end());
 }
+#endif
 
 void Table64::dump (ofstream& ofs) const {
   ofs.write((const char*) &tbl[0], tbl.size());
@@ -49,6 +51,7 @@ void Table64::load (ifstream& ifs) const {
   ifs.read((char*) &tbl[0], tbl.size());
 }
 
+#ifdef DEBUG
 void Table64::print () const {
   constexpr u8 context_width {12};
   cerr.width(context_width);  cerr<<std::left<<"Context";
@@ -60,3 +63,4 @@ void Table64::print () const {
     cerr << c << '\n';
   }
 }
+#endif

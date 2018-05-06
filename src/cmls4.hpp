@@ -15,12 +15,16 @@ class CMLS4    // Count-min-log sketch, 4 bits per counter
   void config   (u64, u8);
   void update   (u64);              // Update sketch
   u16  query    (u64)        const; // Query count of ctx
+#ifdef DEBUG
   u64  getTotal ()           const; // Total count of all items in the sketch
   u64  countMty ()           const; // Number of empty cells in the sketch
   u8   maxSkVal ()           const;
+#endif
 	void dump     (ofstream&)  const;
 	void load     (ifstream&)  const;
+#ifdef DEBUG
   void print    ()           const;
+#endif
   
  private:
   u64         w;                    // Width of sketch
@@ -32,7 +36,9 @@ class CMLS4    // Count-min-log sketch, 4 bits per counter
   
   u8   readCell  (u64)       const; // Read each cell of the sketch
   void setAB     ();                // Set coeffs a, b of hash fns (a*x+b) %P %w
+#ifdef DEBUG
 	void printAB   ()          const;
+#endif
   u64  hash      (u8, u64)   const; // MUST provide pairwise independence
   u8   minLogCtr (u64)       const; // Find min log value in the sketch
 };

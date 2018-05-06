@@ -68,6 +68,7 @@ u16 CMLS4::query (u64 ctx) const {
   return FREQ2[minLogCtr(ctx)];  //todo. base 2. otherwise (b^c-1)/(b-1)
 }
 
+#ifdef DEBUG
 u64 CMLS4::getTotal () const {
   return tot;
 }
@@ -87,6 +88,7 @@ u8 CMLS4::maxSkVal () const {
       c = readCell(i);
 	return c;
 }
+#endif
 
 void CMLS4::dump (ofstream& ofs) const {
 	ofs.write((const char*) &sk[0], sk.size());
@@ -97,6 +99,7 @@ void CMLS4::load (ifstream& ifs) const {
 	ifs.read((char*) &sk[0], sk.size());
 }
 
+#ifdef DEBUG
 void CMLS4::print () const {
   constexpr u8 cell_width {3};
   for (u8 i=0; i!=d; i++) {
@@ -123,3 +126,4 @@ inline void CMLS4::printAB () const {
       cerr << '\n';
   }
 }
+#endif

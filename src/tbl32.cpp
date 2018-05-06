@@ -37,6 +37,7 @@ u32 Table32::query (u32 ctx) const {
   return tbl[ctx];
 }
 
+#ifdef DEBUG
 u64 Table32::getTotal () const {
   return tot;
 }
@@ -48,6 +49,7 @@ u64 Table32::countMty () const {
 u32 Table32::maxTblVal () const {
   return *std::max_element(tbl.begin(), tbl.end());
 }
+#endif
 
 void Table32::dump (ofstream& ofs) const {
   ofs.write((const char*) &tbl[0], tbl.size());
@@ -58,6 +60,7 @@ void Table32::load (ifstream& ifs) const {
   ifs.read((char*) &tbl[0], tbl.size());
 }
 
+#ifdef DEBUG
 void Table32::print () const {
   constexpr u8 context_width {12};
   cerr.width(context_width);  cerr<<std::left<<"Context";
@@ -69,3 +72,4 @@ void Table32::print () const {
     cerr << c << '\n';
   }
 }
+#endif

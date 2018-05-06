@@ -16,12 +16,16 @@ public:
   void config      (u8);
   void update      (u32);               // Update table
   u64  query       (u32)       const;   // Query count of ctx
+#ifdef DEBUG
   u64  getTotal    ()          const;   // Total count of all items in the table
   u64  countMty    ()          const;   // Number of empty cells in the table
   u64  maxTblVal   ()          const;
+#endif
   void dump        (ofstream&) const;
   void load        (ifstream&) const;
+#ifdef DEBUG
   void print       ()          const;
+#endif
   
 private:
   vector<u64> tbl;                      // Table of 64 bit counters
