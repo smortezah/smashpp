@@ -369,7 +369,7 @@ inline void FCM::compress_n (const string& tar) {
         ++mIdx;
       }}
     }
-    cerr<<nbest;//todo
+  cerr<<nbest;//todo
   tf.close();
   aveEnt = sEnt/symsNo;
 }
@@ -421,7 +421,7 @@ inline bool FCM::is_tm_enabled (CnerIter cnerIt, ProbParIter pp) {
 //  if (*std::max_element(c.begin(),c.end()) == c[pp->numSym])
   return (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym);
 //  return true;
-//  return false;
+  return false;
 }
 
 template <typename CnerIter, typename ProbParIter>
@@ -455,6 +455,7 @@ inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
   print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
   update_weights(wFirst, PFirst, PLast);
   print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
+  cerr<<'\n';//todo
   // log2 1 / (P0*w0 + P1*w1 + ...)
   return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
