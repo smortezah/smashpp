@@ -25,6 +25,12 @@ STMMPar::STMMPar (u8 k_, u8 t_, u8 ir_, float a_, float g_)
 ProbPar::ProbPar (float a, u64 m, u8 sh)
   : alpha(a), sAlpha(static_cast<double>(CARDINALITY*alpha)), mask(m), shl(sh) {
 }
+inline void ProbPar::config (u64 ctx) {//todo
+  l = ctx<<2u;
+}
+inline void ProbPar::config (u8 nsym) {//todo
+  numSym = nsym;
+}
 inline void ProbPar::config (char c, u64 ctx) {
   numSym = NUM[static_cast<u8>(c)];
   l      = ctx<<2u;
@@ -177,13 +183,13 @@ inline void FCM::store_n (const Param& p) {
   for (auto& t : thrd)  if (t.joinable()) t.join();  // Join leftover threads
 }
 
-template <typename Mask, typename CnerIter /*Container iterator*/>
-inline void FCM::store_impl (const string& ref, Mask mask, CnerIter cnerIt) {
+template <typename Mask, typename ContIter /*Container iterator*/>
+inline void FCM::store_impl (const string& ref, Mask mask, ContIter contIt) {
   ifstream rf(ref);  char c;
   for (Mask ctx=0; rf.get(c);)
     if (c != '\n') {
       ctx = ((ctx<<2u) & mask) | NUM[static_cast<u8>(c)];
-      (*cnerIt)->update(ctx);
+      (*contIt)->update(ctx);
     }
   rf.close();
 }
@@ -203,8 +209,8 @@ void FCM::compress (const Param& p) {
   cerr << "Finished";
 }
 
-template <typename CnerIter>
-inline void FCM::compress_1 (const string& tar, CnerIter cnerIt) {
+template <typename ContIter>
+inline void FCM::compress_1 (const string& tar, ContIter contIt) {
   // Ctx, Mir (int) sliding through the dataset
   u64 ctx{0}, ctxIr{(1ull<<(Ms[0].k<<1u))-1};
   u64 symsNo{0};                // No. syms in target file, except \n
@@ -218,7 +224,7 @@ inline void FCM::compress_1 (const string& tar, CnerIter cnerIt) {
       if (c != '\n') {
         ++symsNo;
         pp.config(c, ctx);
-        sEnt += entropy(prob(cnerIt, &pp));
+        sEnt += entropy(prob(contIt, &pp));
         update_ctx(ctx, &pp);
       }
   }
@@ -227,7 +233,7 @@ inline void FCM::compress_1 (const string& tar, CnerIter cnerIt) {
       if (c != '\n') {
         ++symsNo;
         pp.config(c, ctx, ctxIr);
-        sEnt += entropy(probIr(cnerIt, &pp));
+        sEnt += entropy(probIr(contIt, &pp));
         update_ctx(ctx, ctxIr, &pp);    // Update ctx & ctxIr
       }
   }
@@ -269,8 +275,18 @@ inline void FCM::compress_n (const string& tar) {
                    : pp[mIdx].config(c, ctx[mIdx], ctxIr[mIdx]);
         if (mm.child) {
           ++mIdx;
-          (mm.child->ir==0) ? pp[mIdx].config(c, ctx[mIdx])
-                            : pp[mIdx].config(c, ctx[mIdx], ctxIr[mIdx]);
+//          (mm.child->ir==0) ? pp[mIdx].config(c, ctx[mIdx])
+//                            : pp[mIdx].config(c, ctx[mIdx], ctxIr[mIdx]);
+          pp[mIdx].config(ctx[mIdx]);
+          auto tbl64_iter=tbl64.begin();//todo. add the rest
+          if (mm.cont == Container::TABLE_64) {
+//            (mm.child->ir==0)
+//              ?
+            pp[mIdx].config(best_sym(tbl64_iter, pp[mIdx].l)) ;
+//              : pp[mIdx].config(c, ctx[mIdx], ctxIr[mIdx]);
+            ++tbl64_iter;
+          }
+          //...
         }
         ++mIdx;
       }}
@@ -292,7 +308,8 @@ inline void FCM::compress_n (const string& tar) {
             if (is_tm_enabled(tbl64_iter, ppIter)) {//todo
               ++nbest;//todo
 //              if (mm.child->ir == 0) {
-                probs.emplace_back(prob_best(tbl64_iter, ppIter));
+                probs.emplace_back(prob(tbl64_iter, ppIter));
+//              probs.emplace_back(prob_best(tbl64_iter, ppIter));
 //              }
 //              else {
 //                probs.emplace_back(probIr_best(tbl64_iter, ppIter));
@@ -388,63 +405,65 @@ inline void FCM::compress_n (const string& tar) {
 //  f.close();  // Actually done, automatically
 //}
 
-template <typename CnerIter, typename ProbParIter>
-inline double FCM::prob (CnerIter cnerIt, ProbParIter pp) const {
-  const array<decltype((*cnerIt)->query(0)), 4> c
-    {(*cnerIt)->query(pp->l),
-     (*cnerIt)->query(pp->l | 1ull),
-     (*cnerIt)->query(pp->l | 2ull),
-     (*cnerIt)->query(pp->l | 3ull)};
+template <typename ContIter, typename ProbParIter>
+inline double FCM::prob (ContIter contIt, ProbParIter pp) const {
+  const array<decltype((*contIt)->query(0)), 4> c
+    {(*contIt)->query(pp->l),
+     (*contIt)->query(pp->l | 1ull),
+     (*contIt)->query(pp->l | 2ull),
+     (*contIt)->query(pp->l | 3ull)};
   return (c[pp->numSym] + pp->alpha)
          / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
 }
 
-template <typename CnerIter, typename ProbParIter>
-inline double FCM::probIr (const CnerIter cnerIt, ProbParIter pp) const {
-  const array<decltype((*cnerIt)->query(0)+(*cnerIt)->query(0)), 4> c
-    {(*cnerIt)->query(pp->l)        + (*cnerIt)->query((3ull<<pp->shl) | pp->r),
-     (*cnerIt)->query(pp->l | 1ull) + (*cnerIt)->query((2ull<<pp->shl) | pp->r),
-     (*cnerIt)->query(pp->l | 2ull) + (*cnerIt)->query((1ull<<pp->shl) | pp->r),
-     (*cnerIt)->query(pp->l | 3ull) + (*cnerIt)->query(pp->r)};
+template <typename ContIter, typename ProbParIter>
+inline double FCM::probIr (const ContIter contIt, ProbParIter pp) const {
+  const array<decltype((*contIt)->query(0)+(*contIt)->query(0)), 4> c
+    {(*contIt)->query(pp->l)        + (*contIt)->query((3ull<<pp->shl) | pp->r),
+     (*contIt)->query(pp->l | 1ull) + (*contIt)->query((2ull<<pp->shl) | pp->r),
+     (*contIt)->query(pp->l | 2ull) + (*contIt)->query((1ull<<pp->shl) | pp->r),
+     (*contIt)->query(pp->l | 3ull) + (*contIt)->query(pp->r)};
   return (c[pp->numSym] + pp->alpha)
          / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
 }
 
-template <typename CnerIter, typename ProbParIter>
-inline bool FCM::is_tm_enabled (CnerIter cnerIt, ProbParIter pp) {
-  const array<decltype((*cnerIt)->query(0)), 4> c
-    {(*cnerIt)->query(pp->l),
-     (*cnerIt)->query(pp->l | 1ull),
-     (*cnerIt)->query(pp->l | 2ull),
-     (*cnerIt)->query(pp->l | 3ull)};
+
+
+
+template <typename ContIter>
+inline u8 FCM::best_sym (ContIter contIt, u64 l) const {
+  const array<decltype((*contIt)->query(0)), 4> c
+    {(*contIt)->query(l),
+     (*contIt)->query(l | 1ull),
+     (*contIt)->query(l | 2ull),
+     (*contIt)->query(l | 3ull)};
+  return static_cast<u8>(std::max_element(c.begin(),c.end()) - c.begin());
+}
+
+template <typename ContIter, typename ProbParIter>
+inline bool FCM::is_tm_enabled (ContIter contIt, ProbParIter pp) {
+  const array<decltype((*contIt)->query(0)), 4> c
+    {(*contIt)->query(pp->l),
+     (*contIt)->query(pp->l | 1ull),
+     (*contIt)->query(pp->l | 2ull),
+     (*contIt)->query(pp->l | 3ull)};
   
 //  if (*std::max_element(c.begin(),c.end()) == c[pp->numSym])
-  return (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym);
-//  return true;
-  return false;
+//  return (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym);
+  return true;
+//  return false;
 }
 
-template <typename CnerIter, typename ProbParIter>
-inline double FCM::prob_best (CnerIter cnerIt, ProbParIter pp) const {
-  const array<decltype((*cnerIt)->query(0)), 4> c
-    {(*cnerIt)->query(pp->l),
-     (*cnerIt)->query(pp->l | 1ull),
-     (*cnerIt)->query(pp->l | 2ull),
-     (*cnerIt)->query(pp->l | 3ull)};
-  return (*std::max_element(c.begin(),c.end()) + pp->alpha)
-         / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
-}
-
-template <typename CnerIter, typename ProbParIter>
-inline double FCM::probIr_best (const CnerIter cnerIt, ProbParIter pp) const {
-  const array<decltype((*cnerIt)->query(0)+(*cnerIt)->query(0)), 4> c
-    {(*cnerIt)->query(pp->l)        + (*cnerIt)->query((3ull<<pp->shl) | pp->r),
-     (*cnerIt)->query(pp->l | 1ull) + (*cnerIt)->query((2ull<<pp->shl) | pp->r),
-     (*cnerIt)->query(pp->l | 2ull) + (*cnerIt)->query((1ull<<pp->shl) | pp->r),
-     (*cnerIt)->query(pp->l | 3ull) + (*cnerIt)->query(pp->r)};
-  return (*std::max_element(c.begin(),c.end()) + pp->alpha)
-         / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
-}
+//template <typename ContIter, typename ProbParIter>
+//inline double FCM::prob_best (ContIter contIt, ProbParIter pp) const {
+//  const array<decltype((*contIt)->query(0)), 4> c
+//    {(*contIt)->query(pp->l),
+//     (*contIt)->query(pp->l | 1ull),
+//     (*contIt)->query(pp->l | 2ull),
+//     (*contIt)->query(pp->l | 3ull)};
+//  return (*std::max_element(c.begin(),c.end()) + pp->alpha)
+//         / (std::accumulate(c.begin(),c.end(),0ull) + pp->sAlpha);
+//}
 
 inline double FCM::entropy (double P) const {
   return -log2(P);
