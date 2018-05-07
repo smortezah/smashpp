@@ -50,6 +50,8 @@ struct ProbPar {
   u8     revNumSym;
   ProbPar () = default;
   ProbPar (float, u64, u8);
+  void config (u64);//todo
+  void config (u8);//todo
   void config (char, u64);
   void config (char, u64, u64);
 };
@@ -79,24 +81,26 @@ class FCM    // Finite-context models
   void alloc_model ();            // Allocate memory to models
   void store_1 (const Param&);    // Build models one thread
   void store_n (const Param&);    // Build models multiple threads
-  template <typename Mask, typename CnerIter>
-  void store_impl (const string&, Mask, CnerIter);  // Fill data structure
+  template <typename Mask, typename ContIter>
+  void store_impl (const string&, Mask, ContIter);  // Fill data structure
   // Compress data structure
-  template <typename CnerIter>
-  void compress_1 (const string&, CnerIter);        // 1 Markov models
+  template <typename ContIter>
+  void compress_1 (const string&, ContIter);        // 1 Markov models
   void compress_n (const string&);
-  template <typename CnerIter, typename ProbParIter>
-  double prob (CnerIter, ProbParIter) const;  // Probability
-  template <typename CnerIter, typename ProbParIter>
-  double probIr (CnerIter, ProbParIter) const;  // Prob. IR
+  template <typename ContIter, typename ProbParIter>
+  double prob (ContIter, ProbParIter) const;  // Probability
+  template <typename ContIter, typename ProbParIter>
+  double probIr (ContIter, ProbParIter) const;  // Prob. IR
   
-  template <typename CnerIter, typename ProbParIter>
-  bool is_tm_enabled(CnerIter, ProbParIter);//todo const
   
-  template <typename CnerIter, typename ProbParIter>
-  double prob_best (CnerIter, ProbParIter) const;  // Probability
-  template <typename CnerIter, typename ProbParIter>
-  double probIr_best (CnerIter, ProbParIter) const;  // Prob. IR
+  template <typename ContIter>
+  u8 best_sym (ContIter, u64) const;
+  
+  template <typename ContIter, typename ProbParIter>
+  bool is_tm_enabled(ContIter, ProbParIter);//todo const
+  
+//  template <typename ContIter, typename ProbParIter>
+//  double prob_best (ContIter, ProbParIter) const;  // Probability
   
   
   double entropy (double) const;
