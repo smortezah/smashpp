@@ -57,8 +57,7 @@ FCM::FCM (const Param& p) {
 }
 
 inline void FCM::config (const Param& p) {
-  vector<string> mdls;
-  split(p.modelsPars.begin(), p.modelsPars.end(), ':', mdls);
+  vector<string> mdls;  split(p.modelsPars.begin(),p.modelsPars.end(),':',mdls);
   for (const auto& e : mdls) {
     // Markov and tolerant models
     vector<string> m_tm;    split(e.begin(), e.end(), '/', m_tm);
@@ -140,8 +139,8 @@ void FCM::store (const Param& p) {
 }
 
 inline void FCM::store_1 (const Param& p) {
-  auto tbl64_iter  = tbl64.begin();     auto tbl32_iter = tbl32.begin();
-  auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
+  auto tbl64_iter=tbl64.begin();      auto tbl32_iter=tbl32.begin();
+  auto lgtbl8_iter=lgtbl8.begin();    auto cmls4_iter=cmls4.begin();
   for (const auto& m : Ms)    // Mask: 4<<2k - 1 = 4^(k+1) - 1
     if (m.cont == Container::TABLE_64)
       store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);
@@ -236,7 +235,7 @@ inline void FCM::compress_1 (const string& tar, ContIter contIt) {
         update_ctx(ctx, &pp);
       }
   }
-  else if (Ms[0].ir == 1) {
+  else /*if (Ms[0].ir == 1)*/ {
     while (tf.get(c))
       if (c != '\n') {
         ++symsNo;
@@ -275,136 +274,146 @@ inline void FCM::compress_n (const string& tar) {
   while (tf.get(c))
     if (c != '\n') {
       ++symsNo;
-  
-      auto tbl64_iter=tbl64.begin();    auto tbl32_iter=tbl32.begin();
-      auto lgtbl8_iter=lgtbl8.begin();  auto cmls4_iter=cmls4.begin();
+      auto ppIt      = pp.begin();
+      auto ctxIt     = ctx.begin();
+      auto ctxIrIt   = ctxIr.begin();
+      auto tbl64_it  = tbl64.begin();
+      auto tbl32_it  = tbl32.begin();
+      auto lgtbl8_it = lgtbl8.begin();
+      auto cmls4_it  = cmls4.begin();
+      
       // Config
-      {u8 mIdx = 0;
-      for (const auto& mm : Ms) {
-        (mm.ir==0) ? pp[mIdx].config(c, ctx[mIdx])
-                   : pp[mIdx].config_ir(c, ctx[mIdx], ctxIr[mIdx]);
-        if (mm.child) {
-          ++mIdx;
-          if (mm.child->ir==0) {
-            pp[mIdx].config(ctx[mIdx]);  // l
-            if      (mm.cont == Container::TABLE_64)
-              pp[mIdx].config(best_sym(tbl64_iter++, pp.begin()+mIdx));
-            else if (mm.cont == Container::TABLE_32)
-              pp[mIdx].config(best_sym(tbl32_iter++, pp.begin()+mIdx));
-            else if (mm.cont == Container::LOG_TABLE_8)
-              pp[mIdx].config(best_sym(lgtbl8_iter++, pp.begin()+mIdx));
-            else if (mm.cont == Container::SKETCH_8)
-              pp[mIdx].config(best_sym(cmls4_iter++, pp.begin()+mIdx));
+      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
+           ++mmIt, ++ppIt, ++ctxIt, ++ctxIrIt) {
+        (mmIt->ir==0) ? ppIt->config(c, *ctxIt)
+                      : ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+        if (mmIt->child) {
+          ++ppIt;  ++ctxIt;  ++ctxIrIt;
+          if (mmIt->child->ir == 0) {
+            ppIt->config(*ctxIt);  // l
+            if (mmIt->cont == Container::TABLE_64)
+              ppIt->config(best_sym(tbl64_it++,  ppIt));
+            else if (mmIt->cont == Container::TABLE_32)
+              ppIt->config(best_sym(tbl32_it++,  ppIt));
+            else if (mmIt->cont == Container::LOG_TABLE_8)
+              ppIt->config(best_sym(lgtbl8_it++, ppIt));
+            else if (mmIt->cont == Container::SKETCH_8)
+              ppIt->config(best_sym(cmls4_it++,  ppIt));
           }
           else {
-            pp[mIdx].config_ir(ctx[mIdx], ctxIr[mIdx]);  // l and r
-            if      (mm.cont == Container::TABLE_64)
-              pp[mIdx].config_ir(best_sym_ir(tbl64_iter++, pp.begin()+mIdx));
-            else if (mm.cont == Container::TABLE_32)
-              pp[mIdx].config_ir(best_sym_ir(tbl32_iter++, pp.begin()+mIdx));
-            else if (mm.cont == Container::LOG_TABLE_8)
-              pp[mIdx].config_ir(best_sym_ir(lgtbl8_iter++, pp.begin()+mIdx));
-            else if (mm.cont == Container::SKETCH_8)
-              pp[mIdx].config_ir(best_sym_ir(cmls4_iter++, pp.begin()+mIdx));
+            ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+            if (mmIt->cont == Container::TABLE_64)
+              ppIt->config_ir(best_sym_ir(tbl64_it++,  ppIt));
+            else if (mmIt->cont == Container::TABLE_32)
+              ppIt->config_ir(best_sym_ir(tbl32_it++,  ppIt));
+            else if (mmIt->cont == Container::LOG_TABLE_8)
+              ppIt->config_ir(best_sym_ir(lgtbl8_it++, ppIt));
+            else if (mmIt->cont == Container::SKETCH_8)
+              ppIt->config_ir(best_sym_ir(cmls4_it++,  ppIt));
           }
         }
-        ++mIdx;
-      }}
+      }
       
       // Entropy
-      tbl64_iter=tbl64.begin();    tbl32_iter=tbl32.begin();
-      lgtbl8_iter=lgtbl8.begin();  cmls4_iter=cmls4.begin();
-      auto ppIter = pp.begin();
+      ppIt = pp.begin();
+      tbl64_it=tbl64.begin();    tbl32_it=tbl32.begin();
+      lgtbl8_it=lgtbl8.begin();  cmls4_it=cmls4.begin();
       vector<double> probs;
       //todo. probs.reserve(nMdl); check not insert 0 when not consider stmm
       for (const auto& mm : Ms) {
+//        if (mm.ir==0) {//todo
+//          if (mm.cont == Container::TABLE_64) {
+//            probs.emplace_back(prob(tbl64_it, ppIt));
+//            if (mm.child) {
+//              ++ppIt;
+//              if (is_tm_enabled(tbl64_it, ppIt)) {//todo
+//                ++nbest;//todo
+//                (mm.child->ir==0)
+//                  ? probs.emplace_back(prob(tbl64_it, ppIt))
+//                  : probs.emplace_back(prob_ir(tbl64_it, ppIt));
+//              }
+//              else
+//                probs.emplace_back(0.0);
+//            }
+//            ++tbl64_it;
+//          }
+//        }
         if (mm.cont == Container::TABLE_64) {
-          
-          
-          (mm.ir==0) ? probs.emplace_back(prob(tbl64_iter, ppIter))
-                     : probs.emplace_back(prob_ir(tbl64_iter, ppIter));
+          (mm.ir==0) ? probs.emplace_back(prob(tbl64_it, ppIt))
+                     : probs.emplace_back(prob_ir(tbl64_it, ppIt));
           if (mm.child) {
-            ++ppIter;
-            if (is_tm_enabled(tbl64_iter, ppIter)) {//todo
+            ++ppIt;
+            if (is_tm_enabled(tbl64_it, ppIt)) {//todo
               ++nbest;//todo
-//              if (mm.child->ir == 0) {
-                probs.emplace_back(prob(tbl64_iter, ppIter));
-//              probs.emplace_back(prob_best(tbl64_iter, ppIter));
-//              }
-//              else {
-//                probs.emplace_back(probIr_best(tbl64_iter, ppIter));
-//              }
+              (mm.child->ir==0)
+                ? probs.emplace_back(prob(tbl64_it, ppIt))
+                : probs.emplace_back(prob_ir(tbl64_it, ppIt));
             }
-            else {
+            else
               probs.emplace_back(0.0);
-            }
           }
-          ++tbl64_iter;
+          ++tbl64_it;
         }
-        
-        
-        
-//        if (mm.cont == Container::TABLE_64) {
-//          (mm.ir==0) ? probs.emplace_back(prob(tbl64_iter, ppIter))
-//                     : probs.emplace_back(prob_ir(tbl64_iter, ppIter));
-//          if (mm.child) {
-//            ++ppIter;
-//            (mm.child->ir==0)
-//              ? probs.emplace_back(prob_best(tbl64_iter, ppIter))
-//              : probs.emplace_back(probIr_best(tbl64_iter, ppIter));
-//          }
-//          ++tbl64_iter;
-//        }
-//        else if (mm.cont == Container::TABLE_32) {
-//          (mm.ir==0) ? probs.emplace_back(prob(tbl32_iter, ppIter))
-//                     : probs.emplace_back(prob_ir(tbl32_iter, ppIter));
-//          if (mm.child) {
-//            ++ppIter;
-//            (mm.child->ir==0)
-//              ? probs.emplace_back(prob_best(tbl32_iter, ppIter))
-//              : probs.emplace_back(probIr_best(tbl32_iter, ppIter));
-//          }
-//          ++tbl32_iter;
-//        }
-//        else if (mm.cont == Container::LOG_TABLE_8) {
-//          (mm.ir==0) ? probs.emplace_back(prob(lgtbl8_iter, ppIter))
-//                     : probs.emplace_back(prob_ir(lgtbl8_iter, ppIter));
-//          if (mm.child) {
-//            ++ppIter;
-//            (mm.child->ir==0)
-//              ? probs.emplace_back(prob_best(lgtbl8_iter, ppIter))
-//              : probs.emplace_back(probIr_best(lgtbl8_iter, ppIter));
-//          }
-//          ++lgtbl8_iter;
-//        }
-//        else if (mm.cont == Container::SKETCH_8) {
-//          (mm.ir==0) ? probs.emplace_back(prob(cmls4_iter, ppIter))
-//                     : probs.emplace_back(prob_ir(cmls4_iter, ppIter));
-//          if (mm.child) {
-//            ++ppIter;
-//            (mm.child->ir==0)
-//              ? probs.emplace_back(prob_best(cmls4_iter, ppIter))
-//              : probs.emplace_back(probIr_best(cmls4_iter, ppIter));
-//          }
-//          ++cmls4_iter;
-//        }
-        ++ppIter;
+        else if (mm.cont == Container::TABLE_32) {
+          (mm.ir==0) ? probs.emplace_back(prob(tbl32_it, ppIt))
+                     : probs.emplace_back(prob_ir(tbl32_it, ppIt));
+          if (mm.child) {
+            ++ppIt;
+            if (is_tm_enabled(tbl32_it, ppIt))
+              (mm.child->ir==0)
+                ? probs.emplace_back(prob(tbl32_it, ppIt))
+                : probs.emplace_back(prob_ir(tbl32_it, ppIt));
+            else
+              probs.emplace_back(0.0);
+          }
+          ++tbl32_it;
+        }
+        else if (mm.cont == Container::LOG_TABLE_8) {
+          (mm.ir==0) ? probs.emplace_back(prob(lgtbl8_it, ppIt))
+                     : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
+          if (mm.child) {
+            ++ppIt;
+            if (is_tm_enabled(lgtbl8_it, ppIt))
+              (mm.child->ir==0)
+                ? probs.emplace_back(prob(lgtbl8_it, ppIt))
+                : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
+            else
+              probs.emplace_back(0.0);
+          }
+          ++lgtbl8_it;
+        }
+        else if (mm.cont == Container::SKETCH_8) {
+          (mm.ir==0) ? probs.emplace_back(prob(cmls4_it, ppIt))
+                     : probs.emplace_back(prob_ir(cmls4_it, ppIt));
+          if (mm.child) {
+            ++ppIt;
+            if (is_tm_enabled(cmls4_it, ppIt))
+              (mm.child->ir==0)
+                ? probs.emplace_back(prob(cmls4_it, ppIt))
+                : probs.emplace_back(prob_ir(cmls4_it, ppIt));
+            else
+              probs.emplace_back(0.0);
+          }
+          ++cmls4_it;
+        }
+        ++ppIt;
       }
       sEnt += entropy(w.begin(), probs.begin(), probs.end());
       
       // Update context
-      ppIter = pp.begin();
-      {u8 mIdx = 0;
-      for (const auto& mm : Ms) {
-        (mm.ir==0) ? update_ctx(ctx[mIdx], ppIter++)
-                   : update_ctx_ir(ctx[mIdx], ctxIr[mIdx], ppIter++);
-        if (mm.child) {
-          ++mIdx;
-          (mm.child->ir==0) ? update_ctx(ctx[mIdx], ppIter++)
-                            : update_ctx_ir(ctx[mIdx], ctxIr[mIdx], ppIter++);
+      ppIt    = pp.begin();
+      ctxIt   = ctx.begin();
+      ctxIrIt = ctxIr.begin();
+      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
+           ++mmIt, ++ctxIt, ++ctxIrIt) {
+        (mmIt->ir==0) ? update_ctx(*ctxIt, ppIt++)
+                       : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
+        if (mmIt->child) {
+          ++ctxIt;  ++ctxIrIt;
+          (mmIt->child->ir==0) ? update_ctx(*ctxIt, ppIt++)
+                                : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
         }
-        ++mIdx;
-      }}
+      }
     }
   cerr<<nbest;//todo
   tf.close();
@@ -475,11 +484,7 @@ inline double FCM::prob_ir (const ContIter contIt, ProbParIter pp) const {
 
 template <typename ContIter, typename ProbParIter>
 inline bool FCM::is_tm_enabled (ContIter contIt, ProbParIter pp) {
-  const array<decltype((*contIt)->query(0)), 4> c
-    {(*contIt)->query(pp->l),
-     (*contIt)->query(pp->l | 1ull),
-     (*contIt)->query(pp->l | 2ull),
-     (*contIt)->query(pp->l | 3ull)};
+//  const auto c = freqs<decltype((*contIt)->query(0))>(contIt, pp);
   
 //  if (*std::max_element(c.begin(),c.end()) == c[pp->numSym])
 //  return (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym);
