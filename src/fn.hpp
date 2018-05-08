@@ -44,4 +44,16 @@ void hms (Time elapsed) {
   cerr << " in " << h << ":" << m << ":" << s << " hour:min:sec.\n";
 }
 
+// Split a range by delim and insert the result into an std::vector
+template <typename InIter, typename Vec>
+void split (InIter first, InIter last, char delim, Vec& vOut) {
+  while (true) {
+    InIter found = std::find(first, last, delim);
+    vOut.emplace_back(string(first,found));
+    if (found == last)
+      break;
+    first = ++found;
+  }
+}
+
 #endif //PROJECT_FN_HPP
