@@ -281,139 +281,415 @@ inline void FCM::compress_n (const string& tar) {
       auto tbl32_it  = tbl32.begin();
       auto lgtbl8_it = lgtbl8.begin();
       auto cmls4_it  = cmls4.begin();
-      
-      // Config
-      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
-           ++mmIt, ++ppIt, ++ctxIt, ++ctxIrIt) {
-        (mmIt->ir==0) ? ppIt->config(c, *ctxIt)
-                      : ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-        if (mmIt->child) {
-          ++ppIt;  ++ctxIt;  ++ctxIrIt;
-          if (mmIt->child->ir == 0) {
-            ppIt->config(*ctxIt);  // l
-            if (mmIt->cont == Container::TABLE_64)
-              ppIt->config(best_sym(tbl64_it++,  ppIt));
-            else if (mmIt->cont == Container::TABLE_32)
-              ppIt->config(best_sym(tbl32_it++,  ppIt));
-            else if (mmIt->cont == Container::LOG_TABLE_8)
-              ppIt->config(best_sym(lgtbl8_it++, ppIt));
-            else if (mmIt->cont == Container::SKETCH_8)
-              ppIt->config(best_sym(cmls4_it++,  ppIt));
-          }
-          else {
-            ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-            if (mmIt->cont == Container::TABLE_64)
-              ppIt->config_ir(best_sym_ir(tbl64_it++,  ppIt));
-            else if (mmIt->cont == Container::TABLE_32)
-              ppIt->config_ir(best_sym_ir(tbl32_it++,  ppIt));
-            else if (mmIt->cont == Container::LOG_TABLE_8)
-              ppIt->config_ir(best_sym_ir(lgtbl8_it++, ppIt));
-            else if (mmIt->cont == Container::SKETCH_8)
-              ppIt->config_ir(best_sym_ir(cmls4_it++,  ppIt));
-          }
-        }
-      }
-      
-      // Entropy
-      ppIt = pp.begin();
-      tbl64_it=tbl64.begin();    tbl32_it=tbl32.begin();
-      lgtbl8_it=lgtbl8.begin();  cmls4_it=cmls4.begin();
       vector<double> probs;
       //todo. probs.reserve(nMdl); check not insert 0 when not consider stmm
+      
+      //todo
       for (const auto& mm : Ms) {
-//        if (mm.ir==0) {//todo
-//          if (mm.cont == Container::TABLE_64) {
-//            probs.emplace_back(prob(tbl64_it, ppIt));
-//            if (mm.child) {
-//              ++ppIt;
-//              if (is_tm_enabled(tbl64_it, ppIt)) {//todo
-//                ++nbest;//todo
-//                (mm.child->ir==0)
-//                  ? probs.emplace_back(prob(tbl64_it, ppIt))
-//                  : probs.emplace_back(prob_ir(tbl64_it, ppIt));
-//              }
-//              else
-//                probs.emplace_back(0.0);
-//            }
-//            ++tbl64_it;
-//          }
-//        }
-        if (mm.cont == Container::TABLE_64) {
-          (mm.ir==0) ? probs.emplace_back(prob(tbl64_it, ppIt))
-                     : probs.emplace_back(prob_ir(tbl64_it, ppIt));
-          if (mm.child) {
-            ++ppIt;
-            if (is_tm_enabled(tbl64_it, ppIt)) {//todo
-              ++nbest;//todo
-              (mm.child->ir==0)
-                ? probs.emplace_back(prob(tbl64_it, ppIt))
-                : probs.emplace_back(prob_ir(tbl64_it, ppIt));
+        if (mm.ir==0) {
+          if (mm.cont == Container::TABLE_64) {
+            ppIt->config(c, *ctxIt);
+  
+            probs.emplace_back(prob(tbl64_it, ppIt));
+            
+            update_ctx(*ctxIt, ppIt);
+            
+            if (mm.child) {
+              ++ppIt;  ++ctxIt;  ++ctxIrIt;
+              
+              if (mm.child->ir == 0) {
+                ppIt->config(*ctxIt);  // l
+                ppIt->config(best_sym(tbl64_it,  ppIt));
+  
+                if (is_tm_enabled(tbl64_it, ppIt))
+                  probs.emplace_back(prob(tbl64_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+  
+                update_ctx(*ctxIt, ppIt);
+              }
+              else {
+                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+                ppIt->config_ir(best_sym_ir(tbl64_it,  ppIt));
+                
+                if (is_tm_enabled(tbl64_it, ppIt))
+                  probs.emplace_back(prob_ir(tbl64_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+                
+                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
             }
-            else
-              probs.emplace_back(0.0);
+            ++tbl64_it;
           }
-          ++tbl64_it;
-        }
-        else if (mm.cont == Container::TABLE_32) {
-          (mm.ir==0) ? probs.emplace_back(prob(tbl32_it, ppIt))
-                     : probs.emplace_back(prob_ir(tbl32_it, ppIt));
-          if (mm.child) {
-            ++ppIt;
-            if (is_tm_enabled(tbl32_it, ppIt))
-              (mm.child->ir==0)
-                ? probs.emplace_back(prob(tbl32_it, ppIt))
-                : probs.emplace_back(prob_ir(tbl32_it, ppIt));
-            else
-              probs.emplace_back(0.0);
+          else if (mm.cont == Container::TABLE_32) {
+            ppIt->config(c, *ctxIt);
+
+            probs.emplace_back(prob(tbl32_it, ppIt));
+
+            update_ctx(*ctxIt, ppIt);
+
+            if (mm.child) {
+              ++ppIt;  ++ctxIt;  ++ctxIrIt;
+              
+              if (mm.child->ir == 0) {
+                ppIt->config(*ctxIt);  // l
+                ppIt->config(best_sym(tbl32_it,  ppIt));
+
+                if (is_tm_enabled(tbl32_it, ppIt))
+                  probs.emplace_back(prob(tbl32_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx(*ctxIt, ppIt);
+              }
+              else {
+                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+                ppIt->config_ir(best_sym_ir(tbl32_it,  ppIt));
+
+                if (is_tm_enabled(tbl32_it, ppIt))
+                  probs.emplace_back(prob_ir(tbl32_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
+            }
+            ++tbl32_it;
           }
-          ++tbl32_it;
-        }
-        else if (mm.cont == Container::LOG_TABLE_8) {
-          (mm.ir==0) ? probs.emplace_back(prob(lgtbl8_it, ppIt))
-                     : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
-          if (mm.child) {
-            ++ppIt;
-            if (is_tm_enabled(lgtbl8_it, ppIt))
-              (mm.child->ir==0)
-                ? probs.emplace_back(prob(lgtbl8_it, ppIt))
-                : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
-            else
-              probs.emplace_back(0.0);
+          else if (mm.cont == Container::LOG_TABLE_8) {
+            ppIt->config(c, *ctxIt);
+
+            probs.emplace_back(prob(lgtbl8_it, ppIt));
+
+            update_ctx(*ctxIt, ppIt);
+
+            if (mm.child) {
+              ++ppIt;  ++ctxIt;  ++ctxIrIt;
+              
+              if (mm.child->ir == 0) {
+                ppIt->config(*ctxIt);  // l
+                ppIt->config(best_sym(lgtbl8_it, ppIt));
+
+                if (is_tm_enabled(lgtbl8_it, ppIt))
+                  probs.emplace_back(prob(lgtbl8_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx(*ctxIt, ppIt);
+              }
+              else {
+                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+                ppIt->config_ir(best_sym_ir(lgtbl8_it, ppIt));
+
+                if (is_tm_enabled(lgtbl8_it, ppIt))
+                  probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
+            }
+            ++lgtbl8_it;
           }
-          ++lgtbl8_it;
-        }
-        else if (mm.cont == Container::SKETCH_8) {
-          (mm.ir==0) ? probs.emplace_back(prob(cmls4_it, ppIt))
-                     : probs.emplace_back(prob_ir(cmls4_it, ppIt));
-          if (mm.child) {
-            ++ppIt;
-            if (is_tm_enabled(cmls4_it, ppIt))
-              (mm.child->ir==0)
-                ? probs.emplace_back(prob(cmls4_it, ppIt))
-                : probs.emplace_back(prob_ir(cmls4_it, ppIt));
-            else
-              probs.emplace_back(0.0);
+          else if (mm.cont == Container::SKETCH_8) {
+            ppIt->config(c, *ctxIt);
+
+            probs.emplace_back(prob(cmls4_it, ppIt));
+
+            update_ctx(*ctxIt, ppIt);
+
+            if (mm.child) {
+              ++ppIt;  ++ctxIt;  ++ctxIrIt;
+              
+              if (mm.child->ir == 0) {
+                ppIt->config(*ctxIt);  // l
+                ppIt->config(best_sym(cmls4_it,  ppIt));
+
+                if (is_tm_enabled(cmls4_it, ppIt))
+                  probs.emplace_back(prob(cmls4_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx(*ctxIt, ppIt);
+              }
+              else {
+                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+                ppIt->config_ir(best_sym_ir(cmls4_it,  ppIt));
+
+                if (is_tm_enabled(cmls4_it, ppIt))
+                  probs.emplace_back(prob_ir(cmls4_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
+            }
+            ++cmls4_it;
           }
-          ++cmls4_it;
         }
-        ++ppIt;
+        else /*if (mm.ir==1)*/ {
+          if (mm.cont == Container::TABLE_64) {
+            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+
+            probs.emplace_back(prob_ir(tbl64_it, ppIt));
+
+            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+
+            if (mm.child) {
+              ++ppIt;  ++ctxIt;  ++ctxIrIt;
+              
+              if (mm.child->ir == 0) {
+                ppIt->config(*ctxIt);  // l
+                ppIt->config(best_sym(tbl64_it, ppIt));
+
+                if (is_tm_enabled(tbl64_it, ppIt))
+                  probs.emplace_back(prob(tbl64_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx(*ctxIt, ppIt);
+              }
+              else {
+                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+                ppIt->config_ir(best_sym_ir(tbl64_it, ppIt));
+
+                if (is_tm_enabled(tbl64_it, ppIt))
+                  probs.emplace_back(prob_ir(tbl64_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
+            }
+            ++tbl64_it;
+          }
+          else if (mm.cont == Container::TABLE_32) {
+            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+
+            probs.emplace_back(prob_ir(tbl32_it, ppIt));
+
+            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+
+            if (mm.child) {
+              ++ppIt;  ++ctxIt;  ++ctxIrIt;
+              
+              if (mm.child->ir == 0) {
+                ppIt->config(*ctxIt);  // l
+                ppIt->config(best_sym(tbl32_it, ppIt));
+
+                if (is_tm_enabled(tbl32_it, ppIt))
+                  probs.emplace_back(prob(tbl32_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx(*ctxIt, ppIt);
+              }
+              else {
+                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+                ppIt->config_ir(best_sym_ir(tbl32_it, ppIt));
+                
+                if (is_tm_enabled(tbl32_it, ppIt))
+                  probs.emplace_back(prob_ir(tbl32_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
+            }
+            ++tbl32_it;
+          }
+          else if (mm.cont == Container::LOG_TABLE_8) {
+            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+
+            probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
+
+            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+
+            if (mm.child) {
+              ++ppIt;  ++ctxIt;  ++ctxIrIt;
+              
+              if (mm.child->ir == 0) {
+                ppIt->config(*ctxIt);  // l
+                ppIt->config(best_sym(lgtbl8_it, ppIt));
+
+                if (is_tm_enabled(lgtbl8_it, ppIt))
+                  probs.emplace_back(prob(lgtbl8_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx(*ctxIt, ppIt);
+              }
+              else {
+                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+                ppIt->config_ir(best_sym_ir(lgtbl8_it, ppIt));
+
+                if (is_tm_enabled(lgtbl8_it, ppIt))
+                  probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
+            }
+            ++lgtbl8_it;
+          }
+          else if (mm.cont == Container::SKETCH_8) {
+            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+            
+            probs.emplace_back(prob_ir(cmls4_it, ppIt));
+
+            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+
+            if (mm.child) {
+              ++ppIt;  ++ctxIt;  ++ctxIrIt;
+              
+              if (mm.child->ir == 0) {
+                ppIt->config(*ctxIt);  // l
+                ppIt->config(best_sym(cmls4_it, ppIt));
+
+                if (is_tm_enabled(cmls4_it, ppIt))
+                  probs.emplace_back(prob(cmls4_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx(*ctxIt, ppIt);
+              }
+              else {
+                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+                ppIt->config_ir(best_sym_ir(cmls4_it, ppIt));
+
+                if (is_tm_enabled(cmls4_it, ppIt))
+                  probs.emplace_back(prob_ir(cmls4_it, ppIt));
+                else
+                  probs.emplace_back(0.0);
+
+                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
+            }
+            ++cmls4_it;
+          }
+        }
+        ++ppIt;  ++ctxIt;  ++ctxIrIt;
       }
       sEnt += entropy(w.begin(), probs.begin(), probs.end());
       
-      // Update context
-      ppIt    = pp.begin();
-      ctxIt   = ctx.begin();
-      ctxIrIt = ctxIr.begin();
-      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
-           ++mmIt, ++ctxIt, ++ctxIrIt) {
-        (mmIt->ir==0) ? update_ctx(*ctxIt, ppIt++)
-                       : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
-        if (mmIt->child) {
-          ++ctxIt;  ++ctxIrIt;
-          (mmIt->child->ir==0) ? update_ctx(*ctxIt, ppIt++)
-                                : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
-        }
-      }
+      
+//      // Config
+//      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
+//           ++mmIt, ++ppIt, ++ctxIt, ++ctxIrIt) {
+//        (mmIt->ir==0) ? ppIt->config(c, *ctxIt)
+//                      : ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+//        if (mmIt->child) {
+//          ++ppIt;  ++ctxIt;  ++ctxIrIt;
+//          if (mmIt->child->ir == 0) {
+//            ppIt->config(*ctxIt);  // l
+//            if (mmIt->cont == Container::TABLE_64)
+//              ppIt->config(best_sym(tbl64_it++,  ppIt));
+//            else if (mmIt->cont == Container::TABLE_32)
+//              ppIt->config(best_sym(tbl32_it++,  ppIt));
+//            else if (mmIt->cont == Container::LOG_TABLE_8)
+//              ppIt->config(best_sym(lgtbl8_it++, ppIt));
+//            else if (mmIt->cont == Container::SKETCH_8)
+//              ppIt->config(best_sym(cmls4_it++,  ppIt));
+//          }
+//          else {
+//            ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+//            if (mmIt->cont == Container::TABLE_64)
+//              ppIt->config_ir(best_sym_ir(tbl64_it++,  ppIt));
+//            else if (mmIt->cont == Container::TABLE_32)
+//              ppIt->config_ir(best_sym_ir(tbl32_it++,  ppIt));
+//            else if (mmIt->cont == Container::LOG_TABLE_8)
+//              ppIt->config_ir(best_sym_ir(lgtbl8_it++, ppIt));
+//            else if (mmIt->cont == Container::SKETCH_8)
+//              ppIt->config_ir(best_sym_ir(cmls4_it++,  ppIt));
+//          }
+//        }
+//      }
+//
+//      // Entropy
+//      ppIt = pp.begin();
+//      tbl64_it=tbl64.begin();    tbl32_it=tbl32.begin();
+//      lgtbl8_it=lgtbl8.begin();  cmls4_it=cmls4.begin();
+//      vector<double> probs;
+//      //todo. probs.reserve(nMdl); check not insert 0 when not consider stmm
+//      for (const auto& mm : Ms) {
+//        if (mm.cont == Container::TABLE_64) {
+//          (mm.ir==0) ? probs.emplace_back(prob(tbl64_it, ppIt))
+//                     : probs.emplace_back(prob_ir(tbl64_it, ppIt));
+//          if (mm.child) {
+//            ++ppIt;
+//            if (is_tm_enabled(tbl64_it, ppIt)) {//todo
+//              ++nbest;//todo
+//              (mm.child->ir==0)
+//                ? probs.emplace_back(prob(tbl64_it, ppIt))
+//                : probs.emplace_back(prob_ir(tbl64_it, ppIt));
+//            }
+//            else
+//              probs.emplace_back(0.0);
+//          }
+//          ++tbl64_it;
+//        }
+//        else if (mm.cont == Container::TABLE_32) {
+//          (mm.ir==0) ? probs.emplace_back(prob(tbl32_it, ppIt))
+//                     : probs.emplace_back(prob_ir(tbl32_it, ppIt));
+//          if (mm.child) {
+//            ++ppIt;
+//            if (is_tm_enabled(tbl32_it, ppIt))
+//              (mm.child->ir==0)
+//                ? probs.emplace_back(prob(tbl32_it, ppIt))
+//                : probs.emplace_back(prob_ir(tbl32_it, ppIt));
+//            else
+//              probs.emplace_back(0.0);
+//          }
+//          ++tbl32_it;
+//        }
+//        else if (mm.cont == Container::LOG_TABLE_8) {
+//          (mm.ir==0) ? probs.emplace_back(prob(lgtbl8_it, ppIt))
+//                     : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
+//          if (mm.child) {
+//            ++ppIt;
+//            if (is_tm_enabled(lgtbl8_it, ppIt))
+//              (mm.child->ir==0)
+//                ? probs.emplace_back(prob(lgtbl8_it, ppIt))
+//                : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
+//            else
+//              probs.emplace_back(0.0);
+//          }
+//          ++lgtbl8_it;
+//        }
+//        else if (mm.cont == Container::SKETCH_8) {
+//          (mm.ir==0) ? probs.emplace_back(prob(cmls4_it, ppIt))
+//                     : probs.emplace_back(prob_ir(cmls4_it, ppIt));
+//          if (mm.child) {
+//            ++ppIt;
+//            if (is_tm_enabled(cmls4_it, ppIt))
+//              (mm.child->ir==0)
+//                ? probs.emplace_back(prob(cmls4_it, ppIt))
+//                : probs.emplace_back(prob_ir(cmls4_it, ppIt));
+//            else
+//              probs.emplace_back(0.0);
+//          }
+//          ++cmls4_it;
+//        }
+//        ++ppIt;
+//      }
+//      sEnt += entropy(w.begin(), probs.begin(), probs.end());
+//
+//      // Update context
+//      ppIt    = pp.begin();
+//      ctxIt   = ctx.begin();
+//      ctxIrIt = ctxIr.begin();
+//      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
+//           ++mmIt, ++ctxIt, ++ctxIrIt) {
+//        (mmIt->ir==0) ? update_ctx(*ctxIt, ppIt++)
+//                       : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
+//        if (mmIt->child) {
+//          ++ctxIt;  ++ctxIrIt;
+//          (mmIt->child->ir==0) ? update_ctx(*ctxIt, ppIt++)
+//                                : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
+//        }
+//      }
     }
   cerr<<nbest;//todo
   tf.close();
