@@ -88,17 +88,6 @@ inline void FCM::config (const Param& p) {
   set_cont();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
 }
 
-template <typename InIter, typename Vec>
-inline void FCM::split (InIter first, InIter last, char delim, Vec& vOut) const{
-  while (true) {
-    InIter found = std::find(first, last, delim);
-    vOut.emplace_back(string(first,found));
-    if (found == last)
-      break;
-    first = ++found;
-  }
-}
-
 inline void FCM::set_cont () {
   for (auto& m : Ms) {
     if      (m.k > K_MAX_LGTBL8)    m.cont = Container::SKETCH_8;
@@ -191,12 +180,12 @@ inline void FCM::store_n (const Param& p) {
 }
 
 template <typename Mask, typename ContIter /*Container iterator*/>
-inline void FCM::store_impl (const string& ref, Mask mask, ContIter contIt) {
+inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  char c;
   for (Mask ctx=0; rf.get(c);)
     if (c != '\n') {
       ctx = ((ctx<<2u) & mask) | NUM[static_cast<u8>(c)];
-      (*contIt)->update(ctx);
+      (*cont)->update(ctx);
     }
   rf.close();
 }
@@ -217,7 +206,7 @@ void FCM::compress (const Param& p) {
 }
 
 template <typename ContIter>
-inline void FCM::compress_1 (const string& tar, ContIter contIt) {
+inline void FCM::compress_1 (const string& tar, ContIter cont) {
   // Ctx, Mir (int) sliding through the dataset
   u64 ctx{0}, ctxIr{(1ull<<(Ms[0].k<<1u))-1};
   u64 symsNo{0};                // No. syms in target file, except \n
@@ -231,7 +220,7 @@ inline void FCM::compress_1 (const string& tar, ContIter contIt) {
       if (c != '\n') {
         ++symsNo;
         pp.config(c, ctx);
-        sEnt += entropy(prob(contIt, &pp));
+        sEnt += entropy(prob(cont, &pp));
         update_ctx(ctx, &pp);
       }
   }
@@ -240,7 +229,7 @@ inline void FCM::compress_1 (const string& tar, ContIter contIt) {
       if (c != '\n') {
         ++symsNo;
         pp.config_ir(c, ctx, ctxIr);
-        sEnt += entropy(prob_ir(contIt, &pp));
+        sEnt += entropy(prob_ir(cont, &pp));
         update_ctx_ir(ctx, ctxIr, &pp);
       }
   }
@@ -284,39 +273,39 @@ inline void FCM::compress_n (const string& tar) {
       vector<double> probs;
       //todo. probs.reserve(nMdl); check not insert 0 when not consider stmm
       
-      //todo
       for (const auto& mm : Ms) {
         if (mm.ir==0) {
           if (mm.cont == Container::TABLE_64) {
+//            probs = probs_models(c, tbl64_it, ppIt, ctxIt, ctxIrIt);//todo
             ppIt->config(c, *ctxIt);
-  
+
             probs.emplace_back(prob(tbl64_it, ppIt));
-            
+
             update_ctx(*ctxIt, ppIt);
-            
+
             if (mm.child) {
               ++ppIt;  ++ctxIt;  ++ctxIrIt;
-              
+
               if (mm.child->ir == 0) {
                 ppIt->config(*ctxIt);  // l
                 ppIt->config(best_sym(tbl64_it,  ppIt));
-  
+
                 if (is_tm_enabled(tbl64_it, ppIt))
                   probs.emplace_back(prob(tbl64_it, ppIt));
                 else
                   probs.emplace_back(0.0);
-  
+
                 update_ctx(*ctxIt, ppIt);
               }
               else {
                 ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
                 ppIt->config_ir(best_sym_ir(tbl64_it,  ppIt));
-                
+
                 if (is_tm_enabled(tbl64_it, ppIt))
                   probs.emplace_back(prob_ir(tbl64_it, ppIt));
                 else
                   probs.emplace_back(0.0);
-                
+
                 update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
               }
             }
@@ -696,6 +685,47 @@ inline void FCM::compress_n (const string& tar) {
   aveEnt = sEnt/symsNo;
 }
 
+template <typename ContIter, typename ProbParIter,
+          typename CtxIter,  typename CtxIrIter>
+vector<double> FCM::probs_models (char c, ContIter& cont, ProbParIter& pp,
+                                  CtxIter& ctx, CtxIrIter& ctxIr) const {
+//  vector<double> probs;
+//  //todo. probs.reserve(nMdl); check not insert 0 when not consider stmm
+//  pp->config(c, *ctx);
+//
+//  probs.emplace_back(prob(cont, pp));
+//
+//  update_ctx(*ctx, pp);
+//
+//  if (mm.child) {
+//    ++pp;  ++ctx;  ++ctxIr;
+//
+//    if (mm.child->ir == 0) {
+//      pp->config(*ctx);  // l
+//      pp->config(best_sym(cont,  pp));
+//
+//      if (is_tm_enabled(cont, pp))
+//        probs.emplace_back(prob(cont, pp));
+//      else
+//        probs.emplace_back(0.0);
+//
+//      update_ctx(*ctx, pp);
+//    }
+//    else {
+//      pp->config_ir(*ctx, *ctxIr);  // l and r
+//      pp->config_ir(best_sym_ir(cont,  pp));
+//
+//      if (is_tm_enabled(cont, pp))
+//        probs.emplace_back(prob_ir(cont, pp));
+//      else
+//        probs.emplace_back(0.0);
+//
+//      update_ctx_ir(*ctx, *ctxIr, pp);
+//    }
+//  }
+//  ++cont;
+};
+
 //// Called from main -- MUST NOT be inline
 //void FCM::report (const Param& p) const {
 //  ofstream f(p.report, ofstream::out | ofstream::app);
@@ -711,56 +741,58 @@ inline void FCM::compress_n (const string& tar) {
 //}
 
 template <typename OutT, typename ContIter, typename ProbParIter>
-inline array<OutT,4> FCM::freqs (ContIter contIt, ProbParIter pp) const {
+inline array<OutT,4> FCM::freqs (ContIter cont, ProbParIter pp) const {
   return array<OutT,4>
-    {(*contIt)->query(pp->l),
-     (*contIt)->query(pp->l | 1ull),
-     (*contIt)->query(pp->l | 2ull),
-     (*contIt)->query(pp->l | 3ull)};
+    {(*cont)->query(pp->l),
+     (*cont)->query(pp->l | 1ull),
+     (*cont)->query(pp->l | 2ull),
+     (*cont)->query(pp->l | 3ull)};
 }
 
 template <typename OutT, typename ContIter, typename ProbParIter>
-inline array<OutT,4> FCM::freqs_ir (ContIter contIt, ProbParIter pp) const {
+inline array<OutT,4> FCM::freqs_ir (ContIter cont, ProbParIter pp) const {
   return array<OutT,4>
-    {(*contIt)->query(pp->l)        + (*contIt)->query((3ull<<pp->shl) | pp->r),
-     (*contIt)->query(pp->l | 1ull) + (*contIt)->query((2ull<<pp->shl) | pp->r),
-     (*contIt)->query(pp->l | 2ull) + (*contIt)->query((1ull<<pp->shl) | pp->r),
-     (*contIt)->query(pp->l | 3ull) + (*contIt)->query(pp->r)};
+    {(*cont)->query(pp->l)        + (*cont)->query((3ull<<pp->shl) | pp->r),
+     (*cont)->query(pp->l | 1ull) + (*cont)->query((2ull<<pp->shl) | pp->r),
+     (*cont)->query(pp->l | 2ull) + (*cont)->query((1ull<<pp->shl) | pp->r),
+     (*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r)};
 }
 
 template <typename ContIter, typename ProbParIter>
-inline u8 FCM::best_sym (ContIter contIt, ProbParIter pp) const {
-  const auto c = freqs<decltype((*contIt)->query(0))>(contIt, pp);  // Coeffs
+inline u8 FCM::best_sym (ContIter cont, ProbParIter pp) const {
+  const auto c = freqs<decltype((*cont)->query(0))>(cont, pp);  // Coeffs
   return static_cast<u8>(std::max_element(c.begin(),c.end()) - c.begin());
 }
 
 template <typename ContIter, typename ProbParIter>
-inline u8 FCM::best_sym_ir (ContIter contIt, ProbParIter pp) const {
-  const auto c = freqs_ir<decltype(2*(*contIt)->query(0))>(contIt, pp);
+inline u8 FCM::best_sym_ir (ContIter cont, ProbParIter pp) const {
+  const auto c = freqs_ir<decltype(2*(*cont)->query(0))>(cont, pp);
   return static_cast<u8>(std::max_element(c.begin(),c.end()) - c.begin());
 }
 
 template <typename Iter>
-inline double FCM::prb_frml (Iter it, u8 numSym, float a, float sa) const {
+inline double FCM::prob_frml (Iter it, u8 numSym, float a, float sa) const {
   return (*(it+numSym) + a) / (std::accumulate(it,it+4,0ull) + sa);
 }
 
 template <typename ContIter, typename ProbParIter>
-inline double FCM::prob (ContIter contIt, ProbParIter pp) const {
-  const auto c = freqs<decltype((*contIt)->query(0))>(contIt, pp);
-  return prb_frml(c.begin(), pp->numSym, pp->alpha, pp->sAlpha);
+inline double FCM::prob (ContIter cont, ProbParIter pp) const {
+  const auto c = freqs<decltype((*cont)->query(0))>(cont, pp);
+  return prob_frml(c.begin(), pp->numSym, pp->alpha, pp->sAlpha);
 }
 
 template <typename ContIter, typename ProbParIter>
-inline double FCM::prob_ir (const ContIter contIt, ProbParIter pp) const {
-  const auto c = freqs_ir<decltype(2*(*contIt)->query(0))>(contIt, pp);
-  return prb_frml(c.begin(), pp->numSym, pp->alpha, pp->sAlpha);
+inline double FCM::prob_ir (const ContIter cont, ProbParIter pp) const {
+  const auto c = freqs_ir<decltype(2*(*cont)->query(0))>(cont, pp);
+  return prob_frml(c.begin(), pp->numSym, pp->alpha, pp->sAlpha);
 }
 
 
 template <typename ContIter, typename ProbParIter>
-inline bool FCM::is_tm_enabled (ContIter contIt, ProbParIter pp) {
-//  const auto c = freqs<decltype((*contIt)->query(0))>(contIt, pp);
+inline bool FCM::is_tm_enabled (ContIter cont, ProbParIter pp)
+const
+{
+//  const auto c = freqs<decltype((*cont)->query(0))>(cont, pp);
   
 //  if (*std::max_element(c.begin(),c.end()) == c[pp->numSym])
 //  return (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym);

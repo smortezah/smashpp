@@ -77,8 +77,6 @@ class FCM    // Finite-context models
   vector<shared_ptr<CMLS4>>     cmls4;
   
   void config (const Param&); // Set models parameters
-  template <typename InIter, typename Vec>  //Split by dlim
-  void split (InIter, InIter, char, Vec&) const;
   void set_cont ();
   void alloc_model ();            // Allocate memory to models
   void store_1 (const Param&);    // Build models one thread
@@ -89,6 +87,12 @@ class FCM    // Finite-context models
   template <typename ContIter>
   void compress_1 (const string&, ContIter);        // 1 Markov models
   void compress_n (const string&);
+  
+  template <typename ContIter, typename ProbParIter, typename CtxIter,
+    typename CtxIrIter>
+  vector<double> probs_models (char, ContIter&, ProbParIter&, CtxIter&,
+                               CtxIrIter&) const;
+  
   template <typename OutT, typename ContIter, typename ProbParIter>
   array<OutT,4> freqs (ContIter, ProbParIter) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
@@ -98,7 +102,7 @@ class FCM    // Finite-context models
   template <typename ContIter, typename ProbParIter>
   u8 best_sym_ir (ContIter, ProbParIter) const;
   template <typename Iter>
-  double prb_frml (Iter, u8, float, float) const;
+  double prob_frml (Iter, u8, float, float) const;
   template <typename ContIter, typename ProbParIter>
   double prob (ContIter, ProbParIter) const;  // Probability
   template <typename ContIter, typename ProbParIter>
@@ -106,7 +110,7 @@ class FCM    // Finite-context models
   
   
   template <typename ContIter, typename ProbParIter>
-  bool is_tm_enabled(ContIter, ProbParIter);//todo const
+  bool is_tm_enabled(ContIter, ProbParIter) const;//todo const
   
   
   double entropy (double) const;
