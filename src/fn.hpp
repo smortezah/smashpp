@@ -56,4 +56,9 @@ void split (InIter first, InIter last, char delim, Vec& vOut) {
   }
 }
 
+// "inline" is a MUST -- not to get "multiple definition of `now()'" error
+inline void error (const string &msg) {
+  throw std::runtime_error ("Error: " + msg + "\n");
+}
+
 #endif //PROJECT_FN_HPP

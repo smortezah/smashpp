@@ -16,7 +16,7 @@
 using namespace std;
 
 // Version
-static const string VERSION   {"18.05"};
+static const string VERSION   {"18.07"};
 static const string DEV_YEARS {"2018"};
 
 // Typedef
