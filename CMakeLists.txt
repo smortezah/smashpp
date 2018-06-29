@@ -2,12 +2,18 @@ cmake_minimum_required(VERSION 3.3.2)
 #project(smashpp)
 #SET(CMAKE_BUILD_TYPE Release)  # Must be commented for debugging
 #SET(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -Wall")
-
-add_executable(smashpp  src/main.cpp src/fcm.cpp src/tbl64.cpp src/tbl32.cpp
-                        src/cmls4.cpp src/logtbl8.cpp src/def.hpp src/par.hpp
-                        src/assert.hpp src/fn.hpp)
+add_executable(smashpp  src/main.cpp
+                        src/fcm.cpp
+                        src/tbl64.cpp
+                        src/tbl32.cpp
+                        src/cmls4.cpp
+                        src/logtbl8.cpp
+                        src/def.hpp
+                        src/par.hpp
+                        src/assert.hpp
+                        src/fn.hpp)
 
 #add_executable(bench    src/bench.cpp)
 
