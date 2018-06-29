@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <fstream>
 #include "tbl64.hpp"
+#include "fn.hpp"
 
 Table64::Table64 (u8 k_) {
   config(k_);
@@ -15,7 +16,7 @@ void Table64::config (u8 k_) {
   tot = 0;
   try { tbl.resize(4ull<<(k<<1u)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
   catch (std::bad_alloc& b) {
-    throw std::runtime_error("Error: failed memory allocation.\n");
+    error("failed memory allocation.");
   }
 }
 

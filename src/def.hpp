@@ -38,7 +38,7 @@ constexpr u64 power (u64 a, u64 n) {
   return n==0 ? 1 : sqr(power(a, n>>1u)) * (n&1ull ? a : 1);
 }
 
-constexpr u64 pow2 (u64 n) noexcept { // Not sure if faster than above, but simpler
+constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
   return 1ull<<n;  // ull is MANDATORY
 }
 //constexpr u64 pow4 (u8 n) { // Not sure if faster than above, but simpler
@@ -62,10 +62,11 @@ static constexpr u8    DEF_IR     {0};// Default inverted repeats for models
 static constexpr float DEF_ALPHA  {0.001};// Default alpha for models
 static constexpr float DEF_GAMMA  {0.9};  // Default gamma for multiple models
 
-//using htbl_t = std::unordered_map<u64, std::array<u64,CARDINALITY>>; //faster th a[]
+// faster than a[]
+//using htbl_t = std::unordered_map<u64, std::array<u64,CARDINALITY>>;
 
 // Enum
-enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};  // Data structures
+enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8}; //Data structs
 enum class Mode {MM, STMM};
 
 // Macro
@@ -143,8 +144,8 @@ static constexpr u8 REV[123] { // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
   0, 0, 0, 67,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0, 65,  0, 0,  0,
   0, 0, 0
 };
-static const vector<vector<u8>> LEVEL {    // 'k' of multiple models MUST be sorted
-//  static constexpr u8 LEVEL[14][16] {    // 'k' of multiple models MUST be sorted
+static const vector<vector<u8>> LEVEL { // 'k' of multiple models MUST be sorted
+//  static constexpr u8 LEVEL[14][16] { // 'k' of multiple models MUST be sorted
 // #mdl, Mir,  k, 100*Malpha, log2 w,  d
   {1,     0, 20,    100,      30,    DEF_D},    // Level 0
 //  {1,     0,  1,    100,      0,     0},

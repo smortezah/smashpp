@@ -72,18 +72,14 @@ inline void Param::parse (int argc, char**& argv) {
     }
 
     // Mandatory args
-    const bool has_t {std::find(vArgs.begin(),vArgs.end(),"-t")!=vArgs.end()};
-    const bool has_tar
-        {std::find(vArgs.begin(),vArgs.end(),"--tar")!=vArgs.end()};
-    const bool has_r {std::find(vArgs.begin(),vArgs.end(),"-r")!=vArgs.end()};
-    const bool has_ref
-        {std::find(vArgs.begin(),vArgs.end(),"--ref")!=vArgs.end()};
+    const bool has_t   {has(vArgs.begin(), vArgs.end(), "-t")};
+    const bool has_tar {has(vArgs.begin(), vArgs.end(), "--tar")};
+    const bool has_r   {has(vArgs.begin(), vArgs.end(), "-r")};
+    const bool has_ref {has(vArgs.begin(), vArgs.end(), "--ref")};
     if (!has_t && !has_tar)
-      throw std::runtime_error
-          ("Error: target file not specified. Use \"-t fileName\".\n");
+      error("target file not specified. Use \"-t fileName\".");
     else if (!has_r && !has_ref)
-      throw std::runtime_error
-          ("Error: reference file not specified. Use \"-r fileName\".\n");
+      error("reference file not specified. Use \"-r fileName\".");
   }
 }
 
@@ -91,8 +87,7 @@ inline void Param::checkFile (const string& s) const {
   ifstream f(s);
   if (!f) {
     f.close();
-    throw std::runtime_error
-        ("Error: the file \"" + s + "\" cannot be opened or is empty.\n");
+    error("the file \"" + s + "\" cannot be opened or is empty.");
   }
   else {
     char c;
@@ -101,7 +96,7 @@ inline void Param::checkFile (const string& s) const {
       if (c!=' ' && c!='\n' && c!='\t')
         foundChar = true;
     if (!foundChar)
-      throw std::runtime_error("Error: the file \"" + s + "\" is empty.\n");
+      error("the file \"" + s + "\" is empty.");
     f.close();
   }
 }

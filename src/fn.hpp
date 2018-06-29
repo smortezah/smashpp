@@ -61,4 +61,9 @@ inline void error (const string &msg) {
   throw std::runtime_error ("Error: " + msg + "\n");
 }
 
+template <typename Iter, typename Element>
+bool has (Iter first, Iter last, Element elem) {
+  return std::find(first, last, elem) != last;
+}
+
 #endif //PROJECT_FN_HPP

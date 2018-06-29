@@ -5,6 +5,7 @@
 #include <random>
 #include <fstream>
 #include "cmls4.hpp"
+#include "fn.hpp"
 
 // W=[e/eps].      0 < eps:   error factor      < 1
 // D=[ln 1/delta]. 0 < delta: error probability < 1
@@ -18,7 +19,7 @@ void CMLS4::config (u64 w_, u8 d_) {
   tot = 0;
   try { sk.resize((d*w+1)>>1u); }
   catch (std::bad_alloc& b) {
-    throw std::runtime_error("Error: failed memory allocation.\n");
+    error("failed memory allocation.");
   }
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
   ab.resize(d<<1u);

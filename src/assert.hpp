@@ -6,19 +6,20 @@
 #define PROJECT_ASSERT_HPP
 
 #include <stdexcept>
+#include "fn.hpp"
 
 template <typename Container>
 void assert_empty_elem (Container cont, string&& msg) {  // Empty element
   for (const auto& e : cont)
     if (e.size() == 0)
-      throw std::runtime_error(msg + "\n");
+      error(msg);
 }
 
 template <typename Container>
-void assert_empty_elem (Container cont, const string& msg) {  // Empty element
-    for (const auto& e : cont)
-        if (e.size() == 0)
-            throw std::runtime_error(msg + "\n");
+void assert_empty_elem(Container cont, const string &msg) {  // Empty element
+  for (const auto &e : cont)
+    if (e.size() == 0)
+      error(msg);
 }
 
 #endif //PROJECT_ASSERT_HPP
