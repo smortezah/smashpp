@@ -61,7 +61,7 @@ inline void FCM::config (const Param& p) {
   for (const auto& e : mdls) {
     // Markov and tolerant models
     vector<string> m_tm;    split(e.begin(), e.end(), '/', m_tm);
-    assert_empty_elem(m_tm, "Error: incorrect model parameters.");
+    assert_empty_elem(m_tm, "incorrect model parameters.");
     vector<string> m;       split(m_tm[0].begin(), m_tm[0].end(), ',', m);
     if (m.size() == 4)
       Ms.emplace_back(
@@ -98,7 +98,7 @@ inline void FCM::set_cont () {
 }
 
 inline void FCM::alloc_model () {
-  for (const auto& m : Ms)
+  for (const auto& m : Ms) {
     if (m.cont == Container::TABLE_64)
       tbl64.emplace_back(make_shared<Table64>(m.k));
     else if (m.cont == Container::TABLE_32)
@@ -107,6 +107,7 @@ inline void FCM::alloc_model () {
       lgtbl8.emplace_back(make_shared<LogTable8>(m.k));
     else if (m.cont == Container::SKETCH_8)
       cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));
+  }
 }
 
 void FCM::store (const Param& p) {

@@ -11,6 +11,7 @@
 #include <numeric>
 #include <limits>
 #include <tgmath.h>
+#include "fn.hpp"
 using namespace std;
 using u8  = unsigned char;
 using u16 = unsigned short;
@@ -45,14 +46,14 @@ private:
 
 void run (const string& cmd) {
   if (std::system(cmd.c_str()) != 0)
-    throw std::runtime_error("Error: failed to execute.");
+    error("failed to execute.");
 }
 
 void runGnuplot (const string& cmd) {
   string gnuplotCmd = "Gnuplot -p -e ";    // -p=-persist
   gnuplotCmd += "\"" + cmd + "\"";
   if (std::system(gnuplotCmd.c_str()) != 0)
-    throw std::runtime_error("Error: failed to execute.");
+    error("failed to execute.");
 }
 
 string exec (const char* cmd) {
@@ -61,7 +62,7 @@ string exec (const char* cmd) {
   string result;
   std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
   if (!pipe)
-    throw std::runtime_error("Error: popen() failed!");
+    error("popen() failed!");
   while (!feof(pipe.get())) {
     if (fgets(buffer.data(), bufSize, pipe.get()) != nullptr)
       result += buffer.data();
