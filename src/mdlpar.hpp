@@ -52,6 +52,7 @@ struct ProbPar {
     sAlpha(static_cast<double>(CARDINALITY*alpha)) {}
   void config (u8);//todo
   void config (u64);//todo
+//  void config (u64, u8);//todo
   void config (char, u64);
   void config_ir (u8);//todo
   void config_ir (u64, u64);//todo
@@ -65,6 +66,11 @@ inline void ProbPar::config (u8 nsym) {//todo
 inline void ProbPar::config (u64 ctx) {//todo
   l = ctx<<2u;
 }
+//
+//inline void ProbPar::config (u64 ctx, u8 nsym) {//todo
+//  l      = ctx<<2u;
+//  numSym = nsym;
+//}
 
 inline void ProbPar::config (char c, u64 ctx) {
   numSym = NUM[static_cast<u8>(c)];
