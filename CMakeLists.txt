@@ -14,7 +14,8 @@ add_executable(smashpp  src/main.cpp
                         src/def.hpp
                         src/par.hpp
                         src/assert.hpp
-                        src/fn.hpp)
+                        src/fn.hpp
+                        src/mdlpar.hpp)
 
 #add_executable(bench    src/bench.cpp)
 
