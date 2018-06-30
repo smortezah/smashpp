@@ -223,7 +223,7 @@ inline void FCM::compress_n (const string& tar) {
   }}
   
   int nbest=0;//todo
-  while (tf.get(c))
+  while (tf.get(c)) {
     if (c != '\n') {
       ++symsNo;
       auto ppIt      = pp.begin();
@@ -643,6 +643,7 @@ inline void FCM::compress_n (const string& tar) {
 //        }
 //      }
     }
+  }
   cerr<<nbest;//todo
   tf.close();
   aveEnt = sEnt/symsNo;
