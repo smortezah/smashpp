@@ -10,46 +10,6 @@
 #include "assert.hpp"
 #include "fn.hpp"
 
-MMPar::MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
-  : k(k_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
-    cont(Container::TABLE_64), child(nullptr) {
-}
-MMPar::MMPar (u8 k_, u8 ir_, float a_, float g_)
-  : MMPar(k_, 0, 0, ir_, a_, g_) {
-}
-
-STMMPar::STMMPar (u8 k_, u8 t_, u8 ir_, float a_, float g_)
-  : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), miss(0), enabled(true) {
-}
-
-ProbPar::ProbPar (float a, u64 m, u8 sh)
-  : alpha(a), sAlpha(static_cast<double>(CARDINALITY*alpha)), mask(m), shl(sh) {
-}
-inline void ProbPar::config (u8 nsym) {//todo
-  numSym = nsym;
-}
-inline void ProbPar::config (u64 ctx) {//todo
-  l = ctx<<2u;
-}
-inline void ProbPar::config (char c, u64 ctx) {
-  numSym = NUM[static_cast<u8>(c)];
-  l      = ctx<<2u;
-}
-inline void ProbPar::config_ir (u8 nsym) {//todo
-  numSym    = nsym;
-  revNumSym = static_cast<u8>(3 - nsym);
-}
-inline void ProbPar::config_ir (u64 ctx, u64 ctxIr) {//todo
-  l = ctx<<2u;
-  r = ctxIr>>2u;
-}
-inline void ProbPar::config_ir (char c, u64 ctx, u64 ctxIr) {
-  numSym    = NUM[static_cast<u8>(c)];
-  l         = ctx<<2u;
-  revNumSym = REVNUM[static_cast<u8>(c)];    // = 3 - numSym
-  r         = ctxIr>>2u;
-}
-
 FCM::FCM (const Param& p) {
   aveEnt = 0.0;
   config(p);
@@ -131,7 +91,7 @@ void FCM::store (const Param& p) {
 inline void FCM::store_1 (const Param& p) {
   auto tbl64_iter=tbl64.begin();      auto tbl32_iter=tbl32.begin();
   auto lgtbl8_iter=lgtbl8.begin();    auto cmls4_iter=cmls4.begin();
-  for (const auto& m : Ms)    // Mask: 4<<2k - 1 = 4^(k+1) - 1
+  for (const auto& m : Ms) {    // Mask: 4<<2k - 1 = 4^(k+1) - 1
     if (m.cont == Container::TABLE_64)
       store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);
     else if (m.cont == Container::TABLE_32)
@@ -141,7 +101,8 @@ inline void FCM::store_1 (const Param& p) {
     else if (m.cont == Container::SKETCH_8)
       store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, cmls4_iter++);
     else
-      cerr << "Error: the models cannot be built.\n";
+      err("the models cannot be built.");
+  }
 }
 
 inline void FCM::store_n (const Param& p) {
@@ -171,7 +132,7 @@ inline void FCM::store_n (const Param& p) {
           std::thread(&FCM::store_impl<u64,decltype(cmls4_iter)>, this,
             std::cref(p.ref), (4ull<<(Ms[i].k<<1u))-1, cmls4_iter++);
         break;
-//      default:  cerr << "Error: the models cannot be built.\n";
+      default:  err("the models cannot be built.");
     }
     // Join
     if ((i+1) % vThrSz == 0)
@@ -183,11 +144,12 @@ inline void FCM::store_n (const Param& p) {
 template <typename Mask, typename ContIter /*Container iterator*/>
 inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  char c;
-  for (Mask ctx=0; rf.get(c);)
+  for (Mask ctx=0; rf.get(c);) {
     if (c != '\n') {
       ctx = ((ctx<<2u) & mask) | NUM[static_cast<u8>(c)];
       (*cont)->update(ctx);
     }
+  }
   rf.close();
 }
 

@@ -11,52 +11,7 @@
 #include "tbl32.hpp"
 #include "logtbl8.hpp"
 #include "cmls4.hpp"
-
-struct STMMPar;
-
-struct MMPar {
-  u8    k;         // Context size
-  u64   w;         // Width of count-min-log sketch
-  u8    d;         // Depth of count-min-log sketch
-  u8    ir;        // Inverted repeat
-  float alpha;
-  float gamma;
-  Container cont;  // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-  shared_ptr<STMMPar> child;
-  MMPar (u8, u64, u8, u8, float, float);
-  MMPar (u8, u8, float, float);
-};
-
-struct STMMPar {
-  u8    k;
-  u8    thresh;
-  u8    ir;
-  float alpha;
-  float gamma;
-  u8    miss;
-  bool  enabled;
-//  shared_ptr<MMPar> parent; //todo. check if necessary
-  STMMPar (u8, u8, u8, float, float);
-};
-
-struct ProbPar {
-  float  alpha;
-  double sAlpha;
-  u64    mask;
-  u8     shl;
-  u64    l;
-  u8     numSym;
-  u64    r;
-  u8     revNumSym;
-  ProbPar () = default;
-  ProbPar (float, u64, u8);
-  void config (u8);//todo
-  void config (u64);//todo
-  void config (char, u64);
-  void config_ir (u8);//todo
-  void config_ir (u64, u64);//todo
-  void config_ir (char, u64, u64);
-};
+#include "mdlpar.hpp"
 
 class FCM    // Finite-context models
 {
