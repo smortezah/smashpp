@@ -251,27 +251,26 @@ inline void FCM::compress_n (const string& tar) {
 
               if (mm.child->ir == 0) {
                 ppIt->config(*ctxIt);  // l
-                ppIt->config(best_sym(tbl64_it, ppIt));
-//                ppIt->config(*ctxIt, best_sym(tbl64_it,ppIt));
+                ppIt->config(best_sym(tbl64_it, ppIt));  // best_sym uses l
 
-                if (is_tm_enabled(tbl64_it, ppIt))
-                  probs.emplace_back(prob(tbl64_it, ppIt));
-                else
+//                if (is_tm_enabled(tbl64_it, ppIt))
+//                  probs.emplace_back(prob(tbl64_it, ppIt));
+//                else
                   probs.emplace_back(0.0);
 
                 update_ctx(*ctxIt, ppIt);
               }
-              else {
-                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                ppIt->config_ir(best_sym_ir(tbl64_it, ppIt));
-
-                if (is_tm_enabled(tbl64_it, ppIt))
-                  probs.emplace_back(prob_ir(tbl64_it, ppIt));
-                else
-                  probs.emplace_back(0.0);
-
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-              }
+//              else {
+////                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+////                ppIt->config_ir(best_sym_ir(tbl64_it, ppIt));
+//
+//                if (is_tm_enabled(tbl64_it, ppIt))
+//                  probs.emplace_back(prob_ir(tbl64_it, ppIt));
+//                else
+//                  probs.emplace_back(0.0);
+//
+//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//              }
             }
             ++tbl64_it;
           }
@@ -525,127 +524,132 @@ inline void FCM::compress_n (const string& tar) {
 //        }
         ++ppIt;  ++ctxIt;  ++ctxIrIt;
       }
+
+      for(auto a:w) cerr<<a<<' ';
+      cerr<<" | ";
+      for(auto a:probs) cerr<<a<<' ';
+      cerr<<'\n';
       sEnt += entropy(w.begin(), probs.begin(), probs.end());
-      
-      
-//      // Config
-//      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
-//           ++mmIt, ++ppIt, ++ctxIt, ++ctxIrIt) {
-//        (mmIt->ir==0) ? ppIt->config(c, *ctxIt)
-//                      : ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-//        if (mmIt->child) {
-//          ++ppIt;  ++ctxIt;  ++ctxIrIt;
-//          if (mmIt->child->ir == 0) {
-//            ppIt->config(*ctxIt);  // l
-//            if (mmIt->cont == Container::TABLE_64)
-//              ppIt->config(best_sym(tbl64_it++,  ppIt));
-//            else if (mmIt->cont == Container::TABLE_32)
-//              ppIt->config(best_sym(tbl32_it++,  ppIt));
-//            else if (mmIt->cont == Container::LOG_TABLE_8)
-//              ppIt->config(best_sym(lgtbl8_it++, ppIt));
-//            else if (mmIt->cont == Container::SKETCH_8)
-//              ppIt->config(best_sym(cmls4_it++,  ppIt));
-//          }
-//          else {
-//            ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-//            if (mmIt->cont == Container::TABLE_64)
-//              ppIt->config_ir(best_sym_ir(tbl64_it++,  ppIt));
-//            else if (mmIt->cont == Container::TABLE_32)
-//              ppIt->config_ir(best_sym_ir(tbl32_it++,  ppIt));
-//            else if (mmIt->cont == Container::LOG_TABLE_8)
-//              ppIt->config_ir(best_sym_ir(lgtbl8_it++, ppIt));
-//            else if (mmIt->cont == Container::SKETCH_8)
-//              ppIt->config_ir(best_sym_ir(cmls4_it++,  ppIt));
-//          }
-//        }
-//      }
-//
-//      // Entropy
-//      ppIt = pp.begin();
-//      tbl64_it=tbl64.begin();    tbl32_it=tbl32.begin();
-//      lgtbl8_it=lgtbl8.begin();  cmls4_it=cmls4.begin();
-//      vector<double> probs;
-//      //todo. probs.reserve(nMdl); check not insert 0 when not consider stmm
-//      for (const auto& mm : Ms) {
-//        if (mm.cont == Container::TABLE_64) {
-//          (mm.ir==0) ? probs.emplace_back(prob(tbl64_it, ppIt))
-//                     : probs.emplace_back(prob_ir(tbl64_it, ppIt));
-//          if (mm.child) {
-//            ++ppIt;
-//            if (is_tm_enabled(tbl64_it, ppIt)) {//todo
-//              ++nbest;//todo
-//              (mm.child->ir==0)
-//                ? probs.emplace_back(prob(tbl64_it, ppIt))
-//                : probs.emplace_back(prob_ir(tbl64_it, ppIt));
-//            }
-//            else
-//              probs.emplace_back(0.0);
-//          }
-//          ++tbl64_it;
-//        }
-//        else if (mm.cont == Container::TABLE_32) {
-//          (mm.ir==0) ? probs.emplace_back(prob(tbl32_it, ppIt))
-//                     : probs.emplace_back(prob_ir(tbl32_it, ppIt));
-//          if (mm.child) {
-//            ++ppIt;
-//            if (is_tm_enabled(tbl32_it, ppIt))
-//              (mm.child->ir==0)
-//                ? probs.emplace_back(prob(tbl32_it, ppIt))
-//                : probs.emplace_back(prob_ir(tbl32_it, ppIt));
-//            else
-//              probs.emplace_back(0.0);
-//          }
-//          ++tbl32_it;
-//        }
-//        else if (mm.cont == Container::LOG_TABLE_8) {
-//          (mm.ir==0) ? probs.emplace_back(prob(lgtbl8_it, ppIt))
-//                     : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
-//          if (mm.child) {
-//            ++ppIt;
-//            if (is_tm_enabled(lgtbl8_it, ppIt))
-//              (mm.child->ir==0)
-//                ? probs.emplace_back(prob(lgtbl8_it, ppIt))
-//                : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
-//            else
-//              probs.emplace_back(0.0);
-//          }
-//          ++lgtbl8_it;
-//        }
-//        else if (mm.cont == Container::SKETCH_8) {
-//          (mm.ir==0) ? probs.emplace_back(prob(cmls4_it, ppIt))
-//                     : probs.emplace_back(prob_ir(cmls4_it, ppIt));
-//          if (mm.child) {
-//            ++ppIt;
-//            if (is_tm_enabled(cmls4_it, ppIt))
-//              (mm.child->ir==0)
-//                ? probs.emplace_back(prob(cmls4_it, ppIt))
-//                : probs.emplace_back(prob_ir(cmls4_it, ppIt));
-//            else
-//              probs.emplace_back(0.0);
-//          }
-//          ++cmls4_it;
-//        }
-//        ++ppIt;
-//      }
-//      sEnt += entropy(w.begin(), probs.begin(), probs.end());
-//
-//      // Update context
-//      ppIt    = pp.begin();
-//      ctxIt   = ctx.begin();
-//      ctxIrIt = ctxIr.begin();
-//      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
-//           ++mmIt, ++ctxIt, ++ctxIrIt) {
-//        (mmIt->ir==0) ? update_ctx(*ctxIt, ppIt++)
-//                       : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
-//        if (mmIt->child) {
-//          ++ctxIt;  ++ctxIrIt;
-//          (mmIt->child->ir==0) ? update_ctx(*ctxIt, ppIt++)
-//                                : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
-//        }
-//      }
+
+
+////      // Config
+////      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
+////           ++mmIt, ++ppIt, ++ctxIt, ++ctxIrIt) {
+////        (mmIt->ir==0) ? ppIt->config(c, *ctxIt)
+////                      : ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+////        if (mmIt->child) {
+////          ++ppIt;  ++ctxIt;  ++ctxIrIt;
+////          if (mmIt->child->ir == 0) {
+////            ppIt->config(*ctxIt);  // l
+////            if (mmIt->cont == Container::TABLE_64)
+////              ppIt->config(best_sym(tbl64_it++,  ppIt));
+////            else if (mmIt->cont == Container::TABLE_32)
+////              ppIt->config(best_sym(tbl32_it++,  ppIt));
+////            else if (mmIt->cont == Container::LOG_TABLE_8)
+////              ppIt->config(best_sym(lgtbl8_it++, ppIt));
+////            else if (mmIt->cont == Container::SKETCH_8)
+////              ppIt->config(best_sym(cmls4_it++,  ppIt));
+////          }
+////          else {
+////            ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+////            if (mmIt->cont == Container::TABLE_64)
+////              ppIt->config_ir(best_sym_ir(tbl64_it++,  ppIt));
+////            else if (mmIt->cont == Container::TABLE_32)
+////              ppIt->config_ir(best_sym_ir(tbl32_it++,  ppIt));
+////            else if (mmIt->cont == Container::LOG_TABLE_8)
+////              ppIt->config_ir(best_sym_ir(lgtbl8_it++, ppIt));
+////            else if (mmIt->cont == Container::SKETCH_8)
+////              ppIt->config_ir(best_sym_ir(cmls4_it++,  ppIt));
+////          }
+////        }
+////      }
+////
+////      // Entropy
+////      ppIt = pp.begin();
+////      tbl64_it=tbl64.begin();    tbl32_it=tbl32.begin();
+////      lgtbl8_it=lgtbl8.begin();  cmls4_it=cmls4.begin();
+////      vector<double> probs;
+////      //todo. probs.reserve(nMdl); check not insert 0 when not consider stmm
+////      for (const auto& mm : Ms) {
+////        if (mm.cont == Container::TABLE_64) {
+////          (mm.ir==0) ? probs.emplace_back(prob(tbl64_it, ppIt))
+////                     : probs.emplace_back(prob_ir(tbl64_it, ppIt));
+////          if (mm.child) {
+////            ++ppIt;
+////            if (is_tm_enabled(tbl64_it, ppIt)) {//todo
+////              ++nbest;//todo
+////              (mm.child->ir==0)
+////                ? probs.emplace_back(prob(tbl64_it, ppIt))
+////                : probs.emplace_back(prob_ir(tbl64_it, ppIt));
+////            }
+////            else
+////              probs.emplace_back(0.0);
+////          }
+////          ++tbl64_it;
+////        }
+////        else if (mm.cont == Container::TABLE_32) {
+////          (mm.ir==0) ? probs.emplace_back(prob(tbl32_it, ppIt))
+////                     : probs.emplace_back(prob_ir(tbl32_it, ppIt));
+////          if (mm.child) {
+////            ++ppIt;
+////            if (is_tm_enabled(tbl32_it, ppIt))
+////              (mm.child->ir==0)
+////                ? probs.emplace_back(prob(tbl32_it, ppIt))
+////                : probs.emplace_back(prob_ir(tbl32_it, ppIt));
+////            else
+////              probs.emplace_back(0.0);
+////          }
+////          ++tbl32_it;
+////        }
+////        else if (mm.cont == Container::LOG_TABLE_8) {
+////          (mm.ir==0) ? probs.emplace_back(prob(lgtbl8_it, ppIt))
+////                     : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
+////          if (mm.child) {
+////            ++ppIt;
+////            if (is_tm_enabled(lgtbl8_it, ppIt))
+////              (mm.child->ir==0)
+////                ? probs.emplace_back(prob(lgtbl8_it, ppIt))
+////                : probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
+////            else
+////              probs.emplace_back(0.0);
+////          }
+////          ++lgtbl8_it;
+////        }
+////        else if (mm.cont == Container::SKETCH_8) {
+////          (mm.ir==0) ? probs.emplace_back(prob(cmls4_it, ppIt))
+////                     : probs.emplace_back(prob_ir(cmls4_it, ppIt));
+////          if (mm.child) {
+////            ++ppIt;
+////            if (is_tm_enabled(cmls4_it, ppIt))
+////              (mm.child->ir==0)
+////                ? probs.emplace_back(prob(cmls4_it, ppIt))
+////                : probs.emplace_back(prob_ir(cmls4_it, ppIt));
+////            else
+////              probs.emplace_back(0.0);
+////          }
+////          ++cmls4_it;
+////        }
+////        ++ppIt;
+////      }
+////      sEnt += entropy(w.begin(), probs.begin(), probs.end());
+////
+////      // Update context
+////      ppIt    = pp.begin();
+////      ctxIt   = ctx.begin();
+////      ctxIrIt = ctxIr.begin();
+////      for (auto mmIt=Ms.begin(); mmIt!=Ms.end();
+////           ++mmIt, ++ctxIt, ++ctxIrIt) {
+////        (mmIt->ir==0) ? update_ctx(*ctxIt, ppIt++)
+////                       : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
+////        if (mmIt->child) {
+////          ++ctxIt;  ++ctxIrIt;
+////          (mmIt->child->ir==0) ? update_ctx(*ctxIt, ppIt++)
+////                                : update_ctx_ir(*ctxIt, *ctxIrIt, ppIt++);
+////        }
+////      }
     }
   }
-  cerr<<nbest;//todo
+//  cerr<<nbest;//todo
   tf.close();
   aveEnt = sEnt/symsNo;
 }
@@ -772,10 +776,10 @@ inline double FCM::entropy (double P) const {
 
 template <typename OutIter, typename InIter>
 inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
-  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
+//  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
   update_weights(wFirst, PFirst, PLast);
-  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
-  cerr<<'\n';//todo
+//  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
+//  cerr<<'\n';//todo
   // log2 1 / (P0*w0 + P1*w1 + ...)
   return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
