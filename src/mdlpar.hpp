@@ -50,36 +50,25 @@ struct ProbPar {
   ProbPar () = default;
   ProbPar (float a, u64 m, u8 sh) : alpha(a), mask(m), shl(sh),
     sAlpha(static_cast<double>(CARDINALITY*alpha)) {}
-  void config (u8);//todo
-  void config (u64);//todo
-//  void config (u64, u8);//todo
+  void config (u64);
+  void config (u8);
   void config (char, u64);
-  void config_ir (u8);//todo
-  void config_ir (u64, u64);//todo
+  void config_ir (u64, u64);
+  void config_ir (u8);
   void config_ir (char, u64, u64);
 };
+
+inline void ProbPar::config (u64 ctx) {//todo
+  l = ctx<<2u;
+}
 
 inline void ProbPar::config (u8 nsym) {//todo
   numSym = nsym;
 }
 
-inline void ProbPar::config (u64 ctx) {//todo
-  l = ctx<<2u;
-}
-//
-//inline void ProbPar::config (u64 ctx, u8 nsym) {//todo
-//  l      = ctx<<2u;
-//  numSym = nsym;
-//}
-
 inline void ProbPar::config (char c, u64 ctx) {
   numSym = NUM[static_cast<u8>(c)];
   l      = ctx<<2u;
-}
-
-inline void ProbPar::config_ir (u8 nsym) {//todo
-  numSym    = nsym;
-  revNumSym = static_cast<u8>(3 - nsym);
 }
 
 inline void ProbPar::config_ir (u64 ctx, u64 ctxIr) {//todo
@@ -87,10 +76,15 @@ inline void ProbPar::config_ir (u64 ctx, u64 ctxIr) {//todo
   r = ctxIr>>2u;
 }
 
+inline void ProbPar::config_ir (u8 nsym) {//todo
+  numSym    = nsym;
+  revNumSym = static_cast<u8>(3 - nsym);
+}
+
 inline void ProbPar::config_ir (char c, u64 ctx, u64 ctxIr) {
   numSym    = NUM[static_cast<u8>(c)];
   l         = ctx<<2u;
-  revNumSym = REVNUM[static_cast<u8>(c)];    // = 3 - numSym
+  revNumSym = static_cast<u8>(3 - numSym);
   r         = ctxIr>>2u;
 }
 
