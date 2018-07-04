@@ -31,10 +31,12 @@ struct STMMPar {
   float gamma;
   u8    miss;
   bool  enabled;
+  u32   history;    // k > 32 => change to u64
 //  shared_ptr<MMPar> parent; //todo. check if necessary
 
   STMMPar (u8 k_, u8 t_, u8 ir_, float a_, float g_)
-    : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), miss(0), enabled(true){}
+    : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), miss(0), enabled(true),
+      history(0) {}
 };
 
 struct ProbPar {
@@ -58,11 +60,11 @@ struct ProbPar {
   void config_ir (char, u64, u64);
 };
 
-inline void ProbPar::config (u64 ctx) {//todo
+inline void ProbPar::config (u64 ctx) {
   l = ctx<<2u;
 }
 
-inline void ProbPar::config (u8 nsym) {//todo
+inline void ProbPar::config (u8 nsym) {
   numSym = nsym;
 }
 
@@ -71,12 +73,12 @@ inline void ProbPar::config (char c, u64 ctx) {
   l      = ctx<<2u;
 }
 
-inline void ProbPar::config_ir (u64 ctx, u64 ctxIr) {//todo
+inline void ProbPar::config_ir (u64 ctx, u64 ctxIr) {
   l = ctx<<2u;
   r = ctxIr>>2u;
 }
 
-inline void ProbPar::config_ir (u8 nsym) {//todo
+inline void ProbPar::config_ir (u8 nsym) {
   numSym    = nsym;
   revNumSym = static_cast<u8>(3 - nsym);
 }

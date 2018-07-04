@@ -200,6 +200,7 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
   aveEnt = sEnt/symsNo;
 }
 
+#include <bitset>//todo
 inline void FCM::compress_n (const string& tar) {
   // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = Ms.size() + TMs.size();
@@ -241,36 +242,54 @@ inline void FCM::compress_n (const string& tar) {
           if (mm.cont == Container::TABLE_64) {
 //            probs = probs_models(c, tbl64_it, ppIt, ctxIt, ctxIrIt);//todo
             ppIt->config(c, *ctxIt);
-
             probs.emplace_back(prob(tbl64_it, ppIt));
-
             update_ctx(*ctxIt, ppIt);
 
             if (mm.child) {
               ++ppIt;  ++ctxIt;  ++ctxIrIt;
 
-              if (mm.child->ir == 0) {
-                ppIt->config(*ctxIt);  // l
-                ppIt->config(best_sym(tbl64_it, ppIt));  // best_sym uses l
+              if (mm.child->enabled) {
+                if (mm.child->ir == 0) {
+                  ppIt->config(*ctxIt);  // l
+                  u8 best;
+                  ppIt->config(best = best_sym(tbl64_it,ppIt));//best_sym uses l
 
-//                if (is_tm_enabled(tbl64_it, ppIt))
-//                  probs.emplace_back(prob(tbl64_it, ppIt));
-//                else
-                  probs.emplace_back(0.0);
+                  std::bitset<32> x(mm.child->history);//todo
+                  cerr<<x<<' ';//todo
+                  if (NUM[static_cast<u8>(c)] == best)
+                    tm_hit(mm.child);
+                  else
+                    tm_miss(mm.child);
 
-                update_ctx(*ctxIt, ppIt);
+                  probs.emplace_back(prob(tbl64_it, ppIt));
+                  update_ctx(*ctxIt, ppIt);
+                }
+//                else {
+////                  ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+////                  ppIt->config_ir(best_sym_ir(tbl64_it, ppIt));
+//
+//                  if (tm_enabled(tbl64_it, ppIt))
+//                    probs.emplace_back(prob_ir(tbl64_it, ppIt));
+//                  else
+//                    probs.emplace_back(0.0);
+//
+//                  update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//                }
               }
-//              else {
-////                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-////                ppIt->config_ir(best_sym_ir(tbl64_it, ppIt));
-//
-//                if (is_tm_enabled(tbl64_it, ppIt))
-//                  probs.emplace_back(prob_ir(tbl64_it, ppIt));
-//                else
-//                  probs.emplace_back(0.0);
-//
-//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-//              }
+              else {
+                cerr<<"disable\n";
+                if (mm.child->ir == 0) {
+                  ppIt->config(c, *ctxIt);
+
+                  if (NUM[static_cast<u8>(c)] == best_sym_abs(tbl64_it,ppIt))
+                    mm.child->enabled = true;
+
+                  probs.emplace_back(0.0);
+                  update_ctx(*ctxIt, ppIt);
+                }
+//                else {
+//                }
+              }
             }
             ++tbl64_it;
           }
@@ -288,7 +307,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config(*ctxIt);  // l
 //                ppIt->config(best_sym(tbl32_it,  ppIt));
 //
-//                if (is_tm_enabled(tbl32_it, ppIt))
+//                if (tm_enabled(tbl32_it, ppIt))
 //                  probs.emplace_back(prob(tbl32_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -299,7 +318,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
 //                ppIt->config_ir(best_sym_ir(tbl32_it,  ppIt));
 //
-//                if (is_tm_enabled(tbl32_it, ppIt))
+//                if (tm_enabled(tbl32_it, ppIt))
 //                  probs.emplace_back(prob_ir(tbl32_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -323,7 +342,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config(*ctxIt);  // l
 //                ppIt->config(best_sym(lgtbl8_it, ppIt));
 //
-//                if (is_tm_enabled(lgtbl8_it, ppIt))
+//                if (tm_enabled(lgtbl8_it, ppIt))
 //                  probs.emplace_back(prob(lgtbl8_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -334,7 +353,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
 //                ppIt->config_ir(best_sym_ir(lgtbl8_it, ppIt));
 //
-//                if (is_tm_enabled(lgtbl8_it, ppIt))
+//                if (tm_enabled(lgtbl8_it, ppIt))
 //                  probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -358,7 +377,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config(*ctxIt);  // l
 //                ppIt->config(best_sym(cmls4_it,  ppIt));
 //
-//                if (is_tm_enabled(cmls4_it, ppIt))
+//                if (tm_enabled(cmls4_it, ppIt))
 //                  probs.emplace_back(prob(cmls4_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -369,7 +388,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
 //                ppIt->config_ir(best_sym_ir(cmls4_it,  ppIt));
 //
-//                if (is_tm_enabled(cmls4_it, ppIt))
+//                if (tm_enabled(cmls4_it, ppIt))
 //                  probs.emplace_back(prob_ir(cmls4_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -395,7 +414,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config(*ctxIt);  // l
 //                ppIt->config(best_sym(tbl64_it, ppIt));
 //
-//                if (is_tm_enabled(tbl64_it, ppIt))
+//                if (tm_enabled(tbl64_it, ppIt))
 //                  probs.emplace_back(prob(tbl64_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -406,7 +425,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
 //                ppIt->config_ir(best_sym_ir(tbl64_it, ppIt));
 //
-//                if (is_tm_enabled(tbl64_it, ppIt))
+//                if (tm_enabled(tbl64_it, ppIt))
 //                  probs.emplace_back(prob_ir(tbl64_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -430,7 +449,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config(*ctxIt);  // l
 //                ppIt->config(best_sym(tbl32_it, ppIt));
 //
-//                if (is_tm_enabled(tbl32_it, ppIt))
+//                if (tm_enabled(tbl32_it, ppIt))
 //                  probs.emplace_back(prob(tbl32_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -441,7 +460,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
 //                ppIt->config_ir(best_sym_ir(tbl32_it, ppIt));
 //
-//                if (is_tm_enabled(tbl32_it, ppIt))
+//                if (tm_enabled(tbl32_it, ppIt))
 //                  probs.emplace_back(prob_ir(tbl32_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -465,7 +484,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config(*ctxIt);  // l
 //                ppIt->config(best_sym(lgtbl8_it, ppIt));
 //
-//                if (is_tm_enabled(lgtbl8_it, ppIt))
+//                if (tm_enabled(lgtbl8_it, ppIt))
 //                  probs.emplace_back(prob(lgtbl8_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -476,7 +495,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
 //                ppIt->config_ir(best_sym_ir(lgtbl8_it, ppIt));
 //
-//                if (is_tm_enabled(lgtbl8_it, ppIt))
+//                if (tm_enabled(lgtbl8_it, ppIt))
 //                  probs.emplace_back(prob_ir(lgtbl8_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -500,7 +519,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config(*ctxIt);  // l
 //                ppIt->config(best_sym(cmls4_it, ppIt));
 //
-//                if (is_tm_enabled(cmls4_it, ppIt))
+//                if (tm_enabled(cmls4_it, ppIt))
 //                  probs.emplace_back(prob(cmls4_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -511,7 +530,7 @@ inline void FCM::compress_n (const string& tar) {
 //                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
 //                ppIt->config_ir(best_sym_ir(cmls4_it, ppIt));
 //
-//                if (is_tm_enabled(cmls4_it, ppIt))
+//                if (tm_enabled(cmls4_it, ppIt))
 //                  probs.emplace_back(prob_ir(cmls4_it, ppIt));
 //                else
 //                  probs.emplace_back(0.0);
@@ -525,10 +544,10 @@ inline void FCM::compress_n (const string& tar) {
         ++ppIt;  ++ctxIt;  ++ctxIrIt;
       }
 
-      for(auto a:w) cerr<<a<<' ';
-      cerr<<" | ";
-      for(auto a:probs) cerr<<a<<' ';
-      cerr<<'\n';
+//      for(auto a:w) cerr<<a<<' ';
+//      cerr<<" | ";
+//      for(auto a:probs) cerr<<a<<' ';
+//      cerr<<'\n';
       sEnt += entropy(w.begin(), probs.begin(), probs.end());
 
 
@@ -673,7 +692,7 @@ vector<double> FCM::probs_models (char c, ContIter& cont, ProbParIter& pp,
 //      pp->config(*ctx);  // l
 //      pp->config(best_sym(cont,  pp));
 //
-//      if (is_tm_enabled(cont, pp))
+//      if (tm_enabled(cont, pp))
 //        probs.emplace_back(prob(cont, pp));
 //      else
 //        probs.emplace_back(0.0);
@@ -684,7 +703,7 @@ vector<double> FCM::probs_models (char c, ContIter& cont, ProbParIter& pp,
 //      pp->config_ir(*ctx, *ctxIr);  // l and r
 //      pp->config_ir(best_sym_ir(cont,  pp));
 //
-//      if (is_tm_enabled(cont, pp))
+//      if (tm_enabled(cont, pp))
 //        probs.emplace_back(prob_ir(cont, pp));
 //      else
 //        probs.emplace_back(0.0);
@@ -739,6 +758,33 @@ inline u8 FCM::best_sym_ir (ContIter cont, ProbParIter pp) const {
   return static_cast<u8>(std::max_element(c.begin(),c.end()) - c.begin());
 }
 
+
+template <typename ContIter, typename ProbParIter>
+inline u8 FCM::best_sym_abs (ContIter cont, ProbParIter pp) const {
+  const auto c = freqs<decltype((*cont)->query(0))>(cont, pp);  // Coeffs
+  const auto max_pos = std::max_element(c.begin(), c.end());
+  for (auto it=c.begin(); it!=c.end(); ++it)
+    if (it!=max_pos && *it==*max_pos)
+      return 255;
+  return static_cast<u8>(max_pos - c.begin());
+}
+
+void FCM::tm_hit (shared_ptr<STMMPar> stmm) {
+  stmm->history <<= 1u;  // ull for 64 bits
+      cerr<<"hit ";//todo
+}
+
+void FCM::tm_miss (shared_ptr<STMMPar> stmm) {
+  if (popcount(stmm->history) > stmm->thresh) {
+    stmm->enabled = false;
+    stmm->history = 0;
+  }
+  else
+    stmm->history = (stmm->history<<1u) | 1u;  // ull for 64 bits
+}
+
+
+
 template <typename Iter>
 inline double FCM::prob_frml (Iter it, u8 numSym, float a, float sa) const {
   return (*(it+numSym) + a) / (std::accumulate(it,it+4,0ull) + sa);
@@ -755,33 +801,21 @@ inline double FCM::prob_ir (const ContIter cont, ProbParIter pp) const {
   const auto c = freqs_ir<decltype(2*(*cont)->query(0))>(cont, pp);
   return prob_frml(c.begin(), pp->numSym, pp->alpha, pp->sAlpha);
 }
-
-
-template <typename ContIter, typename ProbParIter>
-inline bool FCM::is_tm_enabled (ContIter cont, ProbParIter pp)
-const
-{
-//  const auto c = freqs<decltype((*cont)->query(0))>(cont, pp);
-  
-//  if (*std::max_element(c.begin(),c.end()) == c[pp->numSym])
-//  return (std::max_element(c.begin(),c.end())-c.begin() == pp->numSym);
-  return true;
-//  return false;
-}
-
-
 inline double FCM::entropy (double P) const {
   return -log2(P);
 }
 
+
 template <typename OutIter, typename InIter>
 inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
-//  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
+  cerr << "w0=" << *wFirst << " w1=" << *(wFirst+1)
+       << "\tp0=" << *PFirst << " p1=" << *(PLast-1) << '\n';
   update_weights(wFirst, PFirst, PLast);
-//  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
-//  cerr<<'\n';//todo
+  cerr << "w0=" << *wFirst << " w1=" << *(wFirst+1)
+       << "\tp0=" << *PFirst << " p1=" << *(PLast-1) << "\n\n";
   // log2 1 / (P0*w0 + P1*w1 + ...)
-  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
+  return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
+//  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
 
 template <typename OutIter, typename InIter>
@@ -790,13 +824,45 @@ const {
   const auto wFirstKeep = wFirst;
   for (auto mIter=Ms.begin(); PFirst!=PLast; ++mIter, ++wFirst, ++PFirst) {
     *wFirst = pow(*wFirst, mIter->gamma) * *PFirst;
-    if (mIter->child) {//todo check enabled
-      ++wFirst;  ++PFirst;
-      *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
+    if (mIter->child) {
+      ++wFirst;
+      if (mIter->child->enabled) {//todo check enabled
+        ++PFirst;
+        *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
+      }
+      else {
+        *wFirst = 0.0;
+      }
     }
   }
   normalize(wFirstKeep, wFirst);
 }
+
+//template <typename OutIter, typename InIter>
+//inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
+//  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
+//  update_weights(wFirst, PFirst, PLast);
+//  print(*wFirst,*(wFirst+1),*PFirst,*(PLast-1));//todo
+////  cerr<<'\n';//todo
+//  // log2 1 / (P0*w0 + P1*w1 + ...)
+//  return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
+////  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
+//}
+//
+//template <typename OutIter, typename InIter>
+//inline void FCM::update_weights (OutIter wFirst, InIter PFirst, InIter PLast)
+//const {
+//  const auto wFirstKeep = wFirst;
+//  for (auto mIter=Ms.begin(); PFirst!=PLast; ++mIter, ++wFirst, ++PFirst) {
+//    *wFirst = pow(*wFirst, mIter->gamma) * *PFirst;
+////    if (mIter->child) {//todo check enabled
+//    if (mIter->child->enabled) {
+//      ++wFirst;  ++PFirst;
+//      *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
+//    }
+//  }
+//  normalize(wFirstKeep, wFirst);
+//}
 
 template <typename Iter>
 inline void FCM::normalize (Iter first, Iter last) const {
