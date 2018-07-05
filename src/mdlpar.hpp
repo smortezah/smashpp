@@ -41,7 +41,7 @@ struct STMMPar {
 
 struct ProbPar {
   float  alpha;
-  double sAlpha;
+  double sAlpha;//todo float
   u64    mask;
   u8     shl;
   u64    l;
