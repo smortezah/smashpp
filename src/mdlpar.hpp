@@ -31,12 +31,13 @@ struct STMMPar {
   float gamma;
   u8    miss;
   bool  enabled;
+  bool  can_enable;
   u32   history;    // k > 32 => change to u64
 //  shared_ptr<MMPar> parent; //todo. check if necessary
 
   STMMPar (u8 k_, u8 t_, u8 ir_, float a_, float g_)
     : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), miss(0), enabled(true),
-      history(0) {}
+      can_enable(false), history(0) {}
 };
 
 struct ProbPar {
