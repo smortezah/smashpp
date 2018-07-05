@@ -880,8 +880,8 @@ const {
         *wFirst = 0.0;
     }
   }
-  cerr << ">>> w=(" << *wFirstKeep << "," << *(wFirstKeep+1)
-       << ")\tp=(" << *(PFirst-2) << "," << *(PFirst-1) << ")\n";//todo
+//  cerr << ">>> w=(" << *wFirstKeep << "," << *(wFirstKeep+1)
+//       << ")\tp=(" << *(PFirst-2) << "," << *(PFirst-1) << ")\n";//todo
 
   normalize(wFirstKeep, wFirst);
 }
