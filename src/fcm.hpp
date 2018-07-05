@@ -58,14 +58,15 @@ class FCM    // Finite-context models
 //  u8 best_sym (ContIter, ProbParIter) const;
   template <typename ContIter, typename ProbParIter>
   u8 best_sym_ir (ContIter, ProbParIter) const;
-  template <typename ContIter, typename ProbParIter>
-  u8 best_sym_abs (ContIter, ProbParIter) const;
+  template <typename Iter>
+  u8 best_sym_abs (Iter, Iter) const;
+//  template <typename ContIter, typename ProbParIter>
+//  u8 best_sym_abs (ContIter, ProbParIter) const;
 
   template <typename Par>
   void tm_hit (Par);
   template <typename Par>
   void tm_miss (Par);
-
 
   template <typename Iter>
   double prob_frml (Iter, u8, float, float) const;

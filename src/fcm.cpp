@@ -248,6 +248,7 @@ inline void FCM::compress_n (const string& tar) {
             ppIt->config(c, *ctxIt);
 //            cerr<<"mm ctx= "<<*ctxIt<<'\n';//todo
             auto f = freqs<u64>(tbl64_it, ppIt);//todo
+            cerr<<"mm freqs=\t"; for(auto e:f)cerr<<e<<' '; cerr<<'\n';//todo
             probs.emplace_back(prob(f.begin(), ppIt));
 //            probs.emplace_back(prob(tbl64_it, ppIt));
             update_ctx(*ctxIt, ppIt);
@@ -267,13 +268,25 @@ inline void FCM::compress_n (const string& tar) {
                   ppIt->config(best);//best_sym uses l
                   cerr<<"best="<<int(best)<<'\n';
 
-                  (NUM[static_cast<u8>(c)]==best) ? tm_hit(mm.child)
-                                                  : tm_miss(mm.child);
+                  if (NUM[static_cast<u8>(c)] == best) {
+                    tm_hit(mm.child);
+                    probs.emplace_back(prob(f.begin(), ppIt));
+                  }
+                  else {
+                    tm_miss(mm.child);
+                    if (popcount(mm.child->history) > mm.child->thresh) {
+                      mm.child->enabled = false;
+                      mm.child->history = 0;
+                      probs.emplace_back(0.0);
+                    }
+                    else
+                      probs.emplace_back(prob(f.begin(), ppIt));
+                  }
+
                   std::bitset<16> x(mm.child->history);//todo
                   cerr<<x<<' ';//todo
 
-                  probs.emplace_back(prob(f.begin(), ppIt));
-//                  probs.emplace_back(prob(tbl64_it, ppIt));
+///                  probs.emplace_back(prob(tbl64_it, ppIt));
                   update_ctx(*ctxIt, ppIt);
                 }
 //                else {
@@ -290,17 +303,28 @@ inline void FCM::compress_n (const string& tar) {
               }
               else {
                 cerr<<"disable\n";
-//                if (mm.child->ir == 0) {
-//                  ppIt->config(c, *ctxIt);
-//
-//                  if (NUM[static_cast<u8>(c)] == best_sym_abs(tbl64_it,ppIt))
-//                    mm.child->enabled = true;
-//
-//                  probs.emplace_back(0.0);
-//                  update_ctx(*ctxIt, ppIt);
+                if (mm.child->ir == 0) {
+                  ppIt->config(c, *ctxIt);
+                  f = freqs<u64>(tbl64_it, ppIt);//todo
+                  cerr<<"stmm freqs=\t"; for(auto e:f)cerr<<e<<' '; cerr<<'\n';//todo
+
+                  if (NUM[static_cast<u8>(c)]==best_sym_abs(f.begin(),f.end())) {
+                    mm.child->enabled = true;
+                    tm_hit(mm.child);
+                    probs.emplace_back(prob(f.begin(), ppIt));
+                  }
+                  else
+                    probs.emplace_back(0.0);
+
+//                  mm.child->can_enable =
+//                    (NUM[static_cast<u8>(c)]==best_sym_abs(f.begin(), f.end()));
+
+                  cerr<<"best_abs="<<int(best_sym_abs(f.begin(), f.end()))<<'\n';
+
+                  update_ctx(*ctxIt, ppIt);
+                }
+//                else {
 //                }
-////                else {
-////                }
               }
             }
             ++tbl64_it;
@@ -774,16 +798,23 @@ inline u8 FCM::best_sym_ir (ContIter cont, ProbParIter pp) const {
   return static_cast<u8>(std::max_element(c.begin(),c.end()) - c.begin());
 }
 
-
-template <typename ContIter, typename ProbParIter>
-inline u8 FCM::best_sym_abs (ContIter cont, ProbParIter pp) const {
-  const auto c = freqs<decltype((*cont)->query(0))>(cont, pp);  // Coeffs
-  const auto max_pos = std::max_element(c.begin(), c.end());
-  for (auto it=c.begin(); it!=c.end(); ++it)
+template <typename Iter>
+inline u8 FCM::best_sym_abs (Iter first, Iter last) const {
+  const auto max_pos = std::max_element(first, last);
+  for (auto it=first; it!=last; ++it)
     if (it!=max_pos && *it==*max_pos)
       return 255;
-  return static_cast<u8>(max_pos - c.begin());
+  return static_cast<u8>(max_pos - first);
 }
+//template <typename ContIter, typename ProbParIter>
+//inline u8 FCM::best_sym_abs (ContIter cont, ProbParIter pp) const {
+//  const auto c = freqs<decltype((*cont)->query(0))>(cont, pp);  // Coeffs
+//  const auto max_pos = std::max_element(c.begin(), c.end());
+//  for (auto it=c.begin(); it!=c.end(); ++it)
+//    if (it!=max_pos && *it==*max_pos)
+//      return 255;
+//  return static_cast<u8>(max_pos - c.begin());
+//}
 
 template <typename Par>
 void FCM::tm_hit (Par stmm) {
@@ -794,20 +825,11 @@ void FCM::tm_hit (Par stmm) {
 template <typename Par>
 void FCM::tm_miss (Par stmm) {
   stmm->history = (stmm->history<<1u) | 1u;  // ull for 64 bits
-  if (popcount(stmm->history) > stmm->thresh) {
-    stmm->enabled = false;
-    stmm->history = 0;
-  }
-}
-//template <typename Par>
-//void FCM::tm_miss (Par stmm) {
 //  if (popcount(stmm->history) > stmm->thresh) {
 //    stmm->enabled = false;
 //    stmm->history = 0;
 //  }
-//  else
-//    stmm->history = (stmm->history<<1u) | 1u;  // ull for 64 bits
-//}
+}
 
 template <typename Iter>
 inline double FCM::prob_frml (Iter it, u8 numSym, float a, float sa) const {
@@ -816,8 +838,6 @@ inline double FCM::prob_frml (Iter it, u8 numSym, float a, float sa) const {
 
 template <typename FreqIter, typename ProbParIter>
 inline double FCM::prob (FreqIter fFirst, ProbParIter pp) const {
-//  cerr<<"sym="<<int(pp->numSym)<<'\t'; //todo
-//  cerr<<"mm freqs=\t"; for(auto e:c)cerr<<e<<' ';cerr<<'\n';//todo
   return prob_frml(fFirst, pp->numSym, pp->alpha, pp->sAlpha);
 }
 //template <typename ContIter, typename ProbParIter>
@@ -827,7 +847,6 @@ inline double FCM::prob (FreqIter fFirst, ProbParIter pp) const {
 ////  cerr<<"mm freqs=\t"; for(auto e:c)cerr<<e<<' ';cerr<<'\n';//todo
 //  return prob_frml(c.begin(), pp->numSym, pp->alpha, pp->sAlpha);
 //}
-
 //template <typename ContIter, typename ProbParIter>
 //inline double FCM::prob_ir (const ContIter cont, ProbParIter pp) const {
 //  const auto c = freqs_ir<decltype(2*(*cont)->query(0))>(cont, pp);
@@ -843,7 +862,7 @@ inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
   cerr << "w=(" << *wFirst << "," << *(wFirst+1)
        << ")\tp=(" << *PFirst << "," << *(PLast-1) << ")\n";//todo
   update_weights(wFirst, PFirst, PLast);
-//  cerr << "w0=" << *wFirst << " w1=" << *(wFirst+1) << "\n\n";//todo
+  cerr << "w0=" << *wFirst << " w1=" << *(wFirst+1) << "\n\n";//todo
   // log2 1 / (P0*w0 + P1*w1 + ...)
   return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
 //  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
@@ -856,16 +875,18 @@ const {
   for (auto mIter=Ms.begin(); PFirst!=PLast; ++mIter, ++wFirst, ++PFirst) {
     *wFirst = pow(*wFirst, mIter->gamma) * *PFirst;
     if (mIter->child) {
-      ++wFirst;
-      if (mIter->child->enabled) {//todo check enabled
-        ++PFirst;
+      ++wFirst;  ++PFirst;
+      if (mIter->child->enabled)
         *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
-      }
-      else {
+      else
         *wFirst = 0.0;
-      }
+//      mIter->child->enabled = mIter->child->can_enable;//todo
+//      cerr<<int(mIter->child->enabled);//todo
     }
   }
+  cerr << ">>> w=(" << *wFirstKeep << "," << *(wFirstKeep+1)
+       << ")\tp=(" << *(PFirst-2) << "," << *(PFirst-1) << ")\n";//todo
+
   normalize(wFirstKeep, wFirst);
 }
 
