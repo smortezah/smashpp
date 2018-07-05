@@ -312,12 +312,10 @@ inline void FCM::compress_n (const string& tar) {
                     mm.child->enabled = true;
                     tm_hit(mm.child);
                     probs.emplace_back(prob(f.begin(), ppIt));
+                    fill(w.begin(), w.end(), 1.0/nMdl);
                   }
                   else
                     probs.emplace_back(0.0);
-
-//                  mm.child->can_enable =
-//                    (NUM[static_cast<u8>(c)]==best_sym_abs(f.begin(), f.end()));
 
                   cerr<<"best_abs="<<int(best_sym_abs(f.begin(), f.end()))<<'\n';
 
@@ -880,8 +878,6 @@ const {
         *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
       else
         *wFirst = 0.0;
-//      mIter->child->enabled = mIter->child->can_enable;//todo
-//      cerr<<int(mIter->child->enabled);//todo
     }
   }
   cerr << ">>> w=(" << *wFirstKeep << "," << *(wFirstKeep+1)
