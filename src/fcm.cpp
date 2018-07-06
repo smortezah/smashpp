@@ -248,6 +248,8 @@ inline void FCM::compress_n (const string& tar) {
             ppIt->config(c, *ctxIt);
 //            cerr<<"mm ctx= "<<*ctxIt<<'\n';//todo
             auto f = freqs<u64>(tbl64_it, ppIt);//todo
+            cerr<<c<<'\n';
+            cerr<<"ctx="<<*ctxIt<<'\t';//todo
             cerr<<"mm freqs=\t"; for(auto e:f)cerr<<e<<' '; cerr<<'\n';//todo
             probs.emplace_back(prob(f.begin(), ppIt));
 //            probs.emplace_back(prob(tbl64_it, ppIt));
@@ -259,13 +261,13 @@ inline void FCM::compress_n (const string& tar) {
               if (mm.child->enabled) {
                 if (mm.child->ir == 0) {
                   ppIt->config(*ctxIt);  // l
-//                  cerr<<"stmm ctx= "<<*ctxIt<<'\n';//todo
                   f = freqs<u64>(tbl64_it, ppIt);//todo
+                  cerr<<"ctx="<<*ctxIt<<'\t';//todo
                   cerr<<"stmm freqs=\t"; for(auto e:f)cerr<<e<<' '; cerr<<'\n';//todo
 
                   const auto best = best_sym(f.begin(), f.end());
 //                  const auto best = best_sym(tbl64_it,ppIt);
-                  ppIt->config(best);//best_sym uses l
+                  ppIt->config(best);  // best_sym uses l
                   cerr<<"best="<<int(best)<<'\n';
 
                   if (NUM[static_cast<u8>(c)] == best) {
@@ -277,6 +279,7 @@ inline void FCM::compress_n (const string& tar) {
                     if (popcount(mm.child->history) > mm.child->thresh) {
                       mm.child->enabled = false;
                       mm.child->history = 0;
+                      ppIt->config(NUM[static_cast<u8>(c)]);
                       probs.emplace_back(0.0);
                     }
                     else
@@ -306,6 +309,7 @@ inline void FCM::compress_n (const string& tar) {
                 if (mm.child->ir == 0) {
                   ppIt->config(c, *ctxIt);
                   f = freqs<u64>(tbl64_it, ppIt);//todo
+                  cerr<<"ctx="<<*ctxIt<<'\t';//todo
                   cerr<<"stmm freqs=\t"; for(auto e:f)cerr<<e<<' '; cerr<<'\n';//todo
 
                   if (NUM[static_cast<u8>(c)]==best_sym_abs(f.begin(),f.end())) {
