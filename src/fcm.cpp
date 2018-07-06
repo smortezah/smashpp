@@ -1029,6 +1029,15 @@ inline u8 FCM::best_abs (Iter first, Iter last) const {
       return 255;
   return static_cast<u8>(max_pos - first);
 }
+//template <typename Iter>
+//inline u8 /*FCM::*/best_sym_abs (Iter first) /*const*/ {
+//  auto last = first + CARDINALITY;
+//  const auto max_pos = std::max_element(first, last);
+//  while (last-- != first)
+//    if (last!=max_pos && *last==*max_pos)
+//      return 255;
+//  return static_cast<u8>(max_pos - first);
+//}
 
 template <typename Par>
 void FCM::tm_hit (Par stmm) {
