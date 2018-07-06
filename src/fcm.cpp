@@ -557,7 +557,8 @@ inline void FCM::compress_n (const string& tar) {
                 }
                 else {
                   ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                  const auto f32 = freqs_ir<u32>(cmls4_it, ppIt);
+                  const auto f32 = freqs_ir<decltype((*cmls4_it)->query(0)+
+                    (*cmls4_it)->query(0))>(cmls4_it, ppIt);  // <u32>
                   const auto best = best_sym(f32.begin(), f32.end());
                   ppIt->config_ir(best);  // best_sym uses l and r
 
@@ -597,7 +598,8 @@ inline void FCM::compress_n (const string& tar) {
                 }
                 else {
                   ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                  const auto f32 = freqs_ir<u32>(cmls4_it, ppIt);
+                  const auto f32 = freqs_ir<decltype((*cmls4_it)->query(0)+
+                    (*cmls4_it)->query(0))>(cmls4_it, ppIt);  // <u32>
                   if (NUM[static_cast<u8>(c)] ==
                       best_sym_abs(f32.begin(), f32.end())) {
                     mm.child->enabled = true;
@@ -889,7 +891,8 @@ inline void FCM::compress_n (const string& tar) {
           }
           else if (mm.cont == Container::SKETCH_8) {
             ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-            auto f32 = freqs_ir<u32>(cmls4_it, ppIt);
+            auto f32 = freqs_ir<decltype((*cmls4_it)->query(0)+
+              (*cmls4_it)->query(0))>(cmls4_it, ppIt);  // <u32>
             probs.emplace_back(prob(f32.begin(), ppIt));
             update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
 
@@ -921,7 +924,8 @@ inline void FCM::compress_n (const string& tar) {
                 }
                 else {
                   ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                  f32 = freqs_ir<u32>(cmls4_it, ppIt);
+                  f32 = freqs_ir<decltype((*cmls4_it)->query(0)+
+                    (*cmls4_it)->query(0))>(cmls4_it, ppIt);  // <u32>
                   const auto best = best_sym(f32.begin(), f32.end());
                   ppIt->config_ir(best);  // best_sym uses l and r
 
@@ -961,7 +965,8 @@ inline void FCM::compress_n (const string& tar) {
                 }
                 else {
                   ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                  f32 = freqs_ir<u32>(cmls4_it, ppIt);
+                  f32 = freqs_ir<decltype((*cmls4_it)->query(0)+
+                    (*cmls4_it)->query(0))>(cmls4_it, ppIt);  // <u32>
                   if (NUM[static_cast<u8>(c)] ==
                       best_sym_abs(f32.begin(), f32.end())) {
                     mm.child->enabled = true;
@@ -1026,12 +1031,6 @@ inline u8 FCM::best_sym (Iter first, Iter last) const {
   return static_cast<u8>(std::max_element(first,last) - first);
 }
 
-template <typename ContIter, typename ProbParIter>
-inline u8 FCM::best_sym_ir (ContIter cont, ProbParIter pp) const {
-  const auto c = freqs_ir<decltype(2*(*cont)->query(0))>(cont, pp);
-  return static_cast<u8>(std::max_element(c.begin(),c.end()) - c.begin());
-}
-
 template <typename Iter>
 inline u8 FCM::best_sym_abs (Iter first, Iter last) const {
   const auto max_pos = std::max_element(first, last);
@@ -1061,11 +1060,6 @@ template <typename FreqIter, typename ProbParIter>
 inline double FCM::prob (FreqIter fFirst, ProbParIter pp) const {
   return prob_frml(fFirst, pp->numSym, pp->alpha, pp->sAlpha);
 }
-//template <typename ContIter, typename ProbParIter>
-//inline double FCM::prob_ir (const ContIter cont, ProbParIter pp) const {
-//  const auto c = freqs_ir<decltype(2*(*cont)->query(0))>(cont, pp);
-//  return prob_frml(c.begin(), pp->numSym, pp->alpha, pp->sAlpha);
-//}
 
 inline double FCM::entropy (double P) const {
   return -log2(P);

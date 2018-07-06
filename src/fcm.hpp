@@ -49,8 +49,6 @@ class FCM    // Finite-context models
   array<OutT,4> freqs_ir (ContIter, ProbParIter) const;
   template <typename Iter>
   u8 best_sym (Iter, Iter) const;
-  template <typename ContIter, typename ProbParIter>
-  u8 best_sym_ir (ContIter, ProbParIter) const;
   template <typename Iter>
   u8 best_sym_abs (Iter, Iter) const;
 
@@ -63,8 +61,6 @@ class FCM    // Finite-context models
   double prob_frml (Iter, u8, float, float) const;
   template <typename FreqIter, typename ProbParIter>
   double prob (FreqIter, ProbParIter) const;  // Probability
-//  template <typename ContIter, typename ProbParIter>
-//  double prob_ir (ContIter, ProbParIter) const;  // Prob. IR
   double entropy (double) const;
   template <typename OutIter, typename InIter>
   double entropy (OutIter, InIter, InIter) const;
