@@ -48,9 +48,9 @@ class FCM    // Finite-context models
   template <typename OutT, typename ContIter, typename ProbParIter>
   array<OutT,4> freqs_ir (ContIter, ProbParIter) const;
   template <typename Iter>
-  u8 best_sym (Iter, Iter) const;
+  u8 best(Iter, Iter) const;
   template <typename Iter>
-  u8 best_sym_abs (Iter, Iter) const;
+  u8 best_abs(Iter, Iter) const;
 
   template <typename Par>
   void tm_hit (Par);
