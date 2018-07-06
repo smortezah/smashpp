@@ -71,7 +71,6 @@ string exec (const char* cmd) {
 }
 
 void memUsage (u8 k) {//todo
-
 }
 
 string combine (u8 ir, u8 k, float alpha) {
