@@ -43,25 +43,16 @@ class FCM    // Finite-context models
   void compress_1 (const string&, ContIter);        // 1 Markov model
   void compress_n (const string&);
   
-  template <typename ContIter, typename ProbParIter, typename CtxIter,
-    typename CtxIrIter>
-  vector<double> probs_models (char, ContIter&, ProbParIter&, CtxIter&,
-                               CtxIrIter&) const;
-  
   template <typename OutT, typename ContIter, typename ProbParIter>
   array<OutT,4> freqs (ContIter, ProbParIter) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   array<OutT,4> freqs_ir (ContIter, ProbParIter) const;
   template <typename Iter>
   u8 best_sym (Iter, Iter) const;
-//  template <typename ContIter, typename ProbParIter>
-//  u8 best_sym (ContIter, ProbParIter) const;
   template <typename ContIter, typename ProbParIter>
   u8 best_sym_ir (ContIter, ProbParIter) const;
   template <typename Iter>
   u8 best_sym_abs (Iter, Iter) const;
-//  template <typename ContIter, typename ProbParIter>
-//  u8 best_sym_abs (ContIter, ProbParIter) const;
 
   template <typename Par>
   void tm_hit (Par);
@@ -72,8 +63,6 @@ class FCM    // Finite-context models
   double prob_frml (Iter, u8, float, float) const;
   template <typename FreqIter, typename ProbParIter>
   double prob (FreqIter, ProbParIter) const;  // Probability
-//  template <typename ContIter, typename ProbParIter>
-//  double prob (ContIter, ProbParIter) const;  // Probability
 //  template <typename ContIter, typename ProbParIter>
 //  double prob_ir (ContIter, ProbParIter) const;  // Prob. IR
   double entropy (double) const;
