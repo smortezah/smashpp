@@ -247,8 +247,6 @@ inline void FCM::compress_n (const string& tar) {
           if (mm.ir == 0) {
             ppIt->config(c, *ctxIt);
             const auto f = freqs<u64>(tbl64_it, ppIt);
-//          cerr<<c<<'\n'<<"ctx="<<*ctxIt<<'\t'<<"mm freqs=\t";//todo
-//          for(auto e:f)cerr<<e<<' '; cerr<<'\n';//todo
             probs.emplace_back(prob(f.begin(), ppIt));
             update_ctx(*ctxIt, ppIt);
           }
@@ -266,12 +264,8 @@ inline void FCM::compress_n (const string& tar) {
               if (mm.child->ir == 0) {
                 ppIt->config(*ctxIt);  // l
                 const auto f = freqs<u64>(tbl64_it, ppIt);
-//                cerr<<"ctx="<<*ctxIt<<'\t'<<"stmm freqs=\t";//todo
-//                for(auto e:f)cerr<<e<<' '; cerr<<'\n';//todo
                 const auto bestSym = best_sym(f.begin());
                 ppIt->config(bestSym);  // best_sym uses l
-//                cerr<<"best_sym="<<int(bestSym)<<'\n';//todo
-
                 if (nSym == bestSym)
                   probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
                 else
@@ -285,48 +279,34 @@ inline void FCM::compress_n (const string& tar) {
                 const auto f = freqs_ir<u64>(tbl64_it, ppIt);
                 const auto bestSym = best_sym(f.begin());
                 ppIt->config_ir(bestSym);  // best_sym uses l and r
-
                 if (nSym == bestSym)
                   probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
                 else
                   probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
                                                        f.begin(), ppIt));
-
                 update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
               }
             }
             else {
-//              cerr<<"disable\n";//todo
+              array<u64,4>::const_iterator fBeg;
               if (mm.child->ir == 0) {
                 ppIt->config(c, *ctxIt);
-                const auto f = freqs<u64>(tbl64_it, ppIt);
-//                cerr<<"ctx="<<*ctxIt<<'\t'<<"stmm freqs=\t";//todo
-//                for(auto e:f)cerr<<e<<' '; cerr<<'\n';//todo
-                if (nSym == best_sym_abs(f.begin())) {
-                  mm.child->enabled = true;
-                  stmm_update_hist(mm.child, 0u);
-                  probs.emplace_back(prob(f.begin(), ppIt));
-                  fill(w.begin(), w.end(), 1.0/nMdl);
-                }
-                else {
-                  probs.emplace_back(0.0);
-                }
-//                cerr<<"best_abs="<<int(best_sym_abs(f.begin()))<<'\n';
+                fBeg = (freqs<u64>(tbl64_it, ppIt)).cbegin();
                 update_ctx(*ctxIt, ppIt);
               }
               else {
                 ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                const auto f = freqs_ir<u64>(tbl64_it, ppIt);
-                if (nSym == best_sym_abs(f.begin())) {
-                  mm.child->enabled = true;
-                  stmm_update_hist(mm.child, 0u);
-                  probs.emplace_back(prob(f.begin(), ppIt));
-                  fill(w.begin(), w.end(), 1.0/nMdl);
-                }
-                else {
-                  probs.emplace_back(0.0);
-                }
+                fBeg = (freqs_ir<u64>(tbl64_it, ppIt)).cbegin();
                 update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
+
+              if (nSym == best_sym_abs(fBeg)) {
+                mm.child->enabled = true;
+                probs.emplace_back(stmm_hit_prob(mm.child, fBeg, ppIt));
+                fill(w.begin(), w.end(), 1.0/nMdl);
+              }
+              else {
+                probs.emplace_back(0.0);
               }
             }
           }
@@ -341,7 +321,8 @@ inline void FCM::compress_n (const string& tar) {
           }
           else {
             ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-            const auto f = freqs_ir<u64>(tbl32_it, ppIt);
+            const auto f = freqs_ir<decltype((*tbl32_it)->query(0)+
+              (*tbl32_it)->query(0))>(tbl32_it, ppIt);
             probs.emplace_back(prob(f.begin(), ppIt));
             update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
           }
@@ -366,7 +347,8 @@ inline void FCM::compress_n (const string& tar) {
               }
               else {
                 ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                const auto f = freqs_ir<u64>(tbl32_it, ppIt);
+                const auto f = freqs_ir<decltype((*tbl32_it)->query(0)+
+                  (*tbl32_it)->query(0))>(tbl32_it, ppIt);
                 const auto bestSym = best_sym(f.begin());
                 ppIt->config_ir(bestSym);  // best_sym uses l and r
 
@@ -383,30 +365,29 @@ inline void FCM::compress_n (const string& tar) {
               if (mm.child->ir == 0) {
                 ppIt->config(c, *ctxIt);
                 const auto f = freqs<u32>(tbl32_it, ppIt);
+                update_ctx(*ctxIt, ppIt);
                 if (nSym == best_sym_abs(f.begin())) {
                   mm.child->enabled = true;
-                  stmm_update_hist(mm.child, 0u);
-                  probs.emplace_back(prob(f.begin(), ppIt));
+                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
                   fill(w.begin(), w.end(), 1.0/nMdl);
                 }
                 else {
                   probs.emplace_back(0.0);
                 }
-                update_ctx(*ctxIt, ppIt);
               }
               else {
                 ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                const auto f = freqs_ir<u64>(tbl32_it, ppIt);
+                const auto f = freqs_ir<decltype((*tbl32_it)->query(0)+
+                  (*tbl32_it)->query(0))>(tbl32_it, ppIt);
+                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
                 if (nSym == best_sym_abs(f.begin())) {
                   mm.child->enabled = true;
-                  stmm_update_hist(mm.child, 0u);
-                  probs.emplace_back(prob(f.begin(), ppIt));
+                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
                   fill(w.begin(), w.end(), 1.0/nMdl);
                 }
                 else {
                   probs.emplace_back(0.0);
                 }
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
               }
             }
           }
@@ -460,33 +441,25 @@ inline void FCM::compress_n (const string& tar) {
               }
             }
             else {
+              array<u64,4>::const_iterator fBeg;
               if (mm.child->ir == 0) {
                 ppIt->config(c, *ctxIt);
-                const auto f = freqs<u64>(lgtbl8_it, ppIt);
-                if (nSym == best_sym_abs(f.begin())) {
-                  mm.child->enabled = true;
-                  stmm_update_hist(mm.child, 0u);
-                  probs.emplace_back(prob(f.begin(), ppIt));
-                  fill(w.begin(), w.end(), 1.0/nMdl);
-                }
-                else {
-                  probs.emplace_back(0.0);
-                }
+                fBeg = (freqs<u64>(lgtbl8_it, ppIt)).cbegin();
                 update_ctx(*ctxIt, ppIt);
               }
               else {
                 ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                const auto f = freqs_ir<u64>(lgtbl8_it, ppIt);
-                if (nSym == best_sym_abs(f.begin())) {
-                  mm.child->enabled = true;
-                  stmm_update_hist(mm.child, 0u);
-                  probs.emplace_back(prob(f.begin(), ppIt));
-                  fill(w.begin(), w.end(), 1.0/nMdl);
-                }
-                else {
-                  probs.emplace_back(0.0);
-                }
+                fBeg = (freqs_ir<u64>(lgtbl8_it, ppIt)).cbegin();
                 update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+              }
+
+              if (nSym == best_sym_abs(fBeg)) {
+                mm.child->enabled = true;
+                probs.emplace_back(stmm_hit_prob(mm.child, fBeg, ppIt));
+                fill(w.begin(), w.end(), 1.0/nMdl);
+              }
+              else {
+                probs.emplace_back(0.0);
               }
             }
           }
@@ -547,8 +520,7 @@ inline void FCM::compress_n (const string& tar) {
                 const auto f = freqs<u16>(cmls4_it, ppIt);
                 if (nSym == best_sym_abs(f.begin())) {
                   mm.child->enabled = true;
-                  stmm_update_hist(mm.child, 0u);
-                  probs.emplace_back(prob(f.begin(), ppIt));
+                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
                   fill(w.begin(), w.end(), 1.0/nMdl);
                 }
                 else {
@@ -562,8 +534,7 @@ inline void FCM::compress_n (const string& tar) {
                   (*cmls4_it)->query(0))>(cmls4_it, ppIt);  // <u32>
                 if (nSym == best_sym_abs(f.begin())) {
                   mm.child->enabled = true;
-                  stmm_update_hist(mm.child, 0u);
-                  probs.emplace_back(prob(f.begin(), ppIt));
+                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
                   fill(w.begin(), w.end(), 1.0/nMdl);
                 }
                 else {
@@ -690,8 +661,8 @@ inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
   update_weights(wFirst, PFirst, PLast);
 //  cerr<<"w0="<<*wFirst<<" w1="<<*(wFirst+1)<<"\n\n";//todo
   // log2 1 / (P0*w0 + P1*w1 + ...)
-//  return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
-  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
+  return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
+//  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
 
 template <typename OutIter, typename InIter>
