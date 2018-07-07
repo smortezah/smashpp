@@ -49,12 +49,14 @@ class FCM    // Finite-context models
   u8 best_sym (Iter) const;
   template <typename Iter>
   u8 best_sym_abs (Iter) const;
-  template <typename Par>
-  void stmm_hit_upd_hist (Par);
-  template <typename Par>
-  void stmm_miss_upd_hist (Par);
+  template<typename Par, typename Value>
+  void stmm_update_hist (Par, Value);
   template <typename Par, typename FreqIter, typename ProbParIter>
   double stmm_hit_prob (Par, FreqIter, ProbParIter);
+  template <typename Par, typename FreqIter, typename ProbParIter>
+  double stmm_miss_prob (Par, u8, FreqIter, ProbParIter);
+  template <typename Par, typename FreqIter, typename ProbParIter>
+  double stmm_miss_prob_ir (Par, u8, FreqIter, ProbParIter);
   template <typename FreqIter, typename ProbParIter>
   double prob (FreqIter, ProbParIter) const;  // Probability
   double entropy (double) const;
