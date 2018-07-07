@@ -208,6 +208,10 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
 
 #include <bitset>//todo
 inline void FCM::compress_n (const string& tar) {
+  compress_n_impl (tar);
+}
+
+inline void FCM::compress_n_impl (const string& tar) {
   // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = Ms.size() + TMs.size();
   vector<u64> ctx(nMdl);    // Fill with zeros (resize)
@@ -336,13 +340,11 @@ inline void FCM::compress_n (const string& tar) {
                 const auto f = freqs<u32>(tbl32_it, ppIt);
                 const auto bestSym = best_sym(f.begin());
                 ppIt->config(bestSym);  // best_sym uses l
-
                 if (nSym == bestSym)
                   probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
                 else
                   probs.emplace_back(stmm_miss_prob(mm.child, nSym,
                                                     f.begin(), ppIt));
-
                 update_ctx(*ctxIt, ppIt);
               }
               else {
@@ -351,13 +353,11 @@ inline void FCM::compress_n (const string& tar) {
                   (*tbl32_it)->query(0))>(tbl32_it, ppIt);
                 const auto bestSym = best_sym(f.begin());
                 ppIt->config_ir(bestSym);  // best_sym uses l and r
-
                 if (nSym == bestSym)
                   probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
                 else
                   probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
                                                        f.begin(), ppIt));
-
                 update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
               }
             }
