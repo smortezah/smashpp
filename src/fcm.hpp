@@ -38,27 +38,23 @@ class FCM    // Finite-context models
   void store_n (const Param&);    // Build models multiple threads
   template <typename Mask, typename ContIter>
   void store_impl (const string&, Mask, ContIter);  // Fill data structure
-  // Compress data structure
   template <typename ContIter>
-  void compress_1 (const string&, ContIter);        // 1 Markov model
-  void compress_n (const string&);
-  
+  void compress_1 (const string&, ContIter);  // Compress with 1 Markov model
+  void compress_n (const string&);            // Compress with n Markov models
   template <typename OutT, typename ContIter, typename ProbParIter>
   array<OutT,4> freqs (ContIter, ProbParIter) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   array<OutT,4> freqs_ir (ContIter, ProbParIter) const;
   template <typename Iter>
-  u8 best(Iter, Iter) const;
+  u8 best_sym (Iter) const;
   template <typename Iter>
-  u8 best_abs(Iter, Iter) const;
-
+  u8 best_sym_abs (Iter) const;
   template <typename Par>
-  void tm_hit (Par);
+  void stmm_hit_upd_hist (Par);
   template <typename Par>
-  void tm_miss (Par);
-
-  template <typename Iter>
-  double prob_frml (Iter, u8, float, float) const;
+  void stmm_miss_upd_hist (Par);
+  template <typename Par, typename FreqIter, typename ProbParIter>
+  double stmm_hit_prob (Par, FreqIter, ProbParIter);
   template <typename FreqIter, typename ProbParIter>
   double prob (FreqIter, ProbParIter) const;  // Probability
   double entropy (double) const;
