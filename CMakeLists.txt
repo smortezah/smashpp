@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.3.2)
 #project(smashpp)
 #SET(CMAKE_BUILD_TYPE Release)  # Must be commented for debugging
 #SET(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3")
+### NOTE: Using optimization flag "-O" is dangerous.
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 
 add_executable(smashpp  src/main.cpp
                         src/fcm.cpp

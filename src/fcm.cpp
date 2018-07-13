@@ -393,6 +393,8 @@ inline void FCM::compress_n_impl (const string& tar) {
           }
           ++tbl32_it;
         }
+        // Using "-O3" optimization flag of gcc, even when the program shouldn't
+        // enter the following IF condition, it enters!!!  #gcc_bug
         else if (mm.cont == Container::LOG_TABLE_8) {
           if (mm.ir == 0) {
             ppIt->config(c, *ctxIt);
