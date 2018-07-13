@@ -90,4 +90,21 @@ inline void ProbPar::config_ir (char c, u64 ctx, u64 ctxIr) {
   r         = ctxIr>>2u;
 }
 
+
+
+
+
+////todo
+//struct mori_struct {
+//  vector<u64>     ctx;
+//  vector<u64>     ctxIr;
+//  vector<double>  w;
+//  vector<ProbPar> pp;
+//  u8              nMdl;
+//  char            c;
+//};
+
+
+
+
 #endif //PROJECT_MDLPAR_HPP
