@@ -28,8 +28,8 @@ class Param    // Parameters
   void parse (int, char**&);
 
  private:
-  void checkFile (const string&) const;  // Can be opened & is not empty
-  void help      ()              const;
+  void check_file (const string &) const;  // Can be opened & is not empty
+  void help       ()               const;
 };
 
 inline void Param::parse (int argc, char**& argv) {
@@ -48,14 +48,14 @@ inline void Param::parse (int argc, char**& argv) {
       else if (*i=="-t" || *i=="--tar") {
         if (i+1 != vArgs.end()) {
           tar = *++i;
-          checkFile(tar);
+          check_file(tar);
         }
         else error("target file not specified. Use \"-t fileName\".");
       }
       else if (*i=="-r" || *i=="--ref") {
         if (i+1 != vArgs.end()) {
           ref = *++i;
-          checkFile(ref);
+          check_file(ref);
         }
         else error("reference file not specified. Use \"-r fileName\".");
       }
@@ -83,7 +83,7 @@ inline void Param::parse (int argc, char**& argv) {
   }
 }
 
-inline void Param::checkFile (const string& s) const {
+inline void Param::check_file (const string &s) const {
   ifstream f(s);
   if (!f) {
     f.close();
@@ -134,7 +134,8 @@ inline void Param::help () const {//todo
     << "        number of threads"                                       << '\n'
                                                                          << '\n'
     << "    -m [k,[w,d,]ir,alpha,gamma[,log2(w),d]/thresh,ir,alpha,gamma"
-                                                 ":...],  --models[...]" << '\n'
+                                                                ":...]," << '\n'
+    << "    --models [...]"                                              << '\n'
     << "        parameters of models"                                    << '\n'
     << "        k:  context size"                                        << '\n'
     << "        w:  width of sketch in log2 format, e.g., set 10 for "
