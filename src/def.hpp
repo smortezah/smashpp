@@ -16,7 +16,7 @@
 using namespace std;
 
 // Version
-static const string VERSION   {"18.07"};
+static const string VERSION   {"18.09"};
 static const string DEV_YEARS {"2018"};
 
 // Typedef
@@ -127,7 +127,7 @@ static constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3
   0, 0, 0
 };
 //static constexpr u8 REVNUM[123] {    // a,A->3  c,C->2  g,G->1  t,T->0
-//  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,             // #20
+//  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,           // #20
 //  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 //  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 //  0, 0, 0, 0, 0, 3, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
