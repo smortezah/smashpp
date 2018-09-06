@@ -208,370 +208,368 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
 
 #include <bitset>//todo
 inline void FCM::compress_n (const string& tar) {
-  // Ctx, Mir (int) sliding through the dataset
-  const auto nMdl = Ms.size() + TMs.size();
-  vector<u64> ctx(nMdl);    // Fill with zeros (resize)
-  vector<u64> ctxIr;    ctxIr.reserve(nMdl);
-  for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
-    ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
-    if (mm.child)
-      ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
-  }
-  vector<double> w (nMdl, 1.0/nMdl);
+//  // Ctx, Mir (int) sliding through the dataset
+//  const auto nMdl = Ms.size() + TMs.size();
+//  vector<u64> ctx(nMdl);    // Fill with zeros (resize)
+//  vector<u64> ctxIr;    ctxIr.reserve(nMdl);
+//  for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
+//    ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+//    if (mm.child)
+//      ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+//  }
+//  vector<double> w (nMdl, 1.0/nMdl);
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);  char c;
-  vector<ProbPar> pp;    pp.reserve(nMdl);
-  {auto maskIter = ctxIr.begin();
-    for (const auto& mm : Ms) {
-      pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
-      if (mm.child)
-        pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
-    }}
+//  ifstream tf(tar);  char c;
+//  vector<ProbPar> pp;    pp.reserve(nMdl);
+//  {auto maskIter = ctxIr.begin();
+//    for (const auto& mm : Ms) {
+//      pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+//      if (mm.child)
+//        pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+//    }}
 
 
   //todo
-//  auto moriObj = make_shared<mori_struct>();
-//  // Ctx, Mir (int) sliding through the dataset
-//  const auto nMdl = static_cast<u8>(Ms.size() + TMs.size());
-//  moriObj->nMdl = nMdl;
-//  moriObj->ctx.resize(nMdl);    // Fill with zeros (resize)
-//  moriObj->ctxIr.reserve(nMdl);
-//  for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
-//    moriObj->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
-//    if (mm.child)
-//      moriObj->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
-//  }
-//  moriObj->w.resize(nMdl, 1.0/nMdl);
-//  u64 symsNo{0};                // No. syms in target file, except \n
-//  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(tar);  char c;
-//  moriObj->pp.reserve(nMdl);
-//  {auto maskIter = moriObj->ctxIr.begin();
-//  for (const auto& mm : Ms) {
-//    moriObj->pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
-//    if (mm.child)
-//      moriObj->pp.emplace_back(mm.child->alpha, *maskIter++,
-//                               static_cast<u8>(mm.k<<1u));
-//  }}
-//
-//  while (tf.get(c)) {
-//    if (c != '\n') {
-//      ++symsNo;
-//      moriObj->c = c;
-//      sEnt += mori(moriObj);
-//    }
-//  }
-//  tf.close();
-//  aveEnt = sEnt/symsNo;
+  auto moriObj = make_shared<mori_struct>();
+  // Ctx, Mir (int) sliding through the dataset
+  const auto nMdl = static_cast<u8>(Ms.size() + TMs.size());
+  moriObj->nMdl = nMdl;
+  moriObj->ctx.resize(nMdl);    // Fill with zeros (resize)
+  moriObj->ctxIr.reserve(nMdl);
+  for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
+    moriObj->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+    if (mm.child)
+      moriObj->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+  }
+  moriObj->w.resize(nMdl, 1.0/nMdl);
+  ifstream tf(tar);  char c;//todo
+  moriObj->pp.reserve(nMdl);
+  {auto maskIter = moriObj->ctxIr.begin();
+  for (const auto& mm : Ms) {
+    moriObj->pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+    if (mm.child)
+      moriObj->pp.emplace_back(mm.child->alpha, *maskIter++,
+                               static_cast<u8>(mm.k<<1u));
+  }}
 
 
-  while (tf.get(c)) {
+
+  while (tf.get(moriObj->c = c)) {
     if (c != '\n') {
       ++symsNo;
-      const auto nSym = NUM[static_cast<u8>(c)];
-      auto ppIt       = pp.begin();
-      auto ctxIt      = ctx.begin();
-      auto ctxIrIt    = ctxIr.begin();
-      vector<double> probs;
+//      const auto nSym = NUM[static_cast<u8>(c)];
+//      auto ppIt       = pp.begin();
+//      auto ctxIt      = ctx.begin();
+//      auto ctxIrIt    = ctxIr.begin();
+//      vector<double> probs;
+
+      moriObj->nSym    = NUM[static_cast<u8>(c)];
+      moriObj->ppIt    = moriObj->pp.begin();
+      moriObj->ctxIt   = moriObj->ctx.begin();
+      moriObj->ctxIrIt = moriObj->ctxIr.begin();
 
       for (const auto& mm : Ms) {
         if (mm.cont == Container::TABLE_64) {
-          auto tbl64_it = tbl64.begin();
-          if (mm.ir == 0) {
-            ppIt->config(c, *ctxIt);
-            const auto f = freqs<u64>(tbl64_it, ppIt);
-            probs.emplace_back(prob(f.begin(), ppIt));
-            update_ctx(*ctxIt, ppIt);
-          }
-          else {
-            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-            const auto f = freqs_ir<u64>(tbl64_it, ppIt);
-            probs.emplace_back(prob(f.begin(), ppIt));
-            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-          }
-
-          if (mm.child) {
-            ++ppIt;  ++ctxIt;  ++ctxIrIt;
-
-            if (mm.child->enabled) {
-              if (mm.child->ir == 0) {
-                ppIt->config(*ctxIt);  // l
-                const auto f = freqs<u64>(tbl64_it, ppIt);
-                const auto bestSym = best_sym(f.begin());
-                ppIt->config(bestSym);  // best_sym uses l
-                if (nSym == bestSym)
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                else
-                  probs.emplace_back(stmm_miss_prob(mm.child, nSym,
-                                                    f.begin(), ppIt));
-//                std::bitset<16> x(mm.child->history);  cerr<<x<<' ';//todo
-                update_ctx(*ctxIt, ppIt);
-              }
-              else {
-                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                const auto f = freqs_ir<u64>(tbl64_it, ppIt);
-                const auto bestSym = best_sym(f.begin());
-                ppIt->config_ir(bestSym);  // best_sym uses l and r
-                if (nSym == bestSym)
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                else
-                  probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
-                                                       f.begin(), ppIt));
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-              }
-            }
-            else {
-              array<u64,4>::const_iterator fBeg;
-              if (mm.child->ir == 0) {
-                ppIt->config(c, *ctxIt);
-                fBeg = (freqs<u64>(tbl64_it, ppIt)).cbegin();
-                update_ctx(*ctxIt, ppIt);
-              }
-              else {
-                ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                fBeg = (freqs_ir<u64>(tbl64_it, ppIt)).cbegin();
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-              }
-
-              if (nSym == best_sym_abs(fBeg)) {
-                mm.child->enabled = true;
-                probs.emplace_back(stmm_hit_prob(mm.child, fBeg, ppIt));
-                fill(w.begin(), w.end(), 1.0/nMdl);
-              }
-              else {
-                probs.emplace_back(0.0);
-              }
-            }
-          }
-          ++tbl64_it;
+          moriObj->mm = mm;
+          compress_n_impl(moriObj);
+//          auto tbl64_it = tbl64.begin();
+//          if (mm.ir == 0) {
+//            ppIt->config(c, *ctxIt);
+//            const auto f = freqs<u64>(tbl64_it, ppIt);
+//            probs.emplace_back(prob(f.begin(), ppIt));
+//            update_ctx(*ctxIt, ppIt);
+//          }
+//          else {
+//            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+//            const auto f = freqs_ir<u64>(tbl64_it, ppIt);
+//            probs.emplace_back(prob(f.begin(), ppIt));
+//            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//          }
+//
+//          if (mm.child) {
+//            ++ppIt;  ++ctxIt;  ++ctxIrIt;
+//
+//            if (mm.child->enabled) {
+//              if (mm.child->ir == 0) {
+//                ppIt->config(*ctxIt);  // l
+//                const auto f = freqs<u64>(tbl64_it, ppIt);
+//                const auto bestSym = best_sym(f.begin());
+//                ppIt->config(bestSym);  // best_sym uses l
+//                if (nSym == bestSym)
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                else
+//                  probs.emplace_back(stmm_miss_prob(mm.child, nSym,
+//                                                    f.begin(), ppIt));
+////                std::bitset<16> x(mm.child->history);  cerr<<x<<' ';//todo
+//                update_ctx(*ctxIt, ppIt);
+//              }
+//              else {
+//                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+//                const auto f = freqs_ir<u64>(tbl64_it, ppIt);
+//                const auto bestSym = best_sym(f.begin());
+//                ppIt->config_ir(bestSym);  // best_sym uses l and r
+//                if (nSym == bestSym)
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                else
+//                  probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
+//                                                       f.begin(), ppIt));
+//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//              }
+//            }
+//            else {
+//              array<u64,4>::const_iterator fBeg;
+//              if (mm.child->ir == 0) {
+//                ppIt->config(c, *ctxIt);
+//                fBeg = (freqs<u64>(tbl64_it, ppIt)).cbegin();
+//                update_ctx(*ctxIt, ppIt);
+//              }
+//              else {
+//                ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+//                fBeg = (freqs_ir<u64>(tbl64_it, ppIt)).cbegin();
+//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//              }
+//
+//              if (nSym == best_sym_abs(fBeg)) {
+//                mm.child->enabled = true;
+//                probs.emplace_back(stmm_hit_prob(mm.child, fBeg, ppIt));
+//                fill(w.begin(), w.end(), 1.0/nMdl);
+//              }
+//              else {
+//                probs.emplace_back(0.0);
+//              }
+//            }
+//          }
+//          ++tbl64_it;
         }
-        else if (mm.cont == Container::TABLE_32) {
-          auto tbl32_it = tbl32.begin();
-          if (mm.ir == 0) {
-            ppIt->config(c, *ctxIt);
-            const auto f = freqs<u32>(tbl32_it, ppIt);
-            probs.emplace_back(prob(f.begin(), ppIt));
-            update_ctx(*ctxIt, ppIt);
-          }
-          else {
-            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-            const auto f = freqs_ir<u64>(tbl32_it, ppIt);
-            probs.emplace_back(prob(f.begin(), ppIt));
-            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-          }
+//        else if (mm.cont == Container::TABLE_32) {
+//          auto tbl32_it = tbl32.begin();
+//          if (mm.ir == 0) {
+//            ppIt->config(c, *ctxIt);
+//            const auto f = freqs<u32>(tbl32_it, ppIt);
+//            probs.emplace_back(prob(f.begin(), ppIt));
+//            update_ctx(*ctxIt, ppIt);
+//          }
+//          else {
+//            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+//            const auto f = freqs_ir<u64>(tbl32_it, ppIt);
+//            probs.emplace_back(prob(f.begin(), ppIt));
+//            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//          }
+//
+//          if (mm.child) {
+//            ++ppIt;  ++ctxIt;  ++ctxIrIt;
+//
+//            if (mm.child->enabled) {
+//              if (mm.child->ir == 0) {
+//                ppIt->config(*ctxIt);  // l
+//                const auto f = freqs<u32>(tbl32_it, ppIt);
+//                const auto bestSym = best_sym(f.begin());
+//                ppIt->config(bestSym);  // best_sym uses l
+//                if (nSym == bestSym)
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                else
+//                  probs.emplace_back(stmm_miss_prob(mm.child, nSym,
+//                                                    f.begin(), ppIt));
+//                update_ctx(*ctxIt, ppIt);
+//              }
+//              else {
+//                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+//                const auto f = freqs_ir<u64>(tbl32_it, ppIt);
+//                const auto bestSym = best_sym(f.begin());
+//                ppIt->config_ir(bestSym);  // best_sym uses l and r
+//                if (nSym == bestSym)
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                else
+//                  probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
+//                                                       f.begin(), ppIt));
+//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//              }
+//            }
+//            else {
+//              if (mm.child->ir == 0) {
+//                ppIt->config(c, *ctxIt);
+//                const auto f = freqs<u32>(tbl32_it, ppIt);
+//                update_ctx(*ctxIt, ppIt);
+//                if (nSym == best_sym_abs(f.begin())) {
+//                  mm.child->enabled = true;
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                  fill(w.begin(), w.end(), 1.0/nMdl);
+//                }
+//                else {
+//                  probs.emplace_back(0.0);
+//                }
+//              }
+//              else {
+//                ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+//                const auto f = freqs_ir<u64>(tbl32_it, ppIt);
+//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//                if (nSym == best_sym_abs(f.begin())) {
+//                  mm.child->enabled = true;
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                  fill(w.begin(), w.end(), 1.0/nMdl);
+//                }
+//                else {
+//                  probs.emplace_back(0.0);
+//                }
+//              }
+//            }
+//          }
+//          ++tbl32_it;
+//        }
+//          // Using "-O3" optimization flag of gcc, even when the program shouldn't
+//          // enter the following IF condition, it enters!!!  #gcc_bug
+//        else if (mm.cont == Container::LOG_TABLE_8) {
+//          auto lgtbl8_it = lgtbl8.begin();
+//          if (mm.ir == 0) {
+//            ppIt->config(c, *ctxIt);
+//            const auto f = freqs<u64>(lgtbl8_it, ppIt);
+//            probs.emplace_back(prob(f.begin(), ppIt));
+//            update_ctx(*ctxIt, ppIt);
+//          }
+//          else {
+//            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+//            const auto f = freqs_ir<u64>(lgtbl8_it, ppIt);
+//            probs.emplace_back(prob(f.begin(), ppIt));
+//            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//          }
+//
+//          if (mm.child) {
+//            ++ppIt;  ++ctxIt;  ++ctxIrIt;
+//
+//            if (mm.child->enabled) {
+//              if (mm.child->ir == 0) {
+//                ppIt->config(*ctxIt);  // l
+//                const auto f = freqs<u64>(lgtbl8_it, ppIt);
+//                const auto bestSym = best_sym(f.begin());
+//                ppIt->config(bestSym);  // best_sym uses l
+//                if (nSym == bestSym)
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                else
+//                  probs.emplace_back(stmm_miss_prob(mm.child, nSym,
+//                                                    f.begin(), ppIt));
+//                update_ctx(*ctxIt, ppIt);
+//              }
+//              else {
+//                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+//                const auto f = freqs_ir<u64>(lgtbl8_it, ppIt);
+//                const auto bestSym = best_sym(f.begin());
+//                ppIt->config_ir(bestSym);  // best_sym uses l and r
+//                if (nSym == bestSym)
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                else
+//                  probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
+//                                                       f.begin(), ppIt));
+//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//              }
+//            }
+//            else {
+//              array<u64,4>::const_iterator fBeg;
+//              if (mm.child->ir == 0) {
+//                ppIt->config(c, *ctxIt);
+//                fBeg = (freqs<u64>(lgtbl8_it, ppIt)).cbegin();
+//                update_ctx(*ctxIt, ppIt);
+//              }
+//              else {
+//                ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+//                fBeg = (freqs_ir<u64>(lgtbl8_it, ppIt)).cbegin();
+//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//              }
+//
+//              if (nSym == best_sym_abs(fBeg)) {
+//                mm.child->enabled = true;
+//                probs.emplace_back(stmm_hit_prob(mm.child, fBeg, ppIt));
+//                fill(w.begin(), w.end(), 1.0/nMdl);
+//              }
+//              else {
+//                probs.emplace_back(0.0);
+//              }
+//            }
+//          }
+//          ++lgtbl8_it;
+//        }
+//        else if (mm.cont == Container::SKETCH_8) {
+//          auto cmls4_it = cmls4.begin();
+//          if (mm.ir == 0) {
+//            ppIt->config(c, *ctxIt);
+//            const auto f = freqs<u16>(cmls4_it, ppIt);
+//            probs.emplace_back(prob(f.begin(), ppIt));
+//            update_ctx(*ctxIt, ppIt);
+//          }
+//          else {
+//            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+//            const auto f = freqs_ir<u32>(cmls4_it, ppIt);
+//            probs.emplace_back(prob(f.begin(), ppIt));
+//            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//          }
+//
+//          if (mm.child) {
+//            ++ppIt;  ++ctxIt;  ++ctxIrIt;
+//
+//            if (mm.child->enabled) {
+//              if (mm.child->ir == 0) {
+//                ppIt->config(*ctxIt);  // l
+//                const auto f = freqs<u16>(cmls4_it, ppIt);
+//                const auto bestSym = best_sym(f.begin());
+//                ppIt->config(bestSym);  // best_sym uses l
+//                if (nSym == bestSym)
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                else
+//                  probs.emplace_back(stmm_miss_prob(mm.child, nSym,
+//                                                    f.begin(), ppIt));
+//                update_ctx(*ctxIt, ppIt);
+//              }
+//              else {
+//                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
+//                const auto f = freqs_ir<u32>(cmls4_it, ppIt);
+//                const auto bestSym = best_sym(f.begin());
+//                ppIt->config_ir(bestSym);  // best_sym uses l and r
+//                if (nSym == bestSym)
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                else
+//                  probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
+//                                                       f.begin(), ppIt));
+//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//              }
+//            }
+//            else {
+//              if (mm.child->ir == 0) {
+//                ppIt->config(c, *ctxIt);
+//                const auto f = freqs<u16>(cmls4_it, ppIt);
+//                if (nSym == best_sym_abs(f.begin())) {
+//                  mm.child->enabled = true;
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                  fill(w.begin(), w.end(), 1.0/nMdl);
+//                }
+//                else {
+//                  probs.emplace_back(0.0);
+//                }
+//                update_ctx(*ctxIt, ppIt);
+//              }
+//              else {
+//                ppIt->config_ir(c, *ctxIt, *ctxIrIt);
+//                const auto f = freqs_ir<u32>(cmls4_it, ppIt);
+//                if (nSym == best_sym_abs(f.begin())) {
+//                  mm.child->enabled = true;
+//                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
+//                  fill(w.begin(), w.end(), 1.0/nMdl);
+//                }
+//                else {
+//                  probs.emplace_back(0.0);
+//                }
+//                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
+//              }
+//            }
+//          }
+//          ++cmls4_it;
+//        }
 
-          if (mm.child) {
-            ++ppIt;  ++ctxIt;  ++ctxIrIt;
-
-            if (mm.child->enabled) {
-              if (mm.child->ir == 0) {
-                ppIt->config(*ctxIt);  // l
-                const auto f = freqs<u32>(tbl32_it, ppIt);
-                const auto bestSym = best_sym(f.begin());
-                ppIt->config(bestSym);  // best_sym uses l
-                if (nSym == bestSym)
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                else
-                  probs.emplace_back(stmm_miss_prob(mm.child, nSym,
-                                                    f.begin(), ppIt));
-                update_ctx(*ctxIt, ppIt);
-              }
-              else {
-                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                const auto f = freqs_ir<u64>(tbl32_it, ppIt);
-                const auto bestSym = best_sym(f.begin());
-                ppIt->config_ir(bestSym);  // best_sym uses l and r
-                if (nSym == bestSym)
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                else
-                  probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
-                                                       f.begin(), ppIt));
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-              }
-            }
-            else {
-              if (mm.child->ir == 0) {
-                ppIt->config(c, *ctxIt);
-                const auto f = freqs<u32>(tbl32_it, ppIt);
-                update_ctx(*ctxIt, ppIt);
-                if (nSym == best_sym_abs(f.begin())) {
-                  mm.child->enabled = true;
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                  fill(w.begin(), w.end(), 1.0/nMdl);
-                }
-                else {
-                  probs.emplace_back(0.0);
-                }
-              }
-              else {
-                ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                const auto f = freqs_ir<u64>(tbl32_it, ppIt);
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-                if (nSym == best_sym_abs(f.begin())) {
-                  mm.child->enabled = true;
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                  fill(w.begin(), w.end(), 1.0/nMdl);
-                }
-                else {
-                  probs.emplace_back(0.0);
-                }
-              }
-            }
-          }
-          ++tbl32_it;
-        }
-          // Using "-O3" optimization flag of gcc, even when the program shouldn't
-          // enter the following IF condition, it enters!!!  #gcc_bug
-        else if (mm.cont == Container::LOG_TABLE_8) {
-          auto lgtbl8_it = lgtbl8.begin();
-          if (mm.ir == 0) {
-            ppIt->config(c, *ctxIt);
-            const auto f = freqs<u64>(lgtbl8_it, ppIt);
-            probs.emplace_back(prob(f.begin(), ppIt));
-            update_ctx(*ctxIt, ppIt);
-          }
-          else {
-            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-            const auto f = freqs_ir<u64>(lgtbl8_it, ppIt);
-            probs.emplace_back(prob(f.begin(), ppIt));
-            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-          }
-
-          if (mm.child) {
-            ++ppIt;  ++ctxIt;  ++ctxIrIt;
-
-            if (mm.child->enabled) {
-              if (mm.child->ir == 0) {
-                ppIt->config(*ctxIt);  // l
-                const auto f = freqs<u64>(lgtbl8_it, ppIt);
-                const auto bestSym = best_sym(f.begin());
-                ppIt->config(bestSym);  // best_sym uses l
-                if (nSym == bestSym)
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                else
-                  probs.emplace_back(stmm_miss_prob(mm.child, nSym,
-                                                    f.begin(), ppIt));
-                update_ctx(*ctxIt, ppIt);
-              }
-              else {
-                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                const auto f = freqs_ir<u64>(lgtbl8_it, ppIt);
-                const auto bestSym = best_sym(f.begin());
-                ppIt->config_ir(bestSym);  // best_sym uses l and r
-                if (nSym == bestSym)
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                else
-                  probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
-                                                       f.begin(), ppIt));
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-              }
-            }
-            else {
-              array<u64,4>::const_iterator fBeg;
-              if (mm.child->ir == 0) {
-                ppIt->config(c, *ctxIt);
-                fBeg = (freqs<u64>(lgtbl8_it, ppIt)).cbegin();
-                update_ctx(*ctxIt, ppIt);
-              }
-              else {
-                ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                fBeg = (freqs_ir<u64>(lgtbl8_it, ppIt)).cbegin();
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-              }
-
-              if (nSym == best_sym_abs(fBeg)) {
-                mm.child->enabled = true;
-                probs.emplace_back(stmm_hit_prob(mm.child, fBeg, ppIt));
-                fill(w.begin(), w.end(), 1.0/nMdl);
-              }
-              else {
-                probs.emplace_back(0.0);
-              }
-            }
-          }
-          ++lgtbl8_it;
-        }
-        else if (mm.cont == Container::SKETCH_8) {
-          auto cmls4_it = cmls4.begin();
-          if (mm.ir == 0) {
-            ppIt->config(c, *ctxIt);
-            const auto f = freqs<u16>(cmls4_it, ppIt);
-            probs.emplace_back(prob(f.begin(), ppIt));
-            update_ctx(*ctxIt, ppIt);
-          }
-          else {
-            ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-            const auto f = freqs_ir<u32>(cmls4_it, ppIt);
-            probs.emplace_back(prob(f.begin(), ppIt));
-            update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-          }
-
-          if (mm.child) {
-            ++ppIt;  ++ctxIt;  ++ctxIrIt;
-
-            if (mm.child->enabled) {
-              if (mm.child->ir == 0) {
-                ppIt->config(*ctxIt);  // l
-                const auto f = freqs<u16>(cmls4_it, ppIt);
-                const auto bestSym = best_sym(f.begin());
-                ppIt->config(bestSym);  // best_sym uses l
-                if (nSym == bestSym)
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                else
-                  probs.emplace_back(stmm_miss_prob(mm.child, nSym,
-                                                    f.begin(), ppIt));
-                update_ctx(*ctxIt, ppIt);
-              }
-              else {
-                ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                const auto f = freqs_ir<u32>(cmls4_it, ppIt);
-                const auto bestSym = best_sym(f.begin());
-                ppIt->config_ir(bestSym);  // best_sym uses l and r
-                if (nSym == bestSym)
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                else
-                  probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
-                                                       f.begin(), ppIt));
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-              }
-            }
-            else {
-              if (mm.child->ir == 0) {
-                ppIt->config(c, *ctxIt);
-                const auto f = freqs<u16>(cmls4_it, ppIt);
-                if (nSym == best_sym_abs(f.begin())) {
-                  mm.child->enabled = true;
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                  fill(w.begin(), w.end(), 1.0/nMdl);
-                }
-                else {
-                  probs.emplace_back(0.0);
-                }
-                update_ctx(*ctxIt, ppIt);
-              }
-              else {
-                ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                const auto f = freqs_ir<u32>(cmls4_it, ppIt);
-                if (nSym == best_sym_abs(f.begin())) {
-                  mm.child->enabled = true;
-                  probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-                  fill(w.begin(), w.end(), 1.0/nMdl);
-                }
-                else {
-                  probs.emplace_back(0.0);
-                }
-                update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-              }
-            }
-          }
-          ++cmls4_it;
-        }
-
-        ++ppIt;  ++ctxIt;  ++ctxIrIt;
+//        ++ppIt;  ++ctxIt;  ++ctxIrIt;//todo
+        ++moriObj->ppIt;  ++moriObj->ctxIt;  ++moriObj->ctxIrIt;
       }
 
-      sEnt += entropy(w.begin(), probs.begin(), probs.end());
+//      sEnt += entropy(w.begin(), probs.begin(), probs.end());//todo
+      sEnt += entropy(moriObj->w.begin(), moriObj->probs.begin(), moriObj->probs.end());
     }
   }
   tf.close();
@@ -580,7 +578,76 @@ inline void FCM::compress_n (const string& tar) {
 //  compress_n_impl (tar);
 }
 
-inline void FCM::compress_n_impl (const string& tar) {
+//inline void FCM::compress_n_impl (const string& tar) {
+inline void FCM::compress_n_impl (shared_ptr<mori_struct> moriObj) {
+          auto tbl64_it = tbl64.begin();
+          if (moriObj->mm.ir == 0) {
+            moriObj->ppIt->config(moriObj->c, *moriObj->ctxIt);
+            const auto f = freqs<u64>(tbl64_it, moriObj->ppIt);
+            moriObj->probs.emplace_back(prob(f.begin(), moriObj->ppIt));
+            update_ctx(*moriObj->ctxIt, moriObj->ppIt);
+          }
+          else {
+            moriObj->ppIt->config_ir(moriObj->c, *moriObj->ctxIt, *moriObj->ctxIrIt);
+            const auto f = freqs_ir<u64>(tbl64_it, moriObj->ppIt);
+            moriObj->probs.emplace_back(prob(f.begin(), moriObj->ppIt));
+            update_ctx_ir(*moriObj->ctxIt, *moriObj->ctxIrIt, moriObj->ppIt);
+          }
+
+          if (moriObj->mm.child) {
+            ++moriObj->ppIt;  ++moriObj->ctxIt;  ++moriObj->ctxIrIt;
+
+            if (moriObj->mm.child->enabled) {
+              if (moriObj->mm.child->ir == 0) {
+                moriObj->ppIt->config(*moriObj->ctxIt);  // l
+                const auto f = freqs<u64>(tbl64_it, moriObj->ppIt);
+                const auto bestSym = best_sym(f.begin());
+                moriObj->ppIt->config(bestSym);  // best_sym uses l
+                if (moriObj->nSym == bestSym)
+                  moriObj->probs.emplace_back(stmm_hit_prob(moriObj->mm.child, f.begin(), moriObj->ppIt));
+                else
+                  moriObj->probs.emplace_back(stmm_miss_prob(moriObj->mm.child, moriObj->nSym,
+                                                    f.begin(), moriObj->ppIt));
+//                std::bitset<16> x(mm.child->history);  cerr<<x<<' ';//todo
+                update_ctx(*moriObj->ctxIt, moriObj->ppIt);
+              }
+              else {
+                moriObj->ppIt->config_ir(*moriObj->ctxIt, *moriObj->ctxIrIt);  // l and r
+                const auto f = freqs_ir<u64>(tbl64_it, moriObj->ppIt);
+                const auto bestSym = best_sym(f.begin());
+                moriObj->ppIt->config_ir(bestSym);  // best_sym uses l and r
+                if (moriObj->nSym == bestSym)
+                  moriObj->probs.emplace_back(stmm_hit_prob(moriObj->mm.child, f.begin(), moriObj->ppIt));
+                else
+                  moriObj->probs.emplace_back(stmm_miss_prob_ir(moriObj->mm.child, moriObj->nSym,
+                                                       f.begin(), moriObj->ppIt));
+                update_ctx_ir(*moriObj->ctxIt, *moriObj->ctxIrIt, moriObj->ppIt);
+              }
+            }
+            else {
+              array<u64,4>::const_iterator fBeg;
+              if (moriObj->mm.child->ir == 0) {
+                moriObj->ppIt->config(moriObj->c, *moriObj->ctxIt);
+                fBeg = (freqs<u64>(tbl64_it, moriObj->ppIt)).cbegin();
+                update_ctx(*moriObj->ctxIt, moriObj->ppIt);
+              }
+              else {
+                moriObj->ppIt->config_ir(moriObj->c, *moriObj->ctxIt, *moriObj->ctxIrIt);
+                fBeg = (freqs_ir<u64>(tbl64_it, moriObj->ppIt)).cbegin();
+                update_ctx_ir(*moriObj->ctxIt, *moriObj->ctxIrIt, moriObj->ppIt);
+              }
+
+              if (moriObj->nSym == best_sym_abs(fBeg)) {
+                moriObj->mm.child->enabled = true;
+                moriObj->probs.emplace_back(stmm_hit_prob(moriObj->mm.child, fBeg, moriObj->ppIt));
+                fill(moriObj->w.begin(), moriObj->w.end(), 1.0/moriObj->nMdl);
+              }
+              else {
+                moriObj->probs.emplace_back(0.0);
+              }
+            }
+          }
+          ++tbl64_it;
 }
 
 //// Called from main -- MUST NOT be inline

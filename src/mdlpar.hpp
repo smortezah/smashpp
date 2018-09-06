@@ -17,6 +17,7 @@ struct MMPar {
   Container cont;  // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
   shared_ptr<STMMPar> child;
 
+  MMPar () = default;//todo
   MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
     : k(k_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
       cont(Container::TABLE_64), child(nullptr) {}
@@ -94,15 +95,21 @@ inline void ProbPar::config_ir (char c, u64 ctx, u64 ctxIr) {
 
 
 
-////todo
-//struct mori_struct {
-//  vector<u64>     ctx;
-//  vector<u64>     ctxIr;
-//  vector<double>  w;
-//  vector<ProbPar> pp;
-//  u8              nMdl;
-//  char            c;
-//};
+//todo
+struct mori_struct {
+  vector<u64>     ctx;
+  vector<u64>     ctxIr;
+  vector<double>  w;
+  vector<ProbPar> pp;
+  u8              nMdl;
+  u8 nSym;
+  vector<ProbPar>::iterator ppIt;
+  vector<u64>::iterator     ctxIt;
+  vector<u64>::iterator     ctxIrIt;
+  vector<double> probs;
+  char            c;
+  MMPar mm;
+};
 
 
 
