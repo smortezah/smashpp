@@ -208,7 +208,27 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
 
 #include <bitset>//todo
 inline void FCM::compress_n (const string& tar) {
-  compress_n_impl (tar);
+  // Ctx, Mir (int) sliding through the dataset
+  const auto nMdl = Ms.size() + TMs.size();
+  vector<u64> ctx(nMdl);    // Fill with zeros (resize)
+  vector<u64> ctxIr;    ctxIr.reserve(nMdl);
+  for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
+    ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+    if (mm.child)
+      ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+  }
+  vector<double> w (nMdl, 1.0/nMdl);
+  u64 symsNo{0};                // No. syms in target file, except \n
+  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(tar);  char c;
+  vector<ProbPar> pp;    pp.reserve(nMdl);
+  {auto maskIter = ctxIr.begin();
+    for (const auto& mm : Ms) {
+      pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+      if (mm.child)
+        pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+    }}
+
 
   //todo
 //  auto moriObj = make_shared<mori_struct>();
@@ -244,116 +264,7 @@ inline void FCM::compress_n (const string& tar) {
 //  }
 //  tf.close();
 //  aveEnt = sEnt/symsNo;
-}
 
-////todo
-//template <typename MoriT>
-//inline double FCM::mori (MoriT moriObj) {
-//  auto tbl64_it  = tbl64.begin();
-//  auto tbl32_it  = tbl32.begin();
-//  auto lgtbl8_it = lgtbl8.begin();
-//  auto cmls4_it  = cmls4.begin();
-//  vector<double> probs;
-//
-//  for (const auto& mm : Ms) {
-//    if (mm.cont == Container::TABLE_64) {
-//      mori2(moriObj, tbl64_it);
-////    if (mm.ir == 0) {
-////      ppIt->config(c, *ctxIt);
-////      const auto f = freqs<decltype((*tbl64_it)->query(0))>(tbl64_it, ppIt);
-////      probs.emplace_back(prob(f.begin(), ppIt));
-////      update_ctx(*ctxIt, ppIt);
-////    }
-////    else {
-////      ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-////      const auto f = freqs_ir<u64>(tbl64_it, ppIt);
-////      probs.emplace_back(prob(f.begin(), ppIt));
-////      update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-////    }
-////
-////    if (mm.child) {
-////      ++ppIt;  ++ctxIt;  ++ctxIrIt;
-////
-////      if (mm.child->enabled) {
-////        if (mm.child->ir == 0) {
-////          ppIt->config(*ctxIt);  // l
-////          const auto f = freqs<u64>(tbl64_it, ppIt);
-////          const auto bestSym = best_sym(f.begin());
-////          ppIt->config(bestSym);  // best_sym uses l
-////          if (nSym == bestSym)
-////            probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-////          else
-////            probs.emplace_back(stmm_miss_prob(mm.child, nSym,
-////                                              f.begin(), ppIt));
-//////            std::bitset<16> x(mm.child->history);  cerr<<x<<' ';//todo
-////          update_ctx(*ctxIt, ppIt);
-////        }
-////        else {
-////          ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-////          const auto f = freqs_ir<u64>(tbl64_it, ppIt);
-////          const auto bestSym = best_sym(f.begin());
-////          ppIt->config_ir(bestSym);  // best_sym uses l and r
-////          if (nSym == bestSym)
-////            probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
-////          else
-////            probs.emplace_back(stmm_miss_prob_ir(mm.child, nSym,
-////                                                 f.begin(), ppIt));
-////          update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-////        }
-////      }
-////      else {
-////        array<u64,4>::const_iterator fBeg;
-////        if (mm.child->ir == 0) {
-////          ppIt->config(c, *ctxIt);
-////          fBeg = (freqs<u64>(tbl64_it, ppIt)).cbegin();
-////          update_ctx(*ctxIt, ppIt);
-////        }
-////        else {
-////          ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-////          fBeg = (freqs_ir<u64>(tbl64_it, ppIt)).cbegin();
-////          update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
-////        }
-////
-////        if (nSym == best_sym_abs(fBeg)) {
-////          mm.child->enabled = true;
-////          probs.emplace_back(stmm_hit_prob(mm.child, fBeg, ppIt));
-////          fill(moriObj->w.begin(), moriObj->w.end(), 1.0/moriObj->nMdl);
-////        }
-////        else {
-////          probs.emplace_back(0.0);
-////        }
-////      }
-////    }
-//    ++tbl64_it;
-//    }
-//
-//    ++ppIt;  ++ctxIt;  ++ctxIrIt;
-//  }
-//
-//  return entropy(moriObj->w.begin(), probs.begin(), probs.end());
-//}
-
-inline void FCM::compress_n_impl (const string& tar) {
-  // Ctx, Mir (int) sliding through the dataset
-  const auto nMdl = Ms.size() + TMs.size();
-  vector<u64> ctx(nMdl);    // Fill with zeros (resize)
-  vector<u64> ctxIr;    ctxIr.reserve(nMdl);
-  for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
-    ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
-    if (mm.child)
-      ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
-  }
-  vector<double> w (nMdl, 1.0/nMdl);
-  u64 symsNo{0};                // No. syms in target file, except \n
-  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);  char c;
-  vector<ProbPar> pp;    pp.reserve(nMdl);
-  {auto maskIter = ctxIr.begin();
-  for (const auto& mm : Ms) {
-    pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
-    if (mm.child)
-      pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
-  }}
 
   while (tf.get(c)) {
     if (c != '\n') {
@@ -362,14 +273,11 @@ inline void FCM::compress_n_impl (const string& tar) {
       auto ppIt       = pp.begin();
       auto ctxIt      = ctx.begin();
       auto ctxIrIt    = ctxIr.begin();
-      auto tbl64_it   = tbl64.begin();
-      auto tbl32_it   = tbl32.begin();
-      auto lgtbl8_it  = lgtbl8.begin();
-      auto cmls4_it   = cmls4.begin();
       vector<double> probs;
 
       for (const auto& mm : Ms) {
         if (mm.cont == Container::TABLE_64) {
+          auto tbl64_it = tbl64.begin();
           if (mm.ir == 0) {
             ppIt->config(c, *ctxIt);
             const auto f = freqs<u64>(tbl64_it, ppIt);
@@ -439,6 +347,7 @@ inline void FCM::compress_n_impl (const string& tar) {
           ++tbl64_it;
         }
         else if (mm.cont == Container::TABLE_32) {
+          auto tbl32_it = tbl32.begin();
           if (mm.ir == 0) {
             ppIt->config(c, *ctxIt);
             const auto f = freqs<u32>(tbl32_it, ppIt);
@@ -447,8 +356,7 @@ inline void FCM::compress_n_impl (const string& tar) {
           }
           else {
             ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-            const auto f = freqs_ir<decltype((*tbl32_it)->query(0)+
-              (*tbl32_it)->query(0))>(tbl32_it, ppIt);
+            const auto f = freqs_ir<u64>(tbl32_it, ppIt);
             probs.emplace_back(prob(f.begin(), ppIt));
             update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
           }
@@ -471,8 +379,7 @@ inline void FCM::compress_n_impl (const string& tar) {
               }
               else {
                 ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                const auto f = freqs_ir<decltype((*tbl32_it)->query(0)+
-                  (*tbl32_it)->query(0))>(tbl32_it, ppIt);
+                const auto f = freqs_ir<u64>(tbl32_it, ppIt);
                 const auto bestSym = best_sym(f.begin());
                 ppIt->config_ir(bestSym);  // best_sym uses l and r
                 if (nSym == bestSym)
@@ -499,8 +406,7 @@ inline void FCM::compress_n_impl (const string& tar) {
               }
               else {
                 ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                const auto f = freqs_ir<decltype((*tbl32_it)->query(0)+
-                  (*tbl32_it)->query(0))>(tbl32_it, ppIt);
+                const auto f = freqs_ir<u64>(tbl32_it, ppIt);
                 update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
                 if (nSym == best_sym_abs(f.begin())) {
                   mm.child->enabled = true;
@@ -515,9 +421,10 @@ inline void FCM::compress_n_impl (const string& tar) {
           }
           ++tbl32_it;
         }
-        // Using "-O3" optimization flag of gcc, even when the program shouldn't
-        // enter the following IF condition, it enters!!!  #gcc_bug
+          // Using "-O3" optimization flag of gcc, even when the program shouldn't
+          // enter the following IF condition, it enters!!!  #gcc_bug
         else if (mm.cont == Container::LOG_TABLE_8) {
+          auto lgtbl8_it = lgtbl8.begin();
           if (mm.ir == 0) {
             ppIt->config(c, *ctxIt);
             const auto f = freqs<u64>(lgtbl8_it, ppIt);
@@ -586,6 +493,7 @@ inline void FCM::compress_n_impl (const string& tar) {
           ++lgtbl8_it;
         }
         else if (mm.cont == Container::SKETCH_8) {
+          auto cmls4_it = cmls4.begin();
           if (mm.ir == 0) {
             ppIt->config(c, *ctxIt);
             const auto f = freqs<u16>(cmls4_it, ppIt);
@@ -594,8 +502,7 @@ inline void FCM::compress_n_impl (const string& tar) {
           }
           else {
             ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-            const auto f = freqs_ir<decltype((*cmls4_it)->query(0)+
-              (*cmls4_it)->query(0))>(cmls4_it, ppIt);  // <u32>
+            const auto f = freqs_ir<u32>(cmls4_it, ppIt);
             probs.emplace_back(prob(f.begin(), ppIt));
             update_ctx_ir(*ctxIt, *ctxIrIt, ppIt);
           }
@@ -618,8 +525,7 @@ inline void FCM::compress_n_impl (const string& tar) {
               }
               else {
                 ppIt->config_ir(*ctxIt, *ctxIrIt);  // l and r
-                const auto f = freqs_ir<decltype((*cmls4_it)->query(0)+
-                  (*cmls4_it)->query(0))>(cmls4_it, ppIt);  // <u32>
+                const auto f = freqs_ir<u32>(cmls4_it, ppIt);
                 const auto bestSym = best_sym(f.begin());
                 ppIt->config_ir(bestSym);  // best_sym uses l and r
                 if (nSym == bestSym)
@@ -646,8 +552,7 @@ inline void FCM::compress_n_impl (const string& tar) {
               }
               else {
                 ppIt->config_ir(c, *ctxIt, *ctxIrIt);
-                const auto f = freqs_ir<decltype((*cmls4_it)->query(0)+
-                  (*cmls4_it)->query(0))>(cmls4_it, ppIt);  // <u32>
+                const auto f = freqs_ir<u32>(cmls4_it, ppIt);
                 if (nSym == best_sym_abs(f.begin())) {
                   mm.child->enabled = true;
                   probs.emplace_back(stmm_hit_prob(mm.child, f.begin(), ppIt));
@@ -671,6 +576,11 @@ inline void FCM::compress_n_impl (const string& tar) {
   }
   tf.close();
   aveEnt = sEnt/symsNo;
+
+//  compress_n_impl (tar);
+}
+
+inline void FCM::compress_n_impl (const string& tar) {
 }
 
 //// Called from main -- MUST NOT be inline
@@ -699,10 +609,14 @@ inline array<OutT,4> FCM::freqs (ContIter cont, ProbParIter pp) const {
 template <typename OutT, typename ContIter, typename ProbParIter>
 inline array<OutT,4> FCM::freqs_ir (ContIter cont, ProbParIter pp) const {
   return array<OutT,4>
-    {(*cont)->query(pp->l)        + (*cont)->query((3ull<<pp->shl) | pp->r),
-     (*cont)->query(pp->l | 1ull) + (*cont)->query((2ull<<pp->shl) | pp->r),
-     (*cont)->query(pp->l | 2ull) + (*cont)->query((1ull<<pp->shl) | pp->r),
-     (*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r)};
+    {static_cast<OutT>(
+       (*cont)->query(pp->l)        + (*cont)->query((3ull<<pp->shl) | pp->r)),
+     static_cast<OutT>(
+       (*cont)->query(pp->l | 1ull) + (*cont)->query((2ull<<pp->shl) | pp->r)),
+     static_cast<OutT>(
+       (*cont)->query(pp->l | 2ull) + (*cont)->query((1ull<<pp->shl) | pp->r)),
+     static_cast<OutT>(
+       (*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r))};
 }
 
 template <typename Iter>
