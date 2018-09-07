@@ -97,18 +97,19 @@ inline void ProbPar::config_ir (char c, u64 ctx, u64 ctxIr) {
 
 //todo
 struct mori_struct {
-  vector<u64>     ctx;
-  vector<u64>     ctxIr;
-  vector<double>  w;
-  vector<ProbPar> pp;
-  u8              nMdl;
-  u8 nSym;
+  vector<u64>               ctx;
+  vector<u64>               ctxIr;
+  vector<double>            w;
+  vector<ProbPar>           pp;
+  vector<double>            probs;
   vector<ProbPar>::iterator ppIt;
   vector<u64>::iterator     ctxIt;
   vector<u64>::iterator     ctxIrIt;
-  vector<double> probs;
-  char            c;
-  MMPar mm;
+  u8                        nMdl;
+  u8                        nSym;
+  char                      c;
+  MMPar                     mm;
+  mori_struct()= default;
 };
 
 
