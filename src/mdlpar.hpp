@@ -100,8 +100,8 @@ struct mori_struct {
   vector<u64>               ctx;
   vector<u64>               ctxIr;
   vector<double>            w;
-  vector<ProbPar>           pp;
   vector<double>            probs;
+  vector<ProbPar>           pp;
   vector<ProbPar>::iterator ppIt;
   vector<u64>::iterator     ctxIt;
   vector<u64>::iterator     ctxIrIt;
