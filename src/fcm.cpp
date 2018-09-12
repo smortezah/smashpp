@@ -267,6 +267,8 @@ inline void FCM::compress_n (const string& tar) {
 //      auto ctxIt      = ctx.begin();
 //      auto ctxIrIt    = ctxIr.begin();
 //      vector<double> probs;
+
+
 cerr<<c;//todo
       //todo
       moriObj->c = c;
@@ -279,6 +281,8 @@ cerr<<c;//todo
         if (mm.cont == Container::TABLE_64) {
           moriObj->mm = mm;//todo
           compress_n_impl(moriObj);//todo
+
+
 //          auto tbl64_it = tbl64.begin();
 //          if (mm.ir == 0) {
 //            ppIt->config(c, *ctxIt);
@@ -591,12 +595,12 @@ inline void FCM::compress_n_impl (shared_ptr<mori_struct> moriObj) {
     moriObj->probs.emplace_back(prob(f.begin(), moriObj->ppIt));
     update_ctx(*moriObj->ctxIt, moriObj->ppIt);
   }
-  else {
-    moriObj->ppIt->config_ir(moriObj->c, *moriObj->ctxIt, *moriObj->ctxIrIt);
-    const auto f = freqs_ir<u64>(tbl64_it, moriObj->ppIt);
-    moriObj->probs.emplace_back(prob(f.begin(), moriObj->ppIt));
-    update_ctx_ir(*moriObj->ctxIt, *moriObj->ctxIrIt, moriObj->ppIt);
-  }
+//  else {
+//    moriObj->ppIt->config_ir(moriObj->c, *moriObj->ctxIt, *moriObj->ctxIrIt);
+//    const auto f = freqs_ir<u64>(tbl64_it, moriObj->ppIt);
+//    moriObj->probs.emplace_back(prob(f.begin(), moriObj->ppIt));
+//    update_ctx_ir(*moriObj->ctxIt, *moriObj->ctxIrIt, moriObj->ppIt);
+//  }
 
   if (moriObj->mm.child) {
     ++moriObj->ppIt;  ++moriObj->ctxIt;  ++moriObj->ctxIrIt;
@@ -612,21 +616,20 @@ inline void FCM::compress_n_impl (shared_ptr<mori_struct> moriObj) {
         else
           moriObj->probs.emplace_back(stmm_miss_prob(moriObj->mm.child, moriObj->nSym,
                                             f.begin(), moriObj->ppIt));
-//        std::bitset<16> x(mm.child->history);  cerr<<x<<' ';//todo
         update_ctx(*moriObj->ctxIt, moriObj->ppIt);
       }
-      else {
-        moriObj->ppIt->config_ir(*moriObj->ctxIt, *moriObj->ctxIrIt);  // l and r
-        const auto f = freqs_ir<u64>(tbl64_it, moriObj->ppIt);
-        const auto bestSym = best_sym(f.begin());
-        moriObj->ppIt->config_ir(bestSym);  // best_sym uses l and r
-        if (moriObj->nSym == bestSym)
-          moriObj->probs.emplace_back(stmm_hit_prob(moriObj->mm.child, f.begin(), moriObj->ppIt));
-        else
-          moriObj->probs.emplace_back(stmm_miss_prob_ir(moriObj->mm.child, moriObj->nSym,
-                                               f.begin(), moriObj->ppIt));
-        update_ctx_ir(*moriObj->ctxIt, *moriObj->ctxIrIt, moriObj->ppIt);
-      }
+//      else {
+//        moriObj->ppIt->config_ir(*moriObj->ctxIt, *moriObj->ctxIrIt);  // l and r
+//        const auto f = freqs_ir<u64>(tbl64_it, moriObj->ppIt);
+//        const auto bestSym = best_sym(f.begin());
+//        moriObj->ppIt->config_ir(bestSym);  // best_sym uses l and r
+//        if (moriObj->nSym == bestSym)
+//          moriObj->probs.emplace_back(stmm_hit_prob(moriObj->mm.child, f.begin(), moriObj->ppIt));
+//        else
+//          moriObj->probs.emplace_back(stmm_miss_prob_ir(moriObj->mm.child, moriObj->nSym,
+//                                               f.begin(), moriObj->ppIt));
+//        update_ctx_ir(*moriObj->ctxIt, *moriObj->ctxIrIt, moriObj->ppIt);
+//      }
     }
     else {
       array<u64,4>::const_iterator fBeg;
@@ -635,12 +638,12 @@ inline void FCM::compress_n_impl (shared_ptr<mori_struct> moriObj) {
         fBeg = (freqs<u64>(tbl64_it, moriObj->ppIt)).cbegin();
         update_ctx(*moriObj->ctxIt, moriObj->ppIt);
       }
-      else {
-        moriObj->ppIt->config_ir(moriObj->c, *moriObj->ctxIt, *moriObj->ctxIrIt);
-        fBeg = (freqs_ir<u64>(tbl64_it, moriObj->ppIt)).cbegin();
-        update_ctx_ir(*moriObj->ctxIt, *moriObj->ctxIrIt, moriObj->ppIt);
-      }
-
+//      else {
+//        moriObj->ppIt->config_ir(moriObj->c, *moriObj->ctxIt, *moriObj->ctxIrIt);
+//        fBeg = (freqs_ir<u64>(tbl64_it, moriObj->ppIt)).cbegin();
+//        update_ctx_ir(*moriObj->ctxIt, *moriObj->ctxIrIt, moriObj->ppIt);
+//      }
+//
       if (moriObj->nSym == best_sym_abs(fBeg)) {
         moriObj->mm.child->enabled = true;
         moriObj->probs.emplace_back(stmm_hit_prob(moriObj->mm.child, fBeg, moriObj->ppIt));
