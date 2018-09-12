@@ -157,13 +157,14 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 void FCM::compress (const Param& p) {
   if (p.verbose)  cerr << "Compressing the target \"" << p.tar << "\"...\n";
   else            cerr << "Compressing...\n";
-  if (Ms.size()==1 && TMs.empty())  // 1 MM
+  if (Ms.size()==1 && TMs.empty()) { // 1 MM
     switch (Ms[0].cont) {
       case Container::TABLE_64:     compress_1(p.tar, tbl64.begin());   break;
       case Container::TABLE_32:     compress_1(p.tar, tbl32.begin());   break;
       case Container::LOG_TABLE_8:  compress_1(p.tar, lgtbl8.begin());  break;
       case Container::SKETCH_8:     compress_1(p.tar, cmls4.begin());   break;
     }
+  }
   else
     compress_n(p.tar);
   cerr << "Finished";
@@ -270,7 +271,6 @@ cerr<<c;//todo
       //todo
       moriObj->c = c;
       moriObj->nSym    = NUM[static_cast<u8>(c)];
-//      cerr<<c<<' '<<(int)moriObj->nSym<<'\n';//todo
       moriObj->ppIt    = moriObj->pp.begin();
       moriObj->ctxIt   = moriObj->ctx.begin();
       moriObj->ctxIrIt = moriObj->ctxIr.begin();
@@ -588,10 +588,7 @@ inline void FCM::compress_n_impl (shared_ptr<mori_struct> moriObj) {
   if (moriObj->mm.ir == 0) {
     moriObj->ppIt->config(moriObj->c, *moriObj->ctxIt);
     const auto f = freqs<u64>(tbl64_it, moriObj->ppIt);
-//    cerr<<prob(f.begin(), moriObj->ppIt)<<'\n';//todo
     moriObj->probs.emplace_back(prob(f.begin(), moriObj->ppIt));
-//    moriObj->probs.emplace_back(1.0);//todo
-//for(auto i:moriObj->probs)cerr<<i<<' ';cerr<<'\n';//todo
     update_ctx(*moriObj->ctxIt, moriObj->ppIt);
   }
   else {
