@@ -209,26 +209,6 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
 
 #include <bitset>//todo
 inline void FCM::compress_n (const string& tar) {
-//  // Ctx, Mir (int) sliding through the dataset
-//  const auto nMdl = Ms.size() + TMs.size();
-//  vector<u64> ctx(nMdl);    // Fill with zeros (resize)
-//  vector<u64> ctxIr;    ctxIr.reserve(nMdl);
-//  for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
-//    ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
-//    if (mm.child)
-//      ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
-//  }
-//  vector<double> w (nMdl, 1.0/nMdl);
-//  ifstream tf(tar);  char c;
-//  vector<ProbPar> pp;    pp.reserve(nMdl);
-//  {auto maskIter = ctxIr.begin();
-//  for (const auto& mm : Ms) {
-//    pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
-//    if (mm.child)
-//      pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
-//  }}
-
-  //todo
   auto moriObj = make_shared<mori_struct>();
   // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = static_cast<u8>(Ms.size() + TMs.size());
@@ -243,7 +223,7 @@ inline void FCM::compress_n (const string& tar) {
   moriObj->w.resize(nMdl, 1.0/nMdl);
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);  char c;//todo
+  ifstream tf(tar);  char c;
   moriObj->pp.reserve(nMdl);
   {auto maskIter = moriObj->ctxIr.begin();
   for (const auto& mm : Ms) {
@@ -256,52 +236,34 @@ inline void FCM::compress_n (const string& tar) {
   while (tf.get(c)) {
     if (c != '\n') {
       ++symsNo;
-
-//      const auto nSym = NUM[static_cast<u8>(c)];
-//      auto ppIt       = pp.begin();
-//      auto ctxIt      = ctx.begin();
-//      auto ctxIrIt    = ctxIr.begin();
-//      vector<double> probs;
-
-      //todo
-      moriObj->c       = c;
-      moriObj->nSym    = NUM[static_cast<u8>(c)];
-      moriObj->ppIt    = moriObj->pp.begin();
-      moriObj->ctxIt   = moriObj->ctx.begin();
-      moriObj->ctxIrIt = moriObj->ctxIr.begin();
-
-      //todo. important
-      auto tbl64_it  = tbl64.begin();
-      auto tbl32_it  = tbl32.begin();
-      auto lgtbl8_it = lgtbl8.begin();
-      auto cmls4_it  = cmls4.begin();
+      moriObj->c=c;
+      moriObj->nSym=NUM[static_cast<u8>(c)];
+      moriObj->ppIt=moriObj->pp.begin();
+      moriObj->ctxIt=moriObj->ctx.begin();
+      moriObj->ctxIrIt=moriObj->ctxIr.begin();
+      auto tbl64_it=tbl64.begin();    auto tbl32_it  = tbl32.begin();
+      auto lgtbl8_it=lgtbl8.begin();  auto cmls4_it=cmls4.begin();
 
       for (const auto& mm : Ms) {
-        moriObj->mm = mm;//todo
+        moriObj->mm = mm;
         if (mm.cont == Container::TABLE_64) {
-          compress_n_impl(moriObj, tbl64_it);
-          ++tbl64_it;
+          compress_n_impl(moriObj, tbl64_it);   ++tbl64_it;
         }
         else if (mm.cont == Container::TABLE_32) {
-          compress_n_impl(moriObj, tbl32_it);
-          ++tbl32_it;
+          compress_n_impl(moriObj, tbl32_it);   ++tbl32_it;
         }
-          // Using "-O3" optimization flag of gcc, even when the program shouldn't
-          // enter the following IF condition, it enters!!!  #gcc_bug
+        /* Using "-O3" optimization flag of gcc, even when the program shouldn't
+           enter the following IF condition, it enters!!!  #gcc_bug */
         else if (mm.cont == Container::LOG_TABLE_8) {
-          compress_n_impl(moriObj, lgtbl8_it);
-          ++lgtbl8_it;
+          compress_n_impl(moriObj, lgtbl8_it);  ++lgtbl8_it;
         }
         else if (mm.cont == Container::SKETCH_8) {
-          compress_n_impl(moriObj, cmls4_it);
-          ++cmls4_it;
+          compress_n_impl(moriObj, cmls4_it);   ++cmls4_it;
         }
 
-//        ++ppIt;  ++ctxIt;  ++ctxIrIt;
         ++moriObj->ppIt;  ++moriObj->ctxIt;  ++moriObj->ctxIrIt;//todo
       }
 
-//      sEnt += entropy(w.begin(), probs.begin(), probs.end());
       sEnt += entropy(moriObj->w.begin(), moriObj->probs.begin(), moriObj->probs.end());//todo
     }
   }
