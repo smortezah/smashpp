@@ -269,9 +269,8 @@ inline void FCM::compress_n (const string& tar) {
 //      vector<double> probs;
 
 
-cerr<<c;//todo
       //todo
-      moriObj->c = c;
+      moriObj->c       = c;
       moriObj->nSym    = NUM[static_cast<u8>(c)];
       moriObj->ppIt    = moriObj->pp.begin();
       moriObj->ctxIt   = moriObj->ctx.begin();
@@ -589,6 +588,8 @@ cerr<<c;//todo
 //inline void FCM::compress_n_impl (const string& tar) {
 inline void FCM::compress_n_impl (shared_ptr<mori_struct> moriObj) {
   auto tbl64_it = tbl64.begin();
+  moriObj->probs.clear();  // Essential
+  moriObj->probs.reserve(moriObj->nMdl);
   if (moriObj->mm.ir == 0) {
     moriObj->ppIt->config(moriObj->c, *moriObj->ctxIt);
     const auto f = freqs<u64>(tbl64_it, moriObj->ppIt);
@@ -612,10 +613,11 @@ inline void FCM::compress_n_impl (shared_ptr<mori_struct> moriObj) {
         const auto bestSym = best_sym(f.begin());
         moriObj->ppIt->config(bestSym);  // best_sym uses l
         if (moriObj->nSym == bestSym)
-          moriObj->probs.emplace_back(stmm_hit_prob(moriObj->mm.child, f.begin(), moriObj->ppIt));
+          moriObj->probs.emplace_back(stmm_hit_prob(moriObj->mm.child,
+                                                    f.begin(), moriObj->ppIt));
         else
-          moriObj->probs.emplace_back(stmm_miss_prob(moriObj->mm.child, moriObj->nSym,
-                                            f.begin(), moriObj->ppIt));
+          moriObj->probs.emplace_back(stmm_miss_prob(moriObj->mm.child,
+                                      moriObj->nSym, f.begin(), moriObj->ppIt));
         update_ctx(*moriObj->ctxIt, moriObj->ppIt);
       }
 //      else {
