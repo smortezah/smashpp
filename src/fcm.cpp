@@ -220,9 +220,6 @@ inline void FCM::compress_n (const string& tar) {
       compP->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
   }
   compP->w.resize(nMdl, 1.0/nMdl);
-  u64      symsNo{0};          // No. syms in target file, except \n
-  double   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);  char c;
   compP->pp.reserve(nMdl);
   {auto maskIter = compP->ctxIr.begin();
   for (const auto& mm : Ms) {
@@ -231,6 +228,15 @@ inline void FCM::compress_n (const string& tar) {
       compP->pp.emplace_back(
         mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
   }}
+
+  compress_n_impl(tar, compP);
+}
+
+inline void FCM::compress_n_impl (const string& tar,
+                                  shared_ptr<CompressPar> compP) {
+  u64      symsNo{0};          // No. syms in target file, except \n
+  double   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(tar);  char c;
 
   while (tf.get(c)) {
     if (c != '\n') {

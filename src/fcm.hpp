@@ -41,6 +41,7 @@ class FCM    // Finite-context models
   template <typename ContIter>
   void compress_1 (const string&, ContIter);  // Compress with 1 Markov model
   void compress_n (const string&);            // Compress with n Markov models
+  void compress_n_impl (const string&, shared_ptr<CompressPar>);
   template <typename ContIter>
   void compress_n_parent (shared_ptr<CompressPar>, ContIter);
   template <typename ContIter>
