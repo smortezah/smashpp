@@ -277,8 +277,8 @@ inline void FCM::compress_n_impl(shared_ptr<CompressPar> compP,ContIter contIt){
   }
   else {
     compP->ppIt->config_ir(compP->c, *compP->ctxIt, *compP->ctxIrIt);
-    const auto f = freqs_ir<decltype((*contIt)->query(0)+
-                                   (*contIt)->query(0))>(contIt, compP->ppIt);
+    const auto f = freqs_ir<decltype((*contIt)->query(0)+(*contIt)->query(0))>(
+                     contIt, compP->ppIt);
     compP->probs.emplace_back(prob(f.begin(), compP->ppIt));
     update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, compP->ppIt);
   }
@@ -289,30 +289,29 @@ inline void FCM::compress_n_impl(shared_ptr<CompressPar> compP,ContIter contIt){
     if (compP->mm.child->enabled) {
       if (compP->mm.child->ir == 0) {
         compP->ppIt->config(*compP->ctxIt);  // l
-        const auto f = freqs<decltype((*contIt)->query(0))>(contIt,
-                                                            compP->ppIt);
+        const auto f = freqs<decltype((*contIt)->query(0))>(contIt,compP->ppIt);
         const auto bestSym = best_sym(f.begin());
         compP->ppIt->config(bestSym);  // best_sym uses l
         if (compP->nSym == bestSym)
-          compP->probs.emplace_back(stmm_hit_prob(compP->mm.child,
-                                                    f.begin(), compP->ppIt));
+          compP->probs.emplace_back(
+            stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
         else
-          compP->probs.emplace_back(stmm_miss_prob(compP->mm.child,
-                                      compP->nSym, f.begin(), compP->ppIt));
+          compP->probs.emplace_back(
+            stmm_miss_prob(compP->mm.child, compP->nSym,f.begin(),compP->ppIt));
         update_ctx(*compP->ctxIt, compP->ppIt);
       }
       else {
         compP->ppIt->config_ir(*compP->ctxIt, *compP->ctxIrIt);  // l and r
         const auto f = freqs_ir<decltype((*contIt)->query(0)+
-                                   (*contIt)->query(0))>(contIt, compP->ppIt);
+                                (*contIt)->query(0))>(contIt, compP->ppIt);
         const auto bestSym = best_sym(f.begin());
         compP->ppIt->config_ir(bestSym);  // best_sym uses l and r
         if (compP->nSym == bestSym)
-          compP->probs.emplace_back(stmm_hit_prob(compP->mm.child,
-                                                    f.begin(), compP->ppIt));
+          compP->probs.emplace_back(
+            stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
         else
-          compP->probs.emplace_back(stmm_miss_prob_ir(compP->mm.child,
-                                      compP->nSym, f.begin(), compP->ppIt));
+          compP->probs.emplace_back(stmm_miss_prob_ir(
+                         compP->mm.child, compP->nSym, f.begin(), compP->ppIt));
         update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, compP->ppIt);
       }
     }
@@ -323,8 +322,8 @@ inline void FCM::compress_n_impl(shared_ptr<CompressPar> compP,ContIter contIt){
         update_ctx(*compP->ctxIt, compP->ppIt);
         if (compP->nSym == best_sym_abs(f.begin())) {
           compP->mm.child->enabled = true;
-          compP->probs.emplace_back(stmm_hit_prob(compP->mm.child,
-                                                    f.begin(), compP->ppIt));
+          compP->probs.emplace_back(
+            stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
           fill(compP->w.begin(), compP->w.end(), 1.0/compP->nMdl);
         }
         else
@@ -333,12 +332,12 @@ inline void FCM::compress_n_impl(shared_ptr<CompressPar> compP,ContIter contIt){
       else {
         compP->ppIt->config_ir(compP->c, *compP->ctxIt, *compP->ctxIrIt);
         const auto f = freqs_ir<decltype((*contIt)->query(0)+
-                                   (*contIt)->query(0))>(contIt, compP->ppIt);
+                                (*contIt)->query(0))>(contIt, compP->ppIt);
         update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, compP->ppIt);
         if (compP->nSym == best_sym_abs(f.begin())) {
           compP->mm.child->enabled = true;
-          compP->probs.emplace_back(stmm_hit_prob(compP->mm.child,
-                                                    f.begin(), compP->ppIt));
+          compP->probs.emplace_back(
+            stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
           fill(compP->w.begin(), compP->w.end(), 1.0/compP->nMdl);
         }
         else
