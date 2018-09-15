@@ -44,9 +44,9 @@ class FCM    // Finite-context models
   template <typename ContIter>
   void compress_n_parent (shared_ptr<CompressPar>, ContIter);
   template <typename ContIter>
-  void compress_n_child (shared_ptr<CompressPar>, ContIter);
+  void compress_n_child_enabled (shared_ptr<CompressPar>, ContIter);
   template <typename ContIter>
-  void compress_n_impl (shared_ptr<CompressPar>, ContIter);
+  void compress_n_child_disabled (shared_ptr<CompressPar>, ContIter);
   template <typename OutT, typename ContIter, typename ProbParIter>
   array<OutT,4> freqs (ContIter, ProbParIter) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
