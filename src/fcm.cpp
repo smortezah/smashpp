@@ -246,32 +246,55 @@ inline void FCM::compress_n (const string& tar) {
         switch (mm.cont) {
           case Container::TABLE_64:
             compress_n_parent(compP, tbl64_it);
-            if (mm.child)  compress_n_child(compP, tbl64_it);
+            if (mm.child) {
+              ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
+              if (compP->mm.child->enabled)  // NOT mm.child->enabled
+                compress_n_child_enabled(compP, tbl64_it);
+              else
+                compress_n_child_disabled(compP, tbl64_it);
+            }
             ++tbl64_it;
             break;
           case Container::TABLE_32:
             compress_n_parent(compP, tbl32_it);
-            if (mm.child)  compress_n_child(compP, tbl32_it);
+            if (mm.child) {
+              ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
+              if (compP->mm.child->enabled)  // NOT mm.child->enabled
+                compress_n_child_enabled(compP, tbl32_it);
+              else
+                compress_n_child_disabled(compP, tbl32_it);
+            }
             ++tbl32_it;
             break;
           // Using "-O3" optimization flag of gcc, the program enters the
           // following CASE, even when it shouldn't!!!  #gcc_bug
           case Container::LOG_TABLE_8:
             compress_n_parent(compP, lgtbl8_it);
-            if (mm.child)  compress_n_child(compP, lgtbl8_it);
+            if (mm.child) {
+              ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
+              if (compP->mm.child->enabled)  // NOT mm.child->enabled
+                compress_n_child_enabled(compP, lgtbl8_it);
+              else
+                compress_n_child_disabled(compP, lgtbl8_it);
+            }
             ++lgtbl8_it;
             break;
           case Container::SKETCH_8:
             compress_n_parent(compP, cmls4_it);
-            if (mm.child)  compress_n_child(compP, cmls4_it);
+            if (mm.child) {
+              ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
+              if (compP->mm.child->enabled)  // NOT mm.child->enabled
+                compress_n_child_enabled(compP, cmls4_it);
+              else
+                compress_n_child_disabled(compP, cmls4_it);
+            }
             ++cmls4_it;
             break;
         }
         ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
       }
 
-      sEnt += entropy(
-        compP->w.begin(), compP->probs.begin(), compP->probs.end());
+      sEnt += entropy(compP->w.begin(),compP->probs.begin(),compP->probs.end());
     }
   }
   tf.close();
@@ -285,162 +308,80 @@ inline void FCM::compress_n_parent (shared_ptr<CompressPar> compP,
 
   if (compP->mm.ir == 0) {
     compP->ppIt->config(compP->c, *compP->ctxIt);
-    const auto f = freqs<decltype((*contIt)->query(0))>(contIt, compP->ppIt);
-    compP->probs.emplace_back(prob(f.begin(), compP->ppIt));
-    update_ctx(*compP->ctxIt, compP->ppIt);
+    const auto ppIt = compP->ppIt;
+    const auto f = freqs<decltype((*contIt)->query(0))>(contIt, ppIt);
+    compP->probs.emplace_back(prob(f.begin(), ppIt));
+    update_ctx(*compP->ctxIt, ppIt);
   }
   else {
     compP->ppIt->config_ir(compP->c, *compP->ctxIt, *compP->ctxIrIt);
-    const auto f = freqs_ir<decltype((*contIt)->query(0)+(*contIt)->query(0))>(
-      contIt, compP->ppIt);
-    compP->probs.emplace_back(prob(f.begin(), compP->ppIt));
+    const auto ppIt = compP->ppIt;
+    const auto f = freqs_ir<decltype(2*(*contIt)->query(0))>(contIt, ppIt);
+    compP->probs.emplace_back(prob(f.begin(), ppIt));
+    update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, ppIt);
+  }
+}
+
+template <typename ContIter>
+inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> compP,
+                                           ContIter contIt) {
+  if (compP->mm.child->ir == 0) {
+    compP->ppIt->config(*compP->ctxIt);  // l
+    const auto f = freqs<decltype((*contIt)->query(0))>(contIt, compP->ppIt);
+    const auto bestSym = best_sym(f.begin());
+    compP->ppIt->config(bestSym);  // best_sym uses l
+    if (compP->nSym == bestSym)
+      compP->probs.emplace_back(
+        stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
+    else
+      compP->probs.emplace_back(
+        stmm_miss_prob(compP->mm.child, compP->nSym, f.begin(), compP->ppIt));
+    update_ctx(*compP->ctxIt, compP->ppIt);
+  }
+  else {
+    compP->ppIt->config_ir(*compP->ctxIt, *compP->ctxIrIt);  // l and r
+    const auto f = freqs_ir<decltype(2*(*contIt)->query(0))>(contIt,
+                                                             compP->ppIt);
+    const auto bestSym = best_sym(f.begin());
+    compP->ppIt->config_ir(bestSym);  // best_sym uses l and r
+    if (compP->nSym == bestSym)
+      compP->probs.emplace_back(
+        stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
+    else
+      compP->probs.emplace_back(stmm_miss_prob_ir(
+        compP->mm.child, compP->nSym, f.begin(), compP->ppIt));
     update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, compP->ppIt);
   }
 }
 
 template <typename ContIter>
-inline void FCM::compress_n_child (shared_ptr<CompressPar> compP,
-                                   ContIter contIt) {
- ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
-
-  if (compP->mm.child->enabled) {
-    if (compP->mm.child->ir == 0) {
-      compP->ppIt->config(*compP->ctxIt);  // l
-      const auto f = freqs<decltype((*contIt)->query(0))>(contIt, compP->ppIt);
-      const auto bestSym = best_sym(f.begin());
-      compP->ppIt->config(bestSym);  // best_sym uses l
-      if (compP->nSym == bestSym)
-        compP->probs.emplace_back(
-          stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
-      else
-        compP->probs.emplace_back(
-          stmm_miss_prob(compP->mm.child, compP->nSym,f.begin(), compP->ppIt));
-      update_ctx(*compP->ctxIt, compP->ppIt);
-    }
-    else {
-      compP->ppIt->config_ir(*compP->ctxIt, *compP->ctxIrIt);  // l and r
-      const auto f = freqs_ir<decltype((*contIt)->query(0)+
-                              (*contIt)->query(0))>(contIt, compP->ppIt);
-      const auto bestSym = best_sym(f.begin());
-      compP->ppIt->config_ir(bestSym);  // best_sym uses l and r
-      if (compP->nSym == bestSym)
-        compP->probs.emplace_back(
-          stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
-      else
-        compP->probs.emplace_back(stmm_miss_prob_ir(
-          compP->mm.child, compP->nSym, f.begin(), compP->ppIt));
-      update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, compP->ppIt);
-    }
-  }
-  else {
-    if (compP->mm.child->ir == 0) {
-      compP->ppIt->config(compP->c, *compP->ctxIt);
-      const auto f = freqs<decltype((*contIt)->query(0))>(contIt, compP->ppIt);
-      update_ctx(*compP->ctxIt, compP->ppIt);
-      if (compP->nSym == best_sym_abs(f.begin())) {
-        compP->mm.child->enabled = true;
-        compP->probs.emplace_back(
-          stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
-        fill(compP->w.begin(), compP->w.end(), 1.0/compP->nMdl);
-      }
-      else
-        compP->probs.emplace_back(0.0);
-    }
-    else {
-      compP->ppIt->config_ir(compP->c, *compP->ctxIt, *compP->ctxIrIt);
-      const auto f = freqs_ir<decltype((*contIt)->query(0)+
-                              (*contIt)->query(0))>(contIt, compP->ppIt);
-      update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, compP->ppIt);
-      if (compP->nSym == best_sym_abs(f.begin())) {
-        compP->mm.child->enabled = true;
-        compP->probs.emplace_back(
-          stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
-        fill(compP->w.begin(), compP->w.end(), 1.0/compP->nMdl);
-      }
-      else
-        compP->probs.emplace_back(0.0);
-    }
-  }
-}
-
-template <typename ContIter>
-inline void FCM::compress_n_impl(shared_ptr<CompressPar> compP,ContIter contIt){
-  compP->probs.clear(); /*Essential*/  compP->probs.reserve(compP->nMdl);
-  if (compP->mm.ir == 0) {
+inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> compP,
+                                            ContIter contIt) {
+  if (compP->mm.child->ir == 0) {
     compP->ppIt->config(compP->c, *compP->ctxIt);
-    const auto f = freqs<decltype((*contIt)->query(0))>(contIt, compP->ppIt);
-    compP->probs.emplace_back(prob(f.begin(), compP->ppIt));
-    update_ctx(*compP->ctxIt, compP->ppIt);
+    const auto ppIt = compP->ppIt;
+    const auto f = freqs<decltype((*contIt)->query(0))>(contIt, ppIt);
+    update_ctx(*compP->ctxIt, ppIt);
+    if (compP->nSym == best_sym_abs(f.begin())) {
+      compP->mm.child->enabled = true;
+      compP->probs.emplace_back(stmm_hit_prob(compP->mm.child, f.begin(),ppIt));
+      fill(compP->w.begin(), compP->w.end(), 1.0/compP->nMdl);
+    }
+    else
+      compP->probs.emplace_back(0.0);
   }
   else {
     compP->ppIt->config_ir(compP->c, *compP->ctxIt, *compP->ctxIrIt);
-    const auto f = freqs_ir<decltype((*contIt)->query(0)+(*contIt)->query(0))>(
-                     contIt, compP->ppIt);
-    compP->probs.emplace_back(prob(f.begin(), compP->ppIt));
-    update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, compP->ppIt);
-  }
-
-  if (compP->mm.child) {
-    ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
-
-    if (compP->mm.child->enabled) {
-      if (compP->mm.child->ir == 0) {
-        compP->ppIt->config(*compP->ctxIt);  // l
-        const auto f = freqs<decltype((*contIt)->query(0))>(contIt,compP->ppIt);
-        const auto bestSym = best_sym(f.begin());
-        compP->ppIt->config(bestSym);  // best_sym uses l
-        if (compP->nSym == bestSym)
-          compP->probs.emplace_back(
-            stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
-        else
-          compP->probs.emplace_back(
-            stmm_miss_prob(compP->mm.child, compP->nSym,f.begin(),compP->ppIt));
-        update_ctx(*compP->ctxIt, compP->ppIt);
-      }
-      else {
-        compP->ppIt->config_ir(*compP->ctxIt, *compP->ctxIrIt);  // l and r
-        const auto f = freqs_ir<decltype((*contIt)->query(0)+
-                                (*contIt)->query(0))>(contIt, compP->ppIt);
-        const auto bestSym = best_sym(f.begin());
-        compP->ppIt->config_ir(bestSym);  // best_sym uses l and r
-        if (compP->nSym == bestSym)
-          compP->probs.emplace_back(
-            stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
-        else
-          compP->probs.emplace_back(stmm_miss_prob_ir(
-                         compP->mm.child, compP->nSym, f.begin(), compP->ppIt));
-        update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, compP->ppIt);
-      }
+    const auto ppIt = compP->ppIt;
+    const auto f = freqs_ir<decltype(2*(*contIt)->query(0))>(contIt, ppIt);
+    update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, ppIt);
+    if (compP->nSym == best_sym_abs(f.begin())) {
+      compP->mm.child->enabled = true;
+      compP->probs.emplace_back(stmm_hit_prob(compP->mm.child, f.begin(),ppIt));
+      fill(compP->w.begin(), compP->w.end(), 1.0/compP->nMdl);
     }
-    else {
-      if (compP->mm.child->ir == 0) {
-        compP->ppIt->config(compP->c, *compP->ctxIt);
-        const auto f = freqs<decltype((*contIt)->query(0))>(contIt,compP->ppIt);
-        update_ctx(*compP->ctxIt, compP->ppIt);
-        if (compP->nSym == best_sym_abs(f.begin())) {
-          compP->mm.child->enabled = true;
-          compP->probs.emplace_back(
-            stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
-          fill(compP->w.begin(), compP->w.end(), 1.0/compP->nMdl);
-        }
-        else
-          compP->probs.emplace_back(0.0);
-      }
-      else {
-        compP->ppIt->config_ir(compP->c, *compP->ctxIt, *compP->ctxIrIt);
-        const auto f = freqs_ir<decltype((*contIt)->query(0)+
-                                (*contIt)->query(0))>(contIt, compP->ppIt);
-        update_ctx_ir(*compP->ctxIt, *compP->ctxIrIt, compP->ppIt);
-        if (compP->nSym == best_sym_abs(f.begin())) {
-          compP->mm.child->enabled = true;
-          compP->probs.emplace_back(
-            stmm_hit_prob(compP->mm.child, f.begin(), compP->ppIt));
-          fill(compP->w.begin(), compP->w.end(), 1.0/compP->nMdl);
-        }
-        else
-          compP->probs.emplace_back(0.0);
-      }
-    }
+    else
+      compP->probs.emplace_back(0.0);
   }
 }
 
