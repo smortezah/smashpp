@@ -28,7 +28,7 @@ void CMLS4::config (u64 w_, u8 d_) {
 
 void CMLS4::update (u64 ctx) {
   const auto c {minLogCtr(ctx)};
-  if ((tot++ % POW2[c]) == 0)      // Increase decision //todo. base 2
+  if ((tot++ % POW2[c]) == 0)      // Increase decision //to do. base 2
     for (u8 i=0; i!=d; ++i) {
       auto cellIdx = hash(i, ctx);
       if (readCell(cellIdx) == c)    // Conservative update

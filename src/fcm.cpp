@@ -229,11 +229,11 @@ inline void FCM::compress_n (const string& tar) {
         mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
   }}
 
-  compress_n_impl(tar, compP);
+  compress_n_ave(tar, compP);
 }
 
-inline void FCM::compress_n_impl (const string& tar,
-                                  shared_ptr<CompressPar> compP) {
+inline void FCM::compress_n_ave (const string &tar,
+                                 shared_ptr<CompressPar> compP) {
   u64      symsNo{0};          // No. syms in target file, except \n
   double   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
@@ -249,53 +249,23 @@ inline void FCM::compress_n_impl (const string& tar,
 
       for (const auto& mm : Ms) {
         compP->mm = mm;
-        switch (mm.cont) {
-          case Container::TABLE_64:
-            compress_n_parent(compP, tbl64_it);
-            if (mm.child) {
-              ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
-              if (compP->mm.child->enabled)  // NOT mm.child->enabled
-                compress_n_child_enabled(compP, tbl64_it);
-              else
-                compress_n_child_disabled(compP, tbl64_it);
-            }
-            ++tbl64_it;
-            break;
-          case Container::TABLE_32:
-            compress_n_parent(compP, tbl32_it);
-            if (mm.child) {
-              ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
-              if (compP->mm.child->enabled)  // NOT mm.child->enabled
-                compress_n_child_enabled(compP, tbl32_it);
-              else
-                compress_n_child_disabled(compP, tbl32_it);
-            }
-            ++tbl32_it;
-            break;
-          // Using "-O3" optimization flag of gcc, the program enters the
-          // following CASE, even when it shouldn't!!!  #gcc_bug
-          case Container::LOG_TABLE_8:
-            compress_n_parent(compP, lgtbl8_it);
-            if (mm.child) {
-              ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
-              if (compP->mm.child->enabled)  // NOT mm.child->enabled
-                compress_n_child_enabled(compP, lgtbl8_it);
-              else
-                compress_n_child_disabled(compP, lgtbl8_it);
-            }
-            ++lgtbl8_it;
-            break;
-          case Container::SKETCH_8:
-            compress_n_parent(compP, cmls4_it);
-            if (mm.child) {
-              ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
-              if (compP->mm.child->enabled)  // NOT mm.child->enabled
-                compress_n_child_enabled(compP, cmls4_it);
-              else
-                compress_n_child_disabled(compP, cmls4_it);
-            }
-            ++cmls4_it;
-            break;
+        if (mm.cont == Container::TABLE_64) {
+          compress_n_impl(compP, tbl64_it);
+          ++tbl64_it;
+        }
+        else if (mm.cont == Container::TABLE_32) {
+          compress_n_impl(compP, tbl32_it);
+          ++tbl32_it;
+        }
+        // Using "-O3" optimization flag of gcc, the program enters the
+        // following IF, even when it shouldn't!!!  #gcc_bug
+        else if (mm.cont == Container::LOG_TABLE_8) {
+          compress_n_impl(compP, lgtbl8_it);
+          ++lgtbl8_it;
+        }
+        else if (mm.cont == Container::SKETCH_8) {
+          compress_n_impl(compP, cmls4_it);
+          ++cmls4_it;
         }
         ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
       }
@@ -308,9 +278,24 @@ inline void FCM::compress_n_impl (const string& tar,
 }
 
 template <typename ContIter>
+inline void FCM::compress_n_impl (shared_ptr<CompressPar> compP,
+                                  ContIter contIt) {
+  compress_n_parent(compP, contIt);
+
+  if (compP->mm.child) {
+    ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
+    if (compP->mm.child->enabled)  // NOT mm.child->enabled
+      compress_n_child_enabled(compP, contIt);
+    else
+      compress_n_child_disabled(compP, contIt);
+  }
+}
+
+template <typename ContIter>
 inline void FCM::compress_n_parent (shared_ptr<CompressPar> compP,
                                     ContIter contIt) {
-  compP->probs.clear(); /*Essential*/  compP->probs.reserve(compP->nMdl);
+  compP->probs.clear();  // Essential
+  compP->probs.reserve(compP->nMdl);
 
   if (compP->mm.ir == 0) {
     compP->ppIt->config(compP->c, *compP->ctxIt);
@@ -346,8 +331,7 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> compP,
   }
   else {
     compP->ppIt->config_ir(*compP->ctxIt, *compP->ctxIrIt);  // l and r
-    const auto f = freqs_ir<decltype(2*(*contIt)->query(0))>(contIt,
-                                                             compP->ppIt);
+    const auto f=freqs_ir<decltype(2*(*contIt)->query(0))>(contIt, compP->ppIt);
     const auto bestSym = best_sym(f.begin());
     compP->ppIt->config_ir(bestSym);  // best_sym uses l and r
     if (compP->nSym == bestSym)

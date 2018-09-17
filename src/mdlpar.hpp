@@ -18,9 +18,8 @@ struct MMPar {
   shared_ptr<STMMPar> child;
 
   MMPar () = default;  // Essential
-  MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, float a_, float g_)
-    : k(k_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
-      cont(Container::TABLE_64), child(nullptr) {}
+  MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, float a_, float g_) : k(k_), w(w_),d(d_),
+    ir(ir_), alpha(a_), gamma(g_), cont(Container::TABLE_64), child(nullptr) {}
   MMPar (u8 k_, u8 ir_, float a_, float g_) : MMPar(k_, 0, 0, ir_, a_, g_) {}
 };
 
@@ -33,10 +32,9 @@ struct STMMPar {
   u8    miss;
   bool  enabled;
   u32   history;    // k > 32 => change to u64
-//  shared_ptr<MMPar> parent; //todo. check if necessary
 
   STMMPar (u8 k_, u8 t_, u8 ir_, float a_, float g_) : k(k_), thresh(t_),
-           ir(ir_), alpha(a_), gamma(g_), miss(0), enabled(true), history(0) {}
+    ir(ir_), alpha(a_), gamma(g_), miss(0), enabled(true), history(0) {}
 };
 
 struct ProbPar {
