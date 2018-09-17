@@ -194,13 +194,15 @@ int main (int argc, char* argv[])
       writeHeader(false);
     }
     if (execute) {
-      run("./smashpp -r A -t A -m 0,7,0.001:0,12,0.001:0,14,0.001:0,20,0.001,31,5 -R report");
+      run("./smashpp -r A -t A "
+          "-m 0,7,0.001:0,12,0.001:0,14,0.001:0,20,0.001,31,5 -R report");
       
 //      for (const auto &Mir : {0, 1}) {
 //        for (u8 rIdx = 0; rIdx!=vRef.size(); ++rIdx) {
 //          for (u8 tIdx = 0; tIdx!=vTar.size(); ++tIdx) {
 //            for (const auto &a : {0.001, 0.01, 0.1, 1.0}) {
-//              for (const auto &k : {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}) {
+//              for (const auto &k : {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+//                                    14}) {
 //                string model{combine(Mir, k, a)};
 ////            cerr << model<<'\n';
 //                run("./smashpp"
@@ -212,7 +214,8 @@ int main (int argc, char* argv[])
 //                    verbose
 //                );
 //              }
-//              for (const auto &k : {15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25}) {
+//              for (const auto &k : {15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+//                                    25}) {
 //                for (const auto &w : {31}) {
 //                  for (const auto &d : {5}) {
 //                    string model{combine(Mir, k, a, w, d)};
