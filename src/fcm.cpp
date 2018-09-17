@@ -177,6 +177,7 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
+  ofstream pf(PROFILE_LBL+tar);
   ProbPar pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
              static_cast<u8>(Ms[0].k<<1u)};
 
@@ -186,7 +187,9 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
         ++symsNo;
         pp.config(c, ctx);
         const auto f = freqs<decltype((*cont)->query(0))>(cont, &pp);
-        sEnt += entropy(prob(f.begin(), &pp));
+        const auto entr = entropy(prob(f.begin(), &pp));
+        pf << entr << '\n';
+        sEnt += entr;
         update_ctx(ctx, &pp);
       }
     }
@@ -196,14 +199,16 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
       if (c != '\n') {
         ++symsNo;
         pp.config_ir(c, ctx, ctxIr);
-        const auto f = freqs_ir<decltype((*cont)->query(0)+
-          (*cont)->query(0))>(cont, &pp);
-        sEnt += entropy(prob(f.begin(), &pp));
+        const auto f = freqs_ir<decltype(2*(*cont)->query(0))>(cont, &pp);
+        const auto entr = entropy(prob(f.begin(), &pp));
+        pf << entr << '\n';
+        sEnt += entr;
         update_ctx_ir(ctx, ctxIr, &pp);
       }
     }
   }
   tf.close();
+  pf.close();
   aveEnt = sEnt/symsNo;
 }
 
@@ -237,6 +242,7 @@ inline void FCM::compress_n_ave (const string &tar,
   u64      symsNo{0};          // No. syms in target file, except \n
   double   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
+  ofstream pf(PROFILE_LBL+tar);
 
   while (tf.get(c)) {
     if (c != '\n') {
@@ -270,10 +276,14 @@ inline void FCM::compress_n_ave (const string &tar,
         ++compP->ppIt;  ++compP->ctxIt;  ++compP->ctxIrIt;
       }
 
-      sEnt += entropy(compP->w.begin(),compP->probs.begin(),compP->probs.end());
+      const auto entr =
+        entropy(compP->w.begin(), compP->probs.begin(), compP->probs.end());
+      pf << entr << '\n';
+      sEnt += entr;
     }
   }
   tf.close();
+  pf.close();
   aveEnt = sEnt/symsNo;
 }
 
@@ -411,21 +421,6 @@ inline array<OutT,4> FCM::freqs_ir (ContIter cont, ProbParIter pp) const {
        (*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r))};
 }
 
-template <typename Iter>
-inline u8 FCM::best_sym (Iter first) const {
-  return static_cast<u8>(std::max_element(first,first+CARDINALITY) - first);
-}
-
-template <typename Iter>
-inline u8 FCM::best_sym_abs (Iter first) const {
-  auto last = first + CARDINALITY;
-  const auto max_pos = std::max_element(first, last);
-  while (last-- != first)
-    if (last!=max_pos && *last==*max_pos)
-      return 255;
-  return static_cast<u8>(max_pos - first);
-}
-
 template <typename Par, typename Value>
 void FCM::stmm_update_hist (Par stmm, Value val) {
   stmm->history = (stmm->history<<1u) | val;  // ull for 64 bits
@@ -498,12 +493,6 @@ const {
     }
   }
   normalize(wFirstKeep, wFirst);
-}
-
-template <typename Iter>
-inline void FCM::normalize (Iter first, Iter last) const {
-  for (const double sum=std::accumulate(first,last,0.0); first!=last; ++first)
-    *first /= sum;    // *first = *first / sum;
 }
 
 template <typename ProbParIter>

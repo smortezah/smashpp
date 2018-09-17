@@ -6,6 +6,8 @@
 #define PROJECT_FN_HPP
 
 #include <iostream>
+#include <algorithm>
+#include <numeric>
 #include "def.hpp"
 
 template <typename Input>
@@ -76,6 +78,27 @@ u8 popcount (Digit d) {  // Number of ones in a digit
   for (; d; ++n)  d &= d-1;  // First impl. Kernighan. Clear the LSB set
 //  do { if (d & 1) ++n; } while (d >>= 1); // Second impl. Negative nums?
   return n;
+}
+
+template <typename Iter>
+u8 best_sym (Iter first) {
+  return static_cast<u8>(std::max_element(first,first+CARDINALITY) - first);
+}
+
+template <typename Iter>
+u8 best_sym_abs (Iter first) {
+  auto last = first + CARDINALITY;
+  const auto max_pos = std::max_element(first, last);
+  while (last-- != first)
+    if (last!=max_pos && *last==*max_pos)
+      return 255;
+  return static_cast<u8>(max_pos - first);
+}
+
+template <typename Iter>
+void normalize (Iter first, Iter last) {
+  for (const double sum=std::accumulate(first,last,0.0); first!=last; ++first)
+    *first /= sum;    // *first = *first / sum;
 }
 
 #endif //PROJECT_FN_HPP
