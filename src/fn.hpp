@@ -117,4 +117,17 @@ inline double pow2 (double base) noexcept {  // Must be inline
   return std::pow(base, 2);
 }
 
+template <typename Value>
+void symmetric_fill (const vector<Value>& v) {
+  if (is_odd(v.size())) {
+//    for (u64 i=(v.size()+1)/2;;) {
+//
+//    }
+const auto pos = (v.size()>>1u)+2;
+reverse_copy(v.begin(), v.end()-pos, v.end()-pos+2);//todo remove
+  }
+  else {
+  }
+}
+
 #endif //PROJECT_FN_HPP
