@@ -8,6 +8,7 @@
 #include <iostream>
 #include <algorithm>
 #include <numeric>
+#include <cmath>
 #include "def.hpp"
 
 template <typename Input>
@@ -99,6 +100,21 @@ template <typename Iter>
 void normalize (Iter first, Iter last) {
   for (const double sum=std::accumulate(first,last,0.0); first!=last; ++first)
     *first /= sum;    // *first = *first / sum;
+}
+
+template <typename Value>
+bool is_odd (Value v) {
+  if (v < 0)
+    error("\"" + to_string(v) + "\" is a negative number.");
+  return (v & 1ull);
+}
+
+inline float pow2 (float base) noexcept {  // Must be inline
+  return static_cast<float>(std::pow(base, 2));
+}
+
+inline double pow2 (double base) noexcept {  // Must be inline
+  return std::pow(base, 2);
 }
 
 #endif //PROJECT_FN_HPP
