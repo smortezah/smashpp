@@ -20,11 +20,13 @@ class Param    // Parameters
   bool   verbose;
   u8     nthr;
   string modelsPars;
+  u32    wsize;
+  string wtype;
   string report;
   
   // Define Param::Param(){} in *.hpp => compile error
   Param () : tar(""), ref(""), level(DEF_LVL), verbose(false), nthr(DEF_THR),
-             modelsPars(""), report("") {}
+             modelsPars(""), wsize(DEF_WS), wtype(DEF_WT), report("") {}
   void parse (int, char**&);
 
  private:
@@ -67,6 +69,13 @@ inline void Param::parse (int argc, char**& argv) {
         nthr = static_cast<u8>(stoi(*++i));
       else if ((*i=="-m" || *i=="--models") && i+1!=vArgs.end())
         modelsPars = *++i;
+      else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
+        wsize = static_cast<u32>(stoi(*++i));
+        if (wsize <= 0)
+          error("The window size must be greather than zero.");
+      }
+      else if ((*i=="-wt" || *i=="--wtype") && i+1!=vArgs.end())
+        wtype = *++i;
       else if (*i=="-R"  || *i=="--report")
         report = (i+1!=vArgs.end()) ? *++i : "report.txt";
     }
@@ -143,6 +152,12 @@ inline void Param::help () const {//todo
     << "        d:  depth of sketch"                                     << '\n'
     << "        ir: inverted repeat"                                     << '\n'
     << "        thresh: threshold of substitutional tolerant Markov model    \n"
+                                                                         << '\n'
+    << "    -w,  --wsize"                                                << '\n'
+    << "        window size -- for filtering"                            << '\n'
+                                                                         << '\n'
+    << "    -wt, --wtype"                                                << '\n'
+    << "        type of windowing function -- for filtering"             << '\n'
                                                                          << '\n'
     << "    -R,  --report"                                               << '\n'
     << "        save results in the \"report\" file"                     << '\n'

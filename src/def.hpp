@@ -46,22 +46,25 @@ constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
 //}
 
 // Constant
-static constexpr u8  DEF_THR       {4};   // Default # threads
-static constexpr u8  DEF_LVL       {0};   // Default level
-static constexpr u8  CARDINALITY   {4};   // CARDINALITYality = Alphabet size
-static constexpr u8  IRMAGIC       {3};   // Calc Mir syms based on syms
-static constexpr u8  K_MAX_TBL64   {11};  // Max ctx dept. table 64 (128 MB mem)
-static constexpr u8  K_MAX_TBL32   {13};  // Max ...       table 32 (1   GB mem)
-static constexpr u8  K_MAX_LGTBL8  {14};  // Max ...   log table 8  (1   GB mem)
-static constexpr u32 BLK_SZ        {8192};// 8K
-static constexpr u64 DEF_W         {pow2(20)};  // Default w of CML sketch
-static constexpr u8  DEF_D         {5};   // Default depth of CML sketch
-static constexpr u32 G             {64};  // Machine word size - univers hash fn
-static constexpr u8  LOG_BASE      {2};   // Logarithmic counting
-static constexpr u8    DEF_IR      {0};   // Default inverted repeats for models
-static constexpr float DEF_ALPHA   {0.001};// Default alpha for models
-static constexpr float DEF_GAMMA   {0.9};  // Default gamma for multiple models
-const  string          PROFILE_LBL {"profile_"};  // Label for inf. profile file
+static constexpr u8    DEF_THR      {4};  // Default # threads
+static constexpr u8    DEF_LVL      {0};  // Default level
+static constexpr u32   DEF_WS       {3};  // Default window size -- filter
+const  string          DEF_WT       {"0"};// Default window type -- filter
+static constexpr u8    CARDINALITY  {4};  // CARDINALITYality = Alphabet size
+static constexpr u8    IRMAGIC      {3};  // Calc Mir syms based on syms
+static constexpr u8    K_MAX_TBL64  {11}; // Max ctx dept. table 64 (128 MB mem)
+static constexpr u8    K_MAX_TBL32  {13}; // Max ...       table 32 (1   GB mem)
+static constexpr u8    K_MAX_LGTBL8 {14}; // Max ...   log table 8  (1   GB mem)
+static constexpr u32   BLK_SZ       {8192}; // 8K
+static constexpr u64   DEF_W        {pow2(20)};  // Default w of CML sketch
+static constexpr u8    DEF_D        {5};  // Default depth of CML sketch
+static constexpr u32   G            {64}; // Machine word size - univers hash fn
+static constexpr u8    LOG_BASE     {2};  // Logarithmic counting
+static constexpr u8    DEF_IR       {0};  // Default inverted repeats for models
+static constexpr float DEF_ALPHA    {0.001};// Default alpha for models
+static constexpr float DEF_GAMMA    {0.9};  // Default gamma for multiple models
+const  string          PROFILE_LBL  {"profile_"}; // Label for inf. profile file
+static constexpr float PI           {3.14159265358979f};
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDINALITY>>;
