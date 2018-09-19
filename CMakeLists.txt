@@ -12,6 +12,7 @@ add_executable(smashpp  src/main.cpp
                         src/tbl32.cpp
                         src/cmls4.cpp
                         src/logtbl8.cpp
+                        src/filter.cpp
                         src/def.hpp
                         src/par.hpp
                         src/assert.hpp
