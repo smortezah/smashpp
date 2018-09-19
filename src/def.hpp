@@ -56,7 +56,7 @@ static constexpr u8    K_MAX_TBL64  {11}; // Max ctx dept. table 64 (128 MB mem)
 static constexpr u8    K_MAX_TBL32  {13}; // Max ...       table 32 (1   GB mem)
 static constexpr u8    K_MAX_LGTBL8 {14}; // Max ...   log table 8  (1   GB mem)
 static constexpr u32   BLK_SZ       {8192}; // 8K
-static constexpr u64   DEF_W        {pow2(20)};  // Default w of CML sketch
+static constexpr u64   DEF_W        {pow2(20ull)};  // Default w of CML sketch
 static constexpr u8    DEF_D        {5};  // Default depth of CML sketch
 static constexpr u32   G            {64}; // Machine word size - univers hash fn
 static constexpr u8    LOG_BASE     {2};  // Logarithmic counting
@@ -71,7 +71,9 @@ static constexpr float PI           {3.14159265358979f};
 
 // Enum
 enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8}; //Data structs
-enum class Mode {MM, STMM};
+//enum class Mode {MM, STMM};
+enum class WType     {HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH
+}; // Types of windowing function
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n

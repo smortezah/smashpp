@@ -9,18 +9,23 @@
 
 class Filter {
  public:
-  Filter          () = default;
+//  Filter          () = default;
   explicit Filter (const Param&);
   void smooth     ();
 
  private:
   u32           wsize;
-  string        wtype;
+  WType         wtype;
   vector<float> window;
 
-  void config      (const Param&);
-  void make_window ();
-  void hamming     ();
+  void config       (const Param&);
+  void config_wtype (const string&);
+  void make_window  ();
+  void hamming      ();
+  void hann         ();
+  void blackman     ();
+  void triangular   ();  // Bartlett window
+  void welch        ();
 };
 
 #endif //PROJECT_FILTER_HPP

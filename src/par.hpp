@@ -70,9 +70,10 @@ inline void Param::parse (int argc, char**& argv) {
       else if ((*i=="-m" || *i=="--models") && i+1!=vArgs.end())
         modelsPars = *++i;
       else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
-        wsize = static_cast<u32>(stoi(*++i));
-        if (wsize <= 0)
-          error("The window size must be greather than zero.");
+        const auto tmp = stoi(*++i);
+        if (tmp <= 0)
+          error("The window size must be greater than 0.");
+        wsize = static_cast<u32>(tmp);
       }
       else if ((*i=="-wt" || *i=="--wtype") && i+1!=vArgs.end())
         wtype = *++i;
