@@ -23,9 +23,13 @@ inline void Filter::config_wtype (const string& t) {
 }
 
 void Filter::smooth () {
-  make_window();
+  //todo
+  std::vector<int> v {3,4,2};
+  symmetric_fill(v);
 
-  for(auto i:window)cerr<<i<<' ';//todo
+//  make_window();
+//
+//  for(auto i:window)cerr<<i<<' ';//todo
 }
 
 inline void Filter::make_window () {
