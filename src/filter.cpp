@@ -11,7 +11,7 @@ Filter::Filter (const Param& p) {
 inline void Filter::config (const Param& p) {
   config_wtype(p.wtype);
   wsize = p.wsize;
-  window.reserve(wsize);
+  window.resize(wsize);
 }
 
 inline void Filter::config_wtype (const string& t) {
@@ -23,13 +23,9 @@ inline void Filter::config_wtype (const string& t) {
 }
 
 void Filter::smooth () {
-  //todo
-  std::vector<int> v {3,4,2};
-  symmetric_fill(v);
+  make_window();
 
-//  make_window();
-//
-//  for(auto i:window)cerr<<i<<' ';//todo
+  for(auto i:window)cerr<<i<<' ';//todo
 }
 
 inline void Filter::make_window () {
@@ -50,8 +46,8 @@ inline void Filter::hamming () {
   if (is_odd(wsize)) { num=PI;      den=(wsize-1)>>1u; }
   else               { num=2*PI;    den=wsize-1;       }
 
-  for (auto n=0; n!=wsize; ++n)
-    window.emplace_back(0.54 - 0.46*cos(n*num/den));
+  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+    window[n] = window[last-n] = static_cast<float>(0.54 - 0.46*cos(n*num/den));
 }
 
 inline void Filter::hann () {
@@ -62,8 +58,8 @@ inline void Filter::hann () {
   if (is_odd(wsize)) { num=PI;      den=(wsize-1)>>1u; }
   else               { num=2*PI;    den=wsize-1;       }
 
-  for (auto n=0; n!=wsize; ++n)
-    window.emplace_back(0.5 * (1 - cos(n*num/den)));
+  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+    window[n] = window[last-n] = static_cast<float>(0.5 * (1 - cos(n*num/den)));
 }
 
 inline void Filter::blackman () {
@@ -74,8 +70,9 @@ inline void Filter::blackman () {
   if (is_odd(wsize)) { num1=PI;      num2=2*PI;    den=(wsize-1)>>1u; }
   else               { num1=2*PI;    num2=4*PI;    den=wsize-1;       }
 
-  for (auto n=0; n!=wsize; ++n)
-    window.emplace_back(0.42 - 0.5*cos(n*num1/den) + 0.08*cos(n*num2/den));
+  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+    window[n] = window[last-n] =
+      static_cast<float>(0.42 - 0.5*cos(n*num1/den) + 0.08*cos(n*num2/den));
   if (window.front() < 0)    window.front() = 0; // Because of low precision
   if (window.back()  < 0)    window.back()  = 0; // Because of low precision
 }
@@ -87,14 +84,14 @@ inline void Filter::triangular () {
 
   if (is_odd(wsize)) {
     const u32 den = (wsize-1) >> 1u;
-    for (auto n=0; n!=wsize; ++n)
-      window.emplace_back(1 - fabs(static_cast<float>(n)/den - 1));
+    for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+      window[n] = window[last-n] = 1 - fabs(static_cast<float>(n)/den - 1);
   }
   else {
     const auto num = 2.0f;
     const u32  den = wsize - 1;
-    for (auto n=0; n!=wsize; ++n)
-      window.emplace_back(1 - fabs(n*num/den - 1));
+    for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+      window[n] = window[last-n] = 1 - fabs(n*num/den - 1);
   }
 }
 
@@ -104,13 +101,13 @@ inline void Filter::welch () { // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
 
   if (is_odd(wsize)) {
     const u32 den = (wsize-1) >> 1u;
-    for (auto n=0; n!=wsize; ++n)
-      window.emplace_back(1 - pow2(static_cast<float>(n)/den - 1));
+    for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+      window[n] = window[last-n] = 1 - pow2(static_cast<float>(n)/den - 1);
   }
   else {
     const auto num = 2.0f;
     const u32  den = wsize - 1;
-    for (auto n=0; n!=wsize; ++n)
-      window.emplace_back(1 - pow2(n*num/den - 1));
+    for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+      window[n] = window[last-n] = 1 - pow2(n*num/den - 1);
   }
 }
