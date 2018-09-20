@@ -65,7 +65,7 @@ static constexpr u8    DEF_IR       {0};  // Default inverted repeats for models
 static constexpr float DEF_ALPHA    {0.001};// Default alpha for models
 static constexpr float DEF_GAMMA    {0.9};  // Default gamma for multiple models
 const  string          PROFILE_LBL  {"profile_"}; // Label for inf. profile file
-static constexpr float PI           {3.14159265358979f};
+static constexpr float PI           {3.14159265359f};
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDINALITY>>;

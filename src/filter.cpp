@@ -32,34 +32,31 @@ void Filter::smooth (const Param& p) {
 
   ifstream pf(PROFILE_LBL+p.tar);
   vector<float> seq;
-  while (!pf.eof()) {
+
+  while (!pf.eof()) {  // pf.peek() != EOF
     seq.clear();
     seq.reserve(buffSize);
-    for (auto i = buffSize; i--;) {
-      string num;
-      getline(pf, num);
+    string num;
+    for (auto i=buffSize; i-- && getline(pf,num);)
       seq.emplace_back(stof(num));
+    for (auto i :seq)cerr << '\n' << i;//todo
+    cerr << "\n---------\n";
+
+    const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
+    if (seq.size() >= wsize) {
+      for (auto i = (wsize + 1) >> 1u; i--;)
+        cerr <<"1-> "<< inner_product(window.begin() + i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
+      for (auto i = 1; i < seq.size() - wsize + 1; ++i)
+        cerr <<"2-> "<< inner_product(window.begin(), window.end(), seq.begin() + i, 0.0f) / sumWeight << '\n';
+      for (auto i = wsize - 1; i != wsize >> 1u; --i)
+        cerr <<"3-> "<< inner_product(seq.end() - i, seq.end(), window.begin(), 0.0f) / sumWeight << '\n';
     }
-    break;
+    else {
+      //todo
+      for (auto i = (wsize + 1) >> 1u; i--;)
+        cerr <<"1-> "<< inner_product(window.begin() + i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
+    }
   }
-  for(auto i :seq)cerr<<'\n'<<i;//todo
-
-//  vector<int> in{1,3,2,4,2,3,1,3};
-//  vector<int> win{1,4,2,5,2};
-//  const auto sumWeight = accumulate(win.begin(),win.end(),0.0f);
-//  for (auto i = (wsize + 1) >> 1u; i--;)
-//    cerr <<
-//         inner_product(win.begin() + i, win.end(), in.begin(), 0.0f) / sumWeight
-//         << '\n';
-//  for (auto i = 1; i != in.size() - wsize + 1; ++i)
-//    cerr <<
-//         inner_product(win.begin(), win.end(), in.begin() + i, 0.0f) / sumWeight
-//         << '\n';
-//  for (auto i = wsize-1; i != wsize>>1u; --i)
-//    cerr <<
-//         inner_product(in.end()-i, in.end(), win.begin(), 0.0f) / sumWeight
-//         << '\n';
-
 
   pf.close();
 }
