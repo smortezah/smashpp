@@ -27,6 +27,23 @@ inline void Filter::config_wtype (const string& t) {
 }
 
 void Filter::smooth (const Param& p) {
+  make_window();
+  for(auto i:window) cerr<<i<<' ';//todo
+
+  ifstream pf(PROFILE_LBL+p.tar);
+  vector<float> seq;
+  while (!pf.eof()) {
+    seq.clear();
+    seq.reserve(buffSize);
+    for (auto i = buffSize; i--;) {
+      string num;
+      getline(pf, num);
+      seq.emplace_back(stof(num));
+    }
+    break;
+  }
+  for(auto i :seq)cerr<<'\n'<<i;//todo
+
 //  vector<int> in{1,3,2,4,2,3,1,3};
 //  vector<int> win{1,4,2,5,2};
 //  const auto sumWeight = accumulate(win.begin(),win.end(),0.0f);
@@ -43,22 +60,6 @@ void Filter::smooth (const Param& p) {
 //         inner_product(in.end()-i, in.end(), win.begin(), 0.0f) / sumWeight
 //         << '\n';
 
-  make_window();
-  for(auto i:window) cerr<<i<<' ';//todo
-
-  ifstream pf(PROFILE_LBL+p.tar);
-  vector<float> seq;
-  while (!pf.eof()) {
-    seq.clear();
-    seq.reserve(buffSize);
-    for (auto i = buffSize; i--;) {
-      string num;
-      getline(pf, num);
-      seq.emplace_back(stof(num));
-    }
-    break;
-  }
-  for(auto i :seq)cerr<<'\n'<<i;
 
   pf.close();
 }
