@@ -20,6 +20,8 @@ inline void Filter::config_wtype (const string& t) {
   else if (t=="2" || t=="blackman")      wtype = WType::BLACKMAN;
   else if (t=="3" || t=="triangular")    wtype = WType::TRIANGULAR;
   else if (t=="4" || t=="welch")         wtype = WType::WELCH;
+  else if (t=="5" || t=="sine")          wtype = WType::SINE;
+  else if (t=="6" || t=="nuttall")       wtype = WType::NUTTALL;
 }
 
 void Filter::smooth () {
@@ -35,6 +37,8 @@ inline void Filter::make_window () {
     case WType::BLACKMAN:    blackman();     break;
     case WType::TRIANGULAR:  triangular();   break;
     case WType::WELCH:       welch();        break;
+    case WType::SINE:        sine();         break;
+    case WType::NUTTALL:     nuttall();      break;
   }
 }
 
@@ -73,8 +77,8 @@ inline void Filter::blackman () {
   for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
     window[n] = window[last-n] =
       static_cast<float>(0.42 - 0.5*cos(n*num1/den) + 0.08*cos(n*num2/den));
-  if (window.front() < 0)    window.front() = 0; // Because of low precision
-  if (window.back()  < 0)    window.back()  = 0; // Because of low precision
+  if (window.front() < 0)    window.front() = 0.0; // Because of low precision
+  if (window.back()  < 0)    window.back()  = 0.0; // Because of low precision
 }
 
 // Bartlett window:  w(n) = 1 - |(n - (N-1)/2) / (N-1)/2|
@@ -110,4 +114,29 @@ inline void Filter::welch () { // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
       window[n] = window[last-n] = 1 - pow2(n*num/den - 1);
   }
+}
+
+inline void Filter::sine () {
+  if (wsize == 1)
+    error("The size of sine window must be greater than 1.");
+  const float num = PI;
+  const u32   den = wsize - 1;
+
+  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+    window[n] = window[last-n] = sin(n*num/den);
+}
+
+inline void Filter::nuttall () {
+  if (wsize == 1)
+    error("The size of Nuttall window must be greater than 1.");
+  float num1=0.0f, num2=0.0f, num3=0.0f;
+  u32   den = 0;
+  if (is_odd(wsize)) { num1=PI;    num2=2*PI;  num3=3*PI;  den=(wsize-1)>>1u; }
+  else               { num1=2*PI;  num2=4*PI;  num3=6*PI;  den=wsize-1;       }
+
+  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+    window[n] = window[last-n] =
+      static_cast<float>(0.36 - 0.49*cos(n*num1/den) + 0.14*cos(n*num2/den)
+                              - 0.01*cos(n*num3/den));
+  window.front() = window.back() = 0.0;
 }

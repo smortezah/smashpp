@@ -26,6 +26,8 @@ class Filter {
   void blackman     ();
   void triangular   ();  // Bartlett window
   void welch        ();
+  void sine         ();
+  void nuttall      ();
 };
 
 #endif //PROJECT_FILTER_HPP
