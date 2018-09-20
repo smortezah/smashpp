@@ -4,13 +4,15 @@
 #include <cmath>
 #include "filter.hpp"
 
-Filter::Filter (const Param& p) {
+Filter::Filter (const Param& p) : buffSize(DEF_FIL_BUF) {
   config(p);
 }
 
 inline void Filter::config (const Param& p) {
   config_wtype(p.wtype);
-  wsize = p.wsize;
+  wsize = is_odd(p.wsize) ? p.wsize : p.wsize+1;
+  for (auto i=static_cast<u64>(log2(DEF_FIL_BUF)); wsize > buffSize;)
+    buffSize = pow2(++i);
   window.resize(wsize);
 }
 
@@ -24,10 +26,41 @@ inline void Filter::config_wtype (const string& t) {
   else if (t=="6" || t=="nuttall")       wtype = WType::NUTTALL;
 }
 
-void Filter::smooth () {
-  make_window();
+void Filter::smooth (const Param& p) {
+//  vector<int> in{1,3,2,4,2,3,1,3};
+//  vector<int> win{1,4,2,5,2};
+//  const auto sumWeight = accumulate(win.begin(),win.end(),0.0f);
+//  for (auto i = (wsize + 1) >> 1u; i--;)
+//    cerr <<
+//         inner_product(win.begin() + i, win.end(), in.begin(), 0.0f) / sumWeight
+//         << '\n';
+//  for (auto i = 1; i != in.size() - wsize + 1; ++i)
+//    cerr <<
+//         inner_product(win.begin(), win.end(), in.begin() + i, 0.0f) / sumWeight
+//         << '\n';
+//  for (auto i = wsize-1; i != wsize>>1u; --i)
+//    cerr <<
+//         inner_product(in.end()-i, in.end(), win.begin(), 0.0f) / sumWeight
+//         << '\n';
 
-  for(auto i:window)cerr<<i<<' ';//todo
+  make_window();
+  for(auto i:window) cerr<<i<<' ';//todo
+
+  ifstream pf(PROFILE_LBL+p.tar);
+  vector<float> seq;
+  while (!pf.eof()) {
+    seq.clear();
+    seq.reserve(buffSize);
+    for (auto i = buffSize; i--;) {
+      string num;
+      getline(pf, num);
+      seq.emplace_back(stof(num));
+    }
+    break;
+  }
+  for(auto i :seq)cerr<<'\n'<<i;
+
+  pf.close();
 }
 
 inline void Filter::make_window () {

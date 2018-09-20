@@ -34,7 +34,7 @@ int main (int argc, char* argv[])
 
     // Filter
     auto flt = make_shared<Filter>(p);
-    auto t0=now();      flt->smooth();     auto t1=now();   hms(t1-t0);
+    auto t0=now();      flt->smooth(p);     auto t1=now();   hms(t1-t0);
 //    t0=now();        m->filter(p);       t1=now();   hms(t1-t0);
 
     // Report
