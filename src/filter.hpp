@@ -11,12 +11,13 @@ class Filter {
  public:
 //  Filter          () = default;
   explicit Filter (const Param&);
-  void smooth     ();
+  void smooth     (const Param&);
 
  private:
   u32           wsize;
   WType         wtype;
   vector<float> window;
+  u64           buffSize;
 
   void config       (const Param&);
   void config_wtype (const string&);

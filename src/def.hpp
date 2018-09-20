@@ -48,8 +48,9 @@ constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
 // Constant
 static constexpr u8    DEF_THR      {4};  // Default # threads
 static constexpr u8    DEF_LVL      {0};  // Default level
-static constexpr u32   DEF_WS       {3};  // Default window size -- filter
+static constexpr u32   DEF_WS       {5};  // Default window size -- filter
 const  string          DEF_WT       {"0"};// Default window type -- filter
+static constexpr u64   DEF_FIL_BUF  {8};  // Default filter buffer size
 static constexpr u8    CARDINALITY  {4};  // CARDINALITYality = Alphabet size
 static constexpr u8    IRMAGIC      {3};  // Calc Mir syms based on syms
 static constexpr u8    K_MAX_TBL64  {11}; // Max ctx dept. table 64 (128 MB mem)
