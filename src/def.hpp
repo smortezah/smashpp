@@ -72,8 +72,8 @@ static constexpr float PI           {3.14159265358979f};
 // Enum
 enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8}; //Data structs
 //enum class Mode {MM, STMM};
-enum class WType     {HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH
-}; // Types of windowing function
+enum class WType     {HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH, SINE,
+                      NUTTALL};  // Types of windowing function
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n
