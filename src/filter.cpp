@@ -51,10 +51,16 @@ void Filter::smooth (const Param& p) {
       for (auto i = wsize - 1; i != wsize >> 1u; --i)
         cerr <<"3-> "<< inner_product(seq.end() - i, seq.end(), window.begin(), 0.0f) / sumWeight << '\n';
     }
+    //todo
+    else if (seq.size() > (wsize+1)>>1u) {
+      for (auto i = (wsize + 1) >> 1u; i>wsize-seq.size();)
+        cerr <<"1-> "<< inner_product(window.begin() + --i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
+      for (auto i = wsize - 1; i != wsize >> 1u; --i)
+        cerr <<"3-> "<< inner_product(seq.end() - i, seq.end(), window.begin(), 0.0f) / sumWeight << '\n';
+    }
     else {
-      //todo
-      for (auto i = (wsize + 1) >> 1u; i--;)
-        cerr <<"1-> "<< inner_product(window.begin() + i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
+      for (auto i=(wsize+1)>>1u, j=static_cast<u32>(seq.size()); j--;)
+        cerr <<"1-> "<< inner_product(seq.begin(), seq.end(), window.begin() + --i, 0.0f) / sumWeight << '\n';
     }
   }
 
