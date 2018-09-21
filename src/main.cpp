@@ -37,6 +37,18 @@ int main (int argc, char* argv[])
     auto t0=now();      flt->smooth(p);     auto t1=now();   hms(t1-t0);
 //    t0=now();        m->filter(p);       t1=now();   hms(t1-t0);
 
+//    auto t0=now();
+//vector<int> v{3,2,1,4,5};
+//for (int i=0;i<70000000;++i){
+////  v.emplace_back(7);
+////  v.erase(v.begin());
+//copy(v.begin()+1, v.end(), v.begin());
+//v.back()=7;
+////move(v.begin()+1, v.end(), v.begin());
+////v.back()=7;
+//}
+//    auto t1=now();   hms(t1-t0);
+
     // Report
 //    m->report(p); // Without "-R" does nothing
 

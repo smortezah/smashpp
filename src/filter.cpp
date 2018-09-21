@@ -2,17 +2,16 @@
 // Created by morteza on 19-09-2018.
 //
 #include <cmath>
+#include <cstring>//todo
 #include "filter.hpp"
 
-Filter::Filter (const Param& p) : buffSize(DEF_FIL_BUF) {
+Filter::Filter (const Param& p) {
   config(p);
 }
 
 inline void Filter::config (const Param& p) {
   config_wtype(p.wtype);
   wsize = is_odd(p.wsize) ? p.wsize : p.wsize+1;
-  for (auto i=static_cast<u64>(log2(DEF_FIL_BUF)); wsize > buffSize;)
-    buffSize = pow2(++i);
   window.resize(wsize);
 }
 
@@ -28,41 +27,53 @@ inline void Filter::config_wtype (const string& t) {
 
 void Filter::smooth (const Param& p) {
   make_window();
-  for(auto i:window) cerr<<i<<' ';//todo
+  for(auto i:window) cerr<<i<<' ';  cerr << '\n';//todo
 
   ifstream pf(PROFILE_LBL+p.tar);
-  vector<float> seq;
+  vector<float> seq(wsize>>1u, 0);    seq.reserve(wsize);
+  string num;
+  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
+    seq.emplace_back(stof(num));
+  for (auto i :seq)cerr << i << '\n';  cerr<<"-----\n";//todo
 
-  while (!pf.eof()) {  // pf.peek() != EOF
-    seq.clear();
-    seq.reserve(buffSize);
-    string num;
-    for (auto i=buffSize; i-- && getline(pf,num);)
-      seq.emplace_back(stof(num));
-    for (auto i :seq)cerr << '\n' << i;//todo
-    cerr << "\n---------\n";
+  const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
+  cerr << inner_product(window.begin(), window.end(), seq.begin(), 0.0f) /
+          sumWeight << '\n';
 
-    const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
-    if (seq.size() >= wsize) {
-      for (auto i = (wsize + 1) >> 1u; i--;)
-        cerr <<"1-> "<< inner_product(window.begin() + i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
-      for (auto i = 1; i < seq.size() - wsize + 1; ++i)
-        cerr <<"2-> "<< inner_product(window.begin(), window.end(), seq.begin() + i, 0.0f) / sumWeight << '\n';
-      for (auto i = wsize - 1; i != wsize >> 1u; --i)
-        cerr <<"3-> "<< inner_product(seq.end() - i, seq.end(), window.begin(), 0.0f) / sumWeight << '\n';
-    }
-    //todo
-    else if (seq.size() > (wsize+1)>>1u) {
-      for (auto i = (wsize + 1) >> 1u; i>wsize-seq.size();)
-        cerr <<"1-> "<< inner_product(window.begin() + --i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
-      for (auto i = wsize - 1; i != wsize >> 1u; --i)
-        cerr <<"3-> "<< inner_product(seq.end() - i, seq.end(), window.begin(), 0.0f) / sumWeight << '\n';
-    }
-    else {
-      for (auto i=(wsize+1)>>1u, j=static_cast<u32>(seq.size()); j--;)
-        cerr <<"1-> "<< inner_product(seq.begin(), seq.end(), window.begin() + --i, 0.0f) / sumWeight << '\n';
-    }
-  }
+  shift_left_insert(seq.begin(), 7);
+  for (auto i :seq)cerr << i << ' ';  cerr<<"\n";//todo
+
+
+//  while (!pf.eof()) {  // pf.peek() != EOF
+////    seq.clear();
+////    seq.reserve(buffSize);
+//    string num;
+//    for (auto i=buffSize; i-- && getline(pf,num);)
+//      seq.emplace_back(stof(num));
+//    for (auto i :seq)cerr << '\n' << i;//todo
+//    cerr << "\n---------\n";
+//
+//    const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
+////    if (seq.size() >= wsize) {
+////      for (auto i = (wsize + 1) >> 1u; i--;)
+////        cerr <<"1-> "<< inner_product(window.begin() + i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
+////      for (auto i = 1; i < seq.size() - wsize + 1; ++i)
+////        cerr <<"2-> "<< inner_product(window.begin(), window.end(), seq.begin() + i, 0.0f) / sumWeight << '\n';
+////      for (auto i = wsize - 1; i != wsize >> 1u; --i)
+////        cerr <<"3-> "<< inner_product(seq.end() - i, seq.end(), window.begin(), 0.0f) / sumWeight << '\n';
+////    }
+////    //todo
+////    else if (seq.size() > (wsize+1)>>1u) {
+////      for (auto i = (wsize + 1) >> 1u; i>wsize-seq.size();)
+////        cerr <<"1-> "<< inner_product(window.begin() + --i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
+////      for (auto i = wsize - 1; i != wsize >> 1u; --i)
+////        cerr <<"3-> "<< inner_product(seq.end() - i, seq.end(), window.begin(), 0.0f) / sumWeight << '\n';
+////    }
+////    else {
+////      for (auto i=(wsize+1)>>1u, j=static_cast<u32>(seq.size()); j--;)
+////        cerr <<"1-> "<< inner_product(seq.begin(), seq.end(), window.begin() + --i, 0.0f) / sumWeight << '\n';
+////    }
+//  }
 
   pf.close();
 }
@@ -176,4 +187,10 @@ inline void Filter::nuttall () {
       static_cast<float>(0.36 - 0.49*cos(n*num1/den) + 0.14*cos(n*num2/den)
                               - 0.01*cos(n*num3/den));
   window.front() = window.back() = 0.0;
+}
+
+template <typename Iter, typename Value>
+inline void Filter::shift_left_insert (Iter first, Value v) {
+  copy(first+1, first+wsize, first);
+  *(first+wsize-1) = v;
 }
