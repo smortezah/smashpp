@@ -17,7 +17,6 @@ class Filter {
   u32           wsize;
   WType         wtype;
   vector<float> window;
-  u64           buffSize;
 
   void config       (const Param&);
   void config_wtype (const string&);
@@ -29,6 +28,8 @@ class Filter {
   void welch        ();
   void sine         ();
   void nuttall      ();
+  template <typename Iter, typename Value>
+  void shift_left_insert (Iter, Value);
 };
 
 #endif //PROJECT_FILTER_HPP
