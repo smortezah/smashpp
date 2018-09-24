@@ -28,8 +28,11 @@ class Filter {
   void welch        ();
   void sine         ();
   void nuttall      ();
+
+#ifdef BENCH
   template <typename Iter, typename Value>
   void shift_left_insert (Iter, Value);
+#endif
 };
 
 #endif //PROJECT_FILTER_HPP

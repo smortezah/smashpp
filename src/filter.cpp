@@ -30,18 +30,30 @@ void Filter::smooth (const Param& p) {
   for(auto i:window) cerr<<i<<' ';  cerr << '\n';//todo
 
   ifstream pf(PROFILE_LBL+p.tar);
-  vector<float> seq(wsize>>1u, 0);    seq.reserve(wsize);
+//  vector<float> seq(wsize>>1u, 0);    seq.reserve(wsize);
+  vector<float> seq;    seq.reserve(wsize);
   string num;
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
     seq.emplace_back(stof(num));
+//  for (auto i :seq)cerr << i << '\n';  cerr<<"-----\n";//todo
+  cerr << inner_product(window.begin()+(wsize>>1u), window.end(), seq.begin(), 0.0f) << '\n';//todo
+
+  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
+    seq.emplace_back(stof(num));
+    cerr << inner_product(window.begin()+i, window.end(), seq.begin(), 0.0f) << '\n';//todo
+  }
+
+  cerr<<"-----\n";//todo
   for (auto i :seq)cerr << i << '\n';  cerr<<"-----\n";//todo
 
-  const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
-  cerr << inner_product(window.begin(), window.end(), seq.begin(), 0.0f) /
-          sumWeight << '\n';
 
-  shift_left_insert(seq.begin(), 7);
-  for (auto i :seq)cerr << i << ' ';  cerr<<"\n";//todo
+//  const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
+//  cerr << inner_product(window.begin(), window.begin()+(wsize>>1u), seq.begin(), 0.0f) /
+//          sumWeight << '\n';
+
+
+//  shift_left_insert(seq.begin(), 7);
+//  for (auto i :seq)cerr << i << ' ';  cerr<<"\n";//todo
 
 
 //  while (!pf.eof()) {  // pf.peek() != EOF
@@ -189,8 +201,10 @@ inline void Filter::nuttall () {
   window.front() = window.back() = 0.0;
 }
 
+#ifdef BENCH
 template <typename Iter, typename Value>
 inline void Filter::shift_left_insert (Iter first, Value v) {
   copy(first+1, first+wsize, first);
   *(first+wsize-1) = v;
 }
+#endif
