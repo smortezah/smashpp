@@ -26,8 +26,7 @@ inline void Filter::config_wtype (const string& t) {
 }
 
 void Filter::smooth (const Param& p) {
-//  make_window();
-window={0,1,2,1,0};//todo
+  make_window();
   for(auto i:window) cerr<<i<<' ';  cerr << '\n';//todo
   const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
 
@@ -36,7 +35,6 @@ window={0,1,2,1,0};//todo
   string num;
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
     seq.emplace_back(stof(num));
-//  cerr<<"seq: "; for (auto i :seq)cerr << i << ' ';  cerr<<"-----\n";//todo
   cerr <<
        inner_product(window.begin()+(wsize>>1u), window.end(), seq.begin(),
                      0.0f) / sumWeight << '\n';  // The first number //todo
@@ -46,7 +44,7 @@ window={0,1,2,1,0};//todo
     cerr << inner_product(window.begin()+i, window.end(), seq.begin(), 0.0f) /
             sumWeight << '\n';//todo
   }
-//  cerr<<"-------------------\n";//todo
+
   u32 idx = 0;
   for(auto seqBeg = seq.begin(); getline(pf,num);) {   // pf.peek() != EOF
     cerr<<"seq: "; for (auto i :seq)cerr << i << ' ';  cerr<<"\n";//todo
@@ -63,58 +61,20 @@ window={0,1,2,1,0};//todo
   const auto offset = idx;
   cerr << "offset " << offset << '\n';//todo
   for (auto i=wsize>>1u; i--;) {
-    if (++idx != wsize+1) {
+    if (++idx < wsize+1) {
       cerr <<
-           (inner_product(seq.begin() + idx, seq.end(), window.begin(), 0.0f) +
-            inner_product(seq.begin(), seq.begin() + offset, window.end() - idx,
+           (inner_product(seq.begin()+idx, seq.end(), window.begin(), 0.0f) +
+            inner_product(seq.begin(), seq.begin()+offset, window.end()-idx,
                           0.0f)
            ) / sumWeight << '\n';//todo
     }
     else {
-      idx %= wsize;
-      cerr <<
-           (inner_product(seq.begin() + idx, seq.begin()+offset, window.begin(), 0.0f)
-//           +
-//            inner_product(seq.begin(), seq.begin() + offset, window.end() - idx,
-//                          0.0f)
-           ) / sumWeight << '\n';//todo
+      cerr << inner_product(seq.begin()+(idx%wsize), seq.begin()+offset,
+                            window.begin(), 0.0f) / sumWeight << '\n';//todo
     }
   }
 
-
-
-//  shift_left_insert(seq.begin(), 7);
   cerr<<"seq: "; for (auto i :seq)cerr << i << ' ';  cerr<<"\n";//todo
-
-
-
-//  while (!pf.eof()) {  // pf.peek() != EOF
-////    seq.clear();
-////    seq.reserve(buffSize);
-//    string num;
-//    for (auto i=buffSize; i-- && getline(pf,num);)
-//      seq.emplace_back(stof(num));
-//
-//    const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
-////    if (seq.size() >= wsize) {
-////      for (auto i = (wsize + 1) >> 1u; i--;)
-////        cerr <<"1-> "<< inner_product(window.begin() + i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
-////      for (auto i = 1; i < seq.size() - wsize + 1; ++i)
-////        cerr <<"2-> "<< inner_product(window.begin(), window.end(), seq.begin() + i, 0.0f) / sumWeight << '\n';
-////      for (auto i = wsize - 1; i != wsize >> 1u; --i)
-////        cerr <<"3-> "<< inner_product(seq.end() - i, seq.end(), window.begin(), 0.0f) / sumWeight << '\n';
-////    }
-////    else if (seq.size() > (wsize+1)>>1u) {
-////      for (auto i = (wsize + 1) >> 1u; i>wsize-seq.size();)
-////        cerr <<"1-> "<< inner_product(window.begin() + --i, window.end(), seq.begin(), 0.0f) / sumWeight << '\n';
-////      for (auto i = wsize - 1; i != wsize >> 1u; --i)
-////        cerr <<"3-> "<< inner_product(seq.end() - i, seq.end(), window.begin(), 0.0f) / sumWeight << '\n';
-////    }
-////    else {
-////      for (auto i=(wsize+1)>>1u, j=static_cast<u32>(seq.size()); j--;)
-////        cerr <<"1-> "<< inner_product(seq.begin(), seq.end(), window.begin() + --i, 0.0f) / sumWeight << '\n';
-////    }
-//  }
 
   pf.close();
 }
