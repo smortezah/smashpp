@@ -18,16 +18,18 @@ class Filter {
   WType         wtype;
   vector<float> window;
 
-  void config       (const Param&);
-  void config_wtype (const string&);
-  void make_window  ();
-  void hamming      ();
-  void hann         ();
-  void blackman     ();
-  void triangular   ();  // Bartlett window
-  void welch        ();
-  void sine         ();
-  void nuttall      ();
+  void config          (const Param&);
+  void config_wtype    (const string&);
+  void make_window     ();
+  void hamming         ();
+  void hann            ();
+  void blackman        ();
+  void triangular      ();  // Bartlett window
+  void welch           ();
+  void sine            ();
+  void nuttall         ();
+  void smooth_rect     (const Param&);
+  void smooth_non_rect (const Param&);
 
 #ifdef BENCH
   template <typename Iter, typename Value>
