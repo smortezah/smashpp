@@ -157,7 +157,7 @@ void Filter::smooth_rect (const Param& p) {
   u64    pos=0, begPos=0, endPos=0;
   float  sum = 0.0f;
   float  cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
-  bool   begun=false, ended=false;
+  bool   begun=false;
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
@@ -165,10 +165,7 @@ void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
   }
-  if (sum < cut) {
-    begun = true;
-    begPos = endPos = pos;
-  }
+  if (sum <= cut) { begun = true;    begPos = endPos = pos; }
 
   // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
@@ -176,20 +173,15 @@ void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
     ++pos;
-    if (sum < cut) {
-      if (!begun) {
-        begun = true;
-        begPos = endPos = pos;
-      }
-      else { endPos = pos; }
+
+    if (sum > cut) {
+      begun = false;
+      if (begPos!=endPos) { ff<<begPos<<'\t'<<endPos<<'\n';   begPos=endPos=0; }
+      else { begPos = endPos = 0; }
     }
     else {
-      begun = false;
-      if (begPos != endPos) {
-        cerr << begPos << '\t' << endPos << '\n';
-        begPos = endPos = 0;
-      }
-      else { begPos = endPos = 0; }
+      if (!begun) { begun=true;    begPos=endPos=pos; }
+      else { endPos = pos; }
     }
   }
 
@@ -200,20 +192,14 @@ void Filter::smooth_rect (const Param& p) {
     sum = sum - seq[idx] + val;
     ++pos;
 
-    if (sum < cut) {
-      if (!begun) {
-        begun = true;
-        begPos = endPos = pos;
-      }
-      else { endPos = pos; }
+    if (sum > cut) {
+      begun = false;
+      if (begPos!=endPos) { ff<<begPos<<'\t'<<endPos<<'\n';   begPos=endPos=0; }
+      else { begPos = endPos = 0; }
     }
     else {
-      begun = false;
-      if (begPos != endPos) {
-        cerr << begPos << '\t' << endPos << '\n';
-        begPos = endPos = 0;
-      }
-      else { begPos = endPos = 0; }
+      if (!begun) { begun = true;    begPos = endPos = pos; }
+      else { endPos = pos; }
     }
 
     seq[idx] = val;
@@ -226,28 +212,20 @@ void Filter::smooth_rect (const Param& p) {
     sum -= seq[idx];
     ++pos;
 
-    if (sum < cut) {
-      if (!begun) {
-        begun = true;
-        begPos = endPos = pos;
-      }
-      else {
-        endPos = pos;
-      }
+    if (sum > cut) {
+      begun = false;
+      if (begPos!=endPos) { ff<<begPos<<'\t'<<endPos<<'\n';   begPos=endPos=0; }
+      else { begPos = endPos = 0; }
     }
     else {
-      begun = false;
-      if (begPos != endPos) {
-        cerr << begPos << '\t' << endPos << '\n';
-        begPos = endPos = 0;
-      }
-      else { begPos = endPos = 0; }
+      if (!begun) { begun = true;    begPos = endPos = pos; }
+      else { endPos = pos; }
     }
 
     idx = (idx+1) % wsize;
   }
 
-  if (begPos != endPos) { cerr << begPos << '\t' << endPos << '\n'; }
+  if (begPos != endPos) { ff << begPos << '\t' << endPos << '\n'; }
 
   ff.close();
 }
