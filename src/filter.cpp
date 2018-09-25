@@ -157,6 +157,7 @@ void Filter::smooth_rect (const Param& p) {
   u64    pos=0, begPos=0, endPos=0;
   float  sum = 0.0f;
   float  cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
+  bool   begun=false, ended=false;
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
@@ -164,10 +165,9 @@ void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
   }
-  //todo
-  if (sum <= cut) {
-    begPos = pos;
-//    ff << pos << '\n';
+  if (sum < cut) {
+    begun = true;
+    begPos = endPos = pos;
   }
 
   // Next wsize>>1 values
@@ -176,16 +176,28 @@ void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
     ++pos;
-//    if (sum < cut) {
-//      ff << pos << '\n';
-//    }
+    if (sum < cut) {
+      if (!begun) {
+        begun = true;
+        begPos = endPos = pos;
+      }
+      else {
+        endPos = pos;
+      }
+    }
+    else {
+      begun = false;
+      if (begPos != endPos) { cerr << begPos << '\t' << endPos << '\n'; }
+      else { begPos = endPos = 0; }
+    }
   }
 
   // The rest
   u32 idx = 0;
-  for (; getline(pf,num); ++pos) {
+  for (; getline(pf,num);) {
     const auto val = stof(num);
     sum = sum - seq[idx] + val;
+    ++pos;
     /// if sum > wsize*thresh
     seq[idx] = val;
     idx = (idx+1) % wsize;
@@ -195,9 +207,30 @@ void Filter::smooth_rect (const Param& p) {
   // Up to when half of the window goes outside the array
   for (auto i=(wsize>>1u); i--;) {
     sum -= seq[idx];
-    /// if sum > wsize*thresh
+    ++pos;
+
+    if (sum < cut) {
+      if (!begun) {
+        begun = true;
+        begPos = endPos = pos;
+      }
+      else {
+        endPos = pos;
+      }
+    }
+    else {
+      begun = false;
+      if (begPos != endPos) {
+        cerr << begPos << '\t' << endPos << '\n';
+        begPos = endPos = 0;
+      }
+      else { begPos = endPos = 0; }
+    }
+
     idx = (idx+1) % wsize;
   }
+
+  if (begPos != endPos) { cerr << begPos << '\t' << endPos << '\n'; }
 
   ff.close();
 }
