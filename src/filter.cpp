@@ -13,6 +13,7 @@ inline void Filter::config (const Param& p) {
   config_wtype(p.wtype);
   wsize = is_odd(p.wsize) ? p.wsize : p.wsize+1;
   window.resize(wsize);
+  thresh = p.thresh;
 }
 
 inline void Filter::config_wtype (const string& t) {
@@ -148,36 +149,44 @@ inline void Filter::nuttall () {
   window.front() = window.back() = 0.0;
 }
 
-void Filter::smooth_rect (const Param& p) {
-  const auto sumWeight = wsize;
+void Filter::smooth_rect (const Param& p) {cerr<<thresh;
+//  const auto sumWeight = wsize;
   ifstream pf(PROFILE_LBL+p.tar);
   vector<float> seq;    seq.reserve(wsize);
   string num;
-  u64   pos = 0;
-  float sum = 0.0f;
+  u64    pos = 0;
+  float  sum = 0.0f;
 
+  // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num); ++pos) {
     const auto val = stof(num);
     seq.emplace_back(val);
     sum += val;
   }
-  cerr<<sum<<'\n';;//todo
+  /// if sum > wsize*thresh
 
+  // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(pf,num); ++pos) {
     const auto val = stof(num);
     seq.emplace_back(val);
     sum += val;
-    cerr << sum << '\n';//todo
+    /// if sum > wsize*thresh
   }
 
-//  for (auto i:seq)cerr<<i<<' ';cerr<<'\n';//todo
-
+  // The rest
   u32 idx = 0;
   for (; getline(pf,num); ++pos) {
     const auto val = stof(num);
     sum = sum - seq[idx] + val;
-    cerr << sum << '\n';//todo
+    /// if sum > wsize*thresh
     seq[idx] = val;
+    idx = (idx+1) % wsize;
+  }
+
+  // Up to when half of the window goes outside the array
+  for (auto i=(wsize>>1u); i--;) {
+    sum -= seq[idx];
+    /// if sum > wsize*thresh
     idx = (idx+1) % wsize;
   }
 
@@ -205,8 +214,8 @@ void Filter::smooth_non_rect (const Param& p) {
   }
 
   u32 idx = 0;
-  for(auto seqBeg = seq.begin(); getline(pf,num);) {   // pf.peek() != EOF
-    *(seqBeg+idx) = stof(num);
+  for(auto seqBeg=seq.begin(); getline(pf,num);) {   // pf.peek() != EOF
+    *(seqBeg+idx) = stof(num); // or seq[idx] = stof(num);
     idx = (idx+1) % wsize;
 
     cerr <<

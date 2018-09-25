@@ -22,11 +22,13 @@ class Param    // Parameters
   string modelsPars;
   u32    wsize;
   string wtype;
+  float  thresh;
   string report;
   
   // Define Param::Param(){} in *.hpp => compile error
   Param () : tar(""), ref(""), level(DEF_LVL), verbose(false), nthr(DEF_THR),
-             modelsPars(""), wsize(DEF_WS), wtype(DEF_WT), report("") {}
+             modelsPars(""), wsize(DEF_WS), wtype(DEF_WT), thresh(DEF_THRESH),
+             report("") {}
   void parse (int, char**&);
 
  private:
@@ -77,6 +79,8 @@ inline void Param::parse (int argc, char**& argv) {
       }
       else if ((*i=="-wt" || *i=="--wtype") && i+1!=vArgs.end())
         wtype = *++i;
+      else if ((*i=="-th" || *i=="--thresh") && i+1!=vArgs.end())
+        thresh = stof(*++i);
       else if (*i=="-R"  || *i=="--report")
         report = (i+1!=vArgs.end()) ? *++i : "report.txt";
     }
@@ -169,6 +173,9 @@ inline void Param::help () const {//todo
     << "        5 | welch:        Welch window"                          << '\n'
     << "        6 | sine:         sine window"                           << '\n'
     << "        7 | nuttall:      Nuttall window"                        << '\n'
+                                                                         << '\n'
+    << "    -th,  --thresh"                                              << '\n'
+    << "        threshold -- for filtering"                              << '\n'
                                                                          << '\n'
     << "    -R,  --report"                                               << '\n'
     << "        save results in the \"report\" file"                     << '\n'
