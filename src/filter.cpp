@@ -181,13 +181,14 @@ void Filter::smooth_rect (const Param& p) {
         begun = true;
         begPos = endPos = pos;
       }
-      else {
-        endPos = pos;
-      }
+      else { endPos = pos; }
     }
     else {
       begun = false;
-      if (begPos != endPos) { cerr << begPos << '\t' << endPos << '\n'; }
+      if (begPos != endPos) {
+        cerr << begPos << '\t' << endPos << '\n';
+        begPos = endPos = 0;
+      }
       else { begPos = endPos = 0; }
     }
   }
@@ -198,7 +199,23 @@ void Filter::smooth_rect (const Param& p) {
     const auto val = stof(num);
     sum = sum - seq[idx] + val;
     ++pos;
-    /// if sum > wsize*thresh
+
+    if (sum < cut) {
+      if (!begun) {
+        begun = true;
+        begPos = endPos = pos;
+      }
+      else { endPos = pos; }
+    }
+    else {
+      begun = false;
+      if (begPos != endPos) {
+        cerr << begPos << '\t' << endPos << '\n';
+        begPos = endPos = 0;
+      }
+      else { begPos = endPos = 0; }
+    }
+
     seq[idx] = val;
     idx = (idx+1) % wsize;
   }
