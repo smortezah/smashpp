@@ -154,10 +154,10 @@ void Filter::smooth_rect (const Param& p) {
   ofstream ff(p.tar+FILTER_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
-  u64    pos=0, begPos=0, endPos=0;
-  float  sum = 0.0f;
-  float  cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
-  bool   begun=false;
+  u64   pos=0, begPos=0, endPos=0;
+  float sum   = 0.0f;
+  bool  begun = false;
+  const float cut = wsize * thresh; // Sum of weights=wsize. All coeffs of win=1
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
@@ -165,7 +165,7 @@ void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
   }
-  if (sum <= cut) { begun = true;    begPos = endPos = pos; }
+  if (sum <= cut) { begun=true;    begPos=endPos=pos; }
 
   // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
@@ -173,15 +173,15 @@ void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
     ++pos;
-
     if (sum > cut) {
       begun = false;
-      if (begPos!=endPos) { ff<<begPos<<'\t'<<endPos<<'\n';   begPos=endPos=0; }
-      else { begPos = endPos = 0; }
+      if (begPos != endPos)
+        ff << begPos << '\t' << endPos << '\n';
+      begPos = endPos = 0;
     }
     else {
       if (!begun) { begun=true;    begPos=endPos=pos; }
-      else { endPos = pos; }
+      else        {                       endPos=pos; }
     }
   }
 
@@ -191,17 +191,16 @@ void Filter::smooth_rect (const Param& p) {
     const auto val = stof(num);
     sum = sum - seq[idx] + val;
     ++pos;
-
     if (sum > cut) {
       begun = false;
-      if (begPos!=endPos) { ff<<begPos<<'\t'<<endPos<<'\n';   begPos=endPos=0; }
-      else { begPos = endPos = 0; }
+      if (begPos != endPos)
+        ff << begPos << '\t' << endPos << '\n';
+      begPos = endPos = 0;
     }
     else {
-      if (!begun) { begun = true;    begPos = endPos = pos; }
-      else { endPos = pos; }
+      if (!begun) { begun=true;    begPos=endPos=pos; }
+      else        {                       endPos=pos; }
     }
-
     seq[idx] = val;
     idx = (idx+1) % wsize;
   }
@@ -211,20 +210,18 @@ void Filter::smooth_rect (const Param& p) {
   for (auto i=(wsize>>1u); i--;) {
     sum -= seq[idx];
     ++pos;
-
     if (sum > cut) {
       begun = false;
-      if (begPos!=endPos) { ff<<begPos<<'\t'<<endPos<<'\n';   begPos=endPos=0; }
-      else { begPos = endPos = 0; }
+      if (begPos != endPos)
+        ff << begPos << '\t' << endPos << '\n';
+      begPos = endPos = 0;
     }
     else {
-      if (!begun) { begun = true;    begPos = endPos = pos; }
-      else { endPos = pos; }
+      if (!begun) { begun=true;    begPos=endPos=pos; }
+      else        {                       endPos=pos; }
     }
-
     idx = (idx+1) % wsize;
   }
-
   if (begPos != endPos) { ff << begPos << '\t' << endPos << '\n'; }
 
   ff.close();
@@ -238,8 +235,6 @@ void Filter::smooth_non_rect (const Param& p) {
 
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
     seq.emplace_back(stof(num));
-
-  u64 pos = 0;//todo
   cerr <<
        inner_product(window.begin()+(wsize>>1u), window.end(), seq.begin(),
                      0.0f) / sumWeight << '\n';  // The first number //todo
@@ -254,12 +249,12 @@ void Filter::smooth_non_rect (const Param& p) {
   for(auto seqBeg=seq.begin(); getline(pf,num);) {   // pf.peek() != EOF
     *(seqBeg+idx) = stof(num); // or seq[idx] = stof(num);
     idx = (idx+1) % wsize;
-
     cerr <<
     (inner_product(window.begin(), window.end()-idx, seq.begin()+idx, 0.0f) +
     inner_product(window.end()-idx, window.end(), seq.begin(), 0.0f)) /
          sumWeight << '\n';//todo
   }
+  pf.close();
 
   const auto offset = idx;
   for (auto i=wsize>>1u; i--;) {
@@ -275,8 +270,6 @@ void Filter::smooth_non_rect (const Param& p) {
                             window.begin(), 0.0f) / sumWeight << '\n';//todo
     }
   }
-
-  pf.close();
 }
 
 #ifdef BENCH
