@@ -149,28 +149,36 @@ inline void Filter::nuttall () {
   window.front() = window.back() = 0.0;
 }
 
-void Filter::smooth_rect (const Param& p) {cerr<<thresh;
-//  const auto sumWeight = wsize;
-  ifstream pf(PROFILE_LBL+p.tar);
-  vector<float> seq;    seq.reserve(wsize);
+void Filter::smooth_rect (const Param& p) {
+  ifstream pf(p.tar+PROFILE_FMT);
+  ofstream ff(p.tar+FILTER_FMT);
   string num;
-  u64    pos = 0;
+  vector<float> seq;    seq.reserve(wsize);
+  u64    pos=0, begPos=0, endPos=0;
   float  sum = 0.0f;
+  float  cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
 
   // First value
-  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num); ++pos) {
+  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
     sum += val;
   }
-  /// if sum > wsize*thresh
+  //todo
+  if (sum <= cut) {
+    begPos = pos;
+//    ff << pos << '\n';
+  }
 
   // Next wsize>>1 values
-  for (auto i=(wsize>>1u); i-- && getline(pf,num); ++pos) {
+  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
     sum += val;
-    /// if sum > wsize*thresh
+    ++pos;
+//    if (sum < cut) {
+//      ff << pos << '\n';
+//    }
   }
 
   // The rest
@@ -182,6 +190,7 @@ void Filter::smooth_rect (const Param& p) {cerr<<thresh;
     seq[idx] = val;
     idx = (idx+1) % wsize;
   }
+  pf.close();
 
   // Up to when half of the window goes outside the array
   for (auto i=(wsize>>1u); i--;) {
@@ -190,12 +199,12 @@ void Filter::smooth_rect (const Param& p) {cerr<<thresh;
     idx = (idx+1) % wsize;
   }
 
-  pf.close();
+  ff.close();
 }
 
 void Filter::smooth_non_rect (const Param& p) {
   const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
-  ifstream pf(PROFILE_LBL+p.tar);
+  ifstream pf(p.tar+PROFILE_FMT);
   vector<float> seq;    seq.reserve(wsize);
   string num;
 
