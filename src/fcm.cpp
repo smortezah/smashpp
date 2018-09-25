@@ -177,7 +177,7 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  ofstream pf(PROFILE_LBL+tar);
+  ofstream pf(tar+PROFILE_FMT);
   ProbPar pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
              static_cast<u8>(Ms[0].k<<1u)};
 
@@ -242,7 +242,7 @@ inline void FCM::compress_n_ave (const string &tar,
   u64      symsNo{0};          // No. syms in target file, except \n
   double   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  ofstream pf(PROFILE_LBL+tar);
+  ofstream pf(tar+PROFILE_FMT);
 
   while (tf.get(c)) {
     if (c != '\n') {
