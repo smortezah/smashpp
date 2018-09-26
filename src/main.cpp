@@ -21,21 +21,23 @@
 int main (int argc, char* argv[])
 {
   try {
+    // Parse the command
     Param p;
     p.parse(argc, argv);
 
-//    auto m = make_shared<FCM>(p);  // auto* m = new FCM(p);
-//    // Build models  // Start time// Finish time// Elapsed time
-//    auto t0{now()};  m->store(p);     auto t1{now()};  hms(t1-t0);
-//    // Compress
-//    t0=now();        m->compress(p);       t1=now();   hms(t1-t0);
-//    // Result
-//    cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
+    auto m = make_shared<FCM>(p);  // auto* m = new FCM(p);
+    // Build models
+    auto t0{now()};  m->store(p);     auto t1{now()};  hms(t1-t0);
+
+    // Compress
+    t0=now();        m->compress(p);       t1=now();   hms(t1-t0);
+
+    // Result
+    cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
 
     // Filter
     auto flt = make_shared<Filter>(p);
-    auto t0=now();      flt->smooth(p);     auto t1=now();   hms(t1-t0);
-//    t0=now();        m->filter(p);       t1=now();   hms(t1-t0);
+    t0=now();        flt->smooth(p);       t1=now();   hms(t1-t0);
 
     // Report
 //    m->report(p); // Without "-R" does nothing

@@ -29,6 +29,9 @@ inline void Filter::config_wtype (const string& t) {
 }
 
 void Filter::smooth (const Param& p) {
+  if (p.verbose)  cerr << "Filtering the target \"" << p.tar << "\"...\n";
+  else            cerr << "Filtering...\n";
+
   if (wtype == WType::RECTANGULAR) {
     smooth_rect(p);
   }
@@ -36,6 +39,7 @@ void Filter::smooth (const Param& p) {
     make_window();
     smooth_non_rect(p);
   }
+  cerr << "Finished";
 }
 
 inline void Filter::make_window () {
@@ -197,6 +201,7 @@ inline void Filter::smooth_rect (const Param& p) {
   partition_last(ff, part);
 
   ff.close();
+  if (p.verbose)  cerr << "Detected " << part->nParts << " regions.\n";
 }
 
 inline void Filter::smooth_non_rect (const Param& p) {
@@ -247,13 +252,18 @@ inline void Filter::smooth_non_rect (const Param& p) {
     partition(ff, part);
   }
   partition_last(ff, part);
+
+  ff.close();
+  if (p.verbose)  cerr << "Detected " << part->nParts << " regions.\n";
 }
 
 inline void Filter::partition (ofstream& ff, shared_ptr<Part> p) const {
   if (p->sum > p->cut) {
     p->begun = false;
-    if (p->begPos != p->endPos)
+    if (p->begPos != p->endPos) {
+      ++p->nParts;
       ff << p->begPos << '\t' << p->endPos << '\n';
+    }
     p->begPos = p->endPos = 0;
   }
   else {
@@ -266,8 +276,10 @@ inline void Filter::partition (ofstream& ff, shared_ptr<Part> p) const {
 }
 
 inline void Filter::partition_last (ofstream& ff, shared_ptr<Part> p) const {
-  if (p->begPos != p->endPos)
+  if (p->begPos != p->endPos) {
+    ++p->nParts;
     ff << p->begPos << '\t' << p->endPos << '\n';
+  }
 }
 
 #ifdef BENCH
