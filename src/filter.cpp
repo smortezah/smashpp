@@ -200,7 +200,6 @@ inline void Filter::smooth_rect (const Param& p) {
 }
 
 inline void Filter::smooth_non_rect (const Param& p) {
-//  const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
   ifstream pf(p.tar+PROFILE_FMT);
   ofstream ff(p.tar+FILTER_FMT);
   string num;
