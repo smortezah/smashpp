@@ -15,8 +15,10 @@ struct Part {
   u64   endPos;
   float sum;
   float cut;
+  u64   nParts;
 
-  Part () : begun(false), pos(0), begPos(0), endPos(0), sum(0), cut(0) {}
+  Part () : begun(false), pos(0), begPos(0), endPos(0), sum(0), cut(0),
+            nParts(0) {}
 };
 
 class Filter {

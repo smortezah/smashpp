@@ -157,6 +157,7 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 void FCM::compress (const Param& p) {
   if (p.verbose)  cerr << "Compressing the target \"" << p.tar << "\"...\n";
   else            cerr << "Compressing...\n";
+
   if (Ms.size()==1 && TMs.empty()) { // 1 MM
     switch (Ms[0].cont) {
       case Container::TABLE_64:     compress_1(p.tar, tbl64.begin());   break;
