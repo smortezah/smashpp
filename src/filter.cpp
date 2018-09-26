@@ -2,9 +2,8 @@
 // Created by morteza on 19-09-2018.
 //
 #include <cmath>
-#include <cstring>//todo
-#include <memory>//todo
 #include "filter.hpp"
+#include "segment.hpp"
 
 Filter::Filter (const Param& p) {
   config(p);
@@ -29,8 +28,10 @@ inline void Filter::config_wtype (const string& t) {
 }
 
 void Filter::smooth (const Param& p) {
-  if (p.verbose)  cerr << "Filtering the target \"" << p.tar << "\"...\n";
-  else            cerr << "Filtering...\n";
+  if (p.verbose)
+    cerr << "Filtering and segmenting the target \"" << p.tar << "\"...\n";
+  else
+    cerr << "Filtering and segmenting...\n";
 
   if (wtype == WType::RECTANGULAR) {
     smooth_rect(p);
@@ -159,33 +160,38 @@ inline void Filter::smooth_rect (const Param& p) {
   ofstream ff(p.tar+FILTER_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
-  auto part = make_shared<Part>();
-  part->cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
+//  auto seg = make_shared<Part>();
+//  seg->cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
+  auto seg = make_shared<Segment>();
+  seg->cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
-    part->sum += val;
+    seg->sum += val;
   }
-  partition(ff, part);
+//  partition(ff, seg);
+  seg->partition(ff);
 
   // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
-    part->sum += val;
-    ++part->pos;
-    partition(ff, part);
+    seg->sum += val;
+    ++seg->pos;
+//  partition(ff, seg);
+    seg->partition(ff);
   }
 
   // The rest
   u32 idx = 0;
   for (; getline(pf,num);) {
     const auto val = stof(num);
-    part->sum += val - seq[idx];
-    ++part->pos;
-    partition(ff, part);
+    seg->sum += val - seq[idx];
+    ++seg->pos;
+//  partition(ff, seg);
+    seg->partition(ff);
     seq[idx] = val;
     idx = (idx+1) % wsize;
   }
@@ -193,94 +199,96 @@ inline void Filter::smooth_rect (const Param& p) {
 
   // Up to when half of the window goes outside the array
   for (auto i=(wsize>>1u); i--;) {
-    part->sum -= seq[idx];
-    ++part->pos;
-    partition(ff, part);
+    seg->sum -= seq[idx];
+    ++seg->pos;
+//  partition(ff, seg);
+    seg->partition(ff);
     idx = (idx+1) % wsize;
   }
-  partition_last(ff, part);
+//  partition_last(ff, seg);
+  seg->partition_last(ff);
 
   ff.close();
-  if (p.verbose)  cerr << "Detected " << part->nParts << " regions.\n";
+  if (p.verbose)  cerr << "Detected " << seg->nParts << " regions.\n";
 }
 
 inline void Filter::smooth_non_rect (const Param& p) {
-  ifstream pf(p.tar+PROFILE_FMT);
-  ofstream ff(p.tar+FILTER_FMT);
-  string num;
-  vector<float> seq;    seq.reserve(wsize);
-  auto part = make_shared<Part>();
-  auto winBeg=window.begin(), winEnd=window.end();
-  part->cut = accumulate(winBeg,winEnd,0.0f) * thresh;
-
-  // First value
-  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
-    seq.emplace_back(stof(num));
-  part->sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.0f);
-  partition(ff, part);
-
-  // Next wsize>>1 values
-  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
-    seq.emplace_back(stof(num));
-    part->sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.0f);
-    ++part->pos;
-    partition(ff, part);
-  }
-
-  // The rest
-  u32 idx = 0;
-  for(auto seqBeg=seq.begin(); getline(pf,num);) {
-    seq[idx] = stof(num);
-    idx = (idx+1) % wsize;
-    part->sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.0f) +
-                 inner_product(winEnd-idx, winEnd,     seqBeg,     0.0f));
-    ++part->pos;
-    partition(ff, part);
-  }
-  pf.close();
-
-  // Up to when half of the window goes outside the array
-  const auto offset = idx;
-  for (auto i=wsize>>1u; i--;) {
-    auto seqBeg=seq.begin(), seqEnd=seq.end();
-    if (++idx < wsize+1)
-      part->sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.0f) +
-                   inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.0f));
-    else
-      part->sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg,0.0f);
-    ++part->pos;
-    partition(ff, part);
-  }
-  partition_last(ff, part);
-
-  ff.close();
-  if (p.verbose)  cerr << "Detected " << part->nParts << " regions.\n";
+//  ifstream pf(p.tar+PROFILE_FMT);
+//  ofstream ff(p.tar+FILTER_FMT);
+//  string num;
+//  vector<float> seq;    seq.reserve(wsize);
+//  auto part = make_shared<Part>();
+//  auto winBeg=window.begin(), winEnd=window.end();
+//  part->cut = accumulate(winBeg,winEnd,0.0f) * thresh;
+//
+//  // First value
+//  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
+//    seq.emplace_back(stof(num));
+//  part->sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.0f);
+//  partition(ff, part);
+//
+//  // Next wsize>>1 values
+//  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
+//    seq.emplace_back(stof(num));
+//    part->sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.0f);
+//    ++part->pos;
+//    partition(ff, part);
+//  }
+//
+//  // The rest
+//  u32 idx = 0;
+//  for(auto seqBeg=seq.begin(); getline(pf,num);) {
+//    seq[idx] = stof(num);
+//    idx = (idx+1) % wsize;
+//    part->sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.0f) +
+//                 inner_product(winEnd-idx, winEnd,     seqBeg,     0.0f));
+//    ++part->pos;
+//    partition(ff, part);
+//  }
+//  pf.close();
+//
+//  // Up to when half of the window goes outside the array
+//  const auto offset = idx;
+//  for (auto i=wsize>>1u; i--;) {
+//    auto seqBeg=seq.begin(), seqEnd=seq.end();
+//    if (++idx < wsize+1)
+//      part->sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.0f) +
+//                   inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.0f));
+//    else
+//      part->sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg,0.0f);
+//    ++part->pos;
+//    partition(ff, part);
+//  }
+//  partition_last(ff, part);
+//
+//  ff.close();
+//  if (p.verbose)  cerr << "Detected " << part->nParts << " regions.\n";
 }
 
-inline void Filter::partition (ofstream& ff, shared_ptr<Part> p) const {
-  if (p->sum > p->cut) {
-    p->begun = false;
-    if (p->begPos != p->endPos) {
-      ++p->nParts;
-      ff << p->begPos << '\t' << p->endPos << '\n';
-    }
-    p->begPos = p->endPos = 0;
-  }
-  else {
-    if (!p->begun) {
-      p->begun  = true;
-      p->begPos = p->pos;
-    }
-    p->endPos = p->pos;
-  }
-}
-
-inline void Filter::partition_last (ofstream& ff, shared_ptr<Part> p) const {
-  if (p->begPos != p->endPos) {
-    ++p->nParts;
-    ff << p->begPos << '\t' << p->endPos << '\n';
-  }
-}
+//inline void Filter::partition (ofstream& ff, shared_ptr<Part> p) const {
+//  if (p->sum > p->cut) {
+//    p->begun = false;
+//    if (p->begPos != p->endPos) {
+//      ++p->nParts;
+//      ff << p->begPos << '\t' << p->endPos << '\n';
+//    }
+//    p->begPos = p->endPos = 0;
+//  }
+//  else {
+//    if (!p->begun) {
+//      p->begun  = true;
+//      p->begPos = p->pos;
+//    }
+//    p->endPos = p->pos;
+//  }
+//}
+//
+//inline void Filter::partition_last (ofstream& ff, shared_ptr<Part> p) const {
+//  if (p->begPos != p->endPos) {
+//    ++p->nParts;
+//    ff << p->begPos << '\t' << p->endPos << '\n';
+//  }
+//}
 
 #ifdef BENCH
 template <typename Iter, typename Value>

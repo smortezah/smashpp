@@ -28,14 +28,12 @@ int main (int argc, char* argv[])
     auto m = make_shared<FCM>(p);  // auto* m = new FCM(p);
     // Build models
     auto t0{now()};  m->store(p);     auto t1{now()};  hms(t1-t0);
-
     // Compress
     t0=now();        m->compress(p);       t1=now();   hms(t1-t0);
-
     // Result
     cerr << "Average Entropy (H) = " << m->aveEnt << " bps\n";
 
-    // Filter
+    // Filter and segment
     auto flt = make_shared<Filter>(p);
     t0=now();        flt->smooth(p);       t1=now();   hms(t1-t0);
 
