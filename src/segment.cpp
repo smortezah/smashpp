@@ -4,7 +4,7 @@
 
 #include "segment.hpp"
 
-inline void Segment::partition (ofstream& ff) {
+void Segment::partition (ofstream& ff) {
   if (sum > cut) {
     begun = false;
     if (begPos != endPos) {
@@ -22,7 +22,7 @@ inline void Segment::partition (ofstream& ff) {
   }
 }
 
-inline void Segment::partition_last (ofstream& ff) {
+void Segment::partition_last (ofstream& ff) {
   if (begPos != endPos) {
     ++nParts;
     ff << begPos << '\t' << endPos << '\n';
