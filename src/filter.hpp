@@ -32,10 +32,22 @@ class Filter {
   void smooth_rect     (const Param&);
   void smooth_non_rect (const Param&);
 
+void partition (ofstream &, float, bool &, u64 &, u64 &, u64);
 #ifdef BENCH
   template <typename Iter, typename Value>
   void shift_left_insert (Iter, Value);
 #endif
+};
+
+struct Part {
+  bool  begun;
+  u64   pos;
+  u64   begPos;
+  u64   endPos;
+  float sum;
+  float cut;
+
+  Part () : begun(false), pos(0), begPos(0), endPos(0), sum(0.0f), cut(0) {}
 };
 
 #endif //PROJECT_FILTER_HPP

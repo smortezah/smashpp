@@ -3,6 +3,7 @@
 //
 #include <cmath>
 #include <cstring>//todo
+#include <memory>//todo
 #include "filter.hpp"
 
 Filter::Filter (const Param& p) {
@@ -149,11 +150,14 @@ inline void Filter::nuttall () {
   window.front() = window.back() = 0.0;
 }
 
-void Filter::smooth_rect (const Param& p) {
+inline void Filter::smooth_rect (const Param& p) {
   ifstream pf(p.tar+PROFILE_FMT);
   ofstream ff(p.tar+FILTER_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
+
+  auto part = make_shared<Part>();//todo
+
   u64   pos=0, begPos=0, endPos=0;
   float sum   = 0.0f;
   bool  begun = false;
@@ -173,16 +177,16 @@ void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
     ++pos;
-    if (sum > cut) {
-      begun = false;
-      if (begPos != endPos)
-        ff << begPos << '\t' << endPos << '\n';
-      begPos = endPos = 0;
-    }
-    else {
-      if (!begun) { begun=true;    begPos=endPos=pos; }
-      else        {                       endPos=pos; }
-    }
+//    if (sum > cut) {
+//      begun = false;
+//      if (begPos!=endPos)  ff<<begPos<<'\t'<<endPos<<'\n';
+//      begPos = endPos = 0;
+//    }
+//    else {
+//      if (!begun) { begun=true;    begPos=pos; }
+//      endPos = pos;
+//    }
+    partition(ff, sum, begun, begPos, endPos, pos);
   }
 
   // The rest
@@ -191,16 +195,16 @@ void Filter::smooth_rect (const Param& p) {
     const auto val = stof(num);
     sum = sum - seq[idx] + val;
     ++pos;
-    if (sum > cut) {
-      begun = false;
-      if (begPos != endPos)
-        ff << begPos << '\t' << endPos << '\n';
-      begPos = endPos = 0;
-    }
-    else {
-      if (!begun) { begun=true;    begPos=endPos=pos; }
-      else        {                       endPos=pos; }
-    }
+//    if (sum > cut) {
+//      begun = false;
+//      if (begPos!=endPos)  ff<<begPos<<'\t'<<endPos<<'\n';
+//      begPos = endPos = 0;
+//    }
+//    else {
+//      if (!begun) { begun=true;    begPos=pos; }
+//      endPos = pos;
+//    }
+    partition(ff, sum, begun, begPos, endPos, pos);
     seq[idx] = val;
     idx = (idx+1) % wsize;
   }
@@ -210,24 +214,45 @@ void Filter::smooth_rect (const Param& p) {
   for (auto i=(wsize>>1u); i--;) {
     sum -= seq[idx];
     ++pos;
-    if (sum > cut) {
-      begun = false;
-      if (begPos != endPos)
-        ff << begPos << '\t' << endPos << '\n';
-      begPos = endPos = 0;
-    }
-    else {
-      if (!begun) { begun=true;    begPos=endPos=pos; }
-      else        {                       endPos=pos; }
-    }
+//    if (sum > cut) {
+//      begun = false;
+//      if (begPos!=endPos)  ff<<begPos<<'\t'<<endPos<<'\n';
+//      begPos = endPos = 0;
+//    }
+//    else {
+//      if (!begun) { begun=true;    begPos=pos; }
+//      endPos = pos;
+//    }
+    partition(ff, sum, begun, begPos, endPos, pos);
     idx = (idx+1) % wsize;
   }
-  if (begPos != endPos) { ff << begPos << '\t' << endPos << '\n'; }
+  if (begPos!=endPos)  ff<<begPos<<'\t'<<endPos<<'\n';
 
   ff.close();
 }
 
-void Filter::smooth_non_rect (const Param& p) {
+
+
+inline void Filter::partition (ofstream &ff, float sum, bool &begun,
+                               u64 &begPos, u64 &endPos, u64 pos) {
+  const float cut = wsize * thresh; // Sum of weights=wsize. All coeffs of win=1
+
+  if (sum > cut) {
+    begun = false;
+    if (begPos != endPos)
+      ff << begPos << '\t' << endPos << '\n';
+    begPos = endPos = 0;
+  }
+  else {
+    if (!begun) { begun=true;    begPos=pos; }
+    endPos = pos;
+  }
+}
+
+
+
+
+inline void Filter::smooth_non_rect (const Param& p) {
   const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
   ifstream pf(p.tar+PROFILE_FMT);
   vector<float> seq;    seq.reserve(wsize);
