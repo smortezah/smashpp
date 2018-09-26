@@ -5,7 +5,19 @@
 #ifndef PROJECT_FILTER_HPP
 #define PROJECT_FILTER_HPP
 
+#include <memory>
 #include "par.hpp"
+
+struct Part {
+  bool  begun;
+  u64   pos;
+  u64   begPos;
+  u64   endPos;
+  float sum;
+  float cut;
+
+  Part () : begun(false), pos(0), begPos(0), endPos(0), sum(0), cut(0) {}
+};
 
 class Filter {
  public:
@@ -31,23 +43,12 @@ class Filter {
   void nuttall         ();
   void smooth_rect     (const Param&);
   void smooth_non_rect (const Param&);
-
-void partition (ofstream &, float, bool &, u64 &, u64 &, u64);
+  void partition       (ofstream&, shared_ptr<Part>) const;
+  void partition_last  (ofstream&, shared_ptr<Part>) const;
 #ifdef BENCH
   template <typename Iter, typename Value>
   void shift_left_insert (Iter, Value);
 #endif
-};
-
-struct Part {
-  bool  begun;
-  u64   pos;
-  u64   begPos;
-  u64   endPos;
-  float sum;
-  float cut;
-
-  Part () : begun(false), pos(0), begPos(0), endPos(0), sum(0.0f), cut(0) {}
 };
 
 #endif //PROJECT_FILTER_HPP

@@ -155,56 +155,33 @@ inline void Filter::smooth_rect (const Param& p) {
   ofstream ff(p.tar+FILTER_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
-
-  auto part = make_shared<Part>();//todo
-
-  u64   pos=0, begPos=0, endPos=0;
-  float sum   = 0.0f;
-  bool  begun = false;
-  const float cut = wsize * thresh; // Sum of weights=wsize. All coeffs of win=1
+  auto part = make_shared<Part>();
+  part->cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
-    sum += val;
+    part->sum += val;
   }
-  if (sum <= cut) { begun=true;    begPos=endPos=pos; }
+  partition(ff, part);
 
   // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
-    sum += val;
-    ++pos;
-//    if (sum > cut) {
-//      begun = false;
-//      if (begPos!=endPos)  ff<<begPos<<'\t'<<endPos<<'\n';
-//      begPos = endPos = 0;
-//    }
-//    else {
-//      if (!begun) { begun=true;    begPos=pos; }
-//      endPos = pos;
-//    }
-    partition(ff, sum, begun, begPos, endPos, pos);
+    part->sum += val;
+    ++part->pos;
+    partition(ff, part);
   }
 
   // The rest
   u32 idx = 0;
   for (; getline(pf,num);) {
     const auto val = stof(num);
-    sum = sum - seq[idx] + val;
-    ++pos;
-//    if (sum > cut) {
-//      begun = false;
-//      if (begPos!=endPos)  ff<<begPos<<'\t'<<endPos<<'\n';
-//      begPos = endPos = 0;
-//    }
-//    else {
-//      if (!begun) { begun=true;    begPos=pos; }
-//      endPos = pos;
-//    }
-    partition(ff, sum, begun, begPos, endPos, pos);
+    part->sum += val - seq[idx];
+    ++part->pos;
+    partition(ff, part);
     seq[idx] = val;
     idx = (idx+1) % wsize;
   }
@@ -212,89 +189,86 @@ inline void Filter::smooth_rect (const Param& p) {
 
   // Up to when half of the window goes outside the array
   for (auto i=(wsize>>1u); i--;) {
-    sum -= seq[idx];
-    ++pos;
-//    if (sum > cut) {
-//      begun = false;
-//      if (begPos!=endPos)  ff<<begPos<<'\t'<<endPos<<'\n';
-//      begPos = endPos = 0;
-//    }
-//    else {
-//      if (!begun) { begun=true;    begPos=pos; }
-//      endPos = pos;
-//    }
-    partition(ff, sum, begun, begPos, endPos, pos);
+    part->sum -= seq[idx];
+    ++part->pos;
+    partition(ff, part);
     idx = (idx+1) % wsize;
   }
-  if (begPos!=endPos)  ff<<begPos<<'\t'<<endPos<<'\n';
+  partition_last(ff, part);
 
   ff.close();
 }
 
-
-
-inline void Filter::partition (ofstream &ff, float sum, bool &begun,
-                               u64 &begPos, u64 &endPos, u64 pos) {
-  const float cut = wsize * thresh; // Sum of weights=wsize. All coeffs of win=1
-
-  if (sum > cut) {
-    begun = false;
-    if (begPos != endPos)
-      ff << begPos << '\t' << endPos << '\n';
-    begPos = endPos = 0;
-  }
-  else {
-    if (!begun) { begun=true;    begPos=pos; }
-    endPos = pos;
-  }
-}
-
-
-
-
 inline void Filter::smooth_non_rect (const Param& p) {
-  const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
+//  const auto sumWeight = accumulate(window.begin(), window.end(), 0.0f);
   ifstream pf(p.tar+PROFILE_FMT);
-  vector<float> seq;    seq.reserve(wsize);
+  ofstream ff(p.tar+FILTER_FMT);
   string num;
+  vector<float> seq;    seq.reserve(wsize);
+  auto part = make_shared<Part>();
+  auto winBeg=window.begin(), winEnd=window.end();
+  part->cut = accumulate(winBeg,winEnd,0.0f) * thresh;
 
+  // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
     seq.emplace_back(stof(num));
-  cerr <<
-       inner_product(window.begin()+(wsize>>1u), window.end(), seq.begin(),
-                     0.0f) / sumWeight << '\n';  // The first number //todo
+  part->sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.0f);
+  partition(ff, part);
 
+  // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
     seq.emplace_back(stof(num));
-    cerr << inner_product(window.begin()+i, window.end(), seq.begin(), 0.0f) /
-            sumWeight << '\n';//todo
+    part->sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.0f);
+    ++part->pos;
+    partition(ff, part);
   }
 
+  // The rest
   u32 idx = 0;
-  for(auto seqBeg=seq.begin(); getline(pf,num);) {   // pf.peek() != EOF
-    *(seqBeg+idx) = stof(num); // or seq[idx] = stof(num);
+  for(auto seqBeg=seq.begin(); getline(pf,num);) {
+    seq[idx] = stof(num);
     idx = (idx+1) % wsize;
-    cerr <<
-    (inner_product(window.begin(), window.end()-idx, seq.begin()+idx, 0.0f) +
-    inner_product(window.end()-idx, window.end(), seq.begin(), 0.0f)) /
-         sumWeight << '\n';//todo
+    part->sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.0f) +
+                 inner_product(winEnd-idx, winEnd,     seqBeg,     0.0f));
+    ++part->pos;
+    partition(ff, part);
   }
   pf.close();
 
+  // Up to when half of the window goes outside the array
   const auto offset = idx;
   for (auto i=wsize>>1u; i--;) {
-    if (++idx < wsize+1) {
-      cerr <<
-           (inner_product(seq.begin()+idx, seq.end(), window.begin(), 0.0f) +
-            inner_product(seq.begin(), seq.begin()+offset, window.end()-idx,
-                          0.0f)
-           ) / sumWeight << '\n';//todo
-    }
-    else {
-      cerr << inner_product(seq.begin()+(idx%wsize), seq.begin()+offset,
-                            window.begin(), 0.0f) / sumWeight << '\n';//todo
-    }
+    auto seqBeg=seq.begin(), seqEnd=seq.end();
+    if (++idx < wsize+1)
+      part->sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.0f) +
+                   inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.0f));
+    else
+      part->sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg,0.0f);
+    ++part->pos;
+    partition(ff, part);
   }
+  partition_last(ff, part);
+}
+
+inline void Filter::partition (ofstream& ff, shared_ptr<Part> p) const {
+  if (p->sum > p->cut) {
+    p->begun = false;
+    if (p->begPos != p->endPos)
+      ff << p->begPos << '\t' << p->endPos << '\n';
+    p->begPos = p->endPos = 0;
+  }
+  else {
+    if (!p->begun) {
+      p->begun  = true;
+      p->begPos = p->pos;
+    }
+    p->endPos = p->pos;
+  }
+}
+
+inline void Filter::partition_last (ofstream& ff, shared_ptr<Part> p) const {
+  if (p->begPos != p->endPos)
+    ff << p->begPos << '\t' << p->endPos << '\n';
 }
 
 #ifdef BENCH
