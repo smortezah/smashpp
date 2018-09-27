@@ -1,6 +1,7 @@
 //
 // Created by morteza on 19-09-2018.
 //
+
 #include <cmath>
 #include "filter.hpp"
 #include "segment.hpp"
@@ -203,7 +204,7 @@ inline void Filter::smooth_seg_rect (const Param &p) {
   seg->partition_last(ff);
 
   ff.close();
-  if (p.verbose)    cerr << "Detected " << seg->nSegs << " regions.\n";
+  if (p.verbose)    cerr << "Detected " << seg->nSegs << " segments.\n";
 }
 
 inline void Filter::smooth_seg_non_rect (const Param &p) {
@@ -256,7 +257,7 @@ inline void Filter::smooth_seg_non_rect (const Param &p) {
   seg->partition_last(ff);
 
   ff.close();
-  if (p.verbose)  cerr << "Detected " << seg->nSegs << " regions.\n";
+  if (p.verbose)  cerr << "Detected " << seg->nSegs << " segments.\n";
 }
 
 #ifdef BENCH

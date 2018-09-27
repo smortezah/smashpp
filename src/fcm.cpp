@@ -71,15 +71,13 @@ inline void FCM::alloc_model () {
 }
 
 void FCM::store (const Param& p) {
+  const auto t0{now()};
   const auto nMdl = Ms.size();
-  if (p.verbose)
-    cerr << OUT_SEP << "Building " << nMdl << " model" << (nMdl==1 ? "" : "s")
-         << " based on the reference \"" << p.ref << "\"";
-  else
-    cerr << OUT_SEP << "Building the model" << (nMdl==1 ? "" : "s");
-  cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
+  cerr << OUT_SEP << "Building " << (p.verbose ? to_string(nMdl) : "the")
+       << " model" << (nMdl == 1 ? "" : "s") << " based on \"" << p.ref << "\""
+       << " (level " << static_cast<u16>(p.level) << ")...\n";
+
   (p.nthr==1 || nMdl==1) ? store_1(p) : store_n(p)/*Mult thr*/;
-  cerr << "Finished";
 
   #ifdef DEBUG
 //  for(auto a:tbl64)a->print();cerr<<'\n';
@@ -87,6 +85,10 @@ void FCM::store (const Param& p) {
 //  for(auto a:lgtbl8)a->print();cerr<<'\n';
 //  for(auto a:cmls4)a->print();cerr<<'\n';
   #endif
+
+  cerr << "Finished";
+  const auto t1{now()};
+  hms(t1-t0);
 }
 
 inline void FCM::store_1 (const Param& p) {
@@ -155,22 +157,25 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 }
 
 void FCM::compress (const Param& p) {
-  if (p.verbose)
-    cerr << OUT_SEP << "Compressing the target \"" << p.tar << "\"...\n";
-  else
-    cerr << OUT_SEP << "Compressing...\n";
+  const auto t0{now()};
+  cerr << OUT_SEP << "Compressing \"" << p.tar << "\"...\n";
 
-  if (Ms.size()==1 && TMs.empty()) { // 1 MM
+  if (Ms.size()==1 && TMs.empty())  // 1 MM
     switch (Ms[0].cont) {
       case Container::TABLE_64:     compress_1(p.tar, tbl64.begin());   break;
       case Container::TABLE_32:     compress_1(p.tar, tbl32.begin());   break;
       case Container::LOG_TABLE_8:  compress_1(p.tar, lgtbl8.begin());  break;
       case Container::SKETCH_8:     compress_1(p.tar, cmls4.begin());   break;
     }
-  }
   else
     compress_n(p.tar);
+
   cerr << "Finished";
+  const auto t1{now()};
+  hms(t1-t0);
+
+  if (p.verbose)
+    cerr << "Average Entropy (H) = " << aveEnt << " bps\n";
 }
 
 template <typename ContIter>
