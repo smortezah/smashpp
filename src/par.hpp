@@ -32,7 +32,6 @@ class Param    // Parameters
   void parse (int, char**&);
 
  private:
-  void check_file (const string &) const;  // Can be opened & is not empty
   void help       ()               const;
 };
 
@@ -94,24 +93,6 @@ inline void Param::parse (int argc, char**& argv) {
       error("target file not specified. Use \"-t fileName\".");
     else if (!has_r && !has_ref)
       error("reference file not specified. Use \"-r fileName\".");
-  }
-}
-
-inline void Param::check_file (const string &s) const {
-  ifstream f(s);
-  if (!f) {
-    f.close();
-    error("the file \"" + s + "\" cannot be opened or is empty.");
-  }
-  else {
-    char c;
-    bool foundChar {false};
-    while (f.get(c) && !foundChar)
-      if (c!=' ' && c!='\n' && c!='\t')
-        foundChar = true;
-    if (!foundChar)
-      error("the file \"" + s + "\" is empty.");
-    f.close();
   }
 }
 

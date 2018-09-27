@@ -6,6 +6,7 @@
 #define PROJECT_FN_HPP
 
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <numeric>
 #include <cmath>
@@ -117,33 +118,31 @@ inline double pow2 (double base) noexcept {  // Must be inline
   return std::pow(base, 2);
 }
 
+inline void check_file (const string &s) {  // Must be inline
+  ifstream f(s);
+  if (!f) {
+    f.close();
+    error("the file \"" + s + "\" cannot be opened or is empty.");
+  }
+  else {
+    bool foundChar {false};
+    for (char c; f.get(c) && !foundChar;)
+      if (c!=' ' && c!='\n' && c!='\t')
+        foundChar = true;
+    if (!foundChar)
+      error("the file \"" + s + "\" is empty.");
+    f.close();
+  }
+}
+
 inline void extract_subseq (const string& fIn, const string& fOut,
                             u64 begPos, u64 endPos) {  // Must be inline
   ifstream fi(fIn);
   ofstream fo(fOut);
-  const auto bufSize = 10;
   char c;
-  const auto minSize = min<u64>(bufSize, endPos-begPos+1);
-
   fi.seekg(begPos);
-
-//  vector<char> v(5);
-//  fi.read(v,v.size());
-
-//  while (fi.peek() != EOF) {
-    for (u64 i=minSize; i-- && fi.get(c);)
-      fo << c;
-    fo.flush();
-//  }
-
-
-  for (u64 i=endPos-begPos+1; i; i-=bufSize) {
-    for (u64 j=bufSize; j-- && fi.get(c);)
-      fo << c;
-    fo.flush();
-//    i-=bufSize;
-  }
-
+  for (u64 i=endPos-begPos+1; i-- && fi.get(c);)
+    fo << c;
   fi.close();
   fo.close();
 }
