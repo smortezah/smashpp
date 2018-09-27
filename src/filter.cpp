@@ -29,20 +29,19 @@ inline void Filter::config_wtype (const string& t) {
 }
 
 void Filter::smooth_seg (const Param &p) {
-  if (p.verbose)
-    cerr << OUT_SEP << "Filtering and segmenting the target \"" << p.tar
-         << "\"...\n";
-  else
-    cerr << OUT_SEP << "Filtering and segmenting...\n";
+  const auto t0{now()};
+  cerr << OUT_SEP << "Filtering and segmenting \"" << p.tar << "\"...\n";
 
-  if (wtype == WType::RECTANGULAR) {
+  if (wtype == WType::RECTANGULAR)
     smooth_seg_rect(p);
-  }
   else {
     make_window();
     smooth_seg_non_rect(p);
   }
+
   cerr << "Finished";
+  const auto t1{now()};
+  hms(t1-t0);
 }
 
 inline void Filter::make_window () {
