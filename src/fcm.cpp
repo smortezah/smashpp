@@ -73,10 +73,10 @@ inline void FCM::alloc_model () {
 void FCM::store (const Param& p) {
   const auto nMdl = Ms.size();
   if (p.verbose)
-    cerr << "Building " << nMdl << " model" << (nMdl==1 ? "" : "s")
+    cerr << OUT_SEP << "Building " << nMdl << " model" << (nMdl==1 ? "" : "s")
          << " based on the reference \"" << p.ref << "\"";
   else
-    cerr << "Building the model" << (nMdl==1 ? "" : "s");
+    cerr << OUT_SEP << "Building the model" << (nMdl==1 ? "" : "s");
   cerr << " (level " << static_cast<u16>(p.level) << ")...\n";
   (p.nthr==1 || nMdl==1) ? store_1(p) : store_n(p)/*Mult thr*/;
   cerr << "Finished";
@@ -155,8 +155,10 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 }
 
 void FCM::compress (const Param& p) {
-  if (p.verbose)  cerr << "Compressing the target \"" << p.tar << "\"...\n";
-  else            cerr << "Compressing...\n";
+  if (p.verbose)
+    cerr << OUT_SEP << "Compressing the target \"" << p.tar << "\"...\n";
+  else
+    cerr << OUT_SEP << "Compressing...\n";
 
   if (Ms.size()==1 && TMs.empty()) { // 1 MM
     switch (Ms[0].cont) {

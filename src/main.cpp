@@ -35,7 +35,7 @@ int main (int argc, char* argv[])
 
     // Filter and segment
     auto flt = make_shared<Filter>(p);
-    t0=now();        flt->smooth(p);       t1=now();   hms(t1-t0);
+    t0=now();        flt->smooth_seg(p);   t1=now();   hms(t1-t0);
 
     // Report
 //    m->report(p); // Without "-R" does nothing

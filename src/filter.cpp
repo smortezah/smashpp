@@ -27,18 +27,19 @@ inline void Filter::config_wtype (const string& t) {
   else if (t=="7" || t=="nuttall")       wtype = WType::NUTTALL;
 }
 
-void Filter::smooth (const Param& p) {
+void Filter::smooth_seg (const Param &p) {
   if (p.verbose)
-    cerr << "Filtering and segmenting the target \"" << p.tar << "\"...\n";
+    cerr << OUT_SEP << "Filtering and segmenting the target \"" << p.tar
+         << "\"...\n";
   else
-    cerr << "Filtering and segmenting...\n";
+    cerr << OUT_SEP << "Filtering and segmenting...\n";
 
   if (wtype == WType::RECTANGULAR) {
-    smooth_rect(p);
+    smooth_seg_rect(p);
   }
   else {
     make_window();
-    smooth_non_rect(p);
+    smooth_seg_non_rect(p);
   }
   cerr << "Finished";
 }
@@ -155,13 +156,11 @@ inline void Filter::nuttall () {
   window.front() = window.back() = 0.0;
 }
 
-inline void Filter::smooth_rect (const Param& p) {
+inline void Filter::smooth_seg_rect (const Param &p) {
   ifstream pf(p.tar+PROFILE_FMT);
   ofstream ff(p.tar+FILTER_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
-//  auto seg = make_shared<Part>();
-//  seg->cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
   auto seg = make_shared<Segment>();
   seg->cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
 
@@ -171,7 +170,6 @@ inline void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     seg->sum += val;
   }
-//  partition(ff, seg);
   seg->partition(ff);
 
   // Next wsize>>1 values
@@ -180,7 +178,6 @@ inline void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     seg->sum += val;
     ++seg->pos;
-//  partition(ff, seg);
     seg->partition(ff);
   }
 
@@ -190,7 +187,6 @@ inline void Filter::smooth_rect (const Param& p) {
     const auto val = stof(num);
     seg->sum += val - seq[idx];
     ++seg->pos;
-//  partition(ff, seg);
     seg->partition(ff);
     seq[idx] = val;
     idx = (idx+1) % wsize;
@@ -201,94 +197,67 @@ inline void Filter::smooth_rect (const Param& p) {
   for (auto i=(wsize>>1u); i--;) {
     seg->sum -= seq[idx];
     ++seg->pos;
-//  partition(ff, seg);
     seg->partition(ff);
     idx = (idx+1) % wsize;
   }
-//  partition_last(ff, seg);
   seg->partition_last(ff);
 
   ff.close();
-  if (p.verbose)  cerr << "Detected " << seg->nParts << " regions.\n";
+  if (p.verbose)    cerr << "Detected " << seg->nSegs << " regions.\n";
 }
 
-inline void Filter::smooth_non_rect (const Param& p) {
-//  ifstream pf(p.tar+PROFILE_FMT);
-//  ofstream ff(p.tar+FILTER_FMT);
-//  string num;
-//  vector<float> seq;    seq.reserve(wsize);
-//  auto part = make_shared<Part>();
-//  auto winBeg=window.begin(), winEnd=window.end();
-//  part->cut = accumulate(winBeg,winEnd,0.0f) * thresh;
-//
-//  // First value
-//  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
-//    seq.emplace_back(stof(num));
-//  part->sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.0f);
-//  partition(ff, part);
-//
-//  // Next wsize>>1 values
-//  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
-//    seq.emplace_back(stof(num));
-//    part->sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.0f);
-//    ++part->pos;
-//    partition(ff, part);
-//  }
-//
-//  // The rest
-//  u32 idx = 0;
-//  for(auto seqBeg=seq.begin(); getline(pf,num);) {
-//    seq[idx] = stof(num);
-//    idx = (idx+1) % wsize;
-//    part->sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.0f) +
-//                 inner_product(winEnd-idx, winEnd,     seqBeg,     0.0f));
-//    ++part->pos;
-//    partition(ff, part);
-//  }
-//  pf.close();
-//
-//  // Up to when half of the window goes outside the array
-//  const auto offset = idx;
-//  for (auto i=wsize>>1u; i--;) {
-//    auto seqBeg=seq.begin(), seqEnd=seq.end();
-//    if (++idx < wsize+1)
-//      part->sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.0f) +
-//                   inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.0f));
-//    else
-//      part->sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg,0.0f);
-//    ++part->pos;
-//    partition(ff, part);
-//  }
-//  partition_last(ff, part);
-//
-//  ff.close();
-//  if (p.verbose)  cerr << "Detected " << part->nParts << " regions.\n";
-}
+inline void Filter::smooth_seg_non_rect (const Param &p) {
+  ifstream pf(p.tar+PROFILE_FMT);
+  ofstream ff(p.tar+FILTER_FMT);
+  string num;
+  vector<float> seq;    seq.reserve(wsize);
+  auto seg = make_shared<Segment>();
+  auto winBeg=window.begin(), winEnd=window.end();
+  seg->cut = accumulate(winBeg,winEnd,0.0f) * thresh;
 
-//inline void Filter::partition (ofstream& ff, shared_ptr<Part> p) const {
-//  if (p->sum > p->cut) {
-//    p->begun = false;
-//    if (p->begPos != p->endPos) {
-//      ++p->nParts;
-//      ff << p->begPos << '\t' << p->endPos << '\n';
-//    }
-//    p->begPos = p->endPos = 0;
-//  }
-//  else {
-//    if (!p->begun) {
-//      p->begun  = true;
-//      p->begPos = p->pos;
-//    }
-//    p->endPos = p->pos;
-//  }
-//}
-//
-//inline void Filter::partition_last (ofstream& ff, shared_ptr<Part> p) const {
-//  if (p->begPos != p->endPos) {
-//    ++p->nParts;
-//    ff << p->begPos << '\t' << p->endPos << '\n';
-//  }
-//}
+  // First value
+  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
+    seq.emplace_back(stof(num));
+  seg->sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.0f);
+  seg->partition(ff);
+
+  // Next wsize>>1 values
+  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
+    seq.emplace_back(stof(num));
+    seg->sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.0f);
+    ++seg->pos;
+    seg->partition(ff);
+  }
+
+  // The rest
+  u32 idx = 0;
+  for(auto seqBeg=seq.begin(); getline(pf,num);) {
+    seq[idx] = stof(num);
+    idx = (idx+1) % wsize;
+    seg->sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.0f) +
+                inner_product(winEnd-idx, winEnd,     seqBeg,     0.0f));
+    ++seg->pos;
+    seg->partition(ff);
+  }
+  pf.close();
+
+  // Up to when half of the window goes outside the array
+  const auto offset = idx;
+  for (auto i=wsize>>1u; i--;) {
+    auto seqBeg=seq.begin(), seqEnd=seq.end();
+    if (++idx < wsize+1)
+      seg->sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.0f) +
+                  inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.0f));
+    else
+      seg->sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg,0.0f);
+    ++seg->pos;
+    seg->partition(ff);
+  }
+  seg->partition_last(ff);
+
+  ff.close();
+  if (p.verbose)  cerr << "Detected " << seg->nSegs << " regions.\n";
+}
 
 #ifdef BENCH
 template <typename Iter, typename Value>

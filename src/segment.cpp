@@ -8,7 +8,7 @@ void Segment::partition (ofstream& ff) {
   if (sum > cut) {
     begun = false;
     if (begPos != endPos) {
-      ++nParts;
+      ++nSegs;
       ff << begPos << '\t' << endPos << '\n';
     }
     begPos = endPos = 0;
@@ -24,7 +24,7 @@ void Segment::partition (ofstream& ff) {
 
 void Segment::partition_last (ofstream& ff) {
   if (begPos != endPos) {
-    ++nParts;
+    ++nSegs;
     ff << begPos << '\t' << endPos << '\n';
   }
 }

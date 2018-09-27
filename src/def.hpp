@@ -67,6 +67,7 @@ static constexpr float DEF_GAMMA    {0.9};  // Default gamma for multiple models
 const  string          PROFILE_FMT  {".prf"};  // Format for inf. profile file
 const  string          FILTER_FMT   {".flt"};  // Format for filter file
 static constexpr float PI           {3.14159265f};
+const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDINALITY>>;
