@@ -26,15 +26,12 @@ int main (int argc, char* argv[])
     auto m = make_shared<FCM>(p);  // Equiv to auto* m = new FCM(p);
     m->store(p);                   // Build models
     m->compress(p);                // Compress
-
-    // Filter and segment
-//    auto flt = make_shared<Filter>(p);
-//    t0=now();        flt->smooth_seg(p);   t1=now();   hms(t1-t0);
+    auto flt = make_shared<Filter>(p);
+    flt->smooth_seg(p);            // Filter and segment
 
     // Build models for segments
 //    swap(p.tar, p.ref);
-//    t0=now();        m->store(p);          t1=now();   hms(t1-t0);
-
+//    m->store(p);
 
     // Report
 //    m->report(p); // Without "-R" does nothing
