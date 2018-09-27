@@ -39,7 +39,7 @@ void Filter::smooth_seg (const Param &p) {
     smooth_seg_non_rect(p);
   }
 
-  cerr << "Finished";
+  cerr << "Finished in ";
   const auto t1{now()};
   hms(t1-t0);
 }

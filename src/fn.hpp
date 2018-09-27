@@ -44,7 +44,7 @@ void hms (Time elapsed) {
   const auto m = (durSec % 3600) / 60;
   const auto s = durSec % 60;
   
-  cerr << " in " << h << ":" << m << ":" << s << " hour:min:sec.\n";
+  cerr << h << ":" << m << ":" << s << " hour:min:sec.\n";
 }
 
 // Split a range by delim and insert the result into an std::vector
@@ -115,6 +115,37 @@ inline float pow2 (float base) noexcept {  // Must be inline
 
 inline double pow2 (double base) noexcept {  // Must be inline
   return std::pow(base, 2);
+}
+
+inline void extract_subseq (const string& fIn, const string& fOut,
+                            u64 begPos, u64 endPos) {  // Must be inline
+  ifstream fi(fIn);
+  ofstream fo(fOut);
+  const auto bufSize = 10;
+  char c;
+  const auto minSize = min<u64>(bufSize, endPos-begPos+1);
+
+  fi.seekg(begPos);
+
+//  vector<char> v(5);
+//  fi.read(v,v.size());
+
+//  while (fi.peek() != EOF) {
+    for (u64 i=minSize; i-- && fi.get(c);)
+      fo << c;
+    fo.flush();
+//  }
+
+
+  for (u64 i=endPos-begPos+1; i; i-=bufSize) {
+    for (u64 j=bufSize; j-- && fi.get(c);)
+      fo << c;
+    fo.flush();
+//    i-=bufSize;
+  }
+
+  fi.close();
+  fo.close();
 }
 
 #endif //PROJECT_FN_HPP

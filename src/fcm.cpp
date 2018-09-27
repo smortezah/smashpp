@@ -86,7 +86,7 @@ void FCM::store (const Param& p) {
 //  for(auto a:cmls4)a->print();cerr<<'\n';
   #endif
 
-  cerr << "Finished";
+  cerr << "Finished in ";
   const auto t1{now()};
   hms(t1-t0);
 }
@@ -170,7 +170,7 @@ void FCM::compress (const Param& p) {
   else
     compress_n(p.tar);
 
-  cerr << "Finished";
+  cerr << "Finished in ";
   const auto t1{now()};
   hms(t1-t0);
 
