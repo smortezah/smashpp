@@ -10,9 +10,12 @@
 
 class Filter {
  public:
-//  Filter          () = default;
-  explicit Filter (const Param&);
-  void smooth_seg (const Param &);
+  u64 nSegs;
+
+//  Filter           () = default;
+  explicit Filter  (const Param&);
+  void smooth_seg  (const Param &);
+  void extract_seg (const string&, const string&) const;
 
  private:
   WType         wtype;

@@ -46,14 +46,14 @@ void Filter::smooth_seg (const Param &p) {
 
 inline void Filter::make_window () {
   switch (wtype) {
-    case WType::HAMMING:     hamming();      break;
-    case WType::HANN:        hann();         break;
-    case WType::BLACKMAN:    blackman();     break;
-    case WType::TRIANGULAR:  triangular();   break;
-    case WType::WELCH:       welch();        break;
-    case WType::SINE:        sine();         break;
-    case WType::NUTTALL:     nuttall();      break;
-    default:                                 break;
+   case WType::HAMMING:     hamming();      break;
+   case WType::HANN:        hann();         break;
+   case WType::BLACKMAN:    blackman();     break;
+   case WType::TRIANGULAR:  triangular();   break;
+   case WType::WELCH:       welch();        break;
+   case WType::SINE:        sine();         break;
+   case WType::NUTTALL:     nuttall();      break;
+   default:                                 break;
   }
 }
 
@@ -157,8 +157,10 @@ inline void Filter::nuttall () {
 }
 
 inline void Filter::smooth_seg_rect (const Param &p) {
-  ifstream pf(p.tar+PROFILE_FMT);
-  ofstream ff(p.tar+FILTER_FMT);
+  const string fName = p.ref + "_" + p.tar;
+  check_file(fName+PROFILE_FMT);
+  ifstream pf(fName+PROFILE_FMT);
+  ofstream ff(fName+FSEG_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
@@ -203,12 +205,15 @@ inline void Filter::smooth_seg_rect (const Param &p) {
   seg->partition_last(ff);
 
   ff.close();
-  if (p.verbose)    cerr << "Detected " << seg->nSegs << " segments.\n";
+  nSegs = seg->nSegs;
+  if (p.verbose)    cerr << "Detected " << nSegs << " segments.\n";
 }
 
 inline void Filter::smooth_seg_non_rect (const Param &p) {
-  ifstream pf(p.tar+PROFILE_FMT);
-  ofstream ff(p.tar+FILTER_FMT);
+  const string fName = p.ref + "_" + p.tar;
+  check_file(fName+PROFILE_FMT);
+  ifstream pf(fName+PROFILE_FMT);
+  ofstream ff(fName+FSEG_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
@@ -256,7 +261,24 @@ inline void Filter::smooth_seg_non_rect (const Param &p) {
   seg->partition_last(ff);
 
   ff.close();
-  if (p.verbose)  cerr << "Detected " << seg->nSegs << " segments.\n";
+  nSegs = seg->nSegs;
+  if (p.verbose)    cerr << "Detected " << nSegs << " segments.\n";
+}
+
+void Filter::extract_seg (const string& tar, const string& ref) const {
+  const string fName = ref + "_" + tar;
+  check_file(fName+FSEG_FMT);
+  ifstream ff(fName+FSEG_FMT);
+  string posStr;
+
+  for (u64 i=0; getline(ff,posStr); ++i) {
+    vector<string> posVec;    posVec.reserve(2);
+    split(posStr.begin(), posStr.end(), '\t', posVec);
+    extract_subseq(tar, fName+SEG_LBL+to_string(i),
+                   stoull(posVec[0]), stoull(posVec[1]));
+  }
+
+  ff.close();
 }
 
 #ifdef BENCH

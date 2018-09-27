@@ -115,27 +115,27 @@ inline void FCM::store_n (const Param& p) {
   vector<std::thread> thrd(vThrSz);
   for (u8 i=0; i!=Ms.size(); ++i) {    // Mask: 4<<2k-1 = 4^(k+1)-1
     switch (Ms[i].cont) {
-      case Container::TABLE_64:
-        thrd[i % vThrSz] =
-          std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>, this,
-            std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, tbl64_iter++);
-        break;
-      case Container::TABLE_32:
-        thrd[i % vThrSz] =
-          std::thread(&FCM::store_impl<u32,decltype(tbl32_iter)>, this,
-            std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, tbl32_iter++);
-        break;
-      case Container::LOG_TABLE_8:
-        thrd[i % vThrSz] =
-          std::thread(&FCM::store_impl<u32,decltype(lgtbl8_iter)>, this,
-            std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, lgtbl8_iter++);
-        break;
-      case Container::SKETCH_8:
-        thrd[i % vThrSz] =
-          std::thread(&FCM::store_impl<u64,decltype(cmls4_iter)>, this,
-            std::cref(p.ref), (4ull<<(Ms[i].k<<1u))-1, cmls4_iter++);
-        break;
-      default:  err("the models cannot be built.");
+     case Container::TABLE_64:
+       thrd[i % vThrSz] =
+         std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>, this,
+           std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, tbl64_iter++);
+       break;
+     case Container::TABLE_32:
+       thrd[i % vThrSz] =
+         std::thread(&FCM::store_impl<u32,decltype(tbl32_iter)>, this,
+           std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, tbl32_iter++);
+       break;
+     case Container::LOG_TABLE_8:
+       thrd[i % vThrSz] =
+         std::thread(&FCM::store_impl<u32,decltype(lgtbl8_iter)>, this,
+           std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, lgtbl8_iter++);
+       break;
+     case Container::SKETCH_8:
+       thrd[i % vThrSz] =
+         std::thread(&FCM::store_impl<u64,decltype(cmls4_iter)>, this,
+           std::cref(p.ref), (4ull<<(Ms[i].k<<1u))-1, cmls4_iter++);
+       break;
+     default:  err("the models cannot be built.");
     }
     // Join
     if ((i+1) % vThrSz == 0)
@@ -162,13 +162,13 @@ void FCM::compress (const Param& p) {
 
   if (Ms.size()==1 && TMs.empty())  // 1 MM
     switch (Ms[0].cont) {
-      case Container::TABLE_64:     compress_1(p.tar, tbl64.begin());   break;
-      case Container::TABLE_32:     compress_1(p.tar, tbl32.begin());   break;
-      case Container::LOG_TABLE_8:  compress_1(p.tar, lgtbl8.begin());  break;
-      case Container::SKETCH_8:     compress_1(p.tar, cmls4.begin());   break;
+     case Container::TABLE_64:    compress_1(p.tar,p.ref,tbl64.begin());  break;
+     case Container::TABLE_32:    compress_1(p.tar,p.ref,tbl32.begin());  break;
+     case Container::LOG_TABLE_8: compress_1(p.tar,p.ref,lgtbl8.begin()); break;
+     case Container::SKETCH_8:    compress_1(p.tar,p.ref,cmls4.begin());  break;
     }
   else
-    compress_n(p.tar);
+    compress_n(p.tar, p.ref);
 
   cerr << "Finished in ";
   const auto t1{now()};
@@ -179,13 +179,14 @@ void FCM::compress (const Param& p) {
 }
 
 template <typename ContIter>
-inline void FCM::compress_1 (const string& tar, ContIter cont) {
+inline void FCM::compress_1 (const string& tar, const string& ref,
+                             ContIter cont) {
   // Ctx, Mir (int) sliding through the dataset
   u64 ctx{0}, ctxIr{(1ull<<(Ms[0].k<<1u))-1};
   u64 symsNo{0};                // No. syms in target file, except \n
   double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  ofstream pf(tar+PROFILE_FMT);
+  ofstream pf(ref+"_"+tar+PROFILE_FMT);
   ProbPar pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
              static_cast<u8>(Ms[0].k<<1u)};
 
@@ -220,36 +221,37 @@ inline void FCM::compress_1 (const string& tar, ContIter cont) {
   aveEnt = sEnt/symsNo;
 }
 
-inline void FCM::compress_n (const string& tar) {
-  auto compP = make_shared<CompressPar>();
+inline void FCM::compress_n (const string& tar, const string& ref) {
+  auto cp = make_shared<CompressPar>();
   // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = static_cast<u8>(Ms.size() + TMs.size());
-  compP->nMdl = nMdl;
-  compP->ctx.resize(nMdl);     // Fill with zeros (resize)
-  compP->ctxIr.reserve(nMdl);
+  cp->nMdl = nMdl;
+  cp->ctx.resize(nMdl);     // Fill with zeros (resize)
+  cp->ctxIr.reserve(nMdl);
   for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
-    compP->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+    cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
     if (mm.child)
-      compP->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+      cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
   }
-  compP->w.resize(nMdl, 1.0/nMdl);
-  compP->pp.reserve(nMdl);
-  {auto maskIter = compP->ctxIr.begin();
+  cp->w.resize(nMdl, 1.0/nMdl);
+  cp->pp.reserve(nMdl);
+  {auto maskIter = cp->ctxIr.begin();
   for (const auto& mm : Ms) {
-    compP->pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+    cp->pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
     if (mm.child)
-      compP->pp.emplace_back(
+      cp->pp.emplace_back(
         mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
   }}
 
-  compress_n_ave(tar, compP);
+  compress_n_ave(tar, ref, cp);
 }
 
-inline void FCM::compress_n_ave (const string &tar, shared_ptr<CompressPar> cp){
+inline void FCM::compress_n_ave (const string &tar, const string& ref,
+                                 shared_ptr<CompressPar> cp){
   u64      symsNo{0};          // No. syms in target file, except \n
   double   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  ofstream pf(tar+PROFILE_FMT);
+  ofstream pf(ref+"_"+tar+PROFILE_FMT);
 
   while (tf.get(c)) {
     if (c != '\n') {

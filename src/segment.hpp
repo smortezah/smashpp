@@ -23,7 +23,6 @@ class Segment {
 
   void partition      (ofstream&);
   void partition_last (ofstream&);
-//  void extract_seg (const string& fIn, const string& fOut, u64 begPos, u64 endPos);
 };
 
 #endif //PROJECT_SEGMENT_HPP

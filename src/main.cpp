@@ -16,31 +16,45 @@
 #include "fcm.hpp"
 #include "filter.hpp"
 #include "fn.hpp"
+#include "segment.hpp"
 
 
 int main (int argc, char* argv[])
 {
   try {
 //    const auto t0{now()};
-//    Param p;
-//    p.parse(argc, argv);           // Parse the command
-//    auto m = make_shared<FCM>(p);  // Equiv to auto* m = new FCM(p);
-//    m->store(p);                   // Build models
-//    m->compress(p);                // Compress
-//    auto flt = make_shared<Filter>(p);
-//    flt->smooth_seg(p);            // Filter and segment
+    Param p;
+    p.parse(argc, argv);           // Parse the command
+    auto m = make_shared<FCM>(p);  // Equiv to auto* m = new FCM(p);
+    m->store(p);                   // Build models
+    m->compress(p);                // Compress
+    auto f = make_shared<Filter>(p);
+    f->smooth_seg(p);              // Filter and segment
+    f->extract_seg(p.tar, p.ref);  // Extract segments from the target file
+//    for (u64 i=0; i!=f->nSegs; ++i) {
+//    }
 
+//todo
+const auto newTar = p.ref;
+const string segName = p.ref + "_" + p.tar + SEG_LBL;
+p.ref = segName + "0";
+p.tar = newTar;
+m->store(p);
+m->compress(p);
 
-extract_subseq("t2","t2_seg0",0,10);//todo
+p.ref = segName + "1";
+p.tar = newTar;
+m->store(p);
+m->compress(p);
+
 
 
     // Build models for segments
-    // Extract segments from the target file
-//    swap(p.tar, p.ref);
-//    m->store(p);
+
 
     // Report
 //    m->report(p); // Without "-R" does nothing
+
 
 //    const auto t1{now()};
 //    cerr << OUT_SEP << "Total time: ";

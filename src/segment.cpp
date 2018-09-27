@@ -3,6 +3,7 @@
 //
 
 #include "segment.hpp"
+#include "fn.hpp"
 
 void Segment::partition (ofstream& ff) {
   if (sum > cut) {
