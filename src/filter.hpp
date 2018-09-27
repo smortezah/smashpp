@@ -15,17 +15,17 @@
 //  u64   endPos;
 //  float sum;
 //  float cut;
-//  u64   nParts;
+//  u64   nSegs;
 //
 //  Part () : begun(false), pos(0), begPos(0), endPos(0), sum(0), cut(0),
-//            nParts(0) {}
+//            nSegs(0) {}
 //};
 
 class Filter {
  public:
 //  Filter          () = default;
   explicit Filter (const Param&);
-  void smooth     (const Param&);
+  void smooth_seg (const Param &);
 
  private:
   WType         wtype;
@@ -33,20 +33,18 @@ class Filter {
   vector<float> window;
   float         thresh;
 
-  void config          (const Param&);
-  void config_wtype    (const string&);
-  void make_window     ();
-  void hamming         ();
-  void hann            ();
-  void blackman        ();
-  void triangular      ();  // Bartlett window
-  void welch           ();
-  void sine            ();
-  void nuttall         ();
-  void smooth_rect     (const Param&);
-  void smooth_non_rect (const Param&);
-//  void partition       (ofstream&, shared_ptr<Part>) const;
-//  void partition_last  (ofstream&, shared_ptr<Part>) const;
+  void config              (const Param&);
+  void config_wtype        (const string&);
+  void make_window         ();
+  void hamming             ();
+  void hann                ();
+  void blackman            ();
+  void triangular          ();  // Bartlett window
+  void welch               ();
+  void sine                ();
+  void nuttall             ();
+  void smooth_seg_rect     (const Param &);
+  void smooth_seg_non_rect (const Param &);
 #ifdef BENCH
   template <typename Iter, typename Value>
   void shift_left_insert (Iter, Value);

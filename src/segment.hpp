@@ -10,17 +10,16 @@
 
 class Segment {
  public:
-// private:
   bool  begun;
   u64   pos;
   u64   begPos;
   u64   endPos;
   float sum;
   float cut;
-  u64   nParts;
+  u64   nSegs;
 
   Segment () : begun(false), pos(0), begPos(0), endPos(0), sum(0), cut(0),
-               nParts(0) {}
+               nSegs(0) {}
 
   void partition      (ofstream&);
   void partition_last (ofstream&);
