@@ -135,13 +135,14 @@ inline void check_file (const string &s) {  // Must be inline
   }
 }
 
+template <typename Pos>
 inline void extract_subseq (const string& fIn, const string& fOut,
-                            u64 begPos, u64 endPos) {  // Must be inline
+                            Pos begPos, Pos endPos) {  // Must be inline
   ifstream fi(fIn);
   ofstream fo(fOut);
   char c;
   fi.seekg(begPos);
-  for (u64 i=endPos-begPos+1; i-- && fi.get(c);)
+  for (Pos i=endPos-begPos+1; i-- && fi.get(c);)
     fo << c;
   fi.close();
   fo.close();
