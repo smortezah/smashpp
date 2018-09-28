@@ -41,11 +41,13 @@ p.ref = segName + "0";
 p.tar = newTar;
 m->store(p);
 m->compress(p);
+f->thresh = 1;
+f->smooth_seg(p);
 
-p.ref = segName + "1";
-p.tar = newTar;
-m->store(p);
-m->compress(p);
+//p.ref = segName + "1";
+//p.tar = newTar;
+//m->store(p);
+//m->compress(p);
 
 
 

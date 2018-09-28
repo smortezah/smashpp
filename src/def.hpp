@@ -65,7 +65,7 @@ static constexpr u8    DEF_IR       {0};  // Default inverted repeats for models
 static constexpr float DEF_ALPHA    {0.001};// Default alpha for models
 static constexpr float DEF_GAMMA    {0.9};  // Default gamma for multiple models
 const  string          PROFILE_FMT  {".prf"};  // Format for inf. profile file
-const  string          FSEG_FMT     {".fseg"}; // Format for filtered & seg file
+const  string          POS_FMT      {".pos"};  // Format for positions file
 const  string          SEG_LBL      {"_seg"};  // Label for segment files
 static constexpr float PI           {3.14159265f};
 const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
