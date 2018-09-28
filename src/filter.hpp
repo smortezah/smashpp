@@ -10,7 +10,8 @@
 
 class Filter {
  public:
-  u64 nSegs;
+  u64   nSegs;
+  float thresh;
 
 //  Filter           () = default;
   explicit Filter  (const Param&);
@@ -21,7 +22,6 @@ class Filter {
   WType         wtype;
   u32           wsize;
   vector<float> window;
-  float         thresh;
 
   void config              (const Param&);
   void config_wtype        (const string&);

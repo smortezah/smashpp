@@ -160,7 +160,7 @@ inline void Filter::smooth_seg_rect (const Param &p) {
   const string fName = p.ref + "_" + p.tar;
   check_file(fName+PROFILE_FMT);
   ifstream pf(fName+PROFILE_FMT);
-  ofstream ff(fName+FSEG_FMT);
+  ofstream ff(fName+POS_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
@@ -213,7 +213,7 @@ inline void Filter::smooth_seg_non_rect (const Param &p) {
   const string fName = p.ref + "_" + p.tar;
   check_file(fName+PROFILE_FMT);
   ifstream pf(fName+PROFILE_FMT);
-  ofstream ff(fName+FSEG_FMT);
+  ofstream ff(fName+POS_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
@@ -267,8 +267,8 @@ inline void Filter::smooth_seg_non_rect (const Param &p) {
 
 void Filter::extract_seg (const string& tar, const string& ref) const {
   const string fName = ref + "_" + tar;
-  check_file(fName+FSEG_FMT);
-  ifstream ff(fName+FSEG_FMT);
+  check_file(fName+POS_FMT);
+  ifstream ff(fName+POS_FMT);
   string posStr;
 
   for (u64 i=0; getline(ff,posStr); ++i) {
