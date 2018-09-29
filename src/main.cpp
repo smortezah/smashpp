@@ -43,7 +43,7 @@ int main (int argc, char* argv[])
 //m->compress(p);
 //f->thresh = 1.4;
 //f->smooth_seg(p);
-//f->extract_seg(p.tar, p.ref);
+///f->extract_seg(p.tar, p.ref);
 
 //p.ref = segName + "1";
 //p.tar = newTar;
@@ -51,7 +51,7 @@ int main (int argc, char* argv[])
 //m->compress(p);
 //f->thresh = 1.5;
 //f->smooth_seg(p);
-//f->extract_seg(p.tar, p.ref);
+///f->extract_seg(p.tar, p.ref);
 
 
 
