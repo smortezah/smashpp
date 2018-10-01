@@ -59,7 +59,7 @@ void LogTable8::print () const {
   cerr << "Count\n";
   cerr << "-------------------\n";
   u32 i {0};
-  for (auto c : tbl) {
+  for (const auto& c : tbl) {
     cerr.width(context_width);  cerr<<std::left<<i++;
     cerr << static_cast<u16>(c) << '\n';
   }

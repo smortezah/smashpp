@@ -21,19 +21,23 @@ inline void FCM::config (const Param& p) {
   for (const auto& e : mdls) {
     // Markov and tolerant models
     vector<string> m_tm;    split(e.begin(), e.end(), '/', m_tm);
-    assert_empty_elem(m_tm, "incorrect model parameters.");
     vector<string> m;       split(m_tm[0].begin(), m_tm[0].end(), ',', m);
-    if (m.size() == 4)
-      Ms.emplace_back(
-        MMPar(static_cast<u8>(stoi(m[0])), static_cast<u8>(stoi(m[1])),
-              stof(m[2]), stof(m[3]))
-      );
-    else if (m.size() == 6)
+    if (m.size() == 4) {
+      if (stoi(m[0]) > K_MAX_LGTBL8)
+        Ms.emplace_back(
+          MMPar(static_cast<u8>(stoi(m[0])), DEF_W, DEF_D,
+                static_cast<u8>(stoi(m[1])), stof(m[2]), stof(m[3])));
+      else
+        Ms.emplace_back(
+          MMPar(static_cast<u8>(stoi(m[0])), static_cast<u8>(stoi(m[1])),
+                stof(m[2]), stof(m[3])));
+    }
+    else if (m.size() == 6){
       Ms.emplace_back(
         MMPar(static_cast<u8>(stoi(m[0])), pow2(stoull(m[1])),
               static_cast<u8>(stoi(m[2])), static_cast<u8>(stoi(m[3])),
-              stof(m[4]), stof(m[5]))
-      );
+              stof(m[4]), stof(m[5])));
+    }
     
     // Tolerant models
     if (m_tm.size() == 2) {
@@ -182,13 +186,13 @@ template <typename ContIter>
 inline void FCM::compress_1 (const string& tar, const string& ref,
                              ContIter cont) {
   // Ctx, Mir (int) sliding through the dataset
-  u64 ctx{0}, ctxIr{(1ull<<(Ms[0].k<<1u))-1};
-  u64 symsNo{0};                // No. syms in target file, except \n
-  double sEnt{0};               // Sum of entropies = sum(log_2 P(s|c^t))
+  u64      ctx{0},   ctxIr{(1ull<<(Ms[0].k<<1u))-1};
+  u64      symsNo{0};            // No. syms in target file, except \n
+  double   sEnt{0};              // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
   ofstream pf(ref+"_"+tar+PROFILE_FMT);
-  ProbPar pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
-             static_cast<u8>(Ms[0].k<<1u)};
+  ProbPar  pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
+              static_cast<u8>(Ms[0].k<<1u)};
 
   if (Ms[0].ir == 0) {
     while (tf.get(c)) {
@@ -197,7 +201,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
         pp.config(c, ctx);
         const auto f = freqs<decltype((*cont)->query(0))>(cont, &pp);
         const auto entr = entropy(prob(f.begin(), &pp));
-        pf << entr << '\n';
+        pf << setprecision(DEF_PRF_PREC) << entr << '\n';
         sEnt += entr;
         update_ctx(ctx, &pp);
       }
@@ -210,7 +214,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
         pp.config_ir(c, ctx, ctxIr);
         const auto f = freqs_ir<decltype(2*(*cont)->query(0))>(cont, &pp);
         const auto entr = entropy(prob(f.begin(), &pp));
-        pf << entr << '\n';
+        pf << setprecision(DEF_PRF_PREC) << entr << '\n';
         sEnt += entr;
         update_ctx_ir(ctx, ctxIr, &pp);
       }
@@ -286,7 +290,7 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
       }
 
       const auto entr=entropy(cp->w.begin(), cp->probs.begin(),cp->probs.end());
-      pf << entr << '\n';
+      pf << setprecision(DEF_PRF_PREC) << entr << '\n';
       sEnt += entr;
     }
   }

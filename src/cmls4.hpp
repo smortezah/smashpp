@@ -10,7 +10,7 @@
 class CMLS4    // Count-min-log sketch, 4 bits per counter
 {
  public:
-  CMLS4         () = default;
+  CMLS4         () : w(DEF_W), d(DEF_D), uhashShift(0), tot(0) {}
   CMLS4         (u64, u8);
   void config   (u64, u8);
   void update   (u64);              // Update sketch

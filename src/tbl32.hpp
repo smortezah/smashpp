@@ -11,7 +11,7 @@
 class Table32
 {
 public:
-  Table32          () = default;
+  Table32          () : k(0), nRenorm(0), tot(0) {}
   explicit Table32 (u8);
   void config      (u8);
   void update      (u32);               // Update table

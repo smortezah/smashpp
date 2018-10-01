@@ -30,7 +30,7 @@ void CMLS4::update (u64 ctx) {
   const auto c {minLogCtr(ctx)};
   if ((tot++ % POW2[c]) == 0)      // Increase decision //to do. base 2
     for (u8 i=0; i!=d; ++i) {
-      auto cellIdx = hash(i, ctx);
+      const auto cellIdx = hash(i, ctx);
       if (readCell(cellIdx) == c)    // Conservative update
         sk[cellIdx>>1u] = INC_CTR[cellIdx&1ull][sk[cellIdx>>1u]];
     }
@@ -39,7 +39,7 @@ void CMLS4::update (u64 ctx) {
 inline u8 CMLS4::minLogCtr (u64 ctx) const {
   u8 min {std::numeric_limits<u8>::max()};
   for (u8 i=0; i!=d && min!=0; ++i) {
-    auto lg = readCell(hash(i,ctx));
+    const auto lg = readCell(hash(i,ctx));
     if (lg < min)
       min = lg;
   }
@@ -60,8 +60,8 @@ inline void CMLS4::setAB () {
   std::uniform_int_distribution<u64> uDistA(0, (1ull<<63u)-1);    // k <= 2^63-1
   std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
   for (u8 i=0; i!=d; ++i) {
-    ab[i<<1u] = (uDistA(e)<<1u) + 1;  // 1 <= a=2k+1 <= 2^64-1, rand odd posit.
-    ab[(i<<1u)+1] = uDistB(e);        // 0 <= b <= 2^(G-M)-1,   rand posit.
+    ab[i<<1u] = (uDistA(e)<<1u) + 1;// 1 <= a=2k+1 <= 2^64-1, rand odd posit.
+    ab[(i<<1u)+1] = uDistB(e);      // 0 <= b <= 2^(G-M)-1,   rand posit.
   }                                 // Parenthesis in ab[(i<<1)+1] are MANDATORY
 }
 

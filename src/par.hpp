@@ -24,11 +24,10 @@ class Param    // Parameters
   string wtype;
   float  thresh;
   string report;
-  
+
   // Define Param::Param(){} in *.hpp => compile error
-  Param () : tar(""), ref(""), level(DEF_LVL), verbose(false), nthr(DEF_THR),
-             modelsPars(""), wsize(DEF_WS), wtype(DEF_WT), thresh(DEF_THRESH),
-             report("") {}
+  Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
+             wtype(DEF_WT), thresh(DEF_THRESH){}
   void parse (int, char**&);
 
  private:
@@ -68,8 +67,11 @@ inline void Param::parse (int argc, char**& argv) {
         verbose = true;
       else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end())
         nthr = static_cast<u8>(stoi(*++i));
-      else if ((*i=="-m" || *i=="--models") && i+1!=vArgs.end())
+      else if ((*i=="-m" || *i=="--models") && i+1!=vArgs.end()) {
         modelsPars = *++i;
+        if (modelsPars[0]=='-' || modelsPars.empty())
+          error("incorrect model parameters.");
+      }
       else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
         const auto tmp = stoi(*++i);
         if (tmp <= 0)

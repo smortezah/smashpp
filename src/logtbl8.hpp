@@ -11,7 +11,7 @@
 class LogTable8
 {
 public:
-  LogTable8          () = default;
+  LogTable8          () : k(0), tot(0) {}
   explicit LogTable8 (u8);
   void config        (u8);
   void update        (u32);             // Update table
