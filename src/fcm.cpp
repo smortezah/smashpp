@@ -201,7 +201,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
         pp.config(c, ctx);
         const auto f = freqs<decltype((*cont)->query(0))>(cont, &pp);
         const auto entr = entropy(prob(f.begin(), &pp));
-        pf << setprecision(DEF_PRF_PREC) << entr << '\n';
+        pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
         sEnt += entr;
         update_ctx(ctx, &pp);
       }
@@ -214,7 +214,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
         pp.config_ir(c, ctx, ctxIr);
         const auto f = freqs_ir<decltype(2*(*cont)->query(0))>(cont, &pp);
         const auto entr = entropy(prob(f.begin(), &pp));
-        pf << setprecision(DEF_PRF_PREC) << entr << '\n';
+        pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
         sEnt += entr;
         update_ctx_ir(ctx, ctxIr, &pp);
       }
@@ -290,7 +290,7 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
       }
 
       const auto entr=entropy(cp->w.begin(), cp->probs.begin(),cp->probs.end());
-      pf << setprecision(DEF_PRF_PREC) << entr << '\n';
+      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
       sEnt += entr;
     }
   }
