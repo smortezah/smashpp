@@ -34,23 +34,23 @@ int main (int argc, char* argv[])
 //    for (u64 i=0; i!=f->nSegs; ++i) {
 //    }
 
-////todo
-//const auto newTar = p.ref;
-//const string segName = p.ref + "_" + p.tar + SEG_LBL;
-//p.ref = segName + "0";
-//p.tar = newTar;
-//m->store(p);
-//m->compress(p);
-//f->thresh = 1.4;
-//f->smooth_seg(p);
+//todo
+const auto newTar = p.ref;
+const string segName = p.ref + "_" + p.tar + SEG_LBL;
+p.ref = segName + "0";
+p.tar = newTar;
+m->store(p);
+m->compress(p);
+f->thresh = 1.5;
+f->smooth_seg(p);
 ///f->extract_seg(p.tar, p.ref);
 
-//p.ref = segName + "1";
-//p.tar = newTar;
-//m->store(p);
-//m->compress(p);
-//f->thresh = 1.5;
-//f->smooth_seg(p);
+p.ref = segName + "1";
+p.tar = newTar;
+m->store(p);
+m->compress(p);
+f->thresh = 1.5;
+f->smooth_seg(p);
 ///f->extract_seg(p.tar, p.ref);
 
 
