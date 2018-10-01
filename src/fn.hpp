@@ -64,6 +64,9 @@ void split (InIter first, InIter last, char delim, Vec& vOut) {
 inline void error (const string &msg) {
   throw std::runtime_error ("Error: " + msg + "\n");
 }
+inline void error (string &&msg) {
+  throw std::runtime_error ("Error: " + msg + "\n");
+}
 
 inline void err (const string &msg) {
   cerr << "Error: " << msg << '\n';
