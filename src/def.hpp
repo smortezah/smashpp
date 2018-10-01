@@ -57,7 +57,7 @@ static constexpr u8    K_MAX_TBL64  {11}; // Max ctx dept. table 64 (128 MB mem)
 static constexpr u8    K_MAX_TBL32  {13}; // Max ...       table 32 (1   GB mem)
 static constexpr u8    K_MAX_LGTBL8 {14}; // Max ...   log table 8  (1   GB mem)
 static constexpr u32   BLK_SZ       {8192}; // 8K
-static constexpr u64   DEF_W        {pow2(20ull)};  // Default w of CML sketch
+static constexpr u64   DEF_W        {pow2(25ull)};  // Default w of CML sketch
 static constexpr u8    DEF_D        {5};  // Default depth of CML sketch
 static constexpr u32   G            {64}; // Machine word size - univers hash fn
 static constexpr u8    LOG_BASE     {2};  // Logarithmic counting
