@@ -11,7 +11,7 @@
 class Table64
 {
 public:
-  Table64          () = default;
+  Table64          () : k(0), tot(0) {}
   explicit Table64 (u8);
   void config      (u8);
   void update      (u32);               // Update table
