@@ -260,9 +260,12 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
   while (tf.get(c)) {
     if (c != '\n') {
       ++symsNo;
-      cp->c = c;
-      cp->nSym=NUM[static_cast<u8>(c)];  cp->ppIt=cp->pp.begin();
-      cp->ctxIt=cp->ctx.begin();         cp->ctxIrIt=cp->ctxIr.begin();
+      cp->c       = c;
+      cp->nSym    = NUM[static_cast<u8>(c)];
+      cp->ppIt    = cp->pp.begin();
+      cp->ctxIt   = cp->ctx.begin();
+      cp->ctxIrIt = cp->ctxIr.begin();
+      cp->probs.clear();                 cp->probs.reserve(cp->nMdl);
       auto tbl64_it=tbl64.begin();       auto tbl32_it=tbl32.begin();
       auto lgtbl8_it=lgtbl8.begin();     auto cmls4_it=cmls4.begin();
 
@@ -314,9 +317,6 @@ inline void FCM::compress_n_impl (shared_ptr<CompressPar> cp, ContIter contIt) {
 
 template <typename ContIter>
 inline void FCM::compress_n_parent(shared_ptr<CompressPar> cp, ContIter contIt){
-  cp->probs.clear();  // Essential
-  cp->probs.reserve(cp->nMdl);
-
   if (cp->mm.ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     const auto ppIt = cp->ppIt;
@@ -473,6 +473,9 @@ template <typename FreqIter, typename ProbParIter>
 inline double FCM::prob (FreqIter fFirst, ProbParIter pp) const {
   return (*(fFirst+pp->numSym) + pp->alpha) /
          (std::accumulate(fFirst,fFirst+CARDINALITY,0ull) + pp->sAlpha);
+  //todo
+//  return (*(fFirst+pp->numSym) + pp->alpha) /
+//    (std::accumulate(fFirst, fFirst+CARDINALITY, static_cast<u64>(pp->sAlpha)));
 }
 
 inline double FCM::entropy (double P) const {
@@ -481,9 +484,14 @@ inline double FCM::entropy (double P) const {
 
 template <typename OutIter, typename InIter>
 inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
+//  update_weights(wFirst, PFirst, PLast);
+//  return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
+////  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
+
+//todo
+  const auto out = -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
   update_weights(wFirst, PFirst, PLast);
-  return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
-//  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
+  return out;
 }
 
 template <typename OutIter, typename InIter>
