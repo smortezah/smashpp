@@ -31,6 +31,10 @@ struct STMMPar {
   float gamma;
   u8    miss;
   bool  enabled;
+
+  //todo chek kon sizesh bayad andaze k bashe ya mitune hamishe vase k<=32,
+  // barabare 32 bashe?
+  // ehtemalan baraye masalan k=5, nabayad sizesh az 5 bishtar bashe
   u32   history;    // k > 32 => change to u64
 
   STMMPar (u8 k_, u8 t_, u8 ir_, float a_, float g_) : k(k_), thresh(t_),

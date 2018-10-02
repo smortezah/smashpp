@@ -432,7 +432,9 @@ inline array<OutT,4> FCM::freqs_ir (ContIter cont, ProbParIter pp) const {
 
 template <typename Par, typename Value>
 void FCM::stmm_update_hist (Par stmm, Value val) {
-  stmm->history = (stmm->history<<1u) | val;  // ull for 64 bits
+  stmm->history =( (stmm->history<<1u) | val ) ;  // ull for 64 bits
+  //todo ehtemalan bayad ba 1 mask ke be te'dade k, 1 dare, or beshe.
+  // masalan k=5 -> history e bala ba 11111 AND she, ke baghie bit ha remove she
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
@@ -473,7 +475,7 @@ double FCM::stmm_miss_prob_ir (Par stmm, u8 nSym, FreqIter fFirst,
 template <typename FreqIter, typename ProbParIter>
 inline double FCM::prob (FreqIter fFirst, ProbParIter pp) const {
   return (*(fFirst+pp->numSym) + pp->alpha) /
-    (std::accumulate(fFirst, fFirst+CARDINALITY, pp->sAlpha));
+         std::accumulate(fFirst, fFirst+CARDINALITY, pp->sAlpha);
 ///  return (*(fFirst+pp->numSym) + pp->alpha) /
 ///         (std::accumulate(fFirst,fFirst+CARDINALITY,0ull) + pp->sAlpha);
 }
