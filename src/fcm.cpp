@@ -293,6 +293,7 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
       }
 
       const auto entr=entropy(cp->w.begin(), cp->probs.begin(),cp->probs.end());
+      update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
       pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
       sEnt += entr;
     }
@@ -472,10 +473,9 @@ double FCM::stmm_miss_prob_ir (Par stmm, u8 nSym, FreqIter fFirst,
 template <typename FreqIter, typename ProbParIter>
 inline double FCM::prob (FreqIter fFirst, ProbParIter pp) const {
   return (*(fFirst+pp->numSym) + pp->alpha) /
-         (std::accumulate(fFirst,fFirst+CARDINALITY,0ull) + pp->sAlpha);
-  //todo
-//  return (*(fFirst+pp->numSym) + pp->alpha) /
-//    (std::accumulate(fFirst, fFirst+CARDINALITY, static_cast<u64>(pp->sAlpha)));
+    (std::accumulate(fFirst, fFirst+CARDINALITY, pp->sAlpha));
+///  return (*(fFirst+pp->numSym) + pp->alpha) /
+///         (std::accumulate(fFirst,fFirst+CARDINALITY,0ull) + pp->sAlpha);
 }
 
 inline double FCM::entropy (double P) const {
@@ -484,14 +484,8 @@ inline double FCM::entropy (double P) const {
 
 template <typename OutIter, typename InIter>
 inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
-//  update_weights(wFirst, PFirst, PLast);
-//  return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
-////  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
-
-//todo
-  const auto out = -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
-  update_weights(wFirst, PFirst, PLast);
-  return out;
+  return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
+///  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
 
 template <typename OutIter, typename InIter>
