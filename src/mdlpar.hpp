@@ -29,14 +29,12 @@ struct STMMPar {
   u8    ir;
   float alpha;
   float gamma;
-  u8    miss;
   bool  enabled;
   u32   history;    // k > 32 => change to u64
   u32   mask;       // For updating the history
 
   STMMPar (u8 k_, u8 t_, u8 ir_, float a_, float g_) : k(k_), thresh(t_),
-    ir(ir_), alpha(a_), gamma(g_), miss(0), enabled(true), history(0),
-    mask((1u<<k)-1) {}
+    ir(ir_), alpha(a_), gamma(g_), enabled(true), history(0), mask((1u<<k)-1) {}
 };
 
 struct ProbPar {
@@ -70,7 +68,8 @@ inline void ProbPar::config (u8 nsym) {
 
 inline void ProbPar::config (char c, u64 ctx) {
   numSym = NUM[static_cast<u8>(c)];
-  l      = ctx<<2u;
+//  l      = ctx<<2u;todo
+  l      = (ctx<<2u) & mask
 }
 
 inline void ProbPar::config_ir (u64 ctx, u64 ctxIr) {
