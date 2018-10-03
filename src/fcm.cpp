@@ -443,7 +443,6 @@ double FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
 
 template <typename Par, typename FreqIter, typename ProbParIter>
 double FCM::stmm_miss_prob (Par stmm, u8 nSym, FreqIter fFirst, ProbParIter pp){
-  stmm_update_hist(stmm, 1u);
   if (popcount(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
     stmm->history = 0;
@@ -451,6 +450,7 @@ double FCM::stmm_miss_prob (Par stmm, u8 nSym, FreqIter fFirst, ProbParIter pp){
     return 0.0;
   }
   else {
+    stmm_update_hist(stmm, 1u);
     return prob(fFirst, pp);
   }
 }
@@ -458,7 +458,6 @@ double FCM::stmm_miss_prob (Par stmm, u8 nSym, FreqIter fFirst, ProbParIter pp){
 template <typename Par, typename FreqIter, typename ProbParIter>
 double FCM::stmm_miss_prob_ir (Par stmm, u8 nSym, FreqIter fFirst,
                                ProbParIter pp) {
-  stmm_update_hist(stmm, 1u);
   if (popcount(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
     stmm->history = 0;
@@ -466,6 +465,7 @@ double FCM::stmm_miss_prob_ir (Par stmm, u8 nSym, FreqIter fFirst,
     return 0.0;
   }
   else {
+    stmm_update_hist(stmm, 1u);
     return prob(fFirst, pp);
   }
 }
