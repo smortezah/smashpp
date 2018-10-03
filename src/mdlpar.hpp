@@ -68,8 +68,7 @@ inline void ProbPar::config (u8 nsym) {
 
 inline void ProbPar::config (char c, u64 ctx) {
   numSym = NUM[static_cast<u8>(c)];
-//  l      = ctx<<2u;todo
-  l      = (ctx<<2u) & mask
+  l      = ctx<<2u;
 }
 
 inline void ProbPar::config_ir (u64 ctx, u64 ctxIr) {
