@@ -339,29 +339,26 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
                                            ContIter contIt) {
   if (cp->mm.child->ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
-//    cp->ppIt->config(*cp->ctxIt);  // l
     const auto f = freqs<decltype((*contIt)->query(0))>(contIt, cp->ppIt);
     const auto bestSym = best_sym(f.begin());
-//    cp->ppIt->config(bestSym);  // best_sym uses l
     if (cp->nSym == bestSym)
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
     else
-      cp->probs.emplace_back(
-        stmm_miss_prob(cp->mm.child, cp->nSym, f.begin(), cp->ppIt));
+      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
     if (cp->mm.child->enabled)
-      cp->ppIt->config(bestSym);  // best_sym uses l todo
+      cp->ppIt->config(bestSym);  // best_sym uses l
     update_ctx(*cp->ctxIt, cp->ppIt);
   }
   else {
-    cp->ppIt->config_ir(*cp->ctxIt, *cp->ctxIrIt);  // l and r
-    const auto f=freqs_ir<decltype(2*(*contIt)->query(0))>(contIt, cp->ppIt);
+    cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
+    const auto f = freqs_ir<decltype(2*(*contIt)->query(0))>(contIt, cp->ppIt);
     const auto bestSym = best_sym(f.begin());
     if (cp->nSym == bestSym)
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
     else
-      cp->probs.emplace_back(
-        stmm_miss_prob_ir(cp->mm.child, cp->nSym, f.begin(), cp->ppIt));
-    cp->ppIt->config_ir(bestSym);  // best_sym uses l and r
+      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+    if (cp->mm.child->enabled)
+      cp->ppIt->config_ir(bestSym);  // best_sym uses l and r
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
@@ -373,7 +370,6 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     cp->ppIt->config(cp->c, *cp->ctxIt);
     const auto ppIt = cp->ppIt;
     const auto f = freqs<decltype((*contIt)->query(0))>(contIt, ppIt);
-    update_ctx(*cp->ctxIt, ppIt);
     if (cp->nSym == best_sym_abs(f.begin())) {
       cp->mm.child->enabled = true;
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), ppIt));
@@ -381,12 +377,12 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     }
     else
       cp->probs.emplace_back(0.0);
+    update_ctx(*cp->ctxIt, ppIt);
   }
   else {
     cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);
     const auto ppIt = cp->ppIt;
     const auto f = freqs_ir<decltype(2*(*contIt)->query(0))>(contIt, ppIt);
-    update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, ppIt);
     if (cp->nSym == best_sym_abs(f.begin())) {
       cp->mm.child->enabled = true;
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(),ppIt));
@@ -394,6 +390,7 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     }
     else
       cp->probs.emplace_back(0.0);
+    update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, ppIt);
   }
 }
 
@@ -445,26 +442,10 @@ double FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
-double FCM::stmm_miss_prob (Par stmm, u8 nSym, FreqIter fFirst, ProbParIter pp){
+double FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
   if (popcount(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
     stmm->history = 0;
-//    pp->config(nSym);
-    return 0.0;
-  }
-  else {
-    stmm_update_hist(stmm, 1u);
-    return prob(fFirst, pp);
-  }
-}
-
-template <typename Par, typename FreqIter, typename ProbParIter>
-double FCM::stmm_miss_prob_ir (Par stmm, u8 nSym, FreqIter fFirst,
-                               ProbParIter pp) {
-  if (popcount(stmm->history) > stmm->thresh) {
-    stmm->enabled = false;
-    stmm->history = 0;
-    pp->config_ir(nSym);
     return 0.0;
   }
   else {
