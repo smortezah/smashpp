@@ -53,7 +53,6 @@ struct ProbPar {
   void config    (u64);
   void config    (u8);
   void config    (char, u64);
-  void config_ir (u64, u64);
   void config_ir (u8);
   void config_ir (char, u64, u64);
 };
@@ -69,11 +68,6 @@ inline void ProbPar::config (u8 nsym) {
 inline void ProbPar::config (char c, u64 ctx) {
   numSym = NUM[static_cast<u8>(c)];
   l      = ctx<<2u;
-}
-
-inline void ProbPar::config_ir (u64 ctx, u64 ctxIr) {
-  l = ctx<<2u;
-  r = ctxIr>>2u;
 }
 
 inline void ProbPar::config_ir (u8 nsym) {

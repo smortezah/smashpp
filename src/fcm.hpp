@@ -64,9 +64,7 @@ class FCM    // Finite-context models
   template <typename Par, typename FreqIter, typename ProbParIter>
   double stmm_hit_prob     (Par, FreqIter, ProbParIter);
   template <typename Par, typename FreqIter, typename ProbParIter>
-  double stmm_miss_prob    (Par, u8, FreqIter, ProbParIter);
-  template <typename Par, typename FreqIter, typename ProbParIter>
-  double stmm_miss_prob_ir (Par, u8, FreqIter, ProbParIter);
+  double stmm_miss_prob    (Par, FreqIter, ProbParIter);
   template <typename FreqIter, typename ProbParIter>
   double prob              (FreqIter, ProbParIter)   const;  // Probability
   double entropy           (double)                  const;
