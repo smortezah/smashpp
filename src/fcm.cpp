@@ -341,12 +341,13 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
     cp->ppIt->config(*cp->ctxIt);  // l
     const auto f = freqs<decltype((*contIt)->query(0))>(contIt, cp->ppIt);
     const auto bestSym = best_sym(f.begin());
-    cp->ppIt->config(bestSym);  // best_sym uses l
+//    cp->ppIt->config(bestSym);  // best_sym uses l
     if (cp->nSym == bestSym)
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
     else
       cp->probs.emplace_back(
         stmm_miss_prob(cp->mm.child, cp->nSym, f.begin(), cp->ppIt));
+    cp->ppIt->config(bestSym);  // best_sym uses l todo
     update_ctx(*cp->ctxIt, cp->ppIt);
   }
   else {
@@ -368,6 +369,7 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
                                             ContIter contIt) {
   if (cp->mm.child->ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
+//    cp->ppIt->config(*cp->ctxIt);  // l
     const auto ppIt = cp->ppIt;
     const auto f = freqs<decltype((*contIt)->query(0))>(contIt, ppIt);
     update_ctx(*cp->ctxIt, ppIt);
