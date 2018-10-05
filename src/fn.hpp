@@ -93,42 +93,24 @@ bool are_all_zero (Iter first) {
 template <typename Iter>
 bool has_n_max (Iter first) {
   auto last = first + CARDINALITY;
-  const auto max_pos = std::max_element(first, last);
-  while (last-- != first)
-    if (last!=max_pos && *last==*max_pos)
+  for (const auto max_pos=std::max_element(first,last); last-- != first;)
+    if (*last==*max_pos && last!=max_pos)
       return true;
   return false;
 }
 
-template <typename Iter, typename Position>
-bool has_n_max (Iter first, Position max_pos) {
-  auto last = first + CARDINALITY;
-  while (last-- != first)
-    if (last!=max_pos && *last==*max_pos)
+template <typename Iter, typename PosIter>
+bool has_n_max (Iter first, PosIter max_pos) {
+  for (auto last=first+CARDINALITY; last-- != first;)
+    if (*last==*max_pos && last!=max_pos)
       return true;
   return false;
-}
-
-template <typename Iter, typename Value>
-bool is_val_max (Iter first, Value val) {
-  return val == *max_element(first, first+CARDINALITY);
-}
-
-template <typename Iter>
-u8 best_index (Iter first) {
-  return static_cast<u8>(std::max_element(first,first+CARDINALITY) - first);
-}
-
-template <typename Iter>
-u8 best_sym (Iter first) {
-  return are_all_zero(first) ? static_cast<u8>(255) : best_index(first);
 }
 
 template <typename Iter>
 u8 best_sym_abs (Iter first) {
   const auto max_pos = std::max_element(first, first+CARDINALITY);
-  return has_n_max(first, max_pos) ? static_cast<u8>(255)
-                                   : static_cast<u8>(max_pos-first);
+  return static_cast<u8>(has_n_max(first,max_pos) ? 255 : max_pos-first);
 }
 
 template <typename Iter>
