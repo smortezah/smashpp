@@ -239,13 +239,13 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
   }
   cp->w.resize(nMdl, 1.0/nMdl);
   cp->pp.reserve(nMdl);
-  {auto maskIter = cp->ctxIr.begin();
+  auto maskIter = cp->ctxIr.begin();
   for (const auto& mm : Ms) {
     cp->pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
     if (mm.child)
       cp->pp.emplace_back(
         mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
-  }}
+  }
 
   compress_n_ave(tar, ref, cp);
 }
