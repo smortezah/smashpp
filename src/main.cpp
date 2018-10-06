@@ -22,12 +22,12 @@
 int main (int argc, char* argv[])
 {
   try {
-//    const auto t0{now()};
+    const auto t0{now()};
     Param p;
     p.parse(argc, argv);           // Parse the command
     auto m = make_shared<FCM>(p);  // Equiv to auto* m = new FCM(p);
-//    m->store(p);                   // Build models
-//    m->compress(p);                // Compress
+    m->store(p);                   // Build models
+    m->compress(p);                // Compress
 //    auto f = make_shared<Filter>(p);
 //    f->smooth_seg(p);              // Filter and segment
 //    f->extract_seg(p.tar, p.ref);  // Extract segments from the target file
@@ -59,9 +59,8 @@ int main (int argc, char* argv[])
 //    m->report(p); // Without "-R" does nothing
 
 
-//    const auto t1{now()};
-//    cerr << OUT_SEP << "Total time: ";
-//    hms(t1-t0);
+    const auto t1{now()};
+    cerr << OUT_SEP << "Total time: " << hms(t1-t0);
 
 ///    delete m;
   }

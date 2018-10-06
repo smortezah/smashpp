@@ -41,7 +41,7 @@ void Filter::smooth_seg (const Param &p) {
 
   cerr << "Finished in ";
   const auto t1{now()};
-  hms(t1-t0);
+  cerr << hms(t1-t0);
 }
 
 inline void Filter::make_window () {
