@@ -98,7 +98,7 @@ inline void Param::parse (int argc, char**& argv) {
   }
 }
 
-inline void Param::help () const {//todo
+inline void Param::help () const {
   cerr                                                                   << '\n'
     << "NAME"                                                            << '\n'
     << "    Smash++ v" << VERSION << " - rearrangements finder"          << '\n'

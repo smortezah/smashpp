@@ -66,7 +66,7 @@ inline void CMLS4::setAB () {
 }
 
 u16 CMLS4::query (u64 ctx) const {
-  return FREQ2[minLogCtr(ctx)];  //todo. base 2. otherwise (b^c-1)/(b-1)
+  return FREQ2[minLogCtr(ctx)];  //Base 2. otherwise (b^c-1)/(b-1)
 }
 
 #ifdef DEBUG

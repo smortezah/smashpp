@@ -16,7 +16,7 @@
 class FCM    // Finite-context models
 {
  public:
-  double aveEnt;
+  prec_t aveEnt;
   
   explicit FCM  (const Param&);
   void store    (const Param&);         // Build FCM (finite-context models)
@@ -54,26 +54,26 @@ class FCM    // Finite-context models
   void compress_n_child_disabled (shared_ptr<CompressPar>, ContIter);
 
   template <typename OutT, typename ContIter, typename ProbParIter>
-  array<OutT,4> freqs      (ContIter, ProbParIter)   const;
+  array<OutT,4> freqs    (ContIter, ProbParIter)   const;
   template <typename OutT, typename ContIter, typename ProbParIter>
-  array<OutT,4> freqs_ir   (ContIter, ProbParIter)   const;
+  array<OutT,4> freqs_ir (ContIter, ProbParIter)   const;
   template<typename Par, typename Value>
-  void stmm_update_hist    (Par, Value);
+  void stmm_update_hist  (Par, Value);
   template <typename Par, typename FreqIter, typename ProbParIter>
-  double stmm_hit_prob     (Par, FreqIter, ProbParIter);
+  prec_t stmm_hit_prob   (Par, FreqIter, ProbParIter);
   template <typename Par, typename FreqIter, typename ProbParIter>
-  double stmm_miss_prob    (Par, FreqIter, ProbParIter);
+  prec_t stmm_miss_prob  (Par, FreqIter, ProbParIter);
   template <typename FreqIter, typename ProbParIter>
-  double prob              (FreqIter, ProbParIter)   const;  // Probability
-  double entropy           (double)                  const;
+  prec_t prob            (FreqIter, ProbParIter)   const;  // Probability
+  prec_t entropy         (prec_t)                  const;
   template <typename OutIter, typename InIter>
-  double entropy           (OutIter, InIter, InIter) const;
+  prec_t entropy         (OutIter, InIter, InIter) const;
   template <typename OutIter, typename InIter>
-  void update_weights      (OutIter, InIter, InIter) const;
+  void update_weights    (OutIter, InIter, InIter) const;
   template <typename ProbParIter>
-  void update_ctx          (u64&, ProbParIter)       const;
+  void update_ctx        (u64&, ProbParIter)       const;
   template <typename ProbParIter>
-  void update_ctx_ir       (u64&, u64&, ProbParIter) const;
+  void update_ctx_ir     (u64&, u64&, ProbParIter) const;
 };
 
 #endif //SMASHPP_FCM_HPP

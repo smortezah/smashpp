@@ -34,7 +34,7 @@ int main (int argc, char* argv[])
 ////    for (u64 i=0; i!=f->nSegs; ++i) {
 ////    }
 
-////todo
+
 //const auto newTar = p.ref;
 //const string segName = p.ref + "_" + p.tar + SEG_LBL;
 //p.ref = segName + "0";
