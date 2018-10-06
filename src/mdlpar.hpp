@@ -87,7 +87,7 @@ inline void ProbPar::config_ir (char c, u64 ctx, u64 ctxIr) {
 struct CompressPar {
   vector<u64>               ctx;
   vector<u64>               ctxIr;
-  vector<prec_t>            w;//todo float<->double
+  vector<prec_t>            w;    // float <-> double
   vector<prec_t>            probs;
   vector<ProbPar>           pp;
   vector<ProbPar>::iterator ppIt;
