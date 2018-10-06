@@ -33,6 +33,7 @@ class FCM    // Finite-context models
   
   void config      (const Param&);      // Set models parameters
   void set_cont    ();
+  void show_in     (const Param&) const;// Show inputs on the screen
   void alloc_model ();                  // Allocate memory to models
 
   void store_1     (const Param&);      // Build models one thread

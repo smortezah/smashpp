@@ -11,8 +11,10 @@
 #include "fn.hpp"
 
 FCM::FCM (const Param& p) {
-  aveEnt = 0.0;
+  aveEnt = static_cast<prec_t>(0);
   config(p);
+  if (p.verbose)
+    show_in(p);
   alloc_model();
 }
 
@@ -61,6 +63,40 @@ inline void FCM::set_cont () {
   }
 }
 
+inline void FCM::show_in (const Param& p) const {
+  for (auto i=0, j=0; i != Ms.size(); ++i) {
+    cerr
+      << "Model " << i+1 << ':'                                          <<'\n'
+      << "  [+] Context order ............ " << (int)Ms[i].k             <<'\n';
+    if (Ms[i].w)  cerr
+      << "  [+] Width of sketch .......... " << Ms[i].w                  <<'\n';
+    if (Ms[i].d)  cerr
+      << "  [+] Depth of sketch .......... " << (int)Ms[i].d             <<'\n';
+    cerr
+      << "  [+] Inverted repeats ......... " << (Ms[i].ir ? "yes" : "no")<<'\n'
+      << "  [+] Alpha .................... " << Ms[i].alpha              <<'\n'
+      << "  [+] Gamma .................... " << Ms[i].gamma              <<'\n'
+                                                                         <<'\n';
+    if (Ms[i].child) {
+      cerr
+      << "Substitutional Tolerant Model " << j+1 << ':'                  <<'\n'
+      << "  [+] Substitutions allowed .... " << (int)TMs[j].thresh       <<'\n'
+      << "  [+] Inverted repeats ......... " << (TMs[j].ir ? "yes":"no") <<'\n'
+      << "  [+] Alpha .................... " << TMs[j].alpha             <<'\n'
+      << "  [+] Gamma .................... " << TMs[j].gamma             <<'\n'
+                                                                         <<'\n';
+      ++j;
+    }
+  }
+  cerr<< "Reference file: "                                              <<'\n'
+      << "  [+] Name ..................... " << p.ref                    <<'\n'
+      << "  [+] Size (bytes) ............. " << file_size(p.ref)         <<'\n'
+                                                                         <<'\n'
+      << "Target file: "                                                 <<'\n'
+      << "  [+] Name ..................... " << p.tar                    <<'\n'
+      << "  [+] Size (bytes) ............. " << file_size(p.tar)         <<'\n';
+}
+
 inline void FCM::alloc_model () {
   for (const auto& m : Ms) {
     if (m.cont == Container::TABLE_64)
@@ -77,9 +113,9 @@ inline void FCM::alloc_model () {
 void FCM::store (const Param& p) {
   const auto t0{now()};
   const auto nMdl = Ms.size();
-  cerr << OUT_SEP << "Building " << (p.verbose ? to_string(nMdl) : "the")
-       << " model" << (nMdl == 1 ? "" : "s") << " based on \"" << p.ref << "\""
-       << " (level " << static_cast<u16>(p.level) << ")...\n";
+  cerr << OUT_SEP << "Building the model" << (nMdl == 1 ? "" : "s")
+       << " based on \"" << p.ref << "\" (level "
+       << static_cast<u16>(p.level) << ")...\n";
 
   (p.nthr==1 || nMdl==1) ? store_1(p) : store_n(p)/*Mult thr*/;
 

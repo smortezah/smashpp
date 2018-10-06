@@ -154,6 +154,12 @@ inline void check_file (const string &s) {  // Must be inline
   }
 }
 
+inline u64 file_size (const string& s) {
+  check_file(s);
+  ifstream f(s, ifstream::ate | ifstream::binary);
+  return static_cast<u64>(f.tellg());
+}
+
 template <typename Pos>
 inline void extract_subseq (const string& fIn, const string& fOut,
                             Pos begPos, Pos endPos) {  // Must be inline
