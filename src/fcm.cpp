@@ -188,7 +188,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
   // Ctx, Mir (int) sliding through the dataset
   u64      ctx{0},   ctxIr{(1ull<<(Ms[0].k<<1u))-1};
   u64      symsNo{0};            // No. syms in target file, except \n
-  double   sEnt{0};              // Sum of entropies = sum(log_2 P(s|c^t))
+  prec_t   sEnt{0};              // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
   ofstream pf(ref+"_"+tar+PROFILE_FMT);
   ProbPar  pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
@@ -237,7 +237,7 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
     if (mm.child)
       cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
   }
-  cp->w.resize(nMdl, 1.0/nMdl);
+  cp->w.resize(nMdl, static_cast<prec_t>(1)/nMdl);
   cp->pp.reserve(nMdl);
   auto maskIter = cp->ctxIr.begin();
   for (const auto& mm : Ms) {
@@ -253,7 +253,7 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
 inline void FCM::compress_n_ave (const string &tar, const string& ref,
                                  shared_ptr<CompressPar> cp){
   u64      symsNo{0};          // No. syms in target file, except \n
-  double   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
+  prec_t   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
   ofstream pf(ref+"_"+tar+PROFILE_FMT);
 
@@ -375,10 +375,10 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     if (cp->nSym == best_sym_abs(f.begin())) {
       cp->mm.child->enabled = true;
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), ppIt));
-      fill(cp->w.begin(), cp->w.end(), 1.0/cp->nMdl);
+      fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
     else
-      cp->probs.emplace_back(0.0);
+      cp->probs.emplace_back(static_cast<prec_t>(0));
     update_ctx(*cp->ctxIt, ppIt);
   }
   else {
@@ -388,10 +388,10 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     if (cp->nSym == best_sym_abs(f.begin())) {
       cp->mm.child->enabled = true;
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), ppIt));
-      fill(cp->w.begin(), cp->w.end(), 1.0/cp->nMdl);
+      fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
     else
-      cp->probs.emplace_back(0.0);
+      cp->probs.emplace_back(static_cast<prec_t>(0));
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, ppIt);
   }
 }
@@ -438,17 +438,17 @@ void FCM::stmm_update_hist (Par stmm, Value val) {
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
-double FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
+prec_t FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
   stmm_update_hist(stmm, 0u);
   return prob(fFirst, pp);
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
-double FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
+prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
   if (popcount(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
     stmm->history = 0;
-    return 0.0;
+    return static_cast<prec_t>(0);
   }
   else {
     stmm_update_hist(stmm, 1u);
@@ -457,20 +457,20 @@ double FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
 }
 
 template <typename FreqIter, typename ProbParIter>
-inline double FCM::prob (FreqIter fFirst, ProbParIter pp) const {
+inline prec_t FCM::prob (FreqIter fFirst, ProbParIter pp) const {
   return (*(fFirst+pp->numSym) + pp->alpha) /
-         std::accumulate(fFirst, fFirst+CARDINALITY, pp->sAlpha);
+         std::accumulate(fFirst, fFirst+CARDIN, pp->sAlpha);
 ///  return (*(fFirst+pp->numSym) + pp->alpha) /
 ///         (std::accumulate(fFirst,fFirst+CARDINALITY,0ull) + pp->sAlpha);
 }
 
-inline double FCM::entropy (double P) const {
+inline prec_t FCM::entropy (prec_t P) const {
   return -log2(P);
 }
 
 template <typename OutIter, typename InIter>
-inline double FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
-  return -log2(std::inner_product(PFirst, PLast, wFirst, 0.0));
+inline prec_t FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
+  return -log2(inner_product(PFirst, PLast, wFirst, static_cast<prec_t>(0)));
 ///  return log2(1 / std::inner_product(PFirst, PLast, wFirst, 0.0));
 }
 
@@ -485,7 +485,7 @@ const {
       if (mIter->child->enabled)
         *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
       else
-        *wFirst = 0.0;
+        *wFirst = static_cast<prec_t>(0);
     }
   }
   normalize(wFirstKeep, wFirst);

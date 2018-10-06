@@ -2,7 +2,7 @@
 // Created by morteza on 02-02-2018.
 //
 
-#define DEBUG 1  //todo. remove at the end
+//#define DEBUG 1
 
 
 #ifndef SMASHPP_DEF_HPP
@@ -21,15 +21,16 @@ static const string DEV_YEARS {"2018"};
 
 // Typedef
 ////typedef signed char         i8;
-using i8    = signed char;
-using u8    = unsigned char;
-using i16   = signed short;
-using u16   = unsigned short;
-using i32   = signed int;
-using u32   = unsigned int;
-using i64   = signed long long;
-using u64   = unsigned long long;
-using dur_t = std::chrono::duration<double>;
+using i8     = signed char;
+using u8     = unsigned char;
+using i16    = signed short;
+using u16    = unsigned short;
+using i32    = signed int;
+using u32    = unsigned int;
+using i64    = signed long long;
+using u64    = unsigned long long;
+using dur_t  = std::chrono::duration<double>;
+using prec_t = float;  // Precision type
 
 // Metaprogram
 // Power a^n
@@ -51,7 +52,7 @@ static constexpr u8    DEF_LVL      {0};  // Default level
 static constexpr u32   DEF_WS       {257};// Default window size -- filter
 const  string          DEF_WT       {"0"};// Default window type -- filter
 static constexpr float DEF_THRESH   {1.5};// Default threshold   -- filter
-static constexpr u8    CARDINALITY  {4};  // CARDINALITYality = Alphabet size
+static constexpr u8    CARDIN       {4};  // CARDINALITY = Alphabet size
 static constexpr u8    IRMAGIC      {3};  // Calc Mir syms based on syms
 static constexpr u8    K_MAX_TBL64  {11}; // Max ctx dept. table 64 (128 MB mem)
 static constexpr u8    K_MAX_TBL32  {13}; // Max ...       table 32 (1   GB mem)
@@ -72,7 +73,7 @@ static constexpr float PI           {3.14159265f};
 const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 
 // faster than a[]
-//using htbl_t = std::unordered_map<u64, std::array<u64,CARDINALITY>>;
+//using htbl_t = std::unordered_map<u64, std::array<u64,CARDIN>>;
 
 // Enum
 enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8}; //Data structs
