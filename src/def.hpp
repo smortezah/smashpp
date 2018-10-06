@@ -70,7 +70,8 @@ static constexpr u8    DEF_PRF_PREC {3};  // Precisions for floats in Inf. prof
 const  string          POS_FMT      {".pos"};  // Format for positions file
 const  string          SEG_LBL      {"_seg"};  // Label for segment files
 static constexpr float PI           {3.14159265f};
-const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
+//const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
+const  string          OUT_SEP      {"\n"};
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDIN>>;
