@@ -37,15 +37,15 @@ noexcept {
 }
 
 template <typename Time>
-void hms (Time elapsed) {
+string hms (Time elapsed) {
 //  std::chrono::duration<double, std::milli> ms = elapsed;
   const auto durSec =
     std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
   const auto h = durSec / 3600;
   const auto m = (durSec % 3600) / 60;
   const auto s = durSec % 60;
-  
-  cerr << h << ":" << m << ":" << s << " hour:min:sec.\n";
+
+  return to_string(h)+":"+to_string(m)+":"+to_string(s)+" hour:min:sec.\n";
 }
 
 // Split a range by delim and insert the result into an std::vector

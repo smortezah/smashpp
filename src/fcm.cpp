@@ -79,7 +79,7 @@ inline void FCM::show_in (const Param& p) const {
                                                                          <<'\n';
     if (Ms[i].child) {
       cerr
-      << "Substitutional Tolerant Model " << j+1 << ':'                  <<'\n'
+      << "Substitutional Tolerant Model, based on Model " << i+1 << ':'  <<'\n'
       << "  [+] Substitutions allowed .... " << (int)TMs[j].thresh       <<'\n'
       << "  [+] Inverted repeats ......... " << (TMs[j].ir ? "yes":"no") <<'\n'
       << "  [+] Alpha .................... " << TMs[j].alpha             <<'\n'
@@ -128,7 +128,7 @@ void FCM::store (const Param& p) {
 
   cerr << "Finished in ";
   const auto t1{now()};
-  hms(t1-t0);
+  cerr << hms(t1-t0);
 }
 
 inline void FCM::store_1 (const Param& p) {
@@ -212,10 +212,10 @@ void FCM::compress (const Param& p) {
 
   cerr << "Finished in ";
   const auto t1{now()};
-  hms(t1-t0);
+  cerr << hms(t1-t0);
 
   if (p.verbose)
-    cerr << "Average Entropy (H) = " << aveEnt << " bps\n";
+    cerr << "Average Entropy = " << aveEnt << " bps\n";
 }
 
 template <typename ContIter>
