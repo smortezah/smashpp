@@ -23,6 +23,7 @@ class Param    // Parameters
   u32    wsize;
   string wtype;
   float  thresh;
+  bool   saveFilter;
   string report;
 
   // Define Param::Param(){} in *.hpp => compile error
@@ -82,6 +83,8 @@ inline void Param::parse (int argc, char**& argv) {
         wtype = *++i;
       else if ((*i=="-th" || *i=="--thresh") && i+1!=vArgs.end())
         thresh = stof(*++i);
+      else if (*i=="-sf"  || *i=="--save_fitler")
+        saveFilter = true;
       else if (*i=="-R"  || *i=="--report")
         report = (i+1!=vArgs.end()) ? *++i : "report.txt";
     }
@@ -159,6 +162,9 @@ inline void Param::help () const {
                                                                          << '\n'
     << "    -th,  --thresh"                                              << '\n'
     << "        threshold -- for filtering"                              << '\n'
+                                                                         << '\n'
+    << "    -sf,  --save_filter"                                         << '\n'
+    << "        save filtered file"                                      << '\n'
                                                                          << '\n'
     << "    -R,  --report"                                               << '\n'
     << "        save results in the \"report\" file"                     << '\n'

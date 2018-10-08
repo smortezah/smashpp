@@ -15,7 +15,7 @@ class Filter {
 
 //  Filter           () = default;
   explicit Filter  (const Param&);
-  void smooth_seg  (const Param &);
+  void smooth_seg  (const Param&);
   void extract_seg (const string&, const string&) const;
 
  private:
@@ -33,8 +33,10 @@ class Filter {
   void welch               ();
   void sine                ();
   void nuttall             ();
-  void smooth_seg_rect     (const Param &);
-  void smooth_seg_non_rect (const Param &);
+  void smooth_rect         (const Param&);
+  void smooth_seg_rect     (const Param&);
+  void smooth_non_rect     (const Param&);
+  void smooth_seg_non_rect (const Param&);
 #ifdef BENCH
   template <typename Iter, typename Value>
   void shift_left_insert (Iter, Value);

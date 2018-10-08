@@ -28,20 +28,37 @@ inline void Filter::config_wtype (const string& t) {
   else if (t=="7" || t=="nuttall")       wtype = WType::NUTTALL;
 }
 
-void Filter::smooth_seg (const Param &p) {
-  const auto t0{now()};
-  cerr << OUT_SEP << "Filtering and segmenting \"" << p.tar << "\"...\n";
-
-  if (wtype == WType::RECTANGULAR)
-    smooth_seg_rect(p);
-  else {
-    make_window();
-    smooth_seg_non_rect(p);
+void Filter::smooth_seg (const Param& p) {
+  if (p.saveFilter) {
+    const auto t0{now()};
+    cerr << OUT_SEP << "Filtering \"" << p.tar << "\"...\n";
+    if (wtype == WType::RECTANGULAR) {
+      smooth_rect(p);
+      cerr << "Finished in ";
+      const auto t1{now()};
+      cerr << hms(t1-t0);
+    }
+    else {
+      make_window();
+      smooth_non_rect(p);
+      cerr << "Finished in ";
+      const auto t1{now()};
+      cerr << hms(t1-t0);
+    }
   }
-
-  cerr << "Finished in ";
-  const auto t1{now()};
-  cerr << hms(t1-t0);
+  else {
+    const auto t0{now()};
+    cerr << OUT_SEP << "Filtering and segmenting \"" << p.tar << "\"...\n";
+    if (wtype == WType::RECTANGULAR)
+      smooth_seg_rect(p);
+    else {
+      make_window();
+      smooth_seg_non_rect(p);
+    }
+    cerr << "Finished in ";
+    const auto t1{now()};
+    cerr << hms(t1-t0);
+  }
 }
 
 inline void Filter::make_window () {
@@ -60,19 +77,21 @@ inline void Filter::make_window () {
 inline void Filter::hamming () {
   if (wsize == 1)
     error("The size of Hamming window must be greater than 1.");
-  float num = 0.0f;
+  float num = 0.f;
   u32   den = 0;
   if (is_odd(wsize)) { num=PI;      den=(wsize-1)>>1u; }
   else               { num=2*PI;    den=wsize-1;       }
 
   for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
     window[n] = window[last-n] = static_cast<float>(0.54 - 0.46*cos(n*num/den));
+//  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+//    window[n] = window[last-n] = static_cast<float>(0.54 + 0.46*cos(2*PI*n/wsize));
 }
 
 inline void Filter::hann () {
   if (wsize == 1)
     error("The size of Hann window must be greater than 1.");
-  float num = 0.0f;
+  float num = 0.f;
   u32   den = 0;
   if (is_odd(wsize)) { num=PI;      den=(wsize-1)>>1u; }
   else               { num=2*PI;    den=wsize-1;       }
@@ -84,7 +103,7 @@ inline void Filter::hann () {
 inline void Filter::blackman () {
   if (wsize == 1)
     error("The size of Blackman window must be greater than 1.");
-  float num1=0.0f, num2=0.0f;
+  float num1=0.f, num2=0.f;
   u32   den = 0;
   if (is_odd(wsize)) { num1=PI;      num2=2*PI;    den=(wsize-1)>>1u; }
   else               { num1=2*PI;    num2=4*PI;    den=wsize-1;       }
@@ -144,7 +163,7 @@ inline void Filter::sine () {
 inline void Filter::nuttall () {
   if (wsize == 1)
     error("The size of Nuttall window must be greater than 1.");
-  float num1=0.0f, num2=0.0f, num3=0.0f;
+  float num1=0.f, num2=0.f, num3=0.f;
   u32   den = 0;
   if (is_odd(wsize)) { num1=PI;    num2=2*PI;  num3=3*PI;  den=(wsize-1)>>1u; }
   else               { num1=2*PI;  num2=4*PI;  num3=6*PI;  den=wsize-1;       }
@@ -156,7 +175,53 @@ inline void Filter::nuttall () {
   window.front() = window.back() = 0.0;
 }
 
-inline void Filter::smooth_seg_rect (const Param &p) {
+inline void Filter::smooth_rect (const Param& p) {
+  const string fName = p.ref + "_" + p.tar;
+  check_file(fName+PROFILE_FMT);
+  ifstream pf(fName+PROFILE_FMT);
+  ofstream ff(fName+FIL_FMT);
+  string num;
+  vector<float> seq;    seq.reserve(wsize);
+  float sum = 0.f;
+
+  // First value
+  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
+    const auto val = stof(num);
+    seq.emplace_back(val);
+    sum += val;
+  }
+  ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/wsize <<'\n';
+
+  // Next wsize>>1 values
+  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
+    const auto val = stof(num);
+    seq.emplace_back(val);
+    sum += val;
+    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/wsize <<'\n';
+  }
+
+  // The rest
+  u32 idx = 0;
+  for (; getline(pf,num);) {
+    const auto val = stof(num);
+    sum += val - seq[idx];
+    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/wsize <<'\n';
+    seq[idx] = val;
+    idx = (idx+1) % wsize;
+  }
+  pf.close();
+
+  // Until half of the window goes outside the array
+  for (auto i=(wsize>>1u); i--;) {
+    sum -= seq[idx];
+    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/wsize <<'\n';
+    idx = (idx+1) % wsize;
+  }
+
+  ff.close();
+}
+
+inline void Filter::smooth_seg_rect (const Param& p) {
   const string fName = p.ref + "_" + p.tar;
   check_file(fName+PROFILE_FMT);
   ifstream pf(fName+PROFILE_FMT);
@@ -195,7 +260,7 @@ inline void Filter::smooth_seg_rect (const Param &p) {
   }
   pf.close();
 
-  // Up to when half of the window goes outside the array
+  // Until half of the window goes outside the array
   for (auto i=(wsize>>1u); i--;) {
     seg->sum -= seq[idx];
     ++seg->pos;
@@ -209,7 +274,60 @@ inline void Filter::smooth_seg_rect (const Param &p) {
   if (p.verbose)    cerr << "Detected " << nSegs << " segments.\n";
 }
 
-inline void Filter::smooth_seg_non_rect (const Param &p) {
+inline void Filter::smooth_non_rect (const Param& p) {
+  const string fName = p.ref + "_" + p.tar;
+  check_file(fName+PROFILE_FMT);
+  ifstream pf(fName+PROFILE_FMT);
+  ofstream ff(fName+FIL_FMT);
+  string num;
+  vector<float> seq;    seq.reserve(wsize);
+  auto winBeg=window.begin(), winEnd=window.end();
+  float sum = 0.f;
+  float sWeight = accumulate(winBeg,winEnd,0.0f) * thresh;
+
+  // First value
+  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
+    seq.emplace_back(stof(num));
+  sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.f);
+  ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/sWeight <<'\n';
+
+  // Next wsize>>1 values
+  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
+    seq.emplace_back(stof(num));
+    sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.f);
+    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/sWeight <<'\n';
+  }
+
+  // The rest
+  u32 idx = 0;
+  for(auto seqBeg=seq.begin(); getline(pf,num);) {
+    seq[idx] = stof(num);
+    idx = (idx+1) % wsize;
+    sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.f) +
+           inner_product(winEnd-idx, winEnd,     seqBeg,     0.f));
+    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/sWeight <<'\n';
+  }
+  pf.close();
+
+  // Until half of the window goes outside the array
+  const auto offset = idx;
+  for (auto i=wsize>>1u; i--;) {
+    auto seqBeg=seq.begin(), seqEnd=seq.end();
+    if (++idx < wsize+1) {
+      sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
+             inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.f));
+      ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/sWeight <<'\n';
+    }
+    else {
+      sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg,0.f);
+      ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/sWeight <<'\n';
+    }
+  }
+
+  ff.close();
+}
+
+inline void Filter::smooth_seg_non_rect (const Param& p) {
   const string fName = p.ref + "_" + p.tar;
   check_file(fName+PROFILE_FMT);
   ifstream pf(fName+PROFILE_FMT);
@@ -246,7 +364,7 @@ inline void Filter::smooth_seg_non_rect (const Param &p) {
   }
   pf.close();
 
-  // Up to when half of the window goes outside the array
+  // Until half of the window goes outside the array
   const auto offset = idx;
   for (auto i=wsize>>1u; i--;) {
     auto seqBeg=seq.begin(), seqEnd=seq.end();
