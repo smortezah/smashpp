@@ -88,13 +88,18 @@ inline void FCM::show_in (const Param& p) const {
       ++j;
     }
   }
-  cerr<< "Reference file: "                                              <<'\n'
+  cerr<< "Reference file:"                                               <<'\n'
       << "  [+] Name ..................... " << p.ref                    <<'\n'
       << "  [+] Size (bytes) ............. " << file_size(p.ref)         <<'\n'
                                                                          <<'\n'
-      << "Target file: "                                                 <<'\n'
+      << "Target file:"                                                  <<'\n'
       << "  [+] Name ..................... " << p.tar                    <<'\n'
-      << "  [+] Size (bytes) ............. " << file_size(p.tar)         <<'\n';
+      << "  [+] Size (bytes) ............. " << file_size(p.tar)         <<'\n'
+                                                                         <<'\n'
+      << "Filter and segment:"                                           <<'\n'
+      << "  [+] Windowing function ....... " << p.print_win_type()       <<'\n'
+      << "  [+] Window size .............. " << p.wsize                  <<'\n'
+      << "  [+] Threshold ................ " << p.thresh                 <<'\n';
 }
 
 inline void FCM::alloc_model () {
@@ -111,7 +116,6 @@ inline void FCM::alloc_model () {
 }
 
 void FCM::store (const Param& p) {
-  const auto t0{now()};
   const auto nMdl = Ms.size();
   cerr << OUT_SEP << "Building the model" << (nMdl == 1 ? "" : "s")
        << " based on \"" << p.ref << "\" (level "
@@ -126,9 +130,7 @@ void FCM::store (const Param& p) {
 //  for(auto a:cmls4)a->print();cerr<<'\n';
   #endif
 
-  cerr << "Finished in ";
-  const auto t1{now()};
-  cerr << hms(t1-t0);
+    cerr << "Done!\n";
 }
 
 inline void FCM::store_1 (const Param& p) {
@@ -197,7 +199,6 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 }
 
 void FCM::compress (const Param& p) {
-  const auto t0{now()};
   cerr << OUT_SEP << "Compressing \"" << p.tar << "\"...\n";
 
   if (Ms.size()==1 && TMs.empty())  // 1 MM
@@ -210,10 +211,7 @@ void FCM::compress (const Param& p) {
   else
     compress_n(p.tar, p.ref);
 
-  cerr << "Finished in ";
-  const auto t1{now()};
-  cerr << hms(t1-t0);
-
+  cerr << "Done!\n";
   if (p.verbose)
     cerr << "Average Entropy = " << aveEnt << " bps\n";
 }
@@ -226,7 +224,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
   u64      symsNo{0};            // No. syms in target file, except \n
   prec_t   sEnt{0};              // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  ofstream pf(ref+"_"+tar+PROFILE_FMT);
+  ofstream pf(ref+"_"+tar+PRF_FMT);
   ProbPar  pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
               static_cast<u8>(Ms[0].k<<1u)};
 
@@ -293,7 +291,7 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
   u64      symsNo{0};          // No. syms in target file, except \n
   prec_t   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
-  ofstream pf(ref+"_"+tar+PROFILE_FMT);
+  ofstream pf(ref+"_"+tar+PRF_FMT);
 
   while (tf.get(c)) {
     if (c != '\n') {
