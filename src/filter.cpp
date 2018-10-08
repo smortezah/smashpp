@@ -190,14 +190,14 @@ inline void Filter::smooth_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
   }
-  ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/wsize <<'\n';
+  ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/seq.size() <<'\n';
 
   // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
     sum += val;
-    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/wsize <<'\n';
+    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/seq.size() <<'\n';
   }
 
   // The rest
@@ -212,9 +212,9 @@ inline void Filter::smooth_rect (const Param& p) {
   pf.close();
 
   // Until half of the window goes outside the array
-  for (auto i=(wsize>>1u); i--;) {
+  for (auto i=1; i!=(wsize>>1u)+1; ++i) {
     sum -= seq[idx];
-    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/wsize <<'\n';
+    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/(wsize-i) <<'\n';
     idx = (idx+1) % wsize;
   }
 
@@ -229,7 +229,6 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
-  seg->cut = wsize * thresh;  // Sum of weights=wsize. All coeffs of win are 1
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
@@ -237,6 +236,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     seq.emplace_back(val);
     seg->sum += val;
   }
+  seg->cut = seq.size() * thresh;  // Sum of weights of window
   seg->partition(ff);
 
   // Next wsize>>1 values
@@ -245,6 +245,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     seq.emplace_back(val);
     seg->sum += val;
     ++seg->pos;
+    seg->cut = seq.size() * thresh;
     seg->partition(ff);
   }
 
@@ -254,6 +255,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     const auto val = stof(num);
     seg->sum += val - seq[idx];
     ++seg->pos;
+    seg->cut = wsize * thresh;
     seg->partition(ff);
     seq[idx] = val;
     idx = (idx+1) % wsize;
@@ -261,9 +263,10 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   pf.close();
 
   // Until half of the window goes outside the array
-  for (auto i=(wsize>>1u); i--;) {
+  for (auto i=1; i!=(wsize>>1u)+1; ++i) {
     seg->sum -= seq[idx];
     ++seg->pos;
+    seg->cut = (wsize-i) * thresh;
     seg->partition(ff);
     idx = (idx+1) % wsize;
   }
@@ -283,7 +286,7 @@ inline void Filter::smooth_non_rect (const Param& p) {
   vector<float> seq;    seq.reserve(wsize);
   auto winBeg=window.begin(), winEnd=window.end();
   float sum = 0.f;
-  float sWeight = accumulate(winBeg,winEnd,0.0f) * thresh;
+  float sWeight = accumulate(winBeg+(wsize>>1u), winEnd, 0.f);
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
@@ -295,6 +298,7 @@ inline void Filter::smooth_non_rect (const Param& p) {
   for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
     seq.emplace_back(stof(num));
     sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.f);
+    sWeight += window[i];
     ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/sWeight <<'\n';
   }
 
@@ -311,17 +315,15 @@ inline void Filter::smooth_non_rect (const Param& p) {
 
   // Until half of the window goes outside the array
   const auto offset = idx;
-  for (auto i=wsize>>1u; i--;) {
+  for (auto i=1; i!=(wsize>>1u)+1; ++i) {
     auto seqBeg=seq.begin(), seqEnd=seq.end();
-    if (++idx < wsize+1) {
+    if (++idx < wsize+1)
       sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
              inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.f));
-      ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/sWeight <<'\n';
-    }
-    else {
+    else
       sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg,0.f);
-      ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/sWeight <<'\n';
-    }
+    sWeight -= window[wsize-i];
+    ff /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << sum/sWeight <<'\n';
   }
 
   ff.close();
@@ -336,12 +338,12 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
   auto winBeg=window.begin(), winEnd=window.end();
-  seg->cut = accumulate(winBeg,winEnd,0.0f) * thresh;
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
     seq.emplace_back(stof(num));
   seg->sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.0f);
+  seg->cut = accumulate(winBeg+(wsize>>1u),winEnd,0.f) * thresh;
   seg->partition(ff);
 
   // Next wsize>>1 values
@@ -349,6 +351,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
     seq.emplace_back(stof(num));
     seg->sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.0f);
     ++seg->pos;
+    seg->cut += window[i] * thresh;
     seg->partition(ff);
   }
 
@@ -366,7 +369,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
 
   // Until half of the window goes outside the array
   const auto offset = idx;
-  for (auto i=wsize>>1u; i--;) {
+  for (auto i=1; i!=(wsize>>1u)+1; ++i) {
     auto seqBeg=seq.begin(), seqEnd=seq.end();
     if (++idx < wsize+1)
       seg->sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.0f) +
@@ -374,6 +377,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
     else
       seg->sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg,0.0f);
     ++seg->pos;
+    seg->cut -= window[wsize-i] * thresh;
     seg->partition(ff);
   }
   seg->partition_last(ff);
