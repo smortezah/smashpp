@@ -51,7 +51,7 @@ static constexpr u8    DEF_THR      {4};  // Default # threads
 static constexpr u8    DEF_LVL      {0};  // Default level
 static constexpr u32   DEF_WS       {257};// Default window size -- filter
 const  string          DEF_WT       {"0"};// Default window type -- filter
-static constexpr float DEF_THRESH   {1.5};// Default threshold   -- filter
+static constexpr float DEF_THRESH   {2.1};// Default threshold   -- filter
 static constexpr u8    CARDIN       {4};  // CARDINALITY = Alphabet size
 static constexpr u8    IRMAGIC      {3};  // Calc Mir syms based on syms
 static constexpr u8    K_MAX_TBL64  {11}; // Max ctx dept. table 64 (128 MB mem)
@@ -65,7 +65,7 @@ static constexpr u8    LOG_BASE     {2};  // Logarithmic counting
 static constexpr u8    DEF_IR       {0};  // Default inverted repeats for models
 static constexpr float DEF_ALPHA    {0.001};// Default alpha for models
 static constexpr float DEF_GAMMA    {0.9};  // Default gamma for multiple models
-const  string          PROFILE_FMT  {".prf"};  // Format for inf. profile file
+const  string          PRF_FMT      {".prf"};  // Format for inf. profile file
 static constexpr u8    DEF_PRF_PREC {3};  // Precisions for floats in Inf. prof
 static constexpr u8    DEF_FIL_PREC {3};  // Precisions for floats in filt. file
 const  string          POS_FMT      {".pos"};  // Format for positions file

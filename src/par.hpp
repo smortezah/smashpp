@@ -28,11 +28,12 @@ class Param    // Parameters
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
-             wtype(DEF_WT), thresh(DEF_THRESH){}
-  void parse (int, char**&);
+             wtype(DEF_WT), thresh(DEF_THRESH), saveFilter(false) {}
+  void   parse          (int, char**&);
+  string print_win_type ()  const;
 
  private:
-  void help       ()               const;
+  void help             ()  const;
 };
 
 inline void Param::parse (int argc, char**& argv) {
@@ -178,6 +179,17 @@ inline void Param::help () const {
     << "    under the terms of the GNU - General Public License"         << '\n'
     << "    v3 <http://www.gnu.org/licenses/gpl.html>. There"            << '\n'
     << "    is NOT ANY WARRANTY, to the extent permitted by law."        <<endl;
+}
+
+inline string Param::print_win_type () const {
+  if      (wtype=="0" || wtype=="rectangular")    return "rectangular";
+  else if (wtype=="1" || wtype=="hamming")        return "Hamming";
+  else if (wtype=="2" || wtype=="hann")           return "Hann";
+  else if (wtype=="3" || wtype=="blackman")       return "Blackman";
+  else if (wtype=="4" || wtype=="triangular")     return "triangular";
+  else if (wtype=="5" || wtype=="welch")          return "Welch";
+  else if (wtype=="6" || wtype=="sine")           return "sine";
+  else if (wtype=="7" || wtype=="nuttall")        return "Nuttall";
 }
 
 #endif //SMASHPP_PAR_HPP
