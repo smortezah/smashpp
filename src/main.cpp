@@ -30,9 +30,9 @@ int main (int argc, char* argv[])
     m->compress(p);                // Compress
     auto f = make_shared<Filter>(p);
     f->smooth_seg(p);              // Filter and segment
-//    f->extract_seg(p.tar, p.ref);  // Extract segments from the target file
-////    for (u64 i=0; i!=f->nSegs; ++i) {
-////    }
+    f->extract_seg(p.tar, p.ref);  // Extract segments from the target file
+//    for (u64 i=0; i!=f->nSegs; ++i) {
+//    }
 
 
 //const auto newTar = p.ref;
