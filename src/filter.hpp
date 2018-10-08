@@ -11,7 +11,7 @@
 class Filter {
  public:
   u64   nSegs;
-  float thresh;
+//  float thresh;
 
 //  Filter           () = default;
   explicit Filter  (const Param&);
@@ -34,6 +34,7 @@ class Filter {
   void sine                ();
   void nuttall             ();
   void smooth_rect         (const Param&);
+  void seg_rect            (const Param&);
   void smooth_seg_rect     (const Param&);
   void smooth_non_rect     (const Param&);
   void smooth_seg_non_rect (const Param&);

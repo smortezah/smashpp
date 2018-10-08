@@ -14,7 +14,7 @@ inline void Filter::config (const Param& p) {
   config_wtype(p.wtype);
   wsize = is_odd(p.wsize) ? p.wsize : p.wsize+1;
   window.resize(wsize);
-  thresh = p.thresh;
+//  thresh = p.thresh;
 }
 
 inline void Filter::config_wtype (const string& t) {
@@ -182,7 +182,7 @@ inline void Filter::smooth_rect (const Param& p) {
   ofstream ff(fName+FIL_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
-  float sum = 0.f;
+  auto sum = 0.f;
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
@@ -221,58 +221,112 @@ inline void Filter::smooth_rect (const Param& p) {
   ff.close();
 }
 
+inline void Filter::seg_rect (const Param& p) {
+//  const string fName = p.ref + "_" + p.tar;
+//  check_file(fName+FIL_FMT);
+//  ifstream pf(fName+FIL_FMT);
+//  ofstream ff(fName+POS_FMT);
+//  string num;
+//  vector<float> seq;    seq.reserve(wsize);
+//  auto seg = make_shared<Segment>();
+//
+//  // First value
+//  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
+//    const auto val = stof(num);
+//    seq.emplace_back(val);
+//    seg->sum += val;
+//  }
+//  seg->cut = seq.size() * thresh;  // Sum of weights of window
+//  seg->partition(ff);
+//
+//  // Next wsize>>1 values
+//  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
+//    const auto val = stof(num);
+//    seq.emplace_back(val);
+//    seg->sum += val;
+//    ++seg->pos;
+//    seg->cut = seq.size() * thresh;
+//    seg->partition(ff);
+//  }
+//
+//  // The rest
+//  u32 idx = 0;
+//  for (; getline(pf,num);) {
+//    const auto val = stof(num);
+//    seg->sum += val - seq[idx];
+//    ++seg->pos;
+//    seg->cut = wsize * thresh;
+//    seg->partition(ff);
+//    seq[idx] = val;
+//    idx = (idx+1) % wsize;
+//  }
+//  pf.close();
+//
+//  // Until half of the window goes outside the array
+//  for (auto i=1; i!=(wsize>>1u)+1; ++i) {
+//    seg->sum -= seq[idx];
+//    ++seg->pos;
+//    seg->cut = (wsize-i) * thresh;
+//    seg->partition(ff);
+//    idx = (idx+1) % wsize;
+//  }
+//  seg->partition_last(ff);
+//
+//  ff.close();
+//  nSegs = seg->nSegs;
+//  if (p.verbose)    cerr << "Detected " << nSegs << " segments.\n";
+}
+
 inline void Filter::smooth_seg_rect (const Param& p) {
   const string fName = p.ref + "_" + p.tar;
   check_file(fName+PROFILE_FMT);
-  ifstream pf(fName+PROFILE_FMT);
-  ofstream ff(fName+POS_FMT);
+  ifstream prfF(fName+PROFILE_FMT);
+  ofstream posF(fName+POS_FMT);
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
+  seg->thresh = p.thresh;
+  auto sum = 0.f;
 
   // First value
-  for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);) {
+  for (auto i=(wsize>>1u)+1; i-- && getline(prfF,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
-    seg->sum += val;
+    sum += val;
   }
-  seg->cut = seq.size() * thresh;  // Sum of weights of window
-  seg->partition(ff);
+  seg->partition(posF, sum/seq.size());
 
   // Next wsize>>1 values
-  for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
+  for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
-    seg->sum += val;
+    sum += val;
     ++seg->pos;
-    seg->cut = seq.size() * thresh;
-    seg->partition(ff);
+    seg->partition(posF, sum/seq.size());
   }
 
   // The rest
   u32 idx = 0;
-  for (; getline(pf,num);) {
+  for (; getline(prfF,num);) {
     const auto val = stof(num);
-    seg->sum += val - seq[idx];
+    sum += val - seq[idx];
     ++seg->pos;
-    seg->cut = wsize * thresh;
-    seg->partition(ff);
+    seg->partition(posF, sum/wsize);
     seq[idx] = val;
     idx = (idx+1) % wsize;
   }
-  pf.close();
+  prfF.close();
 
   // Until half of the window goes outside the array
   for (auto i=1; i!=(wsize>>1u)+1; ++i) {
-    seg->sum -= seq[idx];
+    sum -= seq[idx];
     ++seg->pos;
-    seg->cut = (wsize-i) * thresh;
-    seg->partition(ff);
+    seg->partition(posF, sum/(wsize-i));
     idx = (idx+1) % wsize;
   }
-  seg->partition_last(ff);
+  seg->partition_last(posF);
 
-  ff.close();
+  posF.close();
   nSegs = seg->nSegs;
   if (p.verbose)    cerr << "Detected " << nSegs << " segments.\n";
 }
@@ -285,8 +339,8 @@ inline void Filter::smooth_non_rect (const Param& p) {
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto winBeg=window.begin(), winEnd=window.end();
-  float sum = 0.f;
-  float sWeight = accumulate(winBeg+(wsize>>1u), winEnd, 0.f);
+  auto sWeight = accumulate(winBeg+(wsize>>1u), winEnd, 0.f);
+  auto sum = 0.f;
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
@@ -337,22 +391,24 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
+  seg->thresh = p.thresh;
   auto winBeg=window.begin(), winEnd=window.end();
+  auto sWeight = accumulate(winBeg+(wsize>>1u), winEnd, 0.f);
+  auto sum = 0.f;
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(pf,num);)
     seq.emplace_back(stof(num));
-  seg->sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.0f);
-  seg->cut = accumulate(winBeg+(wsize>>1u),winEnd,0.f) * thresh;
-  seg->partition(ff);
+  sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.f);
+  seg->partition(ff, sum/sWeight);
 
   // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(pf,num);) {
     seq.emplace_back(stof(num));
-    seg->sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.0f);
+    sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.f);
     ++seg->pos;
-    seg->cut += window[i] * thresh;
-    seg->partition(ff);
+    sWeight += window[i];
+    seg->partition(ff, sum/sWeight);
   }
 
   // The rest
@@ -360,10 +416,10 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   for(auto seqBeg=seq.begin(); getline(pf,num);) {
     seq[idx] = stof(num);
     idx = (idx+1) % wsize;
-    seg->sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.0f) +
-                inner_product(winEnd-idx, winEnd,     seqBeg,     0.0f));
+    sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.f) +
+           inner_product(winEnd-idx, winEnd,     seqBeg,     0.f));
     ++seg->pos;
-    seg->partition(ff);
+    seg->partition(ff, sum/sWeight);
   }
   pf.close();
 
@@ -372,13 +428,13 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   for (auto i=1; i!=(wsize>>1u)+1; ++i) {
     auto seqBeg=seq.begin(), seqEnd=seq.end();
     if (++idx < wsize+1)
-      seg->sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.0f) +
-                  inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.0f));
+      sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
+             inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.f));
     else
-      seg->sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg,0.0f);
+      sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg, 0.f);
     ++seg->pos;
-    seg->cut -= window[wsize-i] * thresh;
-    seg->partition(ff);
+    sWeight -= window[wsize-i];
+    seg->partition(ff, sum/sWeight);
   }
   seg->partition_last(ff);
 
