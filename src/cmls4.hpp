@@ -15,14 +15,12 @@ class CMLS4    // Count-min-log sketch, 4 bits per counter
   void config   (u64, u8);
   void update   (u64);              // Update sketch
   u16  query    (u64)        const; // Query count of ctx
+	void dump     (ofstream&)  const;
+	void load     (ifstream&)  const;
 #ifdef DEBUG
   u64  getTotal ()           const; // Total count of all items in the sketch
   u64  countMty ()           const; // Number of empty cells in the sketch
   u8   maxSkVal ()           const;
-#endif
-	void dump     (ofstream&)  const;
-	void load     (ifstream&)  const;
-#ifdef DEBUG
   void print    ()           const;
 #endif
   

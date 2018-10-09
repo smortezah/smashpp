@@ -39,7 +39,9 @@ inline void CMLS4::setAB () {
 
 void CMLS4::update (u64 ctx) {
   const auto c {minLogCtr(ctx)};
-  if ((tot++ % POW2[c]) == 0)      // Increase decision //to do. base 2
+//  if ((tot++ % POW2[c]) == 0)      // Increase decision //to do. base 2
+//  if (!(tot++ % (1ull<<c)))      // Increase decision //to do. base 2
+  if (!(tot++ & POW2minus1[c]))
     for (u8 i=0; i!=d; ++i) {
       const auto cellIdx = hash(i, ctx);
       if (readCell(cellIdx) == c)    // Conservative update
@@ -67,6 +69,7 @@ inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal
 
 u16 CMLS4::query (u64 ctx) const {
   return FREQ2[minLogCtr(ctx)];  //Base 2. otherwise (b^c-1)/(b-1)
+//  return (static_cast<u16>(1)<<minLogCtr(ctx))-static_cast<u16>(1);  //Base 2. otherwise (b^c-1)/(b-1)
 }
 
 void CMLS4::dump (ofstream& ofs) const {
