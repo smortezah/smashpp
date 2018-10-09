@@ -21,12 +21,23 @@ void LogTable8::config (u8 k_) {
 }
 
 void LogTable8::update (u32 ctx) {
-  if (!(tot++ % POW2[tbl[ctx]]))
+//  if (!(tot++ % POW2[tbl[ctx]]))
+//  if (!(tot++ % (1ull<<tbl[ctx])))
+  if (!(tot++ & POW2minus1[tbl[ctx]]))
     ++tbl[ctx];
 }
 
 u64 LogTable8::query (u32 ctx) const {
   return POW2minus1[tbl[ctx]];  // POW2[tbl[ctx]] - 1
+}
+
+void LogTable8::dump (ofstream& ofs) const {
+  ofs.write((const char*) &tbl[0], tbl.size());
+//  ofs.close();
+}
+
+void LogTable8::load (ifstream& ifs) const {
+  ifs.read((char*) &tbl[0], tbl.size());
 }
 
 #ifdef DEBUG
@@ -41,18 +52,7 @@ u64 LogTable8::countMty () const {
 u32 LogTable8::maxTblVal () const {
   return *std::max_element(tbl.begin(), tbl.end());
 }
-#endif
 
-void LogTable8::dump (ofstream& ofs) const {
-  ofs.write((const char*) &tbl[0], tbl.size());
-//  ofs.close();
-}
-
-void LogTable8::load (ifstream& ifs) const {
-  ifs.read((char*) &tbl[0], tbl.size());
-}
-
-#ifdef DEBUG
 void LogTable8::print () const {
   constexpr u8 context_width {12};
   cerr.width(context_width);  cerr<<std::left<<"Context";

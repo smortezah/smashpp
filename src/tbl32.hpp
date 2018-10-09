@@ -16,14 +16,12 @@ public:
   void config      (u8);
   void update      (u32);               // Update table
   u32  query       (u32)       const;   // Query count of ctx
+  void dump        (ofstream&) const;
+  void load        (ifstream&) const;
 #ifdef DEBUG
   u64  getTotal    ()          const;   // Total count of all items in the table
   u64  countMty    ()          const;   // Number of empty cells in the table
   u32  maxTblVal   ()          const;
-#endif
-  void dump        (ofstream&) const;
-  void load        (ifstream&) const;
-#ifdef DEBUG
   void print       ()          const;
 #endif
 
