@@ -32,7 +32,7 @@ void CMLS4::update (u64 ctx) {
     for (u8 i=0; i!=d; ++i) {
       const auto cellIdx = hash(i, ctx);
       if (readCell(cellIdx) == c)    // Conservative update
-        sk[cellIdx>>1u] = INC_CTR[cellIdx&1ull][sk[cellIdx>>1u]];
+        sk[cellIdx>>1u] = INC_CTR[((cellIdx&1ull)<<8u) + sk[cellIdx>>1u]];
     }
 }
 
@@ -47,7 +47,7 @@ inline u8 CMLS4::minLogCtr (u64 ctx) const {
 }
 
 inline u8 CMLS4::readCell (u64 idx) const {
-  return CTR[idx&1ull][sk[idx>>1u]];//todo 1 bo'dish kon
+  return CTR[((idx&1ull)<<8u) + sk[idx>>1ul]];
 }
 
 inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal
