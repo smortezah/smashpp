@@ -26,7 +26,7 @@ void LogTable8::update (u32 ctx) {
 }
 
 u64 LogTable8::query (u32 ctx) const {
-  return POW2[tbl[ctx]] - 1;
+  return POW2minus1[tbl[ctx]];  // POW2[tbl[ctx]] - 1
 }
 
 #ifdef DEBUG
