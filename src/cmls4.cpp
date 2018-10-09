@@ -47,7 +47,7 @@ inline u8 CMLS4::minLogCtr (u64 ctx) const {
 }
 
 inline u8 CMLS4::readCell (u64 idx) const {
-  return CTR[idx&1ull][sk[idx>>1u]];
+  return CTR[idx&1ull][sk[idx>>1u]];//todo 1 bo'dish kon
 }
 
 inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal
