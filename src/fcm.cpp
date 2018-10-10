@@ -151,8 +151,8 @@ inline void FCM::store_1 (const Param& p) {
 }
 
 inline void FCM::store_n (const Param& p) {
-  auto tbl64_iter  = tbl64.begin();     auto tbl32_iter = tbl32.begin();
-  auto lgtbl8_iter = lgtbl8.begin();    auto cmls4_iter = cmls4.begin();
+  auto tbl64_iter=tbl64.begin();      auto tbl32_iter=tbl32.begin();
+  auto lgtbl8_iter=lgtbl8.begin();    auto cmls4_iter=cmls4.begin();
   const auto vThrSz = (p.nthr < Ms.size()) ? p.nthr : Ms.size();
   vector<std::thread> thrd(vThrSz);
   for (u8 i=0; i!=Ms.size(); ++i) {    // Mask: 4<<2k-1 = 4^(k+1)-1
