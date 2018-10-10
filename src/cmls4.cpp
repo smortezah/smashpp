@@ -23,10 +23,10 @@ void CMLS4::config (u64 w_, u8 d_) {
   }
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
   ab.resize(d<<1u);
-  setAB();
+  set_a_b();
 }
 
-inline void CMLS4::setAB () {
+inline void CMLS4::set_a_b () {
   constexpr u64 seed {0};
   std::default_random_engine e(seed);
   std::uniform_int_distribution<u64> uDistA(0, (1ull<<63u)-1);    // k <= 2^63-1
@@ -38,48 +38,38 @@ inline void CMLS4::setAB () {
 }
 
 void CMLS4::update (u64 ctx) {
-  const auto c {minLogCtr(ctx)};
-//  if ((tot++ % POW2[c]) == 0)      // Increase decision //to do. base 2
-//  if (!(tot++ % (1ull<<c)))        // Increase decision //to do. base 2
-  if (!(tot++ & POW2minus1[c]))
-    for (u8 i=0; i!=d; ++i) {
-      const auto cellIdx = hash(i, ctx);
-      if (readCell(cellIdx) == c)    // Conservative update
-        sk[cellIdx>>1u] = INC_CTR[((cellIdx&1ull)<<8u) + sk[cellIdx>>1u]];
+  const auto c {min_log_ctr(ctx)};
+  if (!(tot++ & POW2minus1[c]))     // Increase decision.  x % 2^n = x & (2^n-1)
+//    for (u8 i=0; i!=d; ++i) {
+    for (u8 i=d; i--;) {
+      const auto idx = hash(i, ctx);
+      if (read_cell(idx) == c)       // Conservative update
+        sk[idx>>1u] = INC_CTR[((idx&1ull)<<8u) + sk[idx>>1u]];
     }
 }
 
-inline u8 CMLS4::minLogCtr (u64 ctx) const {
+inline u8 CMLS4::min_log_ctr (u64 ctx) const {
   u8 min {std::numeric_limits<u8>::max()};
-  for (u8 i=0; i!=d && min!=0; ++i) {
-    const auto lg = readCell(hash(i,ctx));
+//  for (u8 i=0; i!=d && min!=0; ++i) {
+  for (u8 i=d; min!=0 && i--;) {
+    const auto lg = read_cell(hash(i, ctx));
     if (lg < min)
       min = lg;
   }
   return min;
 }
 
-inline u8 CMLS4::readCell (u64 idx) const {
-  return CTR[((idx&1ull)<<8u) + sk[idx>>1ul]];
+inline u8 CMLS4::read_cell (u64 idx) const {
+  return CTR[((idx&1ull)<<8u) + sk[idx>>1u]];
+//  return CTR[static_cast<u16>(((idx&1ull)<<8u) | sk[idx>>1u])];
 }
 
 inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal
   return i*w + ((ab[i<<1u]*ctx + ab[(i<<1u)+1]) >> uhashShift);
 }
-//inline u64 CMLS4::hash (u8 i, u64 z) const {
-//  z = (~z) + (z << 21);
-//  z = z    ^ (z >> 24);
-//  z = (z   + (z << 3)) + (z << 8);
-//  z = z    ^ (z >> 14);
-//  z = (z   + (z << 2)) + (z << 4);
-//  z = z    ^ (z >> 28);
-//  z = z    + (z << 31);
-//  return i*w + (z>>uhashShift);
-//}
 
 u16 CMLS4::query (u64 ctx) const {
-  return FREQ2[minLogCtr(ctx)];  //Base 2. otherwise (b^c-1)/(b-1)
-//  return (static_cast<u16>(1)<<minLogCtr(ctx))-static_cast<u16>(1);  //Base 2. otherwise (b^c-1)/(b-1)
+  return FREQ2[min_log_ctr(ctx)];  //Base 2. otherwise (b^c-1)/(b-1)
 }
 
 void CMLS4::dump (ofstream& ofs) const {
@@ -92,11 +82,11 @@ void CMLS4::load (ifstream& ifs) const {
 }
 
 #ifdef DEBUG
-u64 CMLS4::getTotal () const {
+u64 CMLS4::get_total () const {
   return tot;
 }
 
-u64 CMLS4::countMty () const {
+u64 CMLS4::count_empty () const {
   u64 n {0};
   for (auto i=w*d; i--;)
     if (readCell(i) == 0)
@@ -104,7 +94,7 @@ u64 CMLS4::countMty () const {
 	return n;
 }
 
-u8 CMLS4::maxSkVal () const {
+u8 CMLS4::max_sk_val () const {
   u8 c {0};
   for (auto i=w*d; i--;)
     if (readCell(i) > c)

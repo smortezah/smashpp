@@ -19,9 +19,9 @@ public:
   void dump        (ofstream&) const;
   void load        (ifstream&) const;
 #ifdef DEBUG
-  u64  getTotal    ()          const;   // Total count of all items in the table
-  u64  countMty    ()          const;   // Number of empty cells in the table
-  u32  maxTblVal   ()          const;
+  u64  get_total   ()          const;   // Total count of all items in the table
+  u64  count_empty ()          const;   // Number of empty cells in the table
+  u32  max_tbl_val ()          const;
   void print       ()          const;
 #endif
 
