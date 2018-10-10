@@ -22,25 +22,25 @@ void CMLS4::config (u64 w_, u8 d_) {
     error("failed memory allocation.");
   }
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
-//  ab.resize(d<<1u);
-//  setAB();
+  ab.resize(d<<1u);
+  setAB();
 }
 
-//inline void CMLS4::setAB () {
-//  constexpr u64 seed {0};
-//  std::default_random_engine e(seed);
-//  std::uniform_int_distribution<u64> uDistA(0, (1ull<<63u)-1);    // k <= 2^63-1
-//  std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
-//  for (u8 i=0; i!=d; ++i) {
-//    ab[i<<1u] = (uDistA(e)<<1u) + 1;// 1 <= a=2k+1 <= 2^64-1, rand odd posit.
-//    ab[(i<<1u)+1] = uDistB(e);      // 0 <= b <= 2^(G-M)-1,   rand posit.
-//  }                                 // Parenthesis in ab[(i<<1)+1] are MANDATORY
-//}
+inline void CMLS4::setAB () {
+  constexpr u64 seed {0};
+  std::default_random_engine e(seed);
+  std::uniform_int_distribution<u64> uDistA(0, (1ull<<63u)-1);    // k <= 2^63-1
+  std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
+  for (u8 i=0; i!=d; ++i) {
+    ab[i<<1u] = (uDistA(e)<<1u) + 1;// 1 <= a=2k+1 <= 2^64-1, rand odd posit.
+    ab[(i<<1u)+1] = uDistB(e);      // 0 <= b <= 2^(G-M)-1,   rand posit.
+  }                                 // Parenthesis in ab[(i<<1)+1] are MANDATORY
+}
 
 void CMLS4::update (u64 ctx) {
   const auto c {minLogCtr(ctx)};
 //  if ((tot++ % POW2[c]) == 0)      // Increase decision //to do. base 2
-//  if (!(tot++ % (1ull<<c)))      // Increase decision //to do. base 2
+//  if (!(tot++ % (1ull<<c)))        // Increase decision //to do. base 2
   if (!(tot++ & POW2minus1[c]))
     for (u8 i=0; i!=d; ++i) {
       const auto cellIdx = hash(i, ctx);

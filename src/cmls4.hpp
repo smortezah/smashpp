@@ -27,13 +27,13 @@ class CMLS4    // Count-min-log sketch, 4 bits per counter
  private:
   u64         w;                    // Width of sketch
   u8          d;                    // Depth of sketch
-//  vector<u64> ab;                   // Coefficients of hash functions
+  vector<u64> ab;                   // Coefficients of hash functions
   u8          uhashShift;           // Universal hash shift(G-M). (a*x+b)>>(G-M)
   vector<u8>  sk;                   // Sketch
   u64         tot;                  // Total # elements, so far
   
   u8   readCell  (u64)       const; // Read each cell of the sketch
-//  void setAB     ();                // Set coeffs a, b of hash fns (a*x+b) %P %w
+  void setAB     ();                // Set coeffs a, b of hash fns (a*x+b) %P %w
   u64  hash      (u8, u64)   const; // MUST provide pairwise independence
   u8   minLogCtr (u64)       const; // Find min log value in the sketch
 #ifdef DEBUG
@@ -41,7 +41,7 @@ class CMLS4    // Count-min-log sketch, 4 bits per counter
 #endif
 };
 
-static constexpr u64 ab[10] {1,2,3,4,5,6,7,8,9,10};//todo
+//static constexpr u64 ab[10] {1,2,3,4,5,6,7,8,9,10};//todo
 
 static constexpr u8 CTR[512] {
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
