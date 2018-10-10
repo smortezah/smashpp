@@ -39,15 +39,15 @@ void Table64::load (ifstream& ifs) const {
 }
 
 #ifdef DEBUG
-u64 Table64::getTotal () const {
+u64 Table64::get_total () const {
 //  return tot;
 }
 
-u64 Table64::countMty () const {
+u64 Table64::count_empty () const {
   return static_cast<u64>(std::count(tbl.begin(), tbl.end(), 0));
 }
 
-u64 Table64::maxTblVal () const {
+u64 Table64::max_tbl_val () const {
   return *std::max_element(tbl.begin(), tbl.end());
 }
 

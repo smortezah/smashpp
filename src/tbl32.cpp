@@ -48,15 +48,15 @@ void Table32::load (ifstream& ifs) const {
 }
 
 #ifdef DEBUG
-u64 Table32::getTotal () const {
+u64 Table32::get_total () const {
   return tot;
 }
 
-u64 Table32::countMty () const {
+u64 Table32::count_empty () const {
   return static_cast<u64>(std::count(tbl.begin(), tbl.end(), 0));
 }
 
-u32 Table32::maxTblVal () const {
+u32 Table32::max_tbl_val () const {
   return *std::max_element(tbl.begin(), tbl.end());
 }
 

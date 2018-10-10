@@ -21,14 +21,12 @@ void LogTable8::config (u8 k_) {
 }
 
 void LogTable8::update (u32 ctx) {
-//  if (!(tot++ % POW2[tbl[ctx]]))
-//  if (!(tot++ % (1ull<<tbl[ctx])))
-  if (!(tot++ & POW2minus1[tbl[ctx]]))
+  if (!(tot++ & POW2minus1[tbl[ctx]]))  // x % 2^n = x & (2^n-1)
     ++tbl[ctx];
 }
 
 u64 LogTable8::query (u32 ctx) const {
-  return POW2minus1[tbl[ctx]];  // POW2[tbl[ctx]] - 1
+  return POW2minus1[tbl[ctx]];          // POW2[tbl[ctx]] - 1
 }
 
 void LogTable8::dump (ofstream& ofs) const {
@@ -41,15 +39,15 @@ void LogTable8::load (ifstream& ifs) const {
 }
 
 #ifdef DEBUG
-u64 LogTable8::getTotal () const {
+u64 LogTable8::get_total () const {
   return tot;
 }
 
-u64 LogTable8::countMty () const {
+u64 LogTable8::count_empty () const {
   return static_cast<u64>(std::count(tbl.begin(), tbl.end(), 0));
 }
 
-u32 LogTable8::maxTblVal () const {
+u32 LogTable8::max_tbl_val () const {
   return *std::max_element(tbl.begin(), tbl.end());
 }
 
