@@ -520,7 +520,7 @@ inline u8 FCM::best_id (FreqIter first) const {
 //  if (sum>=4ull && sum<=8ull) {
 //    return static_cast<u8>(255);
 //  }
-  if (are_all(first, 1)) {
+  if (are_all(first, 0) || are_all(first, 1)) {//todo 1
     return static_cast<u8>(255);
   }
   const auto max_pos = std::max_element(first, first+CARDIN);
