@@ -85,6 +85,12 @@ u8 pop_count (Digit d) {  // Number of ones in a digit
   return n;
 }
 
+template <typename Iter, typename Val>
+bool are_all (Iter first, Val val) {
+  return std::all_of(first, first+CARDIN,
+                     [val](u64 i){ return i==static_cast<u64>(val); });
+}
+
 template <typename Iter>
 bool are_all_zero (Iter first) {
   return std::all_of(first, first+CARDIN, [](u64 i){ return i==0; });

@@ -383,10 +383,12 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
     freqs(f, contIt, cp->ppIt->l);
 //    freqs(f, contIt, cp->ppIt);
     const auto best = best_id(f.begin());
-    if (best == static_cast<u8>(255))
+    if (best == static_cast<u8>(255)) {
       cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
-    else if (best==static_cast<u8>(254) || best==cp->nSym)
+    }
+    else if (best==static_cast<u8>(254) || best==cp->nSym) {
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
+    }
     else {
       cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
       cp->ppIt->config(best);
@@ -398,10 +400,12 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
     array<decltype(2*(*contIt)->query(0)),4> f {};
     freqs_ir(f, contIt, cp->ppIt);
     const auto best = best_id(f.begin());
-    if (best == static_cast<u8>(255))
+    if (best == static_cast<u8>(255)) {
       cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
-    else if (best==static_cast<u8>(254) || best==cp->nSym)
+    }
+    else if (best==static_cast<u8>(254) || best==cp->nSym) {
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
+    }
     else {
       cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
       cp->ppIt->config_ir(best);
@@ -420,8 +424,9 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     freqs(f, contIt, ppIt->l);
 //    freqs(f, contIt, ppIt);
     const auto best = best_id(f.begin());
-    if (best==static_cast<u8>(255) || best==static_cast<u8>(254))
+    if (best==static_cast<u8>(255) || best==static_cast<u8>(254)) {
       cp->probs.emplace_back(static_cast<prec_t>(0));
+    }
     else {
       cp->mm.child->enabled = true;
       cp->mm.child->history = 0;
@@ -436,8 +441,9 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     array<decltype(2*(*contIt)->query(0)),4> f {};
     freqs_ir(f, contIt, ppIt);
     const auto best = best_id(f.begin());
-    if (best==static_cast<u8>(255) || best==static_cast<u8>(254))
+    if (best==static_cast<u8>(255) || best==static_cast<u8>(254)) {
       cp->probs.emplace_back(static_cast<prec_t>(0));
+    }
     else {
       cp->mm.child->enabled = true;
       cp->mm.child->history = 0;
@@ -493,9 +499,20 @@ const {
 
 template <typename FreqIter>
 inline u8 FCM::best_id (FreqIter first) const {
-  if (are_all_zero(first)) {
+//  const auto sum = accumulate(first, first+CARDIN, 0ull);
+//  if (sum==4ull || sum==1ull) {
+//    return static_cast<u8>(255);
+//  }
+  if (are_all(first, 1)) {
     return static_cast<u8>(255);
   }
+
+//  if (accumulate(first, first+CARDIN, 0ull) == 4ull) {
+//    return static_cast<u8>(255);
+//  }
+//  if (are_all_zero(first)) {
+//    return static_cast<u8>(255);
+//  }
   const auto max_pos = std::max_element(first, first+CARDIN);
   if (has_n_max(first, max_pos)) {
     return static_cast<u8>(254);
