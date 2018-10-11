@@ -473,26 +473,26 @@ const {
         (*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r))};
 }
 
-template <typename Par, typename Value>
-void FCM::stmm_update_hist (Par stmm, Value val) {
-  stmm->history = ((stmm->history<<1u) | val) & stmm->mask;  // ull for 64 bits
+template <typename Hist, typename Value, typename Mask>
+inline void FCM::stmm_update_hist (Hist& history, Value val, Mask mask) {
+  history = ((history<<1u) | val) & mask;  // ull for 64 bits
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
-prec_t FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
-  stmm_update_hist(stmm, 0u);
+inline prec_t FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
+  stmm_update_hist(stmm->history, 0u, stmm->mask);
   return prob(fFirst, pp);
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
-prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
+inline prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
   if (popcount(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
     stmm->history = 0;
     return static_cast<prec_t>(0);
   }
   else {
-    stmm_update_hist(stmm, 1u);
+    stmm_update_hist(stmm->history, 1u, stmm->mask);
     return prob(fFirst, pp);
   }
 }
