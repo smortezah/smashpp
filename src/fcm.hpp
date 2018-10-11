@@ -58,8 +58,8 @@ class FCM    // Finite-context models
   void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   void freqs_ir (array<OutT,4>&, ContIter, ProbParIter)   const;
-  template<typename Par, typename Value>
-  void stmm_update_hist  (Par, Value);
+  template <typename Hist, typename Value, typename Mask>
+  void stmm_update_hist  (Hist&, Value, Mask);
   template <typename Par, typename FreqIter, typename ProbParIter>
   prec_t stmm_hit_prob   (Par, FreqIter, ProbParIter);
   template <typename Par, typename FreqIter, typename ProbParIter>
