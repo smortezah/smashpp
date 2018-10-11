@@ -386,11 +386,17 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
     if (best == static_cast<u8>(255)) {
       cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
     }
+//    else if (best==static_cast<u8>(254) && best!=cp->nSym) {
+//      cp->mm.child->history = 0;
+//      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+//    }
     else if (best==static_cast<u8>(254) || best==cp->nSym) {
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
     }
     else {
-      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+      cp->mm.child->history = 0;
+//      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+      cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
       cp->ppIt->config(best);
     }
     update_ctx(*cp->ctxIt, cp->ppIt);
@@ -407,6 +413,7 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
     }
     else {
+      cp->mm.child->history = 0;
       cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
       cp->ppIt->config_ir(best);
     }
@@ -427,10 +434,15 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     if (best==static_cast<u8>(255) || best==static_cast<u8>(254)) {
       cp->probs.emplace_back(static_cast<prec_t>(0));
     }
-    else {
+    else if (best == cp->nSym) {
       cp->mm.child->enabled = true;
       cp->mm.child->history = 0;
       cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
+      fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
+    }
+    else {
+      cp->mm.child->enabled = true;
+      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
     update_ctx(*cp->ctxIt, ppIt);
@@ -444,10 +456,15 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     if (best==static_cast<u8>(255) || best==static_cast<u8>(254)) {
       cp->probs.emplace_back(static_cast<prec_t>(0));
     }
-    else {
+    else if (best == cp->nSym) {
       cp->mm.child->enabled = true;
       cp->mm.child->history = 0;
       cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
+      fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
+    }
+    else {
+      cp->mm.child->enabled = true;
+      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, ppIt);
@@ -500,19 +517,12 @@ const {
 template <typename FreqIter>
 inline u8 FCM::best_id (FreqIter first) const {
 //  const auto sum = accumulate(first, first+CARDIN, 0ull);
-//  if (sum==4ull || sum==1ull) {
+//  if (sum>=4ull && sum<=8ull) {
 //    return static_cast<u8>(255);
 //  }
   if (are_all(first, 1)) {
     return static_cast<u8>(255);
   }
-
-//  if (accumulate(first, first+CARDIN, 0ull) == 4ull) {
-//    return static_cast<u8>(255);
-//  }
-//  if (are_all_zero(first)) {
-//    return static_cast<u8>(255);
-//  }
   const auto max_pos = std::max_element(first, first+CARDIN);
   if (has_n_max(first, max_pos)) {
     return static_cast<u8>(254);
@@ -535,7 +545,6 @@ template <typename Par, typename FreqIter, typename ProbParIter>
 inline prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
   if (pop_count(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
-//    stmm->history = 0;//todo
     return static_cast<prec_t>(0);
   }
   else {
