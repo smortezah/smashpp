@@ -388,7 +388,10 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
     }
 //    else if (best==static_cast<u8>(254) && best!=cp->nSym) {
 //      cp->mm.child->history = 0;
-//      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+//      //      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+//      cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
+//      cp->ppIt->config(best);
+//
 //    }
     else if (best==static_cast<u8>(254) || best==cp->nSym) {
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
@@ -414,7 +417,8 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
     }
     else {
       cp->mm.child->history = 0;
-      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+      //      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+      cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
       cp->ppIt->config_ir(best);
     }
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
@@ -516,10 +520,6 @@ const {
 
 template <typename FreqIter>
 inline u8 FCM::best_id (FreqIter first) const {
-//  const auto sum = accumulate(first, first+CARDIN, 0ull);
-//  if (sum>=4ull && sum<=8ull) {
-//    return static_cast<u8>(255);
-//  }
   if (are_all(first, 0) || are_all(first, 1)) {//todo 1
     return static_cast<u8>(255);
   }
