@@ -36,7 +36,7 @@ struct STMMPar {
 
   STMMPar (u8 k_, u8 t_, u8 ir_, prec_t a_, prec_t g_)
     : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), enabled(true),
-      history(0), mask((1u<<k)-1) {}
+      history(0), mask((1u<<k)-1u) {}
 };
 
 struct ProbPar {

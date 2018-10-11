@@ -54,12 +54,18 @@ class FCM    // Finite-context models
   template <typename ContIter>
   void compress_n_child_disabled (shared_ptr<CompressPar>, ContIter);
 
-  template <typename OutT, typename ContIter, typename ProbParIter>
-  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
+  template <typename OutT, typename ContIter>
+  void freqs    (array<OutT,4>&, ContIter, u64)   const;
+//  template <typename OutT, typename ContIter, typename ProbParIter>
+//  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   void freqs_ir (array<OutT,4>&, ContIter, ProbParIter)   const;
-  template <typename Hist, typename Value, typename Mask>
-  void stmm_update_hist  (Hist&, Value, Mask);
+  template <typename FreqIter>
+  u8 best_id (FreqIter) const;
+//  template <typename Hist, typename Value, typename Mask>
+//  void stmm_update_hist  (Hist&, Value, Mask);
+  template <typename Hist, typename Value>
+  void stmm_update_hist  (Hist&, Value, u32);
   template <typename Par, typename FreqIter, typename ProbParIter>
   prec_t stmm_hit_prob   (Par, FreqIter, ProbParIter);
   template <typename Par, typename FreqIter, typename ProbParIter>

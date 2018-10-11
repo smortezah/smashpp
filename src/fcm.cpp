@@ -233,8 +233,9 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
       if (c != '\n') {
         ++symsNo;
         pp.config(c, ctx);
-        array<decltype((*cont)->query(0)), 4> f{};
-        freqs(f, cont, &pp);
+        array<decltype((*cont)->query(0)), 4> f {};
+        freqs(f, cont, pp.l);
+//        freqs(f, cont, &pp);
         const auto entr = entropy(prob(f.begin(), &pp));
         pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
         sEnt += entr;
@@ -358,7 +359,8 @@ inline void FCM::compress_n_parent(shared_ptr<CompressPar> cp, ContIter contIt){
     cp->ppIt->config(cp->c, *cp->ctxIt);
     const auto ppIt = cp->ppIt;
     array<decltype((*contIt)->query(0)),4> f {};
-    freqs(f, contIt, ppIt);
+    freqs(f, contIt, ppIt->l);
+//    freqs(f, contIt, ppIt);
     cp->probs.emplace_back(prob(f.begin(), ppIt));
     update_ctx(*cp->ctxIt, ppIt);
   }
@@ -378,29 +380,32 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
   if (cp->mm.child->ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*contIt)->query(0)),4> f {};
-    freqs(f, contIt, cp->ppIt);
-    const auto val = f[cp->nSym];
-    const auto max_pos = std::max_element(f.begin(), f.end());
-    if (val==*max_pos && val!=0)
-      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
-    else
+    freqs(f, contIt, cp->ppIt->l);
+//    freqs(f, contIt, cp->ppIt);
+    const auto best = best_id(f.begin());
+    if (best == static_cast<u8>(255))
       cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
-    if (cp->mm.child->enabled)
-      cp->ppIt->config(static_cast<u8>(max_pos-f.begin()));  // Uses l
+    else if (best==static_cast<u8>(254) || best==cp->nSym)
+      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
+    else {
+      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+      cp->ppIt->config(best);
+    }
     update_ctx(*cp->ctxIt, cp->ppIt);
   }
-  else {
+  else {//todoo modify based on non ir
     cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
     array<decltype(2*(*contIt)->query(0)),4> f {};
     freqs_ir(f, contIt, cp->ppIt);
-    const auto val = f[cp->nSym];
-    const auto max_pos = std::max_element(f.begin(), f.end());
-    if (val==*max_pos && val!=0)
-      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
-    else
+    const auto best = best_id(f.begin());
+    if (best == static_cast<u8>(255))
       cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
-    if (cp->mm.child->enabled)
-      cp->ppIt->config_ir(static_cast<u8>(max_pos-f.begin()));  // Uses l
+    else if (best==static_cast<u8>(254) || best==cp->nSym)
+      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
+    else {
+      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+      cp->ppIt->config_ir(best);
+    }
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
@@ -412,28 +417,33 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     cp->ppIt->config(cp->c, *cp->ctxIt);
     const auto ppIt = cp->ppIt;
     array<decltype((*contIt)->query(0)),4> f {};
-    freqs(f, contIt, ppIt);
-    if (cp->nSym == best_sym_abs(f.begin())) {
+    freqs(f, contIt, ppIt->l);
+//    freqs(f, contIt, ppIt);
+    const auto best = best_id(f.begin());
+    if (best==static_cast<u8>(255) || best==static_cast<u8>(254))
+      cp->probs.emplace_back(static_cast<prec_t>(0));
+    else {
       cp->mm.child->enabled = true;
-      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), ppIt));
+      cp->mm.child->history = 0;
+      cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
-    else
-      cp->probs.emplace_back(static_cast<prec_t>(0));
     update_ctx(*cp->ctxIt, ppIt);
   }
-  else {
+  else {//todoo modify based on non ir
     cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);
     const auto ppIt = cp->ppIt;
     array<decltype(2*(*contIt)->query(0)),4> f {};
     freqs_ir(f, contIt, ppIt);
-    if (cp->nSym == best_sym_abs(f.begin())) {
+    const auto best = best_id(f.begin());
+    if (best==static_cast<u8>(255) || best==static_cast<u8>(254))
+      cp->probs.emplace_back(static_cast<prec_t>(0));
+    else {
       cp->mm.child->enabled = true;
-      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), ppIt));
+      cp->mm.child->history = 0;
+      cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
-    else
-      cp->probs.emplace_back(static_cast<prec_t>(0));
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, ppIt);
   }
 }
@@ -452,12 +462,20 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
 //  f.close();  // Actually done, automatically
 //}
 
-template <typename OutT, typename ContIter, typename ProbParIter>
-inline void FCM::freqs (array<OutT,4>& a, ContIter cont, ProbParIter pp) const {
-  a= {(*cont)->query(pp->l),
-      (*cont)->query(pp->l | 1ull),
-      (*cont)->query(pp->l | 2ull),
-      (*cont)->query(pp->l | 3ull)};
+//todo check performance
+//template <typename OutT, typename ContIter, typename ProbParIter>
+//inline void FCM::freqs (array<OutT,4>& a, ContIter cont, ProbParIter pp) const {
+//  a = {(*cont)->query(pp->l),
+//       (*cont)->query(pp->l | 1ull),
+//       (*cont)->query(pp->l | 2ull),
+//       (*cont)->query(pp->l | 3ull)};
+//}
+template <typename OutT, typename ContIter>
+inline void FCM::freqs (array<OutT,4>& a, ContIter cont, u64 l) const {
+  a = {(*cont)->query(l),
+       (*cont)->query(l | 1ull),
+       (*cont)->query(l | 2ull),
+       (*cont)->query(l | 3ull)};
 }
 
 template <typename OutT, typename ContIter, typename ProbParIter>
@@ -473,8 +491,20 @@ const {
         (*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r))};
 }
 
-template <typename Hist, typename Value, typename Mask>
-inline void FCM::stmm_update_hist (Hist& history, Value val, Mask mask) {
+template <typename FreqIter>
+inline u8 FCM::best_id (FreqIter first) const {
+  if (are_all_zero(first)) {
+    return static_cast<u8>(255);
+  }
+  const auto max_pos = std::max_element(first, first+CARDIN);
+  if (has_n_max(first, max_pos)) {
+    return static_cast<u8>(254);
+  }
+  return max_pos-first;
+}
+
+template <typename Hist, typename Value>
+inline void FCM::stmm_update_hist (Hist& history, Value val, u32 mask) {
   history = ((history<<1u) | val) & mask;  // ull for 64 bits
 }
 
@@ -486,9 +516,9 @@ inline prec_t FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
 
 template <typename Par, typename FreqIter, typename ProbParIter>
 inline prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
-  if (popcount(stmm->history) > stmm->thresh) {
+  if (pop_count(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
-    stmm->history = 0;
+//    stmm->history = 0;//todo
     return static_cast<prec_t>(0);
   }
   else {
