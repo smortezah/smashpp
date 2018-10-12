@@ -65,21 +65,17 @@ class FCM    // Finite-context models
 //  template <typename Hist, typename Value, typename Mask>
 //  void stmm_update_hist  (Hist&, Value, Mask);
 
-//todo
+#ifdef ARRAY_HISTORY
   template <typename Hist, typename Value>
   void stmm_update_hist  (Hist&, Value);
+#else
+  template <typename Hist, typename Value>
+  void stmm_update_hist  (Hist&, Value, u32);
+#endif
   template <typename Par, typename FreqIter, typename ProbParIter>
   prec_t stmm_hit_prob   (Par, FreqIter, ProbParIter);
   template <typename Par, typename FreqIter, typename ProbParIter>
   prec_t stmm_miss_prob  (Par, FreqIter, ProbParIter);
-
-
-//  template <typename Hist, typename Value>
-//  void stmm_update_hist  (Hist&, Value, u32);
-//  template <typename Par, typename FreqIter, typename ProbParIter>
-//  prec_t stmm_hit_prob   (Par, FreqIter, ProbParIter);
-//  template <typename Par, typename FreqIter, typename ProbParIter>
-//  prec_t stmm_miss_prob  (Par, FreqIter, ProbParIter);
   template <typename FreqIter, typename ProbParIter>
   prec_t prob            (FreqIter, ProbParIter)   const;  // Probability
   prec_t entropy         (prec_t)                  const;

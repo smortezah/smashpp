@@ -31,13 +31,22 @@ struct STMMPar {
   prec_t alpha;
   prec_t gamma;
   bool   enabled;
-//  u32    history;    // k > 32 => change to u64
-  vector<bool> history;    // k > 32 => change to u64//todo
+#ifdef ARRAY_HISTORY
+  vector<bool> history;
+#else
+  u32    history;    // k > 32 => change to u64
+#endif
   u32    mask;       // For updating the history
 
   STMMPar (u8 k_, u8 t_, u8 ir_, prec_t a_, prec_t g_)
     : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), enabled(true),
-      /*history(0),*/ mask((1u<<k)-1u) { history.resize(k); }
+      mask((1u<<k)-1u) {
+    #ifdef ARRAY_HISTORY
+      history.resize(k);
+    #else
+      history = 0;
+    #endif
+  }
 };
 
 struct ProbPar {

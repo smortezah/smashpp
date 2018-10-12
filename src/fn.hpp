@@ -85,12 +85,11 @@ u8 pop_count (Digit d) {  // Number of ones in a digit
   return n;
 }
 
-//todo
 template <typename VecIter>
-u8 pop_count (VecIter first, u8 len) {  // Number of ones in a digit
+u8 pop_count (VecIter first, u8 len) {  // Number of ones in a bool array
   u8 n = 0;
   for (auto last=first+len; last--!=first;) {
-    if (*last == true)
+    if (*last == true)  // 1u instead of "true"
       ++n;
   }
   return n;
