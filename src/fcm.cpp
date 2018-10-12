@@ -386,19 +386,10 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
     if (best == static_cast<u8>(255)) {
       cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
     }
-//    else if (best==static_cast<u8>(254) && best!=cp->nSym) {
-//      cp->mm.child->history = 0;
-//      //      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
-//      cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
-//      cp->ppIt->config(best);
-//
-//    }
     else if (best==static_cast<u8>(254) || best==cp->nSym) {
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
     }
     else {
-      cp->mm.child->history = 0;
-//      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
       cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
       cp->ppIt->config(best);
     }
@@ -416,8 +407,6 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
     }
     else {
-      cp->mm.child->history = 0;
-      //      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
       cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
       cp->ppIt->config_ir(best);
     }
@@ -438,15 +427,9 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     if (best==static_cast<u8>(255) || best==static_cast<u8>(254)) {
       cp->probs.emplace_back(static_cast<prec_t>(0));
     }
-    else if (best == cp->nSym) {
-      cp->mm.child->enabled = true;
-      cp->mm.child->history = 0;
-      cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
-      fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
-    }
     else {
       cp->mm.child->enabled = true;
-      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
+      cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
     update_ctx(*cp->ctxIt, ppIt);
@@ -460,15 +443,9 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     if (best==static_cast<u8>(255) || best==static_cast<u8>(254)) {
       cp->probs.emplace_back(static_cast<prec_t>(0));
     }
-    else if (best == cp->nSym) {
-      cp->mm.child->enabled = true;
-      cp->mm.child->history = 0;
-      cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
-      fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
-    }
     else {
       cp->mm.child->enabled = true;
-      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
+      cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, ppIt);
@@ -520,7 +497,7 @@ const {
 
 template <typename FreqIter>
 inline u8 FCM::best_id (FreqIter first) const {
-  if (are_all(first, 0) || are_all(first, 1)) {//todo 1
+  if (are_all(first, 0) || are_all(first, 1)) {
     return static_cast<u8>(255);
   }
   const auto max_pos = std::max_element(first, first+CARDIN);
