@@ -190,7 +190,7 @@ template <typename Mask, typename ContIter /*Container iterator*/>
 inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  char c;
   for (Mask ctx=0; rf.get(c);) {
-    if (c != '\n') {
+    if (c!='N' && c!='\n') {
       ctx = ((ctx<<2u) & mask) | NUM[static_cast<u8>(c)];
       (*cont)->update(ctx);
     }
@@ -230,7 +230,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
 
   if (Ms[0].ir == 0) {
     while (tf.get(c)) {
-      if (c != '\n') {
+    if (c!='N' && c!='\n') {
         ++symsNo;
         pp.config(c, ctx);
         array<decltype((*cont)->query(0)), 4> f {};
@@ -245,7 +245,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
   }
   else {  // With inv. rep.
     while (tf.get(c)) {
-      if (c != '\n') {
+    if (c!='N' && c!='\n') {
         ++symsNo;
         pp.config_ir(c, ctx, ctxIr);
         array<decltype(2*(*cont)->query(0)),4> f {};
@@ -295,7 +295,7 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
   ofstream pf(ref+"_"+tar+PRF_FMT);
 
   while (tf.get(c)) {
-    if (c != '\n') {
+    if (c!='N' && c!='\n') {
       ++symsNo;
       cp->c       = c;
       cp->nSym    = NUM[static_cast<u8>(c)];
@@ -330,13 +330,15 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
       }
 
       const auto entr=entropy(cp->w.begin(), cp->probs.begin(),cp->probs.end());
-      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+      //todo remove comment
+//      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
       update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
       sEnt += entr;
     }
   }
   tf.close();
   pf.close();
+//  cerr<<symsNo;//todo
   aveEnt = sEnt/symsNo;
 }
 
@@ -390,7 +392,9 @@ inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
       cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
     }
     else {
-      cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
+//      cp->mm.child->history = 0;
+//      cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
+      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
       cp->ppIt->config(best);
     }
     update_ctx(*cp->ctxIt, cp->ppIt);
@@ -427,11 +431,29 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     if (best==static_cast<u8>(255) || best==static_cast<u8>(254)) {
       cp->probs.emplace_back(static_cast<prec_t>(0));
     }
+//    else if (best == cp->nSym) {
+//      cp->mm.child->enabled = true;
+//      cp->mm.child->history = 0;
+//      cp->probs.emplace_back(prob(f.begin(), ppIt));
+////      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+//      fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
+//    }
     else {
       cp->mm.child->enabled = true;
-      cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
+//      cp->mm.child->history = 0;
+      std::fill(cp->mm.child->history.begin(), cp->mm.child->history.end(),
+                false);//todo
+      cp->probs.emplace_back(prob(f.begin(), ppIt));
+//      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
+//    else {
+//      cp->mm.child->enabled = true;
+//      cp->mm.child->history = 0;
+////      cp->probs.emplace_back(prob(f.begin(), ppIt));
+//      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
+//      fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
+//    }
     update_ctx(*cp->ctxIt, ppIt);
   }
   else {//todoo modify based on non ir
@@ -445,7 +467,7 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
     }
     else {
       cp->mm.child->enabled = true;
-      cp->probs.emplace_back(prob(f.begin(), ppIt));  // Hit
+      cp->probs.emplace_back(prob(f.begin(), ppIt));
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, ppIt);
@@ -497,7 +519,9 @@ const {
 
 template <typename FreqIter>
 inline u8 FCM::best_id (FreqIter first) const {
-  if (are_all(first, 0) || are_all(first, 1)) {
+//  if (are_all(first, 0)) {
+  if (are_all(first, 1)) {
+//  if (are_all(first, 0) || are_all(first, 1)) {
     return static_cast<u8>(255);
   }
   const auto max_pos = std::max_element(first, first+CARDIN);
@@ -508,27 +532,56 @@ inline u8 FCM::best_id (FreqIter first) const {
 }
 
 template <typename Hist, typename Value>
-inline void FCM::stmm_update_hist (Hist& history, Value val, u32 mask) {
-  history = ((history<<1u) | val) & mask;  // ull for 64 bits
+inline void FCM::stmm_update_hist (Hist& history, Value val) {
+//  history = (history<<1u) | val;  // ull for 64 bits
+  //todo
+  std::rotate(history.begin(), history.begin()+1, history.end());
+  history.back() = val;
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
 inline prec_t FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
-  stmm_update_hist(stmm->history, 0u, stmm->mask);
+  stmm_update_hist(stmm->history, false);//todo
+//  stmm_update_hist(stmm->history, 0u);
   return prob(fFirst, pp);
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
 inline prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
-  if (pop_count(stmm->history) > stmm->thresh) {
+  if (pop_count(stmm->history.begin(),stmm->k) > stmm->thresh) {
+//  if (pop_count(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
     return static_cast<prec_t>(0);
   }
   else {
-    stmm_update_hist(stmm->history, 1u, stmm->mask);
+    stmm_update_hist(stmm->history, true);//todo
+//    stmm_update_hist(stmm->history, 1u);
     return prob(fFirst, pp);
   }
 }
+
+//template <typename Hist, typename Value>
+//inline void FCM::stmm_update_hist (Hist& history, Value val, u32 mask) {
+//  history = ((history<<1u) | val) & mask;  // ull for 64 bits
+//}
+//
+//template <typename Par, typename FreqIter, typename ProbParIter>
+//inline prec_t FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
+//  stmm_update_hist(stmm->history, 0u, stmm->mask);
+//  return prob(fFirst, pp);
+//}
+//
+//template <typename Par, typename FreqIter, typename ProbParIter>
+//inline prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
+//  if (pop_count(stmm->history) > stmm->thresh) {
+//    stmm->enabled = false;
+//    return static_cast<prec_t>(0);
+//  }
+//  else {
+//    stmm_update_hist(stmm->history, 1u, stmm->mask);
+//    return prob(fFirst, pp);
+//  }
+//}
 
 template <typename FreqIter, typename ProbParIter>
 inline prec_t FCM::prob (FreqIter fFirst, ProbParIter pp) const {

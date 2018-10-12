@@ -85,6 +85,17 @@ u8 pop_count (Digit d) {  // Number of ones in a digit
   return n;
 }
 
+//todo
+template <typename VecIter>
+u8 pop_count (VecIter first, u8 len) {  // Number of ones in a digit
+  u8 n = 0;
+  for (auto last=first+len; last--!=first;) {
+    if (*last == true)
+      ++n;
+  }
+  return n;
+}
+
 template <typename Iter, typename Val>
 bool are_all (Iter first, Val val) {
   return std::all_of(first, first+CARDIN,
