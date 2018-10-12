@@ -64,12 +64,22 @@ class FCM    // Finite-context models
   u8 best_id (FreqIter) const;
 //  template <typename Hist, typename Value, typename Mask>
 //  void stmm_update_hist  (Hist&, Value, Mask);
+
+//todo
   template <typename Hist, typename Value>
-  void stmm_update_hist  (Hist&, Value, u32);
+  void stmm_update_hist  (Hist&, Value);
   template <typename Par, typename FreqIter, typename ProbParIter>
   prec_t stmm_hit_prob   (Par, FreqIter, ProbParIter);
   template <typename Par, typename FreqIter, typename ProbParIter>
   prec_t stmm_miss_prob  (Par, FreqIter, ProbParIter);
+
+
+//  template <typename Hist, typename Value>
+//  void stmm_update_hist  (Hist&, Value, u32);
+//  template <typename Par, typename FreqIter, typename ProbParIter>
+//  prec_t stmm_hit_prob   (Par, FreqIter, ProbParIter);
+//  template <typename Par, typename FreqIter, typename ProbParIter>
+//  prec_t stmm_miss_prob  (Par, FreqIter, ProbParIter);
   template <typename FreqIter, typename ProbParIter>
   prec_t prob            (FreqIter, ProbParIter)   const;  // Probability
   prec_t entropy         (prec_t)                  const;
