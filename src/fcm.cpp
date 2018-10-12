@@ -440,9 +440,8 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
 //    }
     else {
       cp->mm.child->enabled = true;
-//      cp->mm.child->history = 0;
-      std::fill(cp->mm.child->history.begin(), cp->mm.child->history.end(),
-                false);//todo
+      cp->mm.child->history = 0;
+//      std::fill(cp->mm.child->history.begin(), cp->mm.child->history.end(), false);//todo
       cp->probs.emplace_back(prob(f.begin(), ppIt));
 //      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
@@ -531,57 +530,54 @@ inline u8 FCM::best_id (FreqIter first) const {
   return max_pos-first;
 }
 
+#ifdef ARRAY_HISTORY
 template <typename Hist, typename Value>
 inline void FCM::stmm_update_hist (Hist& history, Value val) {
-//  history = (history<<1u) | val;  // ull for 64 bits
-  //todo
   std::rotate(history.begin(), history.begin()+1, history.end());
   history.back() = val;
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
 inline prec_t FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
-  stmm_update_hist(stmm->history, false);//todo
-//  stmm_update_hist(stmm->history, 0u);
+  stmm_update_hist(stmm->history, false);
   return prob(fFirst, pp);
 }
 
 template <typename Par, typename FreqIter, typename ProbParIter>
 inline prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
   if (pop_count(stmm->history.begin(),stmm->k) > stmm->thresh) {
-//  if (pop_count(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
     return static_cast<prec_t>(0);
   }
   else {
-    stmm_update_hist(stmm->history, true);//todo
-//    stmm_update_hist(stmm->history, 1u);
+    stmm_update_hist(stmm->history, true);
     return prob(fFirst, pp);
   }
 }
+#else
+template <typename Hist, typename Value>
+inline void FCM::stmm_update_hist (Hist& history, Value val, u32 mask) {
+  history = ((history<<1u) | val) & mask;  // ull for 64 bits
+}
 
-//template <typename Hist, typename Value>
-//inline void FCM::stmm_update_hist (Hist& history, Value val, u32 mask) {
-//  history = ((history<<1u) | val) & mask;  // ull for 64 bits
-//}
-//
-//template <typename Par, typename FreqIter, typename ProbParIter>
-//inline prec_t FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
-//  stmm_update_hist(stmm->history, 0u, stmm->mask);
-//  return prob(fFirst, pp);
-//}
-//
-//template <typename Par, typename FreqIter, typename ProbParIter>
-//inline prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
-//  if (pop_count(stmm->history) > stmm->thresh) {
-//    stmm->enabled = false;
-//    return static_cast<prec_t>(0);
-//  }
-//  else {
-//    stmm_update_hist(stmm->history, 1u, stmm->mask);
-//    return prob(fFirst, pp);
-//  }
-//}
+template <typename Par, typename FreqIter, typename ProbParIter>
+inline prec_t FCM::stmm_hit_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
+  stmm_update_hist(stmm->history, 0u, stmm->mask);
+  return prob(fFirst, pp);
+}
+
+template <typename Par, typename FreqIter, typename ProbParIter>
+inline prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
+  if (pop_count(stmm->history) > stmm->thresh) {
+    stmm->enabled = false;
+    return static_cast<prec_t>(0);
+  }
+  else {
+    stmm_update_hist(stmm->history, 1u, stmm->mask);
+    return prob(fFirst, pp);
+  }
+}
+#endif
 
 template <typename FreqIter, typename ProbParIter>
 inline prec_t FCM::prob (FreqIter fFirst, ProbParIter pp) const {
