@@ -227,7 +227,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
 
   // Until half of the window goes outside the array
   if (p.saveFilter) {
-    for (auto i=1; i!=(wsize>>1u)+1; ++i) {
+    for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
       sum -= seq[idx];
       ++seg->pos;
       filtered = sum/(wsize-i);
@@ -237,7 +237,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     }
   }
   else {
-    for (auto i=1; i!=(wsize>>1u)+1; ++i) {
+    for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
       sum -= seq[idx];
       ++seg->pos;
       seg->partition(posF, sum/(wsize-i));
@@ -324,7 +324,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   // Until half of the window goes outside the array
   const auto offset = idx;
   if (p.saveFilter) {
-    for (auto i=1; i!=(wsize>>1u)+1; ++i) {
+    for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
       auto seqBeg=seq.begin(), seqEnd=seq.end();
       if (++idx < wsize+1)
         sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
@@ -339,7 +339,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
     }
   }
   else {
-    for (auto i=1; i!=(wsize>>1u)+1; ++i) {
+    for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
       auto seqBeg=seq.begin(), seqEnd=seq.end();
       if (++idx < wsize+1)
         sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +

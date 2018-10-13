@@ -77,14 +77,7 @@ bool has (Iter first, Iter last, Element elem) {
   return std::find(first, last, elem) != last;
 }
 
-template <typename Digit>
-u8 pop_count (Digit d) {  // Number of ones in a digit
-  u8 n = 0;
-  for (; d; ++n)  d &= d-1;  // First impl. Kernighan. Clear the LSB set
-//  do { if (d & 1) ++n; } while (d >>= 1); // Second impl. Negative nums?
-  return n;
-}
-
+#ifdef ARRAY_HISTORY
 template <typename VecIter>
 u8 pop_count (VecIter first, u8 len) {  // Number of ones in a bool array
   u8 n = 0;
@@ -94,6 +87,15 @@ u8 pop_count (VecIter first, u8 len) {  // Number of ones in a bool array
   }
   return n;
 }
+#else
+template <typename Digit>
+u8 pop_count (Digit d) {  // Number of ones in a digit
+  u8 n = 0;
+  for (; d; ++n)  d &= d-1;  // First impl. Kernighan. Clear the LSB set
+//  do { if (d & 1) ++n; } while (d >>= 1); // Second impl. Negative nums?
+  return n;
+}
+#endif
 
 template <typename Iter, typename Val>
 bool are_all (Iter first, Val val) {

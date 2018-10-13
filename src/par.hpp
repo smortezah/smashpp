@@ -190,6 +190,8 @@ inline string Param::print_win_type () const {
   else if (wtype=="5" || wtype=="welch")          return "Welch";
   else if (wtype=="6" || wtype=="sine")           return "sine";
   else if (wtype=="7" || wtype=="nuttall")        return "Nuttall";
+
+  return "rectangular";
 }
 
 #endif //SMASHPP_PAR_HPP
