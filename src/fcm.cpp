@@ -308,24 +308,17 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
 
       for (const auto& mm : Ms) {
         cp->mm = mm;
-        if (mm.cont == Container::TABLE_64) {
-          compress_n_impl(cp, tbl64_it);
-          ++tbl64_it;
-        }
-        else if (mm.cont == Container::TABLE_32) {
-          compress_n_impl(cp, tbl32_it);
-          ++tbl32_it;
-        }
-        // Using "-O3" optimization flag of gcc, the program enters the
+        if (mm.cont == Container::TABLE_64)
+          compress_n_impl(cp, tbl64_it++);
+        else if (mm.cont == Container::TABLE_32)
+          compress_n_impl(cp, tbl32_it++);
+        // Using "-O3" optimization flag of gcc, the program may enter the
         // following IF, even when it shouldn't!!!  #gcc_bug
-        else if (mm.cont == Container::LOG_TABLE_8) {
-          compress_n_impl(cp, lgtbl8_it);
-          ++lgtbl8_it;
-        }
-        else if (mm.cont == Container::SKETCH_8) {
-          compress_n_impl(cp, cmls4_it);
-          ++cmls4_it;
-        }
+        else if (mm.cont == Container::LOG_TABLE_8)
+          compress_n_impl(cp, lgtbl8_it++);
+        else if (mm.cont == Container::SKETCH_8)
+          compress_n_impl(cp, cmls4_it++);
+
         ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
       }
 
@@ -338,7 +331,6 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
   }
   tf.close();
   pf.close();
-//  cerr<<symsNo;//todo
   aveEnt = sEnt/symsNo;
 }
 

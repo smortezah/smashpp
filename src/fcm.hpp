@@ -62,9 +62,6 @@ class FCM    // Finite-context models
   void freqs_ir (array<OutT,4>&, ContIter, ProbParIter)   const;
   template <typename FreqIter>
   u8 best_id (FreqIter) const;
-//  template <typename Hist, typename Value, typename Mask>
-//  void stmm_update_hist  (Hist&, Value, Mask);
-
 #ifdef ARRAY_HISTORY
   template <typename Hist, typename Value>
   void stmm_update_hist  (Hist&, Value);
