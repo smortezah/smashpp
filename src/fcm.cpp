@@ -64,7 +64,7 @@ inline void FCM::set_cont () {
 }
 
 inline void FCM::show_in (const Param& p) const {
-  for (auto i=0, j=0; i != Ms.size(); ++i) {
+  for (auto i=0u, j=0u; i != Ms.size(); ++i) {
     cerr
       << "Model " << i+1 << ':'                                          <<'\n'
       << "  [+] Context order ............ " << (int)Ms[i].k             <<'\n';
