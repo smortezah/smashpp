@@ -233,11 +233,12 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
     if (c!='N' && c!='\n') {
         ++symsNo;
         pp.config(c, ctx);
-        array<decltype((*cont)->query(0)), 4> f {};
+        array<decltype((*cont)->query(0)),4> f {};
         freqs(f, cont, pp.l);
 //        freqs(f, cont, &pp);
         const auto entr = entropy(prob(f.begin(), &pp));
-        pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+      //todo remove comment
+//      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
         sEnt += entr;
         update_ctx(ctx, &pp);
       }
@@ -251,7 +252,8 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
         array<decltype(2*(*cont)->query(0)),4> f {};
         freqs_ir(f, cont, &pp);
         const auto entr = entropy(prob(f.begin(), &pp));
-        pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+      //todo remove comment
+//      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
         sEnt += entr;
         update_ctx_ir(ctx, ctxIr, &pp);
       }
@@ -573,10 +575,10 @@ inline prec_t FCM::stmm_miss_prob (Par stmm, FreqIter fFirst, ProbParIter pp) {
 
 template <typename FreqIter, typename ProbParIter>
 inline prec_t FCM::prob (FreqIter fFirst, ProbParIter pp) const {
-  return (*(fFirst+pp->numSym) + pp->alpha) /
-         std::accumulate(fFirst, fFirst+CARDIN, pp->sAlpha);
 //  return (*(fFirst+pp->numSym) + pp->alpha) /
-//         (std::accumulate(fFirst,fFirst+CARDIN,0ull) + pp->sAlpha);
+//         std::accumulate(fFirst, fFirst+CARDIN, pp->sAlpha);
+  return (*(fFirst+pp->numSym) + pp->alpha) /
+         (std::accumulate(fFirst,fFirst+CARDIN,0ull) + pp->sAlpha);
 }
 
 inline prec_t FCM::entropy (prec_t P) const {
