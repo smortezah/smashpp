@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import figure
 import numpy as np
 import subprocess as sp
 
@@ -14,16 +15,80 @@ import subprocess as sp
 # print(process.memory_info().rss)
 
 
-x, y = np.loadtxt('smashpp-3', delimiter='\t', unpack=True)
-plt.plot(x, y, '-o', label='MM')
-x, y = np.loadtxt('smashpp-mut', delimiter='\t', unpack=True)
-plt.plot(x, y, '-o', label='MM & STMM - Smash++')
-x, y = np.loadtxt('geco-mut', delimiter='\t', unpack=True)
-plt.plot(x, y, '-o', label='MM & STMM - GeCo')
-plt.xlabel('Mutation rate (%)')
+# x, y = np.loadtxt('smashpp-3', delimiter='\t', unpack=True)
+# plt.plot(x, y, '-o', label='MM')
+# x, y = np.loadtxt('smashpp-mut', delimiter='\t', unpack=True)
+# plt.plot(x, y, '-o', label='MM & STMM - Smash++')
+# x, y = np.loadtxt('geco-mut', delimiter='\t', unpack=True)
+# plt.plot(x, y, '-o', label='MM & STMM - GeCo')
+# plt.xlabel('Mutation rate (%)')
+# plt.ylabel('Average entropy (bps)')
+# plt.legend()
+# plt.grid(linewidth=.3)
+# plt.show()
+
+
+# figure(num=None, figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
+# plt.subplot(311)
+# r, g, s = np.loadtxt('syn_72_woN', delimiter='\t', unpack=True)
+# plt.plot(r, g, '-o', label='GeCo')
+# plt.plot(r, s, '-o', label='Smash++')
+# plt.title('Synthetic data (72 MB), without "N" symbols')
+# plt.xlabel('Mutation rate (%)')
+# plt.ylabel('Average entropy (bps)')
+# plt.legend()
+# plt.grid(linewidth=.3)
+#
+# plt.subplot(312)
+# r, g, s = np.loadtxt('syn_61_wN', delimiter='\t', unpack=True)
+# plt.plot(r, g, '-o', label='GeCo')
+# plt.plot(r, s, '-o', label='Smash++')
+# plt.title('Synthetic data (61 MB), with 4% of "N" symbols')
+# plt.xlabel('Mutation rate (%)')
+# plt.ylabel('Average entropy (bps)')
+# plt.legend()
+# plt.grid(linewidth=.3)
+#
+# plt.subplot(313)
+# r, g, s = np.loadtxt('syn_5.7_wN', delimiter='\t', unpack=True)
+# plt.plot(r, g, '-o', label='GeCo')
+# plt.plot(r, s, '-o', label='Smash++')
+# plt.title('Synthetic data (5.7 MB), with 4% of "N" symbols')
+# plt.xlabel('Mutation rate (%)')
+# plt.ylabel('Average entropy (bps)')
+# plt.legend()
+# plt.grid(linewidth=.3)
+# plt.show()
+
+
+figure(num=None, figsize=(7, 7), dpi=80, facecolor='w', edgecolor='k')
+plt.subplot(221)
+g, s = np.loadtxt('hs18-pt18_STMM', delimiter='\t', unpack=True)
+plt.bar('GeCo', height=g, width=0.4)
+plt.bar('Smash++', height=s, width=0.4)
+plt.title('With STMM - ref:HS18, tar:PT18')
 plt.ylabel('Average entropy (bps)')
-plt.legend()
-plt.grid(linewidth=.3)
+
+plt.subplot(222)
+g, s = np.loadtxt('pt18-hs18_STMM', delimiter='\t', unpack=True)
+plt.bar('GeCo', height=g, width=0.4)
+plt.bar('Smash++', height=s, width=0.4)
+plt.title('With STMM - ref:PT18, tar:HS18')
+# plt.ylabel('Average entropy (bps)')
+
+plt.subplot(223)
+g, s = np.loadtxt('pt18-hs18', delimiter='\t', unpack=True)
+plt.bar('GeCo', height=g, width=0.4)
+plt.bar('Smash++', height=s, width=0.4)
+plt.title('Without STMM - ref:PT18, tar:HS18')
+plt.ylabel('Average entropy (bps)')
+
+plt.subplot(224)
+g, s = np.loadtxt('hs18-pt18', delimiter='\t', unpack=True)
+plt.bar('GeCo', height=g, width=0.4)
+plt.bar('Smash++', height=s, width=0.4)
+plt.title('Without STMM - ref:HS18, tar:PT18')
+# plt.ylabel('Average entropy (bps)')
 plt.show()
 
 
