@@ -138,7 +138,8 @@ inline void FCM::store_1 (const Param& p) {
   auto lgtbl8_iter=lgtbl8.begin();    auto cmls4_iter=cmls4.begin();
   for (const auto& m : Ms) {    // Mask: 4<<2k - 1 = 4^(k+1) - 1
     if (m.cont == Container::TABLE_64)
-      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);
+      store_impl(p.ref, (1ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);//todo
+//      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);
     else if (m.cont == Container::TABLE_32)
       store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32_iter++);
     else if (m.cont == Container::LOG_TABLE_8)
@@ -191,7 +192,8 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  char c;
   for (Mask ctx=0; rf.get(c);) {
     if (c!='N' && c!='\n') {
-      ctx = ((ctx<<2u) & mask) | NUM[static_cast<u8>(c)];
+//      ctx = ((ctx<<2u) & mask) | NUM[static_cast<u8>(c)];
+      ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];//todo
       (*cont)->update(ctx);
     }
   }
