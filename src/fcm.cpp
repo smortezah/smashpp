@@ -331,7 +331,7 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
 
       const auto entr=entropy(cp->w.begin(), cp->probs.begin(),cp->probs.end());
       //todo remove comment
-//      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
       update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
       sEnt += entr;
     }
