@@ -136,16 +136,16 @@ void FCM::store (const Param& p) {
 inline void FCM::store_1 (const Param& p) {
   auto tbl64_iter=tbl64.begin();      auto tbl32_iter=tbl32.begin();
   auto lgtbl8_iter=lgtbl8.begin();    auto cmls4_iter=cmls4.begin();
-  for (const auto& m : Ms) {    // Mask: 4<<2k - 1 = 4^(k+1) - 1
+  for (const auto& m : Ms) {    // Mask: 1<<2k - 1 = 4^k - 1
     if (m.cont == Container::TABLE_64)
-      store_impl(p.ref, (1ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);//todo
-//      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl64_iter++);
+      store_impl(p.ref, (1ul<<(m.k<<1u))-1ul  /*Mask 32*/, tbl64_iter++);
+//      store_impl(p.ref, (4ul<<(m.k<<1u))-1  /*Mask 32*/, tbl64_iter++);//todo
     else if (m.cont == Container::TABLE_32)
-      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, tbl32_iter++);
+      store_impl(p.ref, (1ul<<(m.k<<1u))-1ul  /*Mask 32*/, tbl32_iter++);
     else if (m.cont == Container::LOG_TABLE_8)
-      store_impl(p.ref, (4ul<<(m.k<<1u))-1 /*Mask 32*/, lgtbl8_iter++);
+      store_impl(p.ref, (1ul<<(m.k<<1u))-1ul  /*Mask 32*/, lgtbl8_iter++);
     else if (m.cont == Container::SKETCH_8)
-      store_impl(p.ref, (4ull<<(m.k<<1u))-1/*Mask 64*/, cmls4_iter++);
+      store_impl(p.ref, (1ull<<(m.k<<1u))-1ull/*Mask 64*/, cmls4_iter++);
     else
       err("the models cannot be built.");
   }
@@ -156,27 +156,28 @@ inline void FCM::store_n (const Param& p) {
   auto lgtbl8_iter=lgtbl8.begin();    auto cmls4_iter=cmls4.begin();
   const auto vThrSz = (p.nthr < Ms.size()) ? p.nthr : Ms.size();
   vector<std::thread> thrd(vThrSz);
-  for (u8 i=0; i!=Ms.size(); ++i) {    // Mask: 4<<2k-1 = 4^(k+1)-1
+  for (u8 i=0; i!=Ms.size(); ++i) {    // Mask: 1<<2k-1 = 4^k-1
     switch (Ms[i].cont) {
      case Container::TABLE_64:
        thrd[i % vThrSz] =
          std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>, this,
-           std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, tbl64_iter++);
+           std::cref(p.ref), (1ul<<(Ms[i].k<<1u))-1ul, tbl64_iter++);
+//           std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, tbl64_iter++);//todo
        break;
      case Container::TABLE_32:
        thrd[i % vThrSz] =
          std::thread(&FCM::store_impl<u32,decltype(tbl32_iter)>, this,
-           std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, tbl32_iter++);
+           std::cref(p.ref), (1ul<<(Ms[i].k<<1u))-1ul, tbl32_iter++);
        break;
      case Container::LOG_TABLE_8:
        thrd[i % vThrSz] =
          std::thread(&FCM::store_impl<u32,decltype(lgtbl8_iter)>, this,
-           std::cref(p.ref), (4ul<<(Ms[i].k<<1u))-1, lgtbl8_iter++);
+           std::cref(p.ref), (1ul<<(Ms[i].k<<1u))-1ul, lgtbl8_iter++);
        break;
      case Container::SKETCH_8:
        thrd[i % vThrSz] =
          std::thread(&FCM::store_impl<u64,decltype(cmls4_iter)>, this,
-           std::cref(p.ref), (4ull<<(Ms[i].k<<1u))-1, cmls4_iter++);
+           std::cref(p.ref), (1ull<<(Ms[i].k<<1u))-1ull, cmls4_iter++);
        break;
      default:  err("the models cannot be built.");
     }
@@ -192,8 +193,8 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  char c;
   for (Mask ctx=0; rf.get(c);) {
     if (c!='N' && c!='\n') {
-//      ctx = ((ctx<<2u) & mask) | NUM[static_cast<u8>(c)];
-      ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];//todo
+//      ctx = ((ctx<<2u) & mask) | NUM[static_cast<u8>(c)];//todo
+      ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];
       (*cont)->update(ctx);
     }
   }
@@ -214,8 +215,9 @@ void FCM::compress (const Param& p) {
     compress_n(p.tar, p.ref);
 
   cerr << "Done!\n";
-  if (p.verbose)
-    cerr << "Average Entropy = " << aveEnt << " bps\n";
+//  if (p.verbose)//todo maybe remove comment
+    cerr << "Average Entropy = "
+         << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps\n";
 }
 
 template <typename ContIter>
@@ -232,7 +234,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
 
   if (Ms[0].ir == 0) {
     while (tf.get(c)) {
-    if (c!='N' && c!='\n') {
+      if (c!='N' && c!='\n') {
         ++symsNo;
         pp.config(c, ctx);
         array<decltype((*cont)->query(0)),4> f {};
@@ -240,7 +242,8 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
 //        freqs(f, cont, &pp);
         const auto entr = entropy(prob(f.begin(), &pp));
       //todo remove comment
-//      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+//        sEnt += ceil(entr*1000)/1000;//todo
         sEnt += entr;
         update_ctx(ctx, &pp);
       }
@@ -248,7 +251,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
   }
   else {  // With inv. rep.
     while (tf.get(c)) {
-    if (c!='N' && c!='\n') {
+      if (c!='N' && c!='\n') {
         ++symsNo;
         pp.config_ir(c, ctx, ctxIr);
         array<decltype(2*(*cont)->query(0)),4> f {};
