@@ -61,34 +61,51 @@ import subprocess as sp
 # plt.show()
 
 
-figure(num=None, figsize=(7, 7), dpi=80, facecolor='w', edgecolor='k')
-plt.subplot(221)
-g, s = np.loadtxt('hs18-pt18_STMM', delimiter='\t', unpack=True)
-plt.bar('GeCo', height=g, width=0.4)
-plt.bar('Smash++', height=s, width=0.4)
-plt.title('With STMM - ref:HS18, tar:PT18')
-plt.ylabel('Average entropy (bps)')
-
-plt.subplot(222)
-g, s = np.loadtxt('pt18-hs18_STMM', delimiter='\t', unpack=True)
-plt.bar('GeCo', height=g, width=0.4)
-plt.bar('Smash++', height=s, width=0.4)
-plt.title('With STMM - ref:PT18, tar:HS18')
+# figure(num=None, figsize=(7, 7), dpi=80, facecolor='w', edgecolor='k')
+# plt.subplot(221)
+# g, s = np.loadtxt('hs18-pt18_STMM', delimiter='\t', unpack=True)
+# plt.bar('GeCo', height=g, width=0.4)
+# plt.bar('Smash++', height=s, width=0.4)
+# plt.title('With STMM - ref:HS18, tar:PT18')
 # plt.ylabel('Average entropy (bps)')
-
-plt.subplot(223)
-g, s = np.loadtxt('pt18-hs18', delimiter='\t', unpack=True)
-plt.bar('GeCo', height=g, width=0.4)
-plt.bar('Smash++', height=s, width=0.4)
-plt.title('Without STMM - ref:PT18, tar:HS18')
-plt.ylabel('Average entropy (bps)')
-
-plt.subplot(224)
-g, s = np.loadtxt('hs18-pt18', delimiter='\t', unpack=True)
-plt.bar('GeCo', height=g, width=0.4)
-plt.bar('Smash++', height=s, width=0.4)
-plt.title('Without STMM - ref:HS18, tar:PT18')
+#
+# plt.subplot(222)
+# g, s = np.loadtxt('pt18-hs18_STMM', delimiter='\t', unpack=True)
+# plt.bar('GeCo', height=g, width=0.4)
+# plt.bar('Smash++', height=s, width=0.4)
+# plt.title('With STMM - ref:PT18, tar:HS18')
+# # plt.ylabel('Average entropy (bps)')
+#
+# plt.subplot(223)
+# g, s = np.loadtxt('pt18-hs18', delimiter='\t', unpack=True)
+# plt.bar('GeCo', height=g, width=0.4)
+# plt.bar('Smash++', height=s, width=0.4)
+# plt.title('Without STMM - ref:PT18, tar:HS18')
 # plt.ylabel('Average entropy (bps)')
+#
+# plt.subplot(224)
+# g, s = np.loadtxt('hs18-pt18', delimiter='\t', unpack=True)
+# plt.bar('GeCo', height=g, width=0.4)
+# plt.bar('Smash++', height=s, width=0.4)
+# plt.title('Without STMM - ref:HS18, tar:PT18')
+# # plt.ylabel('Average entropy (bps)')
+# plt.show()
+
+
+ref='TAR'#'hs18'#
+tar='REF'#'pt18'#
+figure(num=None, figsize=(12, 8))
+plt.subplot(211)
+prf = np.loadtxt(ref+'_'+tar+'.prf')
+plt.plot(prf)
+plt.title('Smash++')
+plt.grid(linewidth=.3)
+
+plt.subplot(212)
+iae = np.loadtxt(tar+'.iae')
+plt.plot(iae)
+plt.title('GeCo')
+plt.grid(linewidth=.3)
 plt.show()
 
 
@@ -109,4 +126,3 @@ plt.show()
 # plt.legend()
 # plt.grid(linewidth=.3)
 # plt.show()
-
