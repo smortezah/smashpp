@@ -22,6 +22,8 @@ add_executable(smashpp  src/main.cpp
                         src/fn.hpp
                         src/mdlpar.hpp)
 
+add_executable(excule_N src/excludeN.cpp)
+
 #add_executable(bench    src/bench.cpp)
 
 #file(GLOB SOURCE_FILES "src/*.cpp" "src/*.hpp" "src/*.c")

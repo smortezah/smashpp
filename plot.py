@@ -92,18 +92,32 @@ import subprocess as sp
 # plt.show()
 
 
-ref='TAR'#'hs18'#
-tar='REF'#'pt18'#
+ref='hs18'#'REF'#
+tar='pt18'#'TAR'#
 figure(num=None, figsize=(12, 8))
+
+# plt.subplot(211)
+# x = np.loadtxt(ref+'_'+tar+'.prf')
+# plt.plot(x)
+# plt.title('Smash++')
+# plt.grid(linewidth=.3)
+#
+# plt.subplot(212)
+# y = np.loadtxt(tar+'.iae')
+# plt.plot(y)
+# plt.title('GeCo')
+# plt.grid(linewidth=.3)
+# plt.show()
+
 plt.subplot(211)
-prf = np.loadtxt(ref+'_'+tar+'.prf')
-plt.plot(prf)
+x, y = np.loadtxt(ref+'_'+tar+'.fil', delimiter='\t', unpack=True)
+plt.plot(x, y, '-o')
 plt.title('Smash++')
 plt.grid(linewidth=.3)
 
 plt.subplot(212)
-iae = np.loadtxt(tar+'.iae')
-plt.plot(iae)
+x, y = np.loadtxt(tar+'.fil', delimiter='\t', unpack=True)
+plt.plot(x, y, '-o')
 plt.title('GeCo')
 plt.grid(linewidth=.3)
 plt.show()
