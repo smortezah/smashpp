@@ -28,32 +28,22 @@ import subprocess as sp
 # plt.show()
 
 
-# figure(num=None, figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
-# plt.subplot(311)
-# r, g, s = np.loadtxt('syn_72_woN', delimiter='\t', unpack=True)
+# figure(num=None, figsize=(8, 8), dpi=80, facecolor='w', edgecolor='k')
+# plt.subplot(211)
+# r, g, s = np.loadtxt('syn_51', delimiter='\t', unpack=True)
 # plt.plot(r, g, '-o', label='GeCo')
 # plt.plot(r, s, '-o', label='Smash++')
-# plt.title('Synthetic data (72 MB), without "N" symbols')
+# plt.title('Synthetic data (51 MB), without "N"')
 # plt.xlabel('Mutation rate (%)')
 # plt.ylabel('Average entropy (bps)')
 # plt.legend()
 # plt.grid(linewidth=.3)
 #
-# plt.subplot(312)
-# r, g, s = np.loadtxt('syn_61_wN', delimiter='\t', unpack=True)
+# plt.subplot(212)
+# r, g, s = np.loadtxt('syn_21', delimiter='\t', unpack=True)
 # plt.plot(r, g, '-o', label='GeCo')
 # plt.plot(r, s, '-o', label='Smash++')
-# plt.title('Synthetic data (61 MB), with 4% of "N" symbols')
-# plt.xlabel('Mutation rate (%)')
-# plt.ylabel('Average entropy (bps)')
-# plt.legend()
-# plt.grid(linewidth=.3)
-#
-# plt.subplot(313)
-# r, g, s = np.loadtxt('syn_5.7_wN', delimiter='\t', unpack=True)
-# plt.plot(r, g, '-o', label='GeCo')
-# plt.plot(r, s, '-o', label='Smash++')
-# plt.title('Synthetic data (5.7 MB), with 4% of "N" symbols')
+# plt.title('Synthetic data (21 MB), without "N"')
 # plt.xlabel('Mutation rate (%)')
 # plt.ylabel('Average entropy (bps)')
 # plt.legend()
@@ -92,8 +82,8 @@ import subprocess as sp
 # plt.show()
 
 
-ref='hs18'#'REF'#
-tar='pt18'#'TAR'#
+ref='ref11'#'hs18'#'REF'#
+tar='45'#'pt18'#'TAR'#
 figure(num=None, figsize=(12, 8))
 
 # plt.subplot(211)
