@@ -50,6 +50,8 @@ class FCM    // Finite-context models
   template <typename ContIter>
   void compress_n_parent         (shared_ptr<CompressPar>, ContIter);
   template <typename ContIter>
+  void compress_n_child (shared_ptr<CompressPar>, ContIter);//todo
+  template <typename ContIter>
   void compress_n_child_enabled  (shared_ptr<CompressPar>, ContIter);
   template <typename ContIter>
   void compress_n_child_disabled (shared_ptr<CompressPar>, ContIter);
@@ -60,19 +62,27 @@ class FCM    // Finite-context models
 //  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   void freqs_ir (array<OutT,4>&, ContIter, ProbParIter)   const;
+  template <typename FreqIter, typename ParIter, typename ProbParIter>
+  void correct_stmm (FreqIter, ParIter, u8, ProbParIter);//todo
   template <typename FreqIter>
   u8 best_id (FreqIter) const;
 #ifdef ARRAY_HISTORY
   template <typename Hist, typename Value>
-  void stmm_update_hist  (Hist&, Value);
+  void update_hist_stmm (Hist&, Value);
 #else
   template <typename Hist, typename Value>
-  void stmm_update_hist  (Hist&, Value, u32);
+  void update_hist_stmm (Hist&, Value, u32);
 #endif
+  template <typename Par>
+  void hit_stmm (Par);
+  template <typename Par>
+  void miss_stmm (Par);
+
+
   template <typename Par, typename FreqIter, typename ProbParIter>
-  prec_t stmm_hit_prob   (Par, FreqIter, ProbParIter);
+  prec_t hit_prob_stmm (Par, FreqIter, ProbParIter);
   template <typename Par, typename FreqIter, typename ProbParIter>
-  prec_t stmm_miss_prob  (Par, FreqIter, ProbParIter);
+  prec_t miss_prob_stmm (Par, FreqIter, ProbParIter);
   template <typename FreqIter, typename ProbParIter>
   prec_t prob            (FreqIter, ProbParIter)   const;  // Probability
   prec_t entropy         (prec_t)                  const;
