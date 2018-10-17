@@ -399,10 +399,10 @@ inline void FCM::compress_n_child (shared_ptr<CompressPar> cp, ContIter contIt){
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*contIt)->query(0)),4> f {};
     freqs(f, contIt, cp->ppIt->l);
-    if (!cp->mm.child->enabled)
-      cp->probs.emplace_back(static_cast<prec_t>(0));
-    else
+    if (cp->mm.child->enabled)
       cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
+    else
+      cp->probs.emplace_back(static_cast<prec_t>(0));
     correct_stmm(cp, f.begin());
     update_ctx(*cp->ctxIt, cp->ppIt);
   }
