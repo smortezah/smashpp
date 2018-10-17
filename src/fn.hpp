@@ -115,7 +115,7 @@ bool are_all_zero (Iter first) {
 }
 
 template <typename Iter>
-bool has_n_max (Iter first) {
+bool has_multi_max (Iter first) {
   auto last = first + CARDIN;
   for (const auto max_pos=std::max_element(first,last); last-- != first;)
     if (*last==*max_pos && last!=max_pos)
@@ -124,9 +124,9 @@ bool has_n_max (Iter first) {
 }
 
 template <typename Iter, typename PosIter>
-bool has_n_max (Iter first, PosIter max_pos) {
+bool has_multi_max (Iter first, PosIter maxPos) {
   for (auto last=first+CARDIN; last-- != first;)
-    if (*last==*max_pos && last!=max_pos)
+    if (*last==*maxPos && last!=maxPos)
       return true;
   return false;
 }
@@ -139,7 +139,7 @@ u8 best_sym (Iter first) {
 template <typename Iter>
 u8 best_sym_abs (Iter first) {
   const auto max_pos = std::max_element(first, first+CARDIN);
-  return static_cast<u8>(has_n_max(first,max_pos) ? 255 : max_pos-first);
+  return static_cast<u8>(has_multi_max(first, max_pos) ? 255 : max_pos-first);
 }
 
 template <typename Iter>
