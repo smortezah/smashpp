@@ -439,19 +439,17 @@ inline void FCM::compress_n_child_disabled (shared_ptr<CompressPar> cp,
 //    }
     else {
       cp->mm.child->enabled = true;
+#ifdef ARRAY_HISTORY
+      std::fill(cp->mm.child->history.begin(), cp->mm.child->history.end(),
+                false);
+#else
       cp->mm.child->history = 0;
-//      std::fill(cp->mm.child->history.begin(), cp->mm.child->history.end(), false);//todo
+#endif
       cp->probs.emplace_back(prob(f.begin(), ppIt));
+//      cp->probs.emplace_back(stmm_hit_prob(cp->mm.child, f.begin(), cp->ppIt));
 //      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
       fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
     }
-//    else {
-//      cp->mm.child->enabled = true;
-//      cp->mm.child->history = 0;
-////      cp->probs.emplace_back(prob(f.begin(), ppIt));
-//      cp->probs.emplace_back(stmm_miss_prob(cp->mm.child, f.begin(), cp->ppIt));
-//      fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
-//    }
     update_ctx(*cp->ctxIt, ppIt);
   }
   else {//todoo modify based on non ir
@@ -522,11 +520,11 @@ inline u8 FCM::best_id (FreqIter first) const {
 //  if (are_all(first, 0) || are_all(first, 1)) {
     return static_cast<u8>(255);
   }
-  const auto max_pos = std::max_element(first, first+CARDIN);
-  if (has_n_max(first, max_pos)) {
+  const auto maxPos = std::max_element(first, first+CARDIN);
+  if (has_multi_max(first, maxPos)) {
     return static_cast<u8>(254);
   }
-  return max_pos-first;
+  return maxPos-first;
 }
 
 #ifdef ARRAY_HISTORY
