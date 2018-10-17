@@ -45,16 +45,16 @@ class FCM    // Finite-context models
   void compress_1 (const string&, const string&, ContIter); //Compress with 1 MM
   void compress_n     (const string&, const string&); //Compress with n Markov M
   void compress_n_ave (const string&, const string&, shared_ptr<CompressPar>);
-  template <typename ContIter>
-  void compress_n_impl           (shared_ptr<CompressPar>, ContIter);
+//  template <typename ContIter>
+//  void compress_n_impl           (shared_ptr<CompressPar>, ContIter);
   template <typename ContIter>
   void compress_n_parent         (shared_ptr<CompressPar>, ContIter);
   template <typename ContIter>
   void compress_n_child (shared_ptr<CompressPar>, ContIter);//todo
-  template <typename ContIter>
-  void compress_n_child_enabled  (shared_ptr<CompressPar>, ContIter);
-  template <typename ContIter>
-  void compress_n_child_disabled (shared_ptr<CompressPar>, ContIter);
+//  template <typename ContIter>
+//  void compress_n_child_enabled  (shared_ptr<CompressPar>, ContIter);
+//  template <typename ContIter>
+//  void compress_n_child_disabled (shared_ptr<CompressPar>, ContIter);
 
   template <typename OutT, typename ContIter>
   void freqs    (array<OutT,4>&, ContIter, u64)   const;
@@ -62,27 +62,31 @@ class FCM    // Finite-context models
 //  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   void freqs_ir (array<OutT,4>&, ContIter, ProbParIter)   const;
-  template <typename FreqIter, typename ParIter, typename ProbParIter>
-  void correct_stmm (FreqIter, ParIter, u8, ProbParIter);//todo
+  template <typename FreqIter>
+  void correct_stmm (shared_ptr<CompressPar>, const FreqIter&);
   template <typename FreqIter>
   u8 best_id (FreqIter) const;
 #ifdef ARRAY_HISTORY
   template <typename Hist, typename Value>
   void update_hist_stmm (Hist&, Value);
-#else
-  template <typename Hist, typename Value>
-  void update_hist_stmm (Hist&, Value, u32);
-#endif
   template <typename Par>
   void hit_stmm (Par);
   template <typename Par>
   void miss_stmm (Par);
+#else
+  template <typename Hist, typename Value>
+  void update_hist_stmm (Hist&, Value, u32);
+  template <typename Par>
+  void hit_stmm (Par);
+  template <typename Par>
+  void miss_stmm (Par);
+#endif
 
 
-  template <typename Par, typename FreqIter, typename ProbParIter>
-  prec_t hit_prob_stmm (Par, FreqIter, ProbParIter);
-  template <typename Par, typename FreqIter, typename ProbParIter>
-  prec_t miss_prob_stmm (Par, FreqIter, ProbParIter);
+//  template <typename Par, typename FreqIter, typename ProbParIter>
+//  prec_t hit_prob_stmm (Par, FreqIter, ProbParIter);
+//  template <typename Par, typename FreqIter, typename ProbParIter>
+//  prec_t miss_prob_stmm (Par, FreqIter, ProbParIter);
   template <typename FreqIter, typename ProbParIter>
   prec_t prob            (FreqIter, ProbParIter)   const;  // Probability
   prec_t entropy         (prec_t)                  const;
