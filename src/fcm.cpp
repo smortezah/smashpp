@@ -318,13 +318,16 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
         if (mm.cont == Container::TABLE_64) {
 //          compress_n_impl(cp, tbl64_it++);
           compress_n_parent(cp, tbl64_it);
-          if (mm.child)  compress_n_child(cp, tbl64_it++);
+          if (mm.child)
+            compress_n_child(cp, tbl64_it);
+          ++tbl64_it;
         }
         else if (mm.cont == Container::TABLE_32) {
 //          compress_n_impl(cp, tbl32_it++);
           compress_n_parent(cp, tbl32_it);
           if (mm.child)
-            compress_n_child(cp, tbl32_it++);
+            compress_n_child(cp, tbl32_it);
+          ++tbl32_it;
         }
         // Using "-O3" optimization flag of gcc, the program may enter the
         // following IF, even when it shouldn't!!!  #gcc_bug
@@ -332,13 +335,15 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
 //          compress_n_impl(cp, lgtbl8_it++);
           compress_n_parent(cp, lgtbl8_it);
           if (mm.child)
-            compress_n_child(cp, lgtbl8_it++);
+            compress_n_child(cp, lgtbl8_it);
+          ++lgtbl8_it;
         }
         else if (mm.cont == Container::SKETCH_8) {
 //          compress_n_impl(cp, cmls4_it++);
           compress_n_parent(cp, cmls4_it);
           if (mm.child)
-            compress_n_child(cp, cmls4_it++);
+            compress_n_child(cp, cmls4_it);
+          ++cmls4_it;
         }
 
         ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
@@ -348,6 +353,42 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
       //todo remove comment
       pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
       update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
+
+
+
+      cp->ppIt    = cp->pp.begin();
+      cp->ctxIt   = cp->ctx.begin();
+      cp->ctxIrIt = cp->ctxIr.begin();
+      tbl64_it=tbl64.begin();
+
+      for (const auto& mm : Ms) {
+        if (mm.cont == Container::TABLE_64) {
+          if (mm.child) {
+            ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
+            array<decltype((*tbl64_it)->query(0)),4> f {};
+            freqs(f, tbl64_it, cp->ppIt->l);
+            correct_stmm(cp, f.begin());
+            update_ctx(*cp->ctxIt, cp->ppIt);
+            ++tbl64_it;
+          }
+        }
+//        else if (mm.cont == Container::TABLE_32) {
+//          if (mm.child)
+//            compress_n_child(cp, tbl32_it++);
+//        }
+//        else if (mm.cont == Container::LOG_TABLE_8) {
+//          if (mm.child)
+//            compress_n_child(cp, lgtbl8_it++);
+//        }
+//        else if (mm.cont == Container::SKETCH_8) {
+//            compress_n_child(cp, cmls4_it++);
+//        }
+
+        ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
+      }
+
+
+
       sEnt += entr;
     }
   }
@@ -403,8 +444,8 @@ inline void FCM::compress_n_child (shared_ptr<CompressPar> cp, ContIter contIt){
       cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
     else
       cp->probs.emplace_back(static_cast<prec_t>(0));
-    correct_stmm(cp, f.begin());
-    update_ctx(*cp->ctxIt, cp->ppIt);
+//    correct_stmm(cp, f.begin());
+//    update_ctx(*cp->ctxIt, cp->ppIt);
   }
   else {
     cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
@@ -418,8 +459,6 @@ inline void FCM::compress_n_child (shared_ptr<CompressPar> cp, ContIter contIt){
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
-
-
 
 //template <typename ContIter>
 //inline void FCM::compress_n_child_enabled (shared_ptr<CompressPar> cp,
@@ -582,7 +621,7 @@ inline void FCM::correct_stmm (shared_ptr<CompressPar> cp,
     #else
     stmm->history = 0u;
     #endif
-    std::fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1) / cp->nMdl);
+    std::fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
   }
 
   // Second version
@@ -617,9 +656,9 @@ inline void FCM::correct_stmm (shared_ptr<CompressPar> cp,
 
 template <typename FreqIter>
 inline u8 FCM::best_id (FreqIter first) const {
-  if (are_all(first, 0)) {
+//  if (are_all(first, 0)) {
 //  if (are_all(first, 1)) {
-//  if (are_all(first, 0) || are_all(first, 1)) {
+  if (are_all(first, 0) || are_all(first, 1)) {
     return static_cast<u8>(255);
   }
   const auto maxPos = std::max_element(first, first+CARDIN);

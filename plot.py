@@ -83,7 +83,7 @@ import subprocess as sp
 
 
 ref='REF'#'ref11'#'hs18'#
-tar='TAR'#'45'#'pt18'#
+tar='45'#'TAR'#'pt18'#
 figure(num=None, figsize=(12, 8))
 
 plt.subplot(211)
