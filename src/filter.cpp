@@ -64,7 +64,8 @@ inline void Filter::hamming () {
   for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
     window[n] = window[last-n] = static_cast<float>(0.54 - 0.46*cos(n*num/den));
 //  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
-//    window[n] = window[last-n] = static_cast<float>(0.54 + 0.46*cos(2*PI*n/wsize));
+//    window[n] = window[last-n]
+//              = static_cast<float>(0.54 + 0.46*cos(2*PI*n/wsize));
 }
 
 inline void Filter::hann () {

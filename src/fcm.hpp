@@ -39,65 +39,53 @@ class FCM    // Finite-context models
   void store_1     (const Param&);      // Build models one thread
   void store_n     (const Param&);      // Build models multiple threads
   template <typename Mask, typename ContIter>
-  void store_impl  (const string&, Mask, ContIter);  // Fill data structure
+  void store_impl  (const string&, Mask, const ContIter&);  // Fill data struct
 
-  template <typename ContIter>
-  void compress_1 (const string&, const string&, ContIter); //Compress with 1 MM
+  template <typename ContIter>    // Compress with 1 Markov model
+  void compress_1     (const string&, const string&, const ContIter&);
   void compress_n     (const string&, const string&); //Compress with n Markov M
   void compress_n_ave (const string&, const string&, shared_ptr<CompressPar>);
-//  template <typename ContIter>
-//  void compress_n_impl           (shared_ptr<CompressPar>, ContIter);
   template <typename ContIter>
-  void compress_n_parent         (shared_ptr<CompressPar>, ContIter);
+  void compress_n_parent (shared_ptr<CompressPar>, const ContIter&);
   template <typename ContIter>
-  void compress_n_child (shared_ptr<CompressPar>, ContIter);//todo
-//  template <typename ContIter>
-//  void compress_n_child_enabled  (shared_ptr<CompressPar>, ContIter);
-//  template <typename ContIter>
-//  void compress_n_child_disabled (shared_ptr<CompressPar>, ContIter);
+  void compress_n_child  (shared_ptr<CompressPar>, const ContIter&);
 
-  template <typename OutT, typename ContIter>
-  void freqs    (array<OutT,4>&, ContIter, u64)   const;
 //  template <typename OutT, typename ContIter, typename ProbParIter>
 //  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
+  template <typename OutT, typename ContIter>
+  void freqs    (array<OutT,4>&, const ContIter&, u64)                const;
   template <typename OutT, typename ContIter, typename ProbParIter>
-  void freqs_ir (array<OutT,4>&, ContIter, ProbParIter)   const;
+  void freqs_ir (array<OutT,4>&, const ContIter&, const ProbParIter&) const;
   template <typename FreqIter>
   void correct_stmm (shared_ptr<CompressPar>, const FreqIter&);
   template <typename FreqIter>
-  u8 best_id (FreqIter) const;
+  u8 best_id (const FreqIter&) const;
 #ifdef ARRAY_HISTORY
-  template <typename Hist, typename Value>
-  void update_hist_stmm (Hist&, Value);
-  template <typename Par>
-  void hit_stmm (Par);
-  template <typename Par>
-  void miss_stmm (Par);
+  template <typename History, typename Value>
+  void update_hist_stmm (History&, Value);
+  template <typename TmPar>
+  void hit_stmm (const TmPar&);
+  template <typename TmPar>
+  void miss_stmm (TmPar);
 #else
-  template <typename Hist, typename Value>
-  void update_hist_stmm (Hist&, Value, u32);
-  template <typename Par>
-  void hit_stmm (Par);
+  template <typename History, typename Value>
+  void update_hist_stmm (History&, Value, u32);
+  template <typename TmPar>
+  void hit_stmm (const TmPar&);
   template <typename Par>
   void miss_stmm (Par);
 #endif
-
-
-//  template <typename Par, typename FreqIter, typename ProbParIter>
-//  prec_t hit_prob_stmm (Par, FreqIter, ProbParIter);
-//  template <typename Par, typename FreqIter, typename ProbParIter>
-//  prec_t miss_prob_stmm (Par, FreqIter, ProbParIter);
   template <typename FreqIter, typename ProbParIter>
-  prec_t prob            (FreqIter, ProbParIter)   const;  // Probability
-  prec_t entropy         (prec_t)                  const;
+  prec_t prob         (const FreqIter&, const ProbParIter&) const; //Probability
+  prec_t entropy      (prec_t)                  const;
   template <typename OutIter, typename InIter>
-  prec_t entropy         (OutIter, InIter, InIter) const;
+  prec_t entropy      (OutIter, InIter, InIter) const;
   template <typename OutIter, typename InIter>
-  void update_weights    (OutIter, InIter, InIter) const;
+  void update_weights (OutIter, InIter, InIter) const;
   template <typename ProbParIter>
-  void update_ctx        (u64&, ProbParIter)       const;
+  void update_ctx     (u64&, const ProbParIter&) const;
   template <typename ProbParIter>
-  void update_ctx_ir     (u64&, u64&, ProbParIter) const;
+  void update_ctx_ir  (u64&, u64&, const ProbParIter&) const;
 };
 
 #endif //SMASHPP_FCM_HPP
