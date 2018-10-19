@@ -82,7 +82,7 @@ import subprocess as sp
 # plt.show()
 
 
-ref='REF'#'ref11'#'hs18'#
+ref='ref'#'REF'#'ref11'#'hs18'#
 tar='45'#'TAR'#'pt18'#
 figure(num=None, figsize=(12, 8))
 

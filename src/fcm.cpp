@@ -226,7 +226,7 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
   // Ctx, Mir (int) sliding through the dataset
   u64      ctx{0},   ctxIr{(1ull<<(Ms[0].k<<1u))-1};
   u64      symsNo{0};            // No. syms in target file, except \n
-  prec_t   sEnt{0};              // Sum of entropies = sum(log_2 P(s|c^t))
+  prec_t   sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
   ofstream pf(ref+"_"+tar+PRF_FMT);
   ProbPar  pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
@@ -243,8 +243,8 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
         const auto entr = entropy(prob(f.begin(), &pp));
       //todo remove comment
       pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
-//        sEnt += ceil(entr*1000)/1000;//todo
-        sEnt += entr;
+//        sumEnt += ceil(entr*1000)/1000;//todo
+        sumEnt += entr;
         update_ctx(ctx, &pp);
       }
     }
@@ -259,14 +259,14 @@ inline void FCM::compress_1 (const string& tar, const string& ref,
         const auto entr = entropy(prob(f.begin(), &pp));
       //todo remove comment
 //      pf /*todo << std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
-        sEnt += entr;
+        sumEnt += entr;
         update_ctx_ir(ctx, ctxIr, &pp);
       }
     }
   }
   tf.close();
   pf.close();
-  aveEnt = sEnt/symsNo;
+  aveEnt = sumEnt/symsNo;
 }
 
 inline void FCM::compress_n (const string& tar, const string& ref) {
@@ -297,7 +297,7 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
 inline void FCM::compress_n_ave (const string &tar, const string& ref,
                                  shared_ptr<CompressPar> cp){
   u64      symsNo{0};          // No. syms in target file, except \n
-  prec_t   sEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
+  prec_t   sumEnt{0};          // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);  char c;
   ofstream pf(ref+"_"+tar+PRF_FMT);
 
@@ -389,12 +389,12 @@ inline void FCM::compress_n_ave (const string &tar, const string& ref,
 
 
 
-      sEnt += entr;
+      sumEnt += entr;
     }
   }
   tf.close();
   pf.close();
-  aveEnt = sEnt/symsNo;
+  aveEnt = sumEnt/symsNo;
 }
 
 //template <typename ContIter>
@@ -440,12 +440,12 @@ inline void FCM::compress_n_child (shared_ptr<CompressPar> cp, ContIter contIt){
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*contIt)->query(0)),4> f {};
     freqs(f, contIt, cp->ppIt->l);
-    if (cp->mm.child->enabled)
+//    if (cp->mm.child->enabled)
       cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
-    else
-      cp->probs.emplace_back(static_cast<prec_t>(0));
-//    correct_stmm(cp, f.begin());
-//    update_ctx(*cp->ctxIt, cp->ppIt);
+//    else
+//      cp->probs.emplace_back(static_cast<prec_t>(0));
+////    correct_stmm(cp, f.begin());
+////    update_ctx(*cp->ctxIt, cp->ppIt);
   }
   else {
     cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
@@ -775,10 +775,10 @@ const {
     *wFirst = pow(*wFirst, mIter->gamma) * *PFirst;
     if (mIter->child) {
       ++wFirst;  ++PFirst;
-      if (mIter->child->enabled)//todo maybe not needed
+//      if (mIter->child->enabled)//todo maybe not needed
         *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
-      else//todo maybe not needed
-        *wFirst = static_cast<prec_t>(0);
+//      else//todo maybe not needed
+//        *wFirst = static_cast<prec_t>(0);
     }
   }
   normalize(wFirstKeep, wFirst);
