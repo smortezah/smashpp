@@ -543,6 +543,7 @@ inline void FCM::correct_stmm
     #else
     stmm->history = 0u;
     #endif
+    // The following makes the output entropy worst
 //    std::fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
   }
 }
