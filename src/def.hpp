@@ -30,7 +30,7 @@ using u32    = unsigned int;
 using i64    = signed long long;
 using u64    = unsigned long long;
 using dur_t  = std::chrono::duration<double>;
-using prec_t = float;  // Precision type
+using prec_t = double;  // Precision type -- MUST be double
 
 // Metaprogram
 // Power a^n

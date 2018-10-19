@@ -31,16 +31,15 @@ void print (Integral&& in, Args&&... args) /*noexcept*/ {
 #endif
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
-inline std::chrono::time_point<std::chrono::high_resolution_clock> now ()
-noexcept {
-  return std::chrono::high_resolution_clock::now();
+inline chrono::time_point<std::chrono::high_resolution_clock> now () noexcept {
+  return chrono::high_resolution_clock::now();
 }
 
 template <typename Time>
 string hms (Time elapsed) {
 //  std::chrono::duration<double, std::milli> ms = elapsed;
   const auto durSec =
-    std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+    chrono::duration_cast<std::chrono::seconds>(elapsed).count();
   const auto h = durSec / 3600;
   const auto m = (durSec % 3600) / 60;
   const auto s = durSec % 60;
@@ -61,14 +60,15 @@ void split (InIter first, InIter last, char delim, Vec& vOut) {
 }
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
-inline void error (const string &msg) {
-  throw std::runtime_error ("Error: " + msg + "\n");
-}
-inline void error (string &&msg) {
+inline void error (const string& msg) {
   throw std::runtime_error ("Error: " + msg + "\n");
 }
 
-inline void err (const string &msg) {
+inline void error (string&& msg) {
+  throw std::runtime_error ("Error: " + msg + "\n");
+}
+
+inline void err (const string& msg) {
   cerr << "Error: " << msg << '\n';
 }
 
@@ -97,14 +97,14 @@ u8 pop_count (Digit d) {  // Number of ones in a digit
 }
 #endif
 
-template <typename Iter, typename Val>
-bool are_all (Iter first, Val val) {
+template <typename Iter, typename Value>
+bool are_all (Iter first, Value val) {
   return std::all_of(first, first+CARDIN,
                      [val](u64 i){ return i==static_cast<u64>(val); });
 }
 
-template <typename Iter, typename Val>
-bool is_any (Iter first, Val val) {
+template <typename Iter, typename Value>
+bool is_any (Iter first, Value val) {
   return std::any_of(first, first+CARDIN,
                      [val](u64 i){ return i==static_cast<u64>(val); });
 }
@@ -150,10 +150,10 @@ void normalize (Iter first, Iter last) {
 }
 
 template <typename Value>
-bool is_odd (Value v) {
-  if (v < 0)
-    error("\"" + to_string(v) + "\" is a negative number.");
-  return (v & 1ull);
+bool is_odd (Value val) {
+  if (val < 0)
+    error("\"" + to_string(val) + "\" is a negative number.");
+  return (val & 1ull);
 }
 
 template <typename T>
@@ -161,7 +161,7 @@ inline auto pow2 (T base) {  // Must be inline
   return std::pow(base, static_cast<T>(2));
 }
 
-inline void check_file (const string &s) {  // Must be inline
+inline void check_file (const string& s) {  // Must be inline
   ifstream f(s);
   if (!f) {
     f.close();
@@ -184,14 +184,14 @@ inline u64 file_size (const string& s) {
   return static_cast<u64>(f.tellg());
 }
 
-template <typename Pos>
-inline void extract_subseq (const string& fIn, const string& fOut,
-                            Pos begPos, Pos endPos) {  // Must be inline
+template <typename Position>
+inline void extract_subseq    // Must be inline
+(const string& fIn, const string& fOut, Position begPos, Position endPos) {
   ifstream fi(fIn);
   ofstream fo(fOut);
   char c;
   fi.seekg(begPos);
-  for (Pos i=endPos-begPos+1; i-- && fi.get(c);)
+  for (Position i=endPos-begPos+1; i-- && fi.get(c);)
     fo << c;
   fi.close();
   fo.close();
