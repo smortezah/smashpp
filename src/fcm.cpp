@@ -467,19 +467,13 @@ inline void FCM::compress_n_child
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*cont)->query(0)),4> f {};
     freqs(f, cont, cp->ppIt->l);
-//    if (cp->mm.child->enabled)
-      cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
-//    else
-//      cp->probs.emplace_back(static_cast<prec_t>(0));
+    cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
   }
   else {
     cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
     array<decltype(2*(*cont)->query(0)),4> f {};
     freqs_ir(f, cont, cp->ppIt);
-//    if (cp->mm.child->enabled)
-      cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
-//    else
-//      cp->probs.emplace_back(static_cast<prec_t>(0));
+    cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
   }
 }
 
@@ -555,9 +549,9 @@ inline void FCM::correct_stmm
 
 template <typename FreqIter>
 inline u8 FCM::best_id (const FreqIter& fFirst) const {
-  if (are_all(fFirst, 0)) {
-//  if (are_all(fFirst, 1)) {
 //  if (are_all(fFirst, 0) || are_all(fFirst, 1)) {
+//  if (are_all(fFirst, 0)) { // The same as GeCo
+  if (are_all(fFirst, 1)) { // Seems to be the best
     return static_cast<u8>(255);
   }
   const auto maxPos = std::max_element(fFirst, fFirst+CARDIN);
@@ -632,10 +626,10 @@ inline void FCM::update_weights
     *wFirst = pow(*wFirst, mIter->gamma) * *PFirst;
     if (mIter->child) {
       ++wFirst;  ++PFirst;
-//      if (mIter->child->enabled)//todo maybe not needed
+////      if (mIter->child->enabled)  // Lowers the performance
         *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
-//      else//todo maybe not needed
-//        *wFirst = static_cast<prec_t>(0);
+////      else                        // Lowers the performance
+////        *wFirst = static_cast<prec_t>(0);
     }
   }
   normalize(wFirstKeep, wFirst);
