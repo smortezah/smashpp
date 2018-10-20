@@ -188,8 +188,7 @@ inline void FCM::store_n (const Param& p) {
 }
 
 template <typename Mask, typename ContIter /*Container iterator*/>
-inline void FCM::store_impl
-(const string& ref, Mask mask, const ContIter& cont) {
+inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  char c;
   for (Mask ctx=0; rf.get(c);) {
     if (c!='N' && c!='\n') {
@@ -221,7 +220,7 @@ void FCM::compress (const Param& p) {
 
 template <typename ContIter>
 inline void FCM::compress_1
-(const string& tar, const string& ref, const ContIter& cont) {
+(const string& tar, const string& ref, ContIter cont) {
   // Ctx, Mir (int) sliding through the dataset
   u64      ctx{0},   ctxIr{(1ull<<(Ms[0].k<<1u))-1};
   u64      symsNo{0};            // No. syms in target file, except \n
@@ -326,7 +325,7 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
 
 template <typename ContIter>
 inline void FCM::compress_n_impl
-(shared_ptr<CompressPar> cp, const ContIter& cont, u8& n) const {
+(shared_ptr<CompressPar> cp, ContIter cont, u8& n) const {
   compress_n_parent(cp, cont, n);
   if (cp->mm.child) {
     ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
@@ -336,7 +335,7 @@ inline void FCM::compress_n_impl
 
 template <typename ContIter>
 inline void FCM::compress_n_parent
-(shared_ptr<CompressPar> cp, const ContIter& cont, u8 n) const {
+(shared_ptr<CompressPar> cp, ContIter cont, u8 n) const {
   if (cp->mm.ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*cont)->query(0)),4> f {};
@@ -359,7 +358,7 @@ inline void FCM::compress_n_parent
 
 template <typename ContIter>
 inline void FCM::compress_n_child
-(shared_ptr<CompressPar> cp, const ContIter& cont, u8 n) const {
+(shared_ptr<CompressPar> cp, ContIter cont, u8 n) const {
   if (cp->mm.child->ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*cont)->query(0)),4> f {};
@@ -411,7 +410,7 @@ inline void FCM::compress_n_child
 //       (*cont)->query(pp->l | 3ull)};
 //}
 template <typename OutT, typename ContIter>
-inline void FCM::freqs (array<OutT,4>& a, const ContIter& cont, u64 l) const {
+inline void FCM::freqs (array<OutT,4>& a, ContIter cont, u64 l) const {
   a = {(*cont)->query(l),
        (*cont)->query(l | 1ull),
        (*cont)->query(l | 2ull),
@@ -420,7 +419,7 @@ inline void FCM::freqs (array<OutT,4>& a, const ContIter& cont, u64 l) const {
 
 template <typename OutT, typename ContIter, typename ProbParIter>
 inline void FCM::freqs_ir
-(array<OutT, 4>& a, const ContIter& cont, const ProbParIter& pp) const {
+(array<OutT, 4>& a, ContIter cont, ProbParIter pp) const {
   a = {static_cast<OutT>(
         (*cont)->query(pp->l)        + (*cont)->query((3ull<<pp->shl) | pp->r)),
        static_cast<OutT>(
@@ -433,7 +432,7 @@ inline void FCM::freqs_ir
 
 template <typename FreqIter>
 inline void FCM::correct_stmm
-(shared_ptr<CompressPar> cp, const FreqIter& fFirst) const {
+(shared_ptr<CompressPar> cp, FreqIter fFirst) const {
   auto stmm = cp->mm.child;
   const auto best = best_id(fFirst);
   if (stmm->enabled) {
@@ -486,7 +485,7 @@ inline void FCM::correct_stmm
 ////}
 
 template <typename FreqIter>
-inline u8 FCM::best_id (const FreqIter& fFirst) const {
+inline u8 FCM::best_id (FreqIter fFirst) const {
 //  if (are_all(fFirst, 0) || are_all(fFirst, 1)) {
 //  if (are_all(fFirst, 0)) { // The same as GeCo
   if (are_all(fFirst, 1)) { // Seems to be the best
@@ -544,7 +543,7 @@ inline prec_t FCM::weight_next (prec_t weight, prec_t gamma, prec_t prob) const{
 
 template <typename FreqIter, typename ProbParIter>
 //inline
-prec_t FCM::prob (const FreqIter& fFirst, const ProbParIter& pp) const {
+prec_t FCM::prob (FreqIter fFirst, ProbParIter pp) const {
 //  return (*(fFirst+pp->numSym) + pp->alpha) /
 //         std::accumulate(fFirst, fFirst+CARDIN, pp->sAlpha);
   return (*(fFirst+pp->numSym) + pp->alpha) /
@@ -555,11 +554,16 @@ inline prec_t FCM::entropy (prec_t P) const {
   return -log2(P);
 }
 
-template <typename OutIter, typename InIter>
-inline prec_t FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
+template <typename WIter, typename PIter>
+inline prec_t FCM::entropy (WIter wFirst, PIter PFirst, PIter PLast) const {
   return log2(1 / inner_product(PFirst, PLast, wFirst, static_cast<prec_t>(0)));
 //  return -log2(inner_product(PFirst, PLast, wFirst, static_cast<prec_t>(0)));
 }
+//template <typename OutIter, typename InIter>
+//inline prec_t FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
+//  return log2(1 / inner_product(PFirst, PLast, wFirst, static_cast<prec_t>(0)));
+////  return -log2(inner_product(PFirst, PLast, wFirst, static_cast<prec_t>(0)));
+//}
 
 //template <typename OutIter, typename InIter>
 //inline void FCM::update_weights
@@ -579,13 +583,13 @@ inline prec_t FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
 //}
 
 template <typename ProbParIter>
-inline void FCM::update_ctx (u64& ctx, const ProbParIter& pp) const {
+inline void FCM::update_ctx (u64& ctx, ProbParIter pp) const {
   ctx = (pp->l & pp->mask) | pp->numSym;
 }
 
 template <typename ProbParIter>
 inline void FCM::update_ctx_ir
-(u64& ctx, u64& ctxIr, const ProbParIter& pp) const {
+(u64& ctx, u64& ctxIr, ProbParIter pp) const {
   ctx   = (pp->l & pp->mask) | pp->numSym;
   ctxIr = (pp->revNumSym<<pp->shl) | pp->r;
 }
