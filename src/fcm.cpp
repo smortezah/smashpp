@@ -580,7 +580,34 @@ prec_t FCM::prob (FreqIter fFirst, ProbParIter pp) const {
 }
 
 inline prec_t FCM::entropy (prec_t P) const {
-  return -log2(P);
+  static const int n_buckets = 2;  // Should be a power of 2
+  static struct {
+    double p; double result;
+  } cache[n_buckets];
+  static int last_read_i = 0;
+  static int last_written_i = 0;
+  int i = last_read_i;
+  do {
+    if (cache[i].p == P)
+      return cache[i].result;
+    i = (i+1) % n_buckets;
+  } while (i != last_read_i);
+  last_read_i = last_written_i = (last_written_i+1) % n_buckets;
+  cache[last_written_i].p = P;
+  cache[last_written_i].result = -log2(P);
+  return cache[last_written_i].result;
+
+  // Second version
+//  static auto prevP  = static_cast<prec_t>(1); // Can't be zero
+//  static auto result = static_cast<prec_t>(1); // Can't be zero
+//  if (P == prevP)
+//    return result;
+//  prevP  = P;
+//  result = -log2(P);
+//  return result;
+
+  // First version: perhaps slower
+//  return -log2(P);
 }
 
 template <typename WIter, typename PIter>

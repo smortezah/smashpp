@@ -8,10 +8,10 @@
 struct STMMPar;
 
 struct MMPar {
-  u8        k;         // Context size
+  u8        k :6;         // Context size
   u64       w;         // Width of count-min-log sketch
-  u8        d;         // Depth of count-min-log sketch
-  u8        ir;        // Inverted repeat
+  u8        d :4;         // Depth of count-min-log sketch
+  u8        ir :1;        // Inverted repeat
   prec_t    alpha;
   prec_t    gamma;
   Container cont;  // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
@@ -25,9 +25,9 @@ struct MMPar {
 };
 
 struct STMMPar {
-  u8     k;
-  u8     thresh;
-  u8     ir;
+  u8     k :6;
+  u8     thresh: 6;
+  u8     ir :1;
   prec_t alpha;
   prec_t gamma;
   bool   enabled;
@@ -104,8 +104,8 @@ struct CompressPar {
   vector<ProbPar>::iterator ppIt;
   vector<u64>::iterator     ctxIt;
   vector<u64>::iterator     ctxIrIt;
-  u8                        nMdl;
-  u8                        nSym;
+  u8                        nMdl :4;
+  u8                        nSym :2;
   char                      c;
   MMPar                     mm;
 
