@@ -104,14 +104,16 @@ inline void FCM::show_in (const Param& p) const {
 
 inline void FCM::alloc_model () {
   for (const auto& m : Ms) {
-    if (m.cont == Container::TABLE_64)
-      tbl64.emplace_back(make_shared<Table64>(m.k));
-    else if (m.cont == Container::TABLE_32)
-      tbl32.emplace_back(make_shared<Table32>(m.k));
-    else if (m.cont == Container::LOG_TABLE_8)
-      lgtbl8.emplace_back(make_shared<LogTable8>(m.k));
-    else if (m.cont == Container::SKETCH_8)
-      cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));
+    switch (m.cont) {
+    case Container::SKETCH_8:
+      cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));    break;
+    case Container::LOG_TABLE_8:
+      lgtbl8.emplace_back(make_shared<LogTable8>(m.k));    break;
+    case Container::TABLE_32:
+      tbl32.emplace_back(make_shared<Table32>(m.k));       break;
+    case Container::TABLE_64:
+      tbl64.emplace_back(make_shared<Table64>(m.k));       break;
+    }
   }
 }
 
@@ -137,16 +139,18 @@ inline void FCM::store_1 (const Param& p) {
   auto tbl64_iter=tbl64.begin();      auto tbl32_iter=tbl32.begin();
   auto lgtbl8_iter=lgtbl8.begin();    auto cmls4_iter=cmls4.begin();
   for (const auto& m : Ms) {    // Mask: 1<<2k - 1 = 4^k - 1
-    if (m.cont == Container::TABLE_64)
-      store_impl(p.ref, (1ul<<(m.k<<1u))-1ul  /*Mask 32*/, tbl64_iter++);
-    else if (m.cont == Container::TABLE_32)
-      store_impl(p.ref, (1ul<<(m.k<<1u))-1ul  /*Mask 32*/, tbl32_iter++);
-    else if (m.cont == Container::LOG_TABLE_8)
-      store_impl(p.ref, (1ul<<(m.k<<1u))-1ul  /*Mask 32*/, lgtbl8_iter++);
-    else if (m.cont == Container::SKETCH_8)
-      store_impl(p.ref, (1ull<<(m.k<<1u))-1ull/*Mask 64*/, cmls4_iter++);
-    else
+    switch (m.cont) {
+    case Container::SKETCH_8:
+      store_impl(p.ref, (1ull<<(m.k<<1u))-1ull/*Mask 64*/, cmls4_iter++); break;
+    case Container::LOG_TABLE_8:
+      store_impl(p.ref, (1ul<<(m.k<<1u))-1ul /*Mask 32*/, lgtbl8_iter++); break;
+    case Container::TABLE_32:
+      store_impl(p.ref, (1ul<<(m.k<<1u))-1ul /*Mask 32*/, tbl32_iter++);  break;
+    case Container::TABLE_64:
+      store_impl(p.ref, (1ul<<(m.k<<1u))-1ul /*Mask 32*/, tbl64_iter++);  break;
+    default:
       err("the models cannot be built.");
+    }
   }
 }
 
@@ -157,27 +161,24 @@ inline void FCM::store_n (const Param& p) {
   vector<std::thread> thrd(vThrSz);
   for (u8 i=0; i!=Ms.size(); ++i) {    // Mask: 1<<2k-1 = 4^k-1
     switch (Ms[i].cont) {
-     case Container::TABLE_64:
-       thrd[i % vThrSz] =
-         std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>, this,
-           std::cref(p.ref), (1ul<<(Ms[i].k<<1u))-1ul, tbl64_iter++);
-       break;
-     case Container::TABLE_32:
-       thrd[i % vThrSz] =
-         std::thread(&FCM::store_impl<u32,decltype(tbl32_iter)>, this,
-           std::cref(p.ref), (1ul<<(Ms[i].k<<1u))-1ul, tbl32_iter++);
-       break;
-     case Container::LOG_TABLE_8:
-       thrd[i % vThrSz] =
-         std::thread(&FCM::store_impl<u32,decltype(lgtbl8_iter)>, this,
-           std::cref(p.ref), (1ul<<(Ms[i].k<<1u))-1ul, lgtbl8_iter++);
-       break;
-     case Container::SKETCH_8:
-       thrd[i % vThrSz] =
-         std::thread(&FCM::store_impl<u64,decltype(cmls4_iter)>, this,
-           std::cref(p.ref), (1ull<<(Ms[i].k<<1u))-1ull, cmls4_iter++);
-       break;
-     default:  err("the models cannot be built.");
+    case Container::SKETCH_8:
+      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u64,decltype(cmls4_iter)>,
+        this, std::cref(p.ref), (1ull << (Ms[i].k << 1u)) - 1ull, cmls4_iter++);
+      break;
+    case Container::LOG_TABLE_8:
+      thrd[i % vThrSz] =std::thread(&FCM::store_impl<u32,decltype(lgtbl8_iter)>,
+        this, std::cref(p.ref), (1ul << (Ms[i].k << 1u)) - 1ul, lgtbl8_iter++);
+      break;
+    case Container::TABLE_32:
+      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32,decltype(tbl32_iter)>,
+        this, std::cref(p.ref), (1ul << (Ms[i].k << 1u)) - 1ul, tbl32_iter++);
+      break;
+    case Container::TABLE_64:
+      thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>,
+        this, std::cref(p.ref), (1ul << (Ms[i].k << 1u)) - 1ul, tbl64_iter++);
+      break;
+    default:
+      err("the models cannot be built.");
     }
     // Join
     if ((i+1) % vThrSz == 0)
@@ -204,10 +205,10 @@ void FCM::compress (const Param& p) {
 
   if (Ms.size()==1 && TMs.empty())  // 1 MM
     switch (Ms[0].cont) {
-     case Container::TABLE_64:    compress_1(p.tar,p.ref,tbl64.begin());  break;
-     case Container::TABLE_32:    compress_1(p.tar,p.ref,tbl32.begin());  break;
-     case Container::LOG_TABLE_8: compress_1(p.tar,p.ref,lgtbl8.begin()); break;
-     case Container::SKETCH_8:    compress_1(p.tar,p.ref,cmls4.begin());  break;
+    case Container::SKETCH_8:    compress_1(p.tar,p.ref,cmls4.begin());   break;
+    case Container::LOG_TABLE_8: compress_1(p.tar,p.ref,lgtbl8.begin());  break;
+    case Container::TABLE_32:    compress_1(p.tar,p.ref,tbl32.begin());   break;
+    case Container::TABLE_64:    compress_1(p.tar,p.ref,tbl64.begin());   break;
     }
   else
     compress_n(p.tar, p.ref);
@@ -294,7 +295,7 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
       cp->c=c;                        cp->nSym=NUM[static_cast<u8>(c)];
       cp->ppIt=cp->pp.begin();
       cp->ctxIt=cp->ctx.begin();      cp->ctxIrIt=cp->ctxIr.begin();
-      cp->probs.clear();              cp->probs.reserve(cp->nMdl);
+      cp->probs.clear();              cp->probs.reserve(nMdl);
       auto tbl64_it=tbl64.begin();    auto tbl32_it=tbl32.begin();
       auto lgtbl8_it=lgtbl8.begin();  auto cmls4_it=cmls4.begin();
 
@@ -302,10 +303,10 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
       for (const auto& mm : Ms) {
         cp->mm = mm;
         switch (mm.cont) {
-         case Container::TABLE_64:    compress_n_impl(cp, tbl64_it++, n); break;
-         case Container::TABLE_32:    compress_n_impl(cp, tbl32_it++, n); break;
-         case Container::LOG_TABLE_8: compress_n_impl(cp, lgtbl8_it++,n); break;
          case Container::SKETCH_8:    compress_n_impl(cp, cmls4_it++, n); break;
+         case Container::LOG_TABLE_8: compress_n_impl(cp, lgtbl8_it++,n); break;
+         case Container::TABLE_32:    compress_n_impl(cp, tbl32_it++, n); break;
+         case Container::TABLE_64:    compress_n_impl(cp, tbl64_it++, n); break;
         }
         ++n;
         ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
