@@ -89,7 +89,7 @@ class FCM    // Finite-context models
   template <typename ProbParIter>
   void update_ctx (u64&, ProbParIter) const;
   template <typename ProbParIter>
-  void update_ctx_ir  (u64&, u64&, ProbParIter) const;
+  void update_ctx_ir (u64&, u64&, ProbParIter) const;
 };
 
 #endif //SMASHPP_FCM_HPP
