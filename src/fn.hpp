@@ -150,9 +150,10 @@ u8 best_sym_abs (Iter first) {
 //}
 template <typename OutIter, typename InIter>
 void normalize (OutIter oFirst, InIter iFirst, InIter iLast) {
-  for (const auto sum=std::accumulate(iFirst,iLast,static_cast<prec_t>(0));
-       iFirst!=iLast; ++iFirst, ++oFirst)
-    *oFirst = *iFirst / sum;    // *iFirst = *iFirst / sum;
+  const auto sumInv =
+    static_cast<prec_t>(1)/std::accumulate(iFirst,iLast,static_cast<prec_t>(0));
+  for (; iFirst!=iLast; ++iFirst,++oFirst)
+    *oFirst = *iFirst * sumInv;
 }
 
 template <typename Value>

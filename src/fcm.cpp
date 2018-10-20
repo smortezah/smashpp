@@ -311,16 +311,15 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
         ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
       }
 
-      const auto entr=entropy(cp->w.begin(), cp->probs.begin(),cp->probs.end());
-      pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+      const auto ent = entropy(cp->w.begin(),cp->probs.begin(),cp->probs.end());
+      pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << ent << '\n';
       normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
 ////      update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
 
-      sumEnt += entr;
+      sumEnt += ent;
     }
   }
-  tf.close();
-  pf.close();
+  tf.close();    pf.close();
   aveEnt = sumEnt/symsNo;
 }
 
@@ -543,7 +542,8 @@ inline prec_t FCM::weight_next (prec_t weight, prec_t gamma, prec_t prob) {
 }
 
 template <typename FreqIter, typename ProbParIter>
-inline prec_t FCM::prob (const FreqIter& fFirst, const ProbParIter& pp) const {
+//inline
+prec_t FCM::prob (const FreqIter& fFirst, const ProbParIter& pp) const {
 //  return (*(fFirst+pp->numSym) + pp->alpha) /
 //         std::accumulate(fFirst, fFirst+CARDIN, pp->sAlpha);
   return (*(fFirst+pp->numSym) + pp->alpha) /
