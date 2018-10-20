@@ -8,13 +8,13 @@
 struct STMMPar;
 
 struct MMPar {
-  u8        k :6;         // Context size
-  u64       w;         // Width of count-min-log sketch
-  u8        d :4;         // Depth of count-min-log sketch
-  u8        ir :1;        // Inverted repeat
+  u8        k  /*:BIT_K*/;  // Context size
+  u64       w;              // Width of count-min-log sketch
+  u8        d  /*:BIT_D*/;  // Depth of count-min-log sketch
+  u8        ir /*:BIT_IR*/; // Inverted repeat
   prec_t    alpha;
   prec_t    gamma;
-  Container cont;  // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  Container cont;          // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
   shared_ptr<STMMPar> child;
 
   MMPar () = default;  // Essential
@@ -25,9 +25,9 @@ struct MMPar {
 };
 
 struct STMMPar {
-  u8     k :6;
-  u8     thresh: 6;
-  u8     ir :1;
+  u8     k      /*:BIT_K*/;
+  u8     thresh /*:BIT_THRESH*/;
+  u8     ir     /*:BIT_IR*/;
   prec_t alpha;
   prec_t gamma;
   bool   enabled;
@@ -55,9 +55,9 @@ struct ProbPar {
   u8     shl;
   prec_t sAlpha;
   u64    l;
-  u8     numSym;
+  u8     numSym    /*:BIT_NSYM*/;
   u64    r;
-  u8     revNumSym;
+  u8     revNumSym /*:BIT_NSYM*/;
 
   ProbPar () = default;
   ProbPar (prec_t a, u64 m, u8 sh)
@@ -104,8 +104,8 @@ struct CompressPar {
   vector<ProbPar>::iterator ppIt;
   vector<u64>::iterator     ctxIt;
   vector<u64>::iterator     ctxIrIt;
-  u8                        nMdl :4;
-  u8                        nSym :2;
+  u8                        nMdl /*:BIT_NMDL*/;
+  u8                        nSym /*:BIT_NSYM*/;
   char                      c;
   MMPar                     mm;
 

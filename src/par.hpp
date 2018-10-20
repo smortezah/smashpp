@@ -16,11 +16,11 @@ class Param    // Parameters
  public:
   string tar;
   string ref;
-  u8     level;
+  u8     level /*:BIT_LEVEL*/;
   bool   verbose;
-  u8     nthr;
+  u8     nthr  /*:BIT_THREAD*/;
   string modelsPars;
-  u32    wsize;
+  u32    wsize /*:BIT_WSIZE*/;
   string wtype;
   float  thresh;
   bool   saveFilter;
