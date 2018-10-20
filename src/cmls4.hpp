@@ -26,7 +26,7 @@ class CMLS4    // Count-min-log sketch, 4 bits per counter
   
  private:
   u64         w;                    // Width of sketch
-  u8          d;                    // Depth of sketch
+  u8          d /*:BIT_D*/;         // Depth of sketch
   vector<u64> ab;                   // Coefficients of hash functions
   u8          uhashShift;           // Universal hash shift(G-M). (a*x+b)>>(G-M)
   vector<u8>  sk;                   // Sketch

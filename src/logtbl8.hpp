@@ -27,7 +27,7 @@ public:
 
 private:
   vector<u8> tbl;                       // Table of 8 bit logarithmic counters
-  u8         k;                         // Ctx size
+  u8         k /*:BIT_K*/;              // Ctx size
   u64        tot;                       // Total # elements so far
 };
 

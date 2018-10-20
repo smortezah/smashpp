@@ -27,7 +27,7 @@ public:
 
 private:
   vector<u32> tbl;                      // Table of 32 bit counters
-  u8          k;                        // Ctx size
+  u8          k /*:BIT_K*/;             // Ctx size
   u32         nRenorm;                  // Renormalization times
   u64         tot;                      // Total # elements so far
   

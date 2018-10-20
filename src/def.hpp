@@ -75,6 +75,15 @@ static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 const  string          OUT_SEP      {"\n"};
 static constexpr int   FILE_BUF     {4096};  // 4K
+static constexpr u8    BIT_K        {6};
+static constexpr u8    BIT_D        {3};
+static constexpr u8    BIT_IR       {1};
+static constexpr u8    BIT_THRESH   {4};
+static constexpr u8    BIT_NSYM     {2};
+static constexpr u8    BIT_NMDL     {4};
+static constexpr u8    BIT_LEVEL    {5};
+static constexpr u8    BIT_THREAD   {4};
+static constexpr u8    BIT_WSIZE    {15};
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDIN>>;

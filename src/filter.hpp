@@ -19,7 +19,7 @@ class Filter {
 
  private:
   WType         wtype;
-  u32           wsize;
+  u32           wsize /*:BIT_WSIZE*/;
   vector<float> window;
 
   void config              (const Param&);
