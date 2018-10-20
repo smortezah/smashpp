@@ -192,7 +192,7 @@ inline u64 file_size (const string& s) {
 }
 
 template <typename Position>
-inline void extract_subseq    // Must be inline
+inline void extract_subseq    // Must be inline//todo improve performance
 (const string& fIn, const string& fOut, Position begPos, Position endPos) {
   ifstream fi(fIn);
   ofstream fo(fOut);
