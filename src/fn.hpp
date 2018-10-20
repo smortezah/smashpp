@@ -142,11 +142,17 @@ u8 best_sym_abs (Iter first) {
   return static_cast<u8>(has_multi_max(first, max_pos) ? 255 : max_pos-first);
 }
 
-template <typename Iter>
-void normalize (Iter first, Iter last) {
-  for (const auto sum=std::accumulate(first,last,static_cast<prec_t>(0));
-       first!=last; ++first)
-    *first /= sum;    // *first = *first / sum;
+//template <typename Iter>
+//void normalize (Iter first, Iter last) {
+//  for (const auto sum=std::accumulate(first,last,static_cast<prec_t>(0));
+//       first!=last; ++first)
+//    *first /= sum;    // *first = *first / sum;
+//}
+template <typename OutIter, typename InIter>
+void normalize (OutIter oFirst, InIter iFirst, InIter iLast) {
+  for (const auto sum=std::accumulate(iFirst,iLast,static_cast<prec_t>(0));
+       iFirst!=iLast; ++iFirst, ++oFirst)
+    *oFirst = *iFirst / sum;    // *iFirst = *iFirst / sum;
 }
 
 template <typename Value>
