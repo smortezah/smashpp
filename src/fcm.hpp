@@ -42,13 +42,14 @@ class FCM    // Finite-context models
   void store_impl  (const string&, Mask, const ContIter&);  // Fill data struct
 
   template <typename ContIter>    // Compress with 1 Markov model
-  void compress_1     (const string&, const string&, const ContIter&);
-  void compress_n     (const string&, const string&); //Compress with n Markov M
-  void compress_n_ave (const string&, const string&, shared_ptr<CompressPar>);
+  void compress_1  (const string&, const string&, const ContIter&);
+  void compress_n  (const string&, const string&); //Compress with n Markov M
   template <typename ContIter>
-  void compress_n_parent (shared_ptr<CompressPar>, const ContIter&);
+  void compress_n_impl   (shared_ptr<CompressPar>, const ContIter&, u8&);
   template <typename ContIter>
-  void compress_n_child  (shared_ptr<CompressPar>, const ContIter&);
+  void compress_n_parent (shared_ptr<CompressPar>, const ContIter&, u8);
+  template <typename ContIter>
+  void compress_n_child  (shared_ptr<CompressPar>, const ContIter&, u8);
 
 //  template <typename OutT, typename ContIter, typename ProbParIter>
 //  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
@@ -75,13 +76,14 @@ class FCM    // Finite-context models
   template <typename Par>
   void miss_stmm (Par);
 #endif
+  prec_t weight_next (prec_t, prec_t, prec_t);
   template <typename FreqIter, typename ProbParIter>
   prec_t prob         (const FreqIter&, const ProbParIter&) const; //Probability
   prec_t entropy      (prec_t)                  const;
   template <typename OutIter, typename InIter>
   prec_t entropy      (OutIter, InIter, InIter) const;
-  template <typename OutIter, typename InIter>
-  void update_weights (OutIter, InIter, InIter) const;
+//  template <typename OutIter, typename InIter>
+//  void update_weights (OutIter, InIter, InIter) const;
   template <typename ProbParIter>
   void update_ctx     (u64&, const ProbParIter&) const;
   template <typename ProbParIter>

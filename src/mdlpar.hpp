@@ -98,6 +98,7 @@ struct CompressPar {
   vector<u64>               ctx;
   vector<u64>               ctxIr;
   vector<prec_t>            w;    // float <-> double
+  vector<prec_t>            wNext;
   vector<prec_t>            probs;
   vector<ProbPar>           pp;
   vector<ProbPar>::iterator ppIt;

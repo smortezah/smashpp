@@ -264,170 +264,57 @@ inline void FCM::compress_1
 }
 
 inline void FCM::compress_n (const string& tar, const string& ref) {
+  u64 symsNo{0};               // No. syms in target file, except \n
+  prec_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
+  ifstream tf(tar);  char c;
+  ofstream pf(ref+"_"+tar+PRF_FMT);
   auto cp = make_shared<CompressPar>();
   // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = static_cast<u8>(Ms.size() + TMs.size());
   cp->nMdl = nMdl;
-  cp->ctx.resize(nMdl);     // Fill with zeros (resize)
+  cp->ctx.resize(nMdl);        // Fill with zeros (resize)
   cp->ctxIr.reserve(nMdl);
   for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
     cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
-    if (mm.child)
-      cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+    if (mm.child)  cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
   }
   cp->w.resize(nMdl, static_cast<prec_t>(1)/nMdl);
+  cp->wNext.resize(nMdl, static_cast<prec_t>(0));
   cp->pp.reserve(nMdl);
   auto maskIter = cp->ctxIr.begin();
   for (const auto& mm : Ms) {
     cp->pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
-    if (mm.child)
-      cp->pp.emplace_back(
-        mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+    if (mm.child)  cp->pp.emplace_back(
+                     mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
   }
-
-  compress_n_ave(tar, ref, cp);
-}
-
-inline void FCM::compress_n_ave
-(const string& tar, const string& ref, shared_ptr<CompressPar> cp) {
-  u64      symsNo{0};          // No. syms in target file, except \n
-  prec_t   sumEnt{0};          // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);  char c;
-  ofstream pf(ref+"_"+tar+PRF_FMT);
 
   while (tf.get(c)) {
     if (c!='N' && c!='\n') {
       ++symsNo;
-      cp->c       = c;
-      cp->nSym    = NUM[static_cast<u8>(c)];
-      cp->ppIt    = cp->pp.begin();
-      cp->ctxIt   = cp->ctx.begin();
-      cp->ctxIrIt = cp->ctxIr.begin();
-      cp->probs.clear();                 cp->probs.reserve(cp->nMdl);
-      auto tbl64_it=tbl64.begin();       auto tbl32_it=tbl32.begin();
-      auto lgtbl8_it=lgtbl8.begin();     auto cmls4_it=cmls4.begin();
+      cp->c=c;                        cp->nSym=NUM[static_cast<u8>(c)];
+      cp->ppIt=cp->pp.begin();
+      cp->ctxIt=cp->ctx.begin();      cp->ctxIrIt=cp->ctxIr.begin();
+      cp->probs.clear();              cp->probs.reserve(cp->nMdl);
+      auto tbl64_it=tbl64.begin();    auto tbl32_it=tbl32.begin();
+      auto lgtbl8_it=lgtbl8.begin();  auto cmls4_it=cmls4.begin();
 
+      u8 n = 0;  // Counter for the models
       for (const auto& mm : Ms) {
         cp->mm = mm;
-        if (mm.cont == Container::TABLE_64) {
-          compress_n_parent(cp, tbl64_it);
-          if (mm.child)
-            compress_n_child(cp, tbl64_it);
-          ++tbl64_it;
+        switch (mm.cont) {
+         case Container::TABLE_64:    compress_n_impl(cp, tbl64_it++, n); break;
+         case Container::TABLE_32:    compress_n_impl(cp, tbl32_it++, n); break;
+         case Container::LOG_TABLE_8: compress_n_impl(cp, lgtbl8_it++,n); break;
+         case Container::SKETCH_8:    compress_n_impl(cp, cmls4_it++, n); break;
         }
-        else if (mm.cont == Container::TABLE_32) {
-          compress_n_parent(cp, tbl32_it);
-          if (mm.child)
-            compress_n_child(cp, tbl32_it);
-          ++tbl32_it;
-        }
-        // Using "-O3" optimization flag of gcc, the program may enter the
-        // following IF, even when it shouldn't!!!  #gcc_bug
-        else if (mm.cont == Container::LOG_TABLE_8) {
-          compress_n_parent(cp, lgtbl8_it);
-          if (mm.child)
-            compress_n_child(cp, lgtbl8_it);
-          ++lgtbl8_it;
-        }
-        else if (mm.cont == Container::SKETCH_8) {
-          compress_n_parent(cp, cmls4_it);
-          if (mm.child)
-            compress_n_child(cp, cmls4_it);
-          ++cmls4_it;
-        }
-
+        ++n;
         ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
       }
 
       const auto entr=entropy(cp->w.begin(), cp->probs.begin(),cp->probs.end());
       pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
-      update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
-
-      //todo clean
-      cp->ppIt    = cp->pp.begin();
-      cp->ctxIt   = cp->ctx.begin();
-      cp->ctxIrIt = cp->ctxIr.begin();
-      tbl64_it=tbl64.begin();       tbl32_it=tbl32.begin();
-      lgtbl8_it=lgtbl8.begin();     cmls4_it=cmls4.begin();
-
-      for (const auto& mm : Ms) {
-        cp->mm = mm;
-        if (mm.cont == Container::TABLE_64) {
-          if (mm.child) {
-            ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
-            if (mm.child->ir == 0) {
-              array<decltype((*tbl64_it)->query(0)), 4> f{};
-              freqs(f, tbl64_it, cp->ppIt->l);
-              correct_stmm(cp, f.begin());
-              update_ctx(*cp->ctxIt, cp->ppIt);
-            }
-            else {
-              array<decltype(2*(*tbl64_it)->query(0)), 4> f{};
-              freqs_ir(f, tbl64_it, cp->ppIt);
-              correct_stmm(cp, f.begin());
-              update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
-            }
-            ++tbl64_it;
-          }
-        }
-        else if (mm.cont == Container::TABLE_32) {
-          if (mm.child) {
-            ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
-            if (mm.child->ir == 0) {
-              array<decltype((*tbl32_it)->query(0)), 4> f{};
-              freqs(f, tbl32_it, cp->ppIt->l);
-              correct_stmm(cp, f.begin());
-              update_ctx(*cp->ctxIt, cp->ppIt);
-            }
-            else {
-              array<decltype(2*(*tbl32_it)->query(0)), 4> f{};
-              freqs_ir(f, tbl32_it, cp->ppIt);
-              correct_stmm(cp, f.begin());
-              update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
-            }
-            ++tbl32_it;
-          }
-        }
-        else
-        if (mm.cont == Container::LOG_TABLE_8) {
-          if (mm.child) {
-            ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
-            if (mm.child->ir == 0) {
-              array<decltype((*lgtbl8_it)->query(0)), 4> f{};
-              freqs(f, lgtbl8_it, cp->ppIt->l);
-              correct_stmm(cp, f.begin());
-              update_ctx(*cp->ctxIt, cp->ppIt);
-            }
-            else {
-              array<decltype(2 * (*lgtbl8_it)->query(0)), 4> f{};
-              freqs_ir(f, lgtbl8_it, cp->ppIt);
-              correct_stmm(cp, f.begin());
-              update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
-            }
-            ++lgtbl8_it;
-          }
-        }
-        else if (mm.cont == Container::SKETCH_8) {
-          if (mm.child) {
-            ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
-            if (mm.child->ir == 0) {
-              array<decltype((*cmls4_it)->query(0)), 4> f{};
-              freqs(f, cmls4_it, cp->ppIt->l);
-              correct_stmm(cp, f.begin());
-              update_ctx(*cp->ctxIt, cp->ppIt);
-            }
-            else {
-              array<decltype(2*(*cmls4_it)->query(0)), 4> f{};
-              freqs_ir(f, cmls4_it, cp->ppIt);
-              correct_stmm(cp, f.begin());
-              update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
-            }
-            ++cmls4_it;
-          }
-        }
-
-        ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
-      }
+      normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
+////      update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
 
       sumEnt += entr;
     }
@@ -438,42 +325,66 @@ inline void FCM::compress_n_ave
 }
 
 template <typename ContIter>
+inline void FCM::compress_n_impl
+(shared_ptr<CompressPar> cp, const ContIter& cont, u8& n) {
+  compress_n_parent(cp, cont, n);
+  if (cp->mm.child) {
+    ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
+    compress_n_child(cp, cont, ++n);
+  }
+}
+
+template <typename ContIter>
 inline void FCM::compress_n_parent
-(shared_ptr<CompressPar> cp, const ContIter& cont) {
+(shared_ptr<CompressPar> cp, const ContIter& cont, u8 n) {
   if (cp->mm.ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
-    const auto ppIt = cp->ppIt;
     array<decltype((*cont)->query(0)),4> f {};
-    freqs(f, cont, ppIt->l);
-    cp->probs.emplace_back(prob(f.begin(), ppIt));
-    update_ctx(*cp->ctxIt, ppIt);
+    freqs(f, cont, cp->ppIt->l);
+    const auto P = prob(f.begin(), cp->ppIt);
+    cp->probs.emplace_back(P);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    update_ctx(*cp->ctxIt, cp->ppIt);
   }
   else {
     cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);
-    const auto ppIt = cp->ppIt;
     array<decltype(2*(*cont)->query(0)),4> f {};
-    freqs_ir(f, cont, ppIt);
-    cp->probs.emplace_back(prob(f.begin(), ppIt));
-    update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, ppIt);
+    freqs_ir(f, cont, cp->ppIt);
+    const auto P = prob(f.begin(), cp->ppIt);
+    cp->probs.emplace_back(P);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
 
 template <typename ContIter>
 inline void FCM::compress_n_child
-(shared_ptr<CompressPar> cp, const ContIter& cont) {
-  ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
-
+(shared_ptr<CompressPar> cp, const ContIter& cont, u8 n) {
   if (cp->mm.child->ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*cont)->query(0)),4> f {};
     freqs(f, cont, cp->ppIt->l);
-    cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
+    const auto P = prob(f.begin(), cp->ppIt);
+    cp->probs.emplace_back(P);
+    correct_stmm(cp, f.begin());
+//    if (correct_stmm(cp,f.begin()))
+//      fill(cp->wNext.begin(), cp->wNext.end(), static_cast<prec_t>(1)/cp->nMdl);
+//    else
+      cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
+    update_ctx(*cp->ctxIt, cp->ppIt);
   }
   else {
     cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
     array<decltype(2*(*cont)->query(0)),4> f {};
     freqs_ir(f, cont, cp->ppIt);
-    cp->probs.emplace_back(prob(f.begin(), cp->ppIt));
+    const auto P = prob(f.begin(), cp->ppIt);
+    cp->probs.emplace_back(P);
+    correct_stmm(cp, f.begin());
+//    if (correct_stmm(cp,f.begin()))
+//      fill(cp->wNext.begin(), cp->wNext.end(), static_cast<prec_t>(1)/cp->nMdl);
+//    else
+      cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
+    update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
 
@@ -543,10 +454,36 @@ inline void FCM::correct_stmm
     #else
     stmm->history = 0u;
     #endif
-    // The following makes the output entropy worst
-//    std::fill(cp->w.begin(), cp->w.end(), static_cast<prec_t>(1)/cp->nMdl);
   }
 }
+////template <typename FreqIter>
+////inline bool FCM::correct_stmm
+////(shared_ptr<CompressPar> cp, const FreqIter& fFirst) {
+////  auto stmm = cp->mm.child;
+////  const auto best = best_id(fFirst);
+////  if (stmm->enabled) {
+////    if (best==static_cast<u8>(255))
+////      miss_stmm(stmm);
+////    else if (best==static_cast<u8>(254) || best==cp->nSym)
+////      hit_stmm(stmm);
+////    else {
+////      miss_stmm(stmm);
+////      stmm->ir==0 ? cp->ppIt->config(best) : cp->ppIt->config_ir(best);
+////    }
+////  }
+////  else if (!stmm->enabled &&
+////           best!=static_cast<u8>(255) && best!=static_cast<u8>(254)) {
+////    stmm->enabled = true;
+////    #ifdef ARRAY_HISTORY
+////    std::fill(stmm->history.begin(), stmm->history.end(), false);
+////    #else
+////    stmm->history = 0u;
+////    #endif
+////    // The following makes the output entropy worst
+////    return true;
+////  }
+////  return false;
+////}
 
 template <typename FreqIter>
 inline u8 FCM::best_id (const FreqIter& fFirst) const {
@@ -601,6 +538,10 @@ inline void FCM::miss_stmm (TmPar stmm) {
 }
 #endif
 
+inline prec_t FCM::weight_next (prec_t weight, prec_t gamma, prec_t prob) {
+  return pow(weight, gamma) * prob;
+}
+
 template <typename FreqIter, typename ProbParIter>
 inline prec_t FCM::prob (const FreqIter& fFirst, const ProbParIter& pp) const {
 //  return (*(fFirst+pp->numSym) + pp->alpha) /
@@ -619,22 +560,22 @@ inline prec_t FCM::entropy (OutIter wFirst, InIter PFirst, InIter PLast) const {
 //  return -log2(inner_product(PFirst, PLast, wFirst, static_cast<prec_t>(0)));
 }
 
-template <typename OutIter, typename InIter>
-inline void FCM::update_weights
-(OutIter wFirst, InIter PFirst, InIter PLast) const {
-  const auto wFirstKeep = wFirst;
-  for (auto mIter=Ms.begin(); PFirst!=PLast; ++mIter, ++wFirst, ++PFirst) {
-    *wFirst = pow(*wFirst, mIter->gamma) * *PFirst;
-    if (mIter->child) {
-      ++wFirst;  ++PFirst;
-////      if (mIter->child->enabled)  // Lowers the performance
-        *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
-////      else                        // Lowers the performance
-////        *wFirst = static_cast<prec_t>(0);
-    }
-  }
-  normalize(wFirstKeep, wFirst);
-}
+//template <typename OutIter, typename InIter>
+//inline void FCM::update_weights
+//(OutIter wFirst, InIter PFirst, InIter PLast) const {
+//  const auto wFirstKeep = wFirst;
+//  for (auto mIter=Ms.begin(); PFirst!=PLast; ++mIter, ++wFirst, ++PFirst) {
+//    *wFirst = pow(*wFirst, mIter->gamma) * *PFirst;
+//    if (mIter->child) {
+//      ++wFirst;  ++PFirst;
+//////      if (mIter->child->enabled)  // Lowers the performance
+//        *wFirst = pow(*wFirst, mIter->child->gamma) * *PFirst;
+//////      else                        // Lowers the performance
+//////        *wFirst = static_cast<prec_t>(0);
+//    }
+//  }
+//  normalize(wFirstKeep, wFirst);
+//}
 
 template <typename ProbParIter>
 inline void FCM::update_ctx (u64& ctx, const ProbParIter& pp) const {
