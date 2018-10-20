@@ -74,6 +74,7 @@ const  string          SEG_LBL      {"_seg"};  // Label for segment files
 static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 const  string          OUT_SEP      {"\n"};
+static constexpr int   FILE_BUF     {4096};  // 4K
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDIN>>;
