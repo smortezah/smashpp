@@ -39,28 +39,28 @@ class FCM    // Finite-context models
   void store_1 (const Param&);      // Build models one thread
   void store_n (const Param&);      // Build models multiple threads
   template <typename Mask, typename ContIter>
-  void store_impl (const string&, Mask, const ContIter&);  // Fill data struct
+  void store_impl (const string&, Mask, ContIter);  // Fill data struct
 
   template <typename ContIter>    // Compress with 1 Markov model
-  void compress_1 (const string&, const string&, const ContIter&);
+  void compress_1 (const string&, const string&, ContIter);
   void compress_n (const string&, const string&); //Compress with n Markov M
   template <typename ContIter>
-  void compress_n_impl (shared_ptr<CompressPar>, const ContIter&, u8&) const;
+  void compress_n_impl (shared_ptr<CompressPar>, ContIter, u8&) const;
   template <typename ContIter>
-  void compress_n_parent (shared_ptr<CompressPar>, const ContIter&, u8) const;
+  void compress_n_parent (shared_ptr<CompressPar>, ContIter, u8) const;
   template <typename ContIter>
-  void compress_n_child (shared_ptr<CompressPar>, const ContIter&, u8) const;
+  void compress_n_child (shared_ptr<CompressPar>, ContIter, u8) const;
 
 //  template <typename OutT, typename ContIter, typename ProbParIter>
 //  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
   template <typename OutT, typename ContIter>
-  void freqs (array<OutT,4>&, const ContIter&, u64) const;
+  void freqs (array<OutT,4>&, ContIter, u64) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
-  void freqs_ir (array<OutT,4>&, const ContIter&, const ProbParIter&) const;
+  void freqs_ir (array<OutT,4>&, ContIter, ProbParIter) const;
   template <typename FreqIter>
-  void correct_stmm (shared_ptr<CompressPar>, const FreqIter&) const;
+  void correct_stmm (shared_ptr<CompressPar>, FreqIter) const;
   template <typename FreqIter>
-  u8 best_id (const FreqIter&) const;
+  u8 best_id (FreqIter) const;
 #ifdef ARRAY_HISTORY
   template <typename History, typename Value>
   void update_hist_stmm (History&, Value) const;
@@ -78,16 +78,18 @@ class FCM    // Finite-context models
 #endif
   prec_t weight_next (prec_t, prec_t, prec_t) const;
   template <typename FreqIter, typename ProbParIter>
-  prec_t prob (const FreqIter&, const ProbParIter&) const; //Probability
+  prec_t prob (FreqIter, ProbParIter) const; //Probability
   prec_t entropy (prec_t) const;
-  template <typename OutIter, typename InIter>
-  prec_t entropy (OutIter, InIter, InIter) const;
+  template <typename WIter, typename PIter>
+  prec_t entropy (WIter, PIter, PIter) const;
+//  template <typename OutIter, typename InIter>
+//  prec_t entropy (OutIter, InIter, InIter) const;
 //  template <typename OutIter, typename InIter>
 //  void update_weights (OutIter, InIter, InIter) const;
   template <typename ProbParIter>
-  void update_ctx (u64&, const ProbParIter&) const;
+  void update_ctx (u64&, ProbParIter) const;
   template <typename ProbParIter>
-  void update_ctx_ir  (u64&, u64&, const ProbParIter&) const;
+  void update_ctx_ir  (u64&, u64&, ProbParIter) const;
 };
 
 #endif //SMASHPP_FCM_HPP
