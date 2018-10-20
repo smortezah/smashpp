@@ -325,7 +325,7 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
 
 template <typename ContIter>
 inline void FCM::compress_n_impl
-(shared_ptr<CompressPar> cp, const ContIter& cont, u8& n) {
+(shared_ptr<CompressPar> cp, const ContIter& cont, u8& n) const {
   compress_n_parent(cp, cont, n);
   if (cp->mm.child) {
     ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
@@ -335,7 +335,7 @@ inline void FCM::compress_n_impl
 
 template <typename ContIter>
 inline void FCM::compress_n_parent
-(shared_ptr<CompressPar> cp, const ContIter& cont, u8 n) {
+(shared_ptr<CompressPar> cp, const ContIter& cont, u8 n) const {
   if (cp->mm.ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*cont)->query(0)),4> f {};
@@ -358,7 +358,7 @@ inline void FCM::compress_n_parent
 
 template <typename ContIter>
 inline void FCM::compress_n_child
-(shared_ptr<CompressPar> cp, const ContIter& cont, u8 n) {
+(shared_ptr<CompressPar> cp, const ContIter& cont, u8 n) const {
   if (cp->mm.child->ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*cont)->query(0)),4> f {};
@@ -367,7 +367,7 @@ inline void FCM::compress_n_child
     cp->probs.emplace_back(P);
     correct_stmm(cp, f.begin());
 //    if (correct_stmm(cp,f.begin()))
-//      fill(cp->wNext.begin(), cp->wNext.end(), static_cast<prec_t>(1)/cp->nMdl);
+//      fill(cp->wNext.begin(),cp->wNext.end(),static_cast<prec_t>(1)/cp->nMdl);
 //    else
       cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
     update_ctx(*cp->ctxIt, cp->ppIt);
@@ -380,7 +380,7 @@ inline void FCM::compress_n_child
     cp->probs.emplace_back(P);
     correct_stmm(cp, f.begin());
 //    if (correct_stmm(cp,f.begin()))
-//      fill(cp->wNext.begin(), cp->wNext.end(), static_cast<prec_t>(1)/cp->nMdl);
+//      fill(cp->wNext.begin(),cp->wNext.end(),static_cast<prec_t>(1)/cp->nMdl);
 //    else
       cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
@@ -403,7 +403,7 @@ inline void FCM::compress_n_child
 
 //todo check performance
 //template <typename OutT, typename ContIter, typename ProbParIter>
-//inline void FCM::freqs (array<OutT,4>& a, ContIter cont, ProbParIter pp) const {
+//inline void FCM::freqs (array<OutT,4>& a, ContIter cont, ProbParIter pp)const{
 //  a = {(*cont)->query(pp->l),
 //       (*cont)->query(pp->l | 1ull),
 //       (*cont)->query(pp->l | 2ull),
@@ -432,7 +432,7 @@ inline void FCM::freqs_ir
 
 template <typename FreqIter>
 inline void FCM::correct_stmm
-(shared_ptr<CompressPar> cp, const FreqIter& fFirst) {
+(shared_ptr<CompressPar> cp, const FreqIter& fFirst) const {
   auto stmm = cp->mm.child;
   const auto best = best_id(fFirst);
   if (stmm->enabled) {
@@ -500,18 +500,18 @@ inline u8 FCM::best_id (const FreqIter& fFirst) const {
 
 #ifdef ARRAY_HISTORY
 template <typename History, typename Value>
-inline void FCM::update_hist_stmm (History& hist, Value val) {
+inline void FCM::update_hist_stmm (History& hist, Value val) const {
   std::rotate(hist.begin(), hist.begin()+1, hist.end());
   hist.back() = val;
 }
 
 template <typename TmPar>
-inline void FCM::hit_stmm (const TmPar& stmm) {
+inline void FCM::hit_stmm (const TmPar& stmm) const {
   stmm_update_hist(stmm->history, false);
 }
 
 template <typename TmPar>
-inline void FCM::miss_stmm (TmPar stmm) {
+inline void FCM::miss_stmm (TmPar stmm) const {
   if (pop_count(stmm->history.begin(),stmm->k) > stmm->thresh)
     stmm->enabled = false;
   else
@@ -519,17 +519,17 @@ inline void FCM::miss_stmm (TmPar stmm) {
 }
 #else
 template <typename History, typename Value>
-inline void FCM::update_hist_stmm (History& hist, Value val, u32 mask) {
+inline void FCM::update_hist_stmm (History& hist, Value val, u32 mask) const {
   hist = ((hist<<1u) | val) & mask;  // ull for 64 bits
 }
 
 template <typename TmPar /*Tolerant model parameter*/>
-inline void FCM::hit_stmm (const TmPar& stmm) {
+inline void FCM::hit_stmm (const TmPar& stmm) const {
   update_hist_stmm(stmm->history, 0u, stmm->mask);
 }
 
 template <typename TmPar>
-inline void FCM::miss_stmm (TmPar stmm) {
+inline void FCM::miss_stmm (TmPar stmm) const {
   if (pop_count(stmm->history) > stmm->thresh)
     stmm->enabled = false;
   else
@@ -537,7 +537,7 @@ inline void FCM::miss_stmm (TmPar stmm) {
 }
 #endif
 
-inline prec_t FCM::weight_next (prec_t weight, prec_t gamma, prec_t prob) {
+inline prec_t FCM::weight_next (prec_t weight, prec_t gamma, prec_t prob) const{
   return pow(weight, gamma) * prob;
 }
 
