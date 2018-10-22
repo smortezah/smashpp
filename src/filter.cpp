@@ -63,7 +63,8 @@ inline void Filter::hamming () {
 
   for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
     window[n] = window[last-n] = static_cast<float>(0.54 - 0.46*cos(n*num/den));
-//  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+//todo. remove. just for test. compatible with Diogo's version
+  //  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
 //    window[n] = window[last-n]
 //              = static_cast<float>(0.54 + 0.46*cos(2*PI*n/wsize));
 }
@@ -120,13 +121,15 @@ inline void Filter::welch () { // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
   if (is_odd(wsize)) {
     const u32 den = (wsize-1) >> 1u;
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
-      window[n] = window[last-n] = 1 - pow2(static_cast<float>(n)/den - 1);
+      window[n] = window[last-n]
+                = static_cast<float>(1 - pow(static_cast<float>(n)/den - 1, 2));
   }
   else {
     const auto num = 2.0f;
     const u32  den = wsize - 1;
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
-      window[n] = window[last-n] = 1 - pow2(n*num/den - 1);
+      window[n] = window[last-n]
+                = static_cast<float>(1 - pow(n*num/den - 1, 2));
   }
 }
 
@@ -248,6 +251,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   seg->partition_last(posF);
 
   posF.close();
+  if (!p.saveFilter)  remove((fName+FIL_FMT).c_str());
   nSegs = seg->nSegs;
 }
 
@@ -355,6 +359,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   seg->partition_last(pasF);
 
   pasF.close();
+  if (!p.saveFilter)  remove((fName+FIL_FMT).c_str());
   nSegs = seg->nSegs;
 }
 

@@ -21,8 +21,12 @@ void LogTable8::config (u8 k_) {
 }
 
 void LogTable8::update (u32 ctx) {
-  if (!(tot++ & POW2minus1[tbl[ctx]]))  // x % 2^n = x & (2^n-1)
+  if ((tot++ & POW2minus1[tbl[ctx]]) == 0)  // x % 2^n = x & (2^n-1)
     ++tbl[ctx];
+//  const auto addr=&tbl[ctx];
+//  if ((tot++ & POW2minus1[*addr]) == 0)  // x % 2^n = x & (2^n-1)
+//    ++(*addr);
+
 }
 
 u64 LogTable8::query (u32 ctx) const {
