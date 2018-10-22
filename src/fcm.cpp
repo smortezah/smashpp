@@ -193,15 +193,14 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   char* buffer = new char[FILE_BUF];
 
   for (Mask ctx=0; rf.read(buffer,sizeof(buffer));) {
-    for (int i=0; i!=sizeof(buffer); ++i) {
+  for (int i=0; i!=sizeof(buffer); ++i) {
     const char c = buffer[i];
     if (c!='N' && c!='\n') {
       ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];
       (*cont)->update(ctx);
     }
-    }
   }
-
+  }
 //  // Slower
 ////  for (Mask ctx=0; rf.get(c);) {
 ////    if (c!='N' && c!='\n') {
@@ -227,7 +226,7 @@ void FCM::compress (const Param& p) {
     compress_n(p.tar, p.ref);
 
   cerr << "Done!\n";
-//  if (p.verbose)//todo maybe remove comment
+  if (p.verbose)
     cerr << "Average Entropy = "
          << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps\n";
 }
@@ -313,7 +312,7 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
   char* buffer = new char[FILE_BUF];
 
   while (tf.read(buffer,sizeof(buffer))) {
-    for(int i=0; i!= sizeof(buffer); ++i) {
+  for(int i=0; i!= sizeof(buffer); ++i) {
     const char c = buffer[i];
 //  while (tf.get(c)) { // Slower
     if (c!='N' && c!='\n') {
@@ -345,7 +344,7 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
 
       sumEnt += ent;
     }
-    }
+  }
   }
   delete[] buffer;
   tf.close();    pf.close();
