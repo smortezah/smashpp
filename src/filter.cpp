@@ -370,12 +370,19 @@ void Filter::extract_seg (const string& tar, const string& ref) const {
   check_file(fName+POS_FMT);
   ifstream ff(fName+POS_FMT);
   string posStr;
+  auto subseq = make_shared<SubSeq>();
+  subseq->inName = tar;
 
   for (u64 i=0; getline(ff,posStr); ++i) {
     vector<string> posVec;    posVec.reserve(2);
     split(posStr.begin(), posStr.end(), '\t', posVec);
-    extract_subseq(tar, fName+SEG_LBL+to_string(i),
-                   stoull(posVec[0]), stoull(posVec[1]));
+    subseq->outName = fName+SEG_LBL+to_string(i);
+    subseq->begPos  = stoull(posVec[0]) - 1ull;
+    subseq->endPos  = stoull(posVec[1]);
+    extract_subseq(subseq);
+
+//    extract_subseq(tar, fName+SEG_LBL+to_string(i),
+//                   stoull(posVec[0]), stoull(posVec[1]));
   }
 
   ff.close();

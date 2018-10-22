@@ -18,45 +18,45 @@
 #include "fn.hpp"
 #include "segment.hpp"
 
+
+//#include "cstring"
 int main (int argc, char* argv[])
 {
   try {
     const auto t0{now()};
-    Param p;
-    p.parse(argc, argv);           // Parse the command
-    auto m = make_shared<FCM>(p);  // Equiv to auto* m = new FCM(p);
-    m->store(p);                   // Build models
-    m->compress(p);                // Compress
-    auto f = make_shared<Filter>(p);
-    f->smooth_seg(p);              // Filter and segment
-//    f->extract_seg(p.tar, p.ref);  // Extract segments from the target file
-//    for (u64 i=0; i!=f->nSegs; ++i) {
-//    }
+    Param par;
+    par.parse(argc, argv);              // Parse the command
+    auto models = make_shared<FCM>(par);// Equiv to auto* models = new FCM(par);
+    models->store(par);                 // Build models
+    models->compress(par);              // Compress
+//    auto filter = make_shared<Filter>(par);
+////    filter->smooth_seg(par);            // Filter and segment
+//    filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
+////    for (u64 i=0; i!=filter->nSegs; ++i) {
+////    }
 
-
-
-//const auto newTar = p.ref;
-//const string segName = p.ref + "_" + p.tar + SEG_LBL;
-//p.ref = segName + "0";
-//p.tar = newTar;
-//m->store(p);
-//m->compress(p);
-//f->thresh = 1.5;
-//f->smooth_seg(p);
+//const auto newTar = par.ref;
+//const string segName = par.ref + "_" + par.tar + SEG_LBL;
+//par.ref = segName + "0";
+//par.tar = newTar;
+//models->store(par);
+//models->compress(par);
+//filter->thresh = 1.5;
+//filter->smooth_seg(par);
 /////f->extract_seg(p.tar, p.ref);
 //
-//p.ref = segName + "1";
-//p.tar = newTar;
-//m->store(p);
-//m->compress(p);
-//f->thresh = 1.5;
-//f->smooth_seg(p);
+//par.ref = segName + "1";
+//par.tar = newTar;
+//models->store(par);
+//models->compress(par);
+//filter->thresh = 1.5;
+//filter->smooth_seg(par);
 /////f->extract_seg(p.tar, p.ref);
 
 
 
     // Report
-//    m->report(p); // Without "-R" does nothing
+//    models->report(par); // Without "-R" does nothing
 
 
     const auto t1{now()};
