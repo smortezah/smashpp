@@ -9,13 +9,13 @@
 #include "fn.hpp"
 
 template <typename Container>
-void assert_empty_elem (const Container& cont, string&& msg) {  // Empty element
+static void assert_empty_elem (const Container& cont, string&& msg) {//Empty el
   for (const auto& e : cont)
     if (e.size() == 0)
       error(msg);
 }
 template <typename Container>
-void assert_empty_elem (const Container& cont, const string& msg) {  // Empty el
+static void assert_empty_elem (const Container& cont, const string& msg) {
   for (const auto &e : cont)
     if (e.size() == 0)
       error(msg);

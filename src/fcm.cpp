@@ -571,31 +571,16 @@ inline prec_t FCM::weight_next (prec_t weight, prec_t gamma, prec_t prob) const{
 }
 
 template <typename FreqIter, typename ProbParIter>
-//inline
-prec_t FCM::prob (FreqIter fFirst, ProbParIter pp) const {
-//  return (*(fFirst+pp->numSym) + pp->alpha) /
-//         std::accumulate(fFirst, fFirst+CARDIN, pp->sAlpha);
+inline prec_t FCM::prob (FreqIter fFirst, ProbParIter pp) const {
   return (*(fFirst+pp->numSym) + pp->alpha) /
-         (std::accumulate(fFirst,fFirst+CARDIN,0ull) + pp->sAlpha);
+         std::accumulate(fFirst, fFirst+CARDIN, pp->sAlpha);
+//  return (*(fFirst+pp->numSym) + pp->alpha) /
+//         (std::accumulate(fFirst,fFirst+CARDIN,0ull) + pp->sAlpha);
 }
 
 inline prec_t FCM::entropy (prec_t P) const {
-  static const int n_buckets = 2;  // Should be a power of 2
-  static struct {
-    double p; double result;
-  } cache[n_buckets];
-  static int last_read_i = 0;
-  static int last_written_i = 0;
-  int i = last_read_i;
-  do {
-    if (cache[i].p == P)
-      return cache[i].result;
-    i = (i+1) % n_buckets;
-  } while (i != last_read_i);
-  last_read_i = last_written_i = (last_written_i+1) % n_buckets;
-  cache[last_written_i].p = P;
-  cache[last_written_i].result = -log2(P);
-  return cache[last_written_i].result;
+  // First version
+  return -log2(P);
 
   // Second version
 //  static auto prevP  = static_cast<prec_t>(1); // Can't be zero
@@ -606,8 +591,21 @@ inline prec_t FCM::entropy (prec_t P) const {
 //  result = -log2(P);
 //  return result;
 
-  // First version: perhaps slower
-//  return -log2(P);
+  // Third version
+//  static constexpr int n_buckets = 4;  // Should be a power of 2
+//  static struct { prec_t p; prec_t result; } cache[n_buckets];
+//  static int last_read_i = 0;
+//  static int last_written_i = 0;
+//  int i = last_read_i;
+//  do {
+//    if (cache[i].p == P)
+//      return cache[i].result;
+//    i = (i+1) % n_buckets;
+//  } while (i != last_read_i);
+//  last_read_i = last_written_i = (last_written_i+1) % n_buckets;
+//  cache[last_written_i].p = P;
+//  cache[last_written_i].result = -log2(P);
+//  return cache[last_written_i].result;
 }
 
 template <typename WIter, typename PIter>

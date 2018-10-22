@@ -49,7 +49,7 @@ void CMLS4::update (u64 ctx) {
 }
 
 inline u8 CMLS4::min_log_ctr (u64 ctx) const {
-  u8 min {std::numeric_limits<u8>::max()};
+  u8 min {15};  // 15 = max val in CTR[]
 //  for (u8 i=0; i!=d && min!=0; ++i) {
   for (u8 i=d; min!=0 && i--;) {
     const auto lg = read_cell(hash(i, ctx));
