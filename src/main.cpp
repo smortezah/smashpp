@@ -35,6 +35,22 @@ int main (int argc, char* argv[])
 ////    for (u64 i=0; i!=filter->nSegs; ++i) {
 ////    }
 
+
+
+//ifstream f("README.md");
+//int size=27;
+//int n=0;
+//for(vector<char> buffer(size,0); f.get(buffer.data(),size);){
+//  ++n;
+//  for(auto c:buffer)
+//    cerr<<c;
+//  cerr<<'\n';
+//}
+//cerr<<n;
+
+
+
+
 //const auto newTar = par.ref;
 //const string segName = par.ref + "_" + par.tar + SEG_LBL;
 //par.ref = segName + "0";
