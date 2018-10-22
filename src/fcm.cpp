@@ -189,34 +189,31 @@ inline void FCM::store_n (const Param& p) {
 
 template <typename Mask, typename ContIter /*Container iterator*/>
 inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
-//  ifstream rf(ref);
-//  char* buffer = new char[FILE_BUF];
-
-  char buffer[FILE_BUF];
-  FILE* rf = fopen(ref.c_str(), "r");
-
-//  for (Mask ctx=0; rf.read(buffer,sizeof(buffer));) {
-//  for (int i=0; i!=sizeof(buffer); ++i) {
-  Mask ctx=0;
-    for (size_t readSize=0; (readSize = fread(buffer,1,FILE_BUF,rf));) {
-    for(int i=0; i!=readSize; ++i) {
-    const char c = buffer[i];
+  ifstream rf(ref);  char c;
+////  char buffer[FILE_BUF];
+////  FILE* rf = fopen(ref.c_str(), "r");
+////vector<char> buffer (FILE_BUF,0);
+//  Mask ctx=0;
+////  for (size_t readSize=0; (readSize = fread(buffer,1,FILE_BUF,rf));) {
+//for(vector<char> buffer(FILE_BUF+1,0); rf.get(buffer.data(), FILE_BUF+1);){
+////  for(int i=0; i!=buffer.size(); ++i) {
+////    const char c = buffer[i];
+//  for(auto c:buffer){
+//    if (c!='N' && c!='\n') {
+//      ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];
+//      (*cont)->update(ctx);
+//    }
+//  }
+//  }
+  // Slower
+  for (Mask ctx=0; rf.get(c);) {
     if (c!='N' && c!='\n') {
       ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];
       (*cont)->update(ctx);
     }
   }
-  }
-//  // Slower
-////  for (Mask ctx=0; rf.get(c);) {
-////    if (c!='N' && c!='\n') {
-////      ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];
-////      (*cont)->update(ctx);
-////    }
-////  }
-fclose(rf);
-//  delete[] buffer;
-//  rf.close();
+//fclose(rf);
+  rf.close();
 }
 
 void FCM::compress (const Param& p) {
@@ -303,7 +300,7 @@ fclose(tf);
 inline void FCM::compress_n (const string& tar, const string& ref) {
   u64 symsNo{0};               // No. syms in target file, except \n
   prec_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
-//  ifstream tf(tar);  //char c;
+  ifstream tf(tar);  char c;
   ofstream pf(ref+"_"+tar+PRF_FMT);
   auto cp = make_shared<CompressPar>();
   // Ctx, Mir (int) sliding through the dataset
@@ -324,15 +321,17 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
     if (mm.child)  cp->pp.emplace_back(
                      mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
   }
-//  char* buffer = new char[FILE_BUF];
-  char buffer[FILE_BUF];
-  FILE* tf = fopen(tar.c_str(), "r");
 
-//  while (tf.read(buffer,sizeof(buffer))) {
-//  for(int i=0; i!= sizeof(buffer); ++i) {
-    for (size_t readSize=0; (readSize = fread(buffer,1,FILE_BUF,tf));) {
-    for(int i=0; i!=readSize; ++i) {
-    const char c = buffer[i];
+//  char buffer[FILE_BUF];
+//  FILE* tf = fopen(tar.c_str(), "r");
+vector<char> buffer(FILE_BUF,0);
+//for(string buffer; tf.get(buffer.c_str(), FILE_BUF+1);){
+do{
+  tf.get(buffer.data(), FILE_BUF);
+    for(auto c : buffer) {
+//  for (size_t readSize=0; (readSize = fread(buffer,1,FILE_BUF,tf));) {
+//  for(int i=0; i!=buffer.size(); ++i) {
+//    const char c = buffer[i];
 //  while (tf.get(c)) { // Slower
     if (c!='N' && c!='\n') {
       ++symsNo;
@@ -364,10 +363,9 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
       sumEnt += ent;
     }
   }
-  }
-//  delete[] buffer;
-//  tf.close();
-fclose(tf);
+  }while(tf.gcount()>0);
+  tf.close();
+//fclose(tf);
     pf.close();
   aveEnt = sumEnt/symsNo;
 }
