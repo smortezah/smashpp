@@ -205,6 +205,14 @@ static const vector<vector<u8>> LEVEL { // 'k' of multiple models MUST be sorted
 //          0, 20,    99,      15,    DEF_D}
 };
 
+// Struct
+struct SubSeq {
+  string inName;
+  string outName;
+  u64    begPos;
+  u64    endPos;
+};
+
 ////template<u32 N>    // Up to 262144=2^18 elements
 ////struct LogInt      // 0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,...
 ////{
