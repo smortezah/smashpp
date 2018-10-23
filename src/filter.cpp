@@ -159,10 +159,6 @@ inline void Filter::nuttall () {
 }
 
 inline void Filter::smooth_seg_rect (const Param& p) {
-//  const string fName = p.ref+"_"+p.tar;
-//  check_file(fName+FMT_PRF);
-//  ifstream prfF(fName+FMT_PRF);
-//  ofstream filF(fName+FMT_FIL), posF(fName+FMT_POS);
   check_file(gen_name(p.ref, p.tar, Format::PROFILE));
   ifstream prfF(gen_name(p.ref, p.tar, Format::PROFILE));
   ofstream filF(gen_name(p.ref, p.tar, Format::FILTER));
@@ -260,10 +256,6 @@ inline void Filter::smooth_seg_rect (const Param& p) {
 }
 
 inline void Filter::smooth_seg_non_rect (const Param& p) {
-//  const string fName = p.ref + "_" + p.tar;
-//  check_file(fName+FMT_PRF);
-//  ifstream prfF(fName+FMT_PRF);
-//  ofstream filF(fName+FMT_FIL), pasF(fName+FMT_POS);
   check_file(gen_name(p.ref, p.tar, Format::PROFILE));
   ifstream prfF(gen_name(p.ref, p.tar, Format::PROFILE));
   ofstream filF(gen_name(p.ref, p.tar, Format::FILTER));
