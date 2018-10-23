@@ -365,8 +365,6 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
 
 void Filter::extract_seg (const string& tar, const string& ref) const {
   const string fName = ref + "_" + tar;
-  //todo maybe it's ok to detect 0 segments. now that tar isn't similar to ref,
-  // see if ref is similar to ref
   check_file(fName+POS_FMT);
   ifstream ff(fName+POS_FMT);
   string posStr;
@@ -378,11 +376,8 @@ void Filter::extract_seg (const string& tar, const string& ref) const {
     split(posStr.begin(), posStr.end(), '\t', posVec);
     subseq->outName = fName+SEG_LBL+to_string(i);
     subseq->begPos  = stoull(posVec[0]) - 1ull;
-    subseq->endPos  = stoull(posVec[1]);
+    subseq->size    = static_cast<streamsize>(stoull(posVec[1])-subseq->begPos);
     extract_subseq(subseq);
-
-//    extract_subseq(tar, fName+SEG_LBL+to_string(i),
-//                   stoull(posVec[0]), stoull(posVec[1]));
   }
 
   ff.close();
