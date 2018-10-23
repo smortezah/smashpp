@@ -6,12 +6,15 @@
 #include <cmath>
 #include <thread>
 #include <numeric>  // std::accumulate
+#include <mutex>//todo
 #include "fcm.hpp"
 #include "assert.hpp"
 #include "fn.hpp"
+mutex mut;//todo
 
 FCM::FCM (const Param& p) {
   aveEnt = static_cast<prec_t>(0);
+  symsProcessed = 0ull;//todo
   config(p);
   if (p.verbose)
     show_in(p);
@@ -119,7 +122,7 @@ inline void FCM::alloc_model () {
 
 void FCM::store (const Param& p) {
   const auto nMdl = Ms.size();
-  cerr << OUT_SEP << "Building the model" << (nMdl == 1 ? "" : "s")
+  cerr << OUT_SEP << "Building the model" << (nMdl==1 ? "" : "s")
        << " based on \"" << p.ref << "\" (level "
        << static_cast<u16>(p.level) << ")...\n";
 
@@ -193,6 +196,9 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   Mask ctx=0;
   for (vector<char> buffer(FILE_BUF,0); rf.read(buffer.data(),FILE_BUF);) {
   for(const auto c : buffer){
+    mut.lock();//todo
+    ++symsProcessed;
+    mut.unlock();
 //  for (Mask ctx=0; rf.get(c);) { // Slower
     if (c!='N' && c!='\n') {
       ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];

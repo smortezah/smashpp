@@ -30,6 +30,7 @@ class FCM    // Finite-context models
   vector<shared_ptr<Table32>>   tbl32;
   vector<shared_ptr<LogTable8>> lgtbl8;
   vector<shared_ptr<CMLS4>>     cmls4;
+  u64 symsProcessed;//todo
   
   void config (const Param&);      // Set models parameters
   void set_cont ();

@@ -19,7 +19,6 @@
 #include "segment.hpp"
 
 
-//#include "cstring"
 int main (int argc, char* argv[])
 {
   try {
@@ -33,36 +32,26 @@ int main (int argc, char* argv[])
     filter->smooth_seg(par);            // Filter and segment
     filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
 
-    const auto newTar = par.ref;
-    const auto segName = par.ref+"_"+par.tar+SEG_LBL;
-    for (auto i=0; i!=filter->nSegs; ++i) {
-////    for (auto i=0; i!=1; ++i) {
-      cerr<<(par.ref = segName+to_string(i));//todo
-      par.tar = newTar;
+    // Consider the ref as new tar and the tar segments as new refs
+    const auto newTar=par.ref, segName=par.ref+"_"+par.tar+SEG_LBL;
+    par.tar = newTar;
+    const auto nSegs = filter->nSegs;
+    for (auto i=0; i!=nSegs; ++i) {
+      par.ref = segName+to_string(i);
+      par.thresh = 2.0;
+      models = make_shared<FCM>(par);
       models->store(par);
       models->compress(par);
-      par.thresh = 1.5;
+      filter = make_shared<Filter>(par);
       filter->smooth_seg(par);
     }
-
-//par.ref = segName + "1";
-//par.tar = newTar;
-//models->store(par);
-//models->compress(par);
-//filter->thresh = 1.5;
-//filter->smooth_seg(par);
-/////f->extract_seg(p.tar, p.ref);
-
 
 
     // Report
 //    models->report(par); // Without "-R" does nothing
 
-
     const auto t1{now()};
     cerr << OUT_SEP << "Total time: " << hms(t1-t0);
-
-///    delete m;
   }
   catch (std::exception& e) { cout << e.what(); }
   catch (...) { return EXIT_FAILURE; }
