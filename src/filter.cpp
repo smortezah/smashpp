@@ -37,7 +37,7 @@ void Filter::smooth_seg (const Param& p) {
   }
   cerr << "Done!\n";
   if (p.verbose)
-    cerr << "Detected " << nSegs << " segments.\n";
+    cerr << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") <<".\n";
 }
 
 inline void Filter::make_window () {
