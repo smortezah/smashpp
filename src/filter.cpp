@@ -159,10 +159,14 @@ inline void Filter::nuttall () {
 }
 
 inline void Filter::smooth_seg_rect (const Param& p) {
-  const string fName = p.ref+"_"+p.tar;
-  check_file(fName+PRF_FMT);
-  ifstream prfF(fName+PRF_FMT);
-  ofstream filF(fName+FIL_FMT), posF(fName+POS_FMT);
+//  const string fName = p.ref+"_"+p.tar;
+//  check_file(fName+FMT_PRF);
+//  ifstream prfF(fName+FMT_PRF);
+//  ofstream filF(fName+FMT_FIL), posF(fName+FMT_POS);
+  check_file(gen_name(p.ref, p.tar, Format::PROFILE));
+  ifstream prfF(gen_name(p.ref, p.tar, Format::PROFILE));
+  ofstream filF(gen_name(p.ref, p.tar, Format::FILTER));
+  ofstream posF(gen_name(p.ref, p.tar, Format::POSITION));
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
@@ -251,15 +255,19 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   seg->partition_last(posF);
 
   posF.close();
-  if (!p.saveFilter)  remove((fName+FIL_FMT).c_str());
+  if (!p.saveFilter)  remove((gen_name(p.ref,p.tar,Format::FILTER)).c_str());
   nSegs = seg->nSegs;
 }
 
 inline void Filter::smooth_seg_non_rect (const Param& p) {
-  const string fName = p.ref + "_" + p.tar;
-  check_file(fName+PRF_FMT);
-  ifstream prfF(fName+PRF_FMT);
-  ofstream filF(fName+FIL_FMT), pasF(fName+POS_FMT);
+//  const string fName = p.ref + "_" + p.tar;
+//  check_file(fName+FMT_PRF);
+//  ifstream prfF(fName+FMT_PRF);
+//  ofstream filF(fName+FMT_FIL), pasF(fName+FMT_POS);
+  check_file(gen_name(p.ref, p.tar, Format::PROFILE));
+  ifstream prfF(gen_name(p.ref, p.tar, Format::PROFILE));
+  ofstream filF(gen_name(p.ref, p.tar, Format::FILTER));
+  ofstream pasF(gen_name(p.ref, p.tar, Format::POSITION));
   string num;
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
@@ -359,14 +367,14 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   seg->partition_last(pasF);
 
   pasF.close();
-  if (!p.saveFilter)  remove((fName+FIL_FMT).c_str());
+  if (!p.saveFilter)  remove((gen_name(p.ref,p.tar,Format::FILTER)).c_str());
   nSegs = seg->nSegs;
 }
 
 void Filter::extract_seg (const string& tar, const string& ref) const {
   const string fName {ref+"_"+tar};
-  check_file(fName+POS_FMT);
-  ifstream ff(fName+POS_FMT);
+  check_file(fName+FMT_POS);
+  ifstream ff(fName+FMT_POS);
   string posStr;
   auto subseq = make_shared<SubSeq>();
   subseq->inName = tar;
@@ -374,7 +382,7 @@ void Filter::extract_seg (const string& tar, const string& ref) const {
   for (u64 i=0; getline(ff,posStr); ++i) {
     vector<string> posVec;    posVec.reserve(2);
     split(posStr.begin(), posStr.end(), '\t', posVec);
-    subseq->outName = fName+SEG_LBL+to_string(i);
+    subseq->outName = fName+LBL_SEG+to_string(i);
     subseq->begPos  = stoull(posVec[0]);
     subseq->size    = static_cast<streamsize>(
                         stoull(posVec[1]) - subseq->begPos + 1);
