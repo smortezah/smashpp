@@ -61,7 +61,7 @@ inline u8 CMLS4::min_log_ctr (u64 ctx) const {
 
 inline u8 CMLS4::read_cell (u64 idx) const {
   return CTR[((idx&1ull)<<8u) + sk[idx>>1u]];
-//  return CTR[static_cast<u16>(((idx&1ull)<<8u) | sk[idx>>1u])];
+////  return CTR[static_cast<u16>(((idx&1ull)<<8u) | sk[idx>>1u])];
 }
 
 inline u64 CMLS4::hash (u8 i, u64 ctx) const {    // Strong 2-universal

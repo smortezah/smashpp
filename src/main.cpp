@@ -28,8 +28,8 @@ int main (int argc, char* argv[])
     auto models = make_shared<FCM>(par);// Equiv to auto* models = new FCM(par);
     models->store(par);                 // Build models
     models->compress(par);              // Compress
-    auto filter = make_shared<Filter>(par);
-    filter->smooth_seg(par);            // Filter and segment
+//    auto filter = make_shared<Filter>(par);
+//    filter->smooth_seg(par);            // Filter and segment
 ////    filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
 ////
 ////    // Consider the ref as new tar and the tar segments as new refs
