@@ -32,35 +32,19 @@ int main (int argc, char* argv[])
     auto filter = make_shared<Filter>(par);
     filter->smooth_seg(par);            // Filter and segment
     filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
-////    for (u64 i=0; i!=filter->nSegs; ++i) {
-////    }
 
+    const auto newTar = par.ref;
+    const auto segName = par.ref+"_"+par.tar+SEG_LBL;
+    for (auto i=0; i!=filter->nSegs; ++i) {
+////    for (auto i=0; i!=1; ++i) {
+      cerr<<(par.ref = segName+to_string(i));//todo
+      par.tar = newTar;
+      models->store(par);
+      models->compress(par);
+      par.thresh = 1.5;
+      filter->smooth_seg(par);
+    }
 
-
-//ifstream f("README.md");
-//int size=27;
-//int n=0;
-//for(vector<char> buffer(size,0); f.get(buffer.data(),size);){
-//  ++n;
-//  for(auto c:buffer)
-//    cerr<<c;
-//  cerr<<'\n';
-//}
-//cerr<<n;
-
-
-
-
-//const auto newTar = par.ref;
-//const string segName = par.ref + "_" + par.tar + SEG_LBL;
-//par.ref = segName + "0";
-//par.tar = newTar;
-//models->store(par);
-//models->compress(par);
-//filter->thresh = 1.5;
-//filter->smooth_seg(par);
-/////f->extract_seg(p.tar, p.ref);
-//
 //par.ref = segName + "1";
 //par.tar = newTar;
 //models->store(par);

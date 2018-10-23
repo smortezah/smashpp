@@ -159,7 +159,7 @@ inline void Filter::nuttall () {
 }
 
 inline void Filter::smooth_seg_rect (const Param& p) {
-  const string fName = p.ref + "_" + p.tar;
+  const string fName = p.ref+"_"+p.tar;
   check_file(fName+PRF_FMT);
   ifstream prfF(fName+PRF_FMT);
   ofstream filF(fName+FIL_FMT), posF(fName+POS_FMT);
@@ -364,7 +364,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
 }
 
 void Filter::extract_seg (const string& tar, const string& ref) const {
-  const string fName = ref + "_" + tar;
+  const string fName {ref+"_"+tar};
   check_file(fName+POS_FMT);
   ifstream ff(fName+POS_FMT);
   string posStr;
@@ -375,8 +375,9 @@ void Filter::extract_seg (const string& tar, const string& ref) const {
     vector<string> posVec;    posVec.reserve(2);
     split(posStr.begin(), posStr.end(), '\t', posVec);
     subseq->outName = fName+SEG_LBL+to_string(i);
-    subseq->begPos  = stoull(posVec[0]) - 1ull;
-    subseq->size    = static_cast<streamsize>(stoull(posVec[1])-subseq->begPos);
+    subseq->begPos  = stoull(posVec[0]);
+    subseq->size    = static_cast<streamsize>(
+                        stoull(posVec[1]) - subseq->begPos + 1);
     extract_subseq(subseq);
   }
 
