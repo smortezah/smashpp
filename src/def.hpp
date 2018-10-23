@@ -50,7 +50,7 @@ constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
 static constexpr u8    DEF_THR      {4};  // Default # threads
 static constexpr u8    DEF_LVL      {0};  // Default level
 static constexpr u32   DEF_WS       {257};// Default window size -- filter
-const  string          DEF_WT       {"0"};// Default window type -- filter
+static const string    DEF_WT       {"0"};// Default window type -- filter
 static constexpr float DEF_THRESH   {2};// Default threshold   -- filter
 static constexpr u8    CARDIN       {4};  // CARDINALITY = Alphabet size
 static constexpr u8    IRMAGIC      {3};  // Calc Mir syms based on syms
@@ -65,26 +65,25 @@ static constexpr u8    LOG_BASE     {2};  // Logarithmic counting
 static constexpr u8    DEF_IR       {0};  // Default inverted repeats for models
 static constexpr float DEF_ALPHA    {0.001};// Default alpha for models
 static constexpr float DEF_GAMMA    {0.9};  // Default gamma for multiple models
-const  string          PRF_FMT      {".prf"};  // Format for inf. profile file
 static constexpr u8    DEF_PRF_PREC {3};  // Precisions for floats in Inf. prof
 static constexpr u8    DEF_FIL_PREC {3};  // Precisions for floats in filt. file
-const  string          POS_FMT      {".pos"};  // Format for positions file
-const  string          FIL_FMT      {".fil"};  // Format for filtered files
-const  string          SEG_LBL      {"_seg"};  // Label for segment files
+static const string    FMT_PRF      {".prf"};  // Format for inf. profile file
+static const string    FMT_POS      {".pos"};  // Format for positions file
+static const string    FMT_FIL      {".fil"};  // Format for filtered files
+static const string    LBL_SEG      {"-s"};    // Label for segment files
 static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
-const  string          OUT_SEP      {"\n"};
-//static constexpr int   FILE_BUF     {8*1024};  // 8K
-static constexpr int   FILE_BUF     {3};
-static constexpr u8    BIT_K        {6};
-static constexpr u8    BIT_D        {3};
-static constexpr u8    BIT_IR       {1};
-static constexpr u8    BIT_THRESH   {4};
-static constexpr u8    BIT_NSYM     {2};
-static constexpr u8    BIT_NMDL     {4};
-static constexpr u8    BIT_LEVEL    {5};
-static constexpr u8    BIT_THREAD   {4};
-static constexpr u8    BIT_WSIZE    {15};
+static const string    OUT_SEP      {"\n"};
+static constexpr int   FILE_BUF     {8*1024};  // 8K
+//static constexpr u8    BIT_K        {6};
+//static constexpr u8    BIT_D        {3};
+//static constexpr u8    BIT_IR       {1};
+//static constexpr u8    BIT_THRESH   {4};
+//static constexpr u8    BIT_NSYM     {2};
+//static constexpr u8    BIT_NMDL     {4};
+//static constexpr u8    BIT_LEVEL    {5};
+//static constexpr u8    BIT_THREAD   {4};
+//static constexpr u8    BIT_WSIZE    {15};
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDIN>>;
@@ -94,6 +93,7 @@ enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8}; //Data structs
 //enum class Mode {MM, STMM};
 enum class WType     {RECTANGULAR, HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH,
                       SINE, NUTTALL};  // Types of windowing function
+enum class Format    {PROFILE, FILTER, POSITION, SEGMENT};// todo
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n

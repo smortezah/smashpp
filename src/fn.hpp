@@ -210,4 +210,14 @@ inline static void extract_subseq (const shared_ptr<SubSeq>& subseq){
 //    fOut << c;
 }
 
+static string gen_name
+(const string& ref, const string& tar, const Format& frmt) {
+  switch (frmt) {
+  case Format::PROFILE:   return ref+"-"+tar+FMT_PRF;
+  case Format::FILTER:    return ref+"-"+tar+FMT_FIL;
+  case Format::POSITION:  return ref+"-"+tar+FMT_POS;
+  case Format::SEGMENT:   return ref+"-"+tar+LBL_SEG;
+  }
+}
+
 #endif //PROJECT_FN_HPP

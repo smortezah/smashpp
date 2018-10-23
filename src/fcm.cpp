@@ -236,7 +236,8 @@ inline void FCM::compress_1
   u64      symsNo{0};            // No. syms in target file, except \n
   prec_t   sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);
-  ofstream pf(ref+"_"+tar+PRF_FMT);
+  ofstream pf(gen_name(ref, tar, Format::PROFILE));
+//  ofstream pf(ref+"_"+tar+FMT_PRF);
   ProbPar  pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
               static_cast<u8>(Ms[0].k<<1u)};
 
@@ -282,7 +283,8 @@ inline void FCM::compress_n (const string& tar, const string& ref) {
   u64 symsNo{0};               // No. syms in target file, except \n
   prec_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(tar);
-  ofstream pf(ref+"_"+tar+PRF_FMT);
+  ofstream pf(gen_name(ref, tar, Format::PROFILE));
+//  ofstream pf(ref+"_"+tar+FMT_PRF);
   auto cp = make_shared<CompressPar>();
   // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = static_cast<u8>(Ms.size() + TMs.size());

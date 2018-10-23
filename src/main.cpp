@@ -30,21 +30,21 @@ int main (int argc, char* argv[])
     models->compress(par);              // Compress
     auto filter = make_shared<Filter>(par);
     filter->smooth_seg(par);            // Filter and segment
-//    filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
-//
-//    // Consider the ref as new tar and the tar segments as new refs
-//    const auto newTar=par.ref, segName=par.ref+"_"+par.tar+SEG_LBL;
-//    par.tar = newTar;
-//    const auto nSegs = filter->nSegs;
-//    for (auto i=0; i!=nSegs; ++i) {
-//      par.ref = segName+to_string(i);
-//      par.thresh = 2.0;
-//      models = make_shared<FCM>(par);
-//      models->store(par);
-//      models->compress(par);
-//      filter = make_shared<Filter>(par);
-//      filter->smooth_seg(par);
-//    }
+////    filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
+////
+////    // Consider the ref as new tar and the tar segments as new refs
+////    const auto newTar=par.ref, segName=par.ref+"_"+par.tar+SEG_LBL;
+////    par.tar = newTar;
+////    const auto nSegs = filter->nSegs;
+////    for (auto i=0; i!=nSegs; ++i) {
+////      par.ref = segName+to_string(i);
+////      par.thresh = 2.0;
+////      models = make_shared<FCM>(par);
+////      models->store(par);
+////      models->compress(par);
+////      filter = make_shared<Filter>(par);
+////      filter->smooth_seg(par);
+////    }
 
 
     // Report

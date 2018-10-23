@@ -24,11 +24,17 @@ class Param    // Parameters
   string wtype;
   float  thresh;
   bool   saveFilter;
+  //todo
+  bool   saveProfile;
+  bool   saveSegment;
+  bool   saveAll;
+
   string report;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
-             wtype(DEF_WT), thresh(DEF_THRESH), saveFilter(false) {}
+             wtype(DEF_WT), thresh(DEF_THRESH), saveFilter(false),
+             saveProfile(false), saveSegment(false), saveAll(false) {}
   void   parse          (int, char**&);
   string print_win_type ()  const;
 
@@ -86,6 +92,14 @@ inline void Param::parse (int argc, char**& argv) {
         thresh = stof(*++i);
       else if (*i=="-sf"  || *i=="--save_fitler")
         saveFilter = true;
+      //todo
+      else if (*i=="-sp"  || *i=="--save_profile")
+        saveProfile = true;
+      else if (*i=="-ss"  || *i=="--save_segment")
+        saveSegment = true;
+      else if (*i=="-sa"  || *i=="--save_all")
+        saveAll = true;
+
       else if (*i=="-R"  || *i=="--report")
         report = (i+1!=vArgs.end()) ? *++i : "report.txt";
     }
