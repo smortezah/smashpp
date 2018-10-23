@@ -192,46 +192,22 @@ inline static u64 file_size (const string& s) {
   return static_cast<u64>(f.tellg());
 }
 
-//template <typename Position>
-//inline static void extract_subseq    // Must be inline//todo improve performance
-//(const string& fileIn, const string& fileOut, Position begPos, Position endPos){
-inline static void extract_subseq (shared_ptr<SubSeq> subseq){ // Must be inline
+// Must be inline
+inline static void extract_subseq (const shared_ptr<SubSeq>& subseq){
   ifstream fIn(subseq->inName);
   ofstream fOut(subseq->outName);
-//  char c;
-  fIn.seekg(subseq->begPos);
-//fIn.get(c);cerr<<c;
-  const auto subseqSize = subseq->endPos - subseq->begPos /*+ 1*/;
-//  cerr<<subseqSize;//todo
-  auto bufSize = subseqSize;
-  if (FILE_BUF<subseqSize)  bufSize=FILE_BUF;
-  char* buffer = new char[bufSize];
 
-  for (auto times=
-    static_cast<u64>(ceil(static_cast<float>(subseqSize)/FILE_BUF));
-    times-- && fIn.read(buffer,bufSize);) {
-//    fOut.write(buffer,sizeof(buffer));
-cerr<<times<<'\n';
-    for (int i=0; i!=sizeof(buffer); ++i) {
-      cerr<<buffer[i];
-    }
-    cerr<<'\n';
-  }
-//
+  fIn.seekg(subseq->begPos);
+  vector<char> buffer(static_cast<u64>(subseq->size), 0);
+  fIn.read(buffer.data(), subseq->size);
+  fOut.write(buffer.data(), subseq->size);
+
+  fIn.close();  fOut.close();
+
+  // Slower
+//  char c;
 //  for (auto i=subseq->endPos-subseq->begPos; i-- && fIn.get(c);)
 //    fOut << c;
-  delete[] buffer;
-  fIn.close();
-  fOut.close();
-
-//  ifstream fIn(fileIn);
-//  ofstream fOut(fileOut);
-//  char c;
-//  fIn.seekg(begPos);
-//  for (Position i=endPos-begPos+1; i-- && fIn.get(c);)
-//    fOut << c;
-//  fIn.close();
-//  fOut.close();
 }
 
 #endif //PROJECT_FN_HPP

@@ -74,7 +74,8 @@ const  string          SEG_LBL      {"_seg"};  // Label for segment files
 static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 const  string          OUT_SEP      {"\n"};
-static constexpr int   FILE_BUF     {8*1024};  // 8K
+//static constexpr int   FILE_BUF     {8*1024};  // 8K
+static constexpr int   FILE_BUF     {3};
 static constexpr u8    BIT_K        {6};
 static constexpr u8    BIT_D        {3};
 static constexpr u8    BIT_IR       {1};
@@ -207,10 +208,10 @@ static const vector<vector<u8>> LEVEL { // 'k' of multiple models MUST be sorted
 
 // Struct
 struct SubSeq {
-  string inName;
-  string outName;
-  u64    begPos;
-  u64    endPos;
+  string     inName;
+  string     outName;
+  u64        begPos;
+  streamsize size;
 };
 
 ////template<u32 N>    // Up to 262144=2^18 elements
