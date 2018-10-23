@@ -74,7 +74,7 @@ const  string          SEG_LBL      {"_seg"};  // Label for segment files
 static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 const  string          OUT_SEP      {"\n"};
-static constexpr int   FILE_BUF     {4*1024};  // 4K
+static constexpr int   FILE_BUF     {8*1024};  // 8K
 static constexpr u8    BIT_K        {6};
 static constexpr u8    BIT_D        {3};
 static constexpr u8    BIT_IR       {1};
