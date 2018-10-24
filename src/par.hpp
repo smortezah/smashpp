@@ -23,23 +23,21 @@ class Param    // Parameters
   u32    wsize /*:BIT_WSIZE*/;
   string wtype;
   float  thresh;
-  bool   saveFilter;
-  //todo
   bool   saveProfile;
+  bool   saveFilter;
   bool   saveSegment;
   bool   saveAll;
-
   string report;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
-             wtype(DEF_WT), thresh(DEF_THRESH), saveFilter(false),
-             saveProfile(false), saveSegment(false), saveAll(false) {}
-  void   parse          (int, char**&);
-  string print_win_type ()  const;
+             wtype(DEF_WT), thresh(DEF_THRESH), saveProfile(false),
+             saveFilter(false), saveSegment(false), saveAll(false) {}
+  void parse (int, char**&);
+  string print_win_type () const;
 
  private:
-  void help             ()  const;
+  void help () const;
 };
 
 inline void Param::parse (int argc, char**& argv) {
@@ -90,16 +88,14 @@ inline void Param::parse (int argc, char**& argv) {
         wtype = *++i;
       else if ((*i=="-th" || *i=="--thresh") && i+1!=vArgs.end())
         thresh = stof(*++i);
-      else if (*i=="-sf"  || *i=="--save_fitler")
-        saveFilter = true;
-      //todo
       else if (*i=="-sp"  || *i=="--save_profile")
         saveProfile = true;
+      else if (*i=="-sf"  || *i=="--save_fitler")
+        saveFilter = true;
       else if (*i=="-ss"  || *i=="--save_segment")
         saveSegment = true;
       else if (*i=="-sa"  || *i=="--save_all")
         saveAll = true;
-
       else if (*i=="-R"  || *i=="--report")
         report = (i+1!=vArgs.end()) ? *++i : "report.txt";
     }
@@ -178,8 +174,17 @@ inline void Param::help () const {
     << "    -th,  --thresh"                                              << '\n'
     << "        threshold -- for filtering"                              << '\n'
                                                                          << '\n'
+    << "    -sp,  --save_profile"                                        << '\n'
+    << "        save profile"                                            << '\n'
+                                                                         << '\n'
     << "    -sf,  --save_filter"                                         << '\n'
     << "        save filtered file"                                      << '\n'
+                                                                         << '\n'
+    << "    -ss,  --save_segment"                                        << '\n'
+    << "        save segmented file(s)"                                  << '\n'
+                                                                         << '\n'
+    << "    -sa,  --save_all"                                            << '\n'
+    << "        save profile, filetered and segmented files"             << '\n'
                                                                          << '\n'
     << "    -R,  --report"                                               << '\n'
     << "        save results in the \"report\" file"                     << '\n'

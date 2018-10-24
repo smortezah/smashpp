@@ -32,7 +32,9 @@ class Filter {
   void welch               ();
   void sine                ();
   void nuttall             ();
+  template <bool SaveFilter>
   void smooth_seg_rect     (const Param&);
+  template <bool SaveFilter>
   void smooth_seg_non_rect (const Param&);
 #ifdef BENCH
   template <typename Iter, typename Value>

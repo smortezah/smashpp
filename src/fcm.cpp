@@ -214,13 +214,13 @@ void FCM::compress (const Param& p) {
 
   if (Ms.size()==1 && TMs.empty())  // 1 MM
     switch (Ms[0].cont) {
-    case Container::SKETCH_8:    compress_1(p.tar,p.ref,cmls4.begin());   break;
-    case Container::LOG_TABLE_8: compress_1(p.tar,p.ref,lgtbl8.begin());  break;
-    case Container::TABLE_32:    compress_1(p.tar,p.ref,tbl32.begin());   break;
-    case Container::TABLE_64:    compress_1(p.tar,p.ref,tbl64.begin());   break;
+    case Container::SKETCH_8:     compress_1(p, cmls4.begin());   break;
+    case Container::LOG_TABLE_8:  compress_1(p, lgtbl8.begin());  break;
+    case Container::TABLE_32:     compress_1(p, tbl32.begin());   break;
+    case Container::TABLE_64:     compress_1(p, tbl64.begin());   break;
     }
   else
-    compress_n(p.tar, p.ref);
+    compress_n(p);
 
   cerr << "Done!\n";
   if (p.verbose)
@@ -229,15 +229,13 @@ void FCM::compress (const Param& p) {
 }
 
 template <typename ContIter>
-inline void FCM::compress_1
-(const string& tar, const string& ref, ContIter cont) {
+inline void FCM::compress_1 (const Param& par, ContIter cont) {
   // Ctx, Mir (int) sliding through the dataset
   u64      ctx{0},   ctxIr{(1ull<<(Ms[0].k<<1u))-1};
   u64      symsNo{0};            // No. syms in target file, except \n
   prec_t   sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);
-  ofstream pf(gen_name(ref, tar, Format::PROFILE));
-//  ofstream pf(ref+"_"+tar+FMT_PRF);
+  ifstream tf(par.tar);
+  ofstream pf(gen_name(par.ref, par.tar, Format::PROFILE));
   ProbPar  pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
               static_cast<u8>(Ms[0].k<<1u)};
 
@@ -279,12 +277,11 @@ inline void FCM::compress_1
   aveEnt = sumEnt/symsNo;
 }
 
-inline void FCM::compress_n (const string& tar, const string& ref) {
+inline void FCM::compress_n (const Param& par) {
   u64 symsNo{0};               // No. syms in target file, except \n
   prec_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(tar);
-  ofstream pf(gen_name(ref, tar, Format::PROFILE));
-//  ofstream pf(ref+"_"+tar+FMT_PRF);
+  ifstream tf(par.tar);
+  ofstream pf(gen_name(par.ref, par.tar, Format::PROFILE));
   auto cp = make_shared<CompressPar>();
   // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = static_cast<u8>(Ms.size() + TMs.size());
