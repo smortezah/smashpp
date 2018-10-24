@@ -194,7 +194,7 @@ template <typename Mask, typename ContIter /*Container iterator*/>
 inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  //char c;
   Mask ctx=0;
-  for (vector<char> buffer(FILE_BUF,0); rf.read(buffer.data(),FILE_BUF);) {
+  for (vector<char> buffer(FILE_BUF,0); rf.read(buffer.data(),FILE_BUF);) {//todo
   for (const auto c : buffer){
 //    mut.lock();//todo
 //    ++symsProcessed;
@@ -240,7 +240,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
               static_cast<u8>(Ms[0].k<<1u)};
 
   if (Ms[0].ir == 0) {
-    for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {
+    for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {//todo
     for (const auto c : buffer) {
 //    while (tf.get(c)) { // Slower
       if (c!='N' && c!='\n') {
@@ -257,7 +257,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
     }
   }
   else {  // With inv. rep.
-    for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {
+    for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {//todo
     for (const auto c : buffer) {
 //    while (tf.get(c)) { // Slower
       if (c!='N' && c!='\n') {
@@ -302,7 +302,7 @@ inline void FCM::compress_n (const Param& par) {
                      mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
   }
 
-  for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {
+  for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {//todo
   for (const auto c : buffer) {
 //  while (tf.get(c)) { // Slower
     if (c!='N' && c!='\n') {
