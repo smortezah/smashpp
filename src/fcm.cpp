@@ -196,9 +196,9 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   Mask ctx=0;
   for (vector<char> buffer(FILE_BUF,0); rf.read(buffer.data(),FILE_BUF);) {
   for(const auto c : buffer){
-    mut.lock();//todo
-    ++symsProcessed;
-    mut.unlock();
+//    mut.lock();//todo
+//    ++symsProcessed;
+//    mut.unlock();
 //  for (Mask ctx=0; rf.get(c);) { // Slower
     if (c!='N' && c!='\n') {
       ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];

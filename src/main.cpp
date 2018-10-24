@@ -31,7 +31,7 @@ int main (int argc, char* argv[])
     auto filter = make_shared<Filter>(par);
     filter->smooth_seg(par);            // Filter and segment
 //    filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
-//
+
 //    // Consider the ref as new tar and the tar segments as new refs
 //    const auto newTar  = par.ref;
 //    const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
