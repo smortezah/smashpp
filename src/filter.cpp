@@ -29,12 +29,19 @@ inline void Filter::config_wtype (const string& t) {
 
 void Filter::smooth_seg (const Param& p) {
   cerr << OUT_SEP << "Filtering and segmenting \"" << p.tar << "\"...\n";
-  if (wtype == WType::RECTANGULAR)
-    smooth_seg_rect(p);
+
+  if (wtype == WType::RECTANGULAR) {
+    p.saveFilter ? smooth_seg_rect<true>(p) : smooth_seg_rect<false>(p);
+  }
   else {
     make_window();
-    smooth_seg_non_rect(p);
+    p.saveFilter ? smooth_seg_non_rect<true>(p) : smooth_seg_non_rect<false>(p);
   }
+  if (!p.saveAll && !p.saveProfile)
+    remove((gen_name(p.ref,p.tar,Format::PROFILE)).c_str());
+  if (!p.saveAll && !p.saveFilter)
+    remove((gen_name(p.ref,p.tar,Format::FILTER)).c_str());
+
   cerr << "Done!\n";
   if (p.verbose)
     cerr << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") <<".\n";
@@ -158,6 +165,7 @@ inline void Filter::nuttall () {
   window.front() = window.back() = 0.0;
 }
 
+template <bool SaveFilter>
 inline void Filter::smooth_seg_rect (const Param& p) {
   check_file(gen_name(p.ref, p.tar, Format::PROFILE));
   ifstream prfF(gen_name(p.ref, p.tar, Format::PROFILE));
@@ -176,85 +184,56 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
   }
-  filtered = sum/seq.size();
-  if (p.saveFilter)
+  filtered = sum / seq.size();
+  if (SaveFilter)
     filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
   seg->partition(posF, filtered);
 
   // Next wsize>>1 values
-  if (p.saveFilter) {
-    for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
-      const auto val = stof(num);
-      seq.emplace_back(val);
-      sum += val;
-      ++seg->pos;
-      filtered = sum/seq.size();
+  for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
+    const auto val = stof(num);
+    seq.emplace_back(val);
+    sum += val;
+    ++seg->pos;
+    filtered = sum / seq.size();
+    if (SaveFilter)
       filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-      seg->partition(posF, filtered);
-    }
-  }
-  else {
-    for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
-      const auto val = stof(num);
-      seq.emplace_back(val);
-      sum += val;
-      ++seg->pos;
-      seg->partition(posF, sum/seq.size());
-    }
+    seg->partition(posF, filtered);
   }
 
   // The rest
   u32 idx = 0;
-  if (p.saveFilter) {
-    while (getline(prfF,num)) {
-      const auto val = stof(num);
-      sum += val - seq[idx];
-      ++seg->pos;
-      filtered = sum/wsize;
+  while (getline(prfF,num)) {
+    const auto val = stof(num);
+    sum += val - seq[idx];
+    ++seg->pos;
+    filtered = sum / wsize;
+    if (SaveFilter)
       filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-      seg->partition(posF, filtered);
-      seq[idx] = val;
-      idx = (idx+1) % wsize;
-    }
-  }
-  else {
-    while (getline(prfF,num)) {
-      const auto val = stof(num);
-      sum += val - seq[idx];
-      ++seg->pos;
-      seg->partition(posF, sum/wsize);
-      seq[idx] = val;
-      idx = (idx+1) % wsize;
-    }
+    seg->partition(posF, filtered);
+    seq[idx] = val;
+    idx = (idx+1) % wsize;
   }
   prfF.close();
 
   // Until half of the window goes outside the array
-  if (p.saveFilter) {
-    for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
-      sum -= seq[idx];
-      ++seg->pos;
-      filtered = sum/(wsize-i);
+  for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
+    sum -= seq[idx];
+    ++seg->pos;
+    filtered = sum / (wsize-i);
+    if (SaveFilter)
       filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-      seg->partition(posF, filtered);
-      idx = (idx+1) % wsize;
-    }
-  }
-  else {
-    for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
-      sum -= seq[idx];
-      ++seg->pos;
-      seg->partition(posF, sum/(wsize-i));
-      idx = (idx+1) % wsize;
-    }
+    seg->partition(posF, filtered);
+    idx = (idx+1) % wsize;
   }
   seg->partition_last(posF);
 
   posF.close();
-  if (!p.saveFilter)  remove((gen_name(p.ref,p.tar,Format::FILTER)).c_str());
+  if (!SaveFilter)  remove((gen_name(p.ref,p.tar,Format::FILTER)).c_str());
   nSegs = seg->nSegs;
 }
 
+template <bool SaveFilter>
 inline void Filter::smooth_seg_non_rect (const Param& p) {
   check_file(gen_name(p.ref, p.tar, Format::PROFILE));
   ifstream prfF(gen_name(p.ref, p.tar, Format::PROFILE));
@@ -273,108 +252,72 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   for (auto i=(wsize>>1u)+1; i-- && getline(prfF,num);)
     seq.emplace_back(stof(num));
   sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.f);
-  filtered = sum/sWeight;
-  if (p.saveFilter)
+  filtered = sum / sWeight;
+  if (SaveFilter)
     filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
   seg->partition(pasF, filtered);
 
   // Next wsize>>1 values
-  if (p.saveFilter) {
-    for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
-      seq.emplace_back(stof(num));
-      sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.f);
-      ++seg->pos;
-      sWeight += window[i];
-      filtered = sum/sWeight;
+  for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
+    seq.emplace_back(stof(num));
+    sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.f);
+    ++seg->pos;
+    sWeight += window[i];
+    filtered = sum / sWeight;
+    if (SaveFilter)
       filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-      seg->partition(pasF, filtered);
-    }
-  }
-  else {
-    for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
-      seq.emplace_back(stof(num));
-      sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.f);
-      ++seg->pos;
-      sWeight += window[i];
-      seg->partition(pasF, sum/sWeight);
-    }
+    seg->partition(pasF, filtered);
   }
 
   // The rest
   u32 idx = 0;
-  if (p.saveFilter) {
-    for(auto seqBeg=seq.begin(); getline(prfF,num);) {
-      seq[idx] = stof(num);
-      idx = (idx+1) % wsize;
-      sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.f) +
-             inner_product(winEnd-idx, winEnd,     seqBeg,     0.f));
-      ++seg->pos;
-      filtered = sum/sWeight;
+  for(auto seqBeg=seq.begin(); getline(prfF,num);) {
+    seq[idx] = stof(num);
+    idx = (idx+1) % wsize;
+    sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.f) +
+           inner_product(winEnd-idx, winEnd,     seqBeg,     0.f));
+    ++seg->pos;
+    filtered = sum / sWeight;
+    if (SaveFilter)
       filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-      seg->partition(pasF, filtered);
-    }
-  }
-  else {
-    for(auto seqBeg=seq.begin(); getline(prfF,num);) {
-      seq[idx] = stof(num);
-      idx = (idx+1) % wsize;
-      sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.f) +
-             inner_product(winEnd-idx, winEnd,     seqBeg,     0.f));
-      ++seg->pos;
-      seg->partition(pasF, sum/sWeight);
-    }
+    seg->partition(pasF, filtered);
   }
   prfF.close();
 
   // Until half of the window goes outside the array
   const auto offset = idx;
-  if (p.saveFilter) {
-    for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
-      auto seqBeg=seq.begin(), seqEnd=seq.end();
-      if (++idx < wsize+1)
-        sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
-               inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.f));
-      else
-        sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg, 0.f);
-      ++seg->pos;
-      sWeight -= window[wsize-i];
-      filtered = sum/sWeight;
+  for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
+    auto seqBeg=seq.begin(), seqEnd=seq.end();
+    if (++idx < wsize+1)
+      sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
+             inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.f));
+    else
+      sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg, 0.f);
+    ++seg->pos;
+    sWeight -= window[wsize-i];
+    filtered = sum / sWeight;
+    if (SaveFilter)
       filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-      seg->partition(pasF, filtered);
-    }
-  }
-  else {
-    for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
-      auto seqBeg=seq.begin(), seqEnd=seq.end();
-      if (++idx < wsize+1)
-        sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
-               inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.f));
-      else
-        sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg, 0.f);
-      ++seg->pos;
-      sWeight -= window[wsize-i];
-      seg->partition(pasF, sum/sWeight);
-    }
+    seg->partition(pasF, filtered);
   }
   seg->partition_last(pasF);
 
   pasF.close();
-  if (!p.saveFilter)  remove((gen_name(p.ref,p.tar,Format::FILTER)).c_str());
   nSegs = seg->nSegs;
 }
 
 void Filter::extract_seg (const string& tar, const string& ref) const {
-  const string fName {ref+"_"+tar};
-  check_file(fName+FMT_POS);
-  ifstream ff(fName+FMT_POS);
+  check_file(gen_name(ref,tar,Format::POSITION));
+  ifstream ff(gen_name(ref,tar,Format::POSITION));
   string posStr;
+  const auto segName = gen_name(ref,tar,Format::SEGMENT);
   auto subseq = make_shared<SubSeq>();
   subseq->inName = tar;
 
   for (u64 i=0; getline(ff,posStr); ++i) {
     vector<string> posVec;    posVec.reserve(2);
     split(posStr.begin(), posStr.end(), '\t', posVec);
-    subseq->outName = fName+LBL_SEG+to_string(i);
+    subseq->outName = segName+to_string(i);
     subseq->begPos  = stoull(posVec[0]);
     subseq->size    = static_cast<streamsize>(
                         stoull(posVec[1]) - subseq->begPos + 1);
