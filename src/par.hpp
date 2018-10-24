@@ -109,6 +109,15 @@ inline void Param::parse (int argc, char**& argv) {
       error("target file not specified. Use \"-t fileName\".");
     else if (!has_r && !has_ref)
       error("reference file not specified. Use \"-r fileName\".");
+
+    // Fasta/Fastq to bare Seq, if needed
+    switch (file_type(ref)) {
+    case FileType::SEQ:                                      break;
+    case FileType::FASTA:  ref=to_seq(ref,FileType::FASTA);  break;
+    case FileType::FASTQ:  ref=to_seq(ref,FileType::FASTQ);  break;
+    default:               error("\""+ref+"\" has unknown format.");
+    }
+    //todo for tar
   }
 }
 
@@ -130,10 +139,10 @@ inline void Param::help () const {
     << "    Find rearrangements."                                        << '\n'
                                                                          << '\n'
     << "    -r [FILE],  --ref [FILE]"                                    << '\n'
-    << "        reference file -> MANDATORY"                             << '\n'
+    << "        reference file. Can be bare Seq/Fasta/Fastq -> MANDATORY"<< '\n'
                                                                          << '\n'
     << "    -t [FILE],  --tar [FILE]"                                    << '\n'
-    << "        target file -> MANDATORY"                                << '\n'
+    << "        target file. Can be bare Seq/Fasta/Fastq -> MANDATORY"   << '\n'
                                                                          << '\n'
     << "    -l [NUM],  --level [NUM]"                                    << '\n'
     << "        level"                                                   << '\n'

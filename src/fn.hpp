@@ -49,6 +49,10 @@ static string hms (Time elapsed) {
   return to_string(h)+":"+to_string(m)+":"+to_string(s)+" hour:min:sec.\n";
 }
 
+static void ignore_this_line (ifstream& fs) {
+  fs.ignore(numeric_limits<std::streamsize>::max(), '\n');
+}
+
 // Split a range by delim and insert the result into an std::vector
 template <typename InIter, typename Vec>
 static void split (InIter first, InIter last, char delim, Vec& vOut) {
@@ -169,11 +173,11 @@ inline static auto pow2 (T base) {  // Must be inline
   return std::pow(base, static_cast<T>(2));
 }
 
-inline static void check_file (const string& s) {  // Must be inline
-  ifstream f(s);
+inline static void check_file (const string& name) {  // Must be inline
+  ifstream f(name);
   if (!f) {
     f.close();
-    error("the file \"" + s + "\" cannot be opened or is empty.");
+    error("the file \"" + name + "\" cannot be opened or is empty.");
   }
   else {
     bool foundChar {false};
@@ -181,7 +185,7 @@ inline static void check_file (const string& s) {  // Must be inline
       if (c!=' ' && c!='\n' && c!='\t')
         foundChar = true;
     if (!foundChar)
-      error("the file \"" + s + "\" is empty.");
+      error("the file \"" + name + "\" is empty.");
     f.close();
   }
 }
@@ -213,11 +217,68 @@ inline static void extract_subseq (const shared_ptr<SubSeq>& subseq){
 static string gen_name
 (const string& ref, const string& tar, const Format& frmt) {
   switch (frmt) {
-  case Format::PROFILE:   return ref+"-"+tar+FMT_PRF;
-  case Format::FILTER:    return ref+"-"+tar+FMT_FIL;
-  case Format::POSITION:  return ref+"-"+tar+FMT_POS;
-  case Format::SEGMENT:   return ref+"-"+tar+LBL_SEG;
+  case Format::PROFILE:   return ref+"-"+tar+"."+FMT_PRF;
+  case Format::FILTER:    return ref+"-"+tar+"."+FMT_FIL;
+  case Format::POSITION:  return ref+"-"+tar+"."+FMT_POS;
+  case Format::SEGMENT:   return ref+"-"+tar+"-"+LBL_SEG;
   }
+}
+
+static FileType file_type (const string& name) {
+  check_file(name);
+  ifstream f(name);
+  char c;
+  while (f.peek()=='\n' || f.peek()==' ')  f.get(c); //Skip leading blank spaces
+
+  // Fastq
+  while (f.peek()=='@')  ignore_this_line(f);
+  for (u8 nTabs=0; f.get(c) && c!='\n';)  if (c=='\t') ++nTabs;
+  if (f.peek()=='+') { f.close();  return FileType::FASTQ; }
+
+  // Fasta or bare Seq
+  f.clear();  f.seekg(0, std::ios::beg);
+  while (f.peek()!='>' && f.peek()!=EOF)  ignore_this_line(f);
+  if (f.peek()=='>') { f.close();  return FileType::FASTA; }
+  else               { f.close();  return FileType::SEQ;   }
+}
+
+static string to_seq (const string& name, const FileType& type) {
+  ifstream fIn(name);
+  const auto outName = name+"."+FMT_SEQ;
+  ofstream fOut(outName);
+//FILE* fIn = fopen(name.c_str(), "r");
+//  FILE* fOut = fopen(outName.c_str(), "w");
+//  for (char c; fIn.peek()=='\n' || fIn.peek()==' ';) //Skip leading blank spaces
+//    fIn.get(c);
+
+  if (type == FileType::FASTA) {
+    auto bufSize = file_size(name);
+    if (FILE_BUF<bufSize)
+      bufSize=FILE_BUF;
+    for (vector<char> buffer(bufSize,0); fIn;) {
+      fIn.read(buffer.data(), bufSize);
+      string out;
+      bool isHeader = false;
+      for (const auto c : buffer) {
+////      for (int i = 0; i < size; ++i) {
+////        char c=buffer[i];
+        if      (c=='>')  {               isHeader=true;   continue; }
+        else if (c=='\n') { if (isHeader) isHeader=false;  continue; }
+        else if (isHeader)                                 continue;
+//        else if (c<65 || c>122)                            continue;
+        else
+          out += c;
+      }
+//      cerr<<out.size()<<'\n';
+      cerr<<out;
+//      fwrite(out.c_str(), 1, out.size(), fOut);
+//      fOut.write(out.data(), out.size());
+    }
+  }
+//  else if (type==FileType::FASTQ);
+//fclose(fIn);  fclose(fOut);
+  fIn.close();  fOut.close();
+  return outName;
 }
 
 #endif //PROJECT_FN_HPP
