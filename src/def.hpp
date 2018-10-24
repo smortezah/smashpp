@@ -72,6 +72,7 @@ static const string    FMT_PRF      {"prf"}; // Format for inf. profile file
 static const string    FMT_POS      {"pos"}; // Format for positions file
 static const string    FMT_FIL      {"fil"}; // Format for filtered files
 static const string    LBL_SEG      {"s"};   // Label for segment files
+static const string    LBL_BAK      {"_bk"}; // Label for backup files
 static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 static const string    OUT_SEP      {"\n"};

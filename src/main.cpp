@@ -52,10 +52,15 @@ int main (int argc, char* argv[])
       if (!par.saveAll && !par.saveSegment)
         remove((segName+to_string(i)).c_str());
 
-    if (par.refType==FileType::FASTA || par.refType==FileType::FASTQ)
+    // Remove temporary sequences generated from Fasta/Fastq input files
+    if (par.refType==FileType::FASTA || par.refType==FileType::FASTQ) {
       remove(tempRef.c_str());
-    if (par.tarType==FileType::FASTA || par.tarType==FileType::FASTQ)
+      rename((tempRef+LBL_BAK).c_str(), tempRef.c_str());
+    }
+    if (par.tarType==FileType::FASTA || par.tarType==FileType::FASTQ) {
       remove(tempTar.c_str());
+      rename((tempTar+LBL_BAK).c_str(), tempTar.c_str());
+    }
 
 
 
