@@ -67,10 +67,11 @@ static constexpr float DEF_ALPHA    {0.001};// Default alpha for models
 static constexpr float DEF_GAMMA    {0.9};  // Default gamma for multiple models
 static constexpr u8    DEF_PRF_PREC {3};  // Precisions for floats in Inf. prof
 static constexpr u8    DEF_FIL_PREC {3};  // Precisions for floats in filt. file
-static const string    FMT_PRF      {".prf"};  // Format for inf. profile file
-static const string    FMT_POS      {".pos"};  // Format for positions file
-static const string    FMT_FIL      {".fil"};  // Format for filtered files
-static const string    LBL_SEG      {"-s"};    // Label for segment files
+static const string    FMT_SEQ      {"seq"}; // Format for bare seq file
+static const string    FMT_PRF      {"prf"}; // Format for inf. profile file
+static const string    FMT_POS      {"pos"}; // Format for positions file
+static const string    FMT_FIL      {"fil"}; // Format for filtered files
+static const string    LBL_SEG      {"s"};   // Label for segment files
 static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 static const string    OUT_SEP      {"\n"};
@@ -93,7 +94,8 @@ enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8}; //Data structs
 //enum class Mode {MM, STMM};
 enum class WType     {RECTANGULAR, HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH,
                       SINE, NUTTALL};  // Types of windowing function
-enum class Format    {PROFILE, FILTER, POSITION, SEGMENT};// todo
+enum class Format    {PROFILE, FILTER, POSITION, SEGMENT};
+enum class FileType  {SEQ, FASTA, FASTQ};
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n

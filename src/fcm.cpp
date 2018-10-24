@@ -195,7 +195,7 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  //char c;
   Mask ctx=0;
   for (vector<char> buffer(FILE_BUF,0); rf.read(buffer.data(),FILE_BUF);) {
-  for(const auto c : buffer){
+  for (const auto c : buffer){
 //    mut.lock();//todo
 //    ++symsProcessed;
 //    mut.unlock();
@@ -241,7 +241,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
 
   if (Ms[0].ir == 0) {
     for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {
-    for(const auto c : buffer) {
+    for (const auto c : buffer) {
 //    while (tf.get(c)) { // Slower
       if (c!='N' && c!='\n') {
         ++symsNo;
@@ -258,7 +258,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
   }
   else {  // With inv. rep.
     for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {
-    for(const auto c : buffer) {
+    for (const auto c : buffer) {
 //    while (tf.get(c)) { // Slower
       if (c!='N' && c!='\n') {
         ++symsNo;
@@ -303,7 +303,7 @@ inline void FCM::compress_n (const Param& par) {
   }
 
   for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {
-  for(const auto c : buffer) {
+  for (const auto c : buffer) {
 //  while (tf.get(c)) { // Slower
     if (c!='N' && c!='\n') {
       ++symsNo;
