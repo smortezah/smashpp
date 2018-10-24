@@ -242,47 +242,63 @@ static FileType file_type (const string& name) {
   else               { f.close();  return FileType::SEQ;   }
 }
 
-static string to_seq (const string& name, const FileType& type) {
-  ifstream fIn(name);
-  const auto outName = name+"."+FMT_SEQ;
+//static string to_seq (const string& name, const FileType& type) {
+template <typename Par>
+static void to_seq (Par p, const string& RefTar) {
+  string inName, outName;
+  if (RefTar == "ref") {
+    inName = p.ref;
+    if (p.refType == FileType::SEQ) {
+      p.ref = inName + "." + FMT_SEQ;
+      return;
+    }
+    else if (p.refType == FileType::FASTA)
+  }
+
+
+
+//  const auto outName = p.ref+"."+FMT_SEQ;
+
+
+  ifstream fIn(inName);
   ofstream fOut(outName);
 
-  if (type == FileType::FASTA) {
-    for (vector<char> buffer(FILE_BUF,0); fIn;) {
-      fIn.read(buffer.data(), FILE_BUF);
-      bool isHeader = false;
-      string out;
-      for (const auto c : buffer) {
-        if      (c=='>')  {               isHeader=true;   continue; }
-        else if (c=='\n') { if (isHeader) isHeader=false;  continue; }
-        else if (isHeader)                                 continue;
-        else if (c>64 && c<123)
-          out += c;
-      }
-      fOut.write(out.data(), out.size());
-    }
-  }
-  else if (type == FileType::FASTQ) {
-    u8   line  = 0;
-    bool isDNA = false;
-    for (vector<char> buffer(FILE_BUF,0); fIn;) {
-      fIn.read(buffer.data(), FILE_BUF);
-      string out;
-      for (const auto c : buffer) {
-        switch (line) {
-        case 0:  if (c=='\n') { line=1;  isDNA=true;  }  break;
-        case 1:  if (c=='\n') { line=2;  isDNA=false; }  break;
-        case 2:  if (c=='\n') { line=3;  isDNA=false; }  break;
-        case 3:  if (c=='\n') { line=0;  isDNA=false; }  break;
-        default:                                         break;
-        }
-        if (!isDNA || c=='\n')  continue;
-        if (c>64 && c<123)
-          out += c;
-      }
-      fOut.write(out.data(), out.size());
-    }
-  }
+//  if (type == FileType::FASTA) {
+//    for (vector<char> buffer(FILE_BUF,0); fIn;) {
+//      fIn.read(buffer.data(), FILE_BUF);
+//      bool isHeader = false;
+//      string out;
+//      for (const auto c : buffer) {
+//        if      (c=='>')  {               isHeader=true;   continue; }
+//        else if (c=='\n') { if (isHeader) isHeader=false;  continue; }
+//        else if (isHeader)                                 continue;
+//        else if (c>64 && c<123)
+//          out += c;
+//      }
+//      fOut.write(out.data(), out.size());
+//    }
+//  }
+//  else if (type == FileType::FASTQ) {
+//    u8   line  = 0;
+//    bool isDNA = false;
+//    for (vector<char> buffer(FILE_BUF,0); fIn;) {
+//      fIn.read(buffer.data(), FILE_BUF);
+//      string out;
+//      for (const auto c : buffer) {
+//        switch (line) {
+//        case 0:  if (c=='\n') { line=1;  isDNA=true;  }  break;
+//        case 1:  if (c=='\n') { line=2;  isDNA=false; }  break;
+//        case 2:  if (c=='\n') { line=3;  isDNA=false; }  break;
+//        case 3:  if (c=='\n') { line=0;  isDNA=false; }  break;
+//        default:                                         break;
+//        }
+//        if (!isDNA || c=='\n')  continue;
+//        if (c>64 && c<123)
+//          out += c;
+//      }
+//      fOut.write(out.data(), out.size());
+//    }
+//  }
 
   fIn.close();  fOut.close();
   return outName;
