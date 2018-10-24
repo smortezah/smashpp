@@ -113,21 +113,30 @@ inline void Param::parse (int argc, char**& argv) {
       error("reference file not specified. Use \"-r fileName\".");
 
     // Fasta/Fastq to bare Seq
+    auto gen_name_backup = [=] (const string& s)->string { return s+LBL_BAK;};
     refType = file_type(ref);
-    to_seq(this, "ref");
+    if (refType == FileType::FASTA) {
+      const string refBackup = gen_name_backup(ref);
+      rename(ref.c_str(), refBackup.c_str());
+      to_seq(refBackup, ref, FileType::FASTA);
+    } else if (refType == FileType::FASTQ) {
+      const string refBackup = gen_name_backup(ref);
+      rename(ref.c_str(), refBackup.c_str());
+      to_seq(refBackup, ref, FileType::FASTQ);
+    } else if (refType != FileType::SEQ)
+      error("\"" + ref + "\" has unknown format.");
 
-//    switch (refType = file_type(ref)) {
-//    case FileType::SEQ:                                      break;
-//    case FileType::FASTA:  ref=to_seq(ref,FileType::FASTA);  break;
-//    case FileType::FASTQ:  ref=to_seq(ref,FileType::FASTQ);  break;
-//    default:               error("\""+ref+"\" has unknown format.");
-//    }
-//    switch (tarType = file_type(tar)) {
-//    case FileType::SEQ:                                      break;
-//    case FileType::FASTA:  tar=to_seq(tar,FileType::FASTA);  break;
-//    case FileType::FASTQ:  tar=to_seq(tar,FileType::FASTQ);  break;
-//    default:               error("\""+tar+"\" has unknown format.");
-//    }
+    tarType = file_type(tar);
+    if (tarType == FileType::FASTA) {
+      const string tarBackup = gen_name_backup(tar);
+      rename(tar.c_str(), tarBackup.c_str());
+      to_seq(tarBackup, tar, FileType::FASTA);
+    } else if (tarType == FileType::FASTQ) {
+      const string tarBackup = gen_name_backup(tar);
+      rename(tar.c_str(), tarBackup.c_str());
+      to_seq(tarBackup, tar, FileType::FASTQ);
+    } else if (tarType != FileType::SEQ)
+      error("\"" + tar + "\" has unknown format.");
   }
 }
 
