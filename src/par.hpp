@@ -14,20 +14,22 @@
 class Param    // Parameters
 {
  public:
-  string tar;
-  string ref;
-  u8     level /*:BIT_LEVEL*/;
-  bool   verbose;
-  u8     nthr  /*:BIT_THREAD*/;
-  string modelsPars;
-  u32    wsize /*:BIT_WSIZE*/;
-  string wtype;
-  float  thresh;
-  bool   saveProfile;
-  bool   saveFilter;
-  bool   saveSegment;
-  bool   saveAll;
-  string report;
+  string   tar;
+  string   ref;
+  u8       level /*:BIT_LEVEL*/;
+  bool     verbose;
+  u8       nthr  /*:BIT_THREAD*/;
+  string   modelsPars;
+  u32      wsize /*:BIT_WSIZE*/;
+  string   wtype;
+  float    thresh;
+  bool     saveProfile;
+  bool     saveFilter;
+  bool     saveSegment;
+  bool     saveAll;
+  FileType refType;
+  FileType tarType;
+  string   report;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
@@ -110,14 +112,22 @@ inline void Param::parse (int argc, char**& argv) {
     else if (!has_r && !has_ref)
       error("reference file not specified. Use \"-r fileName\".");
 
-    // Fasta/Fastq to bare Seq, if needed
-    switch (file_type(ref)) {
-    case FileType::SEQ:                                      break;
-    case FileType::FASTA:  ref=to_seq(ref,FileType::FASTA);  break;
-    case FileType::FASTQ:  ref=to_seq(ref,FileType::FASTQ);  break;
-    default:               error("\""+ref+"\" has unknown format.");
-    }
-    //todo for tar
+    // Fasta/Fastq to bare Seq
+    refType = file_type(ref);
+    to_seq(this, "ref");
+
+//    switch (refType = file_type(ref)) {
+//    case FileType::SEQ:                                      break;
+//    case FileType::FASTA:  ref=to_seq(ref,FileType::FASTA);  break;
+//    case FileType::FASTQ:  ref=to_seq(ref,FileType::FASTQ);  break;
+//    default:               error("\""+ref+"\" has unknown format.");
+//    }
+//    switch (tarType = file_type(tar)) {
+//    case FileType::SEQ:                                      break;
+//    case FileType::FASTA:  tar=to_seq(tar,FileType::FASTA);  break;
+//    case FileType::FASTQ:  tar=to_seq(tar,FileType::FASTQ);  break;
+//    default:               error("\""+tar+"\" has unknown format.");
+//    }
   }
 }
 
