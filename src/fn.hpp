@@ -197,7 +197,7 @@ inline static u64 file_size (const string& s) {
 }
 
 // Must be inline
-inline static void extract_subseq (const shared_ptr<SubSeq>& subseq){
+inline static void extract_subseq (const shared_ptr<SubSeq>& subseq) {
   ifstream fIn(subseq->inName);
   ofstream fOut(subseq->outName);
 
@@ -242,17 +242,18 @@ static FileType file_type (const string& name) {
   else               { f.close();  return FileType::SEQ;   }
 }
 
-static void to_seq
+static void to_seq//todo
 (const string& inName, const string& outName, const FileType& type) {
   ifstream fIn(inName);
   ofstream fOut(outName);
 
   if (type == FileType::FASTA) {
+    bool isHeader = false;  // MUST be positioned before the following loop
     for (vector<char> buffer(FILE_BUF,0); fIn;) {
       fIn.read(buffer.data(), FILE_BUF);
-      bool isHeader = false;
       string out;
-      for (const auto c : buffer) {
+      for (auto it=buffer.begin(); it!=buffer.begin()+fIn.gcount(); ++it) {
+        const auto c = *it;
         if      (c=='>')  {               isHeader=true;   continue; }
         else if (c=='\n') { if (isHeader) isHeader=false;  continue; }
         else if (isHeader)                                 continue;
@@ -263,12 +264,13 @@ static void to_seq
     }
   }
   else if (type == FileType::FASTQ) {
-    u8   line  = 0;
-    bool isDNA = false;
+    u8   line  = 0;      // MUST be positioned before the following loop
+    bool isDNA = false;  // MUST be positioned before the following loop
     for (vector<char> buffer(FILE_BUF,0); fIn;) {
       fIn.read(buffer.data(), FILE_BUF);
       string out;
-      for (const auto c : buffer) {
+      for (auto it=buffer.begin(); it!=buffer.begin()+fIn.gcount(); ++it) {
+        const auto c = *it;
         switch (line) {
         case 0:  if (c=='\n') { line=1;  isDNA=true;  }  break;
         case 1:  if (c=='\n') { line=2;  isDNA=false; }  break;

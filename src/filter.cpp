@@ -309,21 +309,16 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
 void Filter::extract_seg (const string& tar, const string& ref) const {
   check_file(gen_name(ref,tar,Format::POSITION));
   ifstream ff(gen_name(ref,tar,Format::POSITION));
-  string posStr;
   const auto segName = gen_name(ref,tar,Format::SEGMENT);
-  auto subseq = make_shared<SubSeq>();
-  subseq->inName = tar;
-
-  for (u64 i=0; getline(ff,posStr); ++i) {
-    vector<string> posVec;    posVec.reserve(2);
-    split(posStr.begin(), posStr.end(), '\t', posVec);
+  auto subseq        = make_shared<SubSeq>();
+  subseq->inName     = tar;
+  u64 i              = 0;
+  for (string beg, end; ff>>beg>>end; ++i) {
     subseq->outName = segName+to_string(i);
-    subseq->begPos  = stoull(posVec[0]);
-    subseq->size    = static_cast<streamsize>(
-                        stoull(posVec[1]) - subseq->begPos + 1);
+    subseq->begPos  = stoull(beg);
+    subseq->size    = static_cast<streamsize>(stoull(end)-subseq->begPos+1);
     extract_subseq(subseq);
   }
-
   ff.close();
 }
 
