@@ -14,7 +14,7 @@ mutex mut;//todo
 
 FCM::FCM (const Param& p) {
   aveEnt = static_cast<prec_t>(0);
-  symsProcessed = 0ull;//todo
+//  symsProcessed = 0ull;//todo
   config(p);
   if (p.verbose)
     show_in(p);
@@ -198,10 +198,8 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
     rf.read(buffer.data(), FILE_BUF);
     for (auto it=buffer.begin(); it!=buffer.begin()+rf.gcount(); ++it) {
       const auto c = *it;
-//    mut.lock();//todo
-//    ++symsProcessed;
-//    mut.unlock();
-//  for (Mask ctx=0; rf.get(c);) { // Slower
+//    mut.lock();  ++symsProcessed;  mut.unlock();//todo
+//    for (Mask ctx=0; rf.get(c);) { // Slower
       if (c!='N' && c!='\n') {
         ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];
         (*cont)->update(ctx);
@@ -225,7 +223,7 @@ void FCM::compress (const Param& p) {
     compress_n(p);
 
   cerr << "Done!\n";
-  if (p.verbose)
+//  if (p.verbose)
     cerr << "Average Entropy = "
          << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps\n";
 }
@@ -240,6 +238,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
   ofstream pf(gen_name(par.ref, par.tar, Format::PROFILE));
   ProbPar  pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
               static_cast<u8>(Ms[0].k<<1u)};
+  const auto totalSize = file_size(par.tar);
 
   if (Ms[0].ir == 0) {
     for (vector<char> buffer(FILE_BUF,0); tf;) {
@@ -256,6 +255,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
           pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
           sumEnt += entr;
           update_ctx(ctx, &pp);
+          show_progress(symsNo, totalSize);
         }
       }
     }
@@ -275,10 +275,12 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
           pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
           sumEnt += entr;
           update_ctx_ir(ctx, ctxIr, &pp);
+          show_progress(symsNo, totalSize);
         }
       }
     }
   }
+  remove_progress_trace();
   tf.close();  pf.close();
   aveEnt = sumEnt/symsNo;
 }
@@ -307,6 +309,7 @@ inline void FCM::compress_n (const Param& par) {
     if (mm.child)  cp->pp.emplace_back(
                      mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
   }
+  const auto totalSize = file_size(par.tar);
 
   for (vector<char> buffer(FILE_BUF,0); tf;) {
     tf.read(buffer.data(), FILE_BUF);
@@ -341,9 +344,11 @@ inline void FCM::compress_n (const Param& par) {
 ////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
 
         sumEnt += ent;
+        show_progress(symsNo, totalSize);
       }
     }
   }
+  remove_progress_trace();
   tf.close();  pf.close();
   aveEnt = sumEnt/symsNo;
 }

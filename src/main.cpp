@@ -23,16 +23,17 @@ int main (int argc, char* argv[])
 {
   try {
     const auto t0{now()};
-//    Param par;
-//    par.parse(argc, argv);              // Parse the command
-//    const auto tempRef=par.ref, tempTar=par.tar;
-//    auto models = make_shared<FCM>(par);// Equiv to auto* models = new FCM(par);
-//    models->store(par);                 // Build models
+    Param par;
+    par.parse(argc, argv);              // Parse the command
+    const auto tempRef=par.ref, tempTar=par.tar;
+    auto models = make_shared<FCM>(par);// Equiv to auto* models = new FCM(par);
+    models->store(par);                 // Build models
 //    models->compress(par);              // Compress
 //    auto filter = make_shared<Filter>(par);
 //    filter->smooth_seg(par);            // Filter and segment
 //    filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
-//
+
+//    cerr <<"\n===[ Building reference map for each target pattern ]=========\n";
 //    // Consider the ref as new tar and the tar segments as new refs
 //    const auto newTar  = par.ref;
 //    const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
@@ -60,25 +61,6 @@ int main (int argc, char* argv[])
 //      remove(tempTar.c_str());
 //      rename((tempTar+LBL_BAK).c_str(), tempTar.c_str());
 //    }
-
-
-    to_seq("mori","mori2",FileType::FASTA);
-//ifstream f("mori");
-//constexpr int size=4;
-//    for (vector<char> buffer(size,0); f;) {
-//      f.read(buffer.data(),size);
-//      cerr << f.gcount()<<' ';
-//      string out;
-//      for (auto b=buffer.begin(); b!=buffer.begin()+f.gcount(); ++b) {
-////        for (const auto c : buffer){
-//        if (*b!='\n')
-//          out += *b;
-////          out += c;
-//      }
-////      cerr<<'*';
-//      cerr<<out<<'*';
-//    }
-//f.close();
 
 
 

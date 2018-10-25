@@ -11,10 +11,11 @@
 #include <numeric>
 #include <cmath>
 #include <memory>
+#include <iterator>
 #include "def.hpp"
 
 template <typename Input>
-static bool is_u8 (Input&& in) {
+inline static bool is_u8 (Input&& in) {
   return typeid(in)==typeid(u8);
 }
 
@@ -38,7 +39,7 @@ noexcept {
 }
 
 template <typename Time>
-static string hms (Time elapsed) {
+inline static string hms (Time elapsed) {
 //  std::chrono::duration<double, std::milli> ms = elapsed;
   const auto durSec =
     chrono::duration_cast<std::chrono::seconds>(elapsed).count();
@@ -49,13 +50,13 @@ static string hms (Time elapsed) {
   return to_string(h)+":"+to_string(m)+":"+to_string(s)+" hour:min:sec.\n";
 }
 
-static void ignore_this_line (ifstream& fs) {
+inline static void ignore_this_line (ifstream& fs) {
   fs.ignore(numeric_limits<std::streamsize>::max(), '\n');
 }
 
 // Split a range by delim and insert the result into an std::vector
 template <typename InIter, typename Vec>
-static void split (InIter first, InIter last, char delim, Vec& vOut) {
+inline static void split (InIter first, InIter last, char delim, Vec& vOut) {
   while (true) {
     InIter found = std::find(first, last, delim);
     vOut.emplace_back(string(first,found));
@@ -78,7 +79,7 @@ inline static void err (const string& msg) {
 }
 
 template <typename Iter, typename Element>
-static bool has (Iter first, Iter last, Element elem) {
+inline static bool has (Iter first, Iter last, Element elem) {
   return std::find(first, last, elem) != last;
 }
 
@@ -94,7 +95,7 @@ static u8 pop_count (VecIter first, u8 len) {  // Number of ones in a bool array
 }
 #else
 template <typename Digit>
-static u8 pop_count (Digit d) {  // Number of ones in a digit
+inline static u8 pop_count (Digit d) {  // Number of ones in a digit
   u8 n = 0;
   for (; d; ++n)  d &= d-1;  // First impl. Kernighan. Clear the LSB set
 //  do { if (d & 1) ++n; } while (d >>= 1); // Second impl. Negative nums?
@@ -103,24 +104,24 @@ static u8 pop_count (Digit d) {  // Number of ones in a digit
 #endif
 
 template <typename Iter, typename Value>
-static bool are_all (Iter first, Value val) {
+inline static bool are_all (Iter first, Value val) {
   return std::all_of(first, first+CARDIN,
                      [val](u64 i){ return i==static_cast<u64>(val); });
 }
 
 template <typename Iter, typename Value>
-static bool is_any (Iter first, Value val) {
+inline static bool is_any (Iter first, Value val) {
   return std::any_of(first, first+CARDIN,
                      [val](u64 i){ return i==static_cast<u64>(val); });
 }
 
 template <typename Iter>
-static bool are_all_zero (Iter first) {
+inline static bool are_all_zero (Iter first) {
   return std::all_of(first, first+CARDIN, [](u64 i){ return i==0; });
 }
 
 template <typename Iter>
-static bool has_multi_max (Iter first) {
+inline static bool has_multi_max (Iter first) {
   auto last = first + CARDIN;
   for (const auto max_pos=std::max_element(first,last); last-- != first;)
     if (*last==*max_pos && last!=max_pos)
@@ -129,7 +130,7 @@ static bool has_multi_max (Iter first) {
 }
 
 template <typename Iter, typename PosIter>
-static bool has_multi_max (Iter first, PosIter maxPos) {
+inline static bool has_multi_max (Iter first, PosIter maxPos) {
   for (auto last=first+CARDIN; last-- != first;)
     if (*last==*maxPos && last!=maxPos)
       return true;
@@ -137,12 +138,12 @@ static bool has_multi_max (Iter first, PosIter maxPos) {
 }
 
 template <typename Iter>
-static u8 best_sym (Iter first) {
+inline static u8 best_sym (Iter first) {
   return static_cast<u8>(*std::max_element(first, first+CARDIN));
 }
 
 template <typename Iter>
-static u8 best_sym_abs (Iter first) {
+inline static u8 best_sym_abs (Iter first) {
   const auto max_pos = std::max_element(first, first+CARDIN);
   return static_cast<u8>(has_multi_max(first, max_pos) ? 255 : max_pos-first);
 }
@@ -154,7 +155,7 @@ static u8 best_sym_abs (Iter first) {
 //    *first /= sum;    // *first = *first / sum;
 //}
 template <typename OutIter, typename InIter>
-static void normalize (OutIter oFirst, InIter iFirst, InIter iLast) {
+inline static void normalize (OutIter oFirst, InIter iFirst, InIter iLast) {
   const auto sumInv =
     static_cast<prec_t>(1)/std::accumulate(iFirst,iLast,static_cast<prec_t>(0));
   for (; iFirst!=iLast; ++iFirst,++oFirst)
@@ -162,7 +163,7 @@ static void normalize (OutIter oFirst, InIter iFirst, InIter iLast) {
 }
 
 template <typename Value>
-static bool is_odd (Value val) {
+inline static bool is_odd (Value val) {
   if (val < 0)
     error("\"" + to_string(val) + "\" is a negative number.");
   return (val & 1ull);
@@ -190,10 +191,17 @@ inline static void check_file (const string& name) {  // Must be inline
   }
 }
 
-inline static u64 file_size (const string& s) {
-  check_file(s);
-  ifstream f(s, ifstream::ate | ifstream::binary);
+inline static u64 file_size (const string& name) {
+  check_file(name);
+  ifstream f(name, ifstream::ate | ifstream::binary);
   return static_cast<u64>(f.tellg());
+}
+
+inline static u64 file_lines (const string& name) {
+  ifstream f(name);
+  f.unsetf(ios_base::skipws);  // New lines will be skipped unless we stop it
+  return static_cast<u64>(
+    std::count(istream_iterator<char>(f), istream_iterator<char>(), '\n'));
 }
 
 // Must be inline
@@ -214,7 +222,7 @@ inline static void extract_subseq (const shared_ptr<SubSeq>& subseq) {
 //    fOut << c;
 }
 
-static string gen_name
+inline static string gen_name
 (const string& ref, const string& tar, const Format& frmt) {
   switch (frmt) {
   case Format::PROFILE:   return ref+"-"+tar+"."+FMT_PRF;
@@ -224,7 +232,7 @@ static string gen_name
   }
 }
 
-static FileType file_type (const string& name) {
+inline static FileType file_type (const string& name) {
   check_file(name);
   ifstream f(name);
   char c;
@@ -242,7 +250,7 @@ static FileType file_type (const string& name) {
   else               { f.close();  return FileType::SEQ;   }
 }
 
-static void to_seq//todo
+inline static void to_seq
 (const string& inName, const string& outName, const FileType& type) {
   ifstream fIn(inName);
   ofstream fOut(outName);
@@ -287,6 +295,18 @@ static void to_seq//todo
   }
 
   fIn.close();  fOut.close();
+}
+
+template <typename P, typename T>
+inline static void show_progress (P pos, T total) {
+  if (pos % (total/100) == 0) {
+    cerr << "[" << static_cast<int>((pos*100) / total) << "%] progress\r";
+//    flush(cerr);
+  }
+}
+
+inline static void remove_progress_trace () {
+  cerr << string(20, ' ') << '\r';  // Remove the trace of [...%] progress
 }
 
 #endif //PROJECT_FN_HPP

@@ -30,12 +30,12 @@ class FCM    // Finite-context models
   vector<shared_ptr<Table32>>   tbl32;
   vector<shared_ptr<LogTable8>> lgtbl8;
   vector<shared_ptr<CMLS4>>     cmls4;
-  u64 symsProcessed;//todo
-  
-  void config (const Param&);      // Set models parameters
+//  u64  symsProcessed;//todo
+
+  void config (const Param&);       // Set models parameters
   void set_cont ();
   void show_in (const Param&) const;// Show inputs on the screen
-  void alloc_model ();                  // Allocate memory to models
+  void alloc_model ();              // Allocate memory to models
 
   void store_1 (const Param&);      // Build models one thread
   void store_n (const Param&);      // Build models multiple threads
