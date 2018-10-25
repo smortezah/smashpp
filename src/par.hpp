@@ -229,13 +229,13 @@ inline void Param::help () const {
 }
 
 inline string Param::print_win_type () const {
-  if      (wtype=="0" || wtype=="rectangular")    return "rectangular";
+  if      (wtype=="0" || wtype=="rectangular")    return "Rectangular";
   else if (wtype=="1" || wtype=="hamming")        return "Hamming";
   else if (wtype=="2" || wtype=="hann")           return "Hann";
   else if (wtype=="3" || wtype=="blackman")       return "Blackman";
-  else if (wtype=="4" || wtype=="triangular")     return "triangular";
+  else if (wtype=="4" || wtype=="triangular")     return "Triangular";
   else if (wtype=="5" || wtype=="welch")          return "Welch";
-  else if (wtype=="6" || wtype=="sine")           return "sine";
+  else if (wtype=="6" || wtype=="sine")           return "Sine";
   else if (wtype=="7" || wtype=="nuttall")        return "Nuttall";
 
   return "rectangular";
