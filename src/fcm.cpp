@@ -65,44 +65,130 @@ inline void FCM::set_cont () {
     else                            m.cont = Container::TABLE_64;
   }
 }
+//
+//inline void FCM::show_in (const Param& p) const {
+//  for (auto i=0u, j=0u; i != Ms.size(); ++i) {
+//    cerr
+//      << "Model " << i+1 << ':'                                          <<'\n'
+//      << "  [+] Context order ............ " << (int)Ms[i].k             <<'\n';
+//    if (Ms[i].w)  cerr
+//      << "  [+] Width of sketch .......... " << Ms[i].w                  <<'\n';
+//    if (Ms[i].d)  cerr
+//      << "  [+] Depth of sketch .......... " << (int)Ms[i].d             <<'\n';
+//    cerr
+//      << "  [+] Inverted repeats ......... " << (Ms[i].ir ? "yes" : "no")<<'\n'
+//      << "  [+] Alpha .................... " << Ms[i].alpha              <<'\n'
+//      << "  [+] Gamma .................... " << Ms[i].gamma              <<'\n'
+//                                                                         <<'\n';
+//    if (Ms[i].child) {
+//      cerr
+//      << "Substitutional Tolerant Model, based on Model " << i+1 << ':'  <<'\n'
+//      << "  [+] Substitutions allowed .... " << (int)TMs[j].thresh       <<'\n'
+//      << "  [+] Inverted repeats ......... " << (TMs[j].ir ? "yes":"no") <<'\n'
+//      << "  [+] Alpha .................... " << TMs[j].alpha             <<'\n'
+//      << "  [+] Gamma .................... " << TMs[j].gamma             <<'\n'
+//                                                                         <<'\n';
+//      ++j;
+//    }
+//  }
+//  cerr<< "Reference file:"                                               <<'\n'
+//      << "  [+] Name ..................... " << p.ref                    <<'\n'
+//      << "  [+] Size (bytes) ............. " << file_size(p.ref)         <<'\n'
+//                                                                         <<'\n'
+//      << "Target file:"                                                  <<'\n'
+//      << "  [+] Name ..................... " << p.tar                    <<'\n'
+//      << "  [+] Size (bytes) ............. " << file_size(p.tar)         <<'\n'
+//                                                                         <<'\n'
+//      << "Filter and segment:"                                           <<'\n'
+//      << "  [+] Windowing function ....... " << p.print_win_type()       <<'\n'
+//      << "  [+] Window size .............. " << p.wsize                  <<'\n'
+//      << "  [+] Threshold ................ " << p.thresh                 <<'\n';
+//}
 
 inline void FCM::show_in (const Param& p) const {
-  for (auto i=0u, j=0u; i != Ms.size(); ++i) {
-    cerr
-      << "Model " << i+1 << ':'                                          <<'\n'
-      << "  [+] Context order ............ " << (int)Ms[i].k             <<'\n';
-    if (Ms[i].w)  cerr
-      << "  [+] Width of sketch .......... " << Ms[i].w                  <<'\n';
-    if (Ms[i].d)  cerr
-      << "  [+] Depth of sketch .......... " << (int)Ms[i].d             <<'\n';
-    cerr
-      << "  [+] Inverted repeats ......... " << (Ms[i].ir ? "yes" : "no")<<'\n'
-      << "  [+] Alpha .................... " << Ms[i].alpha              <<'\n'
-      << "  [+] Gamma .................... " << Ms[i].gamma              <<'\n'
-                                                                         <<'\n';
-    if (Ms[i].child) {
-      cerr
-      << "Substitutional Tolerant Model, based on Model " << i+1 << ':'  <<'\n'
-      << "  [+] Substitutions allowed .... " << (int)TMs[j].thresh       <<'\n'
-      << "  [+] Inverted repeats ......... " << (TMs[j].ir ? "yes":"no") <<'\n'
-      << "  [+] Alpha .................... " << TMs[j].alpha             <<'\n'
-      << "  [+] Gamma .................... " << TMs[j].gamma             <<'\n'
-                                                                         <<'\n';
-      ++j;
-    }
+  constexpr int firstWidth = 21;
+  constexpr int colWidth = 7;
+
+  cerr << string(firstWidth + Ms.size()*colWidth, '=') << '\n';
+  cerr << setw(firstWidth) << left << "Models";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    cerr << setw(7) << left << i + 1;
   }
-  cerr<< "Reference file:"                                               <<'\n'
-      << "  [+] Name ..................... " << p.ref                    <<'\n'
-      << "  [+] Size (bytes) ............. " << file_size(p.ref)         <<'\n'
-                                                                         <<'\n'
-      << "Target file:"                                                  <<'\n'
-      << "  [+] Name ..................... " << p.tar                    <<'\n'
-      << "  [+] Size (bytes) ............. " << file_size(p.tar)         <<'\n'
-                                                                         <<'\n'
-      << "Filter and segment:"                                           <<'\n'
-      << "  [+] Windowing function ....... " << p.print_win_type()       <<'\n'
-      << "  [+] Window size .............. " << p.wsize                  <<'\n'
-      << "  [+] Threshold ................ " << p.thresh                 <<'\n';
+  cerr << '\n' << string(firstWidth + Ms.size()*colWidth, '-') << '\n';
+  cerr<<setw(firstWidth) << left <<"Context order";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    cerr << setw(7) << left << int(Ms[i].k);
+  }
+  cerr << '\n';
+  cerr<<setw(firstWidth) << left <<"Width of sketch";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    cerr << setw(7) << left << Ms[i].w;
+  }
+  cerr << '\n';
+  cerr<<setw(firstWidth) << left <<"Depth of sketch";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    cerr << setw(7) << left << int(Ms[i].d);
+  }
+  cerr << '\n';
+  cerr<<setw(firstWidth) << left <<"Inverted repeats";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    cerr << setw(7) << left << (Ms[i].ir ? "yes" : "no");
+  }
+  cerr << '\n';
+  cerr<<setw(firstWidth) << left <<"Alpha";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    cerr << setw(7) << left << Ms[i].alpha;
+  }
+  cerr << '\n';
+  cerr<<setw(firstWidth) << left <<"Gamma";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    cerr << setw(7) << left << Ms[i].gamma;
+  }
+  cerr << '\n' << string(firstWidth + Ms.size()*colWidth, '=') << '\n';
+
+  constexpr char blank = '-';
+//  cerr << '\n';
+  cerr << '\n' << string(firstWidth + Ms.size()*colWidth, '=') << '\n';
+  cerr << setw(firstWidth) << left << "Substitute Models";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    if (Ms[i].child)
+      cerr << setw(7) << left << i + 1;
+    else
+      cerr << setw(7) << left << blank;
+  }
+  cerr << '\n' << string(firstWidth + Ms.size() * colWidth, '-') << '\n';
+  cerr << setw(firstWidth) << left << "No. Substitutes";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    if (Ms[i].child)
+      cerr << setw(7) << left << int(TMs[j].thresh);
+    else
+      cerr << setw(7) << left << blank;
+  }
+  cerr << '\n';
+  cerr << setw(firstWidth) << left << "Inverted repeats";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    if (Ms[i].child)
+      cerr << setw(7) << left << (TMs[j].ir ? "yes" : "no");
+    else
+      cerr << setw(7) << left << blank;
+  }
+  cerr << '\n';
+  cerr << setw(firstWidth) << left << "Alpha";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    if (Ms[i].child)
+      cerr << setw(7) << left << TMs[j].alpha;
+    else
+      cerr << setw(7) << left << blank;
+  }
+  cerr << '\n';
+  cerr << setw(firstWidth) << left << "Gamma";
+  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
+    if (Ms[i].child)
+      cerr << setw(7) << left << TMs[j].gamma;
+    else
+      cerr << setw(7) << left << blank;
+  }
+  cerr << '\n' << string(firstWidth + Ms.size()*colWidth, '=');
 }
 
 inline void FCM::alloc_model () {
