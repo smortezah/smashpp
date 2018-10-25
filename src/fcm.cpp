@@ -194,17 +194,19 @@ template <typename Mask, typename ContIter /*Container iterator*/>
 inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  //char c;
   Mask ctx=0;
-  for (vector<char> buffer(FILE_BUF,0); rf.read(buffer.data(),FILE_BUF);) {//todo
-  for (const auto c : buffer){
+  for (vector<char> buffer(FILE_BUF,0); rf;) {
+    rf.read(buffer.data(), FILE_BUF);
+    for (auto it=buffer.begin(); it!=buffer.begin()+rf.gcount(); ++it) {
+      const auto c = *it;
 //    mut.lock();//todo
 //    ++symsProcessed;
 //    mut.unlock();
 //  for (Mask ctx=0; rf.get(c);) { // Slower
-    if (c!='N' && c!='\n') {
-      ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];
-      (*cont)->update(ctx);
+      if (c!='N' && c!='\n') {
+        ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];
+        (*cont)->update(ctx);
+      }
     }
-  }
   }
   rf.close();
 }
@@ -240,37 +242,41 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
               static_cast<u8>(Ms[0].k<<1u)};
 
   if (Ms[0].ir == 0) {
-    for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {//todo
-    for (const auto c : buffer) {
-//    while (tf.get(c)) { // Slower
-      if (c!='N' && c!='\n') {
-        ++symsNo;
-        pp.config(c, ctx);
-        array<decltype((*cont)->query(0)),4> f {};
-        freqs(f, cont, pp.l);
-        const auto entr = entropy(prob(f.begin(), &pp));
-        pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
-        sumEnt += entr;
-        update_ctx(ctx, &pp);
+    for (vector<char> buffer(FILE_BUF,0); tf;) {
+      tf.read(buffer.data(), FILE_BUF);
+      for (auto it=buffer.begin(); it!=buffer.begin()+tf.gcount(); ++it) {
+        const auto c = *it;
+//      while (tf.get(c)) { // Slower
+        if (c!='N' && c!='\n') {
+          ++symsNo;
+          pp.config(c, ctx);
+          array<decltype((*cont)->query(0)),4> f {};
+          freqs(f, cont, pp.l);
+          const auto entr = entropy(prob(f.begin(), &pp));
+          pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+          sumEnt += entr;
+          update_ctx(ctx, &pp);
+        }
       }
-    }
     }
   }
   else {  // With inv. rep.
-    for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {//todo
-    for (const auto c : buffer) {
-//    while (tf.get(c)) { // Slower
-      if (c!='N' && c!='\n') {
-        ++symsNo;
-        pp.config_ir(c, ctx, ctxIr);
-        array<decltype(2*(*cont)->query(0)),4> f {};
-        freqs_ir(f, cont, &pp);
-        const auto entr = entropy(prob(f.begin(), &pp));
-        pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
-        sumEnt += entr;
-        update_ctx_ir(ctx, ctxIr, &pp);
+    for (vector<char> buffer(FILE_BUF,0); tf;) {
+      tf.read(buffer.data(), FILE_BUF);
+      for (auto it=buffer.begin(); it!=buffer.begin()+tf.gcount(); ++it) {
+        const auto c = *it;
+//      while (tf.get(c)) { // Slower
+        if (c!='N' && c!='\n') {
+          ++symsNo;
+          pp.config_ir(c, ctx, ctxIr);
+          array<decltype(2*(*cont)->query(0)),4> f {};
+          freqs_ir(f, cont, &pp);
+          const auto entr = entropy(prob(f.begin(), &pp));
+          pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+          sumEnt += entr;
+          update_ctx_ir(ctx, ctxIr, &pp);
+        }
       }
-    }
     }
   }
   tf.close();  pf.close();
@@ -302,39 +308,41 @@ inline void FCM::compress_n (const Param& par) {
                      mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
   }
 
-  for (vector<char> buffer(FILE_BUF,0); tf.read(buffer.data(),FILE_BUF);) {//todo
-  for (const auto c : buffer) {
-//  while (tf.get(c)) { // Slower
-    if (c!='N' && c!='\n') {
-      ++symsNo;
-      cp->c=c;                        cp->nSym=NUM[static_cast<u8>(c)];
-      cp->ppIt=cp->pp.begin();
-      cp->ctxIt=cp->ctx.begin();      cp->ctxIrIt=cp->ctxIr.begin();
-      cp->probs.clear();              cp->probs.reserve(nMdl);
-      auto tbl64_it=tbl64.begin();    auto tbl32_it=tbl32.begin();
-      auto lgtbl8_it=lgtbl8.begin();  auto cmls4_it=cmls4.begin();
+  for (vector<char> buffer(FILE_BUF,0); tf;) {
+    tf.read(buffer.data(), FILE_BUF);
+    for (auto it=buffer.begin(); it!=buffer.begin()+tf.gcount(); ++it) {
+      const auto c = *it;
+//    while (tf.get(c)) { // Slower
+      if (c!='N' && c!='\n') {
+        ++symsNo;
+        cp->c=c;                        cp->nSym=NUM[static_cast<u8>(c)];
+        cp->ppIt=cp->pp.begin();
+        cp->ctxIt=cp->ctx.begin();      cp->ctxIrIt=cp->ctxIr.begin();
+        cp->probs.clear();              cp->probs.reserve(nMdl);
+        auto tbl64_it=tbl64.begin();    auto tbl32_it=tbl32.begin();
+        auto lgtbl8_it=lgtbl8.begin();  auto cmls4_it=cmls4.begin();
 
-      u8 n = 0;  // Counter for the models
-      for (const auto& mm : Ms) {
-        cp->mm = mm;
-        switch (mm.cont) {
-         case Container::SKETCH_8:    compress_n_impl(cp, cmls4_it++, n); break;
-         case Container::LOG_TABLE_8: compress_n_impl(cp, lgtbl8_it++,n); break;
-         case Container::TABLE_32:    compress_n_impl(cp, tbl32_it++, n); break;
-         case Container::TABLE_64:    compress_n_impl(cp, tbl64_it++, n); break;
+        u8 n = 0;  // Counter for the models
+        for (const auto& mm : Ms) {
+          cp->mm = mm;
+          switch (mm.cont) {
+          case Container::SKETCH_8:    compress_n_impl(cp,cmls4_it++, n); break;
+          case Container::LOG_TABLE_8: compress_n_impl(cp,lgtbl8_it++,n); break;
+          case Container::TABLE_32:    compress_n_impl(cp,tbl32_it++, n); break;
+          case Container::TABLE_64:    compress_n_impl(cp,tbl64_it++, n); break;
+          }
+          ++n;
+          ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
         }
-        ++n;
-        ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
+
+        const auto ent=entropy(cp->w.begin(),cp->probs.begin(),cp->probs.end());
+        pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << ent << '\n';
+        normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
+////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
+
+        sumEnt += ent;
       }
-
-      const auto ent = entropy(cp->w.begin(),cp->probs.begin(),cp->probs.end());
-      pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << ent << '\n';
-      normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
-////      update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
-
-      sumEnt += ent;
     }
-  }
   }
   tf.close();  pf.close();
   aveEnt = sumEnt/symsNo;
