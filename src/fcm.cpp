@@ -18,7 +18,7 @@ FCM::FCM (const Param& p) {
   config(p);
   if (p.verbose)
     show_in(p);
-//  alloc_model();//TODO remove comment
+  alloc_model();
 }
 
 inline void FCM::config (const Param& p) {
