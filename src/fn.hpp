@@ -300,13 +300,13 @@ inline static void to_seq
 template <typename P, typename T>
 inline static void show_progress (P pos, T total) {
   if (pos % (total/100) == 0) {
-    cerr << "[" << static_cast<int>((pos*100) / total) << "%] progress\r";
+    cerr << "Progress: [" << static_cast<int>((pos*100) / total) << "%]\r";
 //    flush(cerr);
   }
 }
 
 inline static void remove_progress_trace () {
-  cerr << string(20, ' ') << '\r';  // Remove the trace of [...%] progress
+  cerr << string(21, ' ') << '\r';  // Remove the trace of [...%] progress
 }
 
 #endif //PROJECT_FN_HPP
