@@ -106,47 +106,56 @@ inline void FCM::set_cont () {
 //}
 
 inline void FCM::show_in (const Param& p) const {
-  const auto lblWidth=19, colWidth=8,
-             tblWidth=static_cast<int>(lblWidth+Ms.size()*colWidth);
-  const auto rule    = [](int n, const string& s) {
+  const u8 lblWidth=19, colWidth=8,
+           tblWidth=static_cast<u8>(lblWidth+Ms.size()*colWidth);
+  const auto rule    = [](u8 n, const string& s) {
     for (auto i=n/s.size(); i--;)  cerr<<s;    cerr<<'\n';
   };
   const auto toprule = [&]() { rule(tblWidth, "-"); };
   const auto midrule = [&]() { rule(tblWidth, "- "); };
   const auto botrule = [&]() { rule(tblWidth, "-"); };
-  const auto label   = [&](const string& s) {cerr<<setw(lblWidth)<<left<<s;};
+  const auto label   = [&](const string& s) { cerr<<setw(lblWidth)<<left<<s; };
+  const auto header  = [&](const string& s) { cerr<<setw(2*colWidth)<<left<<s; };
   const auto mm_vals = [&](char c) {
     int i = 0;
     for (const auto& e : Ms) {
       cerr << setw(colWidth) << left;
-      switch (c) {
-      case 'm':  cerr<<++i;                                              break;
-      case 'k':  cerr<<static_cast<int>(e.k);                            break;
-      case 'w':  cerr<<(e.w==0 ? "0" : "2^"+to_string(int(log2(e.w))));  break;
-      case 'd':  cerr<<static_cast<int>(e.d);                            break;
-      case 'i':  cerr<<(e.ir ? "yes" : "no");                            break;
-      case 'a':  cerr<<e.alpha;                                          break;
-      case 'g':  cerr<<e.gamma;                                          break;
-      default:                                                           break;
-      }
+      if      (c=='m')  cerr<<++i;
+      else if (c=='k')  cerr<<static_cast<int>(e.k);
+      else if (c=='w')  cerr<<(e.w==0 ? "0" : "2^"+to_string(int(log2(e.w))));
+      else if (c=='d')  cerr<<static_cast<int>(e.d);
+      else if (c=='i')  cerr<<(e.ir ? "yes" : "no");
+      else if (c=='a')  cerr<<e.alpha;
+      else if (c=='g')  cerr<<e.gamma;
     }
     cerr << '\n';
   };
   const auto stmm_vals = [&](char c) {
     for (const auto& e : Ms) {
       cerr << setw(colWidth) << left;
-      if (c=='m')  { cerr<<' ';  continue; }
       if (e.child) {
-        switch (c) {
-        case 't':  cerr<<int(e.child->thresh);                           break;
-        case 'i':  cerr<<(e.child->ir ? "yes" : "no");                   break;
-        case 'a':  cerr<<e.child->alpha;                                 break;
-        case 'g':  cerr<<e.child->gamma;                                 break;
-        default:                                                         break;
-        }
-      } else  cerr<<'-';
+        if      (c=='t')  cerr<<static_cast<int>(e.child->thresh);
+        else if (c=='i')  cerr<<(e.child->ir ? "yes" : "no");
+        else if (c=='a')  cerr<<e.child->alpha;
+        else if (c=='g')  cerr<<e.child->gamma;
+      }
+      else  cerr<<'-';
     }
     cerr << '\n';
+  };
+  const auto filter_vals = [&](char c) {
+    cerr << setw(colWidth) << left;
+    if      (c=='f') cerr<<p.print_win_type();
+    else if (c=='w') cerr<<p.wsize;
+    else if (c=='t') cerr<<p.thresh;
+    cerr << '\n';
+  };
+  const auto file_vals = [&](char c) {
+    cerr << setw(2*colWidth) << left;
+    if      (c=='1') {cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);}
+    else if (c=='r') cerr<<p.ref;
+    else if (c=='2') {cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.tar);}
+    else if (c=='t') cerr<<p.tar;
   };
 
   toprule();
@@ -162,48 +171,30 @@ inline void FCM::show_in (const Param& p) const {
   cerr << '\n';
 
   toprule();
-  label("Substituttional Models");    stmm_vals('m');
+  label("Substituttional Models");    cerr<<'\n';
   midrule();
   label("No. Substitutes");           stmm_vals('t');
   label("Inverted repeats");          stmm_vals('i');
   label("Alpha");                     stmm_vals('a');
   label("Gamma");                     stmm_vals('g');
   botrule();
+  cerr << '\n';
 
+  toprule();
+  label("Filter & Segment");          cerr<<'\n';
+  midrule();
+  label("Window function");           filter_vals('f');
+  label("Window size");               filter_vals('w');
+  label("Threshold");                 filter_vals('t');
+  botrule();
+  cerr << '\n';
 
-////  cerr << '\n';
-////  cerr << '\n';
-//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, toprule) << '\n';
-//  cerr << setw(lblWidth) << left << "Filter & Segment";
-//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, midrule) << '\n';
-//  cerr << setw(lblWidth) << left << "Window function";
-//  cerr << setw(colWidth) << left << p.print_win_type();
-//  cerr << '\n';
-//  cerr << setw(lblWidth) << left << "Window size";
-//  cerr << setw(colWidth) << left << p.wsize;
-//  cerr << '\n';
-//  cerr << setw(lblWidth) << left << "Threshold";
-//  cerr << setw(colWidth) << left << p.thresh;
-//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, botrule)<< '\n';
-//
-//
-////  cerr << '\n';
-////  cerr << '\n';
-//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, toprule) << '\n';
-//  cerr << setw(lblWidth) << left << "File";
-//  cerr << setw(2*colWidth) << left << "Size (B)";
-//  cerr << setw(2*colWidth) << left << "Name";
-//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, midrule) << '\n';
-//  cerr << setw(lblWidth) << left << "Reference";
-//  cerr.imbue(locale("en_US.UTF8"));
-//  cerr << setw(2*colWidth) << left << file_size(p.ref);
-//  cerr << setw(2*colWidth) << left << p.ref;
-//  cerr << '\n';
-//  cerr << setw(lblWidth) << left << "Target";
-//  cerr.imbue(locale("en_US.UTF8"));
-//  cerr << setw(2*colWidth) << left << file_size(p.tar);
-//  cerr << setw(2*colWidth) << left << p.tar;
-//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, botrule);
+  toprule();
+  label("File");         header("Size (B)");    header("Name");      cerr<<'\n';
+  midrule();
+  label("Reference");    file_vals('1');        file_vals('r');      cerr<<'\n';
+  label("Target");       file_vals('2');        file_vals('t');      cerr<<'\n';
+  botrule();
 }
 
 inline void FCM::alloc_model () {
