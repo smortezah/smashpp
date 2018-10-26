@@ -285,7 +285,7 @@ template <typename Mask, typename ContIter /*Container iterator*/>
 inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
   ifstream rf(ref);  //char c;
   Mask ctx=0;
-  for (vector<char> buffer(FILE_BUF,0); rf;) {
+  for (vector<char> buffer(FILE_BUF,0); rf.peek()!=EOF;) {
     rf.read(buffer.data(), FILE_BUF);
     for (auto it=buffer.begin(); it!=buffer.begin()+rf.gcount(); ++it) {
       const auto c = *it;
@@ -331,7 +331,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
               static_cast<u8>(Ms[0].k<<1u)};
   const auto totalSize = file_size(par.tar);
 
-  for (vector<char> buffer(FILE_BUF,0); tf;) {
+  for (vector<char> buffer(FILE_BUF,0); tf.peek()!=EOF;) {
     tf.read(buffer.data(), FILE_BUF);
     for (auto it=buffer.begin(); it!=buffer.begin()+tf.gcount(); ++it) {
       const auto c = *it;
@@ -392,7 +392,7 @@ inline void FCM::compress_n (const Param& par) {
   }
   const auto totalSize = file_size(par.tar);
 
-  for (vector<char> buffer(FILE_BUF,0); tf;) {
+  for (vector<char> buffer(FILE_BUF,0); tf.peek()!=EOF;) {
     tf.read(buffer.data(), FILE_BUF);
     for (auto it=buffer.begin(); it!=buffer.begin()+tf.gcount(); ++it) {
       const auto c = *it;

@@ -257,7 +257,7 @@ inline static void to_seq
 
   if (type == FileType::FASTA) {
     bool isHeader = false;  // MUST be positioned before the following loop
-    for (vector<char> buffer(FILE_BUF,0); fIn;) {
+    for (vector<char> buffer(FILE_BUF,0); fIn.peek()!=EOF;) {
       fIn.read(buffer.data(), FILE_BUF);
       string out;
       for (auto it=buffer.begin(); it!=buffer.begin()+fIn.gcount(); ++it) {
@@ -274,7 +274,7 @@ inline static void to_seq
   else if (type == FileType::FASTQ) {
     u8   line  = 0;      // MUST be positioned before the following loop
     bool isDNA = false;  // MUST be positioned before the following loop
-    for (vector<char> buffer(FILE_BUF,0); fIn;) {
+    for (vector<char> buffer(FILE_BUF,0); fIn.peek()!=EOF;) {
       fIn.read(buffer.data(), FILE_BUF);
       string out;
       for (auto it=buffer.begin(); it!=buffer.begin()+fIn.gcount(); ++it) {

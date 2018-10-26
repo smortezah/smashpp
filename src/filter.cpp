@@ -196,43 +196,55 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   seg->partition(posF, filtered);
 
   // Next wsize>>1 values
-  for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
-    const auto val = stof(num);
-    seq.emplace_back(val);
-    sum += val;
-    ++seg->pos;
-    filtered = sum / seq.size();
-    if (SaveFilter)
-      filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-    seg->partition(posF, filtered);
+  for (auto i=(wsize>>1u); i-- && prfF.peek()!=EOF;) {
+    if (symsNo % p.sampleStep != 0)
+      ignore_this_line(prfF);
+    else {
+      getline(prfF,num);
+      const auto val = stof(num);
+      seq.emplace_back(val);
+      sum += val;
+      ++seg->pos;
+      filtered = sum / seq.size();
+      if (SaveFilter)
+        filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+      seg->partition(posF, filtered);
+    }
     show_progress(++symsNo, totalSize);
   }
 
   // The rest
   u32 idx = 0;
-  while (getline(prfF,num)) {
-    const auto val = stof(num);
-    sum += val - seq[idx];
-    ++seg->pos;
-    filtered = sum / wsize;
-    if (SaveFilter)
-      filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-    seg->partition(posF, filtered);
-    seq[idx] = val;
-    idx = (idx+1) % wsize;
+  while (prfF.peek()!=EOF) {
+    if (symsNo % p.sampleStep != 0)
+      ignore_this_line(prfF);
+    else {
+      getline(prfF,num);
+      const auto val = stof(num);
+      sum += val - seq[idx];
+      ++seg->pos;
+      filtered = sum / wsize;
+      if (SaveFilter)
+        filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+      seg->partition(posF, filtered);
+      seq[idx] = val;
+      idx = (idx+1) % wsize;
+    }
     show_progress(++symsNo, totalSize);
   }
   prfF.close();
 
   // Until half of the window goes outside the array
   for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
-    sum -= seq[idx];
-    ++seg->pos;
-    filtered = sum / (wsize-i);
-    if (SaveFilter)
-      filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-    seg->partition(posF, filtered);
-    idx = (idx+1) % wsize;
+    if (symsNo % p.sampleStep == 0) {
+      sum -= seq[idx];
+      ++seg->pos;
+      filtered = sum / (wsize-i);
+      if (SaveFilter)
+        filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+      seg->partition(posF, filtered);
+      idx = (idx+1) % wsize;
+    }
     show_progress(++symsNo, totalSize);
   }
   seg->partition_last(posF);
@@ -275,30 +287,42 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   show_progress(++symsNo, totalSize);
 
   // Next wsize>>1 values
-  for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
-    seq.emplace_back(stof(num));
-    sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.f);
-    ++seg->pos;
-    sWeight += window[i];
-    filtered = sum / sWeight;
-    if (SaveFilter)
-      filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-    seg->partition(posF, filtered);
+  for (auto i=(wsize>>1u); i-- && prfF.peek()!=EOF;) {
+    if (symsNo % p.sampleStep != 0)
+      ignore_this_line(prfF);
+    else {
+      getline(prfF,num);
+      seq.emplace_back(stof(num));
+      sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.f);
+      ++seg->pos;
+      sWeight += window[i];
+      filtered = sum / sWeight;
+      if (SaveFilter)
+        filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+      seg->partition(posF, filtered);
+    }
     show_progress(++symsNo, totalSize);
   }
 
   // The rest
   u32 idx = 0;
-  for(auto seqBeg=seq.begin(); getline(prfF,num);) {
-    seq[idx] = stof(num);
-    idx = (idx+1) % wsize;
-    sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.f) +
-           inner_product(winEnd-idx, winEnd,     seqBeg,     0.f));
-    ++seg->pos;
-    filtered = sum / sWeight;
-    if (SaveFilter)
-      filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-    seg->partition(posF, filtered);
+  for(auto seqBeg=seq.begin(); prfF.peek()!=EOF;) {
+    if (symsNo % p.sampleStep != 0) {
+      ignore_this_line(prfF);
+      idx = (idx+1) % wsize;
+    }
+    else {
+      getline(prfF,num);
+      seq[idx] = stof(num);
+      idx = (idx+1) % wsize;
+      sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.f) +
+             inner_product(winEnd-idx, winEnd,     seqBeg,     0.f));
+      ++seg->pos;
+      filtered = sum / sWeight;
+      if (SaveFilter)
+        filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+      seg->partition(posF, filtered);
+    }
     show_progress(++symsNo, totalSize);
   }
   prfF.close();
@@ -306,18 +330,22 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   // Until half of the window goes outside the array
   const auto offset = idx;
   for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
-    auto seqBeg=seq.begin(), seqEnd=seq.end();
-    if (++idx < wsize+1)
-      sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
-             inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.f));
-    else
-      sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg, 0.f);
-    ++seg->pos;
-    sWeight -= window[wsize-i];
-    filtered = sum / sWeight;
-    if (SaveFilter)
-      filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
-    seg->partition(posF, filtered);
+    ++idx;
+    if (symsNo % p.sampleStep == 0) {
+      auto seqBeg=seq.begin(), seqEnd=seq.end();
+      if (idx < wsize+1)
+//        if (++idx < wsize+1)
+        sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
+               inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.f));
+      else
+        sum = inner_product(seqBeg+(idx%wsize), seqBeg+offset, winBeg, 0.f);
+      ++seg->pos;
+      sWeight -= window[wsize-i];
+      filtered = sum / sWeight;
+      if (SaveFilter)
+        filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+      seg->partition(posF, filtered);
+    }
     show_progress(++symsNo, totalSize);
   }
   seg->partition_last(posF);
