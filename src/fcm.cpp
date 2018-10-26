@@ -18,7 +18,7 @@ FCM::FCM (const Param& p) {
   config(p);
   if (p.verbose)
     show_in(p);
-  alloc_model();
+//  alloc_model();//TODO remove comment
 }
 
 inline void FCM::config (const Param& p) {
@@ -106,139 +106,104 @@ inline void FCM::set_cont () {
 //}
 
 inline void FCM::show_in (const Param& p) const {
-  constexpr auto firstWidth = 19;
-  constexpr auto colWidth   = 8;
-  const     auto tableWidth = static_cast<int>(firstWidth+Ms.size()*colWidth);
+  const auto lblWidth=19, colWidth=8,
+             tblWidth=static_cast<int>(lblWidth+Ms.size()*colWidth);
+  const auto rule    = [](int n, const string& s) {
+    for (auto i=n/s.size(); i--;)  cerr<<s;    cerr<<'\n';
+  };
+  const auto toprule = [&]() { rule(tblWidth, "-"); };
+  const auto midrule = [&]() { rule(tblWidth, "- "); };
+  const auto botrule = [&]() { rule(tblWidth, "-"); };
+  const auto label   = [&](const string& s) {cerr<<setw(lblWidth)<<left<<s;};
+  const auto mm_vals = [&](char c) {
+    int i = 0;
+    for (const auto& e : Ms) {
+      cerr << setw(colWidth) << left;
+      switch (c) {
+      case 'm':  cerr<<++i;                                              break;
+      case 'k':  cerr<<static_cast<int>(e.k);                            break;
+      case 'w':  cerr<<(e.w==0 ? "0" : "2^"+to_string(int(log2(e.w))));  break;
+      case 'd':  cerr<<static_cast<int>(e.d);                            break;
+      case 'i':  cerr<<(e.ir ? "yes" : "no");                            break;
+      case 'a':  cerr<<e.alpha;                                          break;
+      case 'g':  cerr<<e.gamma;                                          break;
+      default:                                                           break;
+      }
+    }
+    cerr << '\n';
+  };
+  const auto stmm_vals = [&](char c) {
+    for (const auto& e : Ms) {
+      cerr << setw(colWidth) << left;
+      if (c=='m')  { cerr<<' ';  continue; }
+      if (e.child) {
+        switch (c) {
+        case 't':  cerr<<int(e.child->thresh);                           break;
+        case 'i':  cerr<<(e.child->ir ? "yes" : "no");                   break;
+        case 'a':  cerr<<e.child->alpha;                                 break;
+        case 'g':  cerr<<e.child->gamma;                                 break;
+        default:                                                         break;
+        }
+      } else  cerr<<'-';
+    }
+    cerr << '\n';
+  };
 
-  const auto print_rule = [] (int times, string pattern) {
-      cerr << '\n';
-      for (auto i=times/pattern.size(); i--;)  cerr<<pattern;
-      cerr << '\n';
-    };
-  const auto print_top    = [&] () { print_rule(tableWidth, "-"); };
-  const auto print_middle = [&] () { print_rule(tableWidth, "- "); };
-  const auto print_bottom = [&] () { print_rule(tableWidth, "-"); };
+  toprule();
+  label("Models");                    mm_vals('m');
+  midrule();
+  label("Context order");             mm_vals('k');
+  label("Width of sketch");           mm_vals('w');
+  label("Depth of sketch");           mm_vals('d');
+  label("Inverted repeats");          mm_vals('i');
+  label("Alpha");                     mm_vals('a');
+  label("Gamma");                     mm_vals('g');
+  botrule();
+  cerr << '\n';
+
+  toprule();
+  label("Substituttional Models");    stmm_vals('m');
+  midrule();
+  label("No. Substitutes");           stmm_vals('t');
+  label("Inverted repeats");          stmm_vals('i');
+  label("Alpha");                     stmm_vals('a');
+  label("Gamma");                     stmm_vals('g');
+  botrule();
 
 
-
-//  cerr << string(firstWidth + Ms.size()*colWidth, toprule) << '\n';
-  print_top();
-  cerr << setw(firstWidth) << left << "Models";
-  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-    cerr << setw(colWidth) << left << i + 1;
-  }
-  print_middle();
-  cerr<<setw(firstWidth) << left <<"Context order";
-  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-    cerr << setw(colWidth) << left << int(Ms[i].k);
-  }
-  cerr << '\n';
-  cerr<<setw(firstWidth) << left <<"Width of sketch";
-  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-    cerr << setw(colWidth) << left <<
-    (Ms[i].w == 0 ? to_string(0) : "2^"+to_string(int(log2(Ms[i].w))));
-  }
-  cerr << '\n';
-  cerr<<setw(firstWidth) << left <<"Depth of sketch";
-  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-    cerr << setw(colWidth) << left << int(Ms[i].d);
-  }
-  cerr << '\n';
-  cerr<<setw(firstWidth) << left <<"Inverted repeats";
-  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-    cerr << setw(colWidth) << left << (Ms[i].ir ? "yes" : "no");
-  }
-  cerr << '\n';
-  cerr<<setw(firstWidth) << left <<"Alpha";
-  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-    cerr << setw(colWidth) << left << Ms[i].alpha;
-  }
-  cerr << '\n';
-  cerr<<setw(firstWidth) << left <<"Gamma";
-  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-    cerr << setw(colWidth) << left << Ms[i].gamma;
-  }
-  print_bottom();
-
-//  constexpr char blank = '-';
 ////  cerr << '\n';
 ////  cerr << '\n';
-//    cerr << '\n' << string(firstWidth + Ms.size()*colWidth, toprule) << '\n';
-//  cerr << setw(firstWidth) << left << "Substituttional Models";
-//  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-////    if (Ms[i].child)
-////      cerr << setw(colWidth) << left << i + 1;
-////    else
-////      cerr << setw(colWidth) << left << blank;
-//  }
-//  cerr << '\n' << string(firstWidth + Ms.size() * colWidth, midrule) << '\n';
-//  cerr << setw(firstWidth) << left << "No. Substitutes";
-//  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-//    if (Ms[i].child)
-//      cerr << setw(colWidth) << left << int(TMs[j].thresh);
-//    else
-//      cerr << setw(colWidth) << left << blank;
-//  }
-//  cerr << '\n';
-//  cerr << setw(firstWidth) << left << "Inverted repeats";
-//  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-//    if (Ms[i].child)
-//      cerr << setw(colWidth) << left << (TMs[j].ir ? "yes" : "no");
-//    else
-//      cerr << setw(colWidth) << left << blank;
-//  }
-//  cerr << '\n';
-//  cerr << setw(firstWidth) << left << "Alpha";
-//  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-//    if (Ms[i].child)
-//      cerr << setw(colWidth) << left << TMs[j].alpha;
-//    else
-//      cerr << setw(colWidth) << left << blank;
-//  }
-//  cerr << '\n';
-//  cerr << setw(firstWidth) << left << "Gamma";
-//  for (auto i = 0u, j = 0u; i != Ms.size(); ++i) {
-//    if (Ms[i].child)
-//      cerr << setw(colWidth) << left << TMs[j].gamma;
-//    else
-//      cerr << setw(colWidth) << left << blank;
-//  }
-//  cerr << '\n' << string(firstWidth + Ms.size()*colWidth, bottomrule)<< '\n';
-//
-//
-////  cerr << '\n';
-////  cerr << '\n';
-//  cerr << '\n' << string(firstWidth + Ms.size() * colWidth, toprule) << '\n';
-//  cerr << setw(firstWidth) << left << "Filter & Segment";
-//  cerr << '\n' << string(firstWidth + Ms.size() * colWidth, midrule) << '\n';
-//  cerr << setw(firstWidth) << left << "Window function";
+//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, toprule) << '\n';
+//  cerr << setw(lblWidth) << left << "Filter & Segment";
+//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, midrule) << '\n';
+//  cerr << setw(lblWidth) << left << "Window function";
 //  cerr << setw(colWidth) << left << p.print_win_type();
 //  cerr << '\n';
-//  cerr << setw(firstWidth) << left << "Window size";
+//  cerr << setw(lblWidth) << left << "Window size";
 //  cerr << setw(colWidth) << left << p.wsize;
 //  cerr << '\n';
-//  cerr << setw(firstWidth) << left << "Threshold";
+//  cerr << setw(lblWidth) << left << "Threshold";
 //  cerr << setw(colWidth) << left << p.thresh;
-//  cerr << '\n' << string(firstWidth + Ms.size() * colWidth, bottomrule)<< '\n';
+//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, botrule)<< '\n';
 //
 //
 ////  cerr << '\n';
 ////  cerr << '\n';
-//  cerr << '\n' << string(firstWidth + Ms.size() * colWidth, toprule) << '\n';
-//  cerr << setw(firstWidth) << left << "File";
+//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, toprule) << '\n';
+//  cerr << setw(lblWidth) << left << "File";
 //  cerr << setw(2*colWidth) << left << "Size (B)";
 //  cerr << setw(2*colWidth) << left << "Name";
-//  cerr << '\n' << string(firstWidth + Ms.size() * colWidth, midrule) << '\n';
-//  cerr << setw(firstWidth) << left << "Reference";
+//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, midrule) << '\n';
+//  cerr << setw(lblWidth) << left << "Reference";
 //  cerr.imbue(locale("en_US.UTF8"));
 //  cerr << setw(2*colWidth) << left << file_size(p.ref);
 //  cerr << setw(2*colWidth) << left << p.ref;
 //  cerr << '\n';
-//  cerr << setw(firstWidth) << left << "Target";
+//  cerr << setw(lblWidth) << left << "Target";
 //  cerr.imbue(locale("en_US.UTF8"));
 //  cerr << setw(2*colWidth) << left << file_size(p.tar);
 //  cerr << setw(2*colWidth) << left << p.tar;
-//  cerr << '\n' << string(firstWidth + Ms.size() * colWidth, bottomrule);
+//  cerr << '\n' << string(lblWidth + Ms.size() * colWidth, botrule);
 }
 
 inline void FCM::alloc_model () {
