@@ -77,7 +77,6 @@ class FCM    // Finite-context models
   template <typename Par>
   void miss_stmm (Par) const;
 #endif
-  prec_t weight_next (prec_t, prec_t, prec_t) const;
   template <typename FreqIter, typename ProbParIter>
   prec_t prob (FreqIter, ProbParIter) const; //Probability
   prec_t entropy (prec_t) const;
