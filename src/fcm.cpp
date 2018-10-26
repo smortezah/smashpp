@@ -12,12 +12,11 @@
 #include "fn.hpp"
 mutex mut;//todo
 #include <locale>//todo
-FCM::FCM (const Param& p) {
+FCM::FCM (Param& p) {
   aveEnt = static_cast<prec_t>(0);
 //  symsProcessed = 0ull;//todo
   config(p);
-  if (p.verbose)
-    show_in(p);
+  if (p.verbose && p.showInfo) { show_info(p);    p.showInfo=false; }
   alloc_model();
 }
 
@@ -66,7 +65,7 @@ inline void FCM::set_cont () {
   }
 }
 
-//inline void FCM::show_in (const Param& p) const {
+//inline void FCM::show_info (const Param& p) const {
 //  for (auto i=0u, j=0u; i != Ms.size(); ++i) {
 //    cerr
 //      << "Model " << i+1 << ':'                                          <<'\n'
@@ -105,7 +104,7 @@ inline void FCM::set_cont () {
 //      << "  [+] Threshold ................ " << p.thresh                 <<'\n';
 //}
 
-inline void FCM::show_in (const Param& p) const {
+inline void FCM::show_info (const Param& p) const {
   const u8 lblWidth=19, colWidth=8,
            tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
   const auto rule = [](u8 n, const string& s) {
