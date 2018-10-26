@@ -22,6 +22,7 @@ class Param    // Parameters
   string   modelsPars;
   u32      wsize /*:BIT_WSIZE*/;
   string   wtype;
+  u64      sampleStep;
   float    thresh;
   bool     saveSeq;
   bool     saveProfile;
@@ -35,9 +36,9 @@ class Param    // Parameters
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
-             wtype(DEF_WT), thresh(DEF_THRESH), saveSeq(false),
-             saveProfile(false), saveFilter(false), saveSegment(false),
-             saveAll(false), showInfo(true) {}
+             wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
+             saveSeq(false), saveProfile(false), saveFilter(false),
+             saveSegment(false), saveAll(false), showInfo(true) {}
   void parse (int, char**&);
   string print_win_type () const;
 
@@ -91,6 +92,10 @@ inline void Param::parse (int argc, char**& argv) {
       }
       else if ((*i=="-wt" || *i=="--wtype") && i+1!=vArgs.end())
         wtype = *++i;
+      else if ((*i=="-d" || *i=="--sample_step") && i+1!=vArgs.end()) {
+        sampleStep = stoull(*++i);
+        if (sampleStep==0)  sampleStep=1ull;
+      }
       else if ((*i=="-th" || *i=="--thresh") && i+1!=vArgs.end())
         thresh = stof(*++i);
       else if (*i=="-sb"  || *i=="--save_seq")
@@ -178,7 +183,7 @@ inline void Param::help () const {
     << "        ir: inverted repeat"                                     << '\n'
     << "        thresh: threshold of substitutional tolerant Markov model    \n"
                                                                          << '\n'
-    << "    -w,  --wsize"                                                << '\n'
+    << "    -w [NUM],  --wsize [NUM]"                                    << '\n'
     << "        window size -- for filtering"                            << '\n'
                                                                          << '\n'
     << "    -wt [0 | 1 | 2 | 3 | 4 | 5 | 6 | 7], --wtype [...]"          << '\n'
@@ -194,7 +199,10 @@ inline void Param::help () const {
     << "        6 | sine:         sine window"                           << '\n'
     << "        7 | nuttall:      Nuttall window"                        << '\n'
                                                                          << '\n'
-    << "    -th,  --thresh"                                              << '\n'
+    << "    -d [NUM],  --sample_step [NUM]"                              << '\n'
+    << "        sampling steps -- for filtering"                         << '\n'
+                                                                         << '\n'
+    << "    -th [NUM],  --thresh [NUM]"                                  << '\n'
     << "        threshold -- for filtering"                              << '\n'
                                                                          << '\n'
     << "    -sb,  --save_seq"                                            << '\n'
