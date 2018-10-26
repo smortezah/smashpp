@@ -18,7 +18,7 @@ class FCM    // Finite-context models
  public:
   prec_t aveEnt;
   
-  explicit FCM  (const Param&);
+  explicit FCM  (Param&);
   void store    (const Param&);         // Build FCM (finite-context models)
   void compress (const Param&);
 ////  void report     (const Param&) const;
@@ -34,7 +34,7 @@ class FCM    // Finite-context models
 
   void config (const Param&);       // Set models parameters
   void set_cont ();
-  void show_in (const Param&) const;// Show inputs on the screen
+  void show_info (const Param&) const;// Show inputs information on the screen
   void alloc_model ();              // Allocate memory to models
 
   void store_1 (const Param&);      // Build models one thread

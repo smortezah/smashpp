@@ -23,18 +23,21 @@ class Param    // Parameters
   u32      wsize /*:BIT_WSIZE*/;
   string   wtype;
   float    thresh;
+  bool     saveSeq;
   bool     saveProfile;
   bool     saveFilter;
   bool     saveSegment;
   bool     saveAll;
   FileType refType;
   FileType tarType;
+  bool     showInfo;
   string   report;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
-             wtype(DEF_WT), thresh(DEF_THRESH), saveProfile(false),
-             saveFilter(false), saveSegment(false), saveAll(false) {}
+             wtype(DEF_WT), thresh(DEF_THRESH), saveSeq(false),
+             saveProfile(false), saveFilter(false), saveSegment(false),
+             saveAll(false), showInfo(true) {}
   void parse (int, char**&);
   string print_win_type () const;
 
@@ -90,6 +93,8 @@ inline void Param::parse (int argc, char**& argv) {
         wtype = *++i;
       else if ((*i=="-th" || *i=="--thresh") && i+1!=vArgs.end())
         thresh = stof(*++i);
+      else if (*i=="-sb"  || *i=="--save_seq")
+        saveSeq = true;
       else if (*i=="-sp"  || *i=="--save_profile")
         saveProfile = true;
       else if (*i=="-sf"  || *i=="--save_fitler")
@@ -113,30 +118,20 @@ inline void Param::parse (int argc, char**& argv) {
       error("reference file not specified. Use \"-r fileName\".");
 
     // Fasta/Fastq to bare Seq
-    auto gen_name_backup = [=] (const string& s)->string { return s+LBL_BAK;};
+    auto convert_to_seq = [&] (const string& s, const FileType& type) {
+      rename(s.c_str(), (s+LBL_BAK).c_str());
+      to_seq(s+LBL_BAK, s, type);
+    };
+
     refType = file_type(ref);
-    if (refType == FileType::FASTA) {
-      const string refBackup = gen_name_backup(ref);
-      rename(ref.c_str(), refBackup.c_str());
-      to_seq(refBackup, ref, FileType::FASTA);
-    } else if (refType == FileType::FASTQ) {
-      const string refBackup = gen_name_backup(ref);
-      rename(ref.c_str(), refBackup.c_str());
-      to_seq(refBackup, ref, FileType::FASTQ);
-    } else if (refType != FileType::SEQ)
-      error("\"" + ref + "\" has unknown format.");
+    if      (refType==FileType::FASTA) convert_to_seq(ref, FileType::FASTA);
+    else if (refType==FileType::FASTQ) convert_to_seq(ref, FileType::FASTQ);
+    else if (refType!=FileType::SEQ)   error("\""+ref+"\" has unknown format.");
 
     tarType = file_type(tar);
-    if (tarType == FileType::FASTA) {
-      const string tarBackup = gen_name_backup(tar);
-      rename(tar.c_str(), tarBackup.c_str());
-      to_seq(tarBackup, tar, FileType::FASTA);
-    } else if (tarType == FileType::FASTQ) {
-      const string tarBackup = gen_name_backup(tar);
-      rename(tar.c_str(), tarBackup.c_str());
-      to_seq(tarBackup, tar, FileType::FASTQ);
-    } else if (tarType != FileType::SEQ)
-      error("\"" + tar + "\" has unknown format.");
+    if      (tarType==FileType::FASTA) convert_to_seq(tar, FileType::FASTA);
+    else if (tarType==FileType::FASTQ) convert_to_seq(tar, FileType::FASTQ);
+    else if (tarType!=FileType::SEQ)   error("\""+tar+"\" has unknown format.");
   }
 }
 
@@ -187,8 +182,8 @@ inline void Param::help () const {
     << "        window size -- for filtering"                            << '\n'
                                                                          << '\n'
     << "    -wt [0 | 1 | 2 | 3 | 4 | 5 | 6 | 7], --wtype [...]"          << '\n'
-    << "    -wt [rectangular | hamming | hann | blackman]"               << '\n'
-    << "    -wt [triangular | welch | sine | nuttall]"                   << '\n'
+    << "    -wt [rectangular | hamming | hann | blackman | triangular"   << '\n'
+    << "                     | welch   | sine | nuttall]"                << '\n'
     << "        type of windowing function -- for filtering"             << '\n'
     << "        0 | rectangular:  ractangular window"                    << '\n'
     << "        1 | hamming:      Hamming window"                        << '\n'
@@ -201,6 +196,9 @@ inline void Param::help () const {
                                                                          << '\n'
     << "    -th,  --thresh"                                              << '\n'
     << "        threshold -- for filtering"                              << '\n'
+                                                                         << '\n'
+    << "    -sb,  --save_seq"                                            << '\n'
+    << "        save bare sequence, in case the input file is Fasta/Fastq"<<'\n'
                                                                          << '\n'
     << "    -sp,  --save_profile"                                        << '\n'
     << "        save profile"                                            << '\n'
