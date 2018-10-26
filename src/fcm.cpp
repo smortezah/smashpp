@@ -65,7 +65,7 @@ inline void FCM::set_cont () {
     else                            m.cont = Container::TABLE_64;
   }
 }
-//
+
 //inline void FCM::show_in (const Param& p) const {
 //  for (auto i=0u, j=0u; i != Ms.size(); ++i) {
 //    cerr
@@ -107,16 +107,16 @@ inline void FCM::set_cont () {
 
 inline void FCM::show_in (const Param& p) const {
   const u8 lblWidth=19, colWidth=8,
-           tblWidth=static_cast<u8>(lblWidth+Ms.size()*colWidth);
-  const auto rule    = [](u8 n, const string& s) {
+           tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
+  const auto rule = [](u8 n, const string& s) {
     for (auto i=n/s.size(); i--;)  cerr<<s;    cerr<<'\n';
   };
-  const auto toprule = [&]() { rule(tblWidth, "-"); };
-  const auto midrule = [&]() { rule(tblWidth, "- "); };
-  const auto botrule = [&]() { rule(tblWidth, "-"); };
-  const auto label   = [&](const string& s) { cerr<<setw(lblWidth)<<left<<s; };
-  const auto header  = [&](const string& s) { cerr<<setw(2*colWidth)<<left<<s; };
-  const auto mm_vals = [&](char c) {
+  const auto toprule  = [&]() { rule(tblWidth, "~"); };
+  const auto midrule  = [&]() { rule(tblWidth, "~"); };
+  const auto botrule  = [&]() { rule(tblWidth, " "); };
+  const auto label    = [&](const string& s) {cerr<<setw(lblWidth)<<left<<s;};
+  const auto header   = [&](const string& s) {cerr<<setw(2*colWidth)<<left<<s;};
+  const auto mm_vals  = [&](char c) {
     int i = 0;
     for (const auto& e : Ms) {
       cerr << setw(colWidth) << left;
@@ -159,26 +159,24 @@ inline void FCM::show_in (const Param& p) const {
   };
 
   toprule();
-  label("Models");                    mm_vals('m');
+  label("Model(s)");                  mm_vals('m');
   midrule();
   label("Context order");             mm_vals('k');
   label("Width of sketch");           mm_vals('w');
   label("Depth of sketch");           mm_vals('d');
-  label("Inverted repeats");          mm_vals('i');
+  label("Inverted repeat");           mm_vals('i');
   label("Alpha");                     mm_vals('a');
   label("Gamma");                     mm_vals('g');
-  botrule();
-  cerr << '\n';
+  botrule();  //cerr << '\n';
 
   toprule();
-  label("Substituttional Models");    cerr<<'\n';
+  label("Substituttional Model(s)");  cerr<<'\n';
   midrule();
   label("No. Substitutes");           stmm_vals('t');
-  label("Inverted repeats");          stmm_vals('i');
+  label("Inverted repeat");           stmm_vals('i');
   label("Alpha");                     stmm_vals('a');
   label("Gamma");                     stmm_vals('g');
-  botrule();
-  cerr << '\n';
+  botrule();  //cerr << '\n';
 
   toprule();
   label("Filter & Segment");          cerr<<'\n';
@@ -186,11 +184,10 @@ inline void FCM::show_in (const Param& p) const {
   label("Window function");           filter_vals('f');
   label("Window size");               filter_vals('w');
   label("Threshold");                 filter_vals('t');
-  botrule();
-  cerr << '\n';
+  botrule();  //cerr << '\n';
 
   toprule();
-  label("File");         header("Size (B)");    header("Name");      cerr<<'\n';
+  label("Files");        header("Size (B)");    header("Name");      cerr<<'\n';
   midrule();
   label("Reference");    file_vals('1');        file_vals('r');      cerr<<'\n';
   label("Target");       file_vals('2');        file_vals('t');      cerr<<'\n';
