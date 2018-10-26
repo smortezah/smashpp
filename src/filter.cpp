@@ -261,7 +261,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   string num;
   auto sum = 0.f;
   auto filtered = 0.f;
-  const auto totalSize = file_size(profileName);
+  const auto totalSize = file_lines(profileName);
   u64 symsNo = 0;
 
   // First value

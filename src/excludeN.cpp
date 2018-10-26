@@ -8,10 +8,14 @@ using namespace std;
 
 int main (int argc, char* argv[])
 {
-  for (char c; cin.get(c);) {
-    if (c != 'N')
-      cout << c;
+  for (vector<char> buffer(FILE_BUF,0); cin;) {
+    cin.read(buffer.data(), FILE_BUF);
+    string out;
+    for (auto it=buffer.begin(); it!=buffer.begin()+cin.gcount(); ++it) {
+      const auto c = *it;
+      if (c!='N')  out+=c;
+    }
+    cout.write(out.data(), out.size());
   }
-
   return 0;
 }

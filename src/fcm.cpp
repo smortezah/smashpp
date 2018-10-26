@@ -11,7 +11,7 @@
 #include "assert.hpp"
 #include "fn.hpp"
 mutex mut;//todo
-#include <locale>//todo
+
 FCM::FCM (Param& p) {
   aveEnt = static_cast<prec_t>(0);
 //  symsProcessed = 0ull;//todo
@@ -107,6 +107,7 @@ inline void FCM::set_cont () {
 inline void FCM::show_info (const Param& p) const {
   const u8 lblWidth=19, colWidth=8,
            tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
+
   const auto rule = [](u8 n, const string& s) {
     for (auto i=n/s.size(); i--;)  cerr<<s;    cerr<<'\n';
   };
@@ -166,6 +167,8 @@ inline void FCM::show_info (const Param& p) const {
   label("Inverted repeat");           mm_vals('i');
   label("Alpha");                     mm_vals('a');
   label("Gamma");                     mm_vals('g');
+//  label("Alpha ("+string("\u03B1")+")");    mm_vals('a');
+//  label("Gamma ("+string("\u03B3")+")");    mm_vals('g');
   botrule();  //cerr << '\n';
 
   toprule();
@@ -315,9 +318,11 @@ void FCM::compress (const Param& p) {
     cerr << "Average Entropy = "
          << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps\n";
 }
-
+//
 template <typename ContIter>
 inline void FCM::compress_1 (const Param& par, ContIter cont) {
+//template <bool IR, typename ContIter>
+//inline void FCM::compress_1 (const Param& par, ContIter cont) {
   // Ctx, Mir (int) sliding through the dataset
   u64      ctx{0},   ctxIr{(1ull<<(Ms[0].k<<1u))-1};
   u64      symsNo{0};            // No. syms in target file, except \n
@@ -328,34 +333,25 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
               static_cast<u8>(Ms[0].k<<1u)};
   const auto totalSize = file_size(par.tar);
 
-  if (Ms[0].ir == 0) {
-    for (vector<char> buffer(FILE_BUF,0); tf;) {
-      tf.read(buffer.data(), FILE_BUF);
-      for (auto it=buffer.begin(); it!=buffer.begin()+tf.gcount(); ++it) {
-        const auto c = *it;
+
+  for (vector<char> buffer(FILE_BUF, 0); tf;) {
+    tf.read(buffer.data(), FILE_BUF);
+    for (auto it = buffer.begin(); it != buffer.begin() + tf.gcount(); ++it) {
+      const auto c = *it;
 //      while (tf.get(c)) { // Slower
-        if (c!='N' && c!='\n') {
-          ++symsNo;
+      if (c != 'N' && c != '\n') {
+        ++symsNo;
+//        if (!IR) {
+        if (Ms[0].ir == 0) {//Branch prediction: 1 miss, totalSize-1 hits
           pp.config(c, ctx);
-          array<decltype((*cont)->query(0)),4> f {};
+          array<decltype((*cont)->query(0)), 4> f{};
           freqs(f, cont, pp.l);
           const auto entr = entropy(prob(f.begin(), &pp));
           pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
           sumEnt += entr;
           update_ctx(ctx, &pp);
-          show_progress(symsNo, totalSize);
         }
-      }
-    }
-  }
-  else {  // With inv. rep.
-    for (vector<char> buffer(FILE_BUF,0); tf;) {
-      tf.read(buffer.data(), FILE_BUF);
-      for (auto it=buffer.begin(); it!=buffer.begin()+tf.gcount(); ++it) {
-        const auto c = *it;
-//      while (tf.get(c)) { // Slower
-        if (c!='N' && c!='\n') {
-          ++symsNo;
+        else {
           pp.config_ir(c, ctx, ctxIr);
           array<decltype(2*(*cont)->query(0)),4> f {};
           freqs_ir(f, cont, &pp);
@@ -363,11 +359,53 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
           pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
           sumEnt += entr;
           update_ctx_ir(ctx, ctxIr, &pp);
-          show_progress(symsNo, totalSize);
         }
+        show_progress(symsNo, totalSize);
       }
     }
   }
+
+
+//  if (Ms[0].ir == 0) {
+//    for (vector<char> buffer(FILE_BUF,0); tf;) {
+//      tf.read(buffer.data(), FILE_BUF);
+//      for (auto it=buffer.begin(); it!=buffer.begin()+tf.gcount(); ++it) {
+//        const auto c = *it;
+////      while (tf.get(c)) { // Slower
+//        if (c!='N' && c!='\n') {
+//          ++symsNo;
+//          pp.config(c, ctx);
+//          array<decltype((*cont)->query(0)),4> f {};
+//          freqs(f, cont, pp.l);
+//          const auto entr = entropy(prob(f.begin(), &pp));
+//          pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+//          sumEnt += entr;
+//          update_ctx(ctx, &pp);
+//          show_progress(symsNo, totalSize);
+//        }
+//      }
+//    }
+//  }
+//  else {  // With inv. rep.
+//    for (vector<char> buffer(FILE_BUF,0); tf;) {
+//      tf.read(buffer.data(), FILE_BUF);
+//      for (auto it=buffer.begin(); it!=buffer.begin()+tf.gcount(); ++it) {
+//        const auto c = *it;
+////      while (tf.get(c)) { // Slower
+//        if (c!='N' && c!='\n') {
+//          ++symsNo;
+//          pp.config_ir(c, ctx, ctxIr);
+//          array<decltype(2*(*cont)->query(0)),4> f {};
+//          freqs_ir(f, cont, &pp);
+//          const auto entr = entropy(prob(f.begin(), &pp));
+//          pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+//          sumEnt += entr;
+//          update_ctx_ir(ctx, ctxIr, &pp);
+//          show_progress(symsNo, totalSize);
+//        }
+//      }
+//    }
+//  }
   remove_progress_trace();
   tf.close();  pf.close();
   aveEnt = sumEnt/symsNo;
