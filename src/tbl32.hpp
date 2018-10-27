@@ -8,6 +8,7 @@
 #include <vector>
 #include "def.hpp"
 
+namespace smashpp {
 class Table32
 {
 public:
@@ -33,5 +34,6 @@ private:
   
   void renormalize ();
 };
+}
 
 #endif //SMASHPP_TABLE32_HPP

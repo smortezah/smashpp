@@ -7,6 +7,7 @@
 
 #include "def.hpp"
 
+namespace smashpp {
 class CMLS4    // Count-min-log sketch, 4 bits per counter
 {
  public:
@@ -24,7 +25,7 @@ class CMLS4    // Count-min-log sketch, 4 bits per counter
   u8   max_sk_val  ()          const;
   void print       ()          const;
 #endif
-  
+
  private:
 	u64         w;                    // Width of sketch
 	u8          d /*:BIT_D*/;         // Depth of sketch
@@ -110,5 +111,6 @@ static constexpr u8 INC_CTR[512] {
  225, 226, 227, 227, 229, 230, 231, 231, 233, 234, 235, 235, 237, 238, 239, 239,
  241, 242, 243, 243, 245, 246, 247, 247, 249, 250, 251, 251, 253, 254, 255, 255
 };
+}
 
 #endif //SMASHPP_CMLS4_HPP

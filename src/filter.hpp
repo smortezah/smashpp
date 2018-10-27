@@ -8,6 +8,7 @@
 #include <memory>
 #include "par.hpp"
 
+namespace smashpp {
 class Filter {
  public:
   u64   nSegs;
@@ -42,5 +43,6 @@ class Filter {
   void shift_left_insert (Iter, Value);
 #endif
 };
+}
 
 #endif //PROJECT_FILTER_HPP

@@ -17,6 +17,7 @@
 #include "filter.hpp"
 #include "fn.hpp"
 #include "segment.hpp"
+using namespace smashpp;
 
 
 int main (int argc, char* argv[])
@@ -26,10 +27,10 @@ int main (int argc, char* argv[])
     Param par;
     par.parse(argc, argv);              // Parse the command
     const auto tempRef=par.ref, tempTar=par.tar;
-//    auto models = make_shared<FCM>(par);// Equiv to auto* models = new FCM(par);
-//    models->store(par);                 // Build models
-//    models->compress(par);              // Compress
-    auto filter = make_shared<Filter>(par);
+    auto models = make_shared<FCM>(par);// Equiv to auto* models = new FCM(par);
+    models->store(par);                 // Build models
+    models->compress(par);              // Compress
+//    auto filter = make_shared<Filter>(par);
 //    filter->smooth_seg(par);            // Filter and segment
 //    filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
 //
@@ -47,7 +48,8 @@ int main (int argc, char* argv[])
 //      filter = make_shared<Filter>(par);
 //      filter->smooth_seg(par);
 //    }
-    filter->aggregate_pos(tempRef, tempTar);
+//    filter->aggregate_pos(tempRef, tempTar);
+
 //    for (auto i=0; i!=filter->nSegs; ++i)
 //      if (!par.saveAll && !par.saveSegment)
 //        remove((segName+to_string(i)).c_str());

@@ -14,6 +14,7 @@
 #include <iterator>
 #include "def.hpp"
 
+namespace smashpp {
 template <typename Input>
 inline static bool is_u8 (Input&& in) {
   return typeid(in)==typeid(u8);
@@ -307,6 +308,7 @@ inline static void show_progress (P pos, T total) {
 
 inline static void remove_progress_trace () {
   cerr << string(21, ' ') << '\r';  // Remove the trace of [...%] progress
+}
 }
 
 #endif //PROJECT_FN_HPP

@@ -10,6 +10,7 @@
 #include "fcm.hpp"
 #include "assert.hpp"
 #include "fn.hpp"
+using namespace smashpp;
 mutex mut;//todo
 
 FCM::FCM (Param& p) {

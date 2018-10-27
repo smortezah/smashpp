@@ -8,6 +8,7 @@
 #include <vector>
 #include "def.hpp"
 
+namespace smashpp {
 class LogTable8
 {
 public:
@@ -30,5 +31,6 @@ private:
   u8         k /*:BIT_K*/;              // Ctx size
   u64        tot;                       // Total # elements so far
 };
+}
 
 #endif //SMASHPP_LOGTABLE8_HPP

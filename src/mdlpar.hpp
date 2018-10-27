@@ -5,6 +5,7 @@
 #ifndef PROJECT_MDLPAR_HPP
 #define PROJECT_MDLPAR_HPP
 
+namespace smashpp {
 struct STMMPar;
 
 struct MMPar {
@@ -111,5 +112,6 @@ struct CompressPar {
 
   CompressPar () = default;
 };
+}
 
 #endif //PROJECT_MDLPAR_HPP
