@@ -182,6 +182,9 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   auto filtered = 0.f;
   u64 symsNo = 0;
   const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
+  const auto jump_lines = [&]() {
+    for (u64 i=p.sampleStep-1; i--;)  ignore_this_line(prfF);
+  };
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(prfF,num);) {
@@ -189,7 +192,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     seq.emplace_back(val);
     sum += val;
     show_progress(++symsNo, totalSize);
-    for (u64 step=p.sampleStep-1; step--;)  ignore_this_line(prfF);
+    jump_lines();
   }
   filtered = sum / seq.size();
   if (SaveFilter)
@@ -197,7 +200,6 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   seg->partition(posF, filtered);
 
   // Next wsize>>1 values
-//  for (auto i=(wsize>>1u); i-- && prfF.peek()!=EOF;) {
   for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
     const auto val = stof(num);
     seq.emplace_back(val);
@@ -208,12 +210,11 @@ inline void Filter::smooth_seg_rect (const Param& p) {
       filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
     seg->partition(posF, filtered);
     show_progress(++symsNo, totalSize);
-    for (u64 step=p.sampleStep-1; step--;)  ignore_this_line(prfF);
+    jump_lines();
   }
 
   // The rest
   u32 idx = 0;
-//  while (prfF.peek()!=EOF) {
   while (getline(prfF,num)) {
     const auto val = stof(num);
     sum += val - seq[idx];
@@ -225,7 +226,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     seq[idx] = val;
     idx = (idx+1) % wsize;
     show_progress(++symsNo, totalSize);
-    for (u64 step=p.sampleStep-1; step--;)  ignore_this_line(prfF);
+    jump_lines();
   }
   prfF.close();
 
@@ -268,11 +269,14 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   auto filtered = 0.f;
   u64 symsNo = 0;
   const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
+  const auto jump_lines = [&]() {
+    for (u64 i=p.sampleStep-1; i--;)  ignore_this_line(prfF);
+  };
 
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(prfF,num);) {
     seq.emplace_back(stof(num));
-    for (u64 step=p.sampleStep-1; step--;)  ignore_this_line(prfF);
+    jump_lines();
   }
   sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.f);
   filtered = sum / sWeight;
@@ -292,7 +296,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
       filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
     seg->partition(posF, filtered);
     show_progress(++symsNo, totalSize);
-    for (u64 step=p.sampleStep-1; step--;)  ignore_this_line(prfF);
+    jump_lines();
   }
 
   // The rest
@@ -308,7 +312,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
       filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
     seg->partition(posF, filtered);
     show_progress(++symsNo, totalSize);
-    for (u64 step=p.sampleStep-1; step--;)  ignore_this_line(prfF);
+    jump_lines();
   }
   prfF.close();
 
