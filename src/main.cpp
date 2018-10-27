@@ -25,12 +25,12 @@ int main (int argc, char* argv[])
     const auto t0{now()};
     Param par;
     par.parse(argc, argv);              // Parse the command
-//    const auto tempRef=par.ref, tempTar=par.tar;
+    const auto tempRef=par.ref, tempTar=par.tar;
 //    auto models = make_shared<FCM>(par);// Equiv to auto* models = new FCM(par);
 //    models->store(par);                 // Build models
 //    models->compress(par);              // Compress
     auto filter = make_shared<Filter>(par);
-    filter->smooth_seg(par);            // Filter and segment
+//    filter->smooth_seg(par);            // Filter and segment
 //    filter->extract_seg(par.tar, par.ref);  // Extract segs from the target file
 //
 //    cerr <<"\n===[ Building reference map for each target pattern ]=======";
@@ -38,17 +38,17 @@ int main (int argc, char* argv[])
 //    const auto newTar  = par.ref;
 //    const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
 //    par.tar = newTar;
-//    const auto nSegs = filter->nSegs;
-//    for (auto i=0; i!=nSegs; ++i) {
+//    for (auto i=0; i!=filter->nSegs; ++i) {
 //      par.ref = segName+to_string(i);
-//      par.thresh = 1.5;//todo
+////      par.thresh = 1.5;//todo
 //      models = make_shared<FCM>(par);
 //      models->store(par);
 //      models->compress(par);
 //      filter = make_shared<Filter>(par);
 //      filter->smooth_seg(par);
 //    }
-//    for (auto i=0; i!=nSegs; ++i)
+    filter->aggregate_pos(tempRef, tempTar);
+//    for (auto i=0; i!=filter->nSegs; ++i)
 //      if (!par.saveAll && !par.saveSegment)
 //        remove((segName+to_string(i)).c_str());
 //

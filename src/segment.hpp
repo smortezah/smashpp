@@ -10,16 +10,17 @@
 
 class Segment {
  public:
-  bool  begun;
-  u64   pos;
-  u64   begPos;
-  u64   endPos;
-//  float sum;
-  u64   nSegs;
-  float thresh;
+  bool   begun;
+  u64    pos;
+  u64    begPos;
+  u64    endPos;
+  u64    nSegs;
+  float  thresh;
+  prec_t sumEnt;
+  u64    numEnt;
 
-  Segment () : begun(false), pos(0), begPos(0), endPos(0), /*sum(0), */nSegs(0),
-               thresh(0) {}
+  Segment () : begun(false), pos(0), begPos(0), endPos(0), nSegs(0),
+               thresh(0), sumEnt(0), numEnt(0) {}
 
   void partition      (ofstream&, float);
   void partition_last (ofstream&);

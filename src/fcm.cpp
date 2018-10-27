@@ -516,7 +516,7 @@ inline void FCM::compress_n_child
 //    << '\t' << std::fixed << std::setprecision(3) << models[0].Malpha
 //    << '\t' << (models[0].w==0 ? 0 : static_cast<u32>(log2(models[0].w)))
 //    << '\t' << static_cast<u32>(models[0].d)
-//    << '\t' << std::fixed << std::setprecision(3) << aveEnt << '\n';
+//    << '\t' << std::fixed << std::setprecision(3) << sumEnt << '\n';
 //  f.close();  // Actually done, automatically
 //}
 
