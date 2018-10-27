@@ -8,7 +8,9 @@
 #include <fstream>
 #include "def.hpp"
 
-class Segment {
+namespace smashpp {
+class Segment
+{
  public:
   bool   begun;
   u64    pos;
@@ -25,5 +27,6 @@ class Segment {
   void partition      (ofstream&, float);
   void partition_last (ofstream&);
 };
+}
 
 #endif //PROJECT_SEGMENT_HPP

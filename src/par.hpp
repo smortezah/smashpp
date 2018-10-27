@@ -11,6 +11,7 @@
 #include "def.hpp"
 #include "fn.hpp"
 
+namespace smashpp {
 class Param    // Parameters
 {
  public:
@@ -245,6 +246,7 @@ inline string Param::print_win_type () const {
   else if (wtype=="7" || wtype=="nuttall")        return "Nuttall";
 
   return "rectangular";
+}
 }
 
 #endif //SMASHPP_PAR_HPP

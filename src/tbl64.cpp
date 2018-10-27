@@ -6,6 +6,7 @@
 #include <fstream>
 #include "tbl64.hpp"
 #include "fn.hpp"
+using namespace smashpp;
 
 Table64::Table64 (u8 k_) {
   config(k_);

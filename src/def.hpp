@@ -15,6 +15,7 @@
 #include <vector>
 using namespace std;
 
+namespace smashpp {
 // Version
 static const string VERSION   {"18.10"};
 static const string DEV_YEARS {"2018"};
@@ -231,5 +232,6 @@ struct SubSeq {
 //// Inside function definition
 ////constexpr auto a = LogInt<256>();
 ////cerr << (int) a.lg[3];
+}
 
 #endif //SMASHPP_DEF_HPP

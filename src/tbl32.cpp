@@ -6,6 +6,7 @@
 #include <fstream>
 #include "tbl32.hpp"
 #include "fn.hpp"
+using namespace smashpp;
 
 Table32::Table32 (u8 k_) {
   config(k_);

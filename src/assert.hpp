@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include "fn.hpp"
 
+namespace smashpp {
 template <typename Container>
 static void assert_empty_elem (const Container& cont, string&& msg) {//Empty el
   for (const auto& e : cont)
@@ -19,6 +20,7 @@ static void assert_empty_elem (const Container& cont, const string& msg) {
   for (const auto &e : cont)
     if (e.size() == 0)
       error(msg);
+}
 }
 
 #endif //PROJECT_ASSERT_HPP

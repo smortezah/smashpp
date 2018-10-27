@@ -5,6 +5,7 @@
 #include <cmath>
 #include "filter.hpp"
 #include "segment.hpp"
+using namespace smashpp;
 
 Filter::Filter (const Param& p) {
   config(p);
@@ -363,8 +364,8 @@ void Filter::aggregate_pos (const string& origin, const string& dest) const {
   ofstream ffinal("final-"+gen_name(origin, dest, Format::POSITION));
   int i = 0;
   for (string begDir, endDir, entDir; fDirect>>begDir>>endDir>>entDir; ++i) {
-    const string revRef = gen_name(origin, dest, Format::SEGMENT)+to_string(i);
-    ifstream fReverse(gen_name(revRef, origin, Format::POSITION));
+    const string refRev = gen_name(origin, dest, Format::SEGMENT)+to_string(i);
+    ifstream fReverse(gen_name(refRev, origin, Format::POSITION));
     for (string begRev, endRev, entRev; fReverse>>begRev>>endRev>>entRev;) {
       ffinal << begDir << '\t' << endDir << '\t' << entDir << '\t'
              << begRev << '\t' << endRev << '\t' << entRev << '\n';

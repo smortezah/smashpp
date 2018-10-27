@@ -6,6 +6,7 @@
 #include <fstream>
 #include "logtbl8.hpp"
 #include "fn.hpp"
+using namespace smashpp;
 
 LogTable8::LogTable8 (u8 k_) {
   config(k_);

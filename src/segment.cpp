@@ -4,6 +4,7 @@
 
 #include "segment.hpp"
 #include "fn.hpp"
+using namespace smashpp;
 
 void Segment::partition (ofstream& ff, float filtered) {
   if (filtered > thresh) {
