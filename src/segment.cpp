@@ -10,9 +10,11 @@ void Segment::partition (ofstream& ff, float filtered) {
     begun = false;
     if (begPos != endPos) {
       ++nSegs;
-      ff << begPos << '\t' << endPos << '\n';
+      ff << begPos << '\t' << endPos << '\t' << sumEnt/numEnt << '\n';
     }
     begPos = endPos = 0;
+    sumEnt = 0;
+    numEnt = 0;
   }
   else {
     if (!begun) {
@@ -20,12 +22,14 @@ void Segment::partition (ofstream& ff, float filtered) {
       begPos = pos;
     }
     endPos = pos;
+    sumEnt += filtered;
+    ++numEnt;
   }
 }
 
 void Segment::partition_last (ofstream& ff) {
   if (begPos != endPos) {
     ++nSegs;
-    ff << begPos << '\t' << endPos << '\n';
+    ff << begPos << '\t' << endPos << '\t' << sumEnt/numEnt << '\n';
   }
 }

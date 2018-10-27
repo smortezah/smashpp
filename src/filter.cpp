@@ -349,13 +349,29 @@ void Filter::extract_seg (const string& tar, const string& ref) const {
   auto subseq = make_shared<SubSeq>();
   subseq->inName = tar;
   u64 i = 0;
-  for (string beg, end; ff>>beg>>end; ++i) {
+  for (string beg, end, ent; ff>>beg>>end>>ent; ++i) {
     subseq->outName = segName+to_string(i);
     subseq->begPos  = stoull(beg);
     subseq->size    = static_cast<streamsize>(stoull(end)-subseq->begPos+1);
     extract_subseq(subseq);
   }
   ff.close();
+}
+
+void Filter::aggregate_pos (const string& origin, const string& dest) const {
+  ifstream fDirect(gen_name(origin, dest, Format::POSITION));
+  ofstream ffinal("final-"+gen_name(origin, dest, Format::POSITION));
+  int i = 0;
+  for (string begDir, endDir, entDir; fDirect>>begDir>>endDir>>entDir; ++i) {
+    const string revRef = gen_name(origin, dest, Format::SEGMENT)+to_string(i);
+    ifstream fReverse(gen_name(revRef, origin, Format::POSITION));
+    for (string begRev, endRev, entRev; fReverse>>begRev>>endRev>>entRev;) {
+      ffinal << begDir << '\t' << endDir << '\t' << entDir << '\t'
+             << begRev << '\t' << endRev << '\t' << entRev << '\n';
+    }
+    fReverse.close();
+  }
+  fDirect.close();  ffinal.close();
 }
 
 #ifdef BENCH
