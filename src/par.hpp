@@ -15,8 +15,7 @@ namespace smashpp {
 class Param    // Parameters
 {
  public:
-  string   tar;
-  string   ref;
+  string   tar, ref;
   u8       level /*:BIT_LEVEL*/;
   bool     verbose;
   u8       nthr  /*:BIT_THREAD*/;
@@ -25,13 +24,8 @@ class Param    // Parameters
   string   wtype;
   u64      sampleStep;
   float    thresh;
-  bool     saveSeq;
-  bool     saveProfile;
-  bool     saveFilter;
-  bool     saveSegment;
-  bool     saveAll;
-  FileType refType;
-  FileType tarType;
+  bool     saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
+  FileType refType, tarType;
   bool     showInfo;
   string   report;
 
@@ -61,17 +55,11 @@ inline void Param::parse (int argc, char**& argv) {
         help();  throw EXIT_SUCCESS;
       }
       else if (*i=="-t" || *i=="--tar") {
-        if (i+1 != vArgs.end()) {
-          tar = *++i;
-          check_file(tar);
-        }
+        if (i+1 != vArgs.end()) { tar=*++i;  check_file(tar); }
         else error("target file not specified. Use \"-t fileName\".");
       }
       else if (*i=="-r" || *i=="--ref") {
-        if (i+1 != vArgs.end()) {
-          ref = *++i;
-          check_file(ref);
-        }
+        if (i+1 != vArgs.end()) { ref=*++i;  check_file(ref); }
         else error("reference file not specified. Use \"-r fileName\".");
       }
       else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end())
@@ -228,7 +216,7 @@ inline void Param::help () const {
     << "        usage guide"                                             << '\n'
                                                                          << '\n'
     << "COPYRIGHT"                                                       << '\n'
-    << "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro.    \n"
+    << "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro."<<'\n'
     << "    You may redistribute copies of this Free software"           << '\n'
     << "    under the terms of the GNU - General Public License"         << '\n'
     << "    v3 <http://www.gnu.org/licenses/gpl.html>. There"            << '\n'
@@ -245,7 +233,7 @@ inline string Param::print_win_type () const {
   else if (wtype=="6" || wtype=="sine")           return "Sine";
   else if (wtype=="7" || wtype=="nuttall")        return "Nuttall";
 
-  return "rectangular";
+  return "Rectangular";
 }
 }
 

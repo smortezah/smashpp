@@ -230,6 +230,7 @@ inline static string gen_name
   case Format::FILTER:    return ref+"-"+tar+"."+FMT_FIL;
   case Format::POSITION:  return ref+"-"+tar+"."+FMT_POS;
   case Format::SEGMENT:   return ref+"-"+tar+"-"+LBL_SEG;
+  default:                return "";
   }
 }
 
@@ -301,7 +302,7 @@ inline static void to_seq
 template <typename P, typename T>
 inline static void show_progress (P pos, T total) {
   if (pos % (total/100) == 0) {
-    cerr << "Progress: [" << static_cast<int>((pos*100) / total) << "%]\r";
+    cerr << "Progress: [" << static_cast<int>((pos*100) / total) << " %]\r";
 //    flush(cerr);
   }
 }
