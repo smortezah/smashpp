@@ -12,8 +12,9 @@ int main (int argc, char* argv[])
     cin.read(buffer.data(), FILE_BUF);
     string out;
     for (auto it=buffer.begin(); it!=buffer.begin()+cin.gcount(); ++it) {
-      const auto c = *it;
-      if (c!='N')  out+=c;
+      if (*it!='N')  out+=*it;
+//      const auto c = *it;
+//      if (c!='N')  out+=c;
     }
     cout.write(out.data(), out.size());
   }

@@ -5,16 +5,17 @@
 #ifndef PROJECT_MDLPAR_HPP
 #define PROJECT_MDLPAR_HPP
 
+#include "def.hpp"
+
 namespace smashpp {
 struct STMMPar;
 
 struct MMPar {
-  u8        k  /*:BIT_K*/;  // Context size
-  u64       w;              // Width of count-min-log sketch
-  u8        d  /*:BIT_D*/;  // Depth of count-min-log sketch
-  u8        ir /*:BIT_IR*/; // Inverted repeat
-  prec_t    alpha;
-  prec_t    gamma;
+  u8  k  /*:BIT_K*/;  // Context size
+  u64 w;              // Width of count-min-log sketch
+  u8  d  /*:BIT_D*/;  // Depth of count-min-log sketch
+  u8  ir /*:BIT_IR*/; // Inverted repeat
+  prec_t alpha, gamma;
   Container cont;          // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
   shared_ptr<STMMPar> child;
 
@@ -29,8 +30,7 @@ struct STMMPar {
   u8     k      /*:BIT_K*/;
   u8     thresh /*:BIT_THRESH*/;
   u8     ir     /*:BIT_IR*/;
-  prec_t alpha;
-  prec_t gamma;
+  prec_t alpha, gamma;
   bool   enabled;
 #ifdef ARRAY_HISTORY
   vector<bool> history;
@@ -51,10 +51,9 @@ struct STMMPar {
 };
 
 struct ProbPar {
-  prec_t alpha;
+  prec_t alpha, sAlpha;
   u64    mask;
   u8     shl;
-  prec_t sAlpha;
   u64    l;
   u8     numSym    /*:BIT_NSYM*/;
   u64    r;
@@ -62,7 +61,7 @@ struct ProbPar {
 
   ProbPar () = default;
   ProbPar (prec_t a, u64 m, u8 sh)
-    : alpha(a), mask(m), shl(sh), sAlpha(CARDIN*alpha) {}
+    : alpha(a), sAlpha(CARDIN*alpha), mask(m), shl(sh) {}
   void config    (u64);
   void config    (u8);
   void config    (char, u64);
@@ -96,15 +95,11 @@ inline void ProbPar::config_ir (char c, u64 ctx, u64 ctxIr) {
 }
 
 struct CompressPar {
-  vector<u64>               ctx;
-  vector<u64>               ctxIr;
-  vector<prec_t>            w;    // float <-> double
-  vector<prec_t>            wNext;
-  vector<prec_t>            probs;
+  vector<u64>               ctx, ctxIr;
+  vector<prec_t>            w, wNext, probs;
   vector<ProbPar>           pp;
   vector<ProbPar>::iterator ppIt;
-  vector<u64>::iterator     ctxIt;
-  vector<u64>::iterator     ctxIrIt;
+  vector<u64>::iterator     ctxIt, ctxIrIt;
   u8                        nMdl /*:BIT_NMDL*/;
   u8                        nSym /*:BIT_NSYM*/;
   char                      c;

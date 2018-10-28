@@ -13,9 +13,7 @@ class Segment
 {
  public:
   bool   begun;
-  u64    pos;
-  u64    begPos;
-  u64    endPos;
+  u64    pos, begPos, endPos;
   u64    nSegs;
   float  thresh;
   prec_t sumEnt;

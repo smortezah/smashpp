@@ -110,7 +110,7 @@ inline void FCM::show_info (const Param& p) const {
            tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
 
   const auto rule = [](u8 n, const string& s) {
-    for (auto i=n/s.size(); i--;)  cerr<<s;    cerr<<'\n';
+    for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
   };
   const auto toprule  = [&]() { rule(tblWidth, "~"); };
   const auto midrule  = [&]() { rule(tblWidth, "~"); };
