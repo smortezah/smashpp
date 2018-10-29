@@ -3,10 +3,11 @@
 
 #include "defs.h"
 
-void PrintMenuMap      (void);
-void PrintMenuReduce   (void);
-void PrintMenuVisual   (void);
-void PrintVersion      (void);
+namespace smashpp {
+void PrintMenuMap    ();
+void PrintMenuReduce ();
+void PrintMenuVisual ();
+void PrintVersion    ();
+}
 
 #endif
-

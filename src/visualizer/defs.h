@@ -20,7 +20,7 @@ typedef int32_t  I32;
 typedef int16_t  I16;
 typedef int8_t   I8;
 
-#define RELEASE             1
+#define RELEASE_eleanora    1
 #define VERSION_eleanora    1
 
 #define BUFFER_SIZE         262144

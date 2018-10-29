@@ -5,22 +5,16 @@
 #include <stdint.h>
 #include <time.h>
 
-typedef struct{
-  clock_t cpu_start;
-  clock_t cpu_ndrm;
-  clock_t cpu_total;
+namespace smashpp {
+struct TIME {
+  clock_t cpu_start, cpu_ndrm, cpu_total;
   u8 unity;
-  }
-TIME;
+};
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-TIME    *CreateClock  (clock_t);
-void    StopTimeNDRM  (TIME *, clock_t);
-void    StopCalcAll   (TIME *, clock_t);
-void    RemoveClock   (TIME *);
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TIME* CreateClock  (clock_t);
+void  StopTimeNDRM (TIME*, clock_t);
+void  StopCalcAll  (TIME*, clock_t);
+void  RemoveClock  (TIME*);
+}
 
 #endif
-
