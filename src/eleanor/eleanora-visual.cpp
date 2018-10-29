@@ -33,7 +33,7 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
 //  FILE *PLOT = NULL, *POS = NULL;
   FILE *PLOT = NULL;
   char backColor[] = "#ffffff";
-  int64_t conNBases = 0, refNBases = 0;
+  int64_t tarNBases = 0, refNBases = 0;
 //  char watermark[MAX_FILENAME];
   string watermark;
   Painter *Paint;
@@ -41,43 +41,39 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
   ifstream POS(posFile);
   PLOT = Fopen(P->image, "w");
 
-//  if (fscanf(POS, "%s\t%"PRIi64"\t%"PRIi64"\n", watermark, &conNBases,
+//  if (fscanf(POS, "%s\t%"PRIi64"\t%"PRIi64"\n", watermark, &tarNBases,
 //             &refNBases) != 3 || watermark[0] != '#' || watermark[1] != 'S' ||
 //      watermark[2] != 'C' || watermark[3] != 'F') {
-  POS >> watermark >> refNBases >> conNBases;
+  POS >> watermark >> refNBases >> tarNBases;
   if (watermark != "#SCF") {
     fprintf(stderr, "[x] Error: unknown positions file format!\n");
     exit(1);
   }
 
   if (P->verbose) {
-    fprintf(stderr, "==[ CONFIGURATION ]=================\n");
-    fprintf(stderr, "Verbose mode ....................... yes\n");
-    fprintf(stderr, "Reference number of bases .......... %"PRIu64"\n",
-            refNBases);
-    fprintf(stderr, "Target number of bases ............. %"PRIu64"\n",
-            conNBases);
-    fprintf(stderr, "Link type .......................... %u\n", P->link);
-    fprintf(stderr, "Chromosomes design characteristics:\n");
-    fprintf(stderr, "  [+] Width ........................ %u\n", width);
-    fprintf(stderr, "  [+] Space ........................ %u\n", space);
-    fprintf(stderr, "  [+] Multiplication factor ........ %u\n", mult);
-    fprintf(stderr, "  [+] Begin ........................ %u\n", start);
-    fprintf(stderr, "  [+] Minimum ...................... %"PRIi64"\n",
-            minimum);
-    fprintf(stderr, "  [+] Show regular ................. %s\n", P->regular ?
-                                                                 "yes" : "no");
-    fprintf(stderr, "  [+] Show inversions .............. %s\n", P->inversion ?
-                                                                 "yes" : "no");
-    fprintf(stderr, "Output map filename ................ %s\n", P->image);
-    fprintf(stderr, "\n");
+    cerr <<
+      "==[ CONFIGURATION ]================="                              <<"\n"
+      "Verbose mode ....................... yes"                          <<"\n"
+      "Reference number of bases .......... " << refNBases                <<"\n"
+      "Target number of bases ............. " << tarNBases                <<"\n"
+      "Link type .......................... " << P->link                  <<"\n"
+      "Chromosomes design characteristics:"                               <<"\n"
+      "  [+] Width ........................ " << width                    <<"\n"
+      "  [+] Space ........................ " << space                    <<"\n"
+      "  [+] Multiplication factor ........ " << mult                     <<"\n"
+      "  [+] Begin ........................ " << start                    <<"\n"
+      "  [+] Minimum ...................... " << minimum                  <<"\n"
+      "  [+] Show regular ................. " <<(P->regular?"yes":"no")   <<"\n"
+      "  [+] Show inversions .............. " <<(P->inversion?"yes":"no") <<"\n"
+      "Output map filename ................ " << P->image                 <<"\n"
+                                                                         <<endl;
   }
 
-  fprintf(stderr, "==[ PROCESSING ]====================\n");
-  fprintf(stderr, "Printing plot ...\n");
+  cerr << "==[ PROCESSING ]====================\n"
+          "Printing plot ...\n";
 
-  SetRatio(MAX(refNBases, conNBases) / DEFAULT_SCALE);
-  Paint = CreatePainter(GetPoint(refNBases), GetPoint(conNBases),
+  SetRatio(MAX(refNBases, tarNBases) / DEFAULT_SCALE);
+  Paint = CreatePainter(GetPoint(refNBases), GetPoint(tarNBases),
                         (double) width, (double) space, backColor);
 
   PrintHead(PLOT, (2 * DEFAULT_CX) + (((Paint->width + Paint->space) * 2) -
@@ -94,12 +90,11 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
   if (minimum == 0)
-    minimum = MAX(refNBases, conNBases) / 100;
+    minimum = MAX(refNBases, tarNBases) / 100;
 
   int64_t begPosTar, endPosTar, begPosRef, endPosRef;
   uint64_t regular = 0, inverse = 0, ignored = 0;
   string entTar, entRef;
-//  char tmp1[MAX_STR] = {'\0'}, tmp2[MAX_STR] = {'\0'};
   while (POS >> begPosRef>>endPosRef>>entRef>>begPosTar>>endPosTar>>entTar) {
 //    if (fscanf(POS, "%s\t%"PRIi64"\t%"PRIi64"\t%"PRIi64"\t%"PRIi64"\t%s\t"
 //        "%"PRIi64"\t""%"PRIi64"\t%"PRIi64"\t%"PRIi64"\n",
@@ -107,7 +102,7 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
 // &endPosRef) != 10)
 //      break;
 
-    if (labs(endPosRef - begPosRef) < minimum || labs(begPosTar - endPosTar) < minimum) {
+    if (labs(endPosRef-begPosRef)<minimum || labs(begPosTar-endPosTar)<minimum){
       ++ignored;
       continue;
     }
@@ -117,15 +112,16 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
         switch (P->link) {
         case 1:
           Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(begPosRef + ((endPosRef - begPosRef) / 2.0)),
+               Paint->cy + GetPoint(begPosRef + ((endPosRef-begPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(begPosTar + ((endPosTar - begPosTar) / 2.0)), (char*)"black");
+               Paint->cy + GetPoint(begPosTar + ((endPosTar-begPosTar) / 2.0)), 
+               (char*)"black");
           break;
         case 2:
           Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(begPosRef + ((endPosRef - begPosRef) / 2.0)),
+               Paint->cy + GetPoint(begPosRef + ((endPosRef-begPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(begPosTar + ((endPosTar - begPosTar) / 2.0)),
+               Paint->cy + GetPoint(begPosTar + ((endPosTar-begPosTar) / 2.0)),
                GetRgbColor(start * mult));
           break;
         case 3:
@@ -165,13 +161,12 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
         default:break;
         }
 
-        Rect(PLOT, Paint->width, GetPoint(endPosRef - begPosRef), Paint->cx, Paint->cy +
-                                                               GetPoint(begPosRef),
-             GetRgbColor(start * mult));
+        Rect(PLOT, Paint->width, GetPoint(endPosRef-begPosRef), Paint->cx, 
+          Paint->cy + GetPoint(begPosRef), GetRgbColor(start * mult));
 
-        Rect(PLOT, Paint->width, GetPoint(endPosTar - begPosTar), Paint->cx + Paint->space +
-                                                    Paint->width,
-             Paint->cy + GetPoint(begPosTar), GetRgbColor(start * mult));
+        Rect(PLOT, Paint->width, GetPoint(endPosTar-begPosTar), 
+          Paint->cx + Paint->space + Paint->width, 
+          Paint->cy + GetPoint(begPosTar), GetRgbColor(start * mult));
 
         ++regular;
       }
@@ -181,15 +176,16 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
         switch (P->link) {
         case 1:
           Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(endPosRef + ((begPosRef - endPosRef) / 2.0)),
+               Paint->cy + GetPoint(endPosRef + ((begPosRef-endPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(endPosTar + ((begPosTar - endPosTar) / 2.0)), (char*)"green");
+               Paint->cy + GetPoint(endPosTar + ((begPosTar-endPosTar) / 2.0)), 
+               (char*)"green");
           break;
         case 2:
           Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(endPosRef + ((begPosRef - endPosRef) / 2.0)),
+               Paint->cy + GetPoint(endPosRef + ((begPosRef-endPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(endPosTar + ((begPosTar - endPosTar) / 2.0)),
+               Paint->cy + GetPoint(endPosTar + ((begPosTar-endPosTar) / 2.0)),
                GetRgbColor(start * mult));
           break;
         case 3:
@@ -229,13 +225,12 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
         default:break;
         }
 
-        Rect(PLOT, Paint->width, GetPoint(begPosRef - endPosRef), Paint->cx, Paint->cy +
-                                                               GetPoint(endPosRef),
-             GetRgbColor(start * mult));
+        Rect(PLOT, Paint->width, GetPoint(begPosRef - endPosRef), Paint->cx, 
+          Paint->cy + GetPoint(endPosRef), GetRgbColor(start * mult));
 
-        RectIR(PLOT, Paint->width, GetPoint(endPosTar - begPosTar), Paint->cx + Paint->space +
-                                                      Paint->width,
-               Paint->cy + GetPoint(begPosTar), GetRgbColor(start * mult));
+        RectIR(PLOT, Paint->width, GetPoint(endPosTar - begPosTar), 
+          Paint->cx + Paint->space + Paint->width, 
+          Paint->cy + GetPoint(begPosTar), GetRgbColor(start * mult));
 
         ++inverse;
       }
