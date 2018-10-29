@@ -5,7 +5,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 static void PrintCalc(char *text, clock_t t){
-  uint32_t seconds = t / CLOCKS_PER_SEC;
+  u32 seconds = t / CLOCKS_PER_SEC;
   if(seconds <= 60)
     fprintf(stdout, "%s cpu time: %u second(s).\n", text, seconds);
   else if(seconds <= 3600)

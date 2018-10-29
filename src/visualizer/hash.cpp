@@ -10,7 +10,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // SILVERS HASH
 //
-uint64_t XHASH(uint64_t x){
+u64 XHASH(u64 x){
   return (x * 786433 + 196613) % 68719476735;
   }
 
@@ -27,8 +27,8 @@ HASH *CreateHash(void){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // GET REPEAT MODEL HASH ENTRY
 //
-ENTRY *GetHEnt(HASH *H, uint64_t key){
-  uint32_t n, h = key % HSIZE;
+ENTRY *GetHEnt(HASH *H, u64 key){
+  u32 n, h = key % HSIZE;
   #ifdef LOWP
   uint16_t b = key & 0xffff;
   #endif
@@ -47,8 +47,8 @@ ENTRY *GetHEnt(HASH *H, uint64_t key){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // INSERT KMER POSITION INTO HASH TABLE 
 //
-void InsertKmerPos(HASH *H, uint64_t key, uint32_t pos){
-  uint32_t n, h = key % HSIZE;
+void InsertKmerPos(HASH *H, u64 key, u32 pos){
+  u32 n, h = key % HSIZE;
   #ifdef LOWP
   uint16_t b = key & 0xffff;
   #endif

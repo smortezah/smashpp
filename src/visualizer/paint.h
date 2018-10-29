@@ -43,17 +43,17 @@ Painter;
 
 typedef struct
   {
-  uint8_t  r;
-  uint8_t  g;
-  uint8_t  b;
+  u8  r;
+  u8  g;
+  u8  b;
   } 
 RgbColor;
 
 typedef struct
   {
-  uint8_t  h;
-  uint8_t  s;
-  uint8_t  v;
+  u8  h;
+  u8  s;
+  u8  v;
   } 
 HsvColor;
 
@@ -62,7 +62,7 @@ HsvColor;
 Painter   *CreatePainter (double, double, double, double, char *);
 RgbColor  HsvToRgb       (HsvColor);
 HsvColor  RgbToHsv       (RgbColor);
-char      *GetRgbColor   (uint8_t);
+char      *GetRgbColor   (u8);
 void      PrintFinal     (FILE *);
 void      PrintHead      (FILE *, double, double);
 void      Polygon        (FILE *, double, double, double, double, double,
@@ -77,8 +77,8 @@ void      RectIR         (FILE *, double, double, double, double, char *);
 void      Chromosome     (FILE *, double, double, double, double);
 void      Text           (FILE *, double, double, char *);
 void      Textfloatoat   (FILE *, double, double, double);
-double    GetPoint       (uint64_t);
-void      SetRatio       (uint32_t);
+double    GetPoint       (u64);
+void      SetRatio       (u32);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

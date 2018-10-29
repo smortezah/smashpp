@@ -7,14 +7,14 @@
 #include "common.h"
 #include "mem.h"
 
-uint32_t ratio;
+u32 ratio;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 RgbColor HsvToRgb(HsvColor hsv)
   {
   RgbColor  rgb;
-  uint8_t   region, remainder, p, q, t;
+  u8   region, remainder, p, q, t;
 
   if(hsv.s == 0)
     {
@@ -49,7 +49,7 @@ RgbColor HsvToRgb(HsvColor hsv)
 HsvColor RgbToHsv(RgbColor rgb)
   {
   HsvColor  hsv;
-  uint8_t   rgbMin, rgbMax;
+  u8   rgbMin, rgbMax;
 
   rgbMin = rgb.r<rgb.g?(rgb.r<rgb.b?rgb.r:rgb.b):(rgb.g<rgb.b?rgb.g:rgb.b);
   rgbMax = rgb.r>rgb.g?(rgb.r>rgb.b?rgb.r:rgb.b):(rgb.g>rgb.b?rgb.g:rgb.b);
@@ -80,7 +80,7 @@ HsvColor RgbToHsv(RgbColor rgb)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *GetRgbColor(uint8_t hue)
+char *GetRgbColor(u8 hue)
   {
   RgbColor RGB;
   HsvColor HSV;
@@ -307,14 +307,14 @@ void TextFloat(FILE *F, double x, double y, double n)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void SetRatio(uint32_t r)
+void SetRatio(u32 r)
   {
   ratio = r;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-double GetPoint(uint64_t p)
+double GetPoint(u64 p)
   {
   return p / (double) ratio * 5;
   }
