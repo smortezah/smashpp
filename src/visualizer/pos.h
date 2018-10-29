@@ -6,15 +6,15 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 typedef struct{
-  uint64_t init;
-  uint64_t end;
-  uint8_t  name[MAX_CONTIG_NAME];
+  u64 init;
+  u64 end;
+  u8  name[MAX_CONTIG_NAME];
   }
 POS;
 
 typedef struct{
   POS      *Pos;
-  uint64_t iPos;
+  u64 iPos;
   }
 HEADERS;
 

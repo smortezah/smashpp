@@ -2,36 +2,31 @@
 #define BUFFER_H_INCLUDED
 
 #include "defs.h"
+#include "../def.hpp"
 
+namespace smashpp {
 #define DEF_BUF_GUARD 32
 #define DEF_BUF_SIZE  65535
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+struct CBUF {
+  u8* buf;
+  i32 idx;
+  u32 size;
+  u32 guard;
+};
 
-typedef struct{
-  uint8_t  *buf;
-  int32_t  idx;
-  uint32_t size;
-  uint32_t guard;
-  }
-CBUF;
+struct BUF {
+  u8* buf;
+  i32 idx;
+  u32 size;
+};
 
-typedef struct{
-  uint8_t  *buf;
-  int32_t  idx;
-  uint32_t size;
-  }
-BUF;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-CBUF     *CreateCBuffer (uint32_t, uint32_t);
-BUF      *CreateBuffer  (uint32_t);
-void     UpdateCBuffer  (CBUF *);
-void     UpdateBuffer   (BUF *);
-void     RemoveCBuffer  (CBUF *);
-void     RemoveBuffer   (BUF *);
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CBUF* CreateCBuffer (u32, u32);
+BUF*  CreateBuffer  (u32);
+void  UpdateCBuffer (CBUF*);
+void  UpdateBuffer  (BUF*);
+void  RemoveCBuffer (CBUF*);
+void  RemoveBuffer  (BUF*);
+}
 
 #endif

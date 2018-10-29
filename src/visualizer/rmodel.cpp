@@ -11,9 +11,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // CALCULATION OF CONTEXT MULTIPLICATOR FOR INDEX FUNCTION USAGE
 //
-uint64_t CalcMult(uint32_t c){
-  uint32_t n;
-  uint64_t x[c], p = 1;
+u64 CalcMult(u32 c){
+  u32 n;
+  u64 x[c], p = 1;
   for(n = 0 ; n < c ; ++n){
     x[n] = p;
     p <<= 2;
@@ -24,12 +24,12 @@ uint64_t CalcMult(uint32_t c){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // CREATES THE RCLASS BASIC STRUCTURE 
 //
-RCLASS *CreateRClass(uint32_t max, uint32_t min, uint32_t k, uint8_t ir){
-  uint32_t n;
+RCLASS *CreateRClass(u32 max, u32 min, u32 k, u8 ir){
+  u32 n;
 
   RCLASS *C   = (RCLASS *)  Calloc(1,   sizeof(RCLASS));
   C->RM       = (RMODEL *)  Calloc(max, sizeof(RMODEL));
-  C->active   = (uint8_t *) Calloc(max, sizeof(uint8_t));
+  C->active   = (u8 *) Calloc(max, sizeof(u8));
   C->nRM      = 0;
   C->mRM      = max;
   C->rev      = ir;
@@ -59,14 +59,14 @@ void RemoveRClass(RCLASS *C){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // REVERSE COMPLEMENT INDEX BASED ON PAST SYMBOLS FOR REPEATS
 //
-uint64_t GetIdxRevRM(uint8_t *p, RCLASS *C){
+u64 GetIdxRevRM(u8 *p, RCLASS *C){
   return (C->idxRev = (C->idxRev>>2)+GetCompNum(*p)*C->mult);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // INDEX CALC BASED ON PAST SYMBOLS FOR REPEATS
 //
-uint64_t GetIdxRM(uint8_t *p, RCLASS *C){
+u64 GetIdxRM(u8 *p, RCLASS *C){
   return (C->idx = ((C->idx-*(p-C->kmer)*C->mult)<<2)+*p);
   }
 
@@ -87,9 +87,9 @@ static int32_t GetFirstNonActiveRM(RCLASS *C){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // START EACH REPEAT MODEL
 //
-void StartRMs(RCLASS *C, HASH *H, uint64_t relative, uint64_t absolute, uint64_t 
-idx, uint8_t ir){
-  uint32_t n = 0, k = 0;
+void StartRMs(RCLASS *C, HASH *H, u64 relative, u64 absolute, u64
+idx, u8 ir){
+  u32 n = 0, k = 0;
   ENTRY *E;
 
   if((E = GetHEnt(H, idx)) == NULL)
@@ -125,8 +125,8 @@ idx, uint8_t ir){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // GET INDEX POSITION
 //
-static uint64_t GetIPoint(HEADERS *Head, uint64_t init){
-  uint64_t id;
+static u64 GetIPoint(HEADERS *Head, u64 init){
+  u64 id;
   for(id = 0 ; id < Head->iPos ; ++id)
     if(Head->Pos[id].init <= init && Head->Pos[id].end >= init)
       return id;
@@ -136,7 +136,7 @@ static uint64_t GetIPoint(HEADERS *Head, uint64_t init){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // PROTECT NAMES
 //
-void ProtectVoidName(uint8_t *name, uint8_t type){
+void ProtectVoidName(u8 *name, u8 type){
   if(name[0] == '\0'){
     name[0] = type == 0 ? 't' : 'r';
     name[1] = type == 0 ? 'a' : 'e';
@@ -148,8 +148,8 @@ void ProtectVoidName(uint8_t *name, uint8_t type){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // UPDATE REPEAT MODEL
 //
-void UpdateRMs(RCLASS *C, uint8_t *b, uint64_t relative, uint8_t sym){
-  uint32_t n;
+void UpdateRMs(RCLASS *C, u8 *b, u64 relative, u8 sym){
+  u32 n;
 
   for(n = 0 ; n < C->mRM ; ++n){
     if(C->active[n] == 1){
@@ -187,9 +187,9 @@ void UpdateRMs(RCLASS *C, uint8_t *b, uint64_t relative, uint8_t sym){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // PRINT BLOCK
 //
-void PrintBlock(RCLASS *C, HEADERS *Head, uint64_t relative, uint64_t absolute, 
-uint32_t n, uint8_t *cName, FILE *W){
-  uint64_t idxPos = 0;
+void PrintBlock(RCLASS *C, HEADERS *Head, u64 relative, u64 absolute,
+u32 n, u8 *cName, FILE *W){
+  u64 idxPos = 0;
 
   if(C->RM[n].rev == 0){ // REGULAR REPEAT
     idxPos = GetIPoint(Head, C->RM[n].init-C->kmer);
@@ -235,7 +235,7 @@ uint32_t n, uint8_t *cName, FILE *W){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // STOP USELESS REPEAT MODELS
 //
-static void ResetRM(RCLASS *C, uint32_t id){
+static void ResetRM(RCLASS *C, u32 id){
   C->RM[id].write = 0;
   C->RM[id].stop  = 0;
   C->active[id]   = 0;
@@ -244,10 +244,10 @@ static void ResetRM(RCLASS *C, uint32_t id){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // STOP USELESS REPEAT MODELS
 //
-void StopRMs(RCLASS *C, HEADERS *Head, uint64_t position, uint64_t absolute, 
-uint8_t *buf, FILE *Writter){
+void StopRMs(RCLASS *C, HEADERS *Head, u64 position, u64 absolute,
+u8 *buf, FILE *Writter){
   int32_t id, largerRM = -1, largerRMIR = -1;
-  uint64_t size = 0, sizeIR = 0;
+  u64 size = 0, sizeIR = 0;
 
   if(C->nRM > 0){
     for(id = 0 ; id < C->mRM ; ++id){
@@ -300,10 +300,10 @@ uint8_t *buf, FILE *Writter){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // FORCE STOP REPEAT MODELS DURING END OF READ OR 'N'
 //
-void ResetAllRMs(RCLASS *C, HEADERS *Head, uint64_t relative, uint64_t 
-absolute, uint8_t *cName, FILE *Writter){
+void ResetAllRMs(RCLASS *C, HEADERS *Head, u64 relative, u64
+absolute, u8 *cName, FILE *Writter){
   int32_t id, largerRM = -1, largerRMIR = -1;
-  uint64_t size = 0, sizeIR = 0;
+  u64 size = 0, sizeIR = 0;
 
   for(id = 0 ; id < C->mRM ; ++id){
     if(C->active[id] == 1){
@@ -332,7 +332,7 @@ absolute, uint8_t *cName, FILE *Writter){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // START NEW REPEAT MODELS IF THERE IS STILL SPACE
 //                         
-void StartMultipleRMs(RCLASS *C, HASH *H, uint64_t relative, uint64_t absolute){
+void StartMultipleRMs(RCLASS *C, HASH *H, u64 relative, u64 absolute){
   if(C->nRM < C->mRM)
     StartRMs(C, H, relative, absolute, C->idx, 0);
   if(C->rev == 1 && C->nRM < C->mRM) 

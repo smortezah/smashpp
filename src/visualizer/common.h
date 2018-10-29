@@ -5,43 +5,40 @@
 #include "defs.h"
 #include "param.h"
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-double      BoundDouble      (double, double, double);
-FILE        *Fopen           (const char *, const char *);
-void        UnPackByte       (uint8_t *, uint8_t);
-uint8_t     PackByte         (uint8_t *);
-uint64_t    SumWriteBits     (uint8_t **, int, uint64_t, FILE *, FILE *);
-void        ShiftBuffer      (uint8_t *, int, uint8_t);
-double      Power            (double, double);
-uint8_t     DNASymToNum      (uint8_t  );
-uint8_t     NumToDNASym      (uint8_t  );
-uint8_t     GetCompNum       (uint8_t  );
-uint8_t     GetCompSym       (uint8_t  );
-uint64_t    NDNASyminFile    (FILE *);
-uint64_t    NDNASymInFastq   (FILE *);
-uint64_t    NDNASymInFasta   (FILE *);
-uint64_t    NBytesInFile     (FILE *);
-uint64_t    FopenBytesInFile (const char *);
-uint8_t     *ReverseStr      (uint8_t *, uint32_t);
-char        *CloneString     (char *   );
-char        *RepString       (const char *, const char *, const char *);
-uint32_t    ArgsNum          (uint32_t , char *[], uint32_t, char *, uint32_t,
-                              uint32_t);
-double      ArgsDouble       (double, char *[], uint32_t, char *);
-uint8_t     ArgsState        (uint8_t  , char *[], uint32_t, char *);
-char        *ArgsString      (char    *, char *[], uint32_t, char *);
-char        *ArgsFilesMap    (char *[], uint32_t, char *);
-char        *ArgsFilesReduce (char *[], uint32_t, char *);
-char        *ArgsFilesImg    (char *[], uint32_t, char *);
-void        TestReadFile     (char *);
-uint8_t     CmpCheckSum      (uint32_t, uint32_t);
-void        FAccessWPerm     (char    *);
-void        CalcProgress     (uint64_t , uint64_t);
-void        PrintArgs        (Parameters *);
-char        *concatenate     (char *, char *);
-int32_t     StrToArgv        (char *, char ***);
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+namespace smashpp {
+double BoundDouble      (double, double, double);
+FILE*  Fopen            (const char*, const char*);
+void   UnPackByte       (u8*, u8);
+u8     PackByte         (u8*);
+u64    SumWriteBits     (u8**, int, u64, FILE*, FILE*);
+void   ShiftBuffer      (u8*, int, u8);
+double Power            (double, double);
+u8     DNASymToNum      (u8);
+u8     NumToDNASym      (u8);
+u8     GetCompNum       (u8);
+u8     GetCompSym       (u8);
+u64    NDNASyminFile    (FILE*);
+u64    NDNASymInFastq   (FILE*);
+u64    NDNASymInFasta   (FILE*);
+u64    NBytesInFile     (FILE*);
+u64    FopenBytesInFile (const char*);
+u8*    ReverseStr       (u8*, u32);
+char*  CloneString      (char*   );
+char*  RepString        (const char*, const char*, const char *);
+u32    ArgsNum          (u32 , char*[], u32, char*, u32, u32);
+double ArgsDouble       (double, char*[], u32, char *);
+u8     ArgsState        (u8, char*[], u32, char *);
+char*  ArgsString       (char*, char *[], u32, char *);
+char*  ArgsFilesMap     (char*[], u32, char*);
+char*  ArgsFilesReduce  (char*[], u32, char*);
+char*  ArgsFilesImg     (char*[], u32, char*);
+void   TestReadFile     (char*);
+u8     CmpCheckSum      (u32, u32);
+void   FAccessWPerm     (char*);
+void   CalcProgress     (u64, u64);
+void   PrintArgs        (Parameters*);
+char*  concatenate      (char*, char*);
+i32    StrToArgv        (char*, char***);
+}
 
 #endif

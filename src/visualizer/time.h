@@ -9,7 +9,7 @@ typedef struct{
   clock_t cpu_start;
   clock_t cpu_ndrm;
   clock_t cpu_total;
-  uint8_t unity;
+  u8 unity;
   }
 TIME;
 

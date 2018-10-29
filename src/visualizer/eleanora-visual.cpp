@@ -28,8 +28,8 @@ Parameters *P;
 
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - - - - P L O T - - - - - - - - - - - - - - - -
-void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
-                uint32_t start, uint64_t minimum) {
+void PrintPlot (char *posFile, u32 width, u32 space, u32 mult,
+                u32 start, u64 minimum) {
 //  FILE *PLOT = NULL, *POS = NULL;
   FILE *PLOT = NULL;
   char backColor[] = "#ffffff";
@@ -93,7 +93,7 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
     minimum = MAX(refNBases, tarNBases) / 100;
 
   int64_t begPosTar, endPosTar, begPosRef, endPosRef;
-  uint64_t regular = 0, inverse = 0, ignored = 0;
+  u64 regular = 0, inverse = 0, ignored = 0;
   string entTar, entRef;
   while (POS >> begPosTar>>endPosTar>>entTar>>begPosRef>>endPosRef>>entRef) {
 //    if (fscanf(POS, "%s\t%"PRIi64"\t%"PRIi64"\t%"PRIi64"\t%"PRIi64"\t%s\t"
@@ -267,7 +267,7 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int32_t main (int argc, char *argv[]) {
   char **p = *&argv;
-  uint32_t width, space, mult, start, minimum;
+  u32 width, space, mult, start, minimum;
 
   P = (Parameters *) Malloc(1 * sizeof(Parameters));
   if ((P->help = ArgsState(DEF_HELP, p, argc, (char*)"-h")) == 1 || argc < 2) {

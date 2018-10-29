@@ -20,7 +20,7 @@ void UpdateHeaders(HEADERS *Heads){
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void RemoveHeaders(HEADERS *Headers){
-  uint64_t n;
+  u64 n;
   for(n = 0 ; n < Headers->iPos ; ++n)
     Free(Headers->Pos);
   Free(Headers);

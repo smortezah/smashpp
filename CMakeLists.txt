@@ -8,28 +8,28 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 
-add_executable(smashpp          src/main.cpp
-                                src/fcm.cpp
-                                src/tbl64.cpp
-                                src/tbl32.cpp
-                                src/cmls4.cpp
-                                src/logtbl8.cpp
-                                src/filter.cpp
-                                src/segment.cpp
-                                src/def.hpp
-                                src/par.hpp
-                                src/assert.hpp
-                                src/fn.hpp
-                                src/mdlpar.hpp)
+add_executable(smashpp         src/main.cpp
+                               src/fcm.cpp
+                               src/tbl64.cpp
+                               src/tbl32.cpp
+                               src/cmls4.cpp
+                               src/logtbl8.cpp
+                               src/filter.cpp
+                               src/segment.cpp
+                               src/def.hpp
+                               src/par.hpp
+                               src/assert.hpp
+                               src/fn.hpp
+                               src/mdlpar.hpp)
 
-add_executable(smashpp-visual src/visualizer/eleanora-visual.cpp
-        src/visualizer/mem.cpp
-        src/visualizer/time.cpp
-        src/visualizer/msg.cpp
-        src/visualizer/paint.cpp
-        src/visualizer/common.cpp
-        src/visualizer/defs.h
-        src/visualizer/param.h)
+add_executable(smashpp-visual  src/visualizer/eleanora-visual.cpp
+                               src/visualizer/mem.cpp
+                               src/visualizer/time.cpp
+                               src/visualizer/msg.cpp
+                               src/visualizer/paint.cpp
+                               src/visualizer/common.cpp
+                               src/visualizer/defs.h
+                               src/visualizer/param.h)
 
 #add_executable(excule_N src/excludeN.cpp)
 

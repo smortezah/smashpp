@@ -16,44 +16,44 @@ typedef struct{
   int64_t size;      // CURRENT SIZE OF THE RMODEL IN THE CONTIG
   int64_t init;      // FIRST POSITION OF THE FIRST PREDICTED K-MER 
   int64_t pos;       // CURRENT POSITION OF THE FIRST PREDICTED K-MER 
-  uint8_t rev;       // INVERTED REPEAT MODEL. IF REV=1 THEN IS ON
-  uint8_t stop;      // STOP THIS MODEL = 1
-  uint8_t write;     // WRITE TO DISK THIS MODEL = 1
+  u8 rev;       // INVERTED REPEAT MODEL. IF REV=1 THEN IS ON
+  u8 stop;      // STOP THIS MODEL = 1
+  u8 write;     // WRITE TO DISK THIS MODEL = 1
   }
 RMODEL;
 
 typedef struct{
   RMODEL   *RM;      // POINTER FOR EACH OF THE MULTIPLE REPEAT MODELS
-  uint8_t  *active;  // THE REPEAT MODEL IS ACTIVE OR NOT
-  uint32_t nRM;      // CURRENT NUMBER OF REPEAT MODELS
-  uint32_t mRM;      // MAXIMUM NUMBER OF REPEAT MODELS
-  uint32_t kmer;     // CONTEXT TEMPLATE SIZE FOR REPEAT MODEL
-  uint32_t minSize;  // MINIMUM BLOCK SIZE
-  uint64_t mult;     // INDEX MULTIPLIER
-  uint64_t idx;      // CURRENT CONTEXT INDEX
-  uint64_t idxRev;   // CURRENT INVERTED REPEAT INDEX
-  uint8_t  rev;      // INVERTED REPETAT MODEL. IF REV='Y' THEN IS TRUE
-  uint64_t nBases;   // NUMBER OF ACGTN's
+  u8  *active;  // THE REPEAT MODEL IS ACTIVE OR NOT
+  u32 nRM;      // CURRENT NUMBER OF REPEAT MODELS
+  u32 mRM;      // MAXIMUM NUMBER OF REPEAT MODELS
+  u32 kmer;     // CONTEXT TEMPLATE SIZE FOR REPEAT MODEL
+  u32 minSize;  // MINIMUM BLOCK SIZE
+  u64 mult;     // INDEX MULTIPLIER
+  u64 idx;      // CURRENT CONTEXT INDEX
+  u64 idxRev;   // CURRENT INVERTED REPEAT INDEX
+  u8  rev;      // INVERTED REPETAT MODEL. IF REV='Y' THEN IS TRUE
+  u64 nBases;   // NUMBER OF ACGTN's
   }
 RCLASS;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint64_t   CalcMult         (uint32_t);
-RCLASS     *CreateRClass    (uint32_t, uint32_t, uint32_t, uint8_t);
+u64   CalcMult         (u32);
+RCLASS     *CreateRClass    (u32, u32, u32, u8);
 void       RemoveRClass     (RCLASS *);
-uint64_t   GetIdxRevRM      (uint8_t *, RCLASS *);
-uint64_t   GetIdxRM         (uint8_t *, RCLASS *);
-void       PrintBlock       (RCLASS *, HEADERS *, uint64_t, uint64_t, uint32_t,
-                            uint8_t *, FILE *);
-void       StartRMs         (RCLASS *, HASH *, uint64_t, uint64_t, uint64_t,
-                            uint8_t);
-void       UpdateRMs        (RCLASS *, uint8_t *, uint64_t, uint8_t);
-void       StopRMs          (RCLASS *, HEADERS *, uint64_t, uint64_t, uint8_t *, 
+u64   GetIdxRevRM      (u8 *, RCLASS *);
+u64   GetIdxRM         (u8 *, RCLASS *);
+void       PrintBlock       (RCLASS *, HEADERS *, u64, u64, u32,
+                            u8 *, FILE *);
+void       StartRMs         (RCLASS *, HASH *, u64, u64, u64,
+                            u8);
+void       UpdateRMs        (RCLASS *, u8 *, u64, u8);
+void       StopRMs          (RCLASS *, HEADERS *, u64, u64, u8 *,
                             FILE *);
-void       ResetAllRMs      (RCLASS *, HEADERS *, uint64_t, uint64_t, uint8_t *, 
+void       ResetAllRMs      (RCLASS *, HEADERS *, u64, u64, u8 *,
                             FILE *);
-void       StartMultipleRMs (RCLASS *, HASH *, uint64_t, uint64_t);
+void       StartMultipleRMs (RCLASS *, HASH *, u64, u64);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

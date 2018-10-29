@@ -11,13 +11,13 @@
 #define MAX_CTX      20         // ((HASH_SIZE (24 B) + KEY (16 B))>>1) = 20 
 #define LOWP
 
-typedef uint32_t PPR;  // PRECISION OF THE POSITION POINTER FOR REPEATS
+typedef u32 PPR;  // PRECISION OF THE POSITION POINTER FOR REPEATS
 
 typedef struct{
   #ifdef LOWP
   uint16_t key;      // THE KEY (INDEX / HASHSIZE) STORED IN THIS ENTRY
   #else
-  uint64_t key;      // THE KEY STORED IN THIS ENTRY
+  u64 key;      // THE KEY STORED IN THIS ENTRY
   #endif
   uint16_t nPos;
   PPR      *pos;     // LIST WITH THE REPEATING POSITIONS
@@ -32,10 +32,10 @@ HASH;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint64_t    XHASH             (uint64_t);
+u64    XHASH             (u64);
 HASH        *CreateHash       (void);
-ENTRY       *GetHEnt          (HASH   *, uint64_t);
-void        InsertKmerPos     (HASH   *, uint64_t, uint32_t);
+ENTRY       *GetHEnt          (HASH   *, u64);
+void        InsertKmerPos     (HASH   *, u64, u32);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
