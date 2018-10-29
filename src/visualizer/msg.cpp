@@ -4,7 +4,7 @@
 
 void PrintMenuMap(void){
   fprintf(stderr,
-  "Usage: eleanor-map [OPTION]... [FILE] [FILE]                            \n"
+  "Usage: visualizer-map [OPTION]... [FILE] [FILE]                            \n"
   "Ultra-fast mapping of similar genomic regions                            \n"
   "                                                                         \n"
   "Non-mandatory arguments:                                                 \n"
@@ -29,8 +29,8 @@ void PrintMenuMap(void){
 
 void PrintMenuVisual(void){
   fprintf(stderr,
-  "Usage: eleanor-visual [OPTION]... [FILE]                                \n"
-  "Visualization of eleanor-map output.                                    \n"
+  "Usage: visualizer-visual [OPTION]... [FILE]                                \n"
+  "Visualization of visualizer-map output.                                    \n"
   "                                                                         \n"
   "Non-mandatory arguments:                                                 \n"
   "                                                                         \n"
@@ -50,7 +50,7 @@ void PrintMenuVisual(void){
   "Mandatory arguments:                                                     \n"
   "                                                                         \n"
   "  <FILE>                     filename with positions from the            \n" 
-  "                             eleanor-map program (*.pos),               \n"
+  "                             visualizer-map program (*.pos),               \n"
   "                                                                         \n"
   "Report bugs to <pratas@ua.pt>.                                           \n");
   }
@@ -66,8 +66,8 @@ void PrintVersion(void){
   "                       of similar genomic regions                        \n"
   "                                                                         \n"
   "                  It includes the following programs:                    \n"
-  "                           * eleanor-map                                \n"
-  "                           * eleanor-visual                             \n"
+  "                           * visualizer-map                                \n"
+  "                           * visualizer-visual                             \n"
   "                                                                         \n"
   "Copyright (C) 2015-2018 University of Aveiro. This is a Free software.   \n"
   "You may redistribute copies of it under the terms of the GNU - General   \n"

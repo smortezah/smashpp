@@ -22,14 +22,14 @@ add_executable(smashpp          src/main.cpp
                                 src/fn.hpp
                                 src/mdlpar.hpp)
 
-add_executable(eleanora-visual  src/eleanor/eleanora-visual.cpp
-                                src/eleanor/mem.cpp
-                                src/eleanor/time.cpp
-                                src/eleanor/msg.cpp
-                                src/eleanor/paint.cpp
-                                src/eleanor/common.cpp
-                                src/eleanor/defs.h
-                                src/eleanor/param.h)
+add_executable(smashpp-visual src/visualizer/eleanora-visual.cpp
+        src/visualizer/mem.cpp
+        src/visualizer/time.cpp
+        src/visualizer/msg.cpp
+        src/visualizer/paint.cpp
+        src/visualizer/common.cpp
+        src/visualizer/defs.h
+        src/visualizer/param.h)
 
 #add_executable(excule_N src/excludeN.cpp)
 
