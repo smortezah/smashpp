@@ -73,6 +73,6 @@ void PrintVersion(void){
   "You may redistribute copies of it under the terms of the GNU - General   \n"
   "Public License v3 <http://www.gnu.org/licenses/gpl.html>. There is NOT   \n"
   "ANY WARRANTY, to the extent permitted by law. Developed and Written by   \n"
-  "Diogo Pratas.\n\n", VERSION, RELEASE);
+  "Diogo Pratas.\n\n", VERSION_eleanora, RELEASE);
   }
 

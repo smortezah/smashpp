@@ -324,7 +324,7 @@ double GetPoint(uint64_t p)
 void PrintHead(FILE *F, double w, double u)
   {
   fprintf(F, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-  "<!-- IEETA 2014 using Inkscape -->\n""<svg\n"
+  "<!-- IEETA 2018 using Inkscape -->\n""<svg\n"
   "xmlns:osb=\"http://www.openswatchbook.org/uri/2009/osb\"\n"
   "xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
   "xmlns:cc=\"http://creativecommons.org/ns#\"\n"
