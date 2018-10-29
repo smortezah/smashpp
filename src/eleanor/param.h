@@ -29,7 +29,7 @@ typedef struct{
   U32      threshold;
   U32      nThreads;
   FILEP    Ref;
-  FILEP    Con;
+  FILEP    Tar;
   char     *positions;
   char     *image;
   }

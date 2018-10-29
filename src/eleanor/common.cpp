@@ -9,6 +9,7 @@
 #include "common.h"
 #include "msg.h"
 #include <fstream>
+#include <iostream>
 using namespace std;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -272,21 +273,6 @@ FILE *Fopen (const char *path, const char *mode) {
   return file;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-//template <typename Mode>
-//fstream Fopen (const string& path, Mode mode) {
-//  fstream file(path, mode);
-//
-//  if (file == NULL) {
-//    fprintf(stderr, "Error opening: %s (mode %s). Does the file exist?\n",
-//            path, mode);
-//    exit(1);
-//  }
-//
-//  return file;
-//}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 uint8_t *ReverseStr (uint8_t *str, uint32_t end) {
@@ -424,9 +410,9 @@ void FAccessWPerm (char *fn) {
   if (access(fn, F_OK) != -1) {
     fprintf(stderr, "Error: file %s already exists!\n", fn);
     if (access(fn, W_OK) != -1)
-      fprintf(stderr, "Note: file %s has write permission.\nTip: to force "
-                      "writing rerun with \"-f\" option.\nWarning: on forcing, the old (%s) "
-                      "file will be deleted permanently.\n", fn, fn);
+      cerr << "Note: file " << fn << " has write permission.\nTip: to force "
+              "writing rerun with \"-f\" option.\nWarning: on forcing, the "
+              "old (" << fn << ") file will be deleted permanently.\n";
     exit(1);
   }
 }
@@ -483,29 +469,21 @@ uint8_t CmpCheckSum (uint32_t cs, uint32_t checksum) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void PrintArgs (Parameters *P) {
-  fprintf(stderr, "==[ CONFIGURATION ]=================\n");
-  fprintf(stderr, "Verbose mode ....................... %s\n", P->verbose == 0
-                                                               ? "no" : "yes");
-  fprintf(stderr, "Force mode ......................... %s\n", P->force == 0 ?
-                                                               "no" : "yes");
-  fprintf(stderr, "Using inversions ................... %s\n", P->inversion ==
-                                                               0 ? "no"
-                                                                 : "yes");
-  fprintf(stderr, "K-mer size ......................... %u\n", P->kmer);
-  fprintf(stderr, "Minimum block size ................. %u\n", P->minimum);
-  fprintf(stderr, "Repeats number ..................... %u\n", P->repeats);
-  fprintf(stderr, "Number of threads .................. %u\n", P->nThreads);
-  fprintf(stderr, "Output positions filename .......... %s\n", P->positions);
-  fprintf(stderr, "Contigs:\n");
-  fprintf(stderr, "  [+] Name ......................... %s\n", P->Con.name);
-  fprintf(stderr, "  [+] Length ....................... %"PRIu64"\n",
-          P->Con.length);
-  fprintf(stderr, "Reference:\n");
-  fprintf(stderr, "  [+] Name ......................... %s\n", P->Ref.name);
-  fprintf(stderr, "  [+] Length ....................... %"PRIu64"\n",
-          P->Ref.length);
-  fprintf(stderr, "\n");
+  cerr <<
+    "==[ CONFIGURATION ]=================\n"
+    "Verbose mode ....................... " <<(P->verbose==0  ?"no":"yes")<<"\n"
+    "Force mode ......................... " <<(P->force==0    ?"no":"yes")<<"\n"
+    "Using inversions ................... " <<(P->inversion==0?"no":"yes")<<"\n"
+    "K-mer size ......................... " << P->kmer                    <<"\n"
+    "Minimum block size ................. " << P->minimum                 <<"\n"
+    "Repeats number ..................... " << P->repeats                 <<"\n"
+    "Number of threads .................. " << P->nThreads                <<"\n"
+    "Output positions filename .......... " << P->positions               <<"\n"
+    "Contigs:"                                                            <<"\n"
+    "  [+] Name ......................... " << P->Tar.name                <<"\n"
+    "  [+] Length ....................... " << P->Tar.length              <<"\n"
+    "Reference:"                                                          <<"\n"
+    "  [+] Name ......................... " << P->Ref.name                <<"\n"
+    "  [+] Length ....................... " << P->Ref.length              <<"\n"
+                                                                         <<endl;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-

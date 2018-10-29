@@ -130,97 +130,95 @@ inline void Param::parse (int argc, char**& argv) {
 }
 
 inline void Param::help () const {
-  cerr                                                                   << '\n'
-    << "NAME"                                                            << '\n'
-    << "    Smash++ v" << VERSION << " - rearrangements finder"          << '\n'
-                                                                         << '\n'
-    << "AUTHOR"                                                          << '\n'
-    << "    Morteza Hosseini    seyedmorteza@ua.pt"                      << '\n'
-                                                                         << '\n'
-    << "SYNOPSIS"                                                        << '\n'
-    << "    ./smashpp [OPTION]...  -r [REF_FILE] -t [TAR_FILE]"          << '\n'
-                                                                         << '\n'
-    << "SAMPLE"                                                          << '\n'
-//    << "    ./smashpp -t TAR -r REF "                                  << '\n'
-                                                                         << '\n'
-    << "DESCRIPTION"                                                     << '\n'
-    << "    Find rearrangements."                                        << '\n'
-                                                                         << '\n'
-    << "    -r [FILE],  --ref [FILE]"                                    << '\n'
-    << "        reference file. Can be bare Seq/Fasta/Fastq -> MANDATORY"<< '\n'
-                                                                         << '\n'
-    << "    -t [FILE],  --tar [FILE]"                                    << '\n'
-    << "        target file. Can be bare Seq/Fasta/Fastq -> MANDATORY"   << '\n'
-                                                                         << '\n'
-    << "    -l [NUM],  --level [NUM]"                                    << '\n'
-    << "        level"                                                   << '\n'
-                                                                         << '\n'
-    << "    -v,  --verbose"                                              << '\n'
-    << "        more information"                                        << '\n'
-                                                                         << '\n'
-    << "    -n [NUM],  --nthr [NUM]"                                     << '\n'
-    << "        number of threads"                                       << '\n'
-                                                                         << '\n'
-    << "    -m [k,[w,d,]ir,alpha,gamma[,log2(w),d]/thresh,ir,alpha,gamma"
-                                                                ":...]," << '\n'
-    << "    --models [...]"                                              << '\n'
-    << "        parameters of models"                                    << '\n'
-    << "        k:  context size"                                        << '\n'
-    << "        w:  width of sketch in log2 format, e.g., set 10 for "
-                                                           "w=2^10=1024" << '\n'
-    << "        d:  depth of sketch"                                     << '\n'
-    << "        ir: inverted repeat"                                     << '\n'
-    << "        thresh: threshold of substitutional tolerant Markov model    \n"
-                                                                         << '\n'
-    << "    -w [NUM],  --wsize [NUM]"                                    << '\n'
-    << "        window size -- for filtering"                            << '\n'
-                                                                         << '\n'
-    << "    -wt [0 | 1 | 2 | 3 | 4 | 5 | 6 | 7], --wtype [...]"          << '\n'
-    << "    -wt [rectangular | hamming | hann | blackman | triangular"   << '\n'
-    << "                     | welch   | sine | nuttall]"                << '\n'
-    << "        type of windowing function -- for filtering"             << '\n'
-    << "        0 | rectangular:  ractangular window"                    << '\n'
-    << "        1 | hamming:      Hamming window"                        << '\n'
-    << "        2 | hann:         Hann window"                           << '\n'
-    << "        3 | blackman:     Blackman window"                       << '\n'
-    << "        4 | triangular:   triangular window"                     << '\n'
-    << "        5 | welch:        Welch window"                          << '\n'
-    << "        6 | sine:         sine window"                           << '\n'
-    << "        7 | nuttall:      Nuttall window"                        << '\n'
-                                                                         << '\n'
-    << "    -d [NUM],  --sample_step [NUM]"                              << '\n'
-    << "        sampling steps -- for filtering"                         << '\n'
-                                                                         << '\n'
-    << "    -th [NUM],  --thresh [NUM]"                                  << '\n'
-    << "        threshold -- for filtering"                              << '\n'
-                                                                         << '\n'
-    << "    -sb,  --save_seq"                                            << '\n'
-    << "        save bare sequence, in case the input file is Fasta/Fastq"<<'\n'
-                                                                         << '\n'
-    << "    -sp,  --save_profile"                                        << '\n'
-    << "        save profile"                                            << '\n'
-                                                                         << '\n'
-    << "    -sf,  --save_filter"                                         << '\n'
-    << "        save filtered file"                                      << '\n'
-                                                                         << '\n'
-    << "    -ss,  --save_segment"                                        << '\n'
-    << "        save segmented file(s)"                                  << '\n'
-                                                                         << '\n'
-    << "    -sa,  --save_all"                                            << '\n'
-    << "        save profile, filetered and segmented files"             << '\n'
-                                                                         << '\n'
-    << "    -R,  --report"                                               << '\n'
-    << "        save results in the \"report\" file"                     << '\n'
-                                                                         << '\n'
-    << "    -h,  --help"                                                 << '\n'
-    << "        usage guide"                                             << '\n'
-                                                                         << '\n'
-    << "COPYRIGHT"                                                       << '\n'
-    << "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro."<<'\n'
-    << "    You may redistribute copies of this Free software"           << '\n'
-    << "    under the terms of the GNU - General Public License"         << '\n'
-    << "    v3 <http://www.gnu.org/licenses/gpl.html>. There"            << '\n'
-    << "    is NOT ANY WARRANTY, to the extent permitted by law."        <<endl;
+  cerr <<                                                                   "\n"
+    "NAME                                                                    \n"
+    "    Smash++ v" << VERSION << " - rearrangements finder                  \n"
+    "                                                                        \n"
+    "AUTHOR                                                                  \n"
+    "    Morteza Hosseini    seyedmorteza@ua.pt                              \n"
+    "                                                                        \n"
+    "SYNOPSIS                                                                \n"
+    "    ./smashpp [OPTION]...  -r [REF_FILE] -t [TAR_FILE]                  \n"
+    "                                                                        \n"
+    "SAMPLE                                                                  \n"
+//    "    ./smashpp -t TAR -r REF                                           \n"
+    "                                                                        \n"
+    "DESCRIPTION                                                             \n"
+    "    Find rearrangements.                                                \n"
+    "                                                                        \n"
+    "    -r [FILE],  --ref [FILE]                                            \n"
+    "        reference file. Can be bare Seq/Fasta/Fastq -> MANDATORY        \n"
+    "                                                                        \n"
+    "    -t [FILE],  --tar [FILE]                                            \n"
+    "        target file. Can be bare Seq/Fasta/Fastq -> MANDATORY           \n"
+    "                                                                        \n"
+    "    -l [NUM],  --level [NUM]                                            \n"
+    "        level                                                           \n"
+    "                                                                        \n"
+    "    -v,  --verbose                                                      \n"
+    "        more information                                                \n"
+    "                                                                        \n"
+    "    -n [NUM],  --nthr [NUM]                                             \n"
+    "        number of threads                                               \n"
+    "                                                                        \n"
+    "    -m [k,[w,d,]ir,alpha,gamma[,log2(w),d]/thresh,ir,alpha,gamma:...],  \n"
+    "    --models [...]                                                      \n"
+    "        parameters of models                                            \n"
+    "        k:  context size                                                \n"
+    "        w:  width of sketch in log2 format, e.g., set 10 for w=2^10=1024\n"
+    "        d:  depth of sketch                                             \n"
+    "        ir: inverted repeat                                             \n"
+    "        thresh: threshold of substitutional tolerant Markov model       \n"
+    "                                                                        \n"
+    "    -w [NUM],  --wsize [NUM]                                            \n"
+    "        window size -- for filtering                                    \n"
+    "                                                                        \n"
+    "    -wt [0 | 1 | 2 | 3 | 4 | 5 | 6 | 7], --wtype [...]                  \n"
+    "    -wt [rectangular | hamming | hann | blackman | triangular           \n"
+    "                     | welch   | sine | nuttall]                        \n"
+    "        type of windowing function -- for filtering                     \n"
+    "        0 | rectangular:  ractangular window                            \n"
+    "        1 | hamming:      Hamming window                                \n"
+    "        2 | hann:         Hann window                                   \n"
+    "        3 | blackman:     Blackman window                               \n"
+    "        4 | triangular:   triangular window                             \n"
+    "        5 | welch:        Welch window                                  \n"
+    "        6 | sine:         sine window                                   \n"
+    "        7 | nuttall:      Nuttall window                                \n"
+    "                                                                        \n"
+    "    -d [NUM],  --sample_step [NUM]                                      \n"
+    "        sampling steps -- for filtering                                 \n"
+    "                                                                        \n"
+    "    -th [NUM],  --thresh [NUM]                                          \n"
+    "        threshold -- for filtering                                      \n"
+    "                                                                        \n"
+    "    -sb,  --save_seq                                                    \n"
+    "        save bare sequence, in case the input file is Fasta/Fastq       \n"
+    "                                                                        \n"
+    "    -sp,  --save_profile                                                \n"
+    "        save profile                                                    \n"
+    "                                                                        \n"
+    "    -sf,  --save_filter                                                 \n"
+    "        save filtered file                                              \n"
+    "                                                                        \n"
+    "    -ss,  --save_segment                                                \n"
+    "        save segmented file(s)                                          \n"
+    "                                                                        \n"
+    "    -sa,  --save_all                                                    \n"
+    "        save profile, filetered and segmented files                     \n"
+    "                                                                        \n"
+    "    -R,  --report                                                       \n"
+    "        save results in the \"report\" file                             \n"
+    "                                                                        \n"
+    "    -h,  --help                                                         \n"
+    "        usage guide                                                     \n"
+    "                                                                        \n"
+    "COPYRIGHT                                                               \n"
+    "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro.       \n"
+    "    You may redistribute copies of this Free software                   \n"
+    "    under the terms of the GNU - General Public License                 \n"
+    "    v3 <http://www.gnu.org/licenses/gpl.html>. There                    \n"
+    "    is NOT ANY WARRANTY, to the extent permitted by law.           "<<endl;
 }
 
 inline string Param::print_win_type () const {

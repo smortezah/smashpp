@@ -221,7 +221,7 @@ void RectIR(FILE *F, double w, double h, double x, double y, char *color)
 void Chromosome(FILE *F, double w, double h, double x, double y)
   {
   char    borderColor[] = "#000000";
-  double  wk = w / 2 + 0.5;
+//  double  wk = w / 2 + 0.5;
 /*
   fprintf(F, "<path "
          "d=\"m %.2lf,"
