@@ -95,7 +95,7 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
   int64_t begPosTar, endPosTar, begPosRef, endPosRef;
   uint64_t regular = 0, inverse = 0, ignored = 0;
   string entTar, entRef;
-  while (POS >> begPosRef>>endPosRef>>entRef>>begPosTar>>endPosTar>>entTar) {
+  while (POS >> begPosTar>>endPosTar>>entTar>>begPosRef>>endPosRef>>entRef) {
 //    if (fscanf(POS, "%s\t%"PRIi64"\t%"PRIi64"\t%"PRIi64"\t%"PRIi64"\t%s\t"
 //        "%"PRIi64"\t""%"PRIi64"\t%"PRIi64"\t%"PRIi64"\n",
 //        tmp1, &ci, &cf, &begPosTar, &endPosTar, tmp2, &ri, &rf, &begPosRef,
@@ -114,7 +114,7 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
           Line(PLOT, 2, Paint->cx + Paint->width,
                Paint->cy + GetPoint(begPosRef + ((endPosRef-begPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(begPosTar + ((endPosTar-begPosTar) / 2.0)), 
+               Paint->cy + GetPoint(begPosTar + ((endPosTar-begPosTar) / 2.0)),
                (char*)"black");
           break;
         case 2:
@@ -161,11 +161,11 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
         default:break;
         }
 
-        Rect(PLOT, Paint->width, GetPoint(endPosRef-begPosRef), Paint->cx, 
+        Rect(PLOT, Paint->width, GetPoint(endPosRef-begPosRef), Paint->cx,
           Paint->cy + GetPoint(begPosRef), GetRgbColor(start * mult));
 
-        Rect(PLOT, Paint->width, GetPoint(endPosTar-begPosTar), 
-          Paint->cx + Paint->space + Paint->width, 
+        Rect(PLOT, Paint->width, GetPoint(endPosTar-begPosTar),
+          Paint->cx + Paint->space + Paint->width,
           Paint->cy + GetPoint(begPosTar), GetRgbColor(start * mult));
 
         ++regular;
@@ -178,7 +178,7 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
           Line(PLOT, 2, Paint->cx + Paint->width,
                Paint->cy + GetPoint(endPosRef + ((begPosRef-endPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(endPosTar + ((begPosTar-endPosTar) / 2.0)), 
+               Paint->cy + GetPoint(endPosTar + ((begPosTar-endPosTar) / 2.0)),
                (char*)"green");
           break;
         case 2:
@@ -225,11 +225,11 @@ void PrintPlot (char *posFile, uint32_t width, uint32_t space, uint32_t mult,
         default:break;
         }
 
-        Rect(PLOT, Paint->width, GetPoint(begPosRef - endPosRef), Paint->cx, 
+        Rect(PLOT, Paint->width, GetPoint(begPosRef - endPosRef), Paint->cx,
           Paint->cy + GetPoint(endPosRef), GetRgbColor(start * mult));
 
-        RectIR(PLOT, Paint->width, GetPoint(endPosTar - begPosTar), 
-          Paint->cx + Paint->space + Paint->width, 
+        RectIR(PLOT, Paint->width, GetPoint(endPosTar - begPosTar),
+          Paint->cx + Paint->space + Paint->width,
           Paint->cy + GetPoint(begPosTar), GetRgbColor(start * mult));
 
         ++inverse;
