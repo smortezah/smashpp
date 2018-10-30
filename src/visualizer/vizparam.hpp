@@ -30,10 +30,10 @@ class VizParam
   bool   help, verbose, force, inversion, regular;
   string image;
   u32    link, width, space, mult, start, minimum;
+  string posFile;
 
   u8     level;
   u32    kmer;
-//  u32    minimum;
   u32    repeats;
   u32    threshold;
   u32    nThreads;
@@ -52,7 +52,6 @@ class VizParam
   void print_menu_visual () const;
   void print_version     () const;
 };
-//Parameters *P;
 
 inline void VizParam::parse (int argc, char**& argv) {
   if (argc < 2) {
@@ -103,6 +102,7 @@ inline void VizParam::parse (int argc, char**& argv) {
         check_range(minimum, MIN_MINP, MAX_MINP);
       }
     }
+    posFile = vArgs.back();
   }
 }
 
