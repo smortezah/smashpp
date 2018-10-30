@@ -11,21 +11,6 @@ namespace smashpp {
 #define LEVEL_SATURATION  160
 #define LEVEL_VALUE       160
 #define EXTRA             150
-#define DEF_WIDT          40
-#define MIN_WIDT          10
-#define MAX_WIDT          5000
-#define DEF_SPAC          160
-#define MIN_SPAC          0
-#define MAX_SPAC          5000
-#define DEF_MULT          46  // 5 colors without overlapping
-#define MIN_MULT          1
-#define MAX_MULT          255
-#define DEF_BEGI          0
-#define MIN_BEGI          0
-#define MAX_BEGI          255
-#define DEF_MINP          0
-#define MIN_MINP          1
-#define MAX_MINP          99999999
 
 struct Painter {
   string  backColor;
