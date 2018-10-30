@@ -9,10 +9,8 @@
 using namespace smashpp;
 //namespace smashpp { u32 ratio; }
 
-RgbColor VizPaint::hsv_to_rgb (HsvColor HSV) {
-  RgbColor RGB;
-  u8 region, remainder, p, q, t;
-
+RgbColor VizPaint::hsv_to_rgb (HsvColor HSV) const {
+  RgbColor RGB {};
   if (HSV.s == 0) {
     RGB.r = HSV.v;
     RGB.g = HSV.v;
@@ -20,12 +18,11 @@ RgbColor VizPaint::hsv_to_rgb (HsvColor HSV) {
     return RGB;
   }
 
-  region = HSV.h / 43;
-  remainder = (HSV.h - (region * 43)) * 6;
-
-  p = (HSV.v * (255 - HSV.s)) >> 8;
-  q = (HSV.v * (255 - ((HSV.s * remainder) >> 8))) >> 8;
-  t = (HSV.v * (255 - ((HSV.s * (255 - remainder)) >> 8))) >> 8;
+  auto region    = static_cast<u8>(HSV.h / 43);
+  auto remainder = static_cast<u8>((HSV.h - region*43) * 6);
+  auto p = static_cast<u8>((HSV.v * (255 - HSV.s)) >> 8);
+  auto q = static_cast<u8>((HSV.v * (255 - ((HSV.s*remainder)>>8))) >> 8);
+  auto t = static_cast<u8>((HSV.v * (255 - ((HSV.s*(255-remainder))>>8))) >> 8);
 
   switch (region) {
   case 0:   RGB.r=HSV.v;  RGB.g=t;      RGB.b=p;      break;
@@ -39,45 +36,37 @@ RgbColor VizPaint::hsv_to_rgb (HsvColor HSV) {
   return RGB;
 }
 
-string VizPaint::get_rgb_color (u8 hue) {
-  RgbColor RGB {};
-  HsvColor HSV {hue, PAINT_LVL_SATUR, PAINT_LVL_VAL};
-//  HSV.h = hue;
-//  HSV.s = PAINT_LVL_SATUR;
-//  HSV.v = PAINT_LVL_VAL;
-
-  RGB = hsv_to_rgb(HSV);
-
-  char* color = (char*) Malloc(8 * sizeof(char));
-  sprintf(color, "#%X%X%X", RGB.r, RGB.g, RGB.b);
-
-  return string(color);
+string VizPaint::rgb_color (u8 hue) {
+  HsvColor HSV(hue);
+  RgbColor RGB = hsv_to_rgb(HSV);
+  return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
 }
 
-void VizPaint::polygon (ofstream& F, double x1, double y1, double x2, double y2,
-                       double x3, double y3, double x4, double y4,
-                       string colorf, string colorb) {
-  F << "<polygon points=\""
-    <<           setprecision(2) << x1 << "," << setprecision(2) << y1 << " "
-    <<           setprecision(2) << x2 << "," << setprecision(2) << y2 << " "
-    <<           setprecision(2) << x3 << "," << setprecision(2) << y3 << " "
-    <<           setprecision(2) << x4 << "," << setprecision(2) << y4 << "\" "
-                "style=\"fill:" << colorf << ";"
-                "stroke:" << colorb << ";stroke-width:1;fill-opacity:0.7\" />";
+inline void VizPaint::polygon (ofstream& f, double x1, double y1, double x2,
+                               double y2, double x3, double y3, double x4,
+                               double y4, const string& colorf,
+                               const string& colorb) const {
+  f << "<polygon points=\""
+    << setprecision(2) << x1 << "," << setprecision(2) << y1 << " "
+    << setprecision(2) << x2 << "," << setprecision(2) << y2 << " "
+    << setprecision(2) << x3 << "," << setprecision(2) << y3 << " "
+    << setprecision(2) << x4 << "," << setprecision(2) << y4 << "\" "
+      "style=\"fill:" << colorf << ";stroke:" << colorb << ";"
+      "stroke-width:1;fill-opacity:0.7\" />";
 }
 
 inline void VizPaint::line (ofstream& f, double width, double x1, double y1,
                             double x2, double y2, const string& color) const {
   f << "<line x1=\"" << setprecision(2) << x1 << "\" "
-             "y1=\"" << setprecision(2) << y1 << "\" "
-             "x2=\"" << setprecision(2) << x2 << "\" "
-             "y2=\"" << setprecision(2) << y2 << "\" "
-             "style=\"stroke:" << color << ";"
-             "stroke-width:" << setprecision(2) << width << "\" />";
+       "y1=\"" << setprecision(2) << y1 << "\" "
+       "x2=\"" << setprecision(2) << x2 << "\" "
+       "y2=\"" << setprecision(2) << y2 << "\" "
+       "style=\"stroke:" << color << ";"
+       "stroke-width:" << setprecision(2) << width << "\" />";
 }
 
-void VizPaint::rect_oval (ofstream& f, double w, double h, double x, double y,
-                          const string& color) const {
+inline void VizPaint::rect_oval (ofstream& f, double w, double h, double x,
+                                 double y, const string& color) const {
   f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
        "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
        "width=\""  << setprecision(2) << w << "\" "
@@ -96,10 +85,10 @@ inline void VizPaint::rect (ofstream& f, double w, double h, double x, double y,
        "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
 }
 
-void VizPaint::rect_ir
-(ofstream& F, double w, double h, double x, double y, string color) {
-  rect(F, w, h, x, y, color);
-  F << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
+inline void VizPaint::rect_ir (ofstream& f, double w, double h, double x,
+                               double y, const string& color) const {
+  rect(f, w, h, x, y, color);
+  f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
        "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
        "id=\"rect6217\" "
        "width=\""  << setprecision(2) << w << "\" "
@@ -108,11 +97,12 @@ void VizPaint::rect_ir
        "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
 }
 
-void VizPaint::chromosome (ofstream& F, double w, double h, double x, double y) {
-  char borderColor[] = "#000000";
+inline void VizPaint::chromosome
+(ofstream& f, double w, double h, double x, double y) const {
+  static const string borderColor {"#000000"};
 //  double  wk = w / 2 + 0.5;
 /*
-  fprintf(F, "<path "
+  fprintf(f, "<path "
          "d=\"m %.2lf,"
          "%.2lf 0,"
          "%.2lf c 0, -8.31 6.69, -%.2lf %.2lf, -%.2lf l -%.2lf,0 z m %.2lf,"
@@ -121,7 +111,7 @@ void VizPaint::chromosome (ofstream& F, double w, double h, double x, double y) 
          "nonzero;stroke:none\" />", x-0.5, y-0.5, 
          wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
 
-  fprintf(F, "<path "
+  fprintf(f, "<path "
          "d=\"m %.2lf,"
          "%.2lf 0,"
          "-%.2lf c 0,8.31 -6.69, %.2lf -%.2lf, %.2lf l %.2lf,0 z m -%.2lf,"
@@ -131,7 +121,7 @@ void VizPaint::chromosome (ofstream& F, double w, double h, double x, double y) 
          wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
 */
 
-  F << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
+  f << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
        "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
        "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
        "width=\""  << setprecision(2) << w << "\" "
@@ -368,9 +358,9 @@ inline void VizPaint::print_head (ofstream& f, double w, double u) const {
        "2.37338,-0.00568 0,4.76251\" id=\"path2985-1\" /></pattern></defs>";
 }
 
-void VizPaint::print_final (ofstream& F) {
-  F << "</g>\n</svg>";
-  F.close();
+inline void VizPaint::print_final (ofstream& f) const {
+  f << "</g>\n</svg>";
+  f.close();
 }
 
 inline void VizPaint::config
@@ -446,152 +436,121 @@ void VizPaint::print_plot (VizParam& p) {
       if (p.regular) {
         switch (p.link) {
         case 1:
-          line(fPlot, 2, cx + width,
-                         cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0),
-                         cx + space + width,
-                         cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0),
-                         "black");
+          line(fPlot, 2,
+            cx+width,       cy+get_point(begPosRef+(endPosRef-begPosRef)/2.0),
+            cx+space+width, cy+get_point(begPosTar+(endPosTar-begPosTar)/2.0),
+            "black");
           break;
         case 2:
-          line(fPlot, 2, cx + width,
-                         cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0),
-                         cx + space + width,
-                         cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0),
-                         get_rgb_color(static_cast<u8>(p.start*p.mult)));
+          line(fPlot, 2,
+            cx+width,       cy+get_point(begPosRef+(endPosRef-begPosRef)/2.0),
+            cx+space+width, cy+get_point(begPosTar+(endPosTar-begPosTar)/2.0),
+            rgb_color(static_cast<u8>(p.start*p.mult)));
           break;
-//        case 3:
-//          line(fPlot, 2, Paint->cx + Paint->width,
-//               Paint->cy + get_point(begPosRef),
-//               Paint->cx + Paint->space + Paint->width,
-//               Paint->cy + get_point(begPosTar), (char*) "black");
-//          line(fPlot, 2, Paint->cx + Paint->width,
-//               Paint->cy + get_point(endPosRef),
-//               Paint->cx + Paint->space + Paint->width,
-//               Paint->cy + get_point(endPosTar), (char*) "black");
-//          break;
-//        case 4:
-//          line(fPlot, 2, Paint->cx + Paint->width,
-//               Paint->cy + get_point(begPosRef),
-//               Paint->cx + Paint->space + Paint->width,
-//               Paint->cy + get_point(begPosTar),
-//               get_rgb_color(p.start * p.mult));
-//          line(fPlot, 2, Paint->cx + Paint->width,
-//               Paint->cy + get_point(endPosRef),
-//               Paint->cx + Paint->space + Paint->width,
-//               Paint->cy + get_point(endPosTar),
-//               get_rgb_color(p.start * p.mult));
-//          break;
-//        case 5:
-//          polygon(fPlot,
-//                  Paint->cx + Paint->width,
-//                  Paint->cy + get_point(begPosRef),
-//                  Paint->cx + Paint->width,
-//                  Paint->cy + get_point(endPosRef),
-//                  Paint->cx + Paint->space + Paint->width,
-//                  Paint->cy + get_point(endPosTar),
-//                  Paint->cx + Paint->space + Paint->width,
-//                  Paint->cy + get_point(begPosTar),
-//                  get_rgb_color(p.start * p.mult), "grey");
-//          break;
+        case 3:
+          line(fPlot, 2,
+            cx+width,       cy+get_point(begPosRef),
+            cx+space+width, cy+get_point(begPosTar), "black");
+          line(fPlot, 2,
+            cx+width,       cy+get_point(endPosRef),
+            cx+space+width, cy+get_point(endPosTar), "black");
+          break;
+        case 4:
+          line(fPlot, 2,
+            cx+width,       cy+get_point(begPosRef),
+            cx+space+width, cy+get_point(begPosTar),
+            rgb_color(static_cast<u8>(p.start*p.mult)));
+          line(fPlot, 2,
+            cx+width,       cy+get_point(endPosRef),
+            cx+space+width, cy+get_point(endPosTar),
+            rgb_color(static_cast<u8>(p.start*p.mult)));
+          break;
+        case 5:
+          polygon(fPlot,
+            cx+width,       cy+get_point(begPosRef),
+            cx+width,       cy+get_point(endPosRef),
+            cx+space+width, cy+get_point(endPosTar),
+            cx+space+width, cy+get_point(begPosTar),
+            rgb_color(static_cast<u8>(p.start*p.mult)), "grey");
+          break;
         default:break;
         }
 
-//        rect(fPlot, Paint->width, get_point(endPosRef - begPosRef), Paint->cx,
-//             Paint->cy + get_point(begPosRef), get_rgb_color(p.start * p.mult));
-//
-//        rect(fPlot, Paint->width, get_point(endPosTar - begPosTar),
-//             Paint->cx + Paint->space + Paint->width,
-//             Paint->cy + get_point(begPosTar), get_rgb_color(p.start * p.mult));
-//
-//        ++no_regular;
+        rect(fPlot, width, get_point(endPosRef-begPosRef), cx,
+          cy+get_point(begPosRef), rgb_color(static_cast<u8>(p.start*p.mult)));
+
+        rect(fPlot, width, get_point(endPosTar-begPosTar), cx+space+width,
+          cy+get_point(begPosTar), rgb_color(static_cast<u8>(p.start*p.mult)));
+
+        ++no_regular;
       }
     }
-//    else {
-//      if (p.inversion) {
-//        switch (p.link) {
-//        case 1:
-//          line(fPlot, 2, Paint->cx + Paint->width, Paint->cy +
-//                 get_point(endPosRef +
-//                           ((begPosRef -
-//                             endPosRef) / 2.0)),
-//               Paint->cx + Paint->space + Paint->width, Paint->cy +
-//                 get_point(endPosTar +
-//                           ((begPosTar -
-//                             endPosTar) /
-//                            2.0)),
-//               (char*) "green");
-//          break;
-//        case 2:
-//          line(fPlot, 2, Paint->cx + Paint->width, Paint->cy +
-//                 get_point(endPosRef +
-//                           ((begPosRef -
-//                             endPosRef) / 2.0)),
-//               Paint->cx + Paint->space + Paint->width, Paint->cy +
-//                 get_point(endPosTar +
-//                           ((begPosTar -
-//                             endPosTar) /
-//                            2.0)),
-//               get_rgb_color(p.start * p.mult));
-//          break;
-//        case 3:
-//          line(fPlot, 2, Paint->cx + Paint->width,
-//               Paint->cy + get_point(endPosRef),
-//               Paint->cx + Paint->space + Paint->width,
-//               Paint->cy + get_point(endPosTar), (char*) "green");
-//          line(fPlot, 2, Paint->cx + Paint->width,
-//               Paint->cy + get_point(begPosRef),
-//               Paint->cx + Paint->space + Paint->width,
-//               Paint->cy + get_point(begPosTar), (char*) "green");
-//          break;
-//        case 4:
-//          line(fPlot, 2, Paint->cx + Paint->width,
-//               Paint->cy + get_point(endPosRef),
-//               Paint->cx + Paint->space + Paint->width,
-//               Paint->cy + get_point(endPosTar),
-//               get_rgb_color(p.start * p.mult));
-//          line(fPlot, 2, Paint->cx + Paint->width,
-//               Paint->cy + get_point(begPosRef),
-//               Paint->cx + Paint->space + Paint->width,
-//               Paint->cy + get_point(begPosTar),
-//               get_rgb_color(p.start * p.mult));
-//          break;
-//        case 5:
-//          polygon(fPlot,
-//                  Paint->cx + Paint->width, Paint->cy + get_point(endPosRef),
-//                  Paint->cx + Paint->width, Paint->cy + get_point(begPosRef),
-//                  Paint->cx + Paint->space + Paint->width,
-//                  Paint->cy + get_point(begPosTar),
-//                  Paint->cx + Paint->space + Paint->width,
-//                  Paint->cy + get_point(endPosTar),
-//                  get_rgb_color(p.start * p.mult), "grey");
-//          break;
-//        default:break;
-//        }
-//
-//        rect(fPlot, Paint->width, get_point(begPosRef - endPosRef), Paint->cx,
-//             Paint->cy + get_point(endPosRef), get_rgb_color(p.start * p.mult));
-//
-//        rect_ir(fPlot, Paint->width, get_point(endPosTar - begPosTar),
-//                Paint->cx + Paint->space + Paint->width,
-//                Paint->cy + get_point(begPosTar), get_rgb_color(p.start * p.mult));
-//
-//        ++no_inverse;
-//      }
-//    }
+    else {
+      if (p.inversion) {
+        switch (p.link) {
+        case 1:
+          line(fPlot, 2,
+            cx+width,       cy+get_point(endPosRef+(begPosRef-endPosRef)/2.0),
+            cx+space+width, cy+get_point(endPosTar+(begPosTar-endPosTar)/2.0),
+            "green");
+          break;
+        case 2:
+          line(fPlot, 2,
+            cx+width,       cy+get_point(endPosRef+(begPosRef-endPosRef)/2.0),
+            cx+space+width, cy+get_point(endPosTar+(begPosTar-endPosTar)/2.0),
+            rgb_color(static_cast<u8>(p.start*p.mult)));
+          break;
+        case 3:
+          line(fPlot, 2,
+            cx+width,       cy+get_point(endPosRef),
+            cx+space+width, cy+get_point(endPosTar), "green");
+          line(fPlot, 2,
+            cx+width,       cy+get_point(begPosRef),
+            cx+space+width, cy+get_point(begPosTar), "green");
+          break;
+        case 4:
+          line(fPlot, 2,
+            cx+width,       cy+get_point(endPosRef),
+            cx+space+width, cy+get_point(endPosTar),
+            rgb_color(static_cast<u8>(p.start*p.mult)));
+          line(fPlot, 2,
+            cx+width,       cy+get_point(begPosRef),
+            cx+space+width, cy+get_point(begPosTar),
+            rgb_color(static_cast<u8>(p.start*p.mult)));
+          break;
+        case 5:
+          polygon(fPlot,
+            cx+width,       cy+get_point(endPosRef),
+            cx+width,       cy+get_point(begPosRef),
+            cx+space+width, cy+get_point(begPosTar),
+            cx+space+width, cy+get_point(endPosTar),
+            rgb_color(static_cast<u8>(p.start*p.mult)), "grey");
+          break;
+        default:break;
+        }
+
+        rect(fPlot, width, get_point(begPosRef-endPosRef), cx,
+          cy+get_point(endPosRef), rgb_color(static_cast<u8>(p.start*p.mult)));
+
+        rect_ir(fPlot, width, get_point(endPosTar-begPosTar), cx+space+width,
+          cy+get_point(begPosTar), rgb_color(static_cast<u8>(p.start*p.mult)));
+
+        ++no_inverse;
+      }
+    }
 
     ++p.start;
   }
   fPos.seekg(ios::beg);
-//
-//  if (p.regular)    cerr << "Found "   << no_regular << " regular regions.\n";
-//  if (p.inversion)  cerr << "Found "   << no_inverse << " inverted regions.\n";
-//  if (p.verbose)    cerr << "Ignored " << no_ignored << " regions.\n";
-//
-//  chromosome(fPlot, Paint->width, Paint->refSize, Paint->cx, Paint->cy);
-//  chromosome(fPlot, Paint->width, Paint->tarSize, Paint->cx + Paint->space +
-//                                                 Paint->width, Paint->cy);
-//  print_final(fPlot);
-  fPos.close();
+
+  if (p.regular)    cerr << "Found "   << no_regular << " regular regions.\n";
+  if (p.inversion)  cerr << "Found "   << no_inverse << " inverted regions.\n";
+  if (p.verbose)    cerr << "Ignored " << no_ignored << " regions.\n";
+
+  chromosome(fPlot, width, refSize, cx, cy);
+  chromosome(fPlot, width, tarSize, cx+space+width, cy);
+  print_final(fPlot);
 
   cerr << "Done!                       \n";
+  fPos.close();
 }

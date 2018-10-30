@@ -315,6 +315,15 @@ inline static void show_progress (P pos, T total) {
 inline static void remove_progress_trace () {
   cerr << string(21, ' ') << '\r';  // Remove the trace of [...%] progress
 }
+
+template <typename ...Args>
+inline static string string_format(const string& format, Args... args) {
+  auto size =    // Extra space for '\0'
+    static_cast<size_t>(snprintf(nullptr, 0, format.c_str(), args...) + 1);
+  unique_ptr<char[]> buf(new char[size]);
+  snprintf(buf.get(), size, format.c_str(), args...);
+  return string(buf.get(), buf.get()+size-1);  // We don't want the '\0' inside
+}
 }
 
 #endif //PROJECT_FN_HPP
