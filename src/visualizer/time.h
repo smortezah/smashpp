@@ -12,10 +12,10 @@ struct TIME {
   u8 unity;
 };
 
-TIME* CreateClock  (clock_t);
-void  StopTimeNDRM (TIME*, clock_t);
-void  StopCalcAll  (TIME*, clock_t);
-void  RemoveClock  (TIME*);
+TIME* create_clock   (clock_t);
+void  stop_time_ndrm (TIME*, clock_t);
+void  stop_calc_all  (TIME*, clock_t);
+void  remove_clock   (TIME*);
 }
 
 #endif

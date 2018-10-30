@@ -10,7 +10,7 @@
 using namespace smashpp;
 namespace smashpp { u32 ratio; }
 
-RgbColor smashpp::HsvToRgb (HsvColor hsv) {
+RgbColor smashpp::hsv_to_rgb (HsvColor hsv) {
   RgbColor rgb;
   u8 region, remainder, p, q, t;
 
@@ -40,7 +40,7 @@ RgbColor smashpp::HsvToRgb (HsvColor hsv) {
   return rgb;
 }
 
-string smashpp::GetRgbColor (u8 hue) {
+string smashpp::get_rgb_color (u8 hue) {
   RgbColor RGB;
   HsvColor HSV;
   char* color = (char*) Malloc(8 * sizeof(char));
@@ -49,14 +49,14 @@ string smashpp::GetRgbColor (u8 hue) {
   HSV.s = LEVEL_SATURATION;
   HSV.v = LEVEL_VALUE;
 
-  RGB = smashpp::HsvToRgb(HSV);
+  RGB = smashpp::hsv_to_rgb(HSV);
 
   sprintf(color, "#%X%X%X", RGB.r, RGB.g, RGB.b);
 
   return string(color);
 }
 
-Painter* smashpp::CreatePainter
+Painter* smashpp::create_painter
 (double refSize, double tarSize, double width, double space, string color) {
   Painter* P = (Painter*) Malloc(sizeof(Painter));
   P->backColor = color;
@@ -72,9 +72,9 @@ Painter* smashpp::CreatePainter
   return P;
 }
 
-void smashpp::Polygon (ofstream& F, double x1, double y1, double x2, double y2,
-                                    double x3, double y3, double x4, double y4,
-                                    string colorf, string colorb) {
+void smashpp::polygon (ofstream& F, double x1, double y1, double x2, double y2,
+                       double x3, double y3, double x4, double y4,
+                       string colorf, string colorb) {
   F << "<polygon points=\""
     <<           setprecision(2) << x1 << "," << setprecision(2) << y1 << " "
     <<           setprecision(2) << x2 << "," << setprecision(2) << y2 << " "
@@ -84,8 +84,8 @@ void smashpp::Polygon (ofstream& F, double x1, double y1, double x2, double y2,
                 "stroke:" << colorb << ";stroke-width:1;fill-opacity:0.7\" />";
 }
 
-void smashpp::Line (ofstream& F, double width, double x1, double y1, double x2,
-                                 double y2, string color) {
+void smashpp::line (ofstream& F, double width, double x1, double y1, double x2,
+                    double y2, string color) {
   F << "<line x1=\"" << setprecision(2) << x1 << "\" "
              "y1=\"" << setprecision(2) << y1 << "\" "
              "x2=\"" << setprecision(2) << x2 << "\" "
@@ -94,8 +94,8 @@ void smashpp::Line (ofstream& F, double width, double x1, double y1, double x2,
              "stroke-width:" << setprecision(2) << width << "\" />";
 }
 
-void smashpp::RectOval
-(ofstream& F, double w, double h, double x, double y, string color) {
+void smashpp::rect_oval
+  (ofstream& F, double w, double h, double x, double y, string color) {
   F << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
        "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
        "width=\""  << setprecision(2) << w << "\" "
@@ -104,8 +104,8 @@ void smashpp::RectOval
        "y=\""      << setprecision(2) << y << "\" ry=\"12.5\" />\n";
 }
 
-void smashpp::Rect
-(ofstream& F, double w, double h, double x, double y, string color) {
+void smashpp::rect
+  (ofstream& F, double w, double h, double x, double y, string color) {
   F << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
        "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rect3777\" "
        "width=\""  << setprecision(2) << w << "\" "
@@ -114,9 +114,9 @@ void smashpp::Rect
        "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
 }
 
-void smashpp::RectIR
-(ofstream& F, double w, double h, double x, double y, string color) {
-  smashpp::Rect(F, w, h, x, y, color);
+void smashpp::rect_ir
+  (ofstream& F, double w, double h, double x, double y, string color) {
+  smashpp::rect(F, w, h, x, y, color);
   F << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
        "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
        "id=\"rect6217\" "
@@ -126,7 +126,7 @@ void smashpp::RectIR
        "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
 }
 
-void smashpp::Chromosome (ofstream& F, double w, double h, double x, double y) {
+void smashpp::chromosome (ofstream& F, double w, double h, double x, double y) {
   char borderColor[] = "#000000";
 //  double  wk = w / 2 + 0.5;
 /*
@@ -158,7 +158,7 @@ void smashpp::Chromosome (ofstream& F, double w, double h, double x, double y) {
        "y=\""      << setprecision(2) << y << "\" ry=\"1\" />\n";
 }
 
-void smashpp::Text (ofstream& F, double x, double y, string name) {
+void smashpp::text (ofstream& F, double x, double y, string name) {
   F << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
        "font-weight:normal;line-height:125%%;letter-spacing:0px;"
        "word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;"
@@ -175,15 +175,15 @@ void smashpp::Text (ofstream& F, double x, double y, string name) {
        "-inkscape-font-specification:Arial\">" << name << "</tspan>\n</text>\n";
 }
 
-void smashpp::SetRatio (u32 r) {
+void smashpp::set_ratio (u32 r) {
   smashpp::ratio = r;
 }
 
-double smashpp::GetPoint (u64 p) {
+double smashpp::get_point (u64 p) {
   return p / (double) smashpp::ratio * 5;
 }
 
-void smashpp::PrintHead (ofstream& F, double w, double u) {
+void smashpp::print_head (ofstream& F, double w, double u) {
   F << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
        "<!-- IEETA 2018 using Inkscape -->\n""<svg\n"
        "xmlns:osb=\"http://www.openswatchbook.org/uri/2009/osb\"\n"
@@ -388,7 +388,7 @@ void smashpp::PrintHead (ofstream& F, double w, double u) {
        "2.37338,-0.00568 0,4.76251\" id=\"path2985-1\" /></pattern></defs>";
 }
 
-void smashpp::PrintFinal (ofstream& F) {
+void smashpp::print_final (ofstream& F) {
   F << "</g>\n</svg>";
   F.close();
 }

@@ -63,18 +63,19 @@ void PrintPlot
   cerr << "==[ PROCESSING ]====================\n"
           "Printing plot ...\n";
 
-  SetRatio(MAX(refNBases,tarNBases) / DEFAULT_SCALE);
-  Paint = CreatePainter(GetPoint(refNBases), GetPoint(tarNBases),
-                        (double) width, (double) space, backColor);
+  set_ratio(MAX(refNBases, tarNBases) / DEFAULT_SCALE);
+  Paint = create_painter(get_point(refNBases), get_point(tarNBases),
+                         (double) width, (double) space, backColor);
 
-  PrintHead(PLOT, (2*DEFAULT_CX) + (((Paint->width+Paint->space) * 2) -
-            Paint->space), Paint->maxSize + EXTRA);
-  Rect(PLOT, (2*DEFAULT_CX) + (((Paint->width+Paint->space) * 2) -
-       Paint->space), Paint->maxSize + EXTRA, 0, 0, backColor);
-  RectOval(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy, backColor);
-  RectOval(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy, backColor);
-  Text(PLOT, Paint->cx, Paint->cy - 15, "REF");
-  Text(PLOT, Paint->cx+Paint->width+Paint->space, Paint->cy-15, "TAR");
+  print_head(PLOT, (2 * DEFAULT_CX) + (((Paint->width + Paint->space) * 2) -
+                                       Paint->space), Paint->maxSize + EXTRA);
+  rect(PLOT, (2 * DEFAULT_CX) + (((Paint->width + Paint->space) * 2) -
+                                 Paint->space), Paint->maxSize + EXTRA, 0, 0,
+       backColor);
+  rect_oval(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy, backColor);
+  rect_oval(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy, backColor);
+  text(PLOT, Paint->cx, Paint->cy - 15, "REF");
+  text(PLOT, Paint->cx + Paint->width + Paint->space, Paint->cy - 15, "TAR");
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
   if (minimum == 0)
@@ -100,64 +101,69 @@ void PrintPlot
       if (P->regular) {
         switch (P->link) {
         case 1:
-          Line(PLOT, 2, Paint->cx + Paint->width, Paint->cy +
-               GetPoint(begPosRef + ((endPosRef-begPosRef)/2.0)),
+          line(PLOT, 2, Paint->cx + Paint->width, Paint->cy +
+                 get_point(begPosRef +
+                           ((endPosRef -
+                             begPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width, Paint->cy +
-               GetPoint(begPosTar + ((endPosTar-begPosTar)/2.0)),
+                 get_point(begPosTar +
+                           ((endPosTar -
+                             begPosTar) /
+                            2.0)),
                (char*) "black");
           break;
         case 2:
-          Line(PLOT, 2, Paint->cx + Paint->width,
+          line(PLOT, 2, Paint->cx + Paint->width,
                Paint->cy +
-               GetPoint(begPosRef + ((endPosRef - begPosRef) / 2.0)),
+                 get_point(begPosRef + ((endPosRef - begPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width,
                Paint->cy +
-               GetPoint(begPosTar + ((endPosTar - begPosTar) / 2.0)),
-               GetRgbColor(start * mult));
+                 get_point(begPosTar + ((endPosTar - begPosTar) / 2.0)),
+               get_rgb_color(start * mult));
           break;
         case 3:
-          Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(begPosRef),
+          line(PLOT, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(begPosRef),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(begPosTar), (char*) "black");
-          Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(endPosRef),
+               Paint->cy + get_point(begPosTar), (char*) "black");
+          line(PLOT, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(endPosRef),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(endPosTar), (char*) "black");
+               Paint->cy + get_point(endPosTar), (char*) "black");
           break;
         case 4:
-          Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(begPosRef),
+          line(PLOT, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(begPosRef),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(begPosTar),
-               GetRgbColor(start * mult));
-          Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(endPosRef),
+               Paint->cy + get_point(begPosTar),
+               get_rgb_color(start * mult));
+          line(PLOT, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(endPosRef),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(endPosTar),
-               GetRgbColor(start * mult));
+               Paint->cy + get_point(endPosTar),
+               get_rgb_color(start * mult));
           break;
         case 5:
-          Polygon(PLOT,
+          polygon(PLOT,
                   Paint->cx + Paint->width,
-                  Paint->cy + GetPoint(begPosRef),
+                  Paint->cy + get_point(begPosRef),
                   Paint->cx + Paint->width,
-                  Paint->cy + GetPoint(endPosRef),
+                  Paint->cy + get_point(endPosRef),
                   Paint->cx + Paint->space + Paint->width,
-                  Paint->cy + GetPoint(endPosTar),
+                  Paint->cy + get_point(endPosTar),
                   Paint->cx + Paint->space + Paint->width,
-                  Paint->cy + GetPoint(begPosTar),
-                  GetRgbColor(start * mult), "grey");
+                  Paint->cy + get_point(begPosTar),
+                  get_rgb_color(start * mult), "grey");
           break;
         default:break;
         }
 
-        Rect(PLOT, Paint->width, GetPoint(endPosRef-begPosRef), Paint->cx,
-             Paint->cy + GetPoint(begPosRef), GetRgbColor(start*mult));
+        rect(PLOT, Paint->width, get_point(endPosRef - begPosRef), Paint->cx,
+             Paint->cy + get_point(begPosRef), get_rgb_color(start * mult));
 
-        Rect(PLOT, Paint->width, GetPoint(endPosTar-begPosTar),
+        rect(PLOT, Paint->width, get_point(endPosTar - begPosTar),
              Paint->cx + Paint->space + Paint->width,
-             Paint->cy + GetPoint(begPosTar), GetRgbColor(start*mult));
+             Paint->cy + get_point(begPosTar), get_rgb_color(start * mult));
 
         ++regular;
       }
@@ -166,60 +172,70 @@ void PrintPlot
       if (P->inversion) {
         switch (P->link) {
         case 1:
-          Line(PLOT, 2, Paint->cx + Paint->width, Paint->cy +
-               GetPoint(endPosRef + ((begPosRef-endPosRef)/2.0)),
+          line(PLOT, 2, Paint->cx + Paint->width, Paint->cy +
+                 get_point(endPosRef +
+                           ((begPosRef -
+                             endPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width, Paint->cy +
-               GetPoint(endPosTar + ((begPosTar-endPosTar)/2.0)),
+                 get_point(endPosTar +
+                           ((begPosTar -
+                             endPosTar) /
+                            2.0)),
                (char*) "green");
           break;
         case 2:
-          Line(PLOT, 2, Paint->cx + Paint->width, Paint->cy +
-               GetPoint(endPosRef + ((begPosRef-endPosRef)/2.0)),
+          line(PLOT, 2, Paint->cx + Paint->width, Paint->cy +
+                 get_point(endPosRef +
+                           ((begPosRef -
+                             endPosRef) / 2.0)),
                Paint->cx + Paint->space + Paint->width, Paint->cy +
-               GetPoint(endPosTar + ((begPosTar-endPosTar)/2.0)),
-               GetRgbColor(start*mult));
+                 get_point(endPosTar +
+                           ((begPosTar -
+                             endPosTar) /
+                            2.0)),
+               get_rgb_color(start * mult));
           break;
         case 3:
-          Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(endPosRef),
+          line(PLOT, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(endPosRef),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(endPosTar), (char*) "green");
-          Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(begPosRef),
+               Paint->cy + get_point(endPosTar), (char*) "green");
+          line(PLOT, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(begPosRef),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(begPosTar), (char*) "green");
+               Paint->cy + get_point(begPosTar), (char*) "green");
           break;
         case 4:
-          Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(endPosRef),
+          line(PLOT, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(endPosRef),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(endPosTar),
-               GetRgbColor(start*mult));
-          Line(PLOT, 2, Paint->cx + Paint->width,
-               Paint->cy + GetPoint(begPosRef),
+               Paint->cy + get_point(endPosTar),
+               get_rgb_color(start * mult));
+          line(PLOT, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(begPosRef),
                Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(begPosTar),
-               GetRgbColor(start*mult));
+               Paint->cy + get_point(begPosTar),
+               get_rgb_color(start * mult));
           break;
         case 5:
-          Polygon(PLOT,
-                  Paint->cx + Paint->width, Paint->cy + GetPoint(endPosRef),
-                  Paint->cx + Paint->width, Paint->cy + GetPoint(begPosRef),
+          polygon(PLOT,
+                  Paint->cx + Paint->width, Paint->cy + get_point(endPosRef),
+                  Paint->cx + Paint->width, Paint->cy + get_point(begPosRef),
                   Paint->cx + Paint->space + Paint->width,
-                  Paint->cy + GetPoint(begPosTar),
+                  Paint->cy + get_point(begPosTar),
                   Paint->cx + Paint->space + Paint->width,
-                  Paint->cy + GetPoint(endPosTar),
-                  GetRgbColor(start*mult), "grey");
+                  Paint->cy + get_point(endPosTar),
+                  get_rgb_color(start * mult), "grey");
           break;
         default:break;
         }
 
-        Rect(PLOT, Paint->width, GetPoint(begPosRef-endPosRef), Paint->cx,
-             Paint->cy + GetPoint(endPosRef), GetRgbColor(start*mult));
+        rect(PLOT, Paint->width, get_point(begPosRef - endPosRef), Paint->cx,
+             Paint->cy + get_point(endPosRef), get_rgb_color(start * mult));
 
-        RectIR(PLOT, Paint->width, GetPoint(endPosTar-begPosTar),
-               Paint->cx + Paint->space + Paint->width,
-               Paint->cy + GetPoint(begPosTar), GetRgbColor(start*mult));
+        rect_ir(PLOT, Paint->width, get_point(endPosTar - begPosTar),
+                Paint->cx + Paint->space + Paint->width,
+                Paint->cy + get_point(begPosTar), get_rgb_color(start * mult));
 
         ++inverse;
       }
@@ -234,10 +250,10 @@ void PrintPlot
   if (P->inversion)  cerr << "Found "   << inverse << " inverted regions.\n";
   if (P->verbose)    cerr << "Ignored " << ignored << " regions.\n";
 
-  Chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy);
-  Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx + Paint->space +
+  chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy);
+  chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx + Paint->space +
                                                  Paint->width, Paint->cy);
-  PrintFinal(PLOT);
+  print_final(PLOT);
   POS.close();
 
   cerr << "Done!                       \n";
@@ -252,38 +268,38 @@ int main (int argc, char* argv[]) {
   u32 width, space, mult, start, minimum;
 
   P = (Parameters*) Malloc(1 * sizeof(Parameters));
-  if ((P->help = ArgsState(DEF_HELP, p, argc, "-h")) || argc < 2) {
-    PrintMenuVisual();
+  if ((P->help = args_state(DEF_HELP, p, argc, "-h")) || argc < 2) {
+    print_menu_visual();
     return EXIT_SUCCESS;
   }
 
-  if (ArgsState(DEF_VERSION, p, argc, "-V")) {
-    PrintVersion();
+  if (args_state(DEF_VERSION, p, argc, "-V")) {
+    print_version();
     return EXIT_SUCCESS;
   }
 
-  P->verbose   = ArgsState(DEF_VERBOSE, p, argc, "-v");
-  P->force     = ArgsState(DEF_FORCE,   p, argc, "-F");
-  P->link      = ArgsNum  (DEF_LINK,    p, argc, "-l", MIN_LINK, MAX_LINK);
-  width        = ArgsNum  (DEF_WIDT,    p, argc, "-w", MIN_WIDT, MAX_WIDT);
-  space        = ArgsNum  (DEF_SPAC,    p, argc, "-s", MIN_SPAC, MAX_SPAC);
-  mult         = ArgsNum  (DEF_MULT,    p, argc, "-m", MIN_MULT, MAX_MULT);
-  start        = ArgsNum  (DEF_BEGI,    p, argc, "-b", MIN_BEGI, MAX_BEGI);
-  minimum      = ArgsNum  (DEF_MINP,    p, argc, "-c", MIN_MINP, MAX_MINP);
-  P->inversion = ArgsState(DEF_INVE,    p, argc, "-i");
-  P->regular   = ArgsState(DEF_REGU,    p, argc, "-r");
-  P->image     = ArgsFilesImg          (p, argc, "-o");
+  P->verbose   = args_state(DEF_VERBOSE, p, argc, "-v");
+  P->force     = args_state(DEF_FORCE, p, argc, "-F");
+  P->link      = args_num(DEF_LINK, p, argc, "-l", MIN_LINK, MAX_LINK);
+  width        = args_num(DEF_WIDT, p, argc, "-w", MIN_WIDT, MAX_WIDT);
+  space        = args_num(DEF_SPAC, p, argc, "-s", MIN_SPAC, MAX_SPAC);
+  mult         = args_num(DEF_MULT, p, argc, "-m", MIN_MULT, MAX_MULT);
+  start        = args_num(DEF_BEGI, p, argc, "-b", MIN_BEGI, MAX_BEGI);
+  minimum      = args_num(DEF_MINP, p, argc, "-c", MIN_MINP, MAX_MINP);
+  P->inversion = args_state(DEF_INVE, p, argc, "-i");
+  P->regular   = args_state(DEF_REGU, p, argc, "-r");
+  P->image     = args_files_img(p, argc, "-o");
 
   cerr << "\n";
-  TIME* Time = CreateClock(clock());
+  TIME* Time = create_clock(clock());
   PrintPlot(string(argv[argc-1]), width, space, mult, start, minimum);
-  StopTimeNDRM(Time, clock());
+  stop_time_ndrm(Time, clock());
   cerr << "\n";
 
   cerr << "==[ STATISTICS ]====================\n";
-  StopCalcAll(Time, clock());
+  stop_calc_all(Time, clock());
   cerr << "\n";
-  RemoveClock(Time);
+  remove_clock(Time);
 
   return EXIT_SUCCESS;
 }

@@ -4,7 +4,7 @@
 #include "defs.h"
 
 namespace smashpp {
-struct FILEP {
+struct Filep {
   char* name;
   u64  nReads;
   u64  nBases;
@@ -23,7 +23,7 @@ struct Parameters {
   u32   repeats;
   u32   threshold;
   u32   nThreads;
-  FILEP Ref, Tar;
+  Filep Ref, Tar;
   char* positions;
   string image;
 };

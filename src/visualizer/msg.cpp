@@ -3,7 +3,7 @@
 #include <stdlib.h>
 using namespace smashpp;
 
-void smashpp::PrintMenuVisual () {
+void smashpp::print_menu_visual () {
   cerr <<
     "Usage: visualizer-visual [OPTION]... [FILE]                             \n"
     "Visualization of visualizer-map output.                                 \n"
@@ -31,7 +31,7 @@ void smashpp::PrintMenuVisual () {
     "Report bugs to <pratas@ua.pt>."                                     <<endl;
 }
 
-void smashpp::PrintVersion () {
+void smashpp::print_version () {
   cerr <<
     "                                                                        \n"
     "                         =====================                          \n"

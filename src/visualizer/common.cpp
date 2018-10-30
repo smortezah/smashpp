@@ -14,7 +14,7 @@
 using namespace std;
 using namespace smashpp;
 
-u32 smashpp::ArgsNum (u32 d, char* a[], int n, string s, u32 l, u32 u) {
+u32 smashpp::args_num (u32 d, char* a[], int n, string s, u32 l, u32 u) {
   u32 x;
   for (; --n;)
     if (s == string(a[n])) {
@@ -25,14 +25,14 @@ u32 smashpp::ArgsNum (u32 d, char* a[], int n, string s, u32 l, u32 u) {
   return d;
 }
 
-bool smashpp::ArgsState (bool def, char* arg[], int n, string str) {
+bool smashpp::args_state (bool def, char* arg[], int n, string str) {
   for (; --n;)
     if (str == string(arg[n]))
       return !def;
   return def;
 }
 
-string smashpp::ArgsFilesImg (char* arg[], int argc, string str) {
+string smashpp::args_files_img (char* arg[], int argc, string str) {
   for (i32 n=argc; --n;)
     if (str == string(arg[n]))
       return string(arg[n+1]);

@@ -44,22 +44,22 @@ struct HsvColor {
   u8 h, s, v;
 };
 
-Painter* CreatePainter (double, double, double, double, string);
-RgbColor HsvToRgb      (HsvColor);
-string   GetRgbColor   (u8);
-void     PrintFinal    (ofstream&);
-void     PrintHead     (ofstream&, double, double);
-void     Polygon       (ofstream&, double, double, double, double, double,
-                                   double, double, double, string, string);
-void     Line          (ofstream&, double, double, double, double, double,
-                                   string);
-void     RectOval      (ofstream&, double, double, double, double, string);
-void     Rect          (ofstream&, double, double, double, double, string);
-void     RectIR        (ofstream&, double, double, double, double, string);
-void     Chromosome    (ofstream&, double, double, double, double);
-void     Text          (ofstream&, double, double, string);
-double   GetPoint      (u64);
-void     SetRatio      (u32);
+Painter* create_painter (double, double, double, double, string);
+RgbColor hsv_to_rgb     (HsvColor);
+string   get_rgb_color  (u8);
+void     print_final    (ofstream&);
+void     print_head     (ofstream&, double, double);
+void     polygon        (ofstream&, double, double, double, double, double,
+                                    double, double, double, string, string);
+void     line           (ofstream&, double, double, double, double, double,
+                                    string);
+void     rect_oval      (ofstream&, double, double, double, double, string);
+void     rect           (ofstream&, double, double, double, double, string);
+void     rect_ir        (ofstream&, double, double, double, double, string);
+void     chromosome     (ofstream&, double, double, double, double);
+void     text           (ofstream&, double, double, string);
+double   get_point      (u64);
+void     set_ratio      (u32);
 }
 
 #endif
