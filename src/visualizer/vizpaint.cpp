@@ -9,47 +9,46 @@
 using namespace smashpp;
 //namespace smashpp { u32 ratio; }
 
-RgbColor VizPaint::hsv_to_rgb (HsvColor hsv) {
-  RgbColor rgb;
+RgbColor VizPaint::hsv_to_rgb (HsvColor HSV) {
+  RgbColor RGB;
   u8 region, remainder, p, q, t;
 
-  if (hsv.s == 0) {
-    rgb.r = hsv.v;
-    rgb.g = hsv.v;
-    rgb.b = hsv.v;
-    return rgb;
+  if (HSV.s == 0) {
+    RGB.r = HSV.v;
+    RGB.g = HSV.v;
+    RGB.b = HSV.v;
+    return RGB;
   }
 
-  region = hsv.h / 43;
-  remainder = (hsv.h - (region * 43)) * 6;
+  region = HSV.h / 43;
+  remainder = (HSV.h - (region * 43)) * 6;
 
-  p = (hsv.v * (255 - hsv.s)) >> 8;
-  q = (hsv.v * (255 - ((hsv.s * remainder) >> 8))) >> 8;
-  t = (hsv.v * (255 - ((hsv.s * (255 - remainder)) >> 8))) >> 8;
+  p = (HSV.v * (255 - HSV.s)) >> 8;
+  q = (HSV.v * (255 - ((HSV.s * remainder) >> 8))) >> 8;
+  t = (HSV.v * (255 - ((HSV.s * (255 - remainder)) >> 8))) >> 8;
 
   switch (region) {
-  case 0:   rgb.r=hsv.v;  rgb.g=t;      rgb.b=p;      break;
-  case 1:   rgb.r=q;      rgb.g=hsv.v;  rgb.b=p;      break;
-  case 2:   rgb.r=p;      rgb.g=hsv.v;  rgb.b=t;      break;
-  case 3:   rgb.r=p;      rgb.g=q;      rgb.b=hsv.v;  break;
-  case 4:   rgb.r=t;      rgb.g=p;      rgb.b=hsv.v;  break;
-  default:  rgb.r=hsv.v;  rgb.g=p;      rgb.b=q;      break;
+  case 0:   RGB.r=HSV.v;  RGB.g=t;      RGB.b=p;      break;
+  case 1:   RGB.r=q;      RGB.g=HSV.v;  RGB.b=p;      break;
+  case 2:   RGB.r=p;      RGB.g=HSV.v;  RGB.b=t;      break;
+  case 3:   RGB.r=p;      RGB.g=q;      RGB.b=HSV.v;  break;
+  case 4:   RGB.r=t;      RGB.g=p;      RGB.b=HSV.v;  break;
+  default:  RGB.r=HSV.v;  RGB.g=p;      RGB.b=q;      break;
   }
 
-  return rgb;
+  return RGB;
 }
 
 string VizPaint::get_rgb_color (u8 hue) {
-  RgbColor RGB;
-  HsvColor HSV;
-  char* color = (char*) Malloc(8 * sizeof(char));
-
-  HSV.h = hue;
-  HSV.s = LEVEL_SATURATION;
-  HSV.v = LEVEL_VALUE;
+  RgbColor RGB {};
+  HsvColor HSV {hue, PAINT_LVL_SATUR, PAINT_LVL_VAL};
+//  HSV.h = hue;
+//  HSV.s = PAINT_LVL_SATUR;
+//  HSV.v = PAINT_LVL_VAL;
 
   RGB = hsv_to_rgb(HSV);
 
+  char* color = (char*) Malloc(8 * sizeof(char));
   sprintf(color, "#%X%X%X", RGB.r, RGB.g, RGB.b);
 
   return string(color);
@@ -381,7 +380,7 @@ inline void VizPaint::config
   refSize = get_point(refSize_);
   tarSize = get_point(tarSize_);
   maxSize = max(refSize, tarSize);
-  ratio   = static_cast<u32>(maxSize / DEF_PAINT_SCALE);
+  ratio   = static_cast<u32>(maxSize / PAINT_SCALE);
 }
 
 void VizPaint::print_plot (VizParam& p) {
@@ -420,14 +419,14 @@ void VizPaint::print_plot (VizParam& p) {
 
   config(p.width, p.space, refNoBases, tarNoBases);
 
-  print_head(fPlot, 2*DEF_PAINT_CX + 2*(width+space) - space,
-                    maxSize + DEF_PAINT_EXTRA);
-  rect(fPlot, 2*DEF_PAINT_CX + 2*(width+space) - space,
-              maxSize + DEF_PAINT_EXTRA, 0, 0, backColor);
+  print_head(fPlot, 2*PAINT_CX + 2*(width+space) - space,
+                    maxSize + PAINT_EXTRA);
+  rect(fPlot, 2*PAINT_CX + 2*(width+space) - space,
+              maxSize + PAINT_EXTRA, 0, 0, backColor);
   rect_oval(fPlot, width, refSize, cx, cy, backColor);
   rect_oval(fPlot, width, tarSize, cx, cy, backColor);
-  text(fPlot, cx,             cy-15, DEF_PAINT_REF);
-  text(fPlot, cx+width+space, cy-15, DEF_PAINT_TAR);
+  text(fPlot, cx,             cy-15, PAINT_REF);
+  text(fPlot, cx+width+space, cy-15, PAINT_TAR);
 
   // IF MINIMUM IS SET AS DEFAULT, RESET TO BASE MAX PROPORTION
   if (p.minimum == 0)
@@ -460,51 +459,51 @@ void VizPaint::print_plot (VizParam& p) {
                          cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0),
                          get_rgb_color(static_cast<u8>(p.start*p.mult)));
           break;
-        case 3:
-          line(fPlot, 2, Paint->cx + Paint->width,
-               Paint->cy + get_point(begPosRef),
-               Paint->cx + Paint->space + Paint->width,
-               Paint->cy + get_point(begPosTar), (char*) "black");
-          line(fPlot, 2, Paint->cx + Paint->width,
-               Paint->cy + get_point(endPosRef),
-               Paint->cx + Paint->space + Paint->width,
-               Paint->cy + get_point(endPosTar), (char*) "black");
-          break;
-        case 4:
-          line(fPlot, 2, Paint->cx + Paint->width,
-               Paint->cy + get_point(begPosRef),
-               Paint->cx + Paint->space + Paint->width,
-               Paint->cy + get_point(begPosTar),
-               get_rgb_color(p.start * p.mult));
-          line(fPlot, 2, Paint->cx + Paint->width,
-               Paint->cy + get_point(endPosRef),
-               Paint->cx + Paint->space + Paint->width,
-               Paint->cy + get_point(endPosTar),
-               get_rgb_color(p.start * p.mult));
-          break;
-        case 5:
-          polygon(fPlot,
-                  Paint->cx + Paint->width,
-                  Paint->cy + get_point(begPosRef),
-                  Paint->cx + Paint->width,
-                  Paint->cy + get_point(endPosRef),
-                  Paint->cx + Paint->space + Paint->width,
-                  Paint->cy + get_point(endPosTar),
-                  Paint->cx + Paint->space + Paint->width,
-                  Paint->cy + get_point(begPosTar),
-                  get_rgb_color(p.start * p.mult), "grey");
-          break;
+//        case 3:
+//          line(fPlot, 2, Paint->cx + Paint->width,
+//               Paint->cy + get_point(begPosRef),
+//               Paint->cx + Paint->space + Paint->width,
+//               Paint->cy + get_point(begPosTar), (char*) "black");
+//          line(fPlot, 2, Paint->cx + Paint->width,
+//               Paint->cy + get_point(endPosRef),
+//               Paint->cx + Paint->space + Paint->width,
+//               Paint->cy + get_point(endPosTar), (char*) "black");
+//          break;
+//        case 4:
+//          line(fPlot, 2, Paint->cx + Paint->width,
+//               Paint->cy + get_point(begPosRef),
+//               Paint->cx + Paint->space + Paint->width,
+//               Paint->cy + get_point(begPosTar),
+//               get_rgb_color(p.start * p.mult));
+//          line(fPlot, 2, Paint->cx + Paint->width,
+//               Paint->cy + get_point(endPosRef),
+//               Paint->cx + Paint->space + Paint->width,
+//               Paint->cy + get_point(endPosTar),
+//               get_rgb_color(p.start * p.mult));
+//          break;
+//        case 5:
+//          polygon(fPlot,
+//                  Paint->cx + Paint->width,
+//                  Paint->cy + get_point(begPosRef),
+//                  Paint->cx + Paint->width,
+//                  Paint->cy + get_point(endPosRef),
+//                  Paint->cx + Paint->space + Paint->width,
+//                  Paint->cy + get_point(endPosTar),
+//                  Paint->cx + Paint->space + Paint->width,
+//                  Paint->cy + get_point(begPosTar),
+//                  get_rgb_color(p.start * p.mult), "grey");
+//          break;
         default:break;
         }
 
-        rect(fPlot, Paint->width, get_point(endPosRef - begPosRef), Paint->cx,
-             Paint->cy + get_point(begPosRef), get_rgb_color(p.start * p.mult));
-
-        rect(fPlot, Paint->width, get_point(endPosTar - begPosTar),
-             Paint->cx + Paint->space + Paint->width,
-             Paint->cy + get_point(begPosTar), get_rgb_color(p.start * p.mult));
-
-        ++no_regular;
+//        rect(fPlot, Paint->width, get_point(endPosRef - begPosRef), Paint->cx,
+//             Paint->cy + get_point(begPosRef), get_rgb_color(p.start * p.mult));
+//
+//        rect(fPlot, Paint->width, get_point(endPosTar - begPosTar),
+//             Paint->cx + Paint->space + Paint->width,
+//             Paint->cy + get_point(begPosTar), get_rgb_color(p.start * p.mult));
+//
+//        ++no_regular;
       }
     }
 //    else {

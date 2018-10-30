@@ -5,18 +5,11 @@
 #include "vizparam.hpp"
 
 namespace smashpp {
-
-//struct Painter {
-//};
-
-struct RgbColor {
-  u8 r, g, b;
-};
-
+struct RgbColor { u8 r, g, b; };
 struct HsvColor {
   u8 h, s, v;
+  HsvColor() : s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
 };
-
 
 class VizPaint
 {
@@ -28,9 +21,9 @@ class VizPaint
   double  space;
   double  refSize, tarSize, maxSize;
 
-  VizPaint() : cx(DEF_PAINT_CX), cy(DEF_PAINT_CY), tx(DEF_PAINT_TX),
-               ty(DEF_PAINT_TY), backColor(DEF_PAINT_BGCOLOR), width(0.0),
-               space(0.0), refSize(0.0), tarSize(0.0), maxSize(0.0) {}
+  VizPaint() : cx(PAINT_CX), cy(PAINT_CY), tx(PAINT_TX), ty(PAINT_TY),
+               backColor(PAINT_BGCOLOR), width(0.0), space(0.0), refSize(0.0),
+               tarSize(0.0), maxSize(0.0) {}
   void print_plot (VizParam&);
 
  private:
