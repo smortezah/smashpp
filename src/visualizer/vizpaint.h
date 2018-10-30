@@ -7,6 +7,8 @@
 namespace smashpp {
 struct Point {
   double x, y;
+  Point (double x_, double y_) { config(x_,y_); }
+  void config (double x_, double y_) { x=x_;  y=y_; }
 };
 
 struct Rectangle {
@@ -63,7 +65,7 @@ class VizPaint
   void     rect_ir     (ofstream&, const shared_ptr<Rectangle>&, const string&)
                        const;
   void     chromosome  (ofstream&, double, double, double, double) const;
-  void     text        (ofstream&, double, double, const string&) const;
+  void     text        (ofstream&, shared_ptr<Point>, const string&) const;
   template <typename Value>
   double   get_point   (Value);
 };

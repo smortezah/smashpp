@@ -131,18 +131,18 @@ inline void VizPaint::chromosome
        "y=\""      << setprecision(2) << y << "\" ry=\"1\" />\n";
 }
 
-inline void VizPaint::text (ofstream& f, double x, double y, const string& name)
-const {
+inline void VizPaint::text
+(ofstream& f, shared_ptr<Point> point, const string& name) const {
   f << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
        "font-weight:normal;line-height:125%%;letter-spacing:0px;"
        "word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;"
        "font-family:Sans\" "
-       "x=\"" << setprecision(2) << x << "\" "
-       "y=\"" << setprecision(2) << y << "\" "
+       "x=\"" << setprecision(2) << point->x << "\" "
+       "y=\"" << setprecision(2) << point->y << "\" "
        "id=\"corben\" sodipodi:linespacing=\"125%%\"><tspan sodipodi:"
        "role=\"line\" id=\"tspan3804\" "
-       "x=\"" << setprecision(2) << x << "\" "
-       "y=\"" << setprecision(2) << y << "\" "
+       "x=\"" << setprecision(2) << point->x << "\" "
+       "y=\"" << setprecision(2) << point->y << "\" "
        "style=\"font-size:18px;font-style:normal;font-variant:normal;"
        "font-weight:normal;font-stretch:normal;text-align:start;line-height:"
        "125%%;writing-mode:lr-tb;text-anchor:start;font-family:Arial;"
@@ -366,8 +366,8 @@ inline void VizPaint::print_final (ofstream& f) const {
 
 inline void VizPaint::config
 (double width_, double space_, u64 refSize_, u64 tarSize_) {
-  width   = static_cast<double>(width_);
-  space   = static_cast<double>(space_);
+  width   = width_;
+  space   = space_;
   refSize = get_point(refSize_);
   tarSize = get_point(tarSize_);
   maxSize = max(refSize, tarSize);
@@ -415,12 +415,14 @@ void VizPaint::print_plot (VizParam& p) {
 
   auto rectangle = make_shared<Rectangle>(
     2*PAINT_CX+2*(width+space)-space, maxSize+PAINT_EXTRA, 0, 0);
-
   rect(fPlot, rectangle, backColor);
   rect_oval(fPlot, width, refSize, cx, cy, backColor);
   rect_oval(fPlot, width, tarSize, cx, cy, backColor);
-  text(fPlot, cx,             cy-15, PAINT_REF);
-  text(fPlot, cx+width+space, cy-15, PAINT_TAR);
+
+  auto point = make_shared<Point>(cx, cy-15);
+  text(fPlot, point, PAINT_REF);
+  point->config(cx+width+space, cy-15);
+  text(fPlot, point, PAINT_TAR);
 
   // IF MINIMUM IS SET AS DEFAULT, RESET TO BASE MAX PROPORTION
   if (p.minimum == 0)
