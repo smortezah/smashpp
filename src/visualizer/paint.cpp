@@ -4,7 +4,6 @@
 #include <string.h>
 #include <ctype.h>
 #include "paint.h"
-#include "common.h"
 #include "mem.h"
 #include <fstream>
 using namespace smashpp;

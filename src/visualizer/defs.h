@@ -14,7 +14,6 @@ static const string RELEASE_eleanora {"1"};
 static const string VERSION_eleanora {"1"};
 
 //#define BUFFER_SIZE         262144
-#define DEF_VERSION         0
 //#define DEF_EXAMPLE         0
 //#define DEFAULT_FILTERSIZE  500
 //#define DEFAULT_MINBLOCK    100
@@ -43,12 +42,32 @@ static const string VERSION_eleanora {"1"};
 //#define EXTRA_L_CTX         8
 //#define MAX_STR             2048
 
-#define DEF_HELP            0
+static constexpr bool DEF_HELP    {false};
+static constexpr bool DEF_VERSION {false};
 static constexpr bool DEF_VERBOSE {false};
 static constexpr bool DEF_FORCE   {false};
-//#define DEF_THRE            1
 static constexpr bool DEF_INVE    {true};
 static constexpr bool DEF_REGU    {true};
+static const string   DEF_IMAGE   {"map.svg"};
+static constexpr u32  DEF_LINK    {5};
+static constexpr u32  MIN_LINK    {0};
+static constexpr u32  MAX_LINK    {5};
+static constexpr u32  DEF_WIDT    {40};
+static constexpr u32  MIN_WIDT    {10};
+static constexpr u32  MAX_WIDT    {5000};
+static constexpr u32  DEF_SPAC    {160};
+static constexpr u32  MIN_SPAC    {0};
+static constexpr u32  MAX_SPAC    {5000};
+static constexpr u32  DEF_MULT    {46};  // 5 colors without overlapping
+static constexpr u32  MIN_MULT    {1};
+static constexpr u32  MAX_MULT    {255};
+static constexpr u32  DEF_BEGI    {0};
+static constexpr u32  MIN_BEGI    {0};
+static constexpr u32  MAX_BEGI    {255};
+static constexpr u32  DEF_MINP    {0};
+static constexpr u32  MIN_MINP    {1};
+static constexpr u32  MAX_MINP    {99999999};
+//#define DEF_THRE            1
 //#define DEF_KMER            16
 //#define DEF_MINI            40
 //#define DEF_REPE            100
@@ -69,9 +88,6 @@ static constexpr bool DEF_REGU    {true};
 //#define MAX_TSHO            9999999
 //#define MIN_THRE            1
 //#define MAX_THRE            500
-#define DEF_LINK            5
-#define MIN_LINK            0
-#define MAX_LINK            5
 //#define DEF_DELE            1
 //#define NSYM                4
 //#define GUARD               64

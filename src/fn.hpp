@@ -48,7 +48,12 @@ inline static string hms (Time elapsed) {
   const auto m = (durSec % 3600) / 60;
   const auto s = durSec % 60;
 
-  return to_string(h)+":"+to_string(m)+":"+to_string(s)+" hour:min:sec.\n";
+  if (m < 1)
+    return to_string(s)+" sec.\n";
+  else if (h < 1)
+    return to_string(m)+":"+to_string(s)+" min:sec.\n";
+  else
+    return to_string(h)+":"+to_string(m)+":"+to_string(s)+" hour:min:sec.\n";
 }
 
 inline static void ignore_this_line (ifstream& fs) {

@@ -15,15 +15,13 @@
 #include "time.h"
 #include "defs.h"
 #include "vizparam.hpp"
-#include "msg.h"
-#include "common.h"
 #include "paint.h"
 #include <iostream>
 #include <fstream>
 #include "../fn.hpp"
 using namespace std;
 using namespace smashpp;
-Parameters* P;
+VizParam* P;
 
 // - - - - - - - - - - - - - - - - - - P L O T - - - - - - - - - - - - - - - -
 void PrintPlot
@@ -264,42 +262,28 @@ void PrintPlot
 // - - - - - - - - - - - - - - - - - M A I N - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main (int argc, char* argv[]) {
-  char** p = *&argv;
-  u32 width, space, mult, start, minimum;
+  const auto t0 {now()};
 
-  P = (Parameters*) Malloc(1 * sizeof(Parameters));
-  if ((P->help = args_state(DEF_HELP, p, argc, "-h")) || argc < 2) {
-    print_menu_visual();
-    return EXIT_SUCCESS;
+  VizParam P;
+  P.parse(argc, argv);
+  for (int i = 0; i < 5000000000; ++i) {
+    vector <int> v;
+    v.push_back(1);
+    v.pop_back();
   }
 
-  if (args_state(DEF_VERSION, p, argc, "-V")) {
-    print_version();
-    return EXIT_SUCCESS;
-  }
-
-  P->verbose   = args_state(DEF_VERBOSE, p, argc, "-v");
-  P->force     = args_state(DEF_FORCE, p, argc, "-F");
-  P->link      = args_num(DEF_LINK, p, argc, "-l", MIN_LINK, MAX_LINK);
-  width        = args_num(DEF_WIDT, p, argc, "-w", MIN_WIDT, MAX_WIDT);
-  space        = args_num(DEF_SPAC, p, argc, "-s", MIN_SPAC, MAX_SPAC);
-  mult         = args_num(DEF_MULT, p, argc, "-m", MIN_MULT, MAX_MULT);
-  start        = args_num(DEF_BEGI, p, argc, "-b", MIN_BEGI, MAX_BEGI);
-  minimum      = args_num(DEF_MINP, p, argc, "-c", MIN_MINP, MAX_MINP);
-  P->inversion = args_state(DEF_INVE, p, argc, "-i");
-  P->regular   = args_state(DEF_REGU, p, argc, "-r");
-  P->image     = args_files_img(p, argc, "-o");
-
   cerr << "\n";
-  TIME* Time = create_clock(clock());
-  PrintPlot(string(argv[argc-1]), width, space, mult, start, minimum);
-  stop_time_ndrm(Time, clock());
-  cerr << "\n";
-
+//  TIME* Time = create_clock(clock());
+//  PrintPlot(string(argv[argc-1]), width, space, mult, start, minimum);
+//  stop_time_ndrm(Time, clock());
+//  cerr << "\n";
+//
   cerr << "==[ STATISTICS ]====================\n";
-  stop_calc_all(Time, clock());
+  const auto t1 {now()};
+  cerr << "Total time: " << hms(t1-t0);
+//  stop_calc_all(Time, clock());
   cerr << "\n";
-  remove_clock(Time);
+//  remove_clock(Time);
 
   return EXIT_SUCCESS;
 }
