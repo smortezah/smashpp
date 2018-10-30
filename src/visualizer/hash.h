@@ -27,10 +27,10 @@ struct HASH {
   ENTRY** ent;    // ENTRIES VECTORS POINTERS
 };
 
-u64    XHASH         (u64);
-HASH*  CreateHash    ();
-ENTRY* GetHEnt       (HASH*, u64);
-void   InsertKmerPos (HASH*, u64, u32);
+//u64    XHASH         (u64);
+//HASH*  CreateHash    ();
+//ENTRY* GetHEnt       (HASH*, u64);
+//void   InsertKmerPos (HASH*, u64, u32);
 }
 
 #endif

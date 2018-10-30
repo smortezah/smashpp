@@ -15,9 +15,9 @@ struct HEADERS {
   u64  iPos;
 };
 
-HEADERS* CreateHeaders ();
-void     UpdateHeaders (HEADERS*);
-void     RemoveHeaders (HEADERS*);
+//HEADERS* CreateHeaders ();
+//void     UpdateHeaders (HEADERS*);
+//void     RemoveHeaders (HEADERS*);
 }
 
 #endif
