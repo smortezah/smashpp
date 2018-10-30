@@ -4,7 +4,6 @@
 #include "defs.h"
 
 namespace smashpp {
-//void PrintMenuMap    ();
 void PrintMenuVisual ();
 void PrintVersion    ();
 }

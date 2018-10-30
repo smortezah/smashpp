@@ -3,31 +3,6 @@
 #include <stdlib.h>
 using namespace smashpp;
 
-//void smashpp::PrintMenuMap () {
-//  cerr <<
-//    "Usage: visualizer-map [OPTION]... [FILE] [FILE]                         \n"
-//    "Ultra-fast mapping of similar genomic regions                           \n"
-//    "                                                                        \n"
-//    "Non-mandatory arguments:                                                \n"
-//    "                                                                        \n"
-//    "  -h                         give this help,                            \n"
-//    "  -V                         display version number,                    \n"
-//    "  -v                         verbose mode (more information),           \n"
-//    "  -k <k-mer>                 k-mer size [1;20],                         \n"
-//    "  -m <minimum>               minimum similar block size,                \n"
-//    "  -r <repeats>               maximum repeats number,                    \n"
-//    "  -i                         do NOT map inversions,                     \n"
-//    "  -n <nThreads>              number of threads,                         \n"
-//    "  -o <FILE>                  output text filename with positions,       \n"
-//    "                                                                        \n"
-//    "Mandatory arguments:                                                    \n"
-//    "                                                                        \n"
-//    "  <FILE>                     contigs filename (FASTA),                  \n"
-//    "  <FILE>                     reference sequence filename (FASTA).       \n"
-//    "                                                                        \n"
-//    "Report bugs to <pratas@ua.pt>.                                    " <<endl;
-//}
-
 void smashpp::PrintMenuVisual () {
   cerr <<
     "Usage: visualizer-visual [OPTION]... [FILE]                             \n"
