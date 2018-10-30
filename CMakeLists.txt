@@ -29,7 +29,7 @@ add_executable(smashpp-visual  src/visualizer/eleanora-visual.cpp
                                src/visualizer/paint.cpp
                                src/visualizer/common.cpp
                                src/visualizer/defs.h
-                               src/visualizer/param.h)
+                               src/visualizer/param.h src/visualizer/vizparam.cpp src/visualizer/vizparam.hpp)
 
 #add_executable(excule_N src/excludeN.cpp)
 

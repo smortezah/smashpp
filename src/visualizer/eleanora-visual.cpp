@@ -14,7 +14,7 @@
 #include "mem.h"
 #include "time.h"
 #include "defs.h"
-#include "param.h"
+#include "vizparam.hpp"
 #include "msg.h"
 #include "common.h"
 #include "paint.h"

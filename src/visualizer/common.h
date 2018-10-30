@@ -2,7 +2,7 @@
 #define COMMON_H_INCLUDED
 
 #include "defs.h"
-#include "param.h"
+#include "vizparam.hpp"
 
 namespace smashpp {
 u32    args_num       (u32, char*[], int, string, u32, u32);
