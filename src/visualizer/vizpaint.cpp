@@ -9,7 +9,7 @@
 using namespace smashpp;
 //namespace smashpp { u32 ratio; }
 
-RgbColor VizPaint::hsv_to_rgb (HsvColor HSV) const {
+inline RgbColor VizPaint::hsv_to_rgb (HsvColor HSV) const {
   RgbColor RGB {};
   if (HSV.s == 0) {
     RGB.r = HSV.v;
@@ -36,7 +36,7 @@ RgbColor VizPaint::hsv_to_rgb (HsvColor HSV) const {
   return RGB;
 }
 
-string VizPaint::rgb_color (u8 hue) {
+inline string VizPaint::rgb_color (u8 hue) const {
   HsvColor HSV(hue);
   RgbColor RGB = hsv_to_rgb(HSV);
   return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
@@ -75,26 +75,27 @@ inline void VizPaint::rect_oval (ofstream& f, double w, double h, double x,
        "y=\""      << setprecision(2) << y << "\" ry=\"12.5\" />\n";
 }
 
-inline void VizPaint::rect (ofstream& f, double w, double h, double x, double y,
-                            const string& color) const {
+inline void VizPaint::rect
+(ofstream& f, shared_ptr<Rectangle> rectangle, const string& color) const {
   f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
        "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rect3777\" "
-       "width=\""  << setprecision(2) << w << "\" "
-       "height=\"" << setprecision(2) << h << "\" "
-       "x=\""      << setprecision(2) << x << "\" "
-       "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
+       "width=\""  << setprecision(2) << rectangle->w << "\" "
+       "height=\"" << setprecision(2) << rectangle->h << "\" "
+       "x=\""      << setprecision(2) << rectangle->x << "\" "
+       "y=\""      << setprecision(2) << rectangle->y << "\" ry=\"0\" />\n";
 }
 
-inline void VizPaint::rect_ir (ofstream& f, double w, double h, double x,
-                               double y, const string& color) const {
-  rect(f, w, h, x, y, color);
+inline void VizPaint::rect_ir
+(ofstream& f, const shared_ptr<Rectangle>& rectangle, const string& color)
+const {
+  rect(f, rectangle, color);
   f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
        "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
        "id=\"rect6217\" "
-       "width=\""  << setprecision(2) << w << "\" "
-       "height=\"" << setprecision(2) << h << "\" "
-       "x=\""      << setprecision(2) << x << "\" "
-       "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
+       "width=\""  << setprecision(2) << rectangle->w << "\" "
+       "height=\"" << setprecision(2) << rectangle->h << "\" "
+       "x=\""      << setprecision(2) << rectangle->x << "\" "
+       "y=\""      << setprecision(2) << rectangle->y << "\" ry=\"0\" />\n";
 }
 
 inline void VizPaint::chromosome
@@ -411,8 +412,11 @@ void VizPaint::print_plot (VizParam& p) {
 
   print_head(fPlot, 2*PAINT_CX + 2*(width+space) - space,
                     maxSize + PAINT_EXTRA);
-  rect(fPlot, 2*PAINT_CX + 2*(width+space) - space,
-              maxSize + PAINT_EXTRA, 0, 0, backColor);
+
+  auto rectangle = make_shared<Rectangle>(
+    2*PAINT_CX+2*(width+space)-space, maxSize+PAINT_EXTRA, 0, 0);
+
+  rect(fPlot, rectangle, backColor);
   rect_oval(fPlot, width, refSize, cx, cy, backColor);
   rect_oval(fPlot, width, tarSize, cx, cy, backColor);
   text(fPlot, cx,             cy-15, PAINT_REF);
@@ -476,11 +480,13 @@ void VizPaint::print_plot (VizParam& p) {
         default:break;
         }
 
-        rect(fPlot, width, get_point(endPosRef-begPosRef), cx,
-          cy+get_point(begPosRef), rgb_color(static_cast<u8>(p.start*p.mult)));
+        rectangle->config(width, get_point(endPosRef-begPosRef),
+                          cx, cy+get_point(begPosRef));
+        rect(fPlot, rectangle, rgb_color(static_cast<u8>(p.start*p.mult)));
 
-        rect(fPlot, width, get_point(endPosTar-begPosTar), cx+space+width,
-          cy+get_point(begPosTar), rgb_color(static_cast<u8>(p.start*p.mult)));
+        rectangle->config(width, get_point(endPosTar-begPosTar),
+                          cx+space+width, cy+get_point(begPosTar));
+        rect(fPlot, rectangle, rgb_color(static_cast<u8>(p.start*p.mult)));
 
         ++no_regular;
       }
@@ -529,11 +535,13 @@ void VizPaint::print_plot (VizParam& p) {
         default:break;
         }
 
-        rect(fPlot, width, get_point(begPosRef-endPosRef), cx,
-          cy+get_point(endPosRef), rgb_color(static_cast<u8>(p.start*p.mult)));
+        rectangle->config(width, get_point(begPosRef-endPosRef),
+                          cx, cy+get_point(endPosRef));
+        rect(fPlot, rectangle, rgb_color(static_cast<u8>(p.start*p.mult)));
 
-        rect_ir(fPlot, width, get_point(endPosTar-begPosTar), cx+space+width,
-          cy+get_point(begPosTar), rgb_color(static_cast<u8>(p.start*p.mult)));
+        rectangle->config(width, get_point(endPosTar-begPosTar),
+                          cx+space+width, cy+get_point(begPosTar));
+        rect_ir(fPlot, rectangle, rgb_color(static_cast<u8>(p.start*p.mult)));
 
         ++no_inverse;
       }
