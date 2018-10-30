@@ -3,13 +3,13 @@
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
-#include "paint.h"
+#include "vizpaint.h"
 #include "mem.h"
 #include <fstream>
 using namespace smashpp;
-namespace smashpp { u32 ratio; }
+//namespace smashpp { u32 ratio; }
 
-RgbColor smashpp::hsv_to_rgb (HsvColor hsv) {
+RgbColor VizPaint::hsv_to_rgb (HsvColor hsv) {
   RgbColor rgb;
   u8 region, remainder, p, q, t;
 
@@ -39,7 +39,7 @@ RgbColor smashpp::hsv_to_rgb (HsvColor hsv) {
   return rgb;
 }
 
-string smashpp::get_rgb_color (u8 hue) {
+string VizPaint::get_rgb_color (u8 hue) {
   RgbColor RGB;
   HsvColor HSV;
   char* color = (char*) Malloc(8 * sizeof(char));
@@ -48,30 +48,14 @@ string smashpp::get_rgb_color (u8 hue) {
   HSV.s = LEVEL_SATURATION;
   HSV.v = LEVEL_VALUE;
 
-  RGB = smashpp::hsv_to_rgb(HSV);
+  RGB = hsv_to_rgb(HSV);
 
   sprintf(color, "#%X%X%X", RGB.r, RGB.g, RGB.b);
 
   return string(color);
 }
 
-Painter* smashpp::create_painter
-(double refSize, double tarSize, double width, double space, string color) {
-  Painter* P = (Painter*) Malloc(sizeof(Painter));
-  P->backColor = color;
-  P->refSize   = refSize;
-  P->tarSize   = tarSize;
-  P->cx        = DEFAULT_CX;
-  P->cy        = DEFAULT_CY;
-  P->tx        = DEFAULT_TX;
-  P->ty        = DEFAULT_TY;
-  P->width     = width;
-  P->space     = space;
-  P->maxSize   = refSize>tarSize ? refSize : tarSize;
-  return P;
-}
-
-void smashpp::polygon (ofstream& F, double x1, double y1, double x2, double y2,
+void VizPaint::polygon (ofstream& F, double x1, double y1, double x2, double y2,
                        double x3, double y3, double x4, double y4,
                        string colorf, string colorb) {
   F << "<polygon points=\""
@@ -83,9 +67,9 @@ void smashpp::polygon (ofstream& F, double x1, double y1, double x2, double y2,
                 "stroke:" << colorb << ";stroke-width:1;fill-opacity:0.7\" />";
 }
 
-void smashpp::line (ofstream& F, double width, double x1, double y1, double x2,
-                    double y2, string color) {
-  F << "<line x1=\"" << setprecision(2) << x1 << "\" "
+inline void VizPaint::line (ofstream& f, double width, double x1, double y1,
+                            double x2, double y2, const string& color) const {
+  f << "<line x1=\"" << setprecision(2) << x1 << "\" "
              "y1=\"" << setprecision(2) << y1 << "\" "
              "x2=\"" << setprecision(2) << x2 << "\" "
              "y2=\"" << setprecision(2) << y2 << "\" "
@@ -93,9 +77,9 @@ void smashpp::line (ofstream& F, double width, double x1, double y1, double x2,
              "stroke-width:" << setprecision(2) << width << "\" />";
 }
 
-void smashpp::rect_oval
-  (ofstream& F, double w, double h, double x, double y, string color) {
-  F << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
+void VizPaint::rect_oval (ofstream& f, double w, double h, double x, double y,
+                          const string& color) const {
+  f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
        "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
        "width=\""  << setprecision(2) << w << "\" "
        "height=\"" << setprecision(2) << h << "\" "
@@ -103,9 +87,9 @@ void smashpp::rect_oval
        "y=\""      << setprecision(2) << y << "\" ry=\"12.5\" />\n";
 }
 
-void smashpp::rect
-  (ofstream& F, double w, double h, double x, double y, string color) {
-  F << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
+inline void VizPaint::rect (ofstream& f, double w, double h, double x, double y,
+                            const string& color) const {
+  f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
        "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rect3777\" "
        "width=\""  << setprecision(2) << w << "\" "
        "height=\"" << setprecision(2) << h << "\" "
@@ -113,9 +97,9 @@ void smashpp::rect
        "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
 }
 
-void smashpp::rect_ir
-  (ofstream& F, double w, double h, double x, double y, string color) {
-  smashpp::rect(F, w, h, x, y, color);
+void VizPaint::rect_ir
+(ofstream& F, double w, double h, double x, double y, string color) {
+  rect(F, w, h, x, y, color);
   F << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
        "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
        "id=\"rect6217\" "
@@ -125,7 +109,7 @@ void smashpp::rect_ir
        "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
 }
 
-void smashpp::chromosome (ofstream& F, double w, double h, double x, double y) {
+void VizPaint::chromosome (ofstream& F, double w, double h, double x, double y) {
   char borderColor[] = "#000000";
 //  double  wk = w / 2 + 0.5;
 /*
@@ -157,8 +141,9 @@ void smashpp::chromosome (ofstream& F, double w, double h, double x, double y) {
        "y=\""      << setprecision(2) << y << "\" ry=\"1\" />\n";
 }
 
-void smashpp::text (ofstream& F, double x, double y, string name) {
-  F << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
+inline void VizPaint::text (ofstream& f, double x, double y, const string& name)
+const {
+  f << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
        "font-weight:normal;line-height:125%%;letter-spacing:0px;"
        "word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;"
        "font-family:Sans\" "
@@ -174,16 +159,13 @@ void smashpp::text (ofstream& F, double x, double y, string name) {
        "-inkscape-font-specification:Arial\">" << name << "</tspan>\n</text>\n";
 }
 
-void smashpp::set_ratio (u32 r) {
-  smashpp::ratio = r;
+template <typename Value>
+double VizPaint::get_point (Value point) {
+  return 5 * point/static_cast<double>(ratio);
 }
 
-double smashpp::get_point (u64 p) {
-  return p / (double) smashpp::ratio * 5;
-}
-
-void smashpp::print_head (ofstream& F, double w, double u) {
-  F << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+inline void VizPaint::print_head (ofstream& f, double w, double u) const {
+  f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
        "<!-- IEETA 2018 using Inkscape -->\n""<svg\n"
        "xmlns:osb=\"http://www.openswatchbook.org/uri/2009/osb\"\n"
        "xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
@@ -228,7 +210,7 @@ void smashpp::print_head (ofstream& F, double w, double u) {
        "<g inkscape:label=\"Camada 1\" inkscape:groupmode=\"layer\" "
        "id=\"layer1\" >\n";
 
-  F << "<defs id=\"defs6211\"><pattern inkscape:stockid=\"Polka dots, large\" "
+  f << "<defs id=\"defs6211\"><pattern inkscape:stockid=\"Polka dots, large\" "
        "id=\"Polkadots-large\" patternTransform=\"translate(0,0)scale(10,10)\" "
        "height=\"10\" width=\"10\" patternUnits=\"userSpaceOnUse\" inkscape:"
        "collect=\"always\"> "
@@ -321,7 +303,7 @@ void smashpp::print_head (ofstream& F, double w, double u) {
        "<circle id=\"circle5022\" r=\"0.45\" cy=\"3.763\" cx=\"3.047\" "
        "style=\"fill:black;stroke:none\" /></pattern></defs>";
 
-  F << "<defs id=\"ffff\"><pattern inkscape:stockid=\"Wavy\" id=\"Wavy\" "
+  f << "<defs id=\"ffff\"><pattern inkscape:stockid=\"Wavy\" id=\"Wavy\" "
        "height=\"5.1805778\" width=\"30.0\" patternUnits=\"userSpaceOnUse\" "
        "inkscape:collect=\"always\"><path id=\"path5114\" d=\"M 7.597,0.061 "
        "C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 "
@@ -330,7 +312,7 @@ void smashpp::print_head (ofstream& F, double w, double u) {
        "19.246,3.770 14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z \" "
        "style=\"fill:black;stroke:none;\" /></pattern></defs>";
 
-  F << "<defs id=\"defs6219\"><pattern inkscape:stockid=\"xtrace\" id="
+  f << "<defs id=\"defs6219\"><pattern inkscape:stockid=\"xtrace\" id="
        "\"xtrace\" height=\"20.0\" width=\"20.0\" patternUnits="
        "\"userSpaceOnUse\" inkscape:collect=\"always\"><path style=\"fill:"
        "#000000;stroke:#000000;stroke-width:0.30;stroke-linecap:butt;"
@@ -361,7 +343,7 @@ void smashpp::print_head (ofstream& F, double w, double u) {
        "\"m m 0.0,110.0 25.00000,-25.0 0,05 -25.00000,25.00000 z\" id="
        "\"path7213-12\" inkscape:connector-curvature=\"0\" /></pattern></defs>";
 
-  F << "<defs id=\"defs4\"><pattern id=\"dallas\" patternTransform="
+  f << "<defs id=\"defs4\"><pattern id=\"dallas\" patternTransform="
        "\"translate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" "
        "patternUnits=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:"
        "#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;"
@@ -372,14 +354,14 @@ void smashpp::print_head (ofstream& F, double w, double u) {
        "stroke-dasharray:none\" d=\"m 2.37338,-0.00568 0,4.76251\" id="
        "\"path2985-1\" /></pattern></defs>";
 
-  F << "<defs id=\"defs4\"><pattern id=\"lineX\" patternTransform="
+  f << "<defs id=\"defs4\"><pattern id=\"lineX\" patternTransform="
        "\"translate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" "
        "patternUnits=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:"
        "#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;"
        "stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none\" d="
        "\"m -0.00788,2.37557 4.76251,0\" id=\"path2985\" /></pattern></defs>";
 
-  F << "<defs id=\"defs4\"><pattern id=\"stripeX\" patternTransform="
+  f << "<defs id=\"defs4\"><pattern id=\"stripeX\" patternTransform="
        "\"translate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" "
        "patternUnits=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:"
        "#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;"
@@ -387,7 +369,230 @@ void smashpp::print_head (ofstream& F, double w, double u) {
        "2.37338,-0.00568 0,4.76251\" id=\"path2985-1\" /></pattern></defs>";
 }
 
-void smashpp::print_final (ofstream& F) {
+void VizPaint::print_final (ofstream& F) {
   F << "</g>\n</svg>";
   F.close();
+}
+
+inline void VizPaint::config
+(double width_, double space_, u64 refSize_, u64 tarSize_) {
+  width   = static_cast<double>(width_);
+  space   = static_cast<double>(space_);
+  refSize = get_point(refSize_);
+  tarSize = get_point(tarSize_);
+  maxSize = max(refSize, tarSize);
+  ratio   = static_cast<u32>(maxSize / DEF_PAINT_SCALE);
+}
+
+void VizPaint::print_plot (VizParam& p) {
+//  Painter* Paint;
+  check_file(p.posFile);
+  check_file(p.image);
+  ifstream fPos(p.posFile);
+  ofstream fPlot(p.image);
+  string watermark;
+  u64 tarNoBases=0, refNoBases=0;
+
+  fPos >> watermark >> refNoBases >> tarNoBases;
+  if (watermark != "#SCF")
+    error("unknown file format for positions.");
+  if (p.verbose) {
+    cerr <<
+      "==[ CONFIGURATION ]================="                              <<"\n"
+      "Verbose mode ....................... yes"                          <<"\n"
+      "Reference number of bases .......... " << refNoBases               <<"\n"
+      "Target number of bases ............. " << tarNoBases               <<"\n"
+      "Link type .......................... " << p.link                   <<"\n"
+      "Chromosomes design characteristics:"                               <<"\n"
+      "  [+] Width ........................ " << p.width                  <<"\n"
+      "  [+] Space ........................ " << p.space                  <<"\n"
+      "  [+] Multiplication factor ........ " << p.mult                   <<"\n"
+      "  [+] Begin ........................ " << p.start                  <<"\n"
+      "  [+] Minimum ...................... " << p.minimum                <<"\n"
+      "  [+] Show regular ................. " <<(p.regular   ?"yes":"no") <<"\n"
+      "  [+] Show inversions .............. " <<(p.inversion ?"yes":"no") <<"\n"
+      "Output map filename ................ " << p.image                  <<"\n"
+                                                                        << endl;
+  }
+
+  cerr << "==[ PROCESSING ]====================\n"
+          "Printing plot ...\n";
+
+  config(p.width, p.space, refNoBases, tarNoBases);
+
+  print_head(fPlot, 2*DEF_PAINT_CX + 2*(width+space) - space,
+                    maxSize + DEF_PAINT_EXTRA);
+  rect(fPlot, 2*DEF_PAINT_CX + 2*(width+space) - space,
+              maxSize + DEF_PAINT_EXTRA, 0, 0, backColor);
+  rect_oval(fPlot, width, refSize, cx, cy, backColor);
+  rect_oval(fPlot, width, tarSize, cx, cy, backColor);
+  text(fPlot, cx,             cy-15, DEF_PAINT_REF);
+  text(fPlot, cx+width+space, cy-15, DEF_PAINT_TAR);
+
+  // IF MINIMUM IS SET AS DEFAULT, RESET TO BASE MAX PROPORTION
+  if (p.minimum == 0)
+    p.minimum = static_cast<u32>(maxSize / 100);
+
+  i64 begPosTar, endPosTar, begPosRef, endPosRef;
+  string entTar, entRef;
+  u64 no_regular=0, no_inverse=0, no_ignored=0;
+  while (fPos >> begPosTar>>endPosTar>>entTar>>begPosRef>>endPosRef>>entRef) {
+    if (abs(endPosRef-begPosRef) < p.minimum ||
+        abs(begPosTar-endPosTar) < p.minimum) {
+      ++no_ignored;
+      continue;
+    }
+
+    if (endPosRef > begPosRef) {
+      if (p.regular) {
+        switch (p.link) {
+        case 1:
+          line(fPlot, 2, cx + width,
+                         cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0),
+                         cx + space + width,
+                         cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0),
+                         "black");
+          break;
+        case 2:
+          line(fPlot, 2, cx + width,
+                         cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0),
+                         cx + space + width,
+                         cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0),
+                         get_rgb_color(static_cast<u8>(p.start*p.mult)));
+          break;
+        case 3:
+          line(fPlot, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(begPosRef),
+               Paint->cx + Paint->space + Paint->width,
+               Paint->cy + get_point(begPosTar), (char*) "black");
+          line(fPlot, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(endPosRef),
+               Paint->cx + Paint->space + Paint->width,
+               Paint->cy + get_point(endPosTar), (char*) "black");
+          break;
+        case 4:
+          line(fPlot, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(begPosRef),
+               Paint->cx + Paint->space + Paint->width,
+               Paint->cy + get_point(begPosTar),
+               get_rgb_color(p.start * p.mult));
+          line(fPlot, 2, Paint->cx + Paint->width,
+               Paint->cy + get_point(endPosRef),
+               Paint->cx + Paint->space + Paint->width,
+               Paint->cy + get_point(endPosTar),
+               get_rgb_color(p.start * p.mult));
+          break;
+        case 5:
+          polygon(fPlot,
+                  Paint->cx + Paint->width,
+                  Paint->cy + get_point(begPosRef),
+                  Paint->cx + Paint->width,
+                  Paint->cy + get_point(endPosRef),
+                  Paint->cx + Paint->space + Paint->width,
+                  Paint->cy + get_point(endPosTar),
+                  Paint->cx + Paint->space + Paint->width,
+                  Paint->cy + get_point(begPosTar),
+                  get_rgb_color(p.start * p.mult), "grey");
+          break;
+        default:break;
+        }
+
+        rect(fPlot, Paint->width, get_point(endPosRef - begPosRef), Paint->cx,
+             Paint->cy + get_point(begPosRef), get_rgb_color(p.start * p.mult));
+
+        rect(fPlot, Paint->width, get_point(endPosTar - begPosTar),
+             Paint->cx + Paint->space + Paint->width,
+             Paint->cy + get_point(begPosTar), get_rgb_color(p.start * p.mult));
+
+        ++no_regular;
+      }
+    }
+//    else {
+//      if (p.inversion) {
+//        switch (p.link) {
+//        case 1:
+//          line(fPlot, 2, Paint->cx + Paint->width, Paint->cy +
+//                 get_point(endPosRef +
+//                           ((begPosRef -
+//                             endPosRef) / 2.0)),
+//               Paint->cx + Paint->space + Paint->width, Paint->cy +
+//                 get_point(endPosTar +
+//                           ((begPosTar -
+//                             endPosTar) /
+//                            2.0)),
+//               (char*) "green");
+//          break;
+//        case 2:
+//          line(fPlot, 2, Paint->cx + Paint->width, Paint->cy +
+//                 get_point(endPosRef +
+//                           ((begPosRef -
+//                             endPosRef) / 2.0)),
+//               Paint->cx + Paint->space + Paint->width, Paint->cy +
+//                 get_point(endPosTar +
+//                           ((begPosTar -
+//                             endPosTar) /
+//                            2.0)),
+//               get_rgb_color(p.start * p.mult));
+//          break;
+//        case 3:
+//          line(fPlot, 2, Paint->cx + Paint->width,
+//               Paint->cy + get_point(endPosRef),
+//               Paint->cx + Paint->space + Paint->width,
+//               Paint->cy + get_point(endPosTar), (char*) "green");
+//          line(fPlot, 2, Paint->cx + Paint->width,
+//               Paint->cy + get_point(begPosRef),
+//               Paint->cx + Paint->space + Paint->width,
+//               Paint->cy + get_point(begPosTar), (char*) "green");
+//          break;
+//        case 4:
+//          line(fPlot, 2, Paint->cx + Paint->width,
+//               Paint->cy + get_point(endPosRef),
+//               Paint->cx + Paint->space + Paint->width,
+//               Paint->cy + get_point(endPosTar),
+//               get_rgb_color(p.start * p.mult));
+//          line(fPlot, 2, Paint->cx + Paint->width,
+//               Paint->cy + get_point(begPosRef),
+//               Paint->cx + Paint->space + Paint->width,
+//               Paint->cy + get_point(begPosTar),
+//               get_rgb_color(p.start * p.mult));
+//          break;
+//        case 5:
+//          polygon(fPlot,
+//                  Paint->cx + Paint->width, Paint->cy + get_point(endPosRef),
+//                  Paint->cx + Paint->width, Paint->cy + get_point(begPosRef),
+//                  Paint->cx + Paint->space + Paint->width,
+//                  Paint->cy + get_point(begPosTar),
+//                  Paint->cx + Paint->space + Paint->width,
+//                  Paint->cy + get_point(endPosTar),
+//                  get_rgb_color(p.start * p.mult), "grey");
+//          break;
+//        default:break;
+//        }
+//
+//        rect(fPlot, Paint->width, get_point(begPosRef - endPosRef), Paint->cx,
+//             Paint->cy + get_point(endPosRef), get_rgb_color(p.start * p.mult));
+//
+//        rect_ir(fPlot, Paint->width, get_point(endPosTar - begPosTar),
+//                Paint->cx + Paint->space + Paint->width,
+//                Paint->cy + get_point(begPosTar), get_rgb_color(p.start * p.mult));
+//
+//        ++no_inverse;
+//      }
+//    }
+
+    ++p.start;
+  }
+  fPos.seekg(ios::beg);
+//
+//  if (p.regular)    cerr << "Found "   << no_regular << " regular regions.\n";
+//  if (p.inversion)  cerr << "Found "   << no_inverse << " inverted regions.\n";
+//  if (p.verbose)    cerr << "Ignored " << no_ignored << " regions.\n";
+//
+//  chromosome(fPlot, Paint->width, Paint->refSize, Paint->cx, Paint->cy);
+//  chromosome(fPlot, Paint->width, Paint->tarSize, Paint->cx + Paint->space +
+//                                                 Paint->width, Paint->cy);
+//  print_final(fPlot);
+  fPos.close();
+
+  cerr << "Done!                       \n";
 }

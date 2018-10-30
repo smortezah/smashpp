@@ -24,8 +24,7 @@ add_executable(smashpp         src/main.cpp
 
 add_executable(smashpp-visual  src/visualizer/eleanora-visual.cpp
                                src/visualizer/mem.cpp
-                               src/visualizer/time.cpp
-                               src/visualizer/paint.cpp
+                               src/visualizer/vizpaint.cpp
                                src/visualizer/defs.h
                                src/visualizer/vizparam.hpp)
 
