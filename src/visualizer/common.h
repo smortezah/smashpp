@@ -5,7 +5,7 @@
 #include "defs.h"
 #include "param.h"
 
-namespace smashpp {
+//namespace smashpp {
 double BoundDouble      (double, double, double);
 FILE*  Fopen            (const char*, const char*);
 void   UnPackByte       (u8*, u8);
@@ -32,13 +32,12 @@ char*  ArgsString       (char*, char *[], u32, char *);
 char*  ArgsFilesMap     (char*[], u32, char*);
 char*  ArgsFilesReduce  (char*[], u32, char*);
 char*  ArgsFilesImg     (char*[], u32, char*);
-void   TestReadFile     (char*);
 u8     CmpCheckSum      (u32, u32);
 void   FAccessWPerm     (char*);
 void   CalcProgress     (u64, u64);
 void   PrintArgs        (Parameters*);
 char*  concatenate      (char*, char*);
 i32    StrToArgv        (char*, char***);
-}
+//}
 
 #endif

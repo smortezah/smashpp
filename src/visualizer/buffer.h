@@ -2,7 +2,6 @@
 #define BUFFER_H_INCLUDED
 
 #include "defs.h"
-#include "../def.hpp"
 
 namespace smashpp {
 #define DEF_BUF_GUARD 32

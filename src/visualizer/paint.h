@@ -47,7 +47,7 @@ struct HsvColor {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Painter* CreatePainter (double, double, double, double, char*);
-RgbColor HsvToRgb      (HsvColor);
+RgbColor HsvToRgb      (const HsvColor&);
 HsvColor RgbToHsv      (RgbColor);
 char*    GetRgbColor   (u8);
 void     PrintFinal    (FILE*);

@@ -174,6 +174,7 @@ u8 NumToDNASym (u8 sym) {
   case 4:  return 'N';
   default: error("unknown numerical symbols.");
   }
+  return static_cast<u8>(255);
 }
 
 u8 GetCompSym (u8 sym) {
@@ -311,12 +312,6 @@ void FAccessWPerm (char* fn) {
               "old (" << fn << ") file will be deleted permanently.\n";
     exit(1);
   }
-}
-
-void TestReadFile (char* fn) {
-  FILE* f = NULL;
-  f = Fopen(fn, "r");
-  fclose(f);
 }
 
 // GET STRING TO ARGV
