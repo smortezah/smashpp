@@ -5,10 +5,15 @@
 #include "vizparam.hpp"
 
 namespace smashpp {
-struct RgbColor { u8 r, g, b; };
 struct HsvColor {
   u8 h, s, v;
-  HsvColor() : s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
+  explicit HsvColor(u8 h_) : h(h_), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
+  HsvColor(u8 h_, u8 s_, u8 v_) : h(h_), s(s_), v(v_) {}
+};
+
+struct RgbColor {
+  u8 r, g, b;
+  RgbColor() = default;
 };
 
 class VizPaint
@@ -29,24 +34,26 @@ class VizPaint
  private:
   u32 ratio;
 
-  void     config         (double, double, u64, u64);
-  RgbColor hsv_to_rgb     (HsvColor);
-  string   get_rgb_color  (u8);
-  void     print_final    (ofstream&);
-  void     print_head     (ofstream&, double, double) const;
-  void     polygon        (ofstream&, double, double, double, double, double,
-                           double, double, double, string, string);
-  void     line           (ofstream&, double, double, double, double, double,
-                           const string&) const;
-  void     rect_oval      (ofstream&, double, double, double, double,
-                           const string&) const;
-  void     rect           (ofstream&, double, double, double, double,
-                           const string&) const;
-  void     rect_ir        (ofstream&, double, double, double, double, string);
-  void     chromosome     (ofstream&, double, double, double, double);
-  void     text           (ofstream&, double, double, const string&) const;
+  void     config      (double, double, u64, u64);
+  RgbColor hsv_to_rgb  (HsvColor) const;
+  string   rgb_color   (u8);
+  void     print_final (ofstream&) const;
+  void     print_head  (ofstream&, double, double) const;
+  void     polygon     (ofstream&, double, double, double, double, double,
+                        double, double, double, const string&, const string&)
+                        const;
+  void     line        (ofstream&, double, double, double, double, double,
+                        const string&) const;
+  void     rect_oval   (ofstream&, double, double, double, double,
+                        const string&) const;
+  void     rect        (ofstream&, double, double, double, double,
+                        const string&) const;
+  void     rect_ir     (ofstream&, double, double, double, double,
+                        const string&) const;
+  void     chromosome  (ofstream&, double, double, double, double) const;
+  void     text        (ofstream&, double, double, const string&) const;
   template <typename Value>
-  double   get_point      (Value);
+  double   get_point   (Value);
 };
 }
 
