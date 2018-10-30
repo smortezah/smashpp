@@ -1,10 +1,9 @@
 #include "msg.h"
 #include <stdio.h>
 #include <stdlib.h>
-
 using namespace smashpp;
 
-void PrintMenuMap () {
+void smashpp::PrintMenuMap () {
   cerr <<
     "Usage: visualizer-map [OPTION]... [FILE] [FILE]                         \n"
     "Ultra-fast mapping of similar genomic regions                           \n"
@@ -29,7 +28,7 @@ void PrintMenuMap () {
     "Report bugs to <pratas@ua.pt>.                                    " <<endl;
 }
 
-void PrintMenuVisual () {
+void smashpp::PrintMenuVisual () {
   cerr <<
     "Usage: visualizer-visual [OPTION]... [FILE]                             \n"
     "Visualization of visualizer-map output.                                 \n"
@@ -57,7 +56,7 @@ void PrintMenuVisual () {
     "Report bugs to <pratas@ua.pt>."                                     <<endl;
 }
 
-void PrintVersion () {
+void smashpp::PrintVersion () {
   cerr <<
     "                                                                        \n"
     "                         =====================                          \n"

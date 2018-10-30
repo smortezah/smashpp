@@ -4,7 +4,7 @@
 #include <stdlib.h>
 using namespace smashpp;
 
-void* Malloc (size_t size) {
+void* smashpp::Malloc (size_t size) {
   void* pointer = malloc(size);
   if (pointer == NULL) {
     fprintf(stderr, "Error allocating %zu bytes.\n", size);
@@ -13,7 +13,7 @@ void* Malloc (size_t size) {
   return pointer;
 }
 
-void* Calloc (size_t nmemb, size_t size) {
+void* smashpp::Calloc (size_t nmemb, size_t size) {
   void* pointer = calloc(nmemb, size);
   if (pointer == NULL) {
     fprintf(stderr, "Error allocating %zu bytes.\n", size);
@@ -22,7 +22,7 @@ void* Calloc (size_t nmemb, size_t size) {
   return pointer;
 }
 
-void* Realloc (void* ptr, size_t size) {
+void* smashpp::Realloc (void* ptr, size_t size) {
   void* pointer = realloc(ptr, size);
   if (pointer == NULL) {
     fprintf(stderr, "Error allocating %zu bytes.\n", size);
@@ -31,12 +31,12 @@ void* Realloc (void* ptr, size_t size) {
   return pointer;
 }
 
-void Free (void* ptr) {
+void smashpp::Free (void* ptr) {
   free(ptr);
 }
 
 // HUMAN READABLE MEMORY PRINT
-void PrintHRBytes (i64 b) {
+void smashpp::PrintHRBytes (i64 b) {
   i32 u=1024, e;
   double s;
   u8 t[] = {'K', 'M', 'G', 'T', 'E', 'Z', 'Y'};

@@ -7,25 +7,25 @@
 namespace smashpp {
 struct FILEP {
   char* name;
-  U64  nReads;
-  U64  nBases;
-  U32  nSym;
-  U64  length;
+  u64  nReads;
+  u64  nBases;
+  u32  nSym;
+  u64  length;
 };
 
 struct Parameters {
-  U8    help;
-  U8    verbose;
-  U8    force;
-  U8    inversion;
-  U8    regular;
-  U8    level;
-  U8    link;
-  U32   kmer;
-  U32   minimum;
-  U32   repeats;
-  U32   threshold;
-  U32   nThreads;
+  u8    help;
+  u8    verbose;
+  u8    force;
+  u8    inversion;
+  u8    regular;
+  u8    level;
+  u8    link;
+  u32   kmer;
+  u32   minimum;
+  u32   repeats;
+  u32   threshold;
+  u32   nThreads;
   FILEP Ref, Tar;
   char* positions;
   char* image;

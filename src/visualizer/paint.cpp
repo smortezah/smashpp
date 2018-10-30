@@ -7,10 +7,9 @@
 #include "common.h"
 #include "mem.h"
 using namespace smashpp;
+namespace smashpp { u32 ratio; }
 
-u32 ratio;
-
-RgbColor HsvToRgb (HsvColor hsv) {
+RgbColor smashpp::HsvToRgb (const HsvColor& hsv) {
   RgbColor rgb;
   u8 region, remainder, p, q, t;
 
@@ -42,7 +41,7 @@ RgbColor HsvToRgb (HsvColor hsv) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-HsvColor RgbToHsv (RgbColor rgb) {
+HsvColor smashpp::RgbToHsv (RgbColor rgb) {
   HsvColor hsv;
   u8 rgbMin, rgbMax;
 
@@ -75,7 +74,7 @@ HsvColor RgbToHsv (RgbColor rgb) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char* GetRgbColor (u8 hue) {
+char* smashpp::GetRgbColor (u8 hue) {
   RgbColor RGB;
   HsvColor HSV;
   char* color = (char*) Malloc(8 * sizeof(char));
@@ -84,7 +83,7 @@ char* GetRgbColor (u8 hue) {
   HSV.s = LEVEL_SATURATION;
   HSV.v = LEVEL_VALUE;
 
-  RGB = HsvToRgb(HSV);
+  RGB = smashpp::HsvToRgb(HSV);
 
   sprintf(color, "#%X%X%X", RGB.r, RGB.g, RGB.b);
 
@@ -93,7 +92,7 @@ char* GetRgbColor (u8 hue) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Painter* CreatePainter
+Painter* smashpp::CreatePainter
 (double refSize, double tarSize, double width, double space, char* color) {
   Painter* P = (Painter*) Malloc(sizeof(Painter));
   P->backColor = color;
@@ -109,7 +108,7 @@ Painter* CreatePainter
   return P;
 }
 
-void Polygon (FILE* F, double x1, double y1, double x2, double y2, double x3,
+void smashpp::Polygon (FILE* F, double x1, double y1, double x2, double y2, double x3,
               double y3, double x4, double y4, char* colorf, char* colorb) {
   fprintf(F, "<polygon points=\"%.2lf,%.2lf %.2lf,%.2lf %.2lf,%.2lf "
              "%.2lf,%.2lf\" style=\"fill:%s;stroke:%s;stroke-width:1;"
@@ -117,19 +116,19 @@ void Polygon (FILE* F, double x1, double y1, double x2, double y2, double x3,
              x1, y1, x2, y2, x3, y3, x4, y4, colorf, colorb);
 }
 
-void Line (FILE* F, double width, double x1, double y1, double x2, double y2,
+void smashpp::Line (FILE* F, double width, double x1, double y1, double x2, double y2,
            char* color) {
   fprintf(F, "<line x1=\"%.2lf\" y1=\"%.2lf\" x2=\"%.2lf\" y2=\"%.2lf\" "
              "style=\"stroke:%s;stroke-width:%.2lf\" />",
              x1, y1, x2, y2, color, width);
 }
 
-void Circle (FILE* F, double r, double x, double y, char* color) {
+void smashpp::Circle (FILE* F, double r, double x, double y, char* color) {
   fprintf(F, "<circle cx=\"%.2lf\" cy=\"%.2lf\" r=\"%.2lf\" fill=\"%s\"/>",
              x, y, r, color);
 }
 
-void RectOval (FILE* F, double w, double h, double x, double y, char* color) {
+void smashpp::RectOval (FILE* F, double w, double h, double x, double y, char* color) {
   fprintf(F, "<rect "
              "style=\"fill:%s;fill-opacity:1;stroke-width:2;"
              "stroke-miterlimit:4;stroke-dasharray:none\" "
@@ -142,8 +141,8 @@ void RectOval (FILE* F, double w, double h, double x, double y, char* color) {
              "/>\n", color, w, h, x, y);
 }
 
-void RectOvalIR (FILE* F, double w, double h, double x, double y, char* color) {
-  RectOval(F, w, h, x, y, color);
+void smashpp::RectOvalIR (FILE* F, double w, double h, double x, double y, char* color) {
+  smashpp::RectOval(F, w, h, x, y, color);
   fprintf(F, "<rect "
              "style=\"fill-opacity:1;stroke-width:2;"
              "stroke-miterlimit:4;stroke-dasharray:none"
@@ -158,7 +157,7 @@ void RectOvalIR (FILE* F, double w, double h, double x, double y, char* color) {
              "/>\n", w, h, x, y);
 }
 
-void Rect (FILE* F, double w, double h, double x, double y, char* color) {
+void smashpp::Rect (FILE* F, double w, double h, double x, double y, char* color) {
   fprintf(F, "<rect style=\"fill:%s;fill-opacity:1;stroke-width:2;"
              "stroke-miterlimit:4;stroke-dasharray:none\" "
              "id=\"rect3777\" "
@@ -170,8 +169,8 @@ void Rect (FILE* F, double w, double h, double x, double y, char* color) {
              "/>\n", color, w, h, x, y);
 }
 
-void RectIR (FILE* F, double w, double h, double x, double y, char* color) {
-  Rect(F, w, h, x, y, color);
+void smashpp::RectIR (FILE* F, double w, double h, double x, double y, char* color) {
+  smashpp::Rect(F, w, h, x, y, color);
   fprintf(F, "<rect "
              "style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
              "stroke-dasharray:none;fill:url(#Wavy);fill-rule:"
@@ -185,7 +184,7 @@ void RectIR (FILE* F, double w, double h, double x, double y, char* color) {
              "/>\n", w, h, x, y);
 }
 
-void Chromosome (FILE* F, double w, double h, double x, double y) {
+void smashpp::Chromosome (FILE* F, double w, double h, double x, double y) {
   char borderColor[] = "#000000";
 //  double  wk = w / 2 + 0.5;
 /*
@@ -221,7 +220,7 @@ void Chromosome (FILE* F, double w, double h, double x, double y) {
              "/>\n", borderColor, w, h, x, y);
 }
 
-void Text (FILE* F, double x, double y, char* name) {
+void smashpp::Text (FILE* F, double x, double y, char* name) {
   fprintf(F, "<text xml:space=\"preserve\" "
              "style=\"font-size:40px;font-style:normal;"
              "font-weight:normal;line-height:125%%;"
@@ -265,15 +264,15 @@ void TextFloat (FILE* F, double x, double y, double n) {
              "</text>\n", x, y, x, y, n);
 }
 
-void SetRatio (u32 r) {
-  ratio = r;
+void smashpp::SetRatio (u32 r) {
+  smashpp::ratio = r;
 }
 
-double GetPoint (u64 p) {
-  return p / (double) ratio * 5;
+double smashpp::GetPoint (u64 p) {
+  return p / (double) smashpp::ratio * 5;
 }
 
-void PrintHead (FILE* F, double w, double u) {
+void smashpp::PrintHead (FILE* F, double w, double u) {
   fprintf(F,
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- IEETA 2018 using Inkscape -->\n""<svg\n"
@@ -481,7 +480,7 @@ void PrintHead (FILE* F, double w, double u) {
     "h2985-1\" /></pattern></defs>");
 }
 
-void PrintFinal (FILE* F) {
+void smashpp::PrintFinal (FILE* F) {
   fprintf(F, "</g>\n</svg>");
   fclose(F);
 }
