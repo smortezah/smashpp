@@ -10,16 +10,6 @@ using namespace smashpp;
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-//typedef u64 ULL;
-//typedef u64 U64;
-//typedef u32 U32;
-//typedef uint16_t U16;
-//typedef u8  U8;
-//typedef int64_t  I64;
-//typedef int32_t  I32;
-//typedef int16_t  I16;
-//typedef int8_t   I8;
-
 #define RELEASE_eleanora    1
 #define VERSION_eleanora    1
 
@@ -55,11 +45,11 @@ using namespace smashpp;
 
 
 #define DEF_HELP            0
-#define DEF_VERBOSE         0
-#define DEF_FORCE           0
+#define DEF_VERBOSE         false
+#define DEF_FORCE           false
 #define DEF_THRE            1
-#define DEF_INVE            1
-#define DEF_REGU            1
+#define DEF_INVE            true
+#define DEF_REGU            true
 #define DEF_KMER            16
 #define DEF_MINI            40
 #define DEF_REPE            100

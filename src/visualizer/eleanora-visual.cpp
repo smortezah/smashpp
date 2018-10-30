@@ -27,15 +27,15 @@ Parameters* P;
 
 // - - - - - - - - - - - - - - - - - - P L O T - - - - - - - - - - - - - - - -
 void PrintPlot
-(char* posFile, u32 width, u32 space, u32 mult, u32 start, u64 minimum) {
-  FILE* PLOT = NULL;
+(string posFile, u32 width, u32 space, u32 mult, u32 start, u64 minimum) {
   char backColor[] = "#ffffff";
   i64 tarNBases=0, refNBases=0;
   string watermark;
   Painter* Paint;
-  check_file((string) posFile);
+  check_file(posFile);
+  check_file(P->image);
   ifstream POS(posFile);
-  PLOT = Fopen(P->image, "w");
+  ofstream PLOT(P->image);
 
   POS >> watermark >> refNBases >> tarNBases;
   if (watermark != "#SCF")
@@ -147,7 +147,7 @@ void PrintPlot
                   Paint->cy + GetPoint(endPosTar),
                   Paint->cx + Paint->space + Paint->width,
                   Paint->cy + GetPoint(begPosTar),
-                  GetRgbColor(start * mult), (char*) "grey");
+                  GetRgbColor(start * mult), "grey");
           break;
         default:break;
         }
@@ -209,7 +209,7 @@ void PrintPlot
                   Paint->cy + GetPoint(begPosTar),
                   Paint->cx + Paint->space + Paint->width,
                   Paint->cy + GetPoint(endPosTar),
-                  GetRgbColor(start*mult), (char*) "grey");
+                  GetRgbColor(start*mult), "grey");
           break;
         default:break;
         }
@@ -252,31 +252,31 @@ i32 main (int argc, char* argv[]) {
   u32 width, space, mult, start, minimum;
 
   P = (Parameters*) Malloc(1 * sizeof(Parameters));
-  if ((P->help = ArgsState(DEF_HELP, p, argc, (char*) "-h")) == 1 || argc < 2) {
+  if ((P->help = ArgsState(DEF_HELP, p, argc, "-h")) || argc < 2) {
     PrintMenuVisual();
     return EXIT_SUCCESS;
   }
 
-  if (ArgsState(DEF_VERSION, p, argc, (char*) "-V")) {
+  if (ArgsState(DEF_VERSION, p, argc, "-V")) {
     PrintVersion();
     return EXIT_SUCCESS;
   }
 
-  P->verbose   = ArgsState(DEF_VERBOSE,p,argc, (char*)"-v");
-  P->force     = ArgsState(DEF_FORCE, p, argc, (char*)"-F");
-  P->link      = ArgsNum  (DEF_LINK,  p, argc, (char*)"-l", MIN_LINK, MAX_LINK);
-  width        = ArgsNum  (DEF_WIDT,  p, argc, (char*)"-w", MIN_WIDT, MAX_WIDT);
-  space        = ArgsNum  (DEF_SPAC,  p, argc, (char*)"-s", MIN_SPAC, MAX_SPAC);
-  mult         = ArgsNum  (DEF_MULT,  p, argc, (char*)"-m", MIN_MULT, MAX_MULT);
-  start        = ArgsNum  (DEF_BEGI,  p, argc, (char*)"-b", MIN_BEGI, MAX_BEGI);
-  minimum      = ArgsNum  (DEF_MINP,  p, argc, (char*)"-c", MIN_MINP, MAX_MINP);
-  P->inversion = ArgsState(DEF_INVE,  p, argc, (char*)"-i");
-  P->regular   = ArgsState(DEF_REGU,  p, argc, (char*)"-r");
-  P->image     = ArgsFilesImg        (p, argc, (char*)"-o");
+  P->verbose   = ArgsState(DEF_VERBOSE, p, argc, "-v");
+  P->force     = ArgsState(DEF_FORCE,   p, argc, "-F");
+  P->link      = ArgsNum  (DEF_LINK,    p, argc, "-l", MIN_LINK, MAX_LINK);
+  width        = ArgsNum  (DEF_WIDT,    p, argc, "-w", MIN_WIDT, MAX_WIDT);
+  space        = ArgsNum  (DEF_SPAC,    p, argc, "-s", MIN_SPAC, MAX_SPAC);
+  mult         = ArgsNum  (DEF_MULT,    p, argc, "-m", MIN_MULT, MAX_MULT);
+  start        = ArgsNum  (DEF_BEGI,    p, argc, "-b", MIN_BEGI, MAX_BEGI);
+  minimum      = ArgsNum  (DEF_MINP,    p, argc, "-c", MIN_MINP, MAX_MINP);
+  P->inversion = ArgsState(DEF_INVE,    p, argc, "-i");
+  P->regular   = ArgsState(DEF_REGU,    p, argc, "-r");
+  P->image     = ArgsFilesImg          (p, argc, "-o");
 
   cerr << "\n";
   TIME* Time = CreateClock(clock());
-  PrintPlot(argv[argc-1], width, space, mult, start, minimum);
+  PrintPlot(string(argv[argc-1]), width, space, mult, start, minimum);
   StopTimeNDRM(Time, clock());
   cerr << "\n";
 

@@ -14,7 +14,7 @@ namespace smashpp {
 #define DEF_WIDT          40
 #define MIN_WIDT          10
 #define MAX_WIDT          5000
-#define DEF_SPAC          160.0
+#define DEF_SPAC          160
 #define MIN_SPAC          0
 #define MAX_SPAC          5000
 #define DEF_MULT          46  // 5 colors without overlapping
@@ -48,21 +48,21 @@ struct HsvColor {
 
 Painter* CreatePainter (double, double, double, double, char*);
 RgbColor HsvToRgb      (const HsvColor&);
-HsvColor RgbToHsv      (RgbColor);
+//HsvColor RgbToHsv      (RgbColor);
 char*    GetRgbColor   (u8);
-void     PrintFinal    (FILE*);
-void     PrintHead     (FILE*, double, double);
-void     Polygon       (FILE*, double, double, double, double, double, double,
-                               double, double, char*, char*);
-void     Line          (FILE*, double, double, double, double, double, char*);
-void     Circle        (FILE*, double, double, double, char*);
-void     RectOval      (FILE*, double, double, double, double, char*);
-void     RectOvalIR    (FILE*, double, double, double, double, char*);
-void     Rect          (FILE*, double, double, double, double, char*);
-void     RectIR        (FILE*, double, double, double, double, char*);
-void     Chromosome    (FILE*, double, double, double, double);
-void     Text          (FILE*, double, double, char *);
-void     Textfloatoat  (FILE*, double, double, double);
+void     PrintFinal    (ofstream&);
+void     PrintHead     (ofstream&, double, double);
+void     Polygon       (ofstream&, double, double, double, double, double,
+                                  double, double, double, char*, string);
+void     Line          (ofstream&, double, double, double, double, double, char*);
+//void     Circle        (FILE*, double, double, double, char*);
+void     RectOval      (ofstream&, double, double, double, double, char*);
+//void     RectOvalIR    (FILE*, double, double, double, double, char*);
+void     Rect          (ofstream&, double, double, double, double, char*);
+void     RectIR        (ofstream&, double, double, double, double, char*);
+void     Chromosome    (ofstream&, double, double, double, double);
+void     Text          (ofstream&, double, double, char *);
+//void     Textfloatoat  (FILE*, double, double, double);
 double   GetPoint      (u64);
 void     SetRatio      (u32);
 }

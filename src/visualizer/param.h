@@ -14,13 +14,11 @@ struct FILEP {
 };
 
 struct Parameters {
-  u8    help;
-  u8    verbose;
-  u8    force;
-  u8    inversion;
-  u8    regular;
+  bool  help;
+  bool  verbose, force;
+  u32   link;
+  bool  inversion, regular;
   u8    level;
-  u8    link;
   u32   kmer;
   u32   minimum;
   u32   repeats;
@@ -28,7 +26,7 @@ struct Parameters {
   u32   nThreads;
   FILEP Ref, Tar;
   char* positions;
-  char* image;
+  string image;
 };
 
 struct Threads {
