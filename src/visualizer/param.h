@@ -2,7 +2,6 @@
 #define PARAM_H_INCLUDED
 
 #include "defs.h"
-#include "rmodel.h"
 
 namespace smashpp {
 struct FILEP {

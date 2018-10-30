@@ -28,7 +28,7 @@ namespace smashpp {
 #define MAX_MINP          99999999
 
 struct Painter {
-  char*   backColor;
+  string  backColor;
   double  width;
   double  space;
   double  cx, cy;
@@ -44,25 +44,20 @@ struct HsvColor {
   u8 h, s, v;
 };
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-Painter* CreatePainter (double, double, double, double, char*);
-RgbColor HsvToRgb      (const HsvColor&);
-//HsvColor RgbToHsv      (RgbColor);
-char*    GetRgbColor   (u8);
+Painter* CreatePainter (double, double, double, double, string);
+RgbColor HsvToRgb      (HsvColor);
+string   GetRgbColor   (u8);
 void     PrintFinal    (ofstream&);
 void     PrintHead     (ofstream&, double, double);
 void     Polygon       (ofstream&, double, double, double, double, double,
-                                  double, double, double, char*, string);
-void     Line          (ofstream&, double, double, double, double, double, char*);
-//void     Circle        (FILE*, double, double, double, char*);
-void     RectOval      (ofstream&, double, double, double, double, char*);
-//void     RectOvalIR    (FILE*, double, double, double, double, char*);
-void     Rect          (ofstream&, double, double, double, double, char*);
-void     RectIR        (ofstream&, double, double, double, double, char*);
+                                   double, double, double, string, string);
+void     Line          (ofstream&, double, double, double, double, double,
+                                   string);
+void     RectOval      (ofstream&, double, double, double, double, string);
+void     Rect          (ofstream&, double, double, double, double, string);
+void     RectIR        (ofstream&, double, double, double, double, string);
 void     Chromosome    (ofstream&, double, double, double, double);
-void     Text          (ofstream&, double, double, char *);
-//void     Textfloatoat  (FILE*, double, double, double);
+void     Text          (ofstream&, double, double, string);
 double   GetPoint      (u64);
 void     SetRatio      (u32);
 }

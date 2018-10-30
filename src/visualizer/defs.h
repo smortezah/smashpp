@@ -43,7 +43,6 @@ using namespace smashpp;
 #define EXTRA_L_CTX         8
 #define MAX_STR             2048
 
-
 #define DEF_HELP            0
 #define DEF_VERBOSE         false
 #define DEF_FORCE           false

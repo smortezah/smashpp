@@ -28,7 +28,7 @@ Parameters* P;
 // - - - - - - - - - - - - - - - - - - P L O T - - - - - - - - - - - - - - - -
 void PrintPlot
 (string posFile, u32 width, u32 space, u32 mult, u32 start, u64 minimum) {
-  char backColor[] = "#ffffff";
+  string backColor = "#ffffff";
   i64 tarNBases=0, refNBases=0;
   string watermark;
   Painter* Paint;
@@ -73,8 +73,8 @@ void PrintPlot
        Paint->space), Paint->maxSize + EXTRA, 0, 0, backColor);
   RectOval(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy, backColor);
   RectOval(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy, backColor);
-  Text(PLOT, Paint->cx, Paint->cy - 15, (char*) "REF");
-  Text(PLOT, Paint->cx+Paint->width+Paint->space, Paint->cy-15, (char*) "TAR");
+  Text(PLOT, Paint->cx, Paint->cy - 15, "REF");
+  Text(PLOT, Paint->cx+Paint->width+Paint->space, Paint->cy-15, "TAR");
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
   if (minimum == 0)
@@ -230,8 +230,8 @@ void PrintPlot
 //  rewind(POS);
   POS.seekg(ios::beg);
 
-  if (P->regular)    cerr << "Found " << regular << " regular regions.\n";
-  if (P->inversion)  cerr << "Found " << inverse << " inverted regions.\n";
+  if (P->regular)    cerr << "Found "   << regular << " regular regions.\n";
+  if (P->inversion)  cerr << "Found "   << inverse << " inverted regions.\n";
   if (P->verbose)    cerr << "Ignored " << ignored << " regions.\n";
 
   Chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy);
@@ -247,7 +247,7 @@ void PrintPlot
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - M A I N - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-i32 main (int argc, char* argv[]) {
+int main (int argc, char* argv[]) {
   char** p = *&argv;
   u32 width, space, mult, start, minimum;
 

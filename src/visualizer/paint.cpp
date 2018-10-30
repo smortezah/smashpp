@@ -6,10 +6,11 @@
 #include "paint.h"
 #include "common.h"
 #include "mem.h"
+#include <fstream>
 using namespace smashpp;
 namespace smashpp { u32 ratio; }
 
-RgbColor smashpp::HsvToRgb (const HsvColor& hsv) {
+RgbColor smashpp::HsvToRgb (HsvColor hsv) {
   RgbColor rgb;
   u8 region, remainder, p, q, t;
 
@@ -39,38 +40,7 @@ RgbColor smashpp::HsvToRgb (const HsvColor& hsv) {
   return rgb;
 }
 
-//HsvColor smashpp::RgbToHsv (RgbColor rgb) {
-//  HsvColor hsv;
-//  u8 rgbMin, rgbMax;
-//
-//  rgbMin =
-//    rgb.r<rgb.g ? (rgb.r<rgb.b ? rgb.r : rgb.b) : (rgb.g<rgb.b ? rgb.g : rgb.b);
-//  rgbMax =
-//    rgb.r>rgb.g ? (rgb.r>rgb.b ? rgb.r : rgb.b) : (rgb.g>rgb.b ? rgb.g : rgb.b);
-//  hsv.v = rgbMax;
-//  if (hsv.v == 0) {
-//    hsv.h = 0;
-//    hsv.s = 0;
-//    return hsv;
-//  }
-//
-//  hsv.s = 255 * (long) (rgbMax-rgbMin) / hsv.v;
-//  if (hsv.s == 0) {
-//    hsv.h = 0;
-//    return hsv;
-//  }
-//
-//  if (rgbMax == rgb.r)
-//    hsv.h = 43 * (rgb.g-rgb.b) / (rgbMax-rgbMin);
-//  else if (rgbMax == rgb.g)
-//    hsv.h = 85 + 43 * (rgb.b-rgb.r) / (rgbMax-rgbMin);
-//  else
-//    hsv.h = 171 + 43 * (rgb.r-rgb.g) / (rgbMax-rgbMin);
-//
-//  return hsv;
-//}
-
-char* smashpp::GetRgbColor (u8 hue) {
+string smashpp::GetRgbColor (u8 hue) {
   RgbColor RGB;
   HsvColor HSV;
   char* color = (char*) Malloc(8 * sizeof(char));
@@ -83,11 +53,11 @@ char* smashpp::GetRgbColor (u8 hue) {
 
   sprintf(color, "#%X%X%X", RGB.r, RGB.g, RGB.b);
 
-  return color;
+  return string(color);
 }
 
 Painter* smashpp::CreatePainter
-(double refSize, double tarSize, double width, double space, char* color) {
+(double refSize, double tarSize, double width, double space, string color) {
   Painter* P = (Painter*) Malloc(sizeof(Painter));
   P->backColor = color;
   P->refSize   = refSize;
@@ -104,7 +74,7 @@ Painter* smashpp::CreatePainter
 
 void smashpp::Polygon (ofstream& F, double x1, double y1, double x2, double y2,
                                     double x3, double y3, double x4, double y4,
-                                    char* colorf, string colorb) {
+                                    string colorf, string colorb) {
   F << "<polygon points=\""
     <<           setprecision(2) << x1 << "," << setprecision(2) << y1 << " "
     <<           setprecision(2) << x2 << "," << setprecision(2) << y2 << " "
@@ -115,7 +85,7 @@ void smashpp::Polygon (ofstream& F, double x1, double y1, double x2, double y2,
 }
 
 void smashpp::Line (ofstream& F, double width, double x1, double y1, double x2,
-                                 double y2, char* color) {
+                                 double y2, string color) {
   F << "<line x1=\"" << setprecision(2) << x1 << "\" "
              "y1=\"" << setprecision(2) << y1 << "\" "
              "x2=\"" << setprecision(2) << x2 << "\" "
@@ -124,64 +94,36 @@ void smashpp::Line (ofstream& F, double width, double x1, double y1, double x2,
              "stroke-width:" << setprecision(2) << width << "\" />";
 }
 
-//void smashpp::Circle (FILE* F, double r, double x, double y, char* color) {
-//  fprintf(F, "<circle cx=\"%.2lf\" cy=\"%.2lf\" r=\"%.2lf\" fill=\"%s\"/>",
-//             x, y, r, color);
-//}
-
 void smashpp::RectOval
-(ofstream& F, double w, double h, double x, double y, char* color) {
-  F << "<rect style=\"fill:" << color << ";"
-             "fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
-             "stroke-dasharray:none\" "
-             "id=\"rectx\" "
-             "width=\""  << setprecision(2) << w << "\" "
-             "height=\"" << setprecision(2) << h << "\" "
-             "x=\""      << setprecision(2) << x << "\" "
-             "y=\""      << setprecision(2) << y << "\" "
-             "ry=\"12.5\" />\n";
+(ofstream& F, double w, double h, double x, double y, string color) {
+  F << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
+       "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
+       "width=\""  << setprecision(2) << w << "\" "
+       "height=\"" << setprecision(2) << h << "\" "
+       "x=\""      << setprecision(2) << x << "\" "
+       "y=\""      << setprecision(2) << y << "\" ry=\"12.5\" />\n";
 }
 
-//void smashpp::RectOvalIR (FILE* F, double w, double h, double x, double y, char* color) {
-//  smashpp::RectOval(F, w, h, x, y, color);
-//  fprintf(F, "<rect "
-//             "style=\"fill-opacity:1;stroke-width:2;"
-//             "stroke-miterlimit:4;stroke-dasharray:none"
-//             "stroke-dasharray:none;fill:url(#xtrace);"
-//             "fill-rule:nonzero;opacity:1\" "
-//             "id=\"recty\" "
-//             "width=\"%.2lf\" "
-//             "height=\"%.2lf\" "
-//             "x=\"%.2lf\" "
-//             "y=\"%.2lf\" "
-//             "ry=\"12.5\" "
-//             "/>\n", w, h, x, y);
-//}
-
 void smashpp::Rect
-(ofstream& F, double w, double h, double x, double y, char* color) {
+(ofstream& F, double w, double h, double x, double y, string color) {
   F << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
-             "stroke-miterlimit:4;stroke-dasharray:none\" "
-             "id=\"rect3777\" "
-             "width=\""  << setprecision(2) << w << "\" "
-             "height=\"" << setprecision(2) << h << "\" "
-             "x=\""      << setprecision(2) << x << "\" "
-             "y=\""      << setprecision(2) << y << "\" "
-             "ry=\"0\" />\n";
+       "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rect3777\" "
+       "width=\""  << setprecision(2) << w << "\" "
+       "height=\"" << setprecision(2) << h << "\" "
+       "x=\""      << setprecision(2) << x << "\" "
+       "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
 }
 
 void smashpp::RectIR
-(ofstream& F, double w, double h, double x, double y, char* color) {
+(ofstream& F, double w, double h, double x, double y, string color) {
   smashpp::Rect(F, w, h, x, y, color);
   F << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
-             "stroke-dasharray:none;fill:url(#Wavy);fill-rule:"
-             "nonzero;opacity:1\" "
-             "id=\"rect6217\" "
-             "width=\""  << setprecision(2) << w << "\" "
-             "height=\"" << setprecision(2) << h << "\" "
-             "x=\""      << setprecision(2) << x << "\" "
-             "y=\""      << setprecision(2) << y << "\" "
-             "ry=\"0\" />\n";
+       "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
+       "id=\"rect6217\" "
+       "width=\""  << setprecision(2) << w << "\" "
+       "height=\"" << setprecision(2) << h << "\" "
+       "x=\""      << setprecision(2) << x << "\" "
+       "y=\""      << setprecision(2) << y << "\" ry=\"0\" />\n";
 }
 
 void smashpp::Chromosome (ofstream& F, double w, double h, double x, double y) {
@@ -208,58 +150,30 @@ void smashpp::Chromosome (ofstream& F, double w, double h, double x, double y) {
 */
 
   F << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
-             "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
-             "stroke-opacity:1;stroke-dasharray:none\" "
-             "id=\"rect2985\" "
-             "width=\""  << setprecision(2) << w << "\" "
-             "height=\"" << setprecision(2) << h << "\" "
-             "x=\""      << setprecision(2) << x << "\" "
-             "y=\""      << setprecision(2) << y << "\" "
-             "ry=\"1\" />\n";
+       "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
+       "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
+       "width=\""  << setprecision(2) << w << "\" "
+       "height=\"" << setprecision(2) << h << "\" "
+       "x=\""      << setprecision(2) << x << "\" "
+       "y=\""      << setprecision(2) << y << "\" ry=\"1\" />\n";
 }
 
-void smashpp::Text (ofstream& F, double x, double y, char* name) {
-  F << "<text xml:space=\"preserve\" "
-             "style=\"font-size:40px;font-style:normal;"
-             "font-weight:normal;line-height:125%%;"
-             "letter-spacing:0px;word-spacing:0px;fill:#000000;"
-             "fill-opacity:1;stroke:none;font-family:Sans\" "
-             "x=\"" << setprecision(2) << x << "\" "
-             "y=\"" << setprecision(2) << y << "\" "
-             "id=\"corben\" "
-             "sodipodi:linespacing=\"125%%\">"
-             "<tspan sodipodi:role=\"line\" "
-             "id=\"tspan3804\" "
-             "x=\"" << setprecision(2) << x << "\" "
-             "y=\"" << setprecision(2) << y << "\" "
-             "style=\"font-size:18px;font-style:normal;font-variant:normal;"
-             "font-weight:normal;font-stretch:normal;text-align:start;"
-             "line-height:125%%;writing-mode:lr-tb;text-anchor:start;"
-             "font-family:Arial;-inkscape-font-specification:Arial"
-             "\">" << name << "</tspan>\n</text>\n";
+void smashpp::Text (ofstream& F, double x, double y, string name) {
+  F << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
+       "font-weight:normal;line-height:125%%;letter-spacing:0px;"
+       "word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;"
+       "font-family:Sans\" "
+       "x=\"" << setprecision(2) << x << "\" "
+       "y=\"" << setprecision(2) << y << "\" "
+       "id=\"corben\" sodipodi:linespacing=\"125%%\"><tspan sodipodi:"
+       "role=\"line\" id=\"tspan3804\" "
+       "x=\"" << setprecision(2) << x << "\" "
+       "y=\"" << setprecision(2) << y << "\" "
+       "style=\"font-size:18px;font-style:normal;font-variant:normal;"
+       "font-weight:normal;font-stretch:normal;text-align:start;line-height:"
+       "125%%;writing-mode:lr-tb;text-anchor:start;font-family:Arial;"
+       "-inkscape-font-specification:Arial\">" << name << "</tspan>\n</text>\n";
 }
-
-//void TextFloat (FILE* F, double x, double y, double n) {
-//  fprintf(F, "<text xml:space=\"preserve\" "
-//             "style=\"font-size:40px;font-style:normal;"
-//             "font-weight:normal;line-height:125%%;"
-//             "letter-spacing:0px;word-spacing:0px;fill:#000000;"
-//             "fill-opacity:1;stroke:none;font-family:Sans\" "
-//             "x=\"%.2lf\" "
-//             "y=\"%.2lf\" "
-//             "id=\"corben\" "
-//             "sodipodi:linespacing=\"125%%\">"
-//             "<tspan sodipodi:role=\"line\" "
-//             "id=\"tspan3804\" "
-//             "x=\"%.2lf\" "
-//             "y=\"%.2lf\" "
-//             "style=\"font-size:18px;font-style:normal;font-variant:"
-//             "normal;font-weight:normal;font-stretch:normal;"
-//             "text-align:start;line-height:125%%;writing-mode"
-//             ":lr-tb;text-anchor:start;font-family:Arial;-"
-//             "inkscape-font-specification:Arial\"> %5.2lf</tspan>\n"
-//             "</text>\n", x, y, x, y, n);
-//}
 
 void smashpp::SetRatio (u32 r) {
   smashpp::ratio = r;
@@ -315,12 +229,12 @@ void smashpp::PrintHead (ofstream& F, double w, double u) {
        "<g inkscape:label=\"Camada 1\" inkscape:groupmode=\"layer\" "
        "id=\"layer1\" >\n";
 
-  F << "<defs id=\"defs6211\"><pattern inkscape:stockid=\"Polka dots, "
-       "large\" id=\"Polkadots-large\" patternTransform=\"translate(0,0)"
-       "scale(10,10)\" height=\"10\" width=\"10\" patternUnits=\"userSpa"
-       "ceOnUse\" inkscape:collect=\"always\"> "
-       "<circle id=\"circle4936\" r=\"0.45\" cy=\"0.810\" cx=\"2.567\" "
-       "style=\"fill:black;stroke:none\" />"
+  F << "<defs id=\"defs6211\"><pattern inkscape:stockid=\"Polka dots, large\" "
+       "id=\"Polkadots-large\" patternTransform=\"translate(0,0)scale(10,10)\" "
+       "height=\"10\" width=\"10\" patternUnits=\"userSpaceOnUse\" inkscape:"
+       "collect=\"always\"> "
+       "<circle id=\"circle4936\" r=\"0.45\" cy=\"0.810\" "
+       "cx=\"2.567\" style=\"fill:black;stroke:none\" />"
        "<circle id=\"circle4938\" r=\"0.45\" cy=\"2.33\" cx=\"3.048\" "
        "style=\"fill:black;stroke:none\" />"
        "<circle id=\"circle4940\" r=\"0.45\" cy=\"2.415\" cx=\"4.418\" "
@@ -406,77 +320,75 @@ void smashpp::PrintHead (ofstream& F, double w, double u) {
        "<circle id=\"circle5020\" r=\"0.45\" cy=\"4.451\" cx=\"1.302\" "
        "style=\"fill:black;stroke:none\" />"
        "<circle id=\"circle5022\" r=\"0.45\" cy=\"3.763\" cx=\"3.047\" "
-       "style=\"fill:black;stroke:none\" />"
-       "</pattern></defs>";
+       "style=\"fill:black;stroke:none\" /></pattern></defs>";
 
-  F << "<defs id=\"ffff\"><pattern inkscape:stockid=\"Wavy\" "
-       "id=\"Wavy\" height=\"5.1805778\" width=\"30.0\" "
-       "patternUnits=\"userSpaceOnUse\" inkscape:collect=\"always\"><path "
-       "id=\"path5114\" d=\"M 7.597,0.061 C 5.079,-0.187 2.656,0.302 "
-       "-0.01,1.788 L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 "
-       "C 9.770,1.508 11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 "
-       "30.066,3.061 L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 "
-       "C 12.413,1.207 10.115,0.311 7.597,0.061 z \" style=\"fill:black;"
-       "stroke:none;\" /></pattern></defs>";
+  F << "<defs id=\"ffff\"><pattern inkscape:stockid=\"Wavy\" id=\"Wavy\" "
+       "height=\"5.1805778\" width=\"30.0\" patternUnits=\"userSpaceOnUse\" "
+       "inkscape:collect=\"always\"><path id=\"path5114\" d=\"M 7.597,0.061 "
+       "C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 "
+       "5.173,1.052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 "
+       "C 18.820,4.931 23.804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 "
+       "19.246,3.770 14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z \" "
+       "style=\"fill:black;stroke:none;\" /></pattern></defs>";
 
-  F << "<defs id=\"defs6219\"><pattern inkscape:stockid=\"xtrace\" "
-       "id=\"xtrace\" height=\"20.0\" width=\"20.0\" patternUnits=\"userSpace"
-       "OnUse\" inkscape:collect=\"always\"><path style=\"fill:#000000;stroke:"
-       "#000000;stroke-width:0.30;stroke-linecap:butt;stroke-linejoin:miter;"
-       "stroke-opacity:1;stroke-miterlimit:0;stroke-dasharray:none;fill-opacity:"
-       "1\" d=\"m 0.0,10.0 25.00000,-25.0 0,5 -25.00000,25.00000 z\" "
-       "id=\"path7213\" inkscape:connector-curvature=\"0\" /><path style=\""
-       "fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.30;stroke-lineca"
-       "p:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-d"
-       "asharray:none\" d=\"m 0.0,30.0 25.00000,-25.0 0,5 -25.00000,25.00000 z\" i"
-       "d=\"path7213-8\" inkscape:connector-curvature=\"0\" /><path style=\"fill:#"
-       "000000;fill-opacity:1;stroke:#000000;stroke-width:0.30;stroke-linecap:butt"
-       ";stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharr"
-       "ay:none\" d=\"m 0.0,50.0 25.00000,-25.0 0,5 -25.00000,25.00000 z\" id=\"pa"
-       "th7213-9\" inkscape:connector-curvature=\"0\" /><path style=\"fill:#000000"
-       ";fill-opacity:1;stroke:#000000;stroke-width:0.30;stroke-linecap:butt;strok"
-       "e-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:non"
-       "e\" d=\"m 0.0,70.0 25.00000,-25.0 0,5 -25.00000,25.00000 z\" id=\"path7213"
-       "-10\" inkscape:connector-curvature=\"0\" /><path style=\"fill:#000000;fill"
-       "-opacity:1;stroke:#000000;stroke-width:0.30;stroke-linecap:butt;stroke-lin"
-       "ejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none\" d"
-       "=\"m 0.0,90.0 25.00000,-25.0 0,5 -25.00000,25.00000 z\" id=\"path7213-11\""
-       " inkscape:connector-curvature=\"0\" /><path style=\"fill:#000000;fill-opac"
-       "ity:1;stroke:#000000;stroke-width:0.30;stroke-linecap:butt;stroke-linejoin"
-       ":miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none\" d=\"m "
-       "m 0.0,110.0 25.00000,-25.0 0,05 -25.00000,25.00000 z\" id=\"path7213-12\" "
-       "inkscape:connector-curvature=\"0\" /></pattern></defs>";
+  F << "<defs id=\"defs6219\"><pattern inkscape:stockid=\"xtrace\" id="
+       "\"xtrace\" height=\"20.0\" width=\"20.0\" patternUnits="
+       "\"userSpaceOnUse\" inkscape:collect=\"always\"><path style=\"fill:"
+       "#000000;stroke:#000000;stroke-width:0.30;stroke-linecap:butt;"
+       "stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:0;"
+       "stroke-dasharray:none;fill-opacity:1\" d=\"m 0.0,10.0 25.00000,-25.0 "
+       "0,5 -25.00000,25.00000 z\" id=\"path7213\" inkscape:"
+       "connector-curvature=\"0\" /><path style=\"fill:#000000;fill-opacity:1;"
+       "stroke:#000000;stroke-width:0.30;stroke-linecap:butt;stroke-linejoin:"
+       "miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none\" "
+       "d=\"m 0.0,30.0 25.00000,-25.0 0,5 -25.00000,25.00000 z\" id="
+       "\"path7213-8\" inkscape:connector-curvature=\"0\" /><path style="
+       "\"fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.30;"
+       "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;"
+       "stroke-opacity:1;stroke-dasharray:none\" d=\"m 0.0,50.0 25.00000,-25.0 "
+       "0,5 -25.00000,25.00000 z\" id=\"path7213-9\" inkscape:"
+       "connector-curvature=\"0\" /><path style=\"fill:#000000;fill-opacity:1;"
+       "stroke:#000000;stroke-width:0.30;stroke-linecap:butt;stroke-linejoin:"
+       "miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none\" d="
+       "\"m 0.0,70.0 25.00000,-25.0 0,5 -25.00000,25.00000 z\" id="
+       "\"path7213-10\" inkscape:connector-curvature=\"0\" /><path style="
+       "\"fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.30;"
+       "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;"
+       "stroke-opacity:1;stroke-dasharray:none\" d=\"m 0.0,90.0 25.00000,-25.0 "
+       "0,5 -25.00000,25.00000 z\" id=\"path7213-11\" inkscape:"
+       "connector-curvature=\"0\" /><path style=\"fill:#000000;fill-opacity:1;"
+       "stroke:#000000;stroke-width:0.30;stroke-linecap:butt;stroke-linejoin:"
+       "miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none\" d="
+       "\"m m 0.0,110.0 25.00000,-25.0 0,05 -25.00000,25.00000 z\" id="
+       "\"path7213-12\" inkscape:connector-curvature=\"0\" /></pattern></defs>";
 
-  fprintf(F,
-    "<defs id=\"defs4\"><pattern id=\"dallas\" patternTransform=\"tr"
-    "anslate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" patternUnits"
-    "=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:#000000;stroke-width:1"
-    ";stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opac"
-    "ity:1;stroke-dasharray:none\" d=\"m -0.00788,2.37557 4.76251,0\" id=\"path"
-    "2985\" /><path style=\"fill:none;stroke:#000000;stroke-width:1;stroke-line"
-    "cap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke"
-    "-dasharray:none\" d=\"m 2.37338,-0.00568 0,4.76251\" id=\"path2985-1\" /><"
-    "/pattern></defs>");
+  F << "<defs id=\"defs4\"><pattern id=\"dallas\" patternTransform="
+       "\"translate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" "
+       "patternUnits=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:"
+       "#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;"
+       "stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none\" d="
+       "\"m -0.00788,2.37557 4.76251,0\" id=\"path2985\" /><path style="
+       "\"fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;"
+       "stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;"
+       "stroke-dasharray:none\" d=\"m 2.37338,-0.00568 0,4.76251\" id="
+       "\"path2985-1\" /></pattern></defs>";
 
-  fprintf(F,
-    "<defs id=\"defs4\"><pattern id=\"lineX\" patternTransform=\"tra"
-    "nslate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" patternUnits="
-    "\"userSpaceOnUse\"> <path style=\"fill:none;stroke:#000000;stroke-width:1;"
-    "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opaci"
-    "ty:1;stroke-dasharray:none\" d=\"m -0.00788,2.37557 4.76251,0\" id=\"path2"
-    "985\" /></pattern></defs>");
+  F << "<defs id=\"defs4\"><pattern id=\"lineX\" patternTransform="
+       "\"translate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" "
+       "patternUnits=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:"
+       "#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;"
+       "stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none\" d="
+       "\"m -0.00788,2.37557 4.76251,0\" id=\"path2985\" /></pattern></defs>";
 
-  fprintf(F,
-    "<defs id=\"defs4\"><pattern id=\"stripeX\" patternTransform=\"t"
-    "ranslate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" patternUnit"
-    "s=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:#000000;stroke-width:"
-    "1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opa"
-    "city:1;stroke-dasharray:none\" d=\"m 2.37338,-0.00568 0,4.76251\" id=\"pat"
-    "h2985-1\" /></pattern></defs>");
+  F << "<defs id=\"defs4\"><pattern id=\"stripeX\" patternTransform="
+       "\"translate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" "
+       "patternUnits=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:"
+       "#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;"
+       "stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none\" d=\"m "
+       "2.37338,-0.00568 0,4.76251\" id=\"path2985-1\" /></pattern></defs>";
 }
 
 void smashpp::PrintFinal (ofstream& F) {
-  fprintf(F, "</g>\n</svg>");
-//  fclose(F);
+  F << "</g>\n</svg>";
   F.close();
 }
