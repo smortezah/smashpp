@@ -9,9 +9,8 @@
 #include "def.hpp"
 
 namespace smashpp {
-class LogTable8
-{
-public:
+class LogTable8 {
+ public:
   LogTable8          () : k(0), tot(0) {}
   explicit LogTable8 (u8);
   void config        (u8);
@@ -26,7 +25,7 @@ public:
   void print         ()          const;
 #endif
 
-private:
+ private:
   vector<u8> tbl;                       // Table of 8 bit logarithmic counters
   u8         k /*:BIT_K*/;              // Ctx size
   u64        tot;                       // Total # elements so far

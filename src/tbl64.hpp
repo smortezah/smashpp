@@ -9,9 +9,8 @@
 #include "def.hpp"
 
 namespace smashpp {
-class Table64
-{
-public:
+class Table64 {
+ public:
   Table64          () : k(0)/*, tot(0)*/ {}
   explicit Table64 (u8);
   void config      (u8);
@@ -26,7 +25,7 @@ public:
   void print       ()          const;
 #endif
   
-private:
+ private:
   vector<u64> tbl;                      // Table of 64 bit counters
   u8          k /*:BIT_K*/;             // Ctx size
 //  u64         tot;                      // Total # elements so far
