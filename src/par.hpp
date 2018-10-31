@@ -12,8 +12,7 @@
 #include "fn.hpp"
 
 namespace smashpp {
-class Param    // Parameters
-{
+class Param {   // Parameters
  public:
   string   tar, ref;
   u8       level /*:BIT_LEVEL*/;

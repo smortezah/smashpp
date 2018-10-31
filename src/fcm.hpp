@@ -14,8 +14,7 @@
 #include "mdlpar.hpp"
 
 namespace smashpp {
-class FCM    // Finite-context models
-{
+class FCM {   // Finite-context models
  public:
   prec_t aveEnt;
   

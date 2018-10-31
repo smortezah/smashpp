@@ -9,9 +9,8 @@
 #include "def.hpp"
 
 namespace smashpp {
-class Table32
-{
-public:
+class Table32 {
+ public:
   Table32          () : k(0), nRenorm(0), tot(0) {}
   explicit Table32 (u8);
   void config      (u8);
@@ -26,7 +25,7 @@ public:
   void print       ()          const;
 #endif
 
-private:
+ private:
   vector<u32> tbl;                      // Table of 32 bit counters
   u8          k /*:BIT_K*/;             // Ctx size
   u32         nRenorm;                  // Renormalization times

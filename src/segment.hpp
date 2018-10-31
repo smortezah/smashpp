@@ -9,8 +9,7 @@
 #include "def.hpp"
 
 namespace smashpp {
-class Segment
-{
+class Segment {
  public:
   bool   begun;
   u64    pos, begPos, endPos;

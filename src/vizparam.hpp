@@ -5,47 +5,22 @@
 #ifndef PROJECT_VIZPARAM_HPP
 #define PROJECT_VIZPARAM_HPP
 
-#include "../def.hpp"
-#include "../fn.hpp"
-#include "defs.h"
+#include "def.hpp"
+#include "fn.hpp"
+#include "vizdef.hpp"
 
 namespace smashpp {
-struct Filep {
-  char* name;
-  u64  nReads;
-  u64  nBases;
-  u32  nSym;
-  u64  length;
-};
-
-struct Threads {
-  u32 id;
-  u32 tar, ref;
-  u64 min;
-};
-
-class VizParam
-{
+class VizParam {
  public:
   bool   help, verbose, force, inversion, regular;
   string image;
   u32    link, width, space, mult, start, minimum;
   string posFile;
 
-  u8     level;
-  u32    kmer;
-  u32    repeats;
-  u32    threshold;
-  u32    nThreads;
-  Filep  Ref, Tar;
-  char*  positions;
-
   VizParam() : help(DEF_HELP), verbose(DEF_VERBOSE), force(DEF_FORCE),
                inversion(DEF_INVE), regular(DEF_REGU), image(DEF_IMAGE),
                link(DEF_LINK), width(DEF_WIDT), space(DEF_SPAC), mult(DEF_MULT),
-               start(DEF_BEGI), minimum(DEF_MINP),
-               level(), kmer(),
-               repeats(), threshold(), nThreads() {}
+               start(DEF_BEGI), minimum(DEF_MINP) {}
   void parse (int, char**&);
 
  private:
@@ -139,7 +114,7 @@ inline void VizParam::print_version () const {
     "                                                                        \n"
     "                         =====================                          \n"
     "                         |   ELEANORA v"
-    <<VERSION_eleanora<<"."<<RELEASE_eleanora<<"   |                         \n"
+    <<VERSION_viz<<"."<<RELEASE_viz<<"   |                         \n"
     "                         =====================                          \n"
     "                                                                        \n"
     "                  Ultra-fast mapping and visualization                  \n"
