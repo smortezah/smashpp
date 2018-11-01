@@ -145,7 +145,7 @@ inline void Rectangle::plot_chromosome (ofstream& f) const {
     "height=\"" << std::fixed << setprecision(2) << height << "\" "
     "x=\""      << std::fixed << setprecision(2) << origin.x << "\" "
     "y=\""      << std::fixed << setprecision(2) << origin.y << "\" "
-    "ry=\"1\" />\n";
+    "rx=\"20\" ry=\"20\" />\n";
 }
 
 /*
