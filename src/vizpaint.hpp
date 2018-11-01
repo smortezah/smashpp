@@ -91,12 +91,12 @@ class Circle {
 
 class VizPaint {
  public:
-  double  cx, cy;
-  double  tx, ty;
-  string  backColor;
-  double  width;
-  double  space;
-  double  refSize, tarSize, maxSize;
+  double cx, cy;
+  double tx, ty;
+  string backColor;
+  double width;
+  double space;
+  double refSize, tarSize, maxSize;
 
   VizPaint() : cx(PAINT_CX), cy(PAINT_CY), tx(PAINT_TX), ty(PAINT_TY),
                backColor(PAINT_BGCOLOR), width(0.0), space(0.0), refSize(0.0),
@@ -110,8 +110,8 @@ class VizPaint {
   RgbColor hsv_to_rgb (const HsvColor&)           const;
   HsvColor rgb_to_hsv (const RgbColor&)           const;
   string   rgb_color  (u8)                        const;
-  void     print_tail (ofstream&)                 const;
   void     print_head (ofstream&, double, double) const;
+  void     print_tail (ofstream&)                 const;
   template <typename Value>
   double   get_point  (Value)                     const;
 };
