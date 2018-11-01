@@ -103,6 +103,18 @@ inline void Rectangle::plot_oval (ofstream& f) const {
     "rx=\"12.5\" ry=\"12.5\" />\n";
 }
 
+inline void Rectangle::plot_oval_ir (ofstream& f) const {
+  plot_oval(f);
+  f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
+    "stroke-dasharray:nonestroke-dasharray:none;fill:url(#xtrace);"
+    "fill-rule:nonzero;opacity:1\" id=\"recty\" "
+    "width=\""  << std::fixed << setprecision(2) << width << "\" "
+    "height=\"" << std::fixed << setprecision(2) << height << "\" "
+    "x=\""      << std::fixed << setprecision(2) << origin.x << "\" "
+    "y=\""      << std::fixed << setprecision(2) << origin.y << "\" "
+    "ry=\"12.5\" />\n";
+}
+
 inline void Rectangle::plot_chromosome (ofstream& f) const {
   const string borderColor {"#000000"};
 //  double  wk = w / 2 + 0.5;
@@ -171,6 +183,28 @@ inline void Polygon::plot (ofstream& f) const {
 }
 
 /*
+ * class Circle
+ */
+inline Circle::Circle (Point origin, double radius, const string& fillColor) {
+  config(origin, radius, fillColor);
+}
+
+inline void Circle::config
+(Point origin_, double radius_, const string& fillColor_) {
+  origin    = origin_;
+  radius    = radius_;
+  fillColor = fillColor_;
+}
+
+inline void Circle::plot (ofstream& f) const {
+  f << "<circle "
+    "cx=\"" << std::fixed << setprecision(2) << origin.x << "\" "
+    "cy=\"" << std::fixed << setprecision(2) << origin.y << "\" "
+    "r=\""  << std::fixed << setprecision(2) << radius   << "\" "
+    "fill=\"" << fillColor << "\"/>";
+}
+
+/*
  * class VizPaint
  */
 inline RgbColor VizPaint::hsv_to_rgb (const HsvColor& HSV) const {
@@ -220,133 +254,6 @@ inline string VizPaint::rgb_color (u8 hue) const {
   HsvColor HSV (hue);
   RgbColor RGB {hsv_to_rgb(HSV)};
   return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
-}
-
-inline void VizPaint::polygon (ofstream& f, double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, string colorf, string colorb) const {
-  f << "<polygon points=\""
-    << std::fixed << setprecision(2) << x1 << ","
-    << std::fixed << setprecision(2) << y1 << " "
-    << std::fixed << setprecision(2) << x2 << ","
-    << std::fixed << setprecision(2) << y2 << " "
-    << std::fixed << setprecision(2) << x3 << ","
-    << std::fixed << setprecision(2) << y3 << " "
-    << std::fixed << setprecision(2) << x4 << ","
-    << std::fixed << setprecision(2) << y4 << "\" "
-    << "style=\"fill:" << colorf << ";stroke:" << colorb << ";stroke-width:1;"
-    << "fill-opacity:0.7\" />";
-}
-
-inline void VizPaint::circle (ofstream& f, double r, double x, double y, string color) const {
-  f << "<circle "
-    "cx=\"" << std::fixed << setprecision(2) << x << "\" "
-    "cy=\"" << std::fixed << setprecision(2) << y << "\" "
-    "r=\""  << std::fixed << setprecision(2) << r << "\" "
-    "fill=\"" << color << "\"/>";
-}
-
-inline void VizPaint::rect_oval (ofstream& f, double w, double h, double x, double y, string color) const {
-  f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
-    "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
-    "width=\""  << std::fixed << setprecision(2) << w << "\" "
-    "height=\"" << std::fixed << setprecision(2) << h << "\" "
-    "x=\""      << std::fixed << setprecision(2) << x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << y << "\" ry=\"12.5\" />\n";
-}
-
-inline void VizPaint::rect_oval_ir (ofstream& f, double w, double h, double x, double y, string color) const {
-  rect_oval(f, w, h, x, y, color);
-  f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
-    "stroke-dasharray:nonestroke-dasharray:none;fill:url(#xtrace);"
-    "fill-rule:nonzero;opacity:1\" id=\"recty\" "
-    "width=\""  << std::fixed << setprecision(2) << w << "\" "
-    "height=\"" << std::fixed << setprecision(2) << h << "\" "
-    "x=\""      << std::fixed << setprecision(2) << x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << y << "\" ry=\"12.5\" />\n";
-}
-
-inline void VizPaint::rect (ofstream& f, double w, double h, double x, double y, string color) const {
-  f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
-    "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\""  << std::fixed << setprecision(2) << w << "\" "
-    "height=\"" << std::fixed << setprecision(2) << h << "\" "
-    "x=\""      << std::fixed << setprecision(2) << x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << y << "\" ry=\"0\" />\n";
-}
-
-inline void VizPaint::rect_ir (ofstream& f, double w, double h, double x, double y, string color) const {
-  rect(f, w, h, x, y, color);
-  f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
-    "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
-    "id=\"rect6217\" "
-    "width=\""  << std::fixed << setprecision(2) << w << "\" "
-    "height=\"" << std::fixed << setprecision(2) << h << "\" "
-    "x=\""      << std::fixed << setprecision(2) << x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << y << "\" ry=\"0\" />\n";
-}
-
-inline void VizPaint::chromosome (ofstream& f, double w, double h, double x, double y) const {
-  static const string borderColor {"#000000"};
-//  double  wk = w / 2 + 0.5;
-/*
-  fprintf(F, "<path "
-         "d=\"m %.2lf,"
-         "%.2lf 0,"
-         "%.2lf c 0, -8.31 6.69, -%.2lf %.2lf, -%.2lf l -%.2lf,0 z m %.2lf,"
-         "0 c 8.31,0 %.2lf,6.69 %.2lf,%.2lf l 0,-%.2lf -%.2lf,0 z\" "
-         "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:"
-         "nonzero;stroke:none\" />", x-0.5, y-0.5,
-         wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
-
-  fprintf(F, "<path "
-         "d=\"m %.2lf,"
-         "%.2lf 0,"
-         "-%.2lf c 0,8.31 -6.69, %.2lf -%.2lf, %.2lf l %.2lf,0 z m -%.2lf,"
-         "0 c -8.31,0 -%.2lf,-6.69 -%.2lf,-%.2lf l 0,%.2lf %.2lf,0 z\" "
-         "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:"
-         "nonzero;stroke:none\" />", x+0.5+w, y+0.5+h,
-         wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
-*/
-
-  f << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
-    "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
-    "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
-    "width=\""  << std::fixed << setprecision(2) << w << "\" "
-    "height=\"" << std::fixed << setprecision(2) << h << "\" "
-    "x=\""      << std::fixed << setprecision(2) << x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << y << "\" ry=\"1\" />\n";
-}
-
-inline void VizPaint::text (ofstream& f, double x, double y, string name) const {
-  f << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
-    "font-weight:normal;line-height:125%%;letter-spacing:0px;word-spacing:0px;"
-    "fill:#000000;fill-opacity:1;stroke:none;font-family:Sans\" "
-    "x=\"" << std::fixed << setprecision(2) << x << "\" "
-    "y=\"" << std::fixed << setprecision(2) << y << "\" "
-    "id=\"corben\" sodipodi:linespacing=\"125%%\"><tspan sodipodi:role=\""
-    "line\" id=\"tspan3804\" "
-    "x=\"" << std::fixed << setprecision(2) << x << "\" "
-    "y=\"" << std::fixed << setprecision(2) << y << "\" "
-    "style=\"font-size:18px;font-style:normal;font-variant:normal;font-weight:"
-    "normal;font-stretch:normal;text-align:start;line-height:125%%;"
-    "writing-mode:lr-tb;text-anchor:start;font-family:Arial;"
-    "-inkscape-font-specification:Arial\">" << name << "</tspan>\n</text>\n";
-}
-
-inline void VizPaint::text_float (ofstream& f, double x, double y, double n) const {
-  f << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
-    "font-weight:normal;line-height:125%%;letter-spacing:0px;word-spacing:0px;"
-    "fill:#000000;fill-opacity:1;stroke:none;font-family:Sans\" "
-    "x=\"" << std::fixed << setprecision(2) << x << "\" "
-    "y=\"" << std::fixed << setprecision(2) << y << "\" "
-    "id=\"corben\" sodipodi:linespacing=\"125%%\"><tspan sodipodi:role=\""
-    "line\" id=\"tspan3804\" "
-    "x=\"" << std::fixed << setprecision(2) << x << "\" "
-    "y=\"" << std::fixed << setprecision(2) << y << "\" "
-    "style=\"font-size:18px;font-style:normal;font-variant:normal;font-weight:"
-    "normal;font-stretch:normal;text-align:start;line-height:125%%;"
-    "writing-mode:lr-tb;text-anchor:start;font-family:Arial;"
-    "-inkscape-font-specification:Arial\"> "
-    << std::fixed << setprecision(2) << n << "</tspan>\n</text>\n";
 }
 
 template <typename Value>
