@@ -17,6 +17,7 @@ struct HsvColor {
 
 struct Point {
   double x, y;
+
   Point       () = default;
   Point       (double x_, double y_) { config(x_,y_); }
   void config (double x_, double y_) { x=x_;  y=y_; }
