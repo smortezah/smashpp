@@ -55,6 +55,7 @@ class Rectangle {
   void plot            (ofstream&) const;
   void plot_ir         (ofstream&) const;
   void plot_oval       (ofstream&) const;
+  void plot_oval_ir    (ofstream&) const;
   void plot_chromosome (ofstream&) const;
 
  private:
@@ -75,6 +76,19 @@ class Polygon {
   string lineColor, fillColor;
 };
 
+class Circle {
+ public:
+  Circle      () = default;
+  Circle      (Point, double, const string&);
+  void config (Point, double, const string&);
+  void plot   (ofstream&) const;
+
+ private:
+  Point  origin;
+  double radius;
+  string fillColor;
+};
+
 class VizPaint {
  public:
   double  cx, cy;
@@ -92,26 +106,14 @@ class VizPaint {
  private:
   u32 ratio;
 
-  void      config      (double, double, u64, u64);
-  RgbColor  hsv_to_rgb (const HsvColor&) const;
-  HsvColor  rgb_to_hsv (const RgbColor&) const;
-  string    rgb_color (u8) const;
-  void      print_tail (ofstream&) const;
-  void      print_head (ofstream&, double, double) const;
-  void      polygon (ofstream&, double, double, double, double, double, double, double, double, string, string) const;
-//  void      line (ofstream&, double, double, double, double, double, string) const;
-//  void      line (ofstream&, shared_ptr<Line>) const;
-  void      circle (ofstream&, double, double, double, string) const ;
-  void      rect_oval (ofstream&, double, double, double, double, string) const;
-  void      rect_oval_ir (ofstream&, double, double, double, double, string) const;
-  void      rect (ofstream&, double, double, double, double, string) const;
-  void      rect_ir (ofstream&, double, double, double, double, string) const;
-  void      chromosome (ofstream&, double, double, double, double) const;
-  void      text (ofstream&, double, double, string) const;
-  void      text_float (ofstream&, double, double, double) const;
+  void     config     (double, double, u64, u64);
+  RgbColor hsv_to_rgb (const HsvColor&)           const;
+  HsvColor rgb_to_hsv (const RgbColor&)           const;
+  string   rgb_color  (u8)                        const;
+  void     print_tail (ofstream&)                 const;
+  void     print_head (ofstream&, double, double) const;
   template <typename Value>
-  double    get_point (Value) const;
-//  void      set_ratio (u32);
+  double   get_point  (Value)                     const;
 };
 }
 
