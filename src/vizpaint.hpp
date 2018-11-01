@@ -31,10 +31,6 @@ class Text {
   Text        (Point, const string&);
   void config (Point, const string&);
   void plot   (ofstream&) const;
-
-// private:
-//  Point  origin;
-//  string label;
 };
 
 class Line {
@@ -47,11 +43,6 @@ class Line {
   Line        (Point, Point, double, const string&);
   void config (Point, Point, double, const string&);
   void plot   (ofstream&) const;
-
-// private:
-//  Point  beg, end;
-//  double width;
-//  string color;
 };
 
 class Rectangle {
@@ -68,23 +59,17 @@ class Rectangle {
   void plot_oval       (ofstream&) const;
   void plot_oval_ir    (ofstream&) const;
   void plot_chromosome (ofstream&) const;
-
-// private:
-//  Point  origin;
-//  double width, height;
-//  string color;
 };
 
 class Polygon {
  public:
+  Point  one, two, three, four;
+  string lineColor, fillColor;
+
   Polygon     () = default;
   Polygon     (Point, Point, Point, Point, const string&, const string&);
   void config (Point, Point, Point, Point, const string&, const string&);
   void plot   (ofstream&) const;
-
- private:
-  Point  one, two, three, four;
-  string lineColor, fillColor;
 };
 
 class Circle {
