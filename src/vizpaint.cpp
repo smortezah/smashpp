@@ -519,25 +519,38 @@ void VizPaint::print_plot (VizParam& p) {
   print_head(fPlot, 2*PAINT_CX + 2*width + space, maxSize + PAINT_EXTRA);
 
   auto line      = make_shared<Line>();
+  line->width    = 2.0;
   auto rectangle = make_shared<Rectangle>();
   auto polygon   = make_shared<Polygon>();
   auto text      = make_shared<Text>();
 
   const string backColor {"#ffffff"};
-  rectangle->config(Point(0, 0), 2*PAINT_CX + 2*width + space,
-                    maxSize + PAINT_EXTRA, backColor);
+//  rectangle->config(Point(0, 0), 2*PAINT_CX + 2*width + space,
+//                    maxSize + PAINT_EXTRA, backColor);
+  rectangle->color  = "#ffffff";
+  rectangle->origin = Point(0, 0);
+  rectangle->width  = 2*PAINT_CX + 2*width + space;
+  rectangle->height = maxSize + PAINT_EXTRA;
   rectangle->plot(fPlot);
 
-  rectangle->config(Point(cx, cy), width, refSize, backColor);
+//  rectangle->config(Point(cx, cy), width, refSize, backColor);
+  rectangle->origin = Point(cx, cy);
+  rectangle->width  = width;
+  rectangle->height = refSize;
   rectangle->plot_oval(fPlot);
 
-  rectangle->config(Point(cx, cy), width, tarSize, backColor);
+//  rectangle->config(Point(cx, cy), width, tarSize, backColor);
+  rectangle->height = tarSize;
   rectangle->plot_oval(fPlot);
 
-  text->config(Point(cx, cy - 15), "REF");
+//  text->config(Point(cx, cy - 15), "REF");
+  text->origin = Point(cx, cy - 15);
+  text->label = "REF";
   text->plot(fPlot);
 
-  text->config(Point(cx + width + space, cy - 15), "TAR");
+//  text->config(Point(cx + width + space, cy - 15), "TAR");
+  text->origin = Point(cx + width + space, cy - 15);
+  text->label = "TAR";
   text->plot(fPlot);
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
@@ -556,55 +569,70 @@ void VizPaint::print_plot (VizParam& p) {
     if (endPosRef > begPosRef) {
       if (p.regular) {
         switch (p.link) {
-          case 1:
-            line->config(
-                    Point(cx + width,
-                          cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0)),
-                    Point(cx + space + width,
-                          cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0)),
-                    2, "black");
-            line->plot(fPlot);
-            break;
-          case 2:
-            line->config(
-                    Point(cx + width,
-                          cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0)),
-                    Point(cx + space + width,
-                          cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0)),
-                    2, rgb_color(static_cast<u8>(p.start*p.mult)));
-            line->plot(fPlot);
-            break;
-          case 3:
-            line->config(Point(cx + width,         cy + get_point(begPosRef)),
-                         Point(cx + space + width, cy + get_point(begPosTar)),
-                         2, "black");
-            line->plot(fPlot);
+        case 1:
+//          line->config(
+//                  Point(cx + width,
+//                        cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0)),
+//                  Point(cx + space + width,
+//                        cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0)),
+//                  2, "black");
+          line->beg = Point(cx + width,
+                           cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0));
+          line->end = Point(cx + space + width,
+                           cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0));
+          line->color = "black";
+          line->plot(fPlot);
+          break;
+        case 2:
+//          line->config(
+//                  Point(cx + width,
+//                        cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0)),
+//                  Point(cx + space + width,
+//                        cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0)),
+//                  2, rgb_color(static_cast<u8>(p.start*p.mult)));
+          line->beg = Point(cx + width,
+                           cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0));
+          line->end = Point(cx + space + width,
+                           cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0));
+          line->color = rgb_color(static_cast<u8>(p.start*p.mult));
+          line->plot(fPlot);
+          break;
+        case 3:
+//          line->config(Point(cx + width,         cy + get_point(begPosRef)),
+//                       Point(cx + space + width, cy + get_point(begPosTar)),
+//                       2, "black");
+          line->color = "black";
+          line->beg = Point(cx + width,         cy + get_point(begPosRef));
+          line->end = Point(cx + space + width, cy + get_point(begPosTar));
+          line->plot(fPlot);
 
-            line->config(Point(cx + width,         cy + get_point(endPosRef)),
-                         Point(cx + space + width, cy + get_point(endPosTar)),
-                         2, "black");
-            line->plot(fPlot);
-            break;
-          case 4:
-            line->config(Point(cx + width,         cy + get_point(begPosRef)),
-                         Point(cx + space + width, cy + get_point(begPosTar)),
-                         2, rgb_color(static_cast<u8>(p.start*p.mult)));
-            line->plot(fPlot);
+//          line->config(Point(cx + width,         cy + get_point(endPosRef)),
+//                       Point(cx + space + width, cy + get_point(endPosTar)),
+//                       2, "black");
+          line->beg = Point(cx + width,         cy + get_point(endPosRef));
+          line->end = Point(cx + space + width, cy + get_point(endPosTar));
+          line->plot(fPlot);
+          break;
+        case 4:
+          line->config(Point(cx + width,         cy + get_point(begPosRef)),
+                       Point(cx + space + width, cy + get_point(begPosTar)),
+                       2, rgb_color(static_cast<u8>(p.start*p.mult)));
+          line->plot(fPlot);
 
-            line->config(Point(cx + width,         cy + get_point(endPosRef)),
-                         Point(cx + space + width, cy + get_point(endPosTar)),
-                         2, rgb_color(static_cast<u8>(p.start*p.mult)));
-            line->plot(fPlot);
-            break;
-          case 5:
-            polygon->config(Point(cx + width,        cy + get_point(begPosRef)),
-                            Point(cx + width,        cy + get_point(endPosRef)),
-                            Point(cx + space +width, cy + get_point(endPosTar)),
-                            Point(cx + space +width, cy + get_point(begPosTar)),
-                            "grey", rgb_color(static_cast<u8>(p.start*p.mult)));
-            polygon->plot(fPlot);
-            break;
-          default:break;
+          line->config(Point(cx + width,         cy + get_point(endPosRef)),
+                       Point(cx + space + width, cy + get_point(endPosTar)),
+                       2, rgb_color(static_cast<u8>(p.start*p.mult)));
+          line->plot(fPlot);
+          break;
+        case 5:
+          polygon->config(Point(cx + width,        cy + get_point(begPosRef)),
+                          Point(cx + width,        cy + get_point(endPosRef)),
+                          Point(cx + space +width, cy + get_point(endPosTar)),
+                          Point(cx + space +width, cy + get_point(begPosTar)),
+                          "grey", rgb_color(static_cast<u8>(p.start*p.mult)));
+          polygon->plot(fPlot);
+          break;
+        default:break;
         }
         rectangle->config(Point(cx, cy + get_point(begPosRef)),
                           width, get_point(endPosRef-begPosRef),
@@ -622,55 +650,55 @@ void VizPaint::print_plot (VizParam& p) {
     else {
       if (p.inversion) {
         switch (p.link) {
-          case 1:
-            line->config(
-                    Point(cx + width,
-                          cy + get_point(endPosRef+(begPosRef-endPosRef)/2.0)),
-                    Point(cx + space + width,
-                          cy + get_point(endPosTar+(begPosTar-endPosTar)/2.0)),
-                    2, "green");
-            line->plot(fPlot);
-            break;
-          case 2:
-            line->config(
-                    Point(cx + width,
-                          cy + get_point(endPosRef+(begPosRef-endPosRef)/2.0)),
-                    Point(cx + space + width,
-                          cy + get_point(endPosTar+(begPosTar-endPosTar)/2.0)),
-                    2, rgb_color(static_cast<u8>(p.start*p.mult)));
-            line->plot(fPlot);
-            break;
-          case 3:
-            line->config(Point(cx + width,         cy + get_point(endPosRef)),
-                         Point(cx + space + width, cy + get_point(endPosTar)),
-                         2, "green");
-            line->plot(fPlot);
+        case 1:
+          line->config(
+                  Point(cx + width,
+                        cy + get_point(endPosRef+(begPosRef-endPosRef)/2.0)),
+                  Point(cx + space + width,
+                        cy + get_point(endPosTar+(begPosTar-endPosTar)/2.0)),
+                  2, "green");
+          line->plot(fPlot);
+          break;
+        case 2:
+          line->config(
+                  Point(cx + width,
+                        cy + get_point(endPosRef+(begPosRef-endPosRef)/2.0)),
+                  Point(cx + space + width,
+                        cy + get_point(endPosTar+(begPosTar-endPosTar)/2.0)),
+                  2, rgb_color(static_cast<u8>(p.start*p.mult)));
+          line->plot(fPlot);
+          break;
+        case 3:
+          line->config(Point(cx + width,         cy + get_point(endPosRef)),
+                       Point(cx + space + width, cy + get_point(endPosTar)),
+                       2, "green");
+          line->plot(fPlot);
 
-            line->config(Point(cx + width,         cy + get_point(begPosRef)),
-                         Point(cx + space + width, cy + get_point(begPosTar)),
-                         2, "green");
-            line->plot(fPlot);
-            break;
-          case 4:
-            line->config(Point(cx + width,         cy + get_point(endPosRef)),
-                         Point(cx + space + width, cy + get_point(endPosTar)),
-                         2, rgb_color(static_cast<u8>(p.start*p.mult)));
-            line->plot(fPlot);
+          line->config(Point(cx + width,         cy + get_point(begPosRef)),
+                       Point(cx + space + width, cy + get_point(begPosTar)),
+                       2, "green");
+          line->plot(fPlot);
+          break;
+        case 4:
+          line->config(Point(cx + width,         cy + get_point(endPosRef)),
+                       Point(cx + space + width, cy + get_point(endPosTar)),
+                       2, rgb_color(static_cast<u8>(p.start*p.mult)));
+          line->plot(fPlot);
 
-            line->config(Point(cx + width,         cy + get_point(begPosRef)),
-                         Point(cx + space + width, cy + get_point(begPosTar)),
-                         2, rgb_color(static_cast<u8>(p.start*p.mult)));
-            line->plot(fPlot);
-            break;
-          case 5:
-            polygon->config(Point(cx + width,        cy + get_point(endPosRef)),
-                            Point(cx + width,        cy + get_point(begPosRef)),
-                            Point(cx + space +width, cy + get_point(begPosTar)),
-                            Point(cx + space +width, cy + get_point(endPosTar)),
-                            "grey", rgb_color(static_cast<u8>(p.start*p.mult)));
-            polygon->plot(fPlot);
-            break;
-          default:break;
+          line->config(Point(cx + width,         cy + get_point(begPosRef)),
+                       Point(cx + space + width, cy + get_point(begPosTar)),
+                       2, rgb_color(static_cast<u8>(p.start*p.mult)));
+          line->plot(fPlot);
+          break;
+        case 5:
+          polygon->config(Point(cx + width,        cy + get_point(endPosRef)),
+                          Point(cx + width,        cy + get_point(begPosRef)),
+                          Point(cx + space +width, cy + get_point(begPosTar)),
+                          Point(cx + space +width, cy + get_point(endPosTar)),
+                          "grey", rgb_color(static_cast<u8>(p.start*p.mult)));
+          polygon->plot(fPlot);
+          break;
+        default:break;
         }
         rectangle->config(Point(cx, cy + get_point(endPosRef)),
                           width, get_point(begPosRef-endPosRef),

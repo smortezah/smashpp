@@ -24,31 +24,42 @@ struct Point {
 
 class Text {
  public:
+  Point  origin;
+  string label;
+
   Text        () = default;
   Text        (Point, const string&);
   void config (Point, const string&);
   void plot   (ofstream&) const;
 
- private:
-  Point  origin;
-  string label;
+// private:
+//  Point  origin;
+//  string label;
 };
 
 class Line {
  public:
+  Point  beg, end;
+  double width;
+  string color;
+
   Line        () = default;
   Line        (Point, Point, double, const string&);
   void config (Point, Point, double, const string&);
   void plot   (ofstream&) const;
 
- private:
-  Point  beg, end;
-  double width;
-  string color;
+// private:
+//  Point  beg, end;
+//  double width;
+//  string color;
 };
 
 class Rectangle {
  public:
+  Point  origin;
+  double width, height;
+  string color;
+
   Rectangle            () = default;
   Rectangle            (Point, double, double, const string&);
   void config          (Point, double, double, const string&);
@@ -58,10 +69,10 @@ class Rectangle {
   void plot_oval_ir    (ofstream&) const;
   void plot_chromosome (ofstream&) const;
 
- private:
-  Point  origin;
-  double width, height;
-  string color;
+// private:
+//  Point  origin;
+//  double width, height;
+//  string color;
 };
 
 class Polygon {
