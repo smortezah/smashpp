@@ -49,12 +49,13 @@ class Line {
 
 class Rectangle {
  public:
-  Rectangle      () = default;
-  Rectangle      (Point, double, double, const string&);
-  void config    (Point, double, double, const string&);
-  void plot      (ofstream&) const;
-  void plot_ir   (ofstream&) const;
-  void plot_oval (ofstream&) const;
+  Rectangle            () = default;
+  Rectangle            (Point, double, double, const string&);
+  void config          (Point, double, double, const string&);
+  void plot            (ofstream&) const;
+  void plot_ir         (ofstream&) const;
+  void plot_oval       (ofstream&) const;
+  void plot_chromosome (ofstream&) const;
 
  private:
   Point  origin;
@@ -95,7 +96,7 @@ class VizPaint {
   RgbColor  hsv_to_rgb (const HsvColor&) const;
   HsvColor  rgb_to_hsv (const RgbColor&) const;
   string    rgb_color (u8) const;
-  void      print_final (ofstream&) const;
+  void      print_tail (ofstream&) const;
   void      print_head (ofstream&, double, double) const;
   void      polygon (ofstream&, double, double, double, double, double, double, double, double, string, string) const;
 //  void      line (ofstream&, double, double, double, double, double, string) const;

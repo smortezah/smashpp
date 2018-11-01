@@ -33,13 +33,12 @@ inline void Text::plot (ofstream& f) const {
 /*
  * class Line
  */
-inline Line::Line
-(Point beg, Point end_, double width=2.0, const string& color="black") {
+inline Line::Line (Point beg, Point end_, double width, const string& color) {
   config(beg, end_, width, color);
 }
 
 inline void Line::config
-(Point beg_, Point end_, double width_, const string& color_) {
+(Point beg_, Point end_, double width_=2.0, const string& color_="black") {
   beg   = beg_;
   end   = end_;
   width = width_;
@@ -60,12 +59,12 @@ inline void Line::plot (ofstream& f) const {
  * class Rectangle
  */
 inline Rectangle::Rectangle
-(Point origin, double width, double height, const string& color="white") {
+(Point origin, double width, double height, const string& color) {
   config(origin, width, height, color);
 }
 
 inline void Rectangle::config
-(Point origin_, double width_, double height_, const string& color_) {
+(Point origin_, double width_, double height_, const string& color_="white") {
   origin = origin_;
   width  = width_;
   height = height_;
@@ -104,18 +103,51 @@ inline void Rectangle::plot_oval (ofstream& f) const {
     "rx=\"12.5\" ry=\"12.5\" />\n";
 }
 
+inline void Rectangle::plot_chromosome (ofstream& f) const {
+  const string borderColor {"#000000"};
+//  double  wk = w / 2 + 0.5;
+/*
+  fprintf(F, "<path "
+         "d=\"m %.2lf,"
+         "%.2lf 0,"
+         "%.2lf c 0, -8.31 6.69, -%.2lf %.2lf, -%.2lf l -%.2lf,0 z m %.2lf,"
+         "0 c 8.31,0 %.2lf,6.69 %.2lf,%.2lf l 0,-%.2lf -%.2lf,0 z\" "
+         "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:"
+         "nonzero;stroke:none\" />", x-0.5, y-0.5,
+         wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
+
+  fprintf(F, "<path "
+         "d=\"m %.2lf,"
+         "%.2lf 0,"
+         "-%.2lf c 0,8.31 -6.69, %.2lf -%.2lf, %.2lf l %.2lf,0 z m -%.2lf,"
+         "0 c -8.31,0 -%.2lf,-6.69 -%.2lf,-%.2lf l 0,%.2lf %.2lf,0 z\" "
+         "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:"
+         "nonzero;stroke:none\" />", x+0.5+w, y+0.5+h,
+         wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
+*/
+
+  f << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
+    "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
+    "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
+    "width=\""  << std::fixed << setprecision(2) << width << "\" "
+    "height=\"" << std::fixed << setprecision(2) << height << "\" "
+    "x=\""      << std::fixed << setprecision(2) << origin.x << "\" "
+    "y=\""      << std::fixed << setprecision(2) << origin.y << "\" "
+    "ry=\"1\" />\n";
+}
+
 /*
  * class Polygon
  */
 inline Polygon::Polygon (Point one, Point two, Point three, Point four,
-                         const string& lineColor="black",
-                         const string& fillColor="white") {
+                         const string& lineColor,
+                         const string& fillColor) {
   config(one, two, three, four, lineColor, fillColor);
 }
 
 inline void Polygon::config (Point one_, Point two_, Point three_, Point four_,
-                             const string& lineColor_,
-                             const string& fillColor_) {
+                             const string& lineColor_="black",
+                             const string& fillColor_="white") {
   one       = one_;
   two       = two_;
   three     = three_;
@@ -322,7 +354,7 @@ inline double VizPaint::get_point (Value p) const {
   return 5 * p / static_cast<double>(ratio);
 }
 
-inline void VizPaint::print_head (ofstream& f, double w, double u) const {
+inline void VizPaint::print_head (ofstream& f, double w, double h) const {
   f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- IEETA 2014 using Inkscape -->\n""<svg\n"
     "xmlns:osb=\"http://www.openswatchbook.org/uri/2009/osb\"\n"
@@ -334,7 +366,7 @@ inline void VizPaint::print_head (ofstream& f, double w, double u) const {
     "xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
     "xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
     "width=\""  << w << "\"\n"
-    "height=\"" << u << "\"\n"
+    "height=\"" << h << "\"\n"
     "id=\"svg2\"\n"
     "version=\"1.1\"\n"
     "inkscape:version=\"0.48.3.1 r9886\"\n"
@@ -527,10 +559,9 @@ inline void VizPaint::print_head (ofstream& f, double w, double u) const {
     "2.37338,-0.00568 0,4.76251\" id=\"path2985-1\" /></pattern></defs>";
 }
 
-inline void VizPaint::print_final (ofstream& f) const
+inline void VizPaint::print_tail (ofstream& f) const
 {
   f << "</g>\n</svg>";
-  f.close();
 }
 
 inline void VizPaint::config (double width_, double space_, u64 refSize_, u64 tarSize_) {
@@ -546,7 +577,6 @@ inline void VizPaint::config (double width_, double space_, u64 refSize_, u64 ta
 //// - - - - - - - - - - - - - - - - - - P L O T - - - - - - - - - - - - - - - -
 void VizPaint::print_plot (VizParam& p) {
   check_file(p.posFile);
-  check_file(p.image);
   ifstream fPos(p.posFile);
   ofstream fPlot(p.image);
 
@@ -579,8 +609,7 @@ void VizPaint::print_plot (VizParam& p) {
 
   config(p.width, p.space, refNoBases, tarNoBases);
 
-  //todo
-  print_head(fPlot, (2 * PAINT_CX) + (((width + space) * 2) - space), maxSize + PAINT_EXTRA);
+  print_head(fPlot, 2*PAINT_CX + 2*width + space, maxSize + PAINT_EXTRA);
 
   auto line      = make_shared<Line>();
   auto rectangle = make_shared<Rectangle>();
@@ -588,7 +617,7 @@ void VizPaint::print_plot (VizParam& p) {
   auto text      = make_shared<Text>();
 
   const string backColor {"#ffffff"};
-  rectangle->config(Point(0, 0), 2*PAINT_CX + 2*(width+space) - space,
+  rectangle->config(Point(0, 0), 2*PAINT_CX + 2*width + space,
                     maxSize + PAINT_EXTRA, backColor);
   rectangle->plot(fPlot);
 
@@ -754,15 +783,19 @@ void VizPaint::print_plot (VizParam& p) {
   }
   fPos.seekg(ios::beg);
 
-  if(p.regular)    cerr << "Found " << no_regular << " regular regions.\n";
-  if(p.inversion)  cerr << "Found " << no_inverse << " inverted regions.\n";
-  if(p.verbose)    cerr << "Ignored " << no_ignored << " regions.\n";
+  if (p.regular)    cerr << "Found "   << no_regular << " regular regions.\n";
+  if (p.inversion)  cerr << "Found "   << no_inverse << " inverted regions.\n";
+  if (p.verbose)    cerr << "Ignored " << no_ignored << " regions.\n";
 
-  //todo
-  chromosome(fPlot, width, refSize, cx, cy);
-  chromosome(fPlot, width, tarSize, cx + space + width, cy);
-  print_final(fPlot);
+  rectangle->config(Point(cx, cy), width, refSize);
+  rectangle->plot_chromosome(fPlot);
+
+  rectangle->config(Point(cx + space + width, cy), width, tarSize);
+  rectangle->plot_chromosome(fPlot);
+
+  print_tail(fPlot);
 
   cerr << "Done!                       \n";
   fPos.close();
+  fPlot.close();
 }
