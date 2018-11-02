@@ -1,6 +1,7 @@
 #include "vizpaint.hpp"
 #include "fn.hpp"
 using namespace smashpp;
+#define PREC  std::fixed << setprecision(2)
 
 /*
  * class Text
@@ -18,12 +19,12 @@ inline void Text::plot (ofstream& f) const {
   f << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
     "font-weight:normal;line-height:125%%;letter-spacing:0px;word-spacing:0px;"
     "fill:#000000;fill-opacity:1;stroke:none;font-family:Sans\" "
-    "x=\"" << std::fixed << setprecision(2) << origin.x << "\" "
-    "y=\"" << std::fixed << setprecision(2) << origin.y << "\" "
+    "x=\"" << PREC << origin.x << "\" "
+    "y=\"" << PREC << origin.y << "\" "
     "id=\"corben\" sodipodi:linespacing=\"125%%\"><tspan sodipodi:role=\""
     "line\" id=\"tspan3804\" "
-    "x=\"" << std::fixed << setprecision(2) << origin.x << "\" "
-    "y=\"" << std::fixed << setprecision(2) << origin.y << "\" "
+    "x=\"" << PREC << origin.x << "\" "
+    "y=\"" << PREC << origin.y << "\" "
     "style=\"font-size:18px;font-style:normal;font-variant:normal;font-weight:"
     "normal;font-stretch:normal;text-align:start;line-height:125%%;"
     "writing-mode:lr-tb;text-anchor:start;font-family:Arial;"
@@ -47,12 +48,12 @@ inline void Line::config
 
 inline void Line::plot (ofstream& f) const {
   f << "<line "
-    "x1=\"" << std::fixed << setprecision(2) << beg.x << "\" "
-    "y1=\"" << std::fixed << setprecision(2) << beg.y << "\" "
-    "x2=\"" << std::fixed << setprecision(2) << end.x << "\" "
-    "y2=\"" << std::fixed << setprecision(2) << end.y << "\" "
+    "x1=\"" << PREC << beg.x << "\" "
+    "y1=\"" << PREC << beg.y << "\" "
+    "x2=\"" << PREC << end.x << "\" "
+    "y2=\"" << PREC << end.y << "\" "
     "style=\"stroke:" << color << ";"
-    "stroke-width:" << std::fixed << setprecision(2) << width << "\" />";
+    "stroke-width:" << PREC << width << "\" />";
 }
 
 /*
@@ -75,10 +76,10 @@ inline void Rectangle::plot (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
     ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\""  << std::fixed << setprecision(2) << width << "\" "
-    "height=\"" << std::fixed << setprecision(2) << height << "\" "
-    "x=\""      << std::fixed << setprecision(2) << origin.x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << origin.y << "\" "
+    "width=\""  << PREC << width << "\" "
+    "height=\"" << PREC << height << "\" "
+    "x=\""      << PREC << origin.x << "\" "
+    "y=\""      << PREC << origin.y << "\" "
     "ry=\"0\" />\n";
 }
 
@@ -87,20 +88,20 @@ inline void Rectangle::plot_ir (ofstream& f) const {
   f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
     "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
     "id=\"rect6217\" "
-    "width=\""  << std::fixed << setprecision(2) << width << "\" "
-    "height=\"" << std::fixed << setprecision(2) << height << "\" "
-    "x=\""      << std::fixed << setprecision(2) << origin.x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << origin.y << "\" "
+    "width=\""  << PREC << width << "\" "
+    "height=\"" << PREC << height << "\" "
+    "x=\""      << PREC << origin.x << "\" "
+    "y=\""      << PREC << origin.y << "\" "
     "ry=\"0\" />\n";
 }
 
 inline void Rectangle::plot_oval (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
     "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
-    "width=\""  << std::fixed << setprecision(2) << width << "\" "
-    "height=\"" << std::fixed << setprecision(2) << height << "\" "
-    "x=\""      << std::fixed << setprecision(2) << origin.x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << origin.y << "\" "
+    "width=\""  << PREC << width << "\" "
+    "height=\"" << PREC << height << "\" "
+    "x=\""      << PREC << origin.x << "\" "
+    "y=\""      << PREC << origin.y << "\" "
     "rx=\"12.5\" ry=\"12.5\" />\n";
 }
 
@@ -109,10 +110,10 @@ inline void Rectangle::plot_oval_ir (ofstream& f) const {
   f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
     "stroke-dasharray:nonestroke-dasharray:none;fill:url(#xtrace);"
     "fill-rule:nonzero;opacity:1\" id=\"recty\" "
-    "width=\""  << std::fixed << setprecision(2) << width << "\" "
-    "height=\"" << std::fixed << setprecision(2) << height << "\" "
-    "x=\""      << std::fixed << setprecision(2) << origin.x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << origin.y << "\" "
+    "width=\""  << PREC << width << "\" "
+    "height=\"" << PREC << height << "\" "
+    "x=\""      << PREC << origin.x << "\" "
+    "y=\""      << PREC << origin.y << "\" "
     "ry=\"12.5\" />\n";
 }
 
@@ -142,10 +143,10 @@ inline void Rectangle::plot_chromosome (ofstream& f) const {
   f << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
     "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
     "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
-    "width=\""  << std::fixed << setprecision(2) << width << "\" "
-    "height=\"" << std::fixed << setprecision(2) << height << "\" "
-    "x=\""      << std::fixed << setprecision(2) << origin.x << "\" "
-    "y=\""      << std::fixed << setprecision(2) << origin.y << "\" "
+    "width=\""  << PREC << width << "\" "
+    "height=\"" << PREC << height << "\" "
+    "x=\""      << PREC << origin.x << "\" "
+    "y=\""      << PREC << origin.y << "\" "
     "rx=\"20\" ry=\"20\" />\n";
 }
 
@@ -171,14 +172,14 @@ inline void Polygon::config (Point one_, Point two_, Point three_, Point four_,
 
 inline void Polygon::plot (ofstream& f) const {
   f << "<polygon points=\""
-    << std::fixed << setprecision(2) << one.x   << ","
-    << std::fixed << setprecision(2) << one.y   << " "
-    << std::fixed << setprecision(2) << two.x   << ","
-    << std::fixed << setprecision(2) << two.y   << " "
-    << std::fixed << setprecision(2) << three.x << ","
-    << std::fixed << setprecision(2) << three.y << " "
-    << std::fixed << setprecision(2) << four.x  << ","
-    << std::fixed << setprecision(2) << four.y  << "\" "
+    << PREC << one.x   << ","
+    << PREC << one.y   << " "
+    << PREC << two.x   << ","
+    << PREC << two.y   << " "
+    << PREC << three.x << ","
+    << PREC << three.y << " "
+    << PREC << four.x  << ","
+    << PREC << four.y  << "\" "
     << "style=\"fill:" << fillColor << ";stroke:" << lineColor << ";"
     << "stroke-width:1;fill-opacity:0.7\" />";
 }
@@ -199,9 +200,9 @@ inline void Circle::config
 
 inline void Circle::plot (ofstream& f) const {
   f << "<circle "
-    "cx=\"" << std::fixed << setprecision(2) << origin.x << "\" "
-    "cy=\"" << std::fixed << setprecision(2) << origin.y << "\" "
-    "r=\""  << std::fixed << setprecision(2) << radius   << "\" "
+    "cx=\"" << PREC << origin.x << "\" "
+    "cy=\"" << PREC << origin.y << "\" "
+    "r=\""  << PREC << radius   << "\" "
     "fill=\"" << fillColor << "\"/>";
 }
 
