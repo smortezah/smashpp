@@ -12,15 +12,16 @@
 namespace smashpp {
 class VizParam {
  public:
-  bool   help, verbose, force, inverse, regular;
+  bool   help, verbose, force, inverse, regular, showPos;
   string image;
   u32    link, width, space, mult, start, min;
   string posFile;
 
   VizParam() : help(DEF_HELP), verbose(DEF_VERBOSE), force(DEF_FORCE),
-               inverse(DEF_INVE), regular(DEF_REGU), image(DEF_IMAGE),
-               link(DEF_LINK), width(DEF_WIDT), space(DEF_SPAC), mult(DEF_MULT),
-               start(DEF_BEGI), min(DEF_MINP) {}
+               inverse(DEF_INVE), regular(DEF_REGU), showPos(false),
+               image(DEF_IMAGE), link(DEF_LINK), width(DEF_WIDT),
+               space(DEF_SPAC), mult(DEF_MULT), start(DEF_BEGI),
+               min(DEF_MINP) {}
   void parse (int, char**&);
 
  private:
@@ -50,6 +51,7 @@ inline void VizParam::parse (int argc, char**& argv) {
       else if (*i=="-F")   force=true;
       else if (*i=="-i")   inverse=true;
       else if (*i=="-r")   regular=true;
+      else if (*i=="-p")   showPos=true;
       else if (*i=="-o" && i+1!=vArgs.end())
         image = *++i;
       else if (*i=="-l" && i+1!=vArgs.end()) {
@@ -91,13 +93,14 @@ inline void VizParam::print_menu_visual () const {
     "  -h                         give this help,                            \n"
     "  -V                         display version number,                    \n"
     "  -v                         verbose mode (more information),           \n"
+    "  -p                         show positions,                            \n"
     "  -l <link>                  link type between maps [0;4],              \n"
     "  -w <width>                 image sequence width,                      \n"
     "  -s <space>                 space between sequences,                   \n"
     "  -m <mult>                  color id multiplication factor,            \n"
     "  -b <begin>                 color id beggining,                        \n"
-    "  -c <min>               min block size to consider,            \n"
-    "  -i                         do NOT show inverse maps,                \n"
+    "  -c <min>                   minimum block size to consider,            \n"
+    "  -i                         do NOT show inverse maps,                  \n"
     "  -r                         do NOT show regular maps,                  \n"
     "  -o <FILE>                  output image filename with map,            \n"
     "                                                                        \n"
@@ -109,6 +112,7 @@ inline void VizParam::print_menu_visual () const {
     "Report bugs to <pratas@ua.pt>."                                     <<endl;
 }
 
+//todo modify
 inline void VizParam::print_version () const {
   cerr <<
     "                                                                        \n"

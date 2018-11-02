@@ -1,7 +1,7 @@
 #include "vizpaint.hpp"
 #include "fn.hpp"
 using namespace smashpp;
-#define PREC  std::fixed << setprecision(2)
+#define PREC  std::fixed << std::setprecision(2)
 
 /*
  * class Text
@@ -15,20 +15,28 @@ inline void Text::config (Point origin_, const string& label_) {
   label  = label_;
 }
 
-inline void Text::plot (ofstream& f) const {
+inline void Text::plot
+(ofstream& f, u8 fontSize=17, const string& textAnchor="start") const {
   f << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
     "font-weight:normal;line-height:125%%;letter-spacing:0px;word-spacing:0px;"
     "fill:#000000;fill-opacity:1;stroke:none;font-family:Sans\" "
-    "x=\"" << PREC << origin.x << "\" "
-    "y=\"" << PREC << origin.y << "\" "
+    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y << "\" "
     "id=\"corben\" sodipodi:linespacing=\"125%%\"><tspan sodipodi:role=\""
     "line\" id=\"tspan3804\" "
-    "x=\"" << PREC << origin.x << "\" "
-    "y=\"" << PREC << origin.y << "\" "
-    "style=\"font-size:18px;font-style:normal;font-variant:normal;font-weight:"
-    "normal;font-stretch:normal;text-align:start;line-height:125%%;"
-    "writing-mode:lr-tb;text-anchor:start;font-family:Arial;"
+    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y << "\" "
+    "style=\"font-size:" << to_string(fontSize) << "px;font-style:normal;"
+    "font-variant:normal;font-weight:normal;font-stretch:normal;"
+    "text-align:start;line-height:125%%;writing-mode:lr-tb;"
+    "text-anchor:" << textAnchor << ";font-family:Arial;"
     "-inkscape-font-specification:Arial\">" << label << "</tspan>\n</text>\n";
+}
+
+inline void Text::plot_pos_ref (ofstream& f) const {
+  plot(f, 10, "end");
+}
+
+inline void Text::plot_pos_tar (ofstream& f) const {
+  plot(f, 10, "start");
 }
 
 /*
@@ -48,12 +56,10 @@ inline void Line::config
 
 inline void Line::plot (ofstream& f) const {
   f << "<line "
-    "x1=\"" << PREC << beg.x << "\" "
-    "y1=\"" << PREC << beg.y << "\" "
-    "x2=\"" << PREC << end.x << "\" "
-    "y2=\"" << PREC << end.y << "\" "
-    "style=\"stroke:" << color << ";"
-    "stroke-width:" << PREC << width << "\" />";
+    "x1=\""           << PREC << beg.x << "\" y1=\"" << PREC << beg.y << "\" "
+    "x2=\""           << PREC << end.x << "\" y2=\"" << PREC << end.y << "\" "
+    "style=\"stroke:" <<         color << ";"
+    "stroke-width:"   << PREC << width << "\" />";
 }
 
 /*
@@ -76,10 +82,8 @@ inline void Rectangle::plot (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
     ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\""  << PREC << width << "\" "
-    "height=\"" << PREC << height << "\" "
-    "x=\""      << PREC << origin.x << "\" "
-    "y=\""      << PREC << origin.y << "\" "
+    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
+    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
     "ry=\"0\" />\n";
 }
 
@@ -88,20 +92,16 @@ inline void Rectangle::plot_ir (ofstream& f) const {
   f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
     "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
     "id=\"rect6217\" "
-    "width=\""  << PREC << width << "\" "
-    "height=\"" << PREC << height << "\" "
-    "x=\""      << PREC << origin.x << "\" "
-    "y=\""      << PREC << origin.y << "\" "
+    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
+    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
     "ry=\"0\" />\n";
 }
 
 inline void Rectangle::plot_oval (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
     "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
-    "width=\""  << PREC << width << "\" "
-    "height=\"" << PREC << height << "\" "
-    "x=\""      << PREC << origin.x << "\" "
-    "y=\""      << PREC << origin.y << "\" "
+    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
+    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
     "rx=\"12.5\" ry=\"12.5\" />\n";
 }
 
@@ -110,44 +110,39 @@ inline void Rectangle::plot_oval_ir (ofstream& f) const {
   f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
     "stroke-dasharray:nonestroke-dasharray:none;fill:url(#xtrace);"
     "fill-rule:nonzero;opacity:1\" id=\"recty\" "
-    "width=\""  << PREC << width << "\" "
-    "height=\"" << PREC << height << "\" "
-    "x=\""      << PREC << origin.x << "\" "
-    "y=\""      << PREC << origin.y << "\" "
+    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
+    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
     "ry=\"12.5\" />\n";
 }
 
 inline void Rectangle::plot_chromosome (ofstream& f) const {
   const string borderColor {"#000000"};
-//  double  wk = w / 2 + 0.5;
-/*
-  fprintf(F, "<path "
-         "d=\"m %.2lf,"
-         "%.2lf 0,"
-         "%.2lf c 0, -8.31 6.69, -%.2lf %.2lf, -%.2lf l -%.2lf,0 z m %.2lf,"
-         "0 c 8.31,0 %.2lf,6.69 %.2lf,%.2lf l 0,-%.2lf -%.2lf,0 z\" "
-         "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:"
-         "nonzero;stroke:none\" />", x-0.5, y-0.5,
-         wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
+//  double  wk = width / 2 + 0.5;
+//
+//  f << "<path d=\"m " << PREC << origin.x - 1 << ","
+//    << PREC << origin.y - 1 << " 0," << PREC << wk << " c 0, -8.31 6.69, "
+//    << PREC << -wk << " " << PREC << wk << ", " << PREC << -wk << " l "
+//    << PREC << -wk << ",0 z m " << PREC << wk << ",0 c 8.31,0 "
+//    << PREC << wk << ",6.69 " << PREC << wk << "," << PREC << wk << " l 0,"
+//    << PREC << -wk << " " << PREC << -wk << ",0 z\" id=\"rect3787\" "
+//    << "style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;stroke:none\" />";
+//
+//  f << "<path d=\"m " << PREC << origin.x + 1 + width << ","
+//    << PREC << origin.y + 1 + height << " 0," << PREC << -wk
+//    << " c 0,8.31 -6.69, " << PREC << wk << " " << PREC << -wk << ", "
+//    << PREC << wk << " l " << PREC << wk << ",0 z m " << PREC << -wk
+//    << ",0 c -8.31,0 " << PREC << -wk << ",-6.69 " << PREC << -wk << ","
+//    << PREC << -wk << " l 0," << PREC << wk << " " << PREC << wk << ",0 z\" "
+//    << "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;"
+//    << "stroke:none\" />";
 
-  fprintf(F, "<path "
-         "d=\"m %.2lf,"
-         "%.2lf 0,"
-         "-%.2lf c 0,8.31 -6.69, %.2lf -%.2lf, %.2lf l %.2lf,0 z m -%.2lf,"
-         "0 c -8.31,0 -%.2lf,-6.69 -%.2lf,-%.2lf l 0,%.2lf %.2lf,0 z\" "
-         "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:"
-         "nonzero;stroke:none\" />", x+0.5+w, y+0.5+h,
-         wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
-*/
 
   f << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
     "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
     "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
-    "width=\""  << PREC << width << "\" "
-    "height=\"" << PREC << height << "\" "
-    "x=\""      << PREC << origin.x << "\" "
-    "y=\""      << PREC << origin.y << "\" "
-    "rx=\"20\" ry=\"20\" />\n";
+    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
+    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
+    "rx=\"1\" ry=\"1\" />\n";
 }
 
 /*
@@ -172,16 +167,13 @@ inline void Polygon::config (Point one_, Point two_, Point three_, Point four_,
 
 inline void Polygon::plot (ofstream& f) const {
   f << "<polygon points=\""
-    << PREC << one.x   << ","
-    << PREC << one.y   << " "
-    << PREC << two.x   << ","
-    << PREC << two.y   << " "
-    << PREC << three.x << ","
-    << PREC << three.y << " "
-    << PREC << four.x  << ","
-    << PREC << four.y  << "\" "
-    << "style=\"fill:" << fillColor << ";stroke:" << lineColor << ";"
-    << "stroke-width:1;fill-opacity:0.7\" />";
+    << PREC << one.x   << "," << PREC << one.y   << " "
+    << PREC << two.x   << "," << PREC << two.y   << " "
+    << PREC << three.x << "," << PREC << three.y << " "
+    << PREC << four.x  << "," << PREC << four.y  << "\" "
+    << "style=\"fill:" << fillColor   << ";stroke:" << fillColor << ";"
+//    << "style=\"fill:" << fillColor   << ";stroke:" << lineColor << ";"
+    << "stroke-width:1;stroke-opacity:0.5;fill-opacity:0.5\" />";
 }
 
 /*
@@ -200,8 +192,7 @@ inline void Circle::config
 
 inline void Circle::plot (ofstream& f) const {
   f << "<circle "
-    "cx=\"" << PREC << origin.x << "\" "
-    "cy=\"" << PREC << origin.y << "\" "
+    "cx=\"" << PREC << origin.x << "\" cy=\"" << PREC << origin.y << "\" "
     "r=\""  << PREC << radius   << "\" "
     "fill=\"" << fillColor << "\"/>";
 }
@@ -468,8 +459,7 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     "2.37338,-0.00568 0,4.76251\" id=\"path2985-1\" /></pattern></defs>";
 }
 
-inline void VizPaint::print_tail (ofstream& f) const
-{
+inline void VizPaint::print_tail (ofstream& f) const {
   f << "</g>\n</svg>";
 }
 
@@ -487,10 +477,9 @@ void VizPaint::print_plot (VizParam& p) {
   ifstream fPos (p.posFile);
   ofstream fPlot(p.image);
 
-  u64 n_tarBases=0, n_refBases=0;
+  u64 n_refBases=0, n_tarBases=0;
   string watermark;
   fPos >> watermark >> n_refBases >> n_tarBases;
-//  fPos >> watermark >> n_tarBases >> n_refBases;
   if (watermark != "#SCF")
     error("unknown file format for positions.");
   if (p.verbose) {
@@ -517,7 +506,8 @@ void VizPaint::print_plot (VizParam& p) {
 
   config(p.width, p.space, n_refBases, n_tarBases);
 
-  print_head(fPlot, 2*PAINT_CX + 2*width + space, maxSize + PAINT_EXTRA);
+  print_head(fPlot, PAINT_CX + width + space + width + PAINT_CX,
+                    maxSize + PAINT_EXTRA);
 
   auto line   = make_shared<Line>();
   line->width = 2.0;
@@ -527,7 +517,7 @@ void VizPaint::print_plot (VizParam& p) {
 
   rect->color  = "#ffffff";
   rect->origin = Point(0, 0);
-  rect->width  = 2*PAINT_CX + 2*width + space;
+  rect->width  = PAINT_CX + width + space + width + PAINT_CX;
   rect->height = maxSize + PAINT_EXTRA;
   rect->plot(fPlot);
 
@@ -560,6 +550,27 @@ void VizPaint::print_plot (VizParam& p) {
     if (abs(endRef-begRef)<p.min || abs(begTar-endTar)<p.min) {
       ++n_ignored;
       continue;
+    }
+
+    if (p.showPos) {
+      constexpr int horizTune=6, vertTune=4;
+      text->origin = Point(cx - horizTune,
+                           cy + get_point(begRef) + vertTune);
+      text->label = to_string(begRef);
+      text->plot_pos_ref(fPlot);
+      text->origin = Point(cx - horizTune,
+                           cy + get_point(endRef) + vertTune);
+      text->label = to_string(endRef);
+      text->plot_pos_ref(fPlot);
+
+      text->origin = Point(cx + width + space + width + horizTune,
+                           cy + get_point(begTar) + vertTune);
+      text->label = to_string(begTar);
+      text->plot_pos_tar(fPlot);
+      text->origin = Point(cx + width + space + width + horizTune,
+                           cy + get_point(endTar) + vertTune);
+      text->label = to_string(endTar);
+      text->plot_pos_tar(fPlot);
     }
 
     if (endTar > begTar) {

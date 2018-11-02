@@ -5,9 +5,6 @@ using namespace std;
 using namespace smashpp;
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - M A I N - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main (int argc, char* argv[]) {
   try {
     const auto t0 {now()};

@@ -20,8 +20,7 @@
 using namespace smashpp;
 
 
-int main (int argc, char* argv[])
-{
+int main (int argc, char* argv[]) {
   try {
     const auto t0{now()};
     Param par;
