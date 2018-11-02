@@ -7,8 +7,9 @@
 namespace smashpp {
 struct RgbColor {
   u8 r, g, b;
-  RgbColor() = default;
-  RgbColor(u8 r_, u8 g_, u8 b_) : r(r_), g(g_), b(b_) {}
+  RgbColor () = default;
+  RgbColor (u8 r_, u8 g_, u8 b_) { config(r_,g_,b_); }
+  void config (u8 r_, u8 g_, u8 b_) { r=r_;  g=g_;  b=b_; }
 };
 
 struct HsvColor {
@@ -56,17 +57,20 @@ class Rectangle {
   double width, height;
   string color;
 
-  Rectangle            () = default;
-  Rectangle            (Point, double, double, const string&);
-  void config          (Point, double, double, const string&);
-  void plot            (ofstream&)       const;
-  void plot_ir         (ofstream&)       const;
-  void plot_oval       (ofstream&)       const;
-  void plot_oval_ir    (ofstream&)       const;
-  void plot_nrc        (ofstream&, char) const;
-  void plot_nrc_ref    (ofstream&)       const;
-  void plot_nrc_tar    (ofstream&)       const;
-  void plot_chromosome (ofstream&)       const;
+  Rectangle             () = default;
+  Rectangle             (Point, double, double, const string&);
+  void config           (Point, double, double, const string&);
+  void plot             (ofstream&)       const;
+  void plot_ir          (ofstream&)       const;
+  void plot_oval        (ofstream&)       const;
+  void plot_oval_ir     (ofstream&)       const;
+  void plot_nrc         (ofstream&, char) const;
+  void plot_nrc_ref     (ofstream&)       const;
+  void plot_nrc_tar     (ofstream&)       const;
+  void plot_complex     (ofstream&, u8, char) const;
+  void plot_complex_ref (ofstream&, bool)       const;
+  void plot_complex_tar (ofstream&, bool)       const;
+  void plot_chromosome  (ofstream&)       const;
 };
 
 class Polygon {
@@ -96,28 +100,28 @@ class Circle {
 class VizPaint {
  public:
   double cx, cy;
-  double tx, ty;
   string backColor;
   double width;
   double space;
   double refSize, tarSize, maxSize;
 
-  VizPaint() : cx(PAINT_CX), cy(PAINT_CY), tx(PAINT_TX), ty(PAINT_TY),
-               backColor(PAINT_BGCOLOR), width(0.0), space(0.0), refSize(0.0),
-               tarSize(0.0), maxSize(0.0), ratio(1) {}
+  VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),
+               space(0.0), refSize(0.0), tarSize(0.0), maxSize(0.0), ratio(1) {}
   void print_plot (VizParam&);
 
  private:
   u32 ratio;
 
-  void     config     (double, double, u64, u64);
-  RgbColor hsv_to_rgb (const HsvColor&)           const;
-  HsvColor rgb_to_hsv (const RgbColor&)           const;
-  string   rgb_color  (u8)                        const;
-  void     print_head (ofstream&, double, double) const;
-  void     print_tail (ofstream&)                 const;
+  void     config      (double, double, u64, u64);
+  RgbColor hsv_to_rgb  (const HsvColor&)           const;
+  HsvColor rgb_to_hsv  (const RgbColor&)           const;
+  string   rgb_color   (u8)                        const;
+  template <typename ValueR, typename ValueG, typename ValueB>
+  string   shade_color (ValueR, ValueG, ValueB)       const;
+  void     print_head  (ofstream&, double, double) const;
+  void     print_tail  (ofstream&)                 const;
   template <typename Value>
-  double   get_point  (Value)                     const;
+  double   get_point   (Value)                     const;
 };
 }
 

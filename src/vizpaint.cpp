@@ -34,11 +34,11 @@ inline void Text::plot (ofstream& f, int hTune=0, int vTune=0, u8 fontSize=17,
 }
 
 inline void Text::plot_pos_ref (ofstream& f) const {
-  plot(f, -6, 4, 10, "end");
+  plot(f, -5, 3, 10, "end");
 }
 
 inline void Text::plot_pos_tar (ofstream& f) const {
-  plot(f, 6, 4, 10, "start");
+  plot(f, 5, 3, 10, "start");
 }
 
 /*
@@ -118,16 +118,14 @@ inline void Rectangle::plot_oval_ir (ofstream& f) const {
 }
 
 inline void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
-  constexpr auto horizTune  = 4;
-  constexpr auto horizRatio = 3;
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
     ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\""  << PREC << width/horizRatio      << "\" "
-    "height=\"" << PREC << height <<"\" "
-    "x=\"" << PREC << (refTar=='r' ? origin.x - horizTune - width/horizRatio
-                                   : origin.x + width + horizTune) << "\" "
-    "y=\"" << PREC << origin.y <<"\" ry=\"3\" />\n";
+    "width=\""  << PREC << width/HORIZ_RATIO << "\" "
+    "height=\"" << PREC << height            <<"\" "
+    "x=\"" << PREC << (refTar=='r' ? origin.x - HORIZ_TUNE - width/HORIZ_RATIO
+                                   : origin.x + width + HORIZ_TUNE) << "\" "
+    "y=\"" << PREC << origin.y <<"\" ry=\"2\" />\n";
 }
 
 inline void Rectangle::plot_nrc_ref (ofstream& f) const {
@@ -136,6 +134,30 @@ inline void Rectangle::plot_nrc_ref (ofstream& f) const {
 
 inline void Rectangle::plot_nrc_tar (ofstream& f) const {
   plot_nrc(f, 't');
+}
+
+inline void Rectangle::plot_complex
+(ofstream& f, u8 showNRC, char refTar=' ') const {
+  f << "<rect style=\"fill:" << color << ";stroke:" << color <<
+    ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
+    "stroke-dasharray:none\" id=\"rect3777\" "
+    "width=\""  << PREC << width/HORIZ_RATIO << "\" "
+    "height=\"" << PREC << height            <<"\" "
+    "x=\"";
+  if (refTar=='r')
+    f << PREC << origin.x - (1+showNRC)*(HORIZ_TUNE+width/HORIZ_RATIO);
+  else if (refTar=='t')
+    f << PREC << origin.x + width + HORIZ_TUNE
+                          + showNRC*(width/HORIZ_RATIO + HORIZ_TUNE);
+  f << "\" y=\"" << PREC << origin.y <<"\" ry=\"2\" />\n";
+}
+
+inline void Rectangle::plot_complex_ref (ofstream& f, bool showNRC) const {
+  showNRC ? plot_complex(f, 1, 'r') : plot_complex(f, 0, 'r');
+}
+
+inline void Rectangle::plot_complex_tar (ofstream& f, bool showNRC) const {
+  showNRC ? plot_complex(f, 1, 't') : plot_complex(f, 0, 't');
 }
 
 inline void Rectangle::plot_chromosome (ofstream& f) const {
@@ -270,6 +292,13 @@ inline string VizPaint::rgb_color (u8 hue) const {
   HsvColor HSV (hue);
   RgbColor RGB {hsv_to_rgb(HSV)};
   return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
+}
+
+template <typename ValueR, typename ValueG, typename ValueB>
+inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
+  return "rgb("+to_string(static_cast<u8>(r))+","
+               +to_string(static_cast<u8>(g))+","
+               +to_string(static_cast<u8>(b))+")";
 }
 
 template <typename Value>
@@ -553,26 +582,32 @@ void VizPaint::print_plot (VizParam& p) {
 //  rect->plot_oval(fPlot);
 
   text->origin = Point(cx, cy - 15);
+  //todo
+//  if (p.test) { text->label=ref name }
   text->label  = "REF";
   text->plot(fPlot);
 
   text->origin = Point(cx + width + space, cy - 15);
+  //todo
+//  if (p.test) { text->label=tar name }
   text->label  = "TAR";
   text->plot(fPlot);
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
   if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
 
-  const auto customColor = [=] (u32 start) {
+  auto customColor = [=] (u32 start) {
     return rgb_color(static_cast<u8>(start * p.mult));
   };
-  auto nrcColor = [&] (double entropy) {
+  auto nrcColor = [=] (double entropy) {
     if      (entropy>2.0)  entropy=2.0;
     else if (entropy<0.0)  entropy=0.0;
-    RgbColor RGB (0, static_cast<u8>(ceil(entropy*127)), 0);
-    char* color = (char*) malloc(8 * sizeof(char));
-    return sprintf(color, "#%X%X%X", RGB.r, RGB.g, RGB.b);
-//    return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
+    return shade_color(0, ceil(entropy*100+55), 55);
+  };
+  auto complColor = [=] (double entropy) {
+    if      (entropy>2.0)  entropy=2.0;
+    else if (entropy<0.0)  entropy=0.0;
+    return shade_color(0, 55, ceil(entropy*100+55));
   };
   i64 begRef, endRef, begTar, endTar;
   double entRef, entTar;
@@ -586,17 +621,23 @@ void VizPaint::print_plot (VizParam& p) {
     }
 
     if (p.showPos) {
-      text->origin = Point(cx, cy + get_point(begRef));
+      double X = 0;
+      if     (p.showNRC && p.showComplex)  X=2*(HORIZ_TUNE + width/HORIZ_RATIO);
+      else if(p.showNRC ^  p.showComplex)  X=   HORIZ_TUNE + width/HORIZ_RATIO;
+
+      text->origin = Point(cx - X, cy + get_point(begRef));
       text->label  = to_string(begRef);
       text->plot_pos_ref(fPlot);
-      text->origin = Point(cx, cy + get_point(endRef));
+      text->origin = Point(cx - X, cy + get_point(endRef));
       text->label  = to_string(endRef);
       text->plot_pos_ref(fPlot);
 
-      text->origin = Point(cx + width + space + width, cy + get_point(begTar));
+      text->origin = Point(cx + width + space + width + X,
+                           cy + get_point(begTar));
       text->label  = to_string(begTar);
       text->plot_pos_tar(fPlot);
-      text->origin = Point(cx + width + space + width, cy + get_point(endTar));
+      text->origin = Point(cx + width + space + width + X,
+                           cy + get_point(endTar));
       text->label  = to_string(endTar);
       text->plot_pos_tar(fPlot);
     }
@@ -608,17 +649,27 @@ void VizPaint::print_plot (VizParam& p) {
         rect->origin = Point(cx, cy + get_point(begRef));
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
-
-        rect->color = to_string(nrcColor(entRef));
-        rect->plot_nrc_ref(fPlot);
+        if (p.showNRC) {
+          rect->color = nrcColor(entRef);
+          rect->plot_nrc_ref(fPlot);
+        }
+        if (p.showComplex) {//todo
+          rect->color = complColor(entRef);
+          rect->plot_complex_ref(fPlot, p.showNRC);
+        }
 
         rect->color  = customColor(p.start);
         rect->origin = Point(cx + width + space, cy + get_point(begTar));
         rect->height = get_point(endTar-begTar);
         rect->plot(fPlot);
-
-//        rect->color = nrcColor(entTar);
-//        rect->plot_nrc_tar(fPlot);
+        if (p.showNRC) {
+          rect->color = nrcColor(entTar);
+          rect->plot_nrc_tar(fPlot);
+        }
+        if (p.showComplex) {//todo
+          rect->color = complColor(entTar);
+          rect->plot_complex_tar(fPlot, p.showNRC);
+        }
 
         switch (p.link) {
         case 5:
@@ -678,10 +729,27 @@ void VizPaint::print_plot (VizParam& p) {
         rect->origin = Point(cx, cy + get_point(begRef));
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
+        if (p.showNRC) {
+          rect->color = nrcColor(entRef);
+          rect->plot_nrc_ref(fPlot);
+        }
+        if (p.showComplex) {//todo
+          rect->color = complColor(entRef);
+          rect->plot_complex_ref(fPlot, p.showNRC);
+        }
 
+        rect->color  = customColor(p.start);
         rect->origin = Point(cx + width + space, cy + get_point(endTar));
         rect->height = get_point(begTar-endTar);
         rect->plot_ir(fPlot);
+        if (p.showNRC) {
+          rect->color = nrcColor(entTar);
+          rect->plot_nrc_tar(fPlot);
+        }
+        if (p.showComplex) {//todo
+          rect->color = complColor(entTar);
+          rect->plot_complex_tar(fPlot, p.showNRC);
+        }
 
         switch (p.link) {
         case 5:
