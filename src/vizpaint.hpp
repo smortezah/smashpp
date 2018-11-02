@@ -7,6 +7,8 @@
 namespace smashpp {
 struct RgbColor {
   u8 r, g, b;
+  RgbColor() = default;
+  RgbColor(u8 r_, u8 g_, u8 b_) : r(r_), g(g_), b(b_) {}
 };
 
 struct HsvColor {
@@ -57,11 +59,14 @@ class Rectangle {
   Rectangle            () = default;
   Rectangle            (Point, double, double, const string&);
   void config          (Point, double, double, const string&);
-  void plot            (ofstream&) const;
-  void plot_ir         (ofstream&) const;
-  void plot_oval       (ofstream&) const;
-  void plot_oval_ir    (ofstream&) const;
-  void plot_chromosome (ofstream&) const;
+  void plot            (ofstream&)       const;
+  void plot_ir         (ofstream&)       const;
+  void plot_oval       (ofstream&)       const;
+  void plot_oval_ir    (ofstream&)       const;
+  void plot_nrc        (ofstream&, char) const;
+  void plot_nrc_ref    (ofstream&)       const;
+  void plot_nrc_tar    (ofstream&)       const;
+  void plot_chromosome (ofstream&)       const;
 };
 
 class Polygon {

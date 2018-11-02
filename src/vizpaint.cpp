@@ -117,6 +117,27 @@ inline void Rectangle::plot_oval_ir (ofstream& f) const {
     "ry=\"12.5\" />\n";
 }
 
+inline void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
+  constexpr auto horizTune  = 4;
+  constexpr auto horizRatio = 3;
+  f << "<rect style=\"fill:" << color << ";stroke:" << color <<
+    ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
+    "stroke-dasharray:none\" id=\"rect3777\" "
+    "width=\""  << PREC << width/horizRatio      << "\" "
+    "height=\"" << PREC << height <<"\" "
+    "x=\"" << PREC << (refTar=='r' ? origin.x - horizTune - width/horizRatio
+                                   : origin.x + width + horizTune) << "\" "
+    "y=\"" << PREC << origin.y <<"\" ry=\"3\" />\n";
+}
+
+inline void Rectangle::plot_nrc_ref (ofstream& f) const {
+  plot_nrc(f, 'r');
+}
+
+inline void Rectangle::plot_nrc_tar (ofstream& f) const {
+  plot_nrc(f, 't');
+}
+
 inline void Rectangle::plot_chromosome (ofstream& f) const {
   const string borderColor {"#000000"};
 //  double  wk = width / 2 + 0.5;
@@ -540,15 +561,25 @@ void VizPaint::print_plot (VizParam& p) {
   text->plot(fPlot);
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
-  if(p.min==0)  p.min=static_cast<u32>(maxSize / 100);
+  if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
 
   const auto customColor = [=] (u32 start) {
     return rgb_color(static_cast<u8>(start * p.mult));
   };
+  auto nrcColor = [&] (double entropy) {
+    if      (entropy>2.0)  entropy=2.0;
+    else if (entropy<0.0)  entropy=0.0;
+    RgbColor RGB (0, static_cast<u8>(ceil(entropy*127)), 0);
+    char* color = (char*) malloc(8 * sizeof(char));
+    return sprintf(color, "#%X%X%X", RGB.r, RGB.g, RGB.b);
+//    return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
+  };
   i64 begRef, endRef, begTar, endTar;
   double entRef, entTar;
+  string complRef, complTar;
   u64 n_regular=0, n_inverse=0, n_ignored=0;
-  for (; fPos >> begRef>>endRef>>entRef >> begTar>>endTar>>entTar; ++p.start) {
+  for (; fPos >> begRef>>endRef>>entRef>>complRef
+              >> begTar>>endTar>>entTar>>complTar; ++p.start) {
     if (abs(endRef-begRef)<p.min || abs(begTar-endTar)<p.min) {
       ++n_ignored;
       continue;
@@ -578,9 +609,16 @@ void VizPaint::print_plot (VizParam& p) {
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
 
+        rect->color = to_string(nrcColor(entRef));
+        rect->plot_nrc_ref(fPlot);
+
+        rect->color  = customColor(p.start);
         rect->origin = Point(cx + width + space, cy + get_point(begTar));
         rect->height = get_point(endTar-begTar);
         rect->plot(fPlot);
+
+//        rect->color = nrcColor(entTar);
+//        rect->plot_nrc_tar(fPlot);
 
         switch (p.link) {
         case 5:
