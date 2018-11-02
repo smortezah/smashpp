@@ -14,13 +14,13 @@ class VizParam {
  public:
   bool   help, verbose, force, inverse, regular;
   string image;
-  u32    link, width, space, mult, start, minimum;
+  u32    link, width, space, mult, start, min;
   string posFile;
 
   VizParam() : help(DEF_HELP), verbose(DEF_VERBOSE), force(DEF_FORCE),
                inverse(DEF_INVE), regular(DEF_REGU), image(DEF_IMAGE),
                link(DEF_LINK), width(DEF_WIDT), space(DEF_SPAC), mult(DEF_MULT),
-               start(DEF_BEGI), minimum(DEF_MINP) {}
+               start(DEF_BEGI), min(DEF_MINP) {}
   void parse (int, char**&);
 
  private:
@@ -73,8 +73,8 @@ inline void VizParam::parse (int argc, char**& argv) {
         check_range(start, MIN_BEGI, MAX_BEGI);
       }
       else if (*i=="-c" && i+1!=vArgs.end()) {
-        minimum = static_cast<u32>(stoul(*++i));
-        check_range(minimum, MIN_MINP, MAX_MINP);
+        min = static_cast<u32>(stoul(*++i));
+        check_range(min, MIN_MINP, MAX_MINP);
       }
     }
     posFile = vArgs.back();
@@ -96,7 +96,7 @@ inline void VizParam::print_menu_visual () const {
     "  -s <space>                 space between sequences,                   \n"
     "  -m <mult>                  color id multiplication factor,            \n"
     "  -b <begin>                 color id beggining,                        \n"
-    "  -c <minimum>               minimum block size to consider,            \n"
+    "  -c <min>               min block size to consider,            \n"
     "  -i                         do NOT show inverse maps,                \n"
     "  -r                         do NOT show regular maps,                  \n"
     "  -o <FILE>                  output image filename with map,            \n"
