@@ -33,10 +33,8 @@ static constexpr u32    MAX_BEGI        {255};
 static constexpr u32    DEF_MINP        {0};
 static constexpr u32    MIN_MINP        {1};
 static constexpr u32    MAX_MINP        {99999999};
-static constexpr double PAINT_CX        {70.0};
+static constexpr double PAINT_CX        {100.0};
 static constexpr double PAINT_CY        {75.0};
-static constexpr double PAINT_TX        {50.0};
-static constexpr double PAINT_TY        {82.0};
 static const     string PAINT_BGCOLOR   {"#ffffff"};
 static constexpr u32    PAINT_SCALE     {150};
 static constexpr u32    PAINT_EXTRA     {150};
@@ -44,6 +42,8 @@ static const     string PAINT_REF       {"REF"};
 static const     string PAINT_TAR       {"TAR"};
 static constexpr u8     PAINT_LVL_SATUR {160};
 static constexpr u8     PAINT_LVL_VAL   {160};
+static constexpr double HORIZ_TUNE      {5};
+static constexpr double HORIZ_RATIO     {3};
 }
 
 #endif
