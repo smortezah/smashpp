@@ -18,12 +18,12 @@ static const     string DEF_IMAGE       {"map.svg"};
 static constexpr u32    DEF_LINK        {5};
 static constexpr u32    MIN_LINK        {0};
 static constexpr u32    MAX_LINK        {5};
-static constexpr u32    DEF_WIDT        {40};
+static constexpr u32    DEF_WIDT        {34};
 static constexpr u32    MIN_WIDT        {10};
-static constexpr u32    MAX_WIDT        {5000};
-static constexpr u32    DEF_SPAC        {160};
+static constexpr u32    MAX_WIDT        {200};
+static constexpr u32    DEF_SPAC        {80};
 static constexpr u32    MIN_SPAC        {0};
-static constexpr u32    MAX_SPAC        {5000};
+static constexpr u32    MAX_SPAC        {200};
 static constexpr u32    DEF_MULT        {46};  // 5 colors without overlapping
 static constexpr u32    MIN_MULT        {1};
 static constexpr u32    MAX_MULT        {255};
