@@ -31,7 +31,7 @@ class Text {
   Text              () = default;
   Text              (Point, const string&);
   void config       (Point, const string&);
-  void plot         (ofstream&, u8, const string&) const;
+  void plot         (ofstream&, int, int, u8, const string&) const;
   void plot_pos_ref (ofstream&) const;
   void plot_pos_tar (ofstream&) const;
 };

@@ -15,15 +15,17 @@ inline void Text::config (Point origin_, const string& label_) {
   label  = label_;
 }
 
-inline void Text::plot
-(ofstream& f, u8 fontSize=17, const string& textAnchor="start") const {
+inline void Text::plot (ofstream& f, int hTune=0, int vTune=0, u8 fontSize=17,
+                        const string& textAnchor="start") const {
   f << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
     "font-weight:normal;line-height:125%%;letter-spacing:0px;word-spacing:0px;"
     "fill:#000000;fill-opacity:1;stroke:none;font-family:Sans\" "
-    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y << "\" "
+    "x=\"" << PREC << origin.x + hTune << "\" "
+    "y=\"" << PREC << origin.y + vTune << "\" "
     "id=\"corben\" sodipodi:linespacing=\"125%%\"><tspan sodipodi:role=\""
     "line\" id=\"tspan3804\" "
-    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y << "\" "
+    "x=\"" << PREC << origin.x + hTune << "\" "
+    "y=\"" << PREC << origin.y + vTune << "\" "
     "style=\"font-size:" << to_string(fontSize) << "px;font-style:normal;"
     "font-variant:normal;font-weight:normal;font-stretch:normal;"
     "text-align:start;line-height:125%%;writing-mode:lr-tb;"
@@ -32,11 +34,11 @@ inline void Text::plot
 }
 
 inline void Text::plot_pos_ref (ofstream& f) const {
-  plot(f, 10, "end");
+  plot(f, -6, 4, 10, "end");
 }
 
 inline void Text::plot_pos_tar (ofstream& f) const {
-  plot(f, 10, "start");
+  plot(f, 6, 4, 10, "start");
 }
 
 /*
@@ -84,7 +86,7 @@ inline void Rectangle::plot (ofstream& f) const {
     "stroke-dasharray:none\" id=\"rect3777\" "
     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-    "ry=\"0\" />\n";
+    "ry=\"3\" />\n";
 }
 
 inline void Rectangle::plot_ir (ofstream& f) const {
@@ -94,7 +96,7 @@ inline void Rectangle::plot_ir (ofstream& f) const {
     "id=\"rect6217\" "
     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-    "ry=\"0\" />\n";
+    "ry=\"3\" />\n";
 }
 
 inline void Rectangle::plot_oval (ofstream& f) const {
@@ -102,7 +104,7 @@ inline void Rectangle::plot_oval (ofstream& f) const {
     "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-    "rx=\"12.5\" ry=\"12.5\" />\n";
+    "ry=\"12.5\" />\n";
 }
 
 inline void Rectangle::plot_oval_ir (ofstream& f) const {
@@ -142,7 +144,7 @@ inline void Rectangle::plot_chromosome (ofstream& f) const {
     "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-    "rx=\"1\" ry=\"1\" />\n";
+    "ry=\"3\" />\n";
 }
 
 /*
@@ -173,7 +175,7 @@ inline void Polygon::plot (ofstream& f) const {
     << PREC << four.x  << "," << PREC << four.y  << "\" "
     << "style=\"fill:" << fillColor   << ";stroke:" << fillColor << ";"
 //    << "style=\"fill:" << fillColor   << ";stroke:" << lineColor << ";"
-    << "stroke-width:1;stroke-opacity:0.5;fill-opacity:0.5\" />";
+    << "stroke-width:1;stroke-opacity:0.4;fill-opacity:0.4\" />";
 }
 
 /*
@@ -521,13 +523,13 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = maxSize + PAINT_EXTRA;
   rect->plot(fPlot);
 
-  rect->origin = Point(cx, cy);
-  rect->width  = width;
-  rect->height = refSize;
-  rect->plot_oval(fPlot);
-
-  rect->height = tarSize;
-  rect->plot_oval(fPlot);
+//  rect->origin = Point(cx, cy);
+//  rect->width  = width;
+//  rect->height = refSize;
+//  rect->plot_oval(fPlot);
+//
+//  rect->height = tarSize;
+//  rect->plot_oval(fPlot);
 
   text->origin = Point(cx, cy - 15);
   text->label  = "REF";
@@ -553,23 +555,18 @@ void VizPaint::print_plot (VizParam& p) {
     }
 
     if (p.showPos) {
-      constexpr int horizTune=6, vertTune=4;
-      text->origin = Point(cx - horizTune,
-                           cy + get_point(begRef) + vertTune);
-      text->label = to_string(begRef);
+      text->origin = Point(cx, cy + get_point(begRef));
+      text->label  = to_string(begRef);
       text->plot_pos_ref(fPlot);
-      text->origin = Point(cx - horizTune,
-                           cy + get_point(endRef) + vertTune);
-      text->label = to_string(endRef);
+      text->origin = Point(cx, cy + get_point(endRef));
+      text->label  = to_string(endRef);
       text->plot_pos_ref(fPlot);
 
-      text->origin = Point(cx + width + space + width + horizTune,
-                           cy + get_point(begTar) + vertTune);
-      text->label = to_string(begTar);
+      text->origin = Point(cx + width + space + width, cy + get_point(begTar));
+      text->label  = to_string(begTar);
       text->plot_pos_tar(fPlot);
-      text->origin = Point(cx + width + space + width + horizTune,
-                           cy + get_point(endTar) + vertTune);
-      text->label = to_string(endTar);
+      text->origin = Point(cx + width + space + width, cy + get_point(endTar));
+      text->label  = to_string(endTar);
       text->plot_pos_tar(fPlot);
     }
 
