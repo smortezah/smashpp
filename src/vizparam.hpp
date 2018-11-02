@@ -38,10 +38,11 @@ inline void VizParam::parse (int argc, char**& argv) {
     for (int i=0; i!=argc; ++i)
       vArgs.emplace_back(static_cast<string>(argv[i]));
 
-    const auto check_range = [=](u32 val, u32 min, u32 max) {
+    const auto check_range = [&] (u32& val, u32 min, u32 max, u32 def) {
       if (val<min || val>max)
-        error(
-          "invalid number! Interval: ["+to_string(min)+";"+to_string(max)+"].");
+        val = def;
+//      error(
+//        "invalid number! Interval: ["+to_string(min)+";"+to_string(max)+"].");
     };
 
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
@@ -56,27 +57,27 @@ inline void VizParam::parse (int argc, char**& argv) {
         image = *++i;
       else if (*i=="-l" && i+1!=vArgs.end()) {
         link = static_cast<u32>(stoul(*++i));
-        check_range(link, MIN_LINK, MAX_LINK);
+        check_range(link, MIN_LINK, MAX_LINK, DEF_LINK);
       }
       else if (*i=="-w" && i+1!=vArgs.end()) {
         width = static_cast<u32>(stoul(*++i));
-        check_range(width, MIN_WIDT, MAX_WIDT);
+        check_range(width, MIN_WIDT, MAX_WIDT, DEF_WIDT);
       }
       else if (*i=="-s" && i+1!=vArgs.end()) {
         space = static_cast<u32>(stoul(*++i));
-        check_range(space, MIN_SPAC, MAX_SPAC);
+        check_range(space, MIN_SPAC, MAX_SPAC, DEF_SPAC);
       }
       else if (*i=="-m" && i+1!=vArgs.end()) {
         mult = static_cast<u32>(stoul(*++i));
-        check_range(mult, MIN_MULT, MAX_MULT);
+        check_range(mult, MIN_MULT, MAX_MULT, DEF_MULT);
       }
       else if (*i=="-b" && i+1!=vArgs.end()) {
         start = static_cast<u32>(stoul(*++i));
-        check_range(start, MIN_BEGI, MAX_BEGI);
+        check_range(start, MIN_BEGI, MAX_BEGI, DEF_BEGI);
       }
       else if (*i=="-c" && i+1!=vArgs.end()) {
         min = static_cast<u32>(stoul(*++i));
-        check_range(min, MIN_MINP, MAX_MINP);
+        check_range(min, MIN_MINP, MAX_MINP, DEF_MINP);
       }
     }
     posFile = vArgs.back();
@@ -94,7 +95,7 @@ inline void VizParam::print_menu_visual () const {
     "  -V                         display version number,                    \n"
     "  -v                         verbose mode (more information),           \n"
     "  -p                         show positions,                            \n"
-    "  -l <link>                  link type between maps [0;4],              \n"
+    "  -l <link>                  link type between maps [0;5],              \n"
     "  -w <width>                 image sequence width,                      \n"
     "  -s <space>                 space between sequences,                   \n"
     "  -m <mult>                  color id multiplication factor,            \n"
