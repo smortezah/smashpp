@@ -12,13 +12,13 @@
 namespace smashpp {
 class VizParam {
  public:
-  bool   help, verbose, force, inversion, regular;
+  bool   help, verbose, force, inverse, regular;
   string image;
   u32    link, width, space, mult, start, minimum;
   string posFile;
 
   VizParam() : help(DEF_HELP), verbose(DEF_VERBOSE), force(DEF_FORCE),
-               inversion(DEF_INVE), regular(DEF_REGU), image(DEF_IMAGE),
+               inverse(DEF_INVE), regular(DEF_REGU), image(DEF_IMAGE),
                link(DEF_LINK), width(DEF_WIDT), space(DEF_SPAC), mult(DEF_MULT),
                start(DEF_BEGI), minimum(DEF_MINP) {}
   void parse (int, char**&);
@@ -48,7 +48,7 @@ inline void VizParam::parse (int argc, char**& argv) {
       else if (*i=="-V") { print_version();                throw EXIT_SUCCESS; }
       else if (*i=="-v")   verbose=true;
       else if (*i=="-F")   force=true;
-      else if (*i=="-i")   inversion=true;
+      else if (*i=="-i")   inverse=true;
       else if (*i=="-r")   regular=true;
       else if (*i=="-o" && i+1!=vArgs.end())
         image = *++i;
@@ -97,7 +97,7 @@ inline void VizParam::print_menu_visual () const {
     "  -m <mult>                  color id multiplication factor,            \n"
     "  -b <begin>                 color id beggining,                        \n"
     "  -c <minimum>               minimum block size to consider,            \n"
-    "  -i                         do NOT show inversion maps,                \n"
+    "  -i                         do NOT show inverse maps,                \n"
     "  -r                         do NOT show regular maps,                  \n"
     "  -o <FILE>                  output image filename with map,            \n"
     "                                                                        \n"
