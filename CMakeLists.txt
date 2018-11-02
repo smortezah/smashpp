@@ -23,8 +23,8 @@ add_executable(smashpp          src/main.cpp
                                 src/mdlpar.hpp)
 
 add_executable(eleanora-visual  src/vizmain.cpp
-        src/vizpaint.cpp
-        src/vizparam.hpp
+                                src/vizpaint.cpp
+                                src/vizparam.hpp
                                 src/vizdef.hpp)
 
 

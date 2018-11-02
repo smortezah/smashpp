@@ -506,7 +506,7 @@ void VizPaint::print_plot (VizParam& p) {
       "  [+] Begin ........................ " << p.start                  <<"\n"
       "  [+] Minimum ...................... " << p.minimum                <<"\n"
       "  [+] Show regular ................. " <<(p.regular   ?"yes":"no") <<"\n"
-      "  [+] Show inversions .............. " <<(p.inversion ?"yes":"no") <<"\n"
+      "  [+] Show inversions .............. " <<(p.inverse ?"yes":"no") <<"\n"
       "Output map filename ................ " << p.image                  <<"\n"
                                                                         << endl;
   }
@@ -549,10 +549,14 @@ void VizPaint::print_plot (VizParam& p) {
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
   if(p.minimum==0)  p.minimum = static_cast<u32>(maxSize / 100);
 
+  const auto customColor = [=] (u32 start) {
+    return rgb_color(static_cast<u8>(start * p.mult));
+  };
   i64 begPosTar, endPosTar, begPosRef, endPosRef;
   double entTar, entRef;
   u64 no_regular=0, no_inverse=0, no_ignored=0;
-  while (fPos >> begPosTar>>endPosTar>>entTar>>begPosRef>>endPosRef>>entRef) {
+  for (; fPos >> begPosTar>>endPosTar>>entTar>>begPosRef>>endPosRef>>entRef;
+       ++p.start) {
     if (abs(endPosRef-begPosRef) < p.minimum ||
         abs(begPosTar-endPosTar) < p.minimum) {
       ++no_ignored;
@@ -562,6 +566,15 @@ void VizPaint::print_plot (VizParam& p) {
     if (endPosRef > begPosRef) {
       if (p.regular) {
         switch (p.link) {
+        case 5:
+          poly->lineColor = "grey";
+          poly->fillColor = customColor(p.start);
+          poly->one   = Point(cx + width,         cy + get_point(begPosRef));
+          poly->two   = Point(cx + width,         cy + get_point(endPosRef));
+          poly->three = Point(cx + space + width, cy + get_point(endPosTar));
+          poly->four  = Point(cx + space + width, cy + get_point(begPosTar));
+          poly->plot(fPlot);
+          break;
         case 1:
           line->beg = Point(cx + width,
                            cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0));
@@ -575,7 +588,7 @@ void VizPaint::print_plot (VizParam& p) {
                            cy + get_point(begPosRef+(endPosRef-begPosRef)/2.0));
           line->end = Point(cx + space + width,
                            cy + get_point(begPosTar+(endPosTar-begPosTar)/2.0));
-          line->color = rgb_color(static_cast<u8>(p.start*p.mult));
+          line->color = customColor(p.start);
           line->plot(fPlot);
           break;
         case 3:
@@ -589,7 +602,7 @@ void VizPaint::print_plot (VizParam& p) {
           line->plot(fPlot);
           break;
         case 4:
-          line->color = rgb_color(static_cast<u8>(p.start*p.mult));
+          line->color = customColor(p.start);
           line->beg = Point(cx + width,         cy + get_point(begPosRef));
           line->end = Point(cx + space + width, cy + get_point(begPosTar));
           line->plot(fPlot);
@@ -598,20 +611,11 @@ void VizPaint::print_plot (VizParam& p) {
           line->end = Point(cx + space + width, cy + get_point(endPosTar));
           line->plot(fPlot);
           break;
-        case 5:
-          poly->lineColor = "grey";
-          poly->fillColor = rgb_color(static_cast<u8>(p.start*p.mult));
-          poly->one   = Point(cx + width,         cy + get_point(begPosRef));
-          poly->two   = Point(cx + width,         cy + get_point(endPosRef));
-          poly->three = Point(cx + space + width, cy + get_point(endPosTar));
-          poly->four  = Point(cx + space + width, cy + get_point(begPosTar));
-          poly->plot(fPlot);
-          break;
         default:break;
         }
 
         rect->width  = width;
-        rect->color  = rgb_color(static_cast<u8>(p.start*p.mult));
+        rect->color  = customColor(p.start);
         rect->origin = Point(cx, cy + get_point(begPosRef));
         rect->height = get_point(endPosRef-begPosRef);
         rect->plot(fPlot);
@@ -624,8 +628,17 @@ void VizPaint::print_plot (VizParam& p) {
       }
     }
     else {
-      if (p.inversion) {
+      if (p.inverse) {
         switch (p.link) {
+        case 5:
+          poly->lineColor = "grey";
+          poly->fillColor = customColor(p.start);
+          poly->one   = Point(cx + width,         cy + get_point(endPosRef));
+          poly->two   = Point(cx + width,         cy + get_point(begPosRef));
+          poly->three = Point(cx + space + width, cy + get_point(begPosTar));
+          poly->four  = Point(cx + space + width, cy + get_point(endPosTar));
+          poly->plot(fPlot);
+          break;
         case 1:
           line->beg = Point(cx + width,
                            cy + get_point(endPosRef+(begPosRef-endPosRef)/2.0));
@@ -639,7 +652,7 @@ void VizPaint::print_plot (VizParam& p) {
                            cy + get_point(endPosRef+(begPosRef-endPosRef)/2.0));
           line->end = Point(cx + space + width,
                            cy + get_point(endPosTar+(begPosTar-endPosTar)/2.0));
-          line->color = rgb_color(static_cast<u8>(p.start*p.mult));
+          line->color = customColor(p.start);
           line->plot(fPlot);
           break;
         case 3:
@@ -653,7 +666,7 @@ void VizPaint::print_plot (VizParam& p) {
           line->plot(fPlot);
           break;
         case 4:
-          line->color = rgb_color(static_cast<u8>(p.start*p.mult));
+          line->color = customColor(p.start);
           line->beg = Point(cx + width,         cy + get_point(endPosRef));
           line->end = Point(cx + space + width, cy + get_point(endPosTar));
           line->plot(fPlot);
@@ -662,20 +675,11 @@ void VizPaint::print_plot (VizParam& p) {
           line->end = Point(cx + space + width, cy + get_point(begPosTar));
           line->plot(fPlot);
           break;
-        case 5:
-          poly->lineColor = "grey";
-          poly->fillColor = rgb_color(static_cast<u8>(p.start*p.mult));
-          poly->one   = Point(cx + width,         cy + get_point(endPosRef));
-          poly->two   = Point(cx + width,         cy + get_point(begPosRef));
-          poly->three = Point(cx + space + width, cy + get_point(begPosTar));
-          poly->four  = Point(cx + space + width, cy + get_point(endPosTar));
-          poly->plot(fPlot);
-          break;
         default:break;
         }
 
         rect->width  = width;
-        rect->color  = rgb_color(static_cast<u8>(p.start*p.mult));
+        rect->color  = customColor(p.start);
         rect->origin = Point(cx, cy + get_point(endPosRef));
         rect->height = get_point(begPosRef-endPosRef);
         rect->plot(fPlot);
@@ -687,13 +691,11 @@ void VizPaint::print_plot (VizParam& p) {
         ++no_inverse;
       }
     }
-
-    ++p.start;
   }
   fPos.seekg(ios::beg);
 
   if (p.regular)    cerr << "Found "   << no_regular << " regular regions.\n";
-  if (p.inversion)  cerr << "Found "   << no_inverse << " inverted regions.\n";
+  if (p.inverse)    cerr << "Found "   << no_inverse << " inverted regions.\n";
   if (p.verbose)    cerr << "Ignored " << no_ignored << " regions.\n";
 
   rect->width  = width;
