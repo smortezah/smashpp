@@ -338,6 +338,12 @@ inline static void def_if_not_in_range
     val = def;
 //  error("invalid number! Interval: ["+to_string(min)+";"+to_string(max)+"].");
 }
+
+inline static void def_if_not_in_range
+(string& val, const string& min, const string& max, const string& def) {
+  if (stoull(val) < stoull(min) || stoull(val) > stoull(max))
+    val = to_string(stoull(def));
+}
 }
 
 #endif //PROJECT_FN_HPP
