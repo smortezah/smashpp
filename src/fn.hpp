@@ -324,6 +324,20 @@ inline static string string_format(const string& format, Args... args) {
   snprintf(buf.get(), size, format.c_str(), args...);
   return string(buf.get(), buf.get()+size-1);  // We don't want the '\0' inside
 }
+
+template <typename Val, typename MinVal, typename MaxVal>
+inline static void keep_in_range (Val& val, MinVal min, MaxVal max) {
+  if      (val < min)    val = min;
+  else if (val > max)    val = max;
+}
+
+template <typename Val, typename MinVal, typename MaxVal, typename DefaultVal>
+inline static void def_if_not_in_range
+(Val& val, MinVal min, MaxVal max, DefaultVal def) {
+  if (val < min || val > max)
+    val = def;
+//  error("invalid number! Interval: ["+to_string(min)+";"+to_string(max)+"].");
+}
 }
 
 #endif //PROJECT_FN_HPP
