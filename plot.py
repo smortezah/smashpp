@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import scipy as scipy
 from matplotlib.pyplot import figure
 import numpy as np
 import subprocess as sp
@@ -100,12 +101,16 @@ import subprocess as sp
 # plt.show()
 
 
-ref='HS18'#
-tar='PT18'#
+ref='refs'#'HS18'#
+tar='tars'#''PT18'#
 # figure(num=None, figsize=(12, 8))
 
 y = np.loadtxt(ref+'-'+tar+'.fil')
-plt.plot(y)
+x = np.arange(len(y))
+thresh = 0.459
+plt.fill_between(x, y, thresh, where=y<=thresh, color='green')
+plt.plot(x, np.full(len(y), thresh), color='red')
+plt.plot(y, color='green')
 plt.title('Smash++')
 plt.grid(linewidth=.3)
 plt.show()
