@@ -183,7 +183,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   auto filtered = 0.f;
   u64 symsNo = 0;
   const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
-  const auto jump_lines = [&]() {
+  const auto jump_lines = [&] () {
     for (u64 i=p.sampleStep-1; i--;)  ignore_this_line(prfF);
   };
 
@@ -192,7 +192,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     const auto val = stof(num);
     seq.emplace_back(val);
     sum += val;
-    show_progress(++symsNo, totalSize);
+    show_progress(++symsNo, totalSize);//todo faulty
     jump_lines();
   }
   filtered = sum / seq.size();
@@ -200,52 +200,52 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
   seg->partition(posF, filtered);
 
-  // Next wsize>>1 values
-  for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
-    const auto val = stof(num);
-    seq.emplace_back(val);
-    sum += val;
-    ++seg->pos;
-    filtered = sum / seq.size();
-    if (SaveFilter)
-      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
-    seg->partition(posF, filtered);
-    show_progress(++symsNo, totalSize);
-    jump_lines();
-  }
-
-  // The rest
-  u32 idx = 0;
-  while (getline(prfF,num)) {
-    const auto val = stof(num);
-    sum += val - seq[idx];
-    ++seg->pos;
-    filtered = sum / wsize;
-    if (SaveFilter)
-      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
-    seg->partition(posF, filtered);
-    seq[idx] = val;
-    idx = (idx+1) % wsize;
-    show_progress(++symsNo, totalSize);
-    jump_lines();
-  }
-  prfF.close();
-
-  // Until half of the window goes outside the array
-  for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
-    sum -= seq[idx];
-    ++seg->pos;
-    filtered = sum / (wsize-i);
-    if (SaveFilter)
-      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
-    seg->partition(posF, filtered);
-    idx = (idx+1) % wsize;
-    show_progress(++symsNo, totalSize);
-  }
-  seg->partition_last(posF);
-  show_progress(++symsNo, totalSize);
-
-  remove_progress_trace();
+//  // Next wsize>>1 values
+//  for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
+//    const auto val = stof(num);
+//    seq.emplace_back(val);
+//    sum += val;
+//    ++seg->pos;
+//    filtered = sum / seq.size();
+//    if (SaveFilter)
+//      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+//    seg->partition(posF, filtered);
+//    show_progress(++symsNo, totalSize);
+//    jump_lines();
+//  }
+//
+//  // The rest
+//  u32 idx = 0;
+//  while (getline(prfF,num)) {
+//    const auto val = stof(num);
+//    sum += val - seq[idx];
+//    ++seg->pos;
+//    filtered = sum / wsize;
+//    if (SaveFilter)
+//      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+//    seg->partition(posF, filtered);
+//    seq[idx] = val;
+//    idx = (idx+1) % wsize;
+//    show_progress(++symsNo, totalSize);
+//    jump_lines();
+//  }
+//  prfF.close();
+//
+//  // Until half of the window goes outside the array
+//  for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
+//    sum -= seq[idx];
+//    ++seg->pos;
+//    filtered = sum / (wsize-i);
+//    if (SaveFilter)
+//      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+//    seg->partition(posF, filtered);
+//    idx = (idx+1) % wsize;
+//    show_progress(++symsNo, totalSize);
+//  }
+//  seg->partition_last(posF);
+//  show_progress(++symsNo, totalSize);
+//
+//  remove_progress_trace();
   posF.close();  filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
   nSegs = seg->nSegs;
@@ -270,14 +270,14 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   auto filtered = 0.f;
   u64 symsNo = 0;
   const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
-  const auto jump_lines = [&]() {
+  const auto jump_lines = [&] () {
     for (u64 i=p.sampleStep-1; i--;)  ignore_this_line(prfF);
   };
 
   // First value
-  for (auto i=(wsize>>1u)+1; i-- && getline(prfF,num);) {
+  for (auto i=(wsize>>1u)+1; i-- && getline(prfF,num); jump_lines()) {
     seq.emplace_back(stof(num));
-    jump_lines();
+//    jump_lines();
   }
   sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.f);
   filtered = sum / sWeight;

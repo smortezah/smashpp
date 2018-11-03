@@ -55,7 +55,7 @@ static constexpr u8    DEF_LVL      {0};  // Default level
 static constexpr u8    MIN_LVL      {0};  // Min level
 static constexpr u8    MAX_LVL      {3};  // Max level
 static constexpr u32   DEF_WS       {257};// Default window size -- filter
-static constexpr u32   MIN_WS       {3};      // Min window size -- filter
+static constexpr u32   MIN_WS       {1};      // Min window size -- filter
 static constexpr u32   MAX_WS       {100000}; // Max window size -- filter
 static const string    DEF_WT       {"0"};// Default window type -- filter
 static const string    MIN_WT       {"0"};   // Min window type  -- filter
