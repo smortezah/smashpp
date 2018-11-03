@@ -2,7 +2,8 @@
 #define VIZPAINT_H_INCLUDED
 
 #include "vizdef.hpp"
-#include "vizparam.hpp"
+//#include "vizparam.hpp"
+#include "par.hpp"
 
 namespace smashpp {
 struct RgbColor {
@@ -107,7 +108,8 @@ class VizPaint {
 
   VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),
                space(0.0), refSize(0.0), tarSize(0.0), maxSize(0.0), ratio(1) {}
-  void print_plot (VizParam&);
+//  void print_plot (VizParam&);
+  void print_plot (Param&);
 
  private:
   u32 ratio;

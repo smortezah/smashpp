@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "def.hpp"
 #include "fn.hpp"
+#include "vizdef.hpp"//todo
 
 namespace smashpp {
 class Param {   // Parameters
@@ -27,32 +28,84 @@ class Param {   // Parameters
   FileType refType, tarType;
   bool     showInfo;
   string   report;
+  bool     viz, viz_verbose, viz_inverse, viz_regular, viz_showPos, viz_showNRC,
+           viz_showComplex;
+  string   viz_image;
+  u32      viz_link, viz_width, viz_space, viz_mult, viz_start, viz_min;
+  string   viz_posFile;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
              wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
              saveSeq(false), saveProfile(false), saveFilter(false),
-             saveSegment(false), saveAll(false), showInfo(true) {}
+             saveSegment(false), saveAll(false), showInfo(true),
+             viz(false), viz_verbose(false), viz_inverse(true),
+             viz_regular(true), viz_showPos(false), viz_showNRC(false),
+             viz_showComplex(false), viz_image(DEF_IMAGE), viz_link(DEF_LINK),
+             viz_width(DEF_WIDT), viz_space(DEF_SPAC), viz_mult(DEF_MULT),
+             viz_start(DEF_BEGI), viz_min(DEF_MINP) {}
+
   void parse (int, char**&);
   string print_win_type () const;
 
  private:
   void help () const;
+  void viz_help () const;
 };
 
 inline void Param::parse (int argc, char**& argv) {
-  if (argc < 2) {
-    help();  throw EXIT_SUCCESS;
-  }
-  else {
-    vector<string> vArgs(static_cast<u64>(argc));
-    for (int i=0; i!=argc; ++i)
-      vArgs.emplace_back(static_cast<string>(argv[i]));
+  if (argc < 2) { help();  throw EXIT_SUCCESS; }
+
+  vector<string> vArgs(static_cast<u64>(argc));
+  for (int i=0; i!=argc; ++i)
+    vArgs.emplace_back(static_cast<string>(argv[i]));
+
+  if (has(vArgs.begin(), vArgs.end(), "-viz")) {
+    viz = true;
+    if (argc < 3) { viz_help();  throw EXIT_SUCCESS; }
 
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-      if (*i=="-h" || *i=="--help") {
-        help();  throw EXIT_SUCCESS;
+      if      (*i=="-h" || *i=="--help") { viz_help();  throw EXIT_SUCCESS; }
+      else if (*i=="-v" || *i=="--verbose")        verbose=true;
+      else if ((*i=="-o" || *i=="--out") && i+1!=vArgs.end())
+        viz_image = *++i;
+      else if (*i=="-sp" || *i=="--show_pos")      viz_showPos=true;
+      else if (*i=="-sn" || *i=="--show_nrc")      viz_showNRC=true;
+      else if (*i=="-sc" || *i=="--show_complex")  viz_showComplex=true;
+      else if ((*i=="-l" || *i=="--link") && i+1!=vArgs.end()) {
+        viz_link = static_cast<u32>(stoul(*++i));
+        def_if_not_in_range(viz_link, MIN_LINK, MAX_LINK, DEF_LINK);
       }
+      else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
+        viz_width = static_cast<u32>(stoul(*++i));
+        def_if_not_in_range(viz_width, MIN_WIDT, MAX_WIDT, DEF_WIDT);
+      }
+      else if ((*i=="-s" || *i=="--space") && i+1!=vArgs.end()) {
+        viz_space = static_cast<u32>(stoul(*++i));
+        def_if_not_in_range(viz_space, MIN_SPAC, MAX_SPAC, DEF_SPAC);
+      }
+      else if ((*i=="-m" || *i=="--mult") && i+1!=vArgs.end()) {
+        viz_mult = static_cast<u32>(stoul(*++i));
+        def_if_not_in_range(viz_mult, MIN_MULT, MAX_MULT, DEF_MULT);
+      }
+      else if ((*i=="-b" || *i=="--begin") && i+1!=vArgs.end()) {
+        viz_start = static_cast<u32>(stoul(*++i));
+        def_if_not_in_range(viz_start, MIN_BEGI, MAX_BEGI, DEF_BEGI);
+      }
+      else if ((*i=="-c" || *i=="--min") && i+1!=vArgs.end()) {
+        viz_min = static_cast<u32>(stoul(*++i));
+        def_if_not_in_range(viz_min, MIN_MINP, MAX_MINP, DEF_MINP);
+      }
+      else if (*i=="-i" || *i=="--dont_show_inv")
+        viz_inverse=false;
+      else if (*i=="-r" || *i=="--dont_show_reg")
+        viz_regular=false;
+    }
+    viz_posFile = vArgs.back();
+  }
+  else {
+    for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
+      if      (*i=="-h" || *i=="--help") { help();  throw EXIT_SUCCESS; }
       else if (*i=="-t" || *i=="--tar") {
         if (i+1 != vArgs.end()) { tar=*++i;  check_file(tar); }
         else error("target file not specified. Use \"-t fileName\".");
@@ -74,8 +127,7 @@ inline void Param::parse (int argc, char**& argv) {
       }
       else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
         const auto tmp = stoi(*++i);
-        if (tmp <= 0)
-          error("The window size must be greater than 0.");
+        if (tmp<=0)  error("The window size must be greater than 0.");
         wsize = static_cast<u32>(tmp);
       }
       else if ((*i=="-wt" || *i=="--wtype") && i+1!=vArgs.end())
@@ -86,17 +138,12 @@ inline void Param::parse (int argc, char**& argv) {
       }
       else if ((*i=="-th" || *i=="--thresh") && i+1!=vArgs.end())
         thresh = stof(*++i);
-      else if (*i=="-sb"  || *i=="--save_seq")
-        saveSeq = true;
-      else if (*i=="-sp"  || *i=="--save_profile")
-        saveProfile = true;
-      else if (*i=="-sf"  || *i=="--save_fitler")
-        saveFilter = true;
-      else if (*i=="-ss"  || *i=="--save_segment")
-        saveSegment = true;
-      else if (*i=="-sa"  || *i=="--save_all")
-        saveAll = true;
-      else if (*i=="-R"  || *i=="--report")
+      else if (*i=="-sb" || *i=="--save_seq")        saveSeq    =true;
+      else if (*i=="-sp" || *i=="--save_profile")    saveProfile=true;
+      else if (*i=="-sf" || *i=="--save_fitler")     saveFilter =true;
+      else if (*i=="-ss" || *i=="--save_segment")    saveSegment=true;
+      else if (*i=="-sa" || *i=="--save_all")        saveAll    =true;
+      else if (*i=="-R" || *i=="--report")
         report = (i+1!=vArgs.end()) ? *++i : "report.txt";
     }
 
@@ -115,7 +162,6 @@ inline void Param::parse (int argc, char**& argv) {
       rename(s.c_str(), (s+LBL_BAK).c_str());
       to_seq(s+LBL_BAK, s, type);
     };
-
     refType = file_type(ref);
     if      (refType==FileType::FASTA) convert_to_seq(ref, FileType::FASTA);
     else if (refType==FileType::FASTQ) convert_to_seq(ref, FileType::FASTQ);
@@ -145,11 +191,16 @@ inline void Param::help () const {
     "DESCRIPTION                                                             \n"
     "    Find rearrangements.                                                \n"
     "                                                                        \n"
+    "    Mandatory arguments:                                                \n"
     "    -r [FILE],  --ref [FILE]                                            \n"
-    "        reference file. Can be bare Seq/Fasta/Fastq -> MANDATORY        \n"
+    "        reference file. Can be bare Seq/Fasta/Fastq                     \n"
     "                                                                        \n"
     "    -t [FILE],  --tar [FILE]                                            \n"
-    "        target file. Can be bare Seq/Fasta/Fastq -> MANDATORY           \n"
+    "        target file. Can be bare Seq/Fasta/Fastq                        \n"
+    "                                                                        \n"
+    "    Options:                                                            \n"
+    "    -h,  --help                                                         \n"
+    "        usage guide                                                     \n"
     "                                                                        \n"
     "    -l [NUM],  --level [NUM]                                            \n"
     "        level                                                           \n"
@@ -209,9 +260,6 @@ inline void Param::help () const {
     "    -R,  --report                                                       \n"
     "        save results in the \"report\" file                             \n"
     "                                                                        \n"
-    "    -h,  --help                                                         \n"
-    "        usage guide                                                     \n"
-    "                                                                        \n"
     "COPYRIGHT                                                               \n"
     "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro.       \n"
     "    You may redistribute copies of this Free software                   \n"
@@ -231,6 +279,52 @@ inline string Param::print_win_type () const {
   else if (wtype=="7" || wtype=="nuttall")        return "Nuttall";
 
   return "Rectangular";
+}
+
+//todo modify
+inline void Param::viz_help () const {
+  cerr <<                                                                   "\n"
+    "NAME                                                                    \n"
+    "  Smash++ Visualizer v"<<VERSION<<" - Visualization of Samsh++ output   \n"
+    "                                                                        \n"
+    "AUTHORS                                                                 \n"
+    "  Morteza Hosseini    seyedmorteza@ua.pt                                \n"
+    "  Diogo   Pratas      pratas@ua.pt                                      \n"
+    "                                                                        \n"
+    "SYNOPSIS                                                                \n"
+    "  ./smashpp -viz [OPTION]...  -o [SVG_FILE] [POS_FILE]                  \n"
+    "                                                                        \n"
+    "SAMPLE                                                                  \n"
+//    "  ./smashpp -viz -sp -sn -o out.svg ab.pos                            \n"
+    "                                                                        \n"
+    "DESCRIPTION                                                             \n"
+    "  Mandatory arguments:                                                  \n"
+    "  [POS_FILE]               positions file, generated by                 \n"
+    "                             Smash++ program (*.pos)                    \n"
+    "                                                                        \n"
+    "  Options:                                                              \n"
+    "  -h,  --help              usage guide                                  \n"
+    "  -v,  --verbose           more information                             \n"
+    "  -o,  --out [SVG_FILE]    output image filename with map               \n"
+    "  -sp, --show_pos          show positions                               \n"
+    "  -sn, --show_nrc          show normalized relative                     \n"
+    "                             compression (NRC)                          \n"
+    "  -sc, --show_complex      show self complexity                         \n"
+    "  -l,  --link  [NUM]       type of the link between maps [0;5]          \n"
+    "  -w,  --width [NUM]       width of the image sequence                  \n"
+    "  -s,  --space [NUM]       space between sequences                      \n"
+    "  -m,  --mult  [NUM]       multiplication factor for color ID           \n"
+    "  -b,  --begin [NUM]       color id beginning of color ID               \n"
+    "  -c,  --min   [NUM]       minimum block size to consider               \n"
+    "  -i,  --dont_show_inv     do NOT show inverse maps                     \n"
+    "  -r,  --dont_show_reg     do NOT show regular maps                     \n"
+    "                                                                        \n"
+    "COPYRIGHT                                                               \n"
+    "    Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro.       \n"
+    "    You may redistribute copies of this Free software                   \n"
+    "    under the terms of the GNU - General Public License                 \n"
+    "    v3 <http://www.gnu.org/licenses/gpl.html>. There                    \n"
+    "    is NOT ANY WARRANTY, to the extent permitted by law.           "<<endl;
 }
 }
 

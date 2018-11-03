@@ -6,14 +6,6 @@
 #include "def.hpp"
 
 namespace smashpp {
-static const     string RELEASE_viz     {"1"};
-static const     string VERSION_viz     {"1"};
-static constexpr bool   DEF_HELP        {false};
-static constexpr bool   DEF_VERSION     {false};
-static constexpr bool   DEF_VERBOSE     {false};
-static constexpr bool   DEF_FORCE       {false};
-static constexpr bool   DEF_INVE        {true};
-static constexpr bool   DEF_REGU        {true};
 static const     string DEF_IMAGE       {"map.svg"};
 static constexpr u32    DEF_LINK        {5};
 static constexpr u32    MIN_LINK        {0};

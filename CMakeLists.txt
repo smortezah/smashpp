@@ -20,12 +20,10 @@ add_executable(smashpp         src/main.cpp
                                src/par.hpp
                                src/assert.hpp
                                src/fn.hpp
-                               src/mdlpar.hpp)
-
-add_executable(smashpp-visual  src/vizmain.cpp
-                               src/vizpaint.cpp
-                               src/vizparam.hpp
-                               src/vizdef.hpp)
+                               src/mdlpar.hpp
+        src/vizpaint.cpp
+        src/vizdef.hpp
+        )
 
 
 #add_executable(excule_N src/excludeN.cpp)
