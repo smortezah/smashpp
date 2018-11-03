@@ -65,13 +65,15 @@ inline void Param::parse (int argc, char**& argv) {
     if (argc < 3) { viz_help();  throw EXIT_SUCCESS; }
 
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-      if      (*i=="-h" || *i=="--help") { viz_help();  throw EXIT_SUCCESS; }
-      else if (*i=="-v" || *i=="--verbose")        verbose=true;
+      if      (*i=="-h"  || *i=="--help") { viz_help();  throw EXIT_SUCCESS; }
+      else if (*i=="-v"  || *i=="--verbose")             verbose=true;
+      else if (*i=="-sp" || *i=="--show_pos")            viz_showPos=true;
+      else if (*i=="-sn" || *i=="--show_nrc")            viz_showNRC=true;
+      else if (*i=="-sc" || *i=="--show_complex")        viz_showComplex=true;
+      else if (*i=="-i"  || *i=="--dont_show_inv")       viz_inverse=false;
+      else if (*i=="-r"  || *i=="--dont_show_reg")       viz_regular=false;
       else if ((*i=="-o" || *i=="--out") && i+1!=vArgs.end())
         viz_image = *++i;
-      else if (*i=="-sp" || *i=="--show_pos")      viz_showPos=true;
-      else if (*i=="-sn" || *i=="--show_nrc")      viz_showNRC=true;
-      else if (*i=="-sc" || *i=="--show_complex")  viz_showComplex=true;
       else if ((*i=="-l" || *i=="--link") && i+1!=vArgs.end()) {
         viz_link = static_cast<u32>(stoul(*++i));
         def_if_not_in_range(viz_link, MIN_LINK, MAX_LINK, DEF_LINK);
@@ -96,54 +98,54 @@ inline void Param::parse (int argc, char**& argv) {
         viz_min = static_cast<u32>(stoul(*++i));
         def_if_not_in_range(viz_min, MIN_MINP, MAX_MINP, DEF_MINP);
       }
-      else if (*i=="-i" || *i=="--dont_show_inv")
-        viz_inverse=false;
-      else if (*i=="-r" || *i=="--dont_show_reg")
-        viz_regular=false;
     }
     viz_posFile = vArgs.back();
   }
   else {
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-      if      (*i=="-h" || *i=="--help") { help();  throw EXIT_SUCCESS; }
-      else if (*i=="-t" || *i=="--tar") {
+      if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
+      else if (*i=="-v"  || *i=="--verbose")         verbose=true;
+      else if (*i=="-sb" || *i=="--save_seq")        saveSeq=true;
+      else if (*i=="-sp" || *i=="--save_profile")    saveProfile=true;
+      else if (*i=="-sf" || *i=="--save_fitler")     saveFilter=true;
+      else if (*i=="-ss" || *i=="--save_segment")    saveSegment=true;
+      else if (*i=="-sa" || *i=="--save_all")        saveAll=true;
+      else if (*i=="-t"  || *i=="--tar") {
         if (i+1 != vArgs.end()) { tar=*++i;  check_file(tar); }
         else error("target file not specified. Use \"-t fileName\".");
       }
-      else if (*i=="-r" || *i=="--ref") {
+      else if (*i=="-r"  || *i=="--ref") {
         if (i+1 != vArgs.end()) { ref=*++i;  check_file(ref); }
         else error("reference file not specified. Use \"-r fileName\".");
       }
-      else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end())
+      else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
         level = static_cast<u8>(stoi(*++i));
-      else if (*i=="-v"  || *i=="--verbose")
-        verbose = true;
-      else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end())
+        def_if_not_in_range(level, MIN_LVL, MAX_LVL, DEF_LVL);
+      }
+      else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
         nthr = static_cast<u8>(stoi(*++i));
+        def_if_not_in_range(nthr, MIN_THR, MAX_THR, DEF_THR);
+      }
       else if ((*i=="-m" || *i=="--models") && i+1!=vArgs.end()) {
         modelsPars = *++i;
         if (modelsPars[0]=='-' || modelsPars.empty())
           error("incorrect model parameters.");
       }
       else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
-        const auto tmp = stoi(*++i);
-        if (tmp<=0)  error("The window size must be greater than 0.");
-        wsize = static_cast<u32>(tmp);
+        wsize = static_cast<u32>(stoi(*++i));
+        def_if_not_in_range(wsize, MIN_WS, MAX_WS, DEF_WS);
       }
-      else if ((*i=="-wt" || *i=="--wtype") && i+1!=vArgs.end())
+      else if ((*i=="-wt"|| *i=="--wtype") && i+1!=vArgs.end()) {
         wtype = *++i;
+        def_if_not_in_range(wtype, MIN_WT, MAX_WT, DEF_WT);
+      }
       else if ((*i=="-d" || *i=="--sample_step") && i+1!=vArgs.end()) {
         sampleStep = stoull(*++i);
         if (sampleStep==0)  sampleStep=1ull;
       }
-      else if ((*i=="-th" || *i=="--thresh") && i+1!=vArgs.end())
+      else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end())
         thresh = stof(*++i);
-      else if (*i=="-sb" || *i=="--save_seq")        saveSeq    =true;
-      else if (*i=="-sp" || *i=="--save_profile")    saveProfile=true;
-      else if (*i=="-sf" || *i=="--save_fitler")     saveFilter =true;
-      else if (*i=="-ss" || *i=="--save_segment")    saveSegment=true;
-      else if (*i=="-sa" || *i=="--save_all")        saveAll    =true;
-      else if (*i=="-R" || *i=="--report")
+      else if (*i=="-R"  || *i=="--report")
         report = (i+1!=vArgs.end()) ? *++i : "report.txt";
     }
 

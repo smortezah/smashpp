@@ -49,9 +49,17 @@ constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
 
 // Constant
 static constexpr u8    DEF_THR      {4};  // Default # threads
+static constexpr u8    MIN_THR      {1};  // Min # threads
+static constexpr u8    MAX_THR      {8};  // Max # threads
 static constexpr u8    DEF_LVL      {0};  // Default level
+static constexpr u8    MIN_LVL      {0};  // Min level
+static constexpr u8    MAX_LVL      {3};  // Max level
 static constexpr u32   DEF_WS       {257};// Default window size -- filter
+static constexpr u32   MIN_WS       {3};      // Min window size -- filter
+static constexpr u32   MAX_WS       {100000}; // Max window size -- filter
 static const string    DEF_WT       {"0"};// Default window type -- filter
+static const string    MIN_WT       {"0"};   // Min window type  -- filter
+static const string    MAX_WT       {"7"};   // Max window type  -- filter
 static constexpr float DEF_THRESH   {1.5};// Default threshold   -- filter
 static constexpr u8    CARDIN       {4};  // CARDINALITY = Alphabet size
 static constexpr u8    IRMAGIC      {3};  // Calc Mir syms based on syms
