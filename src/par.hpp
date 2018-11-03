@@ -159,6 +159,12 @@ inline void Param::parse (int argc, char**& argv) {
     else if (!has_r && !has_ref)
       error("reference file not specified. Use \"-r fileName\".");
 
+    if (!has(vArgs.begin(), vArgs.end(), "-m") &&
+        !has(vArgs.begin(), vArgs.end(), "--model"))
+      modelsPars = LEVEL[level];
+
+    keep_in_range(wsize, 0ull, min(file_size(ref),file_size(tar)));
+
     // Fasta/Fastq to Seq
     auto convert_to_seq = [&] (const string& s, const FileType& type) {
       rename(s.c_str(), (s+LBL_BAK).c_str());
@@ -248,7 +254,6 @@ inline string Param::print_win_type () const {
   return "Rectangular";
 }
 
-//todo modify
 inline void Param::viz_help () const {
   cerr <<
     "NAME                                                                    \n"
