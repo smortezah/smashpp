@@ -533,7 +533,7 @@ void VizPaint::print_plot (Param& p) {
   u64 n_refBases=0, n_tarBases=0;
   string watermark;
   fPos >> watermark >> n_refBases >> n_tarBases;
-  if (watermark != "#SCF")
+  if (watermark != POS_HDR)
     error("unknown file format for positions.");
   if (p.verbose) {
     cerr <<

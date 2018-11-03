@@ -44,7 +44,7 @@ void Filter::smooth_seg (const Param& p) {
     remove((gen_name(p.ref,p.tar,Format::FILTER)).c_str());
 
   cerr << "Done!\n";
-  if (p.verbose)
+//  if (p.verbose)
     cerr << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") <<".\n";
 }
 
@@ -362,13 +362,15 @@ void Filter::extract_seg (const string& tar, const string& ref) const {
 void Filter::aggregate_pos (const string& origin, const string& dest) const {
   ifstream fDirect(gen_name(origin, dest, Format::POSITION));
   ofstream ffinal("final-"+gen_name(origin, dest, Format::POSITION));
+  ffinal << POS_HDR <<'\t'<< to_string(file_size(origin))
+                    <<'\t'<< to_string(file_size(dest)) << '\n';
   int i = 0;
   for (string begDir, endDir, entDir; fDirect>>begDir>>endDir>>entDir; ++i) {
     const string refRev = gen_name(origin, dest, Format::SEGMENT)+to_string(i);
     ifstream fReverse(gen_name(refRev, origin, Format::POSITION));
     for (string begRev, endRev, entRev; fReverse>>begRev>>endRev>>entRev;) {
-      ffinal << begDir << '\t' << endDir << '\t' << entDir << '\t'
-             << begRev << '\t' << endRev << '\t' << entRev << '\n';
+      ffinal << begDir <<'\t'<< endDir <<'\t'<< entDir <<'\t'<< 'A' <<'\t'
+             << begRev <<'\t'<< endRev <<'\t'<< entRev << 'A' << '\n';
     }
     fReverse.close();
   }

@@ -214,7 +214,7 @@ inline void FCM::alloc_model () {
 
 void FCM::store (const Param& p) {
   const auto nMdl = Ms.size();
-  cerr << OUT_SEP << "Building the model" << (nMdl==1 ? "" : "s")
+  cerr << "Building the model" << (nMdl==1 ? "" : "s")
        << " based on \"" << p.ref << "\" (level "
        << static_cast<u16>(p.level) << ")...\n";
 

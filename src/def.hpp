@@ -82,6 +82,7 @@ static const string    FMT_POS      {"pos"}; // Format for positions file
 static const string    FMT_FIL      {"fil"}; // Format for filtered files
 static const string    LBL_SEG      {"s"};   // Label for segment files
 static const string    LBL_BAK      {"_bk"}; // Label for backup files
+static const string    POS_HDR      {"#SCF"};  // Header of positions file
 static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 static const string    OUT_SEP      {"\n"};
@@ -193,30 +194,10 @@ static constexpr u8 REV[123] { // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
   0, 0, 0, 67,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0, 65,  0, 0,  0,
   0, 0, 0
 };
-static const vector<vector<u8>> LEVEL { // 'k' of multiple models MUST be sorted
-//  static constexpr u8 LEVEL[14][16] { // 'k' of multiple models MUST be sorted
-// #mdl, Mir,  k, 100*Malpha, log2 w,  d
-  {1,     0, 20,    100,      30,    DEF_D},    // Level 0
-//  {1,     0,  1,    100,      0,     0},
-//  {1,     0,  2,    100,      0,     0},
-//  {1,     0,  3,    100,      0,     0},
-//  {1,     0,  4,    100,      0,     0},
-//  {1,     0,  5,    100,      0,     0},
-//  {1,     0,  6,    100,      0,     0},
-//  {1,     0,  7,    100,      0,     0},
-//  {1,     0,  8,    100,      0,     0},
-//  {1,     0,  9,    100,      0,     0},
-//  {1,     0, 10,    100,      0,     0},
-//  {1,     0, 11,    100,      0,     0},
-//  {1,     0, 12,    100,      0,     0},
-//  {1,     0, 13,    100,      0,     0},
-//  {1,     0, 14,    100,      0,     0}
-//  {2,     0, 4,   100,       0,         0,
-//          0, 12,   100,      10,    DEF_D},
-//  {3,     0,  10,    100,       0,         0,
-//          0, 13,    99,       0,         0,
-//          0, 20,    99,      15,    DEF_D}
-};
+static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
+"17,30,5,0,0.002,0.95/5,0,0.02,0.95:14,0,0.005,0.95/3,0,0.1,0.95:"
+"11,0,0.01,0.95:8,0,0.1,0.95:5,0,1,0.95",                             // Level 0
+""};
 
 // Struct
 struct SubSeq {
