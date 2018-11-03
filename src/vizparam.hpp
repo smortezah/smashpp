@@ -87,6 +87,7 @@ inline void VizParam::parse (int argc, char**& argv) {
   }
 }
 
+//todo modify
 inline void VizParam::print_menu_visual () const {
   cerr <<
     "Usage: visualizer-visual [OPTION]... [FILE]                             \n"
@@ -99,7 +100,7 @@ inline void VizParam::print_menu_visual () const {
     "  -v                         verbose mode (more information),           \n"
     "  -sp                        show positions,                            \n"
     "  -sn                        show normalized relative compression (NRC),\n"
-    "  -sc                        show self complexity,                            \n"
+    "  -sc                        show self complexity,                      \n"
     "  -l <link>                  link type between maps [0;5],              \n"
     "  -w <width>                 image sequence width,                      \n"
     "  -s <space>                 space between sequences,                   \n"
