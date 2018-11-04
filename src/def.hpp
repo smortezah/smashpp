@@ -197,7 +197,7 @@ static constexpr u8 REV[123] { // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
 static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
 "17,29,5,0,0.002,0.95/5,0,0.02,0.95:14,0,0.005,0.95/3,0,0.1,0.95:"
 "11,0,0.01,0.95:8,0,0.1,0.95:5,0,1,0.95",                             // Level 0
-""};
+"11,0,0.001,0.95"};
 
 // Struct
 struct SubSeq {
