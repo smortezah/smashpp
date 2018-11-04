@@ -17,7 +17,7 @@
 #include "filter.hpp"
 #include "fn.hpp"
 #include "segment.hpp"
-#include "vizpaint.hpp" //todo
+#include "vizpaint.hpp"
 using namespace smashpp;
 
 

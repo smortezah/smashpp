@@ -10,7 +10,7 @@
 #include <algorithm>
 #include "def.hpp"
 #include "fn.hpp"
-#include "vizdef.hpp"//todo
+#include "vizdef.hpp"
 
 namespace smashpp {
 class Param {   // Parameters

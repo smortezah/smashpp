@@ -6,12 +6,10 @@
 #include <cmath>
 #include <thread>
 #include <numeric>  // std::accumulate
-#include <mutex>//todo
 #include "fcm.hpp"
 #include "assert.hpp"
 #include "fn.hpp"
 using namespace smashpp;
-mutex mut;//todo
 
 FCM::FCM (Param& p) {
   aveEnt = static_cast<prec_t>(0);
@@ -518,14 +516,6 @@ inline void FCM::compress_n_child
 //  f.close();  // Actually done, automatically
 //}
 
-//todo check performance
-//template <typename OutT, typename ContIter, typename ProbParIter>
-//inline void FCM::freqs (array<OutT,4>& a, ContIter cont, ProbParIter pp)const{
-//  a = {(*cont)->query(pp->l),
-//       (*cont)->query(pp->l | 1ull),
-//       (*cont)->query(pp->l | 2ull),
-//       (*cont)->query(pp->l | 3ull)};
-//}
 template <typename OutT, typename ContIter>
 inline void FCM::freqs (array<OutT,4>& a, ContIter cont, u64 l) const {
   a = {(*cont)->query(l),
