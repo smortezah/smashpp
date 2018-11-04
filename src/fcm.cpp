@@ -105,7 +105,7 @@ inline void FCM::set_cont () {
 //}
 
 inline void FCM::show_info (const Param& p) const {
-  const u8 lblWidth=19, colWidth=8,
+  const u8 lblWidth=23, colWidth=8,
            tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
 
   const auto rule = [] (u8 n, const string& s) {
@@ -159,34 +159,33 @@ inline void FCM::show_info (const Param& p) const {
   };
 
   toprule();
-  label("Model(s)");                  mm_vals('m');
+  label("Model(s)");                                mm_vals('m');
   midrule();
-  label("Context order");             mm_vals('k');
-  label("Width of sketch");           mm_vals('w');
-  label("Depth of sketch");           mm_vals('d');
-  label("Inverted repeat");           mm_vals('i');
-  label("Alpha");                     mm_vals('a');
-  label("Gamma");                     mm_vals('g');
-//  label("Alpha ("+string("\u03B1")+")");    mm_vals('a');
-//  label("Gamma ("+string("\u03B3")+")");    mm_vals('g');
+  label("Context order   (\U0001D705)    ");        mm_vals('k');
+  label("Width of sketch (\U0001D464)    ");        mm_vals('w');
+  label("Depth of sketch (\U0001D451)    ");        mm_vals('d');
+  label("Inverted repeat (ir)");                    mm_vals('i');
+  label("Alpha           (\U0001D6FC)    ");        mm_vals('a');
+  label("Gamma           (\U0001D6FE)    ");        mm_vals('g');
   botrule();  //cerr << '\n';
 
   toprule();
-  label("Substituttional Model(s)");  cerr<<'\n';
+  label("Substituttional Model(s)");                cerr<<'\n';
   midrule();
-  label("No. Substitutes");           stmm_vals('t');
-  label("Inverted repeat");           stmm_vals('i');
-  label("Alpha");                     stmm_vals('a');
-  label("Gamma");                     stmm_vals('g');
+  label("No. Substitutes (\U0001D70F)    ");        stmm_vals('t');
+  label("Inverted repeat (ir)");                    stmm_vals('i');
+  label("Alpha           (\U0001D6FC)    ");        stmm_vals('a');
+  label("Gamma           (\U0001D6FE)    ");        stmm_vals('g');
   botrule();  //cerr << '\n';
-
-  toprule();
-  label("Filter & Segment");          cerr<<'\n';
-  midrule();
-  label("Window function");           filter_vals('f');
-  label("Window size");               filter_vals('w');
-  label("Threshold");                 filter_vals('t');
-  botrule();  //cerr << '\n';
+  if (!p.compress) {
+    toprule();
+    label("Filter & Segment");                      cerr<<'\n';
+    midrule();
+    label("Window function");                       filter_vals('f');
+    label("Window size");                           filter_vals('w');
+    label("Threshold");                             filter_vals('t');
+    botrule();  //cerr << '\n';
+  }
 
   toprule();
   label("Files");        header("Size (B)");    header("Name");      cerr<<'\n';
