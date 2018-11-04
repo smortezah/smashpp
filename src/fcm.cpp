@@ -15,7 +15,6 @@ mutex mut;//todo
 
 FCM::FCM (Param& p) {
   aveEnt = static_cast<prec_t>(0);
-//  symsProcessed = 0ull;//todo
   config(p);
   if (p.verbose && p.showInfo) { show_info(p);    p.showInfo=false; }
   alloc_model();
@@ -109,15 +108,15 @@ inline void FCM::show_info (const Param& p) const {
   const u8 lblWidth=19, colWidth=8,
            tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
 
-  const auto rule = [](u8 n, const string& s) {
+  const auto rule = [] (u8 n, const string& s) {
     for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
   };
-  const auto toprule  = [&]() { rule(tblWidth, "~"); };
-  const auto midrule  = [&]() { rule(tblWidth, "~"); };
-  const auto botrule  = [&]() { rule(tblWidth, " "); };
-  const auto label    = [&](const string& s) {cerr<<setw(lblWidth)<<left<<s;};
-  const auto header   = [&](const string& s) {cerr<<setw(2*colWidth)<<left<<s;};
-  const auto mm_vals  = [&](char c) {
+  const auto toprule  = [&] () { rule(tblWidth, "~"); };
+  const auto midrule  = [&] () { rule(tblWidth, "~"); };
+  const auto botrule  = [&] () { rule(tblWidth, " "); };
+  const auto label    = [&] (const string& s) {cerr<<setw(lblWidth)<<left<<s;};
+  const auto header   = [&] (const string& s){cerr<<setw(2*colWidth)<<left<<s;};
+  const auto mm_vals  = [&] (char c) {
     int i = 0;
     for (const auto& e : Ms) {
       cerr << setw(colWidth) << left;
@@ -131,7 +130,7 @@ inline void FCM::show_info (const Param& p) const {
     }
     cerr << '\n';
   };
-  const auto stmm_vals = [&](char c) {
+  const auto stmm_vals = [&] (char c) {
     for (const auto& e : Ms) {
       cerr << setw(colWidth) << left;
       if (e.child) {
@@ -144,7 +143,7 @@ inline void FCM::show_info (const Param& p) const {
     }
     cerr << '\n';
   };
-  const auto filter_vals = [&](char c) {
+  const auto filter_vals = [&] (char c) {
     cerr << setw(colWidth) << left;
     if      (c=='f') cerr<<p.print_win_type();
     else if (c=='w') cerr<<p.wsize;
@@ -227,7 +226,7 @@ void FCM::store (const Param& p) {
 //  for(auto a:cmls4)a->print();cerr<<'\n';
   #endif
 
-    cerr << "Done!\n";
+  cerr << "Done!\n";
 }
 
 inline void FCM::store_1 (const Param& p) {
@@ -290,7 +289,6 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
     rf.read(buffer.data(), FILE_BUF);
     for (auto it=buffer.begin(); it!=buffer.begin()+rf.gcount(); ++it) {
       const auto c = *it;
-//    mut.lock();  ++symsProcessed;  mut.unlock();//todo
 //    for (Mask ctx=0; rf.get(c);) { // Slower
       if (c!='N' && c!='\n') {
         ctx = ((ctx & mask)<<2u) | NUM[static_cast<u8>(c)];

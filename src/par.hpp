@@ -28,6 +28,7 @@ class Param {   // Parameters
   FileType refType, tarType;
   bool     showInfo;
   string   report;
+  bool     compress, filter, segment;
   bool     viz, viz_verbose, viz_inverse, viz_regular, viz_showPos, viz_showNRC,
            viz_showComplex;
   string   viz_image;
@@ -39,6 +40,7 @@ class Param {   // Parameters
              wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
              saveSeq(false), saveProfile(false), saveFilter(false),
              saveSegment(false), saveAll(false), showInfo(true),
+             compress(false), filter(false), segment(false),
              viz(false), viz_verbose(false), viz_inverse(true),
              viz_regular(true), viz_showPos(false), viz_showNRC(false),
              viz_showComplex(false), viz_image(DEF_IMAGE), viz_link(DEF_LINK),
@@ -105,6 +107,9 @@ inline void Param::parse (int argc, char**& argv) {
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
       if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
       else if (*i=="-v"  || *i=="--verbose")         verbose=true;
+      else if (*i=="-compress")                      compress=true;
+      else if (*i=="-filter")                        filter=true;
+      else if (*i=="-segment")                       segment=true;
       else if (*i=="-sb" || *i=="--save_seq")        saveSeq=true;
       else if (*i=="-sp" || *i=="--save_profile")    saveProfile=true;
       else if (*i=="-sf" || *i=="--save_fitler")     saveFilter=true;

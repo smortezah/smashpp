@@ -15,6 +15,8 @@ inline void Filter::config (const Param& p) {
   config_wtype(p.wtype);
   wsize = is_odd(p.wsize) ? p.wsize : p.wsize+1;
   window.resize(wsize);
+  //todo
+  if ((p.filter || p.segment) && p.verbose)  show_info(p);
 }
 
 inline void Filter::config_wtype (const string& t) {
@@ -26,6 +28,49 @@ inline void Filter::config_wtype (const string& t) {
   else if (t=="5" || t=="welch")         wtype = WType::WELCH;
   else if (t=="6" || t=="sine")          wtype = WType::SINE;
   else if (t=="7" || t=="nuttall")       wtype = WType::NUTTALL;
+}
+
+inline void Filter::show_info (const Param& p) const {
+  const u8 lblWidth=19, colWidth=8,
+    tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
+
+  const auto rule = [] (u8 n, const string& s) {
+    for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
+  };
+  const auto toprule  = [&] () { rule(tblWidth, "~"); };
+  const auto midrule  = [&] () { rule(tblWidth, "~"); };
+  const auto botrule  = [&] () { rule(tblWidth, " "); };
+  const auto label    = [&] (const string& s) {cerr<<setw(lblWidth)<<left<<s;};
+  const auto header   = [&] (const string& s){cerr<<setw(2*colWidth)<<left<<s;};
+  const auto filter_vals = [&] (char c) {
+    cerr << setw(colWidth) << left;
+    if      (c=='f') cerr<<p.print_win_type();
+    else if (c=='w') cerr<<p.wsize;
+    else if (c=='t') cerr<<p.thresh;
+    cerr << '\n';
+  };
+  const auto file_vals = [&](char c) {
+    cerr << setw(2*colWidth) << left;
+    if      (c=='1') {cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);}
+    else if (c=='r') cerr<<p.ref;
+    else if (c=='2') {cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.tar);}
+    else if (c=='t') cerr<<p.tar;
+  };
+
+  toprule();
+  label("Filter & Segment");          cerr<<'\n';
+  midrule();
+  label("Window function");           filter_vals('f');
+  label("Window size");               filter_vals('w');
+  label("Threshold");                 filter_vals('t');
+  botrule();  //cerr << '\n';
+
+  toprule();
+  label("Files");        header("Size (B)");    header("Name");      cerr<<'\n';
+  midrule();
+  label("Reference");    file_vals('1');        file_vals('r');      cerr<<'\n';
+  label("Target");       file_vals('2');        file_vals('t');      cerr<<'\n';
+  botrule();
 }
 
 void Filter::smooth_seg (const Param& p) {
@@ -192,7 +237,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     const auto val = stof(num);
     seq.emplace_back(val);
     sum += val;
-    show_progress(++symsNo, totalSize);//todo faulty
+    show_progress(++symsNo, totalSize);
     jump_lines();
   }
   filtered = sum / seq.size();
@@ -200,52 +245,52 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
   seg->partition(posF, filtered);
 
-//  // Next wsize>>1 values
-//  for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
-//    const auto val = stof(num);
-//    seq.emplace_back(val);
-//    sum += val;
-//    ++seg->pos;
-//    filtered = sum / seq.size();
-//    if (SaveFilter)
-//      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
-//    seg->partition(posF, filtered);
-//    show_progress(++symsNo, totalSize);
-//    jump_lines();
-//  }
-//
-//  // The rest
-//  u32 idx = 0;
-//  while (getline(prfF,num)) {
-//    const auto val = stof(num);
-//    sum += val - seq[idx];
-//    ++seg->pos;
-//    filtered = sum / wsize;
-//    if (SaveFilter)
-//      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
-//    seg->partition(posF, filtered);
-//    seq[idx] = val;
-//    idx = (idx+1) % wsize;
-//    show_progress(++symsNo, totalSize);
-//    jump_lines();
-//  }
-//  prfF.close();
-//
-//  // Until half of the window goes outside the array
-//  for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
-//    sum -= seq[idx];
-//    ++seg->pos;
-//    filtered = sum / (wsize-i);
-//    if (SaveFilter)
-//      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
-//    seg->partition(posF, filtered);
-//    idx = (idx+1) % wsize;
-//    show_progress(++symsNo, totalSize);
-//  }
-//  seg->partition_last(posF);
-//  show_progress(++symsNo, totalSize);
-//
-//  remove_progress_trace();
+  // Next wsize>>1 values
+  for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
+    const auto val = stof(num);
+    seq.emplace_back(val);
+    sum += val;
+    ++seg->pos;
+    filtered = sum / seq.size();
+    if (SaveFilter)
+      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+    seg->partition(posF, filtered);
+    show_progress(++symsNo, totalSize);
+    jump_lines();
+  }
+
+  // The rest
+  u32 idx = 0;
+  while (getline(prfF,num)) {
+    const auto val = stof(num);
+    sum += val - seq[idx];
+    ++seg->pos;
+    filtered = sum / wsize;
+    if (SaveFilter)
+      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+    seg->partition(posF, filtered);
+    seq[idx] = val;
+    idx = (idx+1) % wsize;
+    show_progress(++symsNo, totalSize);
+    jump_lines();
+  }
+  prfF.close();
+
+  // Until half of the window goes outside the array
+  for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
+    sum -= seq[idx];
+    ++seg->pos;
+    filtered = sum / (wsize-i);
+    if (SaveFilter)
+      filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
+    seg->partition(posF, filtered);
+    idx = (idx+1) % wsize;
+    show_progress(++symsNo, totalSize);
+  }
+  seg->partition_last(posF);
+  show_progress(++symsNo, totalSize);
+
+  remove_progress_trace();
   posF.close();  filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
   nSegs = seg->nSegs;
@@ -277,7 +322,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   // First value
   for (auto i=(wsize>>1u)+1; i-- && getline(prfF,num); jump_lines()) {
     seq.emplace_back(stof(num));
-//    jump_lines();
+    jump_lines();
   }
   sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.f);
   filtered = sum / sWeight;
