@@ -33,6 +33,10 @@ inline void Text::plot (ofstream& f, int hTune=0, int vTune=0, u8 fontSize=17,
     "-inkscape-font-specification:Arial\">" << label << "</tspan>\n</text>\n";
 }
 
+inline void Text::plot_title (ofstream& f) const {
+  plot(f, 0, 0, 17, "middle");
+}
+
 //todo age baze kuchik bud, bege e.g 100-200
 inline void Text::plot_pos_ref (ofstream& f) const {
   plot(f, -5, 3, 10, "end");
@@ -516,7 +520,8 @@ inline void VizPaint::print_tail (ofstream& f) const {
   f << "</g>\n</svg>";
 }
 
-inline void VizPaint::config (double width_, double space_, u64 refSize_, u64 tarSize_) {
+inline void VizPaint::config
+(double width_, double space_, u64 refSize_, u64 tarSize_) {
   ratio   = static_cast<u32>(max(refSize_,tarSize_) / PAINT_SCALE);
   width   = width_;
   space   = space_;
@@ -531,26 +536,27 @@ void VizPaint::print_plot (Param& p) {
   ofstream fPlot(p.viz_image);
 
   u64 n_refBases=0, n_tarBases=0;
-  string watermark;
-  fPos >> watermark >> n_refBases >> n_tarBases;
+  string watermark, ref, tar;
+  fPos >> watermark >> ref >> n_refBases >> tar >> n_tarBases;
   if (watermark != POS_HDR)
     error("unknown file format for positions.");
   if (p.verbose) {
     cerr <<
       "==[ CONFIGURATION ]================="                              <<"\n"
-      "Verbose mode ....................... yes"                          <<"\n"
-      "Reference number of bases .......... " << n_refBases               <<"\n"
-      "Target number of bases ............. " << n_tarBases               <<"\n"
-      "Link type .......................... " << p.viz_link                   <<"\n"
+      "Reference .......................... " << ref                      <<"\n"
+      "  [+] Number of bases .............. " << n_refBases               <<"\n"
+      "Target ............................. " << tar                      <<"\n"
+      "  [+] Number of bases .............. " << n_tarBases               <<"\n"
+      "Link type .......................... " << p.viz_link               <<"\n"
       "Chromosomes design characteristics:"                               <<"\n"
-      "  [+] Width ........................ " << p.viz_width                  <<"\n"
-      "  [+] Space ........................ " << p.viz_space                  <<"\n"
-      "  [+] Multiplication factor ........ " << p.viz_mult                   <<"\n"
-      "  [+] Begin ........................ " << p.viz_start                  <<"\n"
-      "  [+] Minimum ...................... " << p.viz_min                    <<"\n"
-      "  [+] Show regular ................. " <<(p.viz_regular ? "yes" : "no")<<"\n"
-      "  [+] Show inversions .............. " <<(p.viz_inverse ? "yes" : "no")<<"\n"
-      "Output map filename ................ " << p.viz_image                  <<"\n"
+      "  [+] Width ........................ " << p.viz_width              <<"\n"
+      "  [+] Space ........................ " << p.viz_space              <<"\n"
+      "  [+] Multiplication factor ........ " << p.viz_mult               <<"\n"
+      "  [+] Begin ........................ " << p.viz_start              <<"\n"
+      "  [+] Minimum ...................... " << p.viz_min                <<"\n"
+      "  [+] Show regular ................. " <<(p.viz_regular?"yes":"no")<<"\n"
+      "  [+] Show inversions .............. " <<(p.viz_inverse?"yes":"no")<<"\n"
+      "Output map filename ................ " << p.viz_image              <<"\n"
                                                                         << endl;
   }
 
@@ -582,17 +588,13 @@ void VizPaint::print_plot (Param& p) {
 //  rect->height = tarSize;
 //  rect->plot_oval(fPlot);
 
-  text->origin = Point(cx, cy - 15);
-  //todo
-//  if (p.test) { text->label=ref name }
-  text->label  = "REF";
-  text->plot(fPlot);
+  text->origin = Point(cx + width/2, cy - 15);
+  text->label=ref;    //  text->label  = "REF";
+  text->plot_title(fPlot);
 
-  text->origin = Point(cx + width + space, cy - 15);
-  //todo
-//  if (p.test) { text->label=tar name }
-  text->label  = "TAR";
-  text->plot(fPlot);
+  text->origin = Point(cx + width + space + width/2, cy - 15);
+  text->label=tar;    //  text->label  = "TAR";
+  text->plot_title(fPlot);
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
   if (p.viz_min==0)  p.viz_min=static_cast<u32>(maxSize / 100);
@@ -621,8 +623,10 @@ void VizPaint::print_plot (Param& p) {
 
     if (p.viz_showPos) {
       double X = 0;
-      if     (p.viz_showNRC && p.viz_showComplex)  X=2*(HORIZ_TUNE + width/HORIZ_RATIO);
-      else if(p.viz_showNRC ^  p.viz_showComplex)  X=   HORIZ_TUNE + width/HORIZ_RATIO;
+      if (p.viz_showNRC && p.viz_showComplex)
+        X = 2*(HORIZ_TUNE + width/HORIZ_RATIO);
+      else if(p.viz_showNRC ^ p.viz_showComplex)
+        X = HORIZ_TUNE + width/HORIZ_RATIO;
 
       text->origin = Point(cx - X, cy + get_point(begRef));
       text->label  = to_string(begRef);
@@ -804,9 +808,9 @@ void VizPaint::print_plot (Param& p) {
   }
   fPos.seekg(ios::beg);
 
-  if (p.viz_regular)    cerr << "Found "   << n_regular << " regular regions.\n";
-  if (p.viz_inverse)    cerr << "Found "   << n_inverse << " inverted regions.\n";
-  if (p.verbose)    cerr << "Ignored " << n_ignored << " regions.\n";
+  if (p.viz_regular)    cerr << "Found " << n_regular << " regular regions.\n";
+  if (p.viz_inverse)    cerr << "Found " << n_inverse << " inverted regions.\n";
+  if (p.verbose)        cerr << "Ignored " << n_ignored << " regions.\n";
 
   rect->width  = width;
   rect->origin = Point(cx, cy);

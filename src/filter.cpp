@@ -15,7 +15,6 @@ inline void Filter::config (const Param& p) {
   config_wtype(p.wtype);
   wsize = is_odd(p.wsize) ? p.wsize : p.wsize+1;
   window.resize(wsize);
-  //todo
   if ((p.filter || p.segment) && p.verbose)  show_info(p);
 }
 
@@ -116,8 +115,8 @@ inline void Filter::hamming () {
 
   for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
     window[n] = window[last-n] = static_cast<float>(0.54 - 0.46*cos(n*num/den));
-//todo. remove. just for test. compatible with Diogo's version
-  //  for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
+  // todoo. Remove. Just for test. Compatible with Diogo's version
+//    for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
 //    window[n] = window[last-n]
 //              = static_cast<float>(0.54 + 0.46*cos(2*PI*n/wsize));
 }
@@ -407,8 +406,8 @@ void Filter::extract_seg (const string& tar, const string& ref) const {
 void Filter::aggregate_pos (const string& origin, const string& dest) const {
   ifstream fDirect(gen_name(origin, dest, Format::POSITION));
   ofstream ffinal("final-"+gen_name(origin, dest, Format::POSITION));
-  ffinal << POS_HDR <<'\t'<< to_string(file_size(origin))
-                    <<'\t'<< to_string(file_size(dest)) << '\n';
+  ffinal << POS_HDR <<'\t'<< origin <<'\t'<< to_string(file_size(origin))
+                    <<'\t'<< dest   <<'\t'<< to_string(file_size(dest)) << '\n';
   int i = 0;
   for (string begDir, endDir, entDir; fDirect>>begDir>>endDir>>entDir; ++i) {
     const string refRev = gen_name(origin, dest, Format::SEGMENT)+to_string(i);
