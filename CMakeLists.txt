@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3.2)
-#project(smashpp)
+project(smashpp)
 #SET(CMAKE_BUILD_TYPE Release)  # Must be commented for debugging
 #SET(CMAKE_BUILD_TYPE Debug)
 ### NOTE: Using optimization flag "-O" is DANGEROUS.
