@@ -26,6 +26,7 @@ class Filter {
 
   void config              (const Param&);
   void config_wtype        (const string&);
+  void show_info           (const Param&) const;
   void make_window         ();
   void hamming             ();
   void hann                ();

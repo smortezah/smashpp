@@ -33,6 +33,7 @@ inline void Text::plot (ofstream& f, int hTune=0, int vTune=0, u8 fontSize=17,
     "-inkscape-font-specification:Arial\">" << label << "</tspan>\n</text>\n";
 }
 
+//todo age baze kuchik bud, bege e.g 100-200
 inline void Text::plot_pos_ref (ofstream& f) const {
   plot(f, -5, 3, 10, "end");
 }
@@ -524,7 +525,6 @@ inline void VizPaint::config (double width_, double space_, u64 refSize_, u64 ta
   maxSize = max(refSize, tarSize);
 }
 
-//void VizPaint::print_plot (VizParam& p) {
 void VizPaint::print_plot (Param& p) {
   check_file(p.viz_posFile);
   ifstream fPos (p.viz_posFile);
