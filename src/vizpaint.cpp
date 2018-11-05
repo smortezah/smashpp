@@ -279,6 +279,19 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = maxSize + PAINT_EXTRA;
   rect->plot(fPlot);
 
+
+//  int n=0;
+//  for(auto i=0.0;i!=2.0;i+=0.25){
+//    rect->width  = 20;
+//    rect->height = 100 / int(2.0 / 0.25);
+//    rect->color = shade_color(0, ceil(i*100+55), 55);
+//    rect->origin = Point(cx-2*rect->width,
+//      cy + 0.35 * refSize + n * (rect->height));
+//    rect->plot(fPlot);
+//    ++n;
+//  }
+
+
 //  rect->origin = Point(cx, cy);
 //  rect->width  = width;
 //  rect->height = refSize;
