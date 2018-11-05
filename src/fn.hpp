@@ -303,8 +303,8 @@ inline static void to_seq
   fIn.close();  fOut.close();
 }
 
-template <typename Pos, typename Total>
-inline static void show_progress (Pos pos, Total total) {
+template <typename ValuePos, typename Value>
+inline static void show_progress (ValuePos pos, Value total) {
   if (total>100 && pos%(total/100)==0) {
     cerr << "Progress: [" << static_cast<int>((pos*100) / total) << " %]\r";
 //    flush(cerr);
