@@ -212,7 +212,7 @@ void FCM::store (const Param& p) {
   const auto nMdl = Ms.size();
   cerr << "Building the model" << (nMdl==1 ? "" : "s")
        << " based on \"" << p.ref << "\" (level "
-       << static_cast<u16>(p.level) << ")...\n";
+       << static_cast<u16>(p.level+1) << ")...\n";
 
   (p.nthr==1 || nMdl==1) ? store_1(p) : store_n(p)/*Mult thr*/;
 

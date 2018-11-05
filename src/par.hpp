@@ -95,11 +95,12 @@ inline void Param::parse (int argc, char**& argv) {
       }
       else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
         level = static_cast<u8>(stoi(*++i));
-        def_if_not_in_range(level, MIN_LVL, MAX_LVL, DEF_LVL);
+        def_if_not_in_range("Level", level, MIN_LVL, MAX_LVL, DEF_LVL);
+        level -= 1;
       }
       else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
         nthr = static_cast<u8>(stoi(*++i));
-        def_if_not_in_range(nthr, MIN_THR, MAX_THR, DEF_THR);
+        def_if_not_in_range("Number of threads", nthr, MIN_THR,MAX_THR,DEF_THR);
       }
       else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
         modelsPars = *++i;
@@ -108,11 +109,11 @@ inline void Param::parse (int argc, char**& argv) {
       }
       else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
         wsize = static_cast<u32>(stoi(*++i));
-        def_if_not_in_range(wsize, MIN_WS, MAX_WS, DEF_WS);
+        def_if_not_in_range("Window size", wsize, MIN_WS, MAX_WS, DEF_WS);
       }
       else if ((*i=="-wt"|| *i=="--wtype") && i+1!=vArgs.end()) {
         wtype = *++i;
-        def_if_not_in_range(wtype, MIN_WT, MAX_WT, DEF_WT);
+        def_if_not_in_range("Window type", wtype, MIN_WT, MAX_WT, DEF_WT);
       }
       else if ((*i=="-d" || *i=="--step") && i+1!=vArgs.end()) {
         sampleStep = stoull(*++i);
@@ -248,27 +249,27 @@ inline void VizParam::parse (int argc, char**& argv) {
       image = *++i;
     else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
       link = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range(link, MIN_LINK, MAX_LINK, DEF_LINK);
+      def_if_not_in_range("Link", link, MIN_LINK, MAX_LINK, DEF_LINK);
     }
     else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
       width = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range(width, MIN_WIDT, MAX_WIDT, DEF_WIDT);
+      def_if_not_in_range("Width", width, MIN_WIDT, MAX_WIDT, DEF_WIDT);
     }
     else if ((*i=="-s" || *i=="--space") && i+1!=vArgs.end()) {
       space = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range(space, MIN_SPAC, MAX_SPAC, DEF_SPAC);
+      def_if_not_in_range("Space", space, MIN_SPAC, MAX_SPAC, DEF_SPAC);
     }
     else if ((*i=="-m" || *i=="--mult")  && i+1!=vArgs.end()) {
       mult = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range(mult, MIN_MULT, MAX_MULT, DEF_MULT);
+      def_if_not_in_range("Mult", mult, MIN_MULT, MAX_MULT, DEF_MULT);
     }
     else if ((*i=="-b" || *i=="--begin") && i+1!=vArgs.end()) {
       start = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range(start, MIN_BEGI, MAX_BEGI, DEF_BEGI);
+      def_if_not_in_range("Begin", start, MIN_BEGI, MAX_BEGI, DEF_BEGI);
     }
     else if ((*i=="-c" || *i=="--min")   && i+1!=vArgs.end()) {
       min = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range(min, MIN_MINP, MAX_MINP, DEF_MINP);
+      def_if_not_in_range("Min", min, MIN_MINP, MAX_MINP, DEF_MINP);
     }
   }
   posFile = vArgs.back();
