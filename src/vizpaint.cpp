@@ -6,61 +6,43 @@ using namespace smashpp;
 /*
  * class Text
  */
-inline Text::Text (Point origin, const string& label) {
-  config(origin, label);
-}
-
-inline void Text::config (Point origin_, const string& label_) {
-  origin = origin_;
-  label  = label_;
-}
-
-inline void Text::plot (ofstream& f, int hTune=0, int vTune=0, u8 fontSize=17,
-                        const string& textAnchor="start") const {
-  f << "<text xml:space=\"preserve\" style=\"font-size:40px;font-style:normal;"
-    "font-weight:normal;line-height:125%%;letter-spacing:0px;word-spacing:0px;"
-    "fill:#000000;fill-opacity:1;stroke:none;font-family:Sans\" "
-    "x=\"" << PREC << origin.x + hTune << "\" "
-    "y=\"" << PREC << origin.y + vTune << "\" "
-    "id=\"corben\" sodipodi:linespacing=\"125%%\"><tspan sodipodi:role=\""
-    "line\" id=\"tspan3804\" "
-    "x=\"" << PREC << origin.x + hTune << "\" "
-    "y=\"" << PREC << origin.y + vTune << "\" "
+inline void Text::plot (ofstream& f) const {
+  f << "<text sodipodi:role=\"line\" id=\"tspan3804\" "
+    "x=\"" << PREC << origin.x  << "\" "
+    "y=\"" << PREC << origin.y  << "\" "
+    "transform=\"" << transform << "\" "
     "style=\"font-size:" << to_string(fontSize) << "px;font-style:normal;"
     "font-variant:normal;font-weight:normal;font-stretch:normal;"
     "text-align:start;line-height:125%%;writing-mode:lr-tb;"
     "text-anchor:" << textAnchor << ";font-family:Arial;"
-    "-inkscape-font-specification:Arial\">" << label << "</tspan>\n</text>\n";
+    "-inkscape-font-specification:Arial\">" << label << "</text>\n";
 }
 
-inline void Text::plot_title (ofstream& f) const {
-  plot(f, 0, 0, 17, "middle");
+inline void Text::plot_title (ofstream& f) {
+  textAnchor = "middle";
+  fontSize = 17;
+  plot(f);
 }
 
-//todo age baze kuchik bud, bege e.g 100-200
-inline void Text::plot_pos_ref (ofstream& f) const {
-  plot(f, -5, 3, 10, "end");
+inline void Text::plot_pos_ref (ofstream& f) {
+  textAnchor = "end";
+  origin.x += -5;
+  origin.y += 3;
+  fontSize = 10;
+  plot(f);
 }
 
-inline void Text::plot_pos_tar (ofstream& f) const {
-  plot(f, 5, 3, 10, "start");
+inline void Text::plot_pos_tar (ofstream& f) {
+  textAnchor = "start";
+  origin.x += 5;
+  origin.y += 3;
+  fontSize = 10;
+  plot(f);
 }
 
 /*
  * class Line
  */
-inline Line::Line (Point beg, Point end_, double width, const string& color) {
-  config(beg, end_, width, color);
-}
-
-inline void Line::config
-(Point beg_, Point end_, double width_=2.0, const string& color_="black") {
-  beg   = beg_;
-  end   = end_;
-  width = width_;
-  color = color_;
-}
-
 inline void Line::plot (ofstream& f) const {
   f << "<line "
     "x1=\""           << PREC << beg.x << "\" y1=\"" << PREC << beg.y << "\" "
@@ -72,18 +54,41 @@ inline void Line::plot (ofstream& f) const {
 /*
  * class Rectangle
  */
-inline Rectangle::Rectangle
-(Point origin, double width, double height, const string& color) {
-  config(origin, width, height, color);
+//todo
+inline void Rectangle::plot_legend (ofstream& f, const string& startColor,
+  const string& stopColor) const {
+  f << "<defs> <linearGradient id=\"grad1\" x1=\"0%\" y1=\"0%\" "
+    "x2=\"0%\" y2=\"100%\"> <stop offset=\"0%\" "
+    "style=\"stop-color:" << startColor << ";stop-opacity:1\" />"
+    "<stop offset=\"100%\" "
+    "style=\"stop-color:" << stopColor << ";stop-opacity:1\" /> "
+    "</linearGradient> </defs>"
+    "<rect fill=\"url(#grad1)\" "
+    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
+    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
+    "/>\n";
+
+  auto text = make_shared<Text>();
+  text->origin = Point(origin.x+width/2, origin.y);
+  text->label = "+";
+  text->fontSize = 20;
+  text->plot(f);
+
+  text->origin = Point(origin.x+width/2, origin.y+height+13);
+  text->label = "-";
+  text->fontSize = 30;
+  text->plot(f);
+
+  text->origin = Point(origin.x+width*1.2, origin.y+height/2);
+  text->label = "SIMILARITY";
+  text->fontSize = 13;
+  text->textAnchor = "middle";
+  text->transform = "rotate(90,"+to_string(text->origin.x)+","
+                                +to_string(text->origin.y)+")";
+  text->plot(f);
 }
 
-inline void Rectangle::config
-(Point origin_, double width_, double height_, const string& color_="white") {
-  origin = origin_;
-  width  = width_;
-  height = height_;
-  color  = color_;
-}
+
 
 inline void Rectangle::plot (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
@@ -198,23 +203,6 @@ inline void Rectangle::plot_chromosome (ofstream& f) const {
 /*
  * class Polygon
  */
-inline Polygon::Polygon (Point one, Point two, Point three, Point four,
-                         const string& lineColor,
-                         const string& fillColor) {
-  config(one, two, three, four, lineColor, fillColor);
-}
-
-inline void Polygon::config (Point one_, Point two_, Point three_, Point four_,
-                             const string& lineColor_="black",
-                             const string& fillColor_="white") {
-  one       = one_;
-  two       = two_;
-  three     = three_;
-  four      = four_;
-  lineColor = lineColor_;
-  fillColor = fillColor_;
-}
-
 inline void Polygon::plot (ofstream& f) const {
   f << "<polygon points=\""
     << PREC << one.x   << "," << PREC << one.y   << " "
@@ -229,17 +217,6 @@ inline void Polygon::plot (ofstream& f) const {
 /*
  * class Circle
  */
-inline Circle::Circle (Point origin, double radius, const string& fillColor) {
-  config(origin, radius, fillColor);
-}
-
-inline void Circle::config
-(Point origin_, double radius_, const string& fillColor_) {
-  origin    = origin_;
-  radius    = radius_;
-  fillColor = fillColor_;
-}
-
 inline void Circle::plot (ofstream& f) const {
   f << "<circle "
     "cx=\"" << PREC << origin.x << "\" cy=\"" << PREC << origin.y << "\" "
@@ -264,7 +241,7 @@ void VizPaint::print_plot (VizParam& p) {
   cerr << "Plotting ...\n";
   config(p.width, p.space, n_refBases, n_tarBases);
 
-  print_head(fPlot, PAINT_CX + width + space + width + PAINT_CX,
+  print_head(fPlot, PAINT_CX + width + space + width + 1.5*PAINT_CX,
              maxSize + PAINT_EXTRA);
 
   auto line   = make_shared<Line>();
@@ -273,24 +250,11 @@ void VizPaint::print_plot (VizParam& p) {
   auto poly   = make_shared<Polygon>();
   auto text   = make_shared<Text>();
 
-  rect->color  = "#ffffff";
+  rect->color  = backColor;
   rect->origin = Point(0, 0);
-  rect->width  = PAINT_CX + width + space + width + PAINT_CX;
+  rect->width  = PAINT_CX + width + space + width + 1.5*PAINT_CX;
   rect->height = maxSize + PAINT_EXTRA;
   rect->plot(fPlot);
-
-
-//  int n=0;
-//  for(auto i=0.0;i!=2.0;i+=0.25){
-//    rect->width  = 20;
-//    rect->height = 100 / int(2.0 / 0.25);
-//    rect->color = shade_color(0, ceil(i*100+55), 55);
-//    rect->origin = Point(cx-2*rect->width,
-//      cy + 0.35 * refSize + n * (rect->height));
-//    rect->plot(fPlot);
-//    ++n;
-//  }
-
 
 //  rect->origin = Point(cx, cy);
 //  rect->width  = width;
@@ -301,11 +265,11 @@ void VizPaint::print_plot (VizParam& p) {
 //  rect->plot_oval(fPlot);
 
   text->origin = Point(cx + width/2, cy - 15);
-  text->label=ref;    //  text->label  = "REF";
+  text->label  = ref;    //  text->label  = "REF";
   text->plot_title(fPlot);
 
   text->origin = Point(cx + width + space + width/2, cy - 15);
-  text->label=tar;    //  text->label  = "TAR";
+  text->label  = tar;    //  text->label  = "TAR";
   text->plot_title(fPlot);
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
@@ -316,12 +280,23 @@ void VizPaint::print_plot (VizParam& p) {
   };
   auto nrcColor = [=] (double entropy) {
     keep_in_range(entropy, 0.0, 2.0);
-    return shade_color(0, ceil(entropy*100+55), 55);
+    return shade_color(0, ceil(255-(entropy*50)), 75);
   };
   auto complColor = [=] (double entropy) {
     keep_in_range(entropy, 0.0, 2.0);
-    return shade_color(0, 55, ceil(entropy*100+55));
+    return shade_color(0, 55, ceil(255-(entropy*100+55)));
   };
+
+
+
+//todo
+  rect->origin = Point(PAINT_CX+width+space+width+PAINT_CX-40, 30);
+  rect->width  = 0.6*width;
+  rect->height = 100;
+  rect->plot_legend(fPlot, nrcColor(2), nrcColor(0));
+
+
+
   i64 begRef, endRef, begTar, endTar;
   double entRef, entTar;
   string complRef, complTar;
@@ -687,7 +662,6 @@ inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
                +to_string(static_cast<u8>(b))+")";
 }
 
-
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {
   f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- IEETA 2014 using Inkscape -->\n""<svg\n"
@@ -705,13 +679,13 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     "version=\"1.1\"\n"
     "inkscape:version=\"0.48.3.1 r9886\"\n"
     "sodipodi:docname=\"chromosomes\">\n"
-    "<defs\n"
-    "id=\"defs4\">\n"
-      "<linearGradient id=\"linearGradient3755\" osb:paint=\"solid\">\n"
-        "<stop style=\"stop-color:#aa00ff;stop-opacity:1;\" offset=\"0\"\n"
-        "id=\"stop3757\" />\n"
-      "</linearGradient>\n"
-    "</defs>\n"
+//    "<defs\n"//todo
+//    "id=\"defs4\">\n"
+//      "<linearGradient id=\"linearGradient3755\" osb:paint=\"solid\">\n"
+//        "<stop style=\"stop-color:#aa00ff;stop-opacity:1;\" offset=\"0\"\n"
+//        "id=\"stop3757\" />\n"
+//      "</linearGradient>\n"
+//    "</defs>\n"
     "<sodipodi:namedview id=\"base\" pagecolor=\"#ffffff\"\n"
     "bordercolor=\"#666666\" borderopacity=\"1.0\"\n"
     "inkscape:pageopacity=\"0.0\" inkscape:pageshadow=\"2\"\n"

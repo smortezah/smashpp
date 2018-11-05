@@ -8,8 +8,8 @@
 namespace smashpp {
 struct RgbColor {
   u8 r, g, b;
-  RgbColor () = default;
-  RgbColor (u8 r_, u8 g_, u8 b_) { config(r_,g_,b_); }
+  RgbColor    () = default;
+  RgbColor    (u8 r_, u8 g_, u8 b_) { config(r_,g_,b_); }
   void config (u8 r_, u8 g_, u8 b_) { r=r_;  g=g_;  b=b_; }
 };
 
@@ -30,15 +30,14 @@ struct Point {
 class Text {
  public:
   Point  origin;
-  string label;
+  string label, textAnchor, transform;
+  u8 fontSize;
 
-  Text              () = default;
-  Text              (Point, const string&);
-  void config       (Point, const string&);
-  void plot         (ofstream&, int, int, u8, const string&) const;
-  void plot_title   (ofstream&) const;
-  void plot_pos_ref (ofstream&) const;
-  void plot_pos_tar (ofstream&) const;
+  Text              () : textAnchor("middle"), fontSize(13) {}
+  void plot         (ofstream&) const;
+  void plot_title   (ofstream&);
+  void plot_pos_ref (ofstream&);
+  void plot_pos_tar (ofstream&);
 };
 
 class Line {
@@ -47,10 +46,8 @@ class Line {
   double width;
   string color;
 
-  Line        () = default;
-  Line        (Point, Point, double, const string&);
-  void config (Point, Point, double, const string&);
-  void plot   (ofstream&) const;
+  Line      () = default;
+  void plot (ofstream&) const;
 };
 
 class Rectangle {
@@ -60,19 +57,18 @@ class Rectangle {
   string color;
 
   Rectangle             () = default;
-  Rectangle             (Point, double, double, const string&);
-  void config           (Point, double, double, const string&);
-  void plot             (ofstream&)       const;
-  void plot_ir          (ofstream&)       const;
-  void plot_oval        (ofstream&)       const;
-  void plot_oval_ir     (ofstream&)       const;
-  void plot_nrc         (ofstream&, char) const;
-  void plot_nrc_ref     (ofstream&)       const;
-  void plot_nrc_tar     (ofstream&)       const;
+  void plot             (ofstream&)           const;
+  void plot_ir          (ofstream&)           const;
+  void plot_oval        (ofstream&)           const;
+  void plot_oval_ir     (ofstream&)           const;
+  void plot_nrc         (ofstream&, char)     const;
+  void plot_nrc_ref     (ofstream&)           const;
+  void plot_nrc_tar     (ofstream&)           const;
   void plot_complex     (ofstream&, u8, char) const;
-  void plot_complex_ref (ofstream&, bool)       const;
-  void plot_complex_tar (ofstream&, bool)       const;
-  void plot_chromosome  (ofstream&)       const;
+  void plot_complex_ref (ofstream&, bool)     const;
+  void plot_complex_tar (ofstream&, bool)     const;
+  void plot_chromosome  (ofstream&)           const;
+  void plot_legend      (ofstream&, const string&, const string&) const;
 };
 
 class Polygon {
@@ -80,18 +76,14 @@ class Polygon {
   Point  one, two, three, four;
   string lineColor, fillColor;
 
-  Polygon     () = default;
-  Polygon     (Point, Point, Point, Point, const string&, const string&);
-  void config (Point, Point, Point, Point, const string&, const string&);
-  void plot   (ofstream&) const;
+  Polygon   () = default;
+  void plot (ofstream&) const;
 };
 
 class Circle {
  public:
-  Circle      () = default;
-  Circle      (Point, double, const string&);
-  void config (Point, double, const string&);
-  void plot   (ofstream&) const;
+  Circle    () = default;
+  void plot (ofstream&) const;
 
  private:
   Point  origin;
@@ -107,7 +99,7 @@ class VizPaint {
   double space;
   double refSize, tarSize, maxSize;
 
-  VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),
+  VizPaint() : cx(0.8*PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),
                space(0.0), refSize(0.0), tarSize(0.0), maxSize(0.0), ratio(1) {}
   void print_plot (VizParam&);
 
