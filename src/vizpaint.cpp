@@ -530,16 +530,18 @@ inline void VizPaint::config
   maxSize = max(refSize, tarSize);
 }
 
-void VizPaint::print_plot (Param& p) {
-  check_file(p.viz_posFile);
-  ifstream fPos (p.viz_posFile);
-  ofstream fPlot(p.viz_image);
+//void VizPaint::print_plot (Param& p) {
+void VizPaint::print_plot (VizParam& p) {
+  check_file(p.posFile);
+  ifstream fPos (p.posFile);
+  ofstream fPlot(p.image);
 
   u64 n_refBases=0, n_tarBases=0;
   string watermark, ref, tar;
   fPos >> watermark >> ref >> n_refBases >> tar >> n_tarBases;
   if (watermark != POS_HDR)
     error("unknown file format for positions.");
+//  if (p.verbose) {
   if (p.verbose) {
     cerr <<
       "==[ CONFIGURATION ]================="                              <<"\n"
@@ -547,23 +549,23 @@ void VizPaint::print_plot (Param& p) {
       "  [+] Number of bases .............. " << n_refBases               <<"\n"
       "Target ............................. " << tar                      <<"\n"
       "  [+] Number of bases .............. " << n_tarBases               <<"\n"
-      "Link type .......................... " << p.viz_link               <<"\n"
+      "Link type .......................... " << p.link               <<"\n"
       "Chromosomes design characteristics:"                               <<"\n"
-      "  [+] Width ........................ " << p.viz_width              <<"\n"
-      "  [+] Space ........................ " << p.viz_space              <<"\n"
-      "  [+] Multiplication factor ........ " << p.viz_mult               <<"\n"
-      "  [+] Begin ........................ " << p.viz_start              <<"\n"
-      "  [+] Minimum ...................... " << p.viz_min                <<"\n"
-      "  [+] Show regular ................. " <<(p.viz_regular?"yes":"no")<<"\n"
-      "  [+] Show inversions .............. " <<(p.viz_inverse?"yes":"no")<<"\n"
-      "Output map filename ................ " << p.viz_image              <<"\n"
+      "  [+] Width ........................ " << p.width              <<"\n"
+      "  [+] Space ........................ " << p.space              <<"\n"
+      "  [+] Multiplication factor ........ " << p.mult               <<"\n"
+      "  [+] Begin ........................ " << p.start              <<"\n"
+      "  [+] Minimum ...................... " << p.min                <<"\n"
+      "  [+] Show regular ................. " <<(p.regular?"yes":"no")<<"\n"
+      "  [+] Show inversions .............. " <<(p.inverse?"yes":"no")<<"\n"
+      "Output map filename ................ " << p.image              <<"\n"
                                                                         << endl;
   }
 
   cerr << "==[ PROCESSING ]====================\n"
           "Printing plot ...\n";
 
-  config(p.viz_width, p.viz_space, n_refBases, n_tarBases);
+  config(p.width, p.space, n_refBases, n_tarBases);
 
   print_head(fPlot, PAINT_CX + width + space + width + PAINT_CX,
                     maxSize + PAINT_EXTRA);
@@ -597,10 +599,10 @@ void VizPaint::print_plot (Param& p) {
   text->plot_title(fPlot);
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
-  if (p.viz_min==0)  p.viz_min=static_cast<u32>(maxSize / 100);
+  if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
 
   auto customColor = [=] (u32 start) {
-    return rgb_color(static_cast<u8>(start * p.viz_mult));
+    return rgb_color(static_cast<u8>(start * p.mult));
   };
   auto nrcColor = [=] (double entropy) {
     keep_in_range(entropy, 0.0, 2.0);
@@ -615,17 +617,17 @@ void VizPaint::print_plot (Param& p) {
   string complRef, complTar;
   u64 n_regular=0, n_inverse=0, n_ignored=0;
   for (; fPos >> begRef>>endRef>>entRef>>complRef
-              >> begTar>>endTar>>entTar>>complTar; ++p.viz_start) {
-    if (abs(endRef-begRef)<p.viz_min || abs(begTar-endTar)<p.viz_min) {
+              >> begTar>>endTar>>entTar>>complTar; ++p.start) {
+    if (abs(endRef-begRef)<p.min || abs(begTar-endTar)<p.min) {
       ++n_ignored;
       continue;
     }
 
-    if (p.viz_showPos) {
+    if (p.showPos) {
       double X = 0;
-      if (p.viz_showNRC && p.viz_showComplex)
+      if (p.showNRC && p.showComplex)
         X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-      else if (p.viz_showNRC ^ p.viz_showComplex)
+      else if (p.showNRC ^ p.showComplex)
         X = HORIZ_TUNE + width/HORIZ_RATIO;
 
       if (endRef-begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
@@ -664,39 +666,39 @@ void VizPaint::print_plot (Param& p) {
     }
 
     if (endTar > begTar) {
-      if (p.viz_regular) {
+      if (p.regular) {
         rect->width  = width;
-        rect->color  = customColor(p.viz_start);
+        rect->color  = customColor(p.start);
         rect->origin = Point(cx, cy + get_point(begRef));
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
-        if (p.viz_showNRC) {
+        if (p.showNRC) {
           //todo colorpallet o bebin tu hamin shekl bekeshi behtare ya joda
           rect->color = nrcColor(entRef);
           rect->plot_nrc_ref(fPlot);
         }
-        if (p.viz_showComplex) {//todo
+        if (p.showComplex) {//todo
           rect->color = complColor(entRef);
-          rect->plot_complex_ref(fPlot, p.viz_showNRC);
+          rect->plot_complex_ref(fPlot, p.showNRC);
         }
 
-        rect->color  = customColor(p.viz_start);
+        rect->color  = customColor(p.start);
         rect->origin = Point(cx + width + space, cy + get_point(begTar));
         rect->height = get_point(endTar-begTar);
         rect->plot(fPlot);
-        if (p.viz_showNRC) {
+        if (p.showNRC) {
           rect->color = nrcColor(entTar);
           rect->plot_nrc_tar(fPlot);
         }
-        if (p.viz_showComplex) {//todo
+        if (p.showComplex) {//todo
           rect->color = complColor(entTar);
-          rect->plot_complex_tar(fPlot, p.viz_showNRC);
+          rect->plot_complex_tar(fPlot, p.showNRC);
         }
 
-        switch (p.viz_link) {
+        switch (p.link) {
         case 5:
           poly->lineColor = "grey";
-          poly->fillColor = customColor(p.viz_start);
+          poly->fillColor = customColor(p.start);
           poly->one   = Point(cx + width,         cy + get_point(begRef));
           poly->two   = Point(cx + width,         cy + get_point(endRef));
           poly->three = Point(cx + width + space, cy + get_point(endTar));
@@ -712,7 +714,7 @@ void VizPaint::print_plot (Param& p) {
           line->plot(fPlot);
           break;
         case 2:
-          line->color = customColor(p.viz_start);
+          line->color = customColor(p.start);
           line->beg = Point(cx + width,
                             cy + get_point(begRef+(endRef-begRef)/2.0));
           line->end = Point(cx + width + space,
@@ -730,7 +732,7 @@ void VizPaint::print_plot (Param& p) {
           line->plot(fPlot);
           break;
         case 4:
-          line->color = customColor(p.viz_start);
+          line->color = customColor(p.start);
           line->beg = Point(cx + width,         cy + get_point(begRef));
           line->end = Point(cx + width + space, cy + get_point(begTar));
           line->plot(fPlot);
@@ -745,38 +747,38 @@ void VizPaint::print_plot (Param& p) {
       }
     }
     else {
-      if (p.viz_inverse) {
+      if (p.inverse) {
         rect->width  = width;
-        rect->color  = customColor(p.viz_start);
+        rect->color  = customColor(p.start);
         rect->origin = Point(cx, cy + get_point(begRef));
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
-        if (p.viz_showNRC) {
+        if (p.showNRC) {
           rect->color = nrcColor(entRef);
           rect->plot_nrc_ref(fPlot);
         }
-        if (p.viz_showComplex) {//todo
+        if (p.showComplex) {//todo
           rect->color = complColor(entRef);
-          rect->plot_complex_ref(fPlot, p.viz_showNRC);
+          rect->plot_complex_ref(fPlot, p.showNRC);
         }
 
-        rect->color  = customColor(p.viz_start);
+        rect->color  = customColor(p.start);
         rect->origin = Point(cx + width + space, cy + get_point(endTar));
         rect->height = get_point(begTar-endTar);
         rect->plot_ir(fPlot);
-        if (p.viz_showNRC) {
+        if (p.showNRC) {
           rect->color = nrcColor(entTar);
           rect->plot_nrc_tar(fPlot);
         }
-        if (p.viz_showComplex) {//todo
+        if (p.showComplex) {//todo
           rect->color = complColor(entTar);
-          rect->plot_complex_tar(fPlot, p.viz_showNRC);
+          rect->plot_complex_tar(fPlot, p.showNRC);
         }
 
-        switch (p.viz_link) {
+        switch (p.link) {
         case 5:
           poly->lineColor = "grey";
-          poly->fillColor = customColor(p.viz_start);
+          poly->fillColor = customColor(p.start);
           poly->one   = Point(cx + width,         cy + get_point(begRef));
           poly->two   = Point(cx + width,         cy + get_point(endRef));
           poly->three = Point(cx + width + space, cy + get_point(endTar));
@@ -792,7 +794,7 @@ void VizPaint::print_plot (Param& p) {
           line->plot(fPlot);
           break;
         case 2:
-          line->color = customColor(p.viz_start);
+          line->color = customColor(p.start);
           line->beg = Point(cx + width,
                             cy + get_point(begRef+(endRef-begRef)/2.0));
           line->end = Point(cx + width + space,
@@ -810,7 +812,7 @@ void VizPaint::print_plot (Param& p) {
           line->plot(fPlot);
           break;
         case 4:
-          line->color = customColor(p.viz_start);
+          line->color = customColor(p.start);
           line->beg = Point(cx + width,         cy + get_point(begRef));
           line->end = Point(cx + width + space, cy + get_point(begTar));
           line->plot(fPlot);
@@ -827,9 +829,10 @@ void VizPaint::print_plot (Param& p) {
   }
   fPos.seekg(ios::beg);
 
-  if (p.viz_regular)    cerr << "Found " << n_regular << " regular regions.\n";
-  if (p.viz_inverse)    cerr << "Found " << n_inverse << " inverted regions.\n";
-  if (p.verbose)        cerr << "Ignored " << n_ignored << " regions.\n";
+  if (p.regular)    cerr << "Found " << n_regular << " regular regions.\n";
+  if (p.inverse)    cerr << "Found " << n_inverse << " inverted regions.\n";
+  if (p.verbose)    cerr << "Ignored " << n_ignored << " regions.\n";
+//  if (p.verbose)        cerr << "Ignored " << n_ignored << " regions.\n";
 
   rect->width  = width;
   rect->origin = Point(cx, cy);

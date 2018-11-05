@@ -29,30 +29,39 @@ class Param {   // Parameters
   bool     showInfo;
   string   report;
   bool     compress, filter, segment;
-  bool     viz, viz_verbose, viz_inverse, viz_regular, viz_showPos, viz_showNRC,
-           viz_showComplex;
-  string   viz_image;
-  u32      viz_link, viz_width, viz_space, viz_mult, viz_start, viz_min;
-  string   viz_posFile;
+  bool     viz;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
              wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
              saveSeq(false), saveProfile(false), saveFilter(false),
-             saveSegment(false), saveAll(false), showInfo(true),
-             compress(false), filter(false), segment(false),
-             viz(false), viz_verbose(false), viz_inverse(true),
-             viz_regular(true), viz_showPos(false), viz_showNRC(false),
-             viz_showComplex(false), viz_image(DEF_IMAGE), viz_link(DEF_LINK),
-             viz_width(DEF_WIDT), viz_space(DEF_SPAC), viz_mult(DEF_MULT),
-             viz_start(DEF_BEGI), viz_min(DEF_MINP) {}
+             saveSegment(false), saveAll(false), refType(FileType::SEQ),
+             tarType(FileType::SEQ), showInfo(true), compress(false),
+             filter(false), segment(false), viz(false) {}
 
   void parse (int, char**&);
   string print_win_type () const;
 
  private:
   void help () const;
-  void viz_help () const;
+};
+
+class VizParam {
+ public:
+  bool   verbose, inverse, regular, showPos, showNRC, showComplex;
+  string image;
+  u32    link, width, space, mult, start, min;
+  string posFile;
+
+  VizParam () : verbose(false), inverse(true), regular(true), showPos(false),
+                showNRC(false), showComplex(false), image(DEF_IMAGE),
+                link(DEF_LINK), width(DEF_WIDT), space(DEF_SPAC),
+                mult(DEF_MULT), start(DEF_BEGI), min(DEF_MINP) {}
+
+  void parse (int, char**&);
+
+ private:
+  void help () const;
 };
 
 inline void Param::parse (int argc, char**& argv) {
@@ -64,44 +73,6 @@ inline void Param::parse (int argc, char**& argv) {
 
   if (has(vArgs.begin(), vArgs.end(), "-viz")) {
     viz = true;
-    if (argc < 3) { viz_help();  throw EXIT_SUCCESS; }
-
-    for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-      if      (*i=="-h"  || *i=="--help") { viz_help();  throw EXIT_SUCCESS; }
-      else if (*i=="-v"  || *i=="--verbose")             verbose=true;
-      else if (*i=="-sp" || *i=="--show_pos")            viz_showPos=true;
-      else if (*i=="-sn" || *i=="--show_nrc")            viz_showNRC=true;
-      else if (*i=="-sc" || *i=="--show_complex")        viz_showComplex=true;
-      else if (*i=="-i"  || *i=="--dont_show_inv")       viz_inverse=false;
-      else if (*i=="-r"  || *i=="--dont_show_reg")       viz_regular=false;
-      else if ((*i=="-o" || *i=="--out") && i+1!=vArgs.end())
-        viz_image = *++i;
-      else if ((*i=="-l" || *i=="--link") && i+1!=vArgs.end()) {
-        viz_link = static_cast<u32>(stoul(*++i));
-        def_if_not_in_range(viz_link, MIN_LINK, MAX_LINK, DEF_LINK);
-      }
-      else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
-        viz_width = static_cast<u32>(stoul(*++i));
-        def_if_not_in_range(viz_width, MIN_WIDT, MAX_WIDT, DEF_WIDT);
-      }
-      else if ((*i=="-s" || *i=="--space") && i+1!=vArgs.end()) {
-        viz_space = static_cast<u32>(stoul(*++i));
-        def_if_not_in_range(viz_space, MIN_SPAC, MAX_SPAC, DEF_SPAC);
-      }
-      else if ((*i=="-m" || *i=="--mult") && i+1!=vArgs.end()) {
-        viz_mult = static_cast<u32>(stoul(*++i));
-        def_if_not_in_range(viz_mult, MIN_MULT, MAX_MULT, DEF_MULT);
-      }
-      else if ((*i=="-b" || *i=="--begin") && i+1!=vArgs.end()) {
-        viz_start = static_cast<u32>(stoul(*++i));
-        def_if_not_in_range(viz_start, MIN_BEGI, MAX_BEGI, DEF_BEGI);
-      }
-      else if ((*i=="-c" || *i=="--min") && i+1!=vArgs.end()) {
-        viz_min = static_cast<u32>(stoul(*++i));
-        def_if_not_in_range(viz_min, MIN_MINP, MAX_MINP, DEF_MINP);
-      }
-    }
-    viz_posFile = vArgs.back();
   }
   else {
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
@@ -259,7 +230,52 @@ inline string Param::print_win_type () const {
   return "Rectangular";
 }
 
-inline void Param::viz_help () const {
+inline void VizParam::parse (int argc, char**& argv) {
+  if (argc < 3) { help();  throw EXIT_SUCCESS; }
+
+  vector<string> vArgs(static_cast<u64>(argc));
+  for (int i=0; i!=argc; ++i)
+    vArgs.emplace_back(static_cast<string>(argv[i]));
+
+  for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
+    if      (*i=="-h"  || *i=="--help") { help();   throw EXIT_SUCCESS; }
+    else if (*i=="-v"  || *i=="--verbose")          verbose=true;
+    else if (*i=="-sp" || *i=="--show_pos")         showPos=true;
+    else if (*i=="-sn" || *i=="--show_nrc")         showNRC=true;
+    else if (*i=="-sc" || *i=="--show_complex")     showComplex=true;
+    else if (*i=="-i"  || *i=="--dont_show_inv")    inverse=false;
+    else if (*i=="-r"  || *i=="--dont_show_reg")    regular=false;
+    else if ((*i=="-o" || *i=="--out")   && i+1!=vArgs.end())
+      image = *++i;
+    else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
+      link = static_cast<u32>(stoul(*++i));
+      def_if_not_in_range(link, MIN_LINK, MAX_LINK, DEF_LINK);
+    }
+    else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
+      width = static_cast<u32>(stoul(*++i));
+      def_if_not_in_range(width, MIN_WIDT, MAX_WIDT, DEF_WIDT);
+    }
+    else if ((*i=="-s" || *i=="--space") && i+1!=vArgs.end()) {
+      space = static_cast<u32>(stoul(*++i));
+      def_if_not_in_range(space, MIN_SPAC, MAX_SPAC, DEF_SPAC);
+    }
+    else if ((*i=="-m" || *i=="--mult")  && i+1!=vArgs.end()) {
+      mult = static_cast<u32>(stoul(*++i));
+      def_if_not_in_range(mult, MIN_MULT, MAX_MULT, DEF_MULT);
+    }
+    else if ((*i=="-b" || *i=="--begin") && i+1!=vArgs.end()) {
+      start = static_cast<u32>(stoul(*++i));
+      def_if_not_in_range(start, MIN_BEGI, MAX_BEGI, DEF_BEGI);
+    }
+    else if ((*i=="-c" || *i=="--min")   && i+1!=vArgs.end()) {
+      min = static_cast<u32>(stoul(*++i));
+      def_if_not_in_range(min, MIN_MINP, MAX_MINP, DEF_MINP);
+    }
+  }
+  posFile = vArgs.back();
+}
+
+inline void VizParam::help () const {
   cerr <<
     "NAME                                                                    \n"
     "  Smash++ Visualizer v"<<VERSION<<" - Visualization of Samsh++ output   \n"
@@ -297,7 +313,7 @@ inline void Param::viz_help () const {
     "  -h,  --help              usage guide                                  \n"
     "                                                                        \n"
     "COPYRIGHT                                                               \n"
-    "  Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro.         \n"
+    "  Copyright (C) "<<DEV_YEARS<<", IEETA, University of Aveiro.           \n"
     "  You may redistribute copies of this Free software                     \n"
     "  under the terms of the GNU - General Public License                   \n"
     "  v3 <http://www.gnu.org/licenses/gpl.html>. There is                   \n"
