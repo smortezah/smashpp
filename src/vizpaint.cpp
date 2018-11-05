@@ -624,25 +624,43 @@ void VizPaint::print_plot (Param& p) {
     if (p.viz_showPos) {
       double X = 0;
       if (p.viz_showNRC && p.viz_showComplex)
-        X = 2*(HORIZ_TUNE + width/HORIZ_RATIO);
-      else if(p.viz_showNRC ^ p.viz_showComplex)
+        X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
+      else if (p.viz_showNRC ^ p.viz_showComplex)
         X = HORIZ_TUNE + width/HORIZ_RATIO;
 
-      text->origin = Point(cx - X, cy + get_point(begRef));
-      text->label  = to_string(begRef);
-      text->plot_pos_ref(fPlot);
-      text->origin = Point(cx - X, cy + get_point(endRef));
-      text->label  = to_string(endRef);
-      text->plot_pos_ref(fPlot);
+      if (endRef-begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
+        text->origin = Point(cx - X,
+          cy + get_point(begRef) + (get_point(endRef)-get_point(begRef))/2);
+        text->label = to_string(begRef) + " - " + to_string(endRef);
+        text->plot_pos_ref(fPlot);
+      }
+      else {
+        text->origin = Point(cx - X, cy + get_point(begRef));
+        text->label  = to_string(begRef);
+        text->plot_pos_ref(fPlot);
+        text->origin = Point(cx - X, cy + get_point(endRef));
+        text->label  = to_string(endRef);
+        text->plot_pos_ref(fPlot);
+      }
 
-      text->origin = Point(cx + width + space + width + X,
-                           cy + get_point(begTar));
-      text->label  = to_string(begTar);
-      text->plot_pos_tar(fPlot);
-      text->origin = Point(cx + width + space + width + X,
-                           cy + get_point(endTar));
-      text->label  = to_string(endTar);
-      text->plot_pos_tar(fPlot);
+      if (abs(endTar-begTar) < PAINT_SHORT*max(n_refBases,n_tarBases)) {
+        text->origin = Point(cx + width + space + width + X,
+                             cy + get_point(min(begTar,endTar)) +
+                             abs(get_point(endTar)-get_point(begTar))/2);
+        text->label = to_string(min(begTar,endTar)) + " - " +
+                      to_string(max(begTar,endTar));
+        text->plot_pos_tar(fPlot);
+      }
+      else {
+        text->origin = Point(cx + width + space + width + X,
+                             cy + get_point(begTar));
+        text->label  = to_string(begTar);
+        text->plot_pos_tar(fPlot);
+        text->origin = Point(cx + width + space + width + X,
+                             cy + get_point(endTar));
+        text->label  = to_string(endTar);
+        text->plot_pos_tar(fPlot);
+      }
     }
 
     if (endTar > begTar) {
@@ -653,6 +671,7 @@ void VizPaint::print_plot (Param& p) {
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
         if (p.viz_showNRC) {
+          //todo colorpallet o bebin tu hamin shekl bekeshi behtare ya joda
           rect->color = nrcColor(entRef);
           rect->plot_nrc_ref(fPlot);
         }
