@@ -332,16 +332,23 @@ inline static void keep_in_range (Val& val, MinVal min, MaxVal max) {
 
 template <typename Val, typename MinVal, typename MaxVal, typename DefaultVal>
 inline static void def_if_not_in_range
-(Val& val, MinVal min, MaxVal max, DefaultVal def) {
-  if (val < min || val > max)
+(const string& variable, Val& val, MinVal min, MaxVal max, DefaultVal def) {
+  if (val < min || val > max) {
     val = def;
-//  error("invalid number! Interval: ["+to_string(min)+";"+to_string(max)+"].");
+    cerr << "\""+variable+"\" not in valid "
+            "range ["+to_string(min)+";"+to_string(max)+"]. "
+            "Default value \""+to_string(def)+"\" been set.\n";
+  }
 }
 
-inline static void def_if_not_in_range
-(string& val, const string& min, const string& max, const string& def) {
-  if (stoull(val) < stoull(min) || stoull(val) > stoull(max))
+inline static void def_if_not_in_range (const string& variable, string& val,
+                                        const string& min, const string& max,
+                                        const string& def) {
+  if (stoull(val) < stoull(min) || stoull(val) > stoull(max)) {
     val = to_string(stoull(def));
+    cerr << "\""+variable+"\" not in valid range ["+min+";"+max+"]. "
+            "Default value \""+def+"\" been set.";
+  }
 }
 }
 

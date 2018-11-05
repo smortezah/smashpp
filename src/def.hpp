@@ -51,9 +51,9 @@ constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
 static constexpr u8    DEF_THR      {4};  // Default # threads
 static constexpr u8    MIN_THR      {1};  // Min # threads
 static constexpr u8    MAX_THR      {8};  // Max # threads
-static constexpr u8    DEF_LVL      {0};  // Default level
-static constexpr u8    MIN_LVL      {0};  // Min level
-static constexpr u8    MAX_LVL      {3};  // Max level
+static constexpr u8    DEF_LVL      {1};  // Default level
+static constexpr u8    MIN_LVL      {1};  // Min level
+static constexpr u8    MAX_LVL      {5};  // Max level
 static constexpr u32   DEF_WS       {257};// Default window size -- filter
 static constexpr u32   MIN_WS       {1};      // Min window size -- filter
 static constexpr u32   MAX_WS       {100000}; // Max window size -- filter
@@ -195,9 +195,13 @@ static constexpr u8 REV[123] { // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)
   0, 0, 0
 };
 static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
-"17,29,5,0,0.002,0.95/5,0,0.02,0.95:14,0,0.005,0.95/3,0,0.1,0.95:"
-"11,0,0.01,0.95:8,0,0.1,0.95:5,0,1,0.95",                             // Level 0
-"11,0,0.001,0.95"};
+  "14,1,0.005,0.95",                                                  // Level 1
+  "14,1,0.005,0.95:6,0,0.1,0.95",                                     // Level 2
+  "20,1,0.002,0.95",                                                  // Level 3
+  "18,1,0.002,0.95/3,1,0.02,0.95:13,1,0.01,0.95:6,0,0.1,0.95",        // Level 4
+  "20,1,0.002,0.95/5,1,0.05,0.95:14,1,0.005,0.95/3,1,1,0.95:"
+  "8,0,0.1,0.95:4,0,1,0.95"                                           // Level 5
+};
 
 // Struct
 struct SubSeq {
