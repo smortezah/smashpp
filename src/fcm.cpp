@@ -103,8 +103,8 @@ inline void FCM::set_cont () {
 //}
 
 inline void FCM::show_info (const Param& p) const {
-  const u8 lblWidth=23, colWidth=8,
-           tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
+  const u8 lblWidth=20, colWidth=8,
+           tblWidth=58;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
 
   const auto rule = [] (u8 n, const string& s) {
     for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
@@ -148,7 +148,7 @@ inline void FCM::show_info (const Param& p) const {
     else if (c=='t') cerr<<p.thresh;
     cerr << '\n';
   };
-  const auto file_vals = [&](char c) {
+  const auto file_vals = [&] (char c) {
     cerr << setw(2*colWidth) << left;
     if      (c=='1') {cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);}
     else if (c=='r') cerr<<p.ref;
@@ -157,39 +157,39 @@ inline void FCM::show_info (const Param& p) const {
   };
 
   toprule();
-  label("Model(s)");                                mm_vals('m');
+  label("Model(s)");                             mm_vals('m');
   midrule();
-  label("Context order   (\U0001D705)    ");        mm_vals('k');
-  label("Width of sketch (\U0001D464)    ");        mm_vals('w');
-  label("Depth of sketch (\U0001D451)    ");        mm_vals('d');
-  label("Inverted repeat (ir)");                    mm_vals('i');
-  label("Alpha           (\U0001D6FC)    ");        mm_vals('a');
-  label("Gamma           (\U0001D6FE)    ");        mm_vals('g');
+  label("Context size (\U0001D705)    ");        mm_vals('k');
+  label("Sketch width (\U0001D464)    ");        mm_vals('w');
+  label("Sketch depth (\U0001D451)    ");        mm_vals('d');
+  label("Inv. repeat  (ir)");                    mm_vals('i');
+  label("Alpha        (\U0001D6FC)    ");        mm_vals('a');
+  label("Gamma        (\U0001D6FE)    ");        mm_vals('g');
   botrule();  //cerr << '\n';
 
   toprule();
-  label("Substituttional Model(s)");                cerr<<'\n';
+  label("Substituttional Model(s)");             cerr<<'\n';
   midrule();
-  label("No. Substitutes (\U0001D70F)    ");        stmm_vals('t');
-  label("Inverted repeat (ir)");                    stmm_vals('i');
-  label("Alpha           (\U0001D6FC)    ");        stmm_vals('a');
-  label("Gamma           (\U0001D6FE)    ");        stmm_vals('g');
+  label("No. Subst.   (\U0001D70F)    ");        stmm_vals('t');
+  label("Inv. repeat  (ir)");                    stmm_vals('i');
+  label("Alpha        (\U0001D6FC)    ");        stmm_vals('a');
+  label("Gamma        (\U0001D6FE)    ");        stmm_vals('g');
   botrule();  //cerr << '\n';
   if (!p.compress) {
     toprule();
-    label("Filter & Segment");                      cerr<<'\n';
+    label("Filter & Segment");                   cerr<<'\n';
     midrule();
-    label("Window function");                       filter_vals('f');
-    label("Window size");                           filter_vals('w');
-    label("Threshold");                             filter_vals('t');
+    label("Window function");                    filter_vals('f');
+    label("Window size");                        filter_vals('w');
+    label("Threshold");                          filter_vals('t');
     botrule();  //cerr << '\n';
   }
 
   toprule();
-  label("Files");        header("Size (B)");    header("Name");      cerr<<'\n';
+  label("Files");        header("Name");    header("Size (B)");      cerr<<'\n';
   midrule();
-  label("Reference");    file_vals('1');        file_vals('r');      cerr<<'\n';
-  label("Target");       file_vals('2');        file_vals('t');      cerr<<'\n';
+  label("Reference");    file_vals('r');    file_vals('1');          cerr<<'\n';
+  label("Target");       file_vals('t');    file_vals('2');          cerr<<'\n';
   botrule();
 }
 

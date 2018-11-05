@@ -114,12 +114,13 @@ class VizPaint {
  private:
   u32 ratio;
 
+  void     show_info   (VizParam&, const string&, const string&, u64, u64)const;
   void     config      (double, double, u64, u64);
   RgbColor hsv_to_rgb  (const HsvColor&)           const;
   HsvColor rgb_to_hsv  (const RgbColor&)           const;
   string   rgb_color   (u8)                        const;
   template <typename ValueR, typename ValueG, typename ValueB>
-  string   shade_color (ValueR, ValueG, ValueB)       const;
+  string   shade_color (ValueR, ValueG, ValueB)    const;
   void     print_head  (ofstream&, double, double) const;
   void     print_tail  (ofstream&)                 const;
   template <typename Value>
