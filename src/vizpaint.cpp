@@ -54,42 +54,6 @@ inline void Line::plot (ofstream& f) const {
 /*
  * class Rectangle
  */
-//todo
-inline void Rectangle::plot_legend (ofstream& f, const string& startColor,
-  const string& stopColor) const {
-  f << "<defs> <linearGradient id=\"grad1\" x1=\"0%\" y1=\"0%\" "
-    "x2=\"0%\" y2=\"100%\"> <stop offset=\"0%\" "
-    "style=\"stop-color:" << startColor << ";stop-opacity:1\" />"
-    "<stop offset=\"100%\" "
-    "style=\"stop-color:" << stopColor << ";stop-opacity:1\" /> "
-    "</linearGradient> </defs>"
-    "<rect fill=\"url(#grad1)\" "
-    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-    "/>\n";
-
-  auto text = make_shared<Text>();
-  text->origin = Point(origin.x+width/2, origin.y);
-  text->label = "+";
-  text->fontSize = 20;
-  text->plot(f);
-
-  text->origin = Point(origin.x+width/2, origin.y+height+13);
-  text->label = "-";
-  text->fontSize = 30;
-  text->plot(f);
-
-  text->origin = Point(origin.x+width*1.2, origin.y+height/2);
-  text->label = "SIMILARITY";
-  text->fontSize = 13;
-  text->textAnchor = "middle";
-  text->transform = "rotate(90,"+to_string(text->origin.x)+","
-                                +to_string(text->origin.y)+")";
-  text->plot(f);
-}
-
-
-
 inline void Rectangle::plot (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
     ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
@@ -241,8 +205,8 @@ void VizPaint::print_plot (VizParam& p) {
   cerr << "Plotting ...\n";
   config(p.width, p.space, n_refBases, n_tarBases);
 
-  print_head(fPlot, PAINT_CX + width + space + width + 1.5*PAINT_CX,
-             maxSize + PAINT_EXTRA);
+  print_head(fPlot, PAINT_CX + width + space + width + PAINT_CX,
+                    maxSize + PAINT_EXTRA);
 
   auto line   = make_shared<Line>();
   line->width = 2.0;
@@ -252,7 +216,7 @@ void VizPaint::print_plot (VizParam& p) {
 
   rect->color  = backColor;
   rect->origin = Point(0, 0);
-  rect->width  = PAINT_CX + width + space + width + 1.5*PAINT_CX;
+  rect->width  = PAINT_CX + width + space + width + PAINT_CX;
   rect->height = maxSize + PAINT_EXTRA;
   rect->plot(fPlot);
 
@@ -278,26 +242,7 @@ void VizPaint::print_plot (VizParam& p) {
   auto customColor = [=] (u32 start) {
     return rgb_color(static_cast<u8>(start * p.mult));
   };
-  auto nrcColor = [=] (double entropy) {
-    keep_in_range(entropy, 0.0, 2.0);
-    return shade_color(0, ceil(255-(entropy*50)), 75);
-  };
-  auto complColor = [=] (double entropy) {
-    keep_in_range(entropy, 0.0, 2.0);
-    return shade_color(0, 55, ceil(255-(entropy*100+55)));
-  };
-
-
-
-//todo
-  rect->origin = Point(PAINT_CX+width+space+width+PAINT_CX-40, 30);
-  rect->width  = 0.6*width;
-  rect->height = 100;
-  rect->plot_legend(fPlot, nrcColor(2), nrcColor(0));
-
-
-
-  i64 begRef, endRef, begTar, endTar;
+    i64 begRef, endRef, begTar, endTar;
   double entRef, entTar;
   string complRef, complTar;
   u64 n_regular=0, n_inverse=0, n_ignored=0;
@@ -359,11 +304,11 @@ void VizPaint::print_plot (VizParam& p) {
         rect->plot(fPlot);
         if (p.showNRC) {
           //todo colorpallet o bebin tu hamin shekl bekeshi behtare ya joda
-          rect->color = nrcColor(entRef);
+          rect->color = nrc_color(entRef);
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showComplex) {//todo
-          rect->color = complColor(entRef);
+          rect->color = redun_color(entRef);
           rect->plot_complex_ref(fPlot, p.showNRC);
         }
 
@@ -372,11 +317,11 @@ void VizPaint::print_plot (VizParam& p) {
         rect->height = get_point(endTar-begTar);
         rect->plot(fPlot);
         if (p.showNRC) {
-          rect->color = nrcColor(entTar);
+          rect->color = nrc_color(entTar);
           rect->plot_nrc_tar(fPlot);
         }
         if (p.showComplex) {//todo
-          rect->color = complColor(entTar);
+          rect->color = redun_color(entTar);
           rect->plot_complex_tar(fPlot, p.showNRC);
         }
 
@@ -439,11 +384,11 @@ void VizPaint::print_plot (VizParam& p) {
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
         if (p.showNRC) {
-          rect->color = nrcColor(entRef);
+          rect->color = nrc_color(entRef);
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showComplex) {//todo
-          rect->color = complColor(entRef);
+          rect->color = redun_color(entRef);
           rect->plot_complex_ref(fPlot, p.showNRC);
         }
 
@@ -452,11 +397,11 @@ void VizPaint::print_plot (VizParam& p) {
         rect->height = get_point(begTar-endTar);
         rect->plot_ir(fPlot);
         if (p.showNRC) {
-          rect->color = nrcColor(entTar);
+          rect->color = nrc_color(entTar);
           rect->plot_nrc_tar(fPlot);
         }
         if (p.showComplex) {//todo
-          rect->color = complColor(entTar);
+          rect->color = redun_color(entTar);
           rect->plot_complex_tar(fPlot, p.showNRC);
         }
 
@@ -522,6 +467,10 @@ void VizPaint::print_plot (VizParam& p) {
   rect->origin = Point(cx + width + space, cy);
   rect->height = tarSize;
   rect->plot_chromosome(fPlot);
+
+//todo
+  plot_legend_nrc(fPlot);
+  plot_legend_redun(fPlot);
 
   print_tail(fPlot);
 
@@ -660,6 +609,16 @@ inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
   return "rgb("+to_string(static_cast<u8>(r))+","
                +to_string(static_cast<u8>(g))+","
                +to_string(static_cast<u8>(b))+")";
+}
+
+inline string VizPaint::nrc_color (double entropy) const {
+  keep_in_range(entropy, 0.0, 2.0);
+  return shade_color(0, ceil(255-entropy*50), 75);
+}
+
+inline string VizPaint::redun_color (double entropy) const {
+  keep_in_range(entropy, 0.0, 2.0);
+  return shade_color(0, 55, ceil(255-entropy*50));
 }
 
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {
@@ -874,4 +833,48 @@ inline void VizPaint::print_tail (ofstream& f) const {
 template <typename Value>
 inline double VizPaint::get_point (Value p) const {
   return 5 * p / static_cast<double>(ratio);
+}
+
+//todo
+inline void VizPaint::plot_legend (ofstream& f, double x, double y, double w,
+  const string& startColor, const string& stopColor) const {
+  const auto height = 15;
+  f << "<defs> <linearGradient id=\"grad1\" x1=\"0%\" y1=\"0%\" "
+    "x2=\"100%\" y2=\"0%\"> <stop offset=\"0%\" "
+    "style=\"stop-color:" << startColor << ";stop-opacity:1\" />"
+    "<stop offset=\"100%\" "
+    "style=\"stop-color:" << stopColor << ";stop-opacity:1\" /> "
+    "</linearGradient> </defs>"
+    "<rect fill=\"url(#grad1)\" "
+    "width=\"" << PREC << w    << "\" height=\"" << PREC << height   <<"\" "
+    "x=\""     << PREC << x << "\" y=\""      << PREC << y <<"\" "
+    "/>\n";
+
+//  auto text = make_shared<Text>();
+//  text->origin = Point(rect->origin.x-7, rect->origin.y+rect->height);
+//  text->label = "-";
+//  text->fontSize = 30;
+//  text->plot(f);
+//
+//  text->origin = Point(rect->origin.x+rect->width+7, rect->origin.y);
+//  text->label = "+";
+//  text->fontSize = 18;
+//  text->plot(f);
+
+//  text->origin = Point(origin.x+width*1.2, origin.y+height/2);
+//  text->label = "SIMILARITY";
+//  text->fontSize = 13;
+//  text->textAnchor = "middle";
+//  text->transform = "rotate(90,"+to_string(text->origin.x)+","
+//                    +to_string(text->origin.y)+")";
+//  text->plot(f);
+}
+
+inline void VizPaint::plot_legend_nrc (ofstream& f) const {
+  plot_legend(f, cx+width/2-space/2, 30, space, nrc_color(0), nrc_color(2));
+}
+
+inline void VizPaint::plot_legend_redun (ofstream& f) const {
+  plot_legend(f, cx+width+space+width/2-space/2, 30, space,
+    redun_color(0), "red");
 }
