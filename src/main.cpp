@@ -28,8 +28,10 @@ int main (int argc, char* argv[]) {
     par.parse(argc, argv);              // Parse the command
 
     if (par.viz) {
+      VizParam vizpar;
+      vizpar.parse(argc, argv);
       auto paint = make_shared<VizPaint>();
-      paint->print_plot(par);
+      paint->print_plot(vizpar);
     }
     else {
       if (par.compress) {
