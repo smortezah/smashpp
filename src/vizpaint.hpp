@@ -68,7 +68,6 @@ class Rectangle {
   void plot_complex_ref (ofstream&, bool)     const;
   void plot_complex_tar (ofstream&, bool)     const;
   void plot_chromosome  (ofstream&)           const;
-  void plot_legend      (ofstream&, const string&, const string&) const;
 };
 
 class Polygon {
@@ -99,7 +98,7 @@ class VizPaint {
   double space;
   double refSize, tarSize, maxSize;
 
-  VizPaint() : cx(0.8*PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),
+  VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),
                space(0.0), refSize(0.0), tarSize(0.0), maxSize(0.0), ratio(1) {}
   void print_plot (VizParam&);
 
@@ -113,10 +112,17 @@ class VizPaint {
   string   rgb_color   (u8)                        const;
   template <typename ValueR, typename ValueG, typename ValueB>
   string   shade_color (ValueR, ValueG, ValueB)    const;
+  string   nrc_color   (double)                    const;
+  string   redun_color (double)                    const;
   void     print_head  (ofstream&, double, double) const;
   void     print_tail  (ofstream&)                 const;
   template <typename Value>
   double   get_point   (Value)                     const;
+
+  //todo
+  void plot_legend       (ofstream&, double, double, double, const string&, const string&) const;
+  void plot_legend_nrc   (ofstream&) const;
+  void plot_legend_redun (ofstream&) const;
 };
 }
 
