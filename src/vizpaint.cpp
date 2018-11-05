@@ -530,7 +530,6 @@ inline void VizPaint::config
   maxSize = max(refSize, tarSize);
 }
 
-//void VizPaint::print_plot (Param& p) {
 void VizPaint::print_plot (VizParam& p) {
   check_file(p.posFile);
   ifstream fPos (p.posFile);
@@ -541,7 +540,6 @@ void VizPaint::print_plot (VizParam& p) {
   fPos >> watermark >> ref >> n_refBases >> tar >> n_tarBases;
   if (watermark != POS_HDR)
     error("unknown file format for positions.");
-//  if (p.verbose) {
   if (p.verbose) {
     cerr <<
       "==[ CONFIGURATION ]================="                              <<"\n"
@@ -832,7 +830,6 @@ void VizPaint::print_plot (VizParam& p) {
   if (p.regular)    cerr << "Found " << n_regular << " regular regions.\n";
   if (p.inverse)    cerr << "Found " << n_inverse << " inverted regions.\n";
   if (p.verbose)    cerr << "Ignored " << n_ignored << " regions.\n";
-//  if (p.verbose)        cerr << "Ignored " << n_ignored << " regions.\n";
 
   rect->width  = width;
   rect->origin = Point(cx, cy);

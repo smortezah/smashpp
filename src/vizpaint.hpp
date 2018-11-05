@@ -109,7 +109,6 @@ class VizPaint {
 
   VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),
                space(0.0), refSize(0.0), tarSize(0.0), maxSize(0.0), ratio(1) {}
-//  void print_plot (Param&);
   void print_plot (VizParam&);
 
  private:
