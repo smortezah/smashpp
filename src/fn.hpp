@@ -34,8 +34,7 @@ static void print (Integral&& in, Args&&... args) /*noexcept*/ {
 #endif
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
-inline static chrono::time_point<std::chrono::high_resolution_clock> now ()
-noexcept {
+inline static chrono::time_point<chrono::high_resolution_clock> now () noexcept{
   return chrono::high_resolution_clock::now();
 }
 

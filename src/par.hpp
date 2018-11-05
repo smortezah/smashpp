@@ -29,7 +29,6 @@ class Param {   // Parameters
   bool     showInfo;
   string   report;
   bool     compress, filter, segment;
-  bool     viz;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
@@ -37,7 +36,7 @@ class Param {   // Parameters
              saveSeq(false), saveProfile(false), saveFilter(false),
              saveSegment(false), saveAll(false), refType(FileType::SEQ),
              tarType(FileType::SEQ), showInfo(true), compress(false),
-             filter(false), segment(false), viz(false) {}
+             filter(false), segment(false) {}
 
   void parse (int, char**&);
   string print_win_type () const;
@@ -71,10 +70,10 @@ inline void Param::parse (int argc, char**& argv) {
   for (int i=0; i!=argc; ++i)
     vArgs.emplace_back(static_cast<string>(argv[i]));
 
-  if (has(vArgs.begin(), vArgs.end(), "-viz")) {
-    viz = true;
-  }
-  else {
+//  if (has(vArgs.begin(), vArgs.end(), "-viz")) {
+//    viz = true;
+//  }
+//  else {
     for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
       if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
       else if (*i=="-v"  || *i=="--verbose")         verbose=true;
@@ -155,7 +154,7 @@ inline void Param::parse (int argc, char**& argv) {
     if      (tarType==FileType::FASTA) convert_to_seq(tar, FileType::FASTA);
     else if (tarType==FileType::FASTQ) convert_to_seq(tar, FileType::FASTQ);
     else if (tarType!=FileType::SEQ)   error("\""+tar+"\" has unknown format.");
-  }
+//  }
 }
 
 inline void Param::help () const {
