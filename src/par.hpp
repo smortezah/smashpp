@@ -70,92 +70,87 @@ inline void Param::parse (int argc, char**& argv) {
   for (int i=0; i!=argc; ++i)
     vArgs.emplace_back(static_cast<string>(argv[i]));
 
-//  if (has(vArgs.begin(), vArgs.end(), "-viz")) {
-//    viz = true;
-//  }
-//  else {
-    for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-      if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
-      else if (*i=="-v"  || *i=="--verbose")         verbose=true;
-      else if (*i=="-compress")                      compress=true;
-      else if (*i=="-filter")                        filter=true;
-      else if (*i=="-segment")                       segment=true;
-      else if (*i=="-sb" || *i=="--save_seq")        saveSeq=true;
-      else if (*i=="-sp" || *i=="--save_profile")    saveProfile=true;
-      else if (*i=="-sf" || *i=="--save_fitler")     saveFilter=true;
-      else if (*i=="-ss" || *i=="--save_segment")    saveSegment=true;
-      else if (*i=="-sa" || *i=="--save_all")        saveAll=true;
-      else if (*i=="-t"  || *i=="--tar") {
-        if (i+1 != vArgs.end()) { tar=*++i;  check_file(tar); }
-        else error("target file not specified. Use \"-t fileName\".");
-      }
-      else if (*i=="-r"  || *i=="--ref") {
-        if (i+1 != vArgs.end()) { ref=*++i;  check_file(ref); }
-        else error("reference file not specified. Use \"-r fileName\".");
-      }
-      else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
-        level = static_cast<u8>(stoi(*++i));
-        def_if_not_in_range("Level", level, MIN_LVL, MAX_LVL, DEF_LVL);
-        level -= 1;
-      }
-      else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
-        nthr = static_cast<u8>(stoi(*++i));
-        def_if_not_in_range("Number of threads", nthr, MIN_THR,MAX_THR,DEF_THR);
-      }
-      else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
-        modelsPars = *++i;
-        if (modelsPars[0]=='-' || modelsPars.empty())
-          error("incorrect model parameters.");
-      }
-      else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
-        wsize = static_cast<u32>(stoi(*++i));
-        def_if_not_in_range("Window size", wsize, MIN_WS, MAX_WS, DEF_WS);
-      }
-      else if ((*i=="-wt"|| *i=="--wtype") && i+1!=vArgs.end()) {
-        wtype = *++i;
-        def_if_not_in_range("Window type", wtype, MIN_WT, MAX_WT, DEF_WT);
-      }
-      else if ((*i=="-d" || *i=="--step") && i+1!=vArgs.end()) {
-        sampleStep = stoull(*++i);
-        if (sampleStep==0)  sampleStep=1ull;
-      }
-      else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end())
-        thresh = stof(*++i);
-      else if (*i=="-R"  || *i=="--report")
-        report = (i+1!=vArgs.end()) ? *++i : "report.txt";
+  for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
+    if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
+    else if (*i=="-v"  || *i=="--verbose")         verbose=true;
+    else if (*i=="-compress")                      compress=true;
+    else if (*i=="-filter")                        filter=true;
+    else if (*i=="-segment")                       segment=true;
+    else if (*i=="-sb" || *i=="--save_seq")        saveSeq=true;
+    else if (*i=="-sp" || *i=="--save_profile")    saveProfile=true;
+    else if (*i=="-sf" || *i=="--save_fitler")     saveFilter=true;
+    else if (*i=="-ss" || *i=="--save_segment")    saveSegment=true;
+    else if (*i=="-sa" || *i=="--save_all")        saveAll=true;
+    else if (*i=="-t"  || *i=="--tar") {
+      if (i+1 != vArgs.end()) { tar=*++i;  check_file(tar); }
+      else error("target file not specified. Use \"-t fileName\".");
     }
+    else if (*i=="-r"  || *i=="--ref") {
+      if (i+1 != vArgs.end()) { ref=*++i;  check_file(ref); }
+      else error("reference file not specified. Use \"-r fileName\".");
+    }
+    else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
+      level = static_cast<u8>(stoi(*++i));
+      def_if_not_in_range("Level", level, MIN_LVL, MAX_LVL, DEF_LVL);
+      level -= 1;
+    }
+    else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
+      nthr = static_cast<u8>(stoi(*++i));
+      def_if_not_in_range("Number of threads", nthr, MIN_THR,MAX_THR,DEF_THR);
+    }
+    else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
+      modelsPars = *++i;
+      if (modelsPars[0]=='-' || modelsPars.empty())
+        error("incorrect model parameters.");
+    }
+    else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
+      wsize = static_cast<u32>(stoi(*++i));
+      def_if_not_in_range("Window size", wsize, MIN_WS, MAX_WS, DEF_WS);
+    }
+    else if ((*i=="-wt"|| *i=="--wtype") && i+1!=vArgs.end()) {
+      wtype = *++i;
+      def_if_not_in_range("Window type", wtype, MIN_WT, MAX_WT, DEF_WT);
+    }
+    else if ((*i=="-d" || *i=="--step") && i+1!=vArgs.end()) {
+      sampleStep = stoull(*++i);
+      if (sampleStep==0)  sampleStep=1ull;
+    }
+    else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end())
+      thresh = stof(*++i);
+    else if (*i=="-R"  || *i=="--report")
+      report = (i+1!=vArgs.end()) ? *++i : "report.txt";
+  }
 
-    // Mandatory args
-    const bool has_t   {has(vArgs.begin(), vArgs.end(), "-t")};
-    const bool has_tar {has(vArgs.begin(), vArgs.end(), "--tar")};
-    const bool has_r   {has(vArgs.begin(), vArgs.end(), "-r")};
-    const bool has_ref {has(vArgs.begin(), vArgs.end(), "--ref")};
-    if (!has_t && !has_tar)
-      error("target file not specified. Use \"-t fileName\".");
-    else if (!has_r && !has_ref)
-      error("reference file not specified. Use \"-r fileName\".");
+  // Mandatory args
+  const bool has_t   {has(vArgs.begin(), vArgs.end(), "-t")};
+  const bool has_tar {has(vArgs.begin(), vArgs.end(), "--tar")};
+  const bool has_r   {has(vArgs.begin(), vArgs.end(), "-r")};
+  const bool has_ref {has(vArgs.begin(), vArgs.end(), "--ref")};
+  if (!has_t && !has_tar)
+    error("target file not specified. Use \"-t fileName\".");
+  else if (!has_r && !has_ref)
+    error("reference file not specified. Use \"-r fileName\".");
 
-    if (!has(vArgs.begin(), vArgs.end(), "-m") &&
-        !has(vArgs.begin(), vArgs.end(), "--model"))
-      modelsPars = LEVEL[level];
+  if (!has(vArgs.begin(), vArgs.end(), "-m") &&
+      !has(vArgs.begin(), vArgs.end(), "--model"))
+    modelsPars = LEVEL[level];
 
-    keep_in_range(wsize, 0ull, min(file_size(ref),file_size(tar)));
+  keep_in_range(wsize, 0ull, min(file_size(ref),file_size(tar)));
 
-    // Fasta/Fastq to Seq
-    auto convert_to_seq = [&] (const string& s, const FileType& type) {
-      rename(s.c_str(), (s+LBL_BAK).c_str());
-      to_seq(s+LBL_BAK, s, type);
-    };
-    refType = file_type(ref);
-    if      (refType==FileType::FASTA) convert_to_seq(ref, FileType::FASTA);
-    else if (refType==FileType::FASTQ) convert_to_seq(ref, FileType::FASTQ);
-    else if (refType!=FileType::SEQ)   error("\""+ref+"\" has unknown format.");
+  // Fasta/Fastq to Seq
+  auto convert_to_seq = [&] (const string& s, const FileType& type) {
+    rename(s.c_str(), (s+LBL_BAK).c_str());
+    to_seq(s+LBL_BAK, s, type);
+  };
+  refType = file_type(ref);
+  if      (refType==FileType::FASTA)  convert_to_seq(ref, FileType::FASTA);
+  else if (refType==FileType::FASTQ)  convert_to_seq(ref, FileType::FASTQ);
+  else if (refType!=FileType::SEQ)    error("\""+ref+"\" has unknown format.");
 
-    tarType = file_type(tar);
-    if      (tarType==FileType::FASTA) convert_to_seq(tar, FileType::FASTA);
-    else if (tarType==FileType::FASTQ) convert_to_seq(tar, FileType::FASTQ);
-    else if (tarType!=FileType::SEQ)   error("\""+tar+"\" has unknown format.");
-//  }
+  tarType = file_type(tar);
+  if      (tarType==FileType::FASTA)  convert_to_seq(tar, FileType::FASTA);
+  else if (tarType==FileType::FASTQ)  convert_to_seq(tar, FileType::FASTQ);
+  else if (tarType!=FileType::SEQ)    error("\""+tar+"\" has unknown format.");
 }
 
 inline void Param::help () const {
