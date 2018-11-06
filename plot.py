@@ -101,59 +101,69 @@ import subprocess as sp
 # plt.show()
 
 
-ref='refs'#'HS18'#
-tar='tars'#''PT18'#
-# figure(num=None, figsize=(12, 8))
-
-y = np.loadtxt(ref+'-'+tar+'.fil')
+# ref='refs'#'HS18'#
+# tar='tars'#''PT18'#
+# # figure(num=None, figsize=(12, 8))
+#
+# y = np.loadtxt(ref+'-'+tar+'.fil')
 # x = np.arange(len(y))
-# thresh = 0.844905
+# thresh = 1 #0.844905
 # plt.fill_between(x, y, thresh, where=y<=thresh, color='green')
 # plt.plot(x, np.full(len(y), thresh), color='brown')
-plt.plot(y, color='green')
-# plt.title('Smash++')
-plt.xlabel('Bases')
-plt.ylabel('Average entropy (bps)')
-plt.grid(linewidth=.3)
-plt.show()
-
-
-# figure(num=None, figsize=(10, 10))
-# plt.subplot(411)
-# y = np.loadtxt('refs-tars.fil128')
-# plt.plot(y, color='green', label='Window=128')
-# # plt.xlabel('Bases')
-# plt.ylabel('Average entropy (bps)')
-# plt.grid(linewidth=.3)
-# plt.legend()
-#
-# plt.subplot(412)
-# y = np.loadtxt('refs-tars.fil256')
-# plt.plot(y, color='green', label='Window=256')
-# # plt.xlabel('Bases')
-# plt.ylabel('Average entropy (bps)')
-# plt.grid(linewidth=.3)
-# plt.legend()
-#
-# plt.subplot(413)
-# y = np.loadtxt('refs-tars.fil512')
-# plt.plot(y, color='green', label='Window=512')
-# # plt.xlabel('Bases')
-# plt.ylabel('Average entropy (bps)')
-# plt.grid(linewidth=.3)
-# plt.legend()
-#
-# plt.subplot(414)
-# y = np.loadtxt('refs-tars.fil1024')
-# plt.plot(y, color='green', label='Window=1024')
+# plt.plot(y, color='green')
+# # plt.title('Smash++')
 # plt.xlabel('Bases')
 # plt.ylabel('Average entropy (bps)')
 # plt.grid(linewidth=.3)
-# plt.legend()
 # plt.show()
-# # plt.savefig('Smash++.jpg')
 
 
+figure(num=None, figsize=(10, 10))
+plt.subplot(411)
+thresh = 1.0
+y = np.loadtxt('refs-tars.fil128')
+x = np.arange(len(y))
+plt.fill_between(x, y, thresh, where=y<=thresh, color='green')
+plt.plot(x, np.full(len(y), thresh), color='brown')
+plt.plot(y, color='green', label='Window=128')
+plt.xlabel('Bases')
+plt.ylabel('Average entropy (bps)')
+plt.grid(linewidth=.3)
+plt.legend()
+
+plt.subplot(412)
+y = np.loadtxt('refs-tars.fil256')
+plt.fill_between(x, y, thresh, where=y<=thresh, color='green')
+plt.plot(x, np.full(len(y), thresh), color='brown')
+plt.plot(y, color='green', label='Window=256')
+# plt.xlabel('Bases')
+plt.ylabel('Average entropy (bps)')
+plt.grid(linewidth=.3)
+plt.legend()
+
+plt.subplot(413)
+y = np.loadtxt('refs-tars.fil512')
+plt.fill_between(x, y, thresh, where=y<=thresh, color='green')
+plt.plot(x, np.full(len(y), thresh), color='brown')
+plt.plot(y, color='green', label='Window=512')
+# plt.xlabel('Bases')
+plt.ylabel('Average entropy (bps)')
+plt.grid(linewidth=.3)
+plt.legend()
+
+plt.subplot(414)
+y = np.loadtxt('refs-tars.fil1024')
+plt.fill_between(x, y, thresh, where=y<=thresh, color='green')
+plt.plot(x, np.full(len(y), thresh), color='brown')
+plt.plot(y, color='green', label='Window=1024')
+plt.xlabel('Bases')
+plt.ylabel('Average entropy (bps)')
+plt.grid(linewidth=.3)
+plt.legend()
+plt.show()
+# plt.savefig('Smash++.jpg')
+#
+#
 # plt.subplot(211)
 # x, y = np.loadtxt(ref+'_'+tar+'.fil', delimiter='\t', unpack=True)
 # plt.plot(x, y, '-o')
