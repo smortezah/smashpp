@@ -19,6 +19,13 @@ struct HsvColor {
   explicit HsvColor (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
 };
 
+struct Gradient {
+  string startColor, stopColor;
+  Gradient () = default;
+  Gradient (string start, string stop)
+    : startColor(std::move(start)), stopColor(std::move(stop)) {}
+};
+
 struct Point {
   double x, y;
 
@@ -64,9 +71,9 @@ class Rectangle {
   void plot_nrc         (ofstream&, char)     const;
   void plot_nrc_ref     (ofstream&)           const;
   void plot_nrc_tar     (ofstream&)           const;
-  void plot_complex     (ofstream&, u8, char) const;
-  void plot_complex_ref (ofstream&, bool)     const;
-  void plot_complex_tar (ofstream&, bool)     const;
+  void plot_redun       (ofstream&, u8, char) const;
+  void plot_redun_ref   (ofstream&, bool)     const;
+  void plot_redun_tar   (ofstream&, bool)     const;
   void plot_chromosome  (ofstream&)           const;
 };
 
@@ -118,11 +125,11 @@ class VizPaint {
   void     print_tail  (ofstream&)                 const;
   template <typename Value>
   double   get_point   (Value)                     const;
-
-  //todo
-  void plot_legend       (ofstream&, double, double, double, const string&, const string&) const;
-  void plot_legend_nrc   (ofstream&) const;
-  void plot_legend_redun (ofstream&) const;
+  void     plot_legend (ofstream&, shared_ptr<Rectangle>,
+                        shared_ptr<Gradient>, shared_ptr<Text>) const;
+//  void plot_legend_simil (ofstream&, string&&, string&&) const;
+  void     plot_legend_nrc   (ofstream&)           const;
+  void     plot_legend_redun (ofstream&)           const;
 };
 }
 

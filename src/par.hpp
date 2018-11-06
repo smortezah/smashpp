@@ -47,13 +47,13 @@ class Param {   // Parameters
 
 class VizParam {
  public:
-  bool   verbose, inverse, regular, showPos, showNRC, showComplex;
+  bool   verbose, inverse, regular, showPos, showNRC, showRedun;
   string image;
   u32    link, width, space, mult, start, min;
   string posFile;
 
   VizParam () : verbose(false), inverse(true), regular(true), showPos(false),
-                showNRC(false), showComplex(false), image(DEF_IMAGE),
+                showNRC(false), showRedun(false), image(DEF_IMAGE),
                 link(DEF_LINK), width(DEF_WIDT), space(DEF_SPAC),
                 mult(DEF_MULT), start(DEF_BEGI), min(DEF_MINP) {}
 
@@ -179,7 +179,7 @@ inline void Param::help () const {
     "                                                                        \n"
     "  Options:                                                              \n"
     "  -v,  --verbose         more information                               \n"
-    "  -l,  --level [NUM]     levels of compression [0;3]"/*todo*/"          \n"
+    "  -l,  --level [NUM]     levels of compression [1;5]                    \n"
     "  -n,  --nthr  [NUM]     number of threads                              \n"
     "  -w,  --wsize [NUM]     window size                <-- filter          \n"
     "  -wt, --wtype [...]     type of windowing function <-- filter          \n"
@@ -242,7 +242,7 @@ inline void VizParam::parse (int argc, char**& argv) {
     else if (*i=="-v"  || *i=="--verbose")          verbose=true;
     else if (*i=="-sp" || *i=="--show_pos")         showPos=true;
     else if (*i=="-sn" || *i=="--show_nrc")         showNRC=true;
-    else if (*i=="-sc" || *i=="--show_complex")     showComplex=true;
+    else if (*i=="-sr" || *i=="--show_redun")       showRedun=true;
     else if (*i=="-i"  || *i=="--dont_show_inv")    inverse=false;
     else if (*i=="-r"  || *i=="--dont_show_reg")    regular=false;
     else if ((*i=="-o" || *i=="--out")   && i+1!=vArgs.end())
@@ -301,7 +301,7 @@ inline void VizParam::help () const {
     "  -sp, --show_pos          show positions                               \n"
     "  -sn, --show_nrc          show normalized relative                     \n"
     "                             compression (NRC)                          \n"
-    "  -sc, --show_complex      show self complexity                         \n"
+    "  -sr, --show_redun        show self complexity                         \n"
     "  -l,  --link  [NUM]       type of the link between maps [0;5]          \n"
     "  -w,  --width [NUM]       width of the image sequence                  \n"
     "  -s,  --space [NUM]       space between sequences                      \n"

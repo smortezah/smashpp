@@ -110,8 +110,8 @@ inline void Rectangle::plot_nrc_tar (ofstream& f) const {
   plot_nrc(f, 't');
 }
 
-inline void Rectangle::plot_complex
-(ofstream& f, u8 showNRC, char refTar=' ') const {
+inline void Rectangle::plot_redun
+  (ofstream& f, u8 showNRC, char refTar = ' ') const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
     ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
@@ -126,12 +126,12 @@ inline void Rectangle::plot_complex
   f << "\" y=\"" << PREC << origin.y <<"\" ry=\"2\" />\n";
 }
 
-inline void Rectangle::plot_complex_ref (ofstream& f, bool showNRC) const {
-  showNRC ? plot_complex(f, 1, 'r') : plot_complex(f, 0, 'r');
+inline void Rectangle::plot_redun_ref (ofstream& f, bool showNRC) const {
+  showNRC ? plot_redun(f, 1, 'r') : plot_redun(f, 0, 'r');
 }
 
-inline void Rectangle::plot_complex_tar (ofstream& f, bool showNRC) const {
-  showNRC ? plot_complex(f, 1, 't') : plot_complex(f, 0, 't');
+inline void Rectangle::plot_redun_tar (ofstream& f, bool showNRC) const {
+  showNRC ? plot_redun(f, 1, 't') : plot_redun(f, 0, 't');
 }
 
 inline void Rectangle::plot_chromosome (ofstream& f) const {
@@ -242,10 +242,11 @@ void VizPaint::print_plot (VizParam& p) {
   auto customColor = [=] (u32 start) {
     return rgb_color(static_cast<u8>(start * p.mult));
   };
-    i64 begRef, endRef, begTar, endTar;
+  i64 begRef, endRef, begTar, endTar;
   double entRef, entTar;
   string complRef, complTar;
   u64 n_regular=0, n_inverse=0, n_ignored=0;
+//  const auto similColorStart = p.start;
   for (; fPos >> begRef>>endRef>>entRef>>complRef
               >> begTar>>endTar>>entTar>>complTar; ++p.start) {
     if (abs(endRef-begRef)<p.min || abs(begTar-endTar)<p.min) {
@@ -255,9 +256,9 @@ void VizPaint::print_plot (VizParam& p) {
 
     if (p.showPos) {
       double X = 0;
-      if (p.showNRC && p.showComplex)
+      if (p.showNRC && p.showRedun)
         X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-      else if (p.showNRC ^ p.showComplex)
+      else if (p.showNRC ^ p.showRedun)
         X = HORIZ_TUNE + width/HORIZ_RATIO;
 
       if (endRef-begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
@@ -303,13 +304,12 @@ void VizPaint::print_plot (VizParam& p) {
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
         if (p.showNRC) {
-          //todo colorpallet o bebin tu hamin shekl bekeshi behtare ya joda
           rect->color = nrc_color(entRef);
           rect->plot_nrc_ref(fPlot);
         }
-        if (p.showComplex) {//todo
+        if (p.showRedun) {//todo
           rect->color = redun_color(entRef);
-          rect->plot_complex_ref(fPlot, p.showNRC);
+          rect->plot_redun_ref(fPlot, p.showNRC);
         }
 
         rect->color  = customColor(p.start);
@@ -320,9 +320,9 @@ void VizPaint::print_plot (VizParam& p) {
           rect->color = nrc_color(entTar);
           rect->plot_nrc_tar(fPlot);
         }
-        if (p.showComplex) {//todo
+        if (p.showRedun) {//todo
           rect->color = redun_color(entTar);
-          rect->plot_complex_tar(fPlot, p.showNRC);
+          rect->plot_redun_tar(fPlot, p.showNRC);
         }
 
         switch (p.link) {
@@ -387,9 +387,9 @@ void VizPaint::print_plot (VizParam& p) {
           rect->color = nrc_color(entRef);
           rect->plot_nrc_ref(fPlot);
         }
-        if (p.showComplex) {//todo
+        if (p.showRedun) {//todo
           rect->color = redun_color(entRef);
-          rect->plot_complex_ref(fPlot, p.showNRC);
+          rect->plot_redun_ref(fPlot, p.showNRC);
         }
 
         rect->color  = customColor(p.start);
@@ -400,9 +400,9 @@ void VizPaint::print_plot (VizParam& p) {
           rect->color = nrc_color(entTar);
           rect->plot_nrc_tar(fPlot);
         }
-        if (p.showComplex) {//todo
+        if (p.showRedun) {//todo
           rect->color = redun_color(entTar);
-          rect->plot_complex_tar(fPlot, p.showNRC);
+          rect->plot_redun_tar(fPlot, p.showNRC);
         }
 
         switch (p.link) {
@@ -468,7 +468,8 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = tarSize;
   rect->plot_chromosome(fPlot);
 
-//todo
+//  plot_legend_simil(fPlot, customColor(similColorStart),
+//                           customColor(p.start-similColorStart-1));
   plot_legend_nrc(fPlot);
   plot_legend_redun(fPlot);
 
@@ -613,12 +614,12 @@ inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
 
 inline string VizPaint::nrc_color (double entropy) const {
   keep_in_range(entropy, 0.0, 2.0);
-  return shade_color(0, ceil(255-entropy*50), 75);
+  return shade_color(0, ceil(255-entropy*75), ceil(255-entropy*75));
 }
 
 inline string VizPaint::redun_color (double entropy) const {
   keep_in_range(entropy, 0.0, 2.0);
-  return shade_color(0, 55, ceil(255-entropy*50));
+  return shade_color(ceil(255-entropy*75), ceil(255-entropy*75), 0);
 }
 
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {
@@ -638,13 +639,6 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     "version=\"1.1\"\n"
     "inkscape:version=\"0.48.3.1 r9886\"\n"
     "sodipodi:docname=\"chromosomes\">\n"
-//    "<defs\n"//todo
-//    "id=\"defs4\">\n"
-//      "<linearGradient id=\"linearGradient3755\" osb:paint=\"solid\">\n"
-//        "<stop style=\"stop-color:#aa00ff;stop-opacity:1;\" offset=\"0\"\n"
-//        "id=\"stop3757\" />\n"
-//      "</linearGradient>\n"
-//    "</defs>\n"
     "<sodipodi:namedview id=\"base\" pagecolor=\"#ffffff\"\n"
     "bordercolor=\"#666666\" borderopacity=\"1.0\"\n"
     "inkscape:pageopacity=\"0.0\" inkscape:pageshadow=\"2\"\n"
@@ -835,46 +829,88 @@ inline double VizPaint::get_point (Value p) const {
   return 5 * p / static_cast<double>(ratio);
 }
 
-//todo
-inline void VizPaint::plot_legend (ofstream& f, double x, double y, double w,
-  const string& startColor, const string& stopColor) const {
-  const auto height = 15;
-  f << "<defs> <linearGradient id=\"grad1\" x1=\"0%\" y1=\"0%\" "
-    "x2=\"100%\" y2=\"0%\"> <stop offset=\"0%\" "
-    "style=\"stop-color:" << startColor << ";stop-opacity:1\" />"
+inline void VizPaint::plot_legend (ofstream& f, shared_ptr<Rectangle> rect,
+                                   shared_ptr<Gradient> grad,
+                                   shared_ptr<Text> title) const {
+  rect->height = 12;
+  const auto id = to_string(rect->origin.x)+to_string(rect->origin.y);
+  f << "<defs> <linearGradient id=\"grad"+id+"\" "
+    "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> "
+    "<stop offset=\"0%\" "
+    "style=\"stop-color:" << grad->startColor << ";stop-opacity:1\" />"
     "<stop offset=\"100%\" "
-    "style=\"stop-color:" << stopColor << ";stop-opacity:1\" /> "
+    "style=\"stop-color:" << grad->stopColor  << ";stop-opacity:1\" /> "
     "</linearGradient> </defs>"
-    "<rect fill=\"url(#grad1)\" "
-    "width=\"" << PREC << w    << "\" height=\"" << PREC << height   <<"\" "
-    "x=\""     << PREC << x << "\" y=\""      << PREC << y <<"\" "
-    "/>\n";
+    "<rect fill=\"url(#grad"+id+")\" "
+    "width=\""  << PREC << rect->width    << "\" "
+    "height=\"" << PREC << rect->height   << "\" "
+    "x=\""      << PREC << rect->origin.x << "\" "
+    "y=\""      << PREC << rect->origin.y << "\" />\n";
 
-//  auto text = make_shared<Text>();
-//  text->origin = Point(rect->origin.x-7, rect->origin.y+rect->height);
-//  text->label = "-";
-//  text->fontSize = 30;
-//  text->plot(f);
-//
-//  text->origin = Point(rect->origin.x+rect->width+7, rect->origin.y);
-//  text->label = "+";
-//  text->fontSize = 18;
-//  text->plot(f);
+  auto text        = make_shared<Text>();
+  text->origin     = Point(rect->origin.x-1, rect->origin.y+rect->height-1.5);
+  text->label      = "-";
+  text->textAnchor = "end";
+  text->fontSize   = 17;
+  text->plot(f);
 
-//  text->origin = Point(origin.x+width*1.2, origin.y+height/2);
-//  text->label = "SIMILARITY";
-//  text->fontSize = 13;
-//  text->textAnchor = "middle";
+  text->origin     = Point(rect->origin.x+rect->width+1,
+                           rect->origin.y+rect->height-1.5);
+  text->label      = "+";
+  text->textAnchor = "start";
+  text->fontSize   = 14;
+  text->plot(f);
+
 //  text->transform = "rotate(90,"+to_string(text->origin.x)+","
 //                    +to_string(text->origin.y)+")";
-//  text->plot(f);
+  title->plot(f);
 }
 
+//inline void VizPaint::plot_legend_simil (ofstream& f, string&& start,
+//                                                      string&& stop) const {
+//  const auto vert = 15;
+//  auto grad    = make_shared<Gradient>();
+//  grad->startColor = std::move(start);
+//  grad->stopColor  = std::move(stop);
+//  auto text    = make_shared<Text>();
+//  text->origin = Point(cx+width+space/2, vert-2);
+//  text->label  = "SIMILARITY";
+//  text->textAnchor = "middle";
+//  text->fontSize   = 9;
+//  auto rect    = make_shared<Rectangle>();
+//  rect->origin = Point(cx+width/2-space/2-4, vert);
+//  rect->width  = 2*space+38;
+//  plot_legend(f, rect, grad, text);
+//}
+
 inline void VizPaint::plot_legend_nrc (ofstream& f) const {
-  plot_legend(f, cx+width/2-space/2, 30, space, nrc_color(0), nrc_color(2));
+  const auto vert = 17;
+  auto grad    = make_shared<Gradient>();
+  grad->startColor = nrc_color(0);
+  grad->stopColor  = nrc_color(2);
+  auto text    = make_shared<Text>();
+  text->origin = Point(cx+width+space/2, vert-3);
+  text->label  = "NRC";
+  text->textAnchor = "middle";
+  text->fontSize   = 9;
+  auto rect    = make_shared<Rectangle>();
+  rect->origin = Point(cx, vert);
+  rect->width  = width+space+width;
+  plot_legend(f, rect, grad, text);
 }
 
 inline void VizPaint::plot_legend_redun (ofstream& f) const {
-  plot_legend(f, cx+width+space+width/2-space/2, 30, space,
-    redun_color(0), "red");
+  const auto vert = 17;
+  auto grad    = make_shared<Gradient>();
+  grad->startColor = redun_color(0);
+  grad->stopColor  = redun_color(2);
+  auto text    = make_shared<Text>();
+  text->origin = Point(cx+width+space/2, vert+36);
+  text->label  = "REDUNDANCY";
+  text->textAnchor = "middle";
+  text->fontSize   = 9;
+  auto rect    = make_shared<Rectangle>();
+  rect->origin = Point(cx, vert+15);
+  rect->width  = width+space+width;
+  plot_legend(f, rect, grad, text);
 }
