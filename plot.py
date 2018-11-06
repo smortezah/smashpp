@@ -118,15 +118,16 @@ import subprocess as sp
 # plt.show()
 
 
-figure(num=None, figsize=(10, 10))
+figure(figsize=(9, 9))
 plt.subplot(411)
-thresh = 1.0
+plt.title('tar (900 B), ref (1000 B), model:14,0,0.005,0.95')
+thresh = 0.846757
 y = np.loadtxt('refs-tars.fil128')
 x = np.arange(len(y))
 plt.fill_between(x, y, thresh, where=y<=thresh, color='green')
 plt.plot(x, np.full(len(y), thresh), color='brown')
 plt.plot(y, color='green', label='Window=128')
-plt.xlabel('Bases')
+# plt.xlabel('Bases')
 plt.ylabel('Average entropy (bps)')
 plt.grid(linewidth=.3)
 plt.legend()
@@ -152,16 +153,16 @@ plt.grid(linewidth=.3)
 plt.legend()
 
 plt.subplot(414)
-y = np.loadtxt('refs-tars.fil1024')
+y = np.loadtxt('refs-tars.fil900')
 plt.fill_between(x, y, thresh, where=y<=thresh, color='green')
 plt.plot(x, np.full(len(y), thresh), color='brown')
-plt.plot(y, color='green', label='Window=1024')
+plt.plot(y, color='green', label='Window=900')
 plt.xlabel('Bases')
 plt.ylabel('Average entropy (bps)')
 plt.grid(linewidth=.3)
 plt.legend()
-plt.show()
-# plt.savefig('Smash++.jpg')
+# plt.show()
+plt.savefig('/home/morteza/Smash++.pdf')
 #
 #
 # plt.subplot(211)
