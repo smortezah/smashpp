@@ -92,7 +92,6 @@ inline void Param::parse (int argc, char**& argv) {
     else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
       level = static_cast<u8>(stoi(*++i));
       def_if_not_in_range("Level", level, MIN_LVL, MAX_LVL, DEF_LVL);
-      level -= 1;
     }
     else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
       nthr = static_cast<u8>(stoi(*++i));
@@ -169,12 +168,12 @@ inline void Param::help () const {
     "                                                                        \n"
     "DESCRIPTION                                                             \n"
     "  Mandatory arguments:                                                  \n"
-    "  -r,  --ref [FILE]       reference file (Seq/Fasta/Fastq)              \n"
-    "  -t,  --tar [FILE]       target file    (Seq/Fasta/Fastq)              \n"
+    "  -r,  --ref [FILE]      reference file (Seq/Fasta/Fastq)               \n"
+    "  -t,  --tar [FILE]      target file    (Seq/Fasta/Fastq)               \n"
     "                                                                        \n"
     "  Options:                                                              \n"
     "  -v,  --verbose         more information                               \n"
-    "  -l,  --level [NUM]     levels of compression [1;5]                    \n"
+    "  -l,  --level [NUM]     levels of compression [0;4]                    \n"
     "  -n,  --nthr  [NUM]     number of threads                              \n"
     "  -w,  --wsize [NUM]     window size                <-- filter          \n"
     "  -wt, --wtype [...]     type of windowing function <-- filter          \n"
@@ -197,9 +196,12 @@ inline void Param::help () const {
     "                         parameters of models                           \n"
     "                           \U0001D705:  context size                    \n"
     "                           \U0001D464:  width of sketch in log2 form,   \n"
-    "                                  e.g., set 10 for w=2^10=1024          \n"
+    "                                 e.g., set 10 for w=2^10=1024           \n"
     "                           \U0001D451:  depth of sketch                 \n"
-    "                           ir: inverted repeat (0 or 1)                 \n"
+    "                           ir: inverted repeat (0 | 1 | 2)              \n"
+    "                               [0]: regular (not inverted)              \n"
+    "                               [1]: inverted, solely                    \n"
+    "                               [2]: both regular and inverted           \n"
     "                           \U0001D6FC:  estimator                       \n"
     "                           \U0001D6FE:  forgetting factor [0;1)         \n"
     "                           \U0001D70F:  threshold (# substitutions)     \n"

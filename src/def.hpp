@@ -51,13 +51,13 @@ constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
 static constexpr u8    DEF_THR      {4};  // Default # threads
 static constexpr u8    MIN_THR      {1};  // Min # threads
 static constexpr u8    MAX_THR      {8};  // Max # threads
-static constexpr u8    DEF_LVL      {1};  // Default level
-static constexpr u8    MIN_LVL      {1};  // Min level
-static constexpr u8    MAX_LVL      {5};  // Max level
+static constexpr u8    DEF_LVL      {0};  // Default level
+static constexpr u8    MIN_LVL      {0};  // Min level
+static constexpr u8    MAX_LVL      {4};  // Max level
 static constexpr u32   DEF_WS       {257};// Default window size -- filter
 static constexpr u32   MIN_WS       {1};      // Min window size -- filter
 static constexpr u32   MAX_WS       {100000}; // Max window size -- filter
-static const string    DEF_WT       {"0"};// Default window type -- filter
+static const string    DEF_WT       {"2"};// Default window type -- filter
 static const string    MIN_WT       {"0"};   // Min window type  -- filter
 static const string    MAX_WT       {"7"};   // Max window type  -- filter
 static constexpr float DEF_THRESH   {1.5};// Default threshold   -- filter
