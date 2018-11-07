@@ -413,8 +413,8 @@ void Filter::aggregate_pos (const string& origin, const string& dest) const {
     const string refRev = gen_name(origin, dest, Format::SEGMENT)+to_string(i);
     ifstream fReverse(gen_name(refRev, origin, Format::POSITION));
     for (string begRev, endRev, entRev; fReverse>>begRev>>endRev>>entRev;) {
-      ffinal << begDir <<'\t'<< endDir <<'\t'<< entDir <<'\t'<< 'A' <<'\t'
-             << begRev <<'\t'<< endRev <<'\t'<< entRev << 'A' << '\n';
+      ffinal << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< 'A' <<'\t'
+             << begDir <<'\t'<< endDir <<'\t'<< entDir <<'\t'<< 'A' << '\n';
     }
     fReverse.close();
   }
