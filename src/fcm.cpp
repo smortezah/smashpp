@@ -442,7 +442,7 @@ inline void FCM::compress_n_impl
 template <typename ContIter>
 inline void FCM::compress_n_parent
 (shared_ptr<CompressPar> cp, ContIter cont, u8 n) const {
-  const auto weight_next = [=](prec_t w, prec_t g, prec_t p) -> prec_t {
+  const auto weight_next = [=] (prec_t w, prec_t g, prec_t p) -> prec_t {
     return pow(w, g) * p;
   };
 
@@ -522,6 +522,16 @@ inline void FCM::freqs (array<OutT,4>& a, ContIter cont, u64 l) const {
        (*cont)->query(l | 2ull),
        (*cont)->query(l | 3ull)};
 }
+
+//todo
+//template <typename OutT, typename ContIter, typename ProbParIter>
+//inline void FCM::freqs_ir1
+//(array<OutT, 4>& a, ContIter cont, ProbParIter pp) const {
+//  a = {static_cast<OutT>((*cont)->query((3ull<<pp->shl) | pp->r)),
+//       static_cast<OutT>((*cont)->query((2ull<<pp->shl) | pp->r)),
+//       static_cast<OutT>((*cont)->query((1ull<<pp->shl) | pp->r)),
+//       static_cast<OutT>((*cont)->query(                  pp->r))};
+//}
 
 template <typename OutT, typename ContIter, typename ProbParIter>
 inline void FCM::freqs_ir
