@@ -161,10 +161,10 @@ plt.xlabel('Bases')
 plt.ylabel('Average entropy (bps)')
 plt.grid(linewidth=.3)
 plt.legend()
-# plt.show()
-plt.savefig('/home/morteza/Smash++.pdf')
-#
-#
+plt.show()
+# plt.savefig('/home/morteza/Smash++.pdf')
+
+
 # plt.subplot(211)
 # x, y = np.loadtxt(ref+'_'+tar+'.fil', delimiter='\t', unpack=True)
 # plt.plot(x, y, '-o')
