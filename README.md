@@ -1,7 +1,6 @@
 # Smash++
 
-Find similarities.
-
+A tool to find and visualize rearrangements in DNA sequences.
 
 ## INSTALL
 Get Smash++ and make the project, using:
