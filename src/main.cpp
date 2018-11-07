@@ -57,6 +57,8 @@ int main (int argc, char* argv[]) {
         filter->smooth_seg(par);                // Filter and segment
         filter->extract_seg(par.tar, par.ref);  // Extract segs from target
 
+        //todo ref-free compress all extraced regions
+
         cerr <<"\n===[ Building reference map for each target pattern ]=======";
         // Consider the ref as new tar and the tar segments as new refs
         const auto newTar  = par.ref;
@@ -70,6 +72,7 @@ int main (int argc, char* argv[]) {
           models->compress(par);
           filter = make_shared<Filter>(par);
           filter->smooth_seg(par);
+          //todo extract and ref-free compress all extraced regions
         }
         filter->aggregate_pos(tempRef, tempTar);
 
