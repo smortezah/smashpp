@@ -6,12 +6,12 @@
 #include "fn.hpp"
 using namespace smashpp;
 
-void Segment::partition (ofstream& ff, float filtered) {
+void Segment::partition (ofstream& posF, float filtered) {
   if (filtered > thresh) {
     begun = false;
     if (begPos != endPos) {
       ++nSegs;
-      ff << begPos << '\t' << endPos << '\t' << sumEnt/numEnt << '\n';
+      posF << begPos << '\t' << endPos << '\t' << sumEnt/numEnt << '\n';
     }
     begPos = endPos = 0;
     sumEnt = 0;
