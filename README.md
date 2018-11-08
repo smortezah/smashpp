@@ -22,7 +22,8 @@ For example,
 ```bash
 ./smashpp -r ref -t tar
 ```
-Options are described in the following sections.
+It is highly recommended to choose short names for reference and target 
+sequences.
 
 
 ### Options

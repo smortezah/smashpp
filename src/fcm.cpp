@@ -19,7 +19,7 @@ FCM::FCM (Param& p) {
 }
 
 inline void FCM::config (const Param& p) {
-  vector<string> mdls;  split(p.modelsPars.begin(),p.modelsPars.end(),':',mdls);
+  vector<string> mdls;  split(p.rmodelsPars.begin(),p.rmodelsPars.end(),':',mdls);
   for (const auto& e : mdls) {
     // Markov and tolerant models
     vector<string> m_tm;    split(e.begin(), e.end(), '/', m_tm);
@@ -112,68 +112,80 @@ inline void FCM::show_info (const Param& p) const {
   const auto toprule  = [&] () { rule(tblWidth, "~"); };
   const auto midrule  = [&] () { rule(tblWidth, "~"); };
   const auto botrule  = [&] () { rule(tblWidth, " "); };
-  const auto label    = [&] (const string& s) {cerr<<setw(lblWidth)<<left<<s;};
+  const auto label    = [&] (const string& s){cerr<<setw(lblWidth)  <<left<<s;};
   const auto header   = [&] (const string& s){cerr<<setw(2*colWidth)<<left<<s;};
-  const auto mm_vals  = [&] (char c) {
+  const auto rmm_vals = [&] (char c) {
     int i = 0;
     for (const auto& e : Ms) {
       cerr << setw(colWidth) << left;
-      if      (c=='m')  cerr<<++i;
-      else if (c=='k')  cerr<<static_cast<int>(e.k);
-      else if (c=='w')  cerr<<(e.w==0 ? "0" : "2^"+to_string(int(log2(e.w))));
-      else if (c=='d')  cerr<<static_cast<int>(e.d);
-      else if (c=='i')  cerr<<(e.ir ? "yes" : "no");
-      else if (c=='a')  cerr<<e.alpha;
-      else if (c=='g')  cerr<<e.gamma;
+      switch (c) {
+      case 'm':  cerr<<++i;                                              break;
+      case 'k':  cerr<<static_cast<int>(e.k);                            break;
+      case 'w':  cerr<<(e.w==0 ? "0" : "2^"+to_string(int(log2(e.w))));  break;
+      case 'd':  cerr<<static_cast<int>(e.d);                            break;
+      case 'i':  cerr<<(e.ir ? "yes" : "no");/*todo 0 1 2 be ja yes no*/ break;
+      case 'a':  cerr<<e.alpha;                                          break;
+      case 'g':  cerr<<e.gamma;                                          break;
+      default:                                                           break;
+      }
     }
     cerr << '\n';
   };
-  const auto stmm_vals = [&] (char c) {
+  const auto rstmm_vals = [&] (char c) {
     for (const auto& e : Ms) {
       cerr << setw(colWidth) << left;
-      if (e.child) {
-        if      (c=='t')  cerr<<static_cast<int>(e.child->thresh);
-        else if (c=='i')  cerr<<(e.child->ir ? "yes" : "no");
-        else if (c=='a')  cerr<<e.child->alpha;
-        else if (c=='g')  cerr<<e.child->gamma;
-      }
-      else  cerr<<'-';
+      if (e.child)
+        switch (c) {
+        case 't':  cerr<<static_cast<int>(e.child->thresh);  break;
+        case 'i':  cerr<<(e.child->ir ? "yes" : "no");       break;
+        case 'a':  cerr<<e.child->alpha;                     break;
+        case 'g':  cerr<<e.child->gamma;                     break;
+        default:                                             break;
+        }
+      else
+        cerr<<'-';
     }
     cerr << '\n';
   };
   const auto filter_vals = [&] (char c) {
     cerr << setw(colWidth) << left;
-    if      (c=='f') cerr<<p.print_win_type();
-    else if (c=='w') cerr<<p.wsize;
-    else if (c=='t') cerr<<p.thresh;
+    switch (c) {
+    case 'f':  cerr<<p.print_win_type();  break;
+    case 'w':  cerr<<p.wsize;             break;
+    case 't':  cerr<<p.thresh;            break;
+    default:                              break;
+    }
     cerr << '\n';
   };
   const auto file_vals = [&] (char c) {
     cerr << setw(2*colWidth) << left;
-    if      (c=='1') {cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);}
-    else if (c=='r') cerr<<p.ref;
-    else if (c=='2') {cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.tar);}
-    else if (c=='t') cerr<<p.tar;
+    switch (c) {
+    case '1':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);  break;
+    case 'r':  cerr<<p.ref;                                               break;
+    case '2':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.tar);  break;
+    case 't':  cerr<<p.tar;                                               break;
+    default:                                                              break;
+    }
   };
 
   toprule();
-  label("Model(s)");                             mm_vals('m');
+  label("Ref model(s)");                         rmm_vals('m');
   midrule();
-  label("Context size (\U0001D705)    ");        mm_vals('k');
-  label("Sketch width (\U0001D464)    ");        mm_vals('w');
-  label("Sketch depth (\U0001D451)    ");        mm_vals('d');
-  label("Inv. repeat  (ir)");                    mm_vals('i');
-  label("Alpha        (\U0001D6FC)    ");        mm_vals('a');
-  label("Gamma        (\U0001D6FE)    ");        mm_vals('g');
+  label("Context size (\U0001D705)    ");        rmm_vals('k');
+  label("Sketch width (\U0001D464)    ");        rmm_vals('w');
+  label("Sketch depth (\U0001D451)    ");        rmm_vals('d');
+  label("Inv. repeat  (ir)");                    rmm_vals('i');
+  label("Alpha        (\U0001D6FC)    ");        rmm_vals('a');
+  label("Gamma        (\U0001D6FE)    ");        rmm_vals('g');
   botrule();  //cerr << '\n';
 
   toprule();
-  label("Substituttional Model(s)");             cerr<<'\n';
+  label("Ref substituttional Model(s)");         cerr<<'\n';
   midrule();
-  label("No. Subst.   (\U0001D70F)    ");        stmm_vals('t');
-  label("Inv. repeat  (ir)");                    stmm_vals('i');
-  label("Alpha        (\U0001D6FC)    ");        stmm_vals('a');
-  label("Gamma        (\U0001D6FE)    ");        stmm_vals('g');
+  label("No. Subst.   (\U0001D70F)    ");        rstmm_vals('t');
+  label("Inv. repeat  (ir)");                    rstmm_vals('i');
+  label("Alpha        (\U0001D6FC)    ");        rstmm_vals('a');
+  label("Gamma        (\U0001D6FE)    ");        rstmm_vals('g');
   botrule();  //cerr << '\n';
   if (!p.compress) {
     toprule();
@@ -181,7 +193,9 @@ inline void FCM::show_info (const Param& p) const {
     midrule();
     label("Window function");                    filter_vals('f');
     label("Window size");                        filter_vals('w');
+    if (p.manThresh) {
     label("Threshold");                          filter_vals('t');
+    }
     botrule();  //cerr << '\n';
   }
 
@@ -312,6 +326,11 @@ void FCM::compress (const Param& p) {
 //  if (p.verbose)
     cerr << "Average Entropy = "
          << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps\n";
+}
+
+void FCM::reffree_compress (const Param& p) {
+  //todo
+  cerr<<"hi";
 }
 
 template <typename ContIter>
