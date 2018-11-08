@@ -39,8 +39,6 @@ class FCM {   // Finite-context models
   void set_Ms_TMs (Iter, Iter, vector<MMPar>&, vector<STMMPar>&);
   void set_cont (vector<MMPar>&);
   void show_info (const Param&) const;  // Show inputs information on the screen
-  void print_info_MM (const vector<MMPar>&, u8, char) const;
-  void print_info_STMM (const vector<MMPar>&, u8, char) const;
   void alloc_model ();                  // Allocate memory to models
 
   void store_1 (const Param&);          // Build models one thread
