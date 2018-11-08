@@ -350,10 +350,10 @@ void FCM::compress (const Param& p) {
 void FCM::reffree_compress (const Param& p) {
   //todo
 //  ofstream sf(gen_name("", p.seq, Format::SELF));
-//  for (auto e : cmls4) {
+//  for (auto e : lgtbl8) {
 //    e.reset();
 //  }
-//  cmls4.clear();
+//  lgtbl8.clear();
 //  sf.close();
 }
 
