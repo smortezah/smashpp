@@ -15,15 +15,16 @@
 namespace smashpp {
 class Param {   // Parameters
  public:
-  string   tar, ref;
+  string   ref, tar, seq;
   u8       level /*:BIT_LEVEL*/;
   bool     verbose;
   u8       nthr  /*:BIT_THREAD*/;
-  string   modelsPars;
+  string   rmodelsPars, tmodelsPars;
   u32      wsize /*:BIT_WSIZE*/;
   string   wtype;
   u64      sampleStep;
   float    thresh;
+  bool     manThresh;
   bool     saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
   FileType refType, tarType;
   bool     showInfo;
@@ -33,10 +34,10 @@ class Param {   // Parameters
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
              wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
-             saveSeq(false), saveProfile(false), saveFilter(false),
-             saveSegment(false), saveAll(false), refType(FileType::SEQ),
-             tarType(FileType::SEQ), showInfo(true), compress(false),
-             filter(false), segment(false) {}
+             manThresh(false), saveSeq(false), saveProfile(false),
+             saveFilter(false), saveSegment(false), saveAll(false),
+             refType(FileType::SEQ), tarType(FileType::SEQ), showInfo(true),
+             compress(false), filter(false), segment(false) {}
 
   void parse (int, char**&);
   string print_win_type () const;
@@ -62,6 +63,7 @@ class VizParam {
  private:
   void help () const;
 };
+
 
 inline void Param::parse (int argc, char**& argv) {
   if (argc < 2) { help();  throw EXIT_SUCCESS; }
@@ -97,10 +99,15 @@ inline void Param::parse (int argc, char**& argv) {
       nthr = static_cast<u8>(stoi(*++i));
       def_if_not_in_range("Number of threads", nthr, MIN_THR,MAX_THR,DEF_THR);
     }
-    else if ((*i=="-m" || *i=="--model") && i+1!=vArgs.end()) {
-      modelsPars = *++i;
-      if (modelsPars[0]=='-' || modelsPars.empty())
-        error("incorrect model parameters.");
+    else if ((*i=="-rm" || *i=="--ref_model") && i+1!=vArgs.end()) {
+      rmodelsPars = *++i;
+      if (rmodelsPars[0]=='-' || rmodelsPars.empty())
+        error("incorrect reference model parameters.");
+    }
+    else if ((*i=="-tm" || *i=="--tar_model") && i+1!=vArgs.end()) {
+      tmodelsPars = *++i;
+      if (tmodelsPars[0]=='-' || tmodelsPars.empty())
+        error("incorrect target model parameters.");
     }
     else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
       wsize = static_cast<u32>(stoi(*++i));
@@ -114,8 +121,10 @@ inline void Param::parse (int argc, char**& argv) {
       sampleStep = stoull(*++i);
       if (sampleStep==0)  sampleStep=1ull;
     }
-    else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end())
+    else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end()) {
+      manThresh = true;
       thresh = stof(*++i);
+    }
     else if (*i=="-R"  || *i=="--report")
       report = (i+1!=vArgs.end()) ? *++i : "report.txt";
   }
@@ -130,9 +139,12 @@ inline void Param::parse (int argc, char**& argv) {
   else if (!has_r && !has_ref)
     error("reference file not specified. Use \"-r fileName\".");
 
-  if (!has(vArgs.begin(), vArgs.end(), "-m") &&
-      !has(vArgs.begin(), vArgs.end(), "--model"))
-    modelsPars = LEVEL[level];
+  if (!has(vArgs.begin(), vArgs.end(), "-rm") &&
+      !has(vArgs.begin(), vArgs.end(), "--ref_model"))
+    rmodelsPars = LEVEL[level];
+  if (!has(vArgs.begin(), vArgs.end(), "-tm") &&
+      !has(vArgs.begin(), vArgs.end(), "--tar_model"))
+    tmodelsPars = REFFREE_LEVEL[level];
 
   keep_in_range(wsize, 0ull, min(file_size(ref),file_size(tar)));
 
@@ -191,8 +203,9 @@ inline void Param::help () const {
     "                           segmented files                              \n"
     "  -R,  --report          save results in the \"report\" file            \n"
     "  -h,  --help            usage guide                                    \n"
-    "  -m,  --model [\U0001D705,[\U0001D464,\U0001D451,]ir,\U0001D6FC,"
+    "  -rm, --ref_model [\U0001D705,[\U0001D464,\U0001D451,]ir,\U0001D6FC,"
                          "\U0001D6FE/\U0001D70F,ir,\U0001D6FC,\U0001D6FE:...]\n"
+    "  -tm, --tar_model [...]                                                .\n"
     "                         parameters of models                           \n"
     "                           \U0001D705:  context size                    \n"
     "                           \U0001D464:  width of sketch in log2 form,   \n"

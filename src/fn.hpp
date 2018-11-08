@@ -216,15 +216,10 @@ inline static void extract_subseq (const shared_ptr<SubSeq>& subseq) {
 
   fIn.seekg(subseq->begPos);
   vector<char> buffer(static_cast<u64>(subseq->size), 0);
-  fIn.read(buffer.data(), subseq->size);
+  fIn.read  (buffer.data(), subseq->size);
   fOut.write(buffer.data(), subseq->size);
 
   fIn.close();  fOut.close();
-
-  // Slower
-//  char c;
-//  for (auto i=subseq->endPos-subseq->begPos; i-- && fIn.get(c);)
-//    fOut << c;
 }
 
 inline static string gen_name

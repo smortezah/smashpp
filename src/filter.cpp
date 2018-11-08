@@ -39,21 +39,27 @@ inline void Filter::show_info (const Param& p) const {
   const auto toprule  = [&] () { rule(tblWidth, "~"); };
   const auto midrule  = [&] () { rule(tblWidth, "~"); };
   const auto botrule  = [&] () { rule(tblWidth, " "); };
-  const auto label    = [&] (const string& s) {cerr<<setw(lblWidth)<<left<<s;};
+  const auto label    = [&] (const string& s) {cerr<<setw(lblWidth) <<left<<s;};
   const auto header   = [&] (const string& s){cerr<<setw(2*colWidth)<<left<<s;};
   const auto filter_vals = [&] (char c) {
     cerr << setw(colWidth) << left;
-    if      (c=='f') cerr<<p.print_win_type();
-    else if (c=='w') cerr<<p.wsize;
-    else if (c=='t') cerr<<p.thresh;
+    switch (c) {
+    case 'f':  cerr<<p.print_win_type();  break;
+    case 'w':  cerr<<p.wsize;             break;
+    case 't':  cerr<<p.thresh;            break;
+    default:                              break;
+    }
     cerr << '\n';
   };
-  const auto file_vals = [&](char c) {
+  const auto file_vals = [&] (char c) {
     cerr << setw(2*colWidth) << left;
-    if      (c=='1') {cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);}
-    else if (c=='r') cerr<<p.ref;
-    else if (c=='2') {cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.tar);}
-    else if (c=='t') cerr<<p.tar;
+    switch (c) {
+    case '1':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);  break;
+    case 'r':  cerr<<p.ref;                                               break;
+    case '2':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.tar);  break;
+    case 't':  cerr<<p.tar;                                               break;
+    default:                                                              break;
+    }
   };
 
   toprule();
@@ -61,7 +67,9 @@ inline void Filter::show_info (const Param& p) const {
   midrule();
   label("Window function");           filter_vals('f');
   label("Window size");               filter_vals('w');
+  if (p.manThresh) {
   label("Threshold");                 filter_vals('t');
+  }
   botrule();  //cerr << '\n';
 
   toprule();
@@ -387,7 +395,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   nSegs = seg->nSegs;
 }
 
-void Filter::extract_seg (const string& tar, const string& ref) const {
+void Filter::extract_seg (const string& ref, const string& tar) const {
   check_file(gen_name(ref,tar,Format::POSITION));
   ifstream ff(gen_name(ref,tar,Format::POSITION));
   const auto segName = gen_name(ref,tar,Format::SEGMENT);

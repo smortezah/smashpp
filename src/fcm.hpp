@@ -21,6 +21,7 @@ class FCM {   // Finite-context models
   explicit FCM  (Param&);
   void store    (const Param&);         // Build FCM (finite-context models)
   void compress (const Param&);
+  void reffree_compress (const Param&);
 ////  void report     (const Param&) const;
 
  private:
