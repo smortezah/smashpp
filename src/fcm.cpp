@@ -157,7 +157,7 @@ inline void FCM::show_info (const Param& p) const {
   };
 
   toprule();
-  rmm_row("Ref Model(s)", 'm');
+  rmm_row("Ref Model(s)",                    'm');
   midrule();
   rmm_row("Context size (\U0001D705)    ",   'k');
   bool hasSketch = false;
@@ -182,7 +182,7 @@ inline void FCM::show_info (const Param& p) const {
   botrule();  //cerr << '\n';
 
   toprule();
-  tmm_row("Tar Model(s)", 'm');
+  tmm_row("Tar Model(s)",                    'm');
   midrule();
   tmm_row("Context size (\U0001D705)    ",   'k');
   hasSketch = false;
