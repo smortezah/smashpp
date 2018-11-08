@@ -74,21 +74,48 @@ inline void FCM::set_cont (vector<MMPar>& Ms) {
 
 inline void FCM::show_info (const Param& p) const {
   const u8 lblWidth=20, colWidth=8,
-           tblWidth=58;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
+           tblWidth=52;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
 
-  const auto rule = [] (u8 n, const string& s) {
+  const auto rule = [] (u8 n, string&& s) {
     for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
   };
-  const auto toprule  = [&] () { rule(tblWidth, "~"); };
-  const auto midrule  = [&] () { rule(tblWidth, "~"); };
-  const auto botrule  = [&] () { rule(tblWidth, " "); };
+  const auto toprule  = [=] () { rule(tblWidth, "~"); };
+  const auto midrule  = [=] () { rule(tblWidth, "~"); };
+  const auto botrule  = [=] () { rule(tblWidth, " "); };
   const auto label    = [&] (const string& s){cerr<<setw(lblWidth)  <<left<<s;};
   const auto header   = [&] (const string& s){cerr<<setw(2*colWidth)<<left<<s;};
-  const auto rmm_vals   = [&] (char c) { print_info_MM  (rMs, colWidth, c); };
-  const auto rstmm_vals = [&] (char c) { print_info_STMM(rMs, colWidth, c); };
-  const auto tmm_vals   = [&] (char c) { print_info_MM  (tMs, colWidth, c); };
-  const auto tstmm_vals = [&] (char c) { print_info_STMM(tMs, colWidth, c); };
-  const auto filter_vals = [&] (char c) {
+  const auto info_MM  = [&] (const vector<MMPar>& Ms, char c) {
+    int i = 0;
+    for (const auto& e : Ms) {
+      cerr << setw(colWidth) << left;
+      switch (c) {
+      case 'm':  cerr<<++i;                                              break;
+      case 'k':  cerr<<static_cast<int>(e.k);                            break;
+      case 'w':  cerr<<(e.w==0 ? "0" : "2^"+to_string(int(log2(e.w))));  break;
+      case 'd':  cerr<<static_cast<int>(e.d);                            break;
+      case 'i':  cerr<<(e.ir ? "yes" : "no");/*todo 0 1 2 be ja yes no*/ break;
+      case 'a':  cerr<<e.alpha;                                          break;
+      case 'g':  cerr<<e.gamma;                                          break;
+      default:                                                           break;
+      }
+    }
+  };
+  const auto info_STMM = [&] (const vector<MMPar>& Ms, char c) {
+    for (const auto& e : Ms) {
+      cerr << setw(colWidth) << left;
+      if (e.child)
+        switch (c) {
+        case 't':  cerr<<static_cast<int>(e.child->thresh);  break;
+        case 'i':  cerr<<(e.child->ir ? "yes" : "no");       break;
+        case 'a':  cerr<<e.child->alpha;                     break;
+        case 'g':  cerr<<e.child->gamma;                     break;
+        default:                                             break;
+        }
+      else
+        cerr<<'-';
+    }
+  };
+  const auto info_filter = [&] (char c) {
     cerr << setw(colWidth) << left;
     switch (c) {
     case 'f':  cerr<<p.print_win_type();  break;
@@ -96,9 +123,8 @@ inline void FCM::show_info (const Param& p) const {
     case 't':  cerr<<p.thresh;            break;
     default:                              break;
     }
-    cerr << '\n';
   };
-  const auto file_vals = [&] (char c) {
+  const auto info_file = [&] (char c) {
     cerr << setw(2*colWidth) << left;
     switch (c) {
     case '1':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);  break;
@@ -108,112 +134,96 @@ inline void FCM::show_info (const Param& p) const {
     default:                                                              break;
     }
   };
+  const auto rmm_row    = [=] (string&& lbl, char c) {
+    label(lbl);    info_MM(rMs, c);                  cerr<<'\n';
+  };
+  const auto rstmm_row  = [=] (string&& lbl, char c) {
+    label(lbl);    if (c!='h') info_STMM(rMs, c);    cerr<<'\n';
+  };
+  const auto tmm_row    = [=] (string&& lbl, char c) {
+    label(lbl);    info_MM(tMs, c);                  cerr<<'\n';
+  };
+  const auto tstmm_row  = [=] (string&& lbl, char c) {
+    label(lbl);    if (c!='h') info_STMM(tMs, c);    cerr<<'\n';
+  };
+  const auto filter_row = [=] (string&& lbl, char c) {
+    label(lbl);    if (c!='h') info_filter(c);       cerr<<'\n';
+  };
+  const auto file_row   = [=] (string&& lbl, string&& s1, string&& s2) {
+    label(lbl);
+    if (s1.size()==1) { char c1=s1[0],c2=s2[0];  info_file(c1); info_file(c2); }
+    else              {                          header(s1);    header(s2);    }
+    cerr << '\n';
+  };
 
+  toprule();
+  rmm_row("Ref Model(s)", 'm');
+  midrule();
+  rmm_row("Context size (\U0001D705)    ",   'k');
   bool hasSketch = false;
   for (const auto& e : rMs)
     if (e.cont==Container::SKETCH_8) { hasSketch=true;  break; }
-  toprule();
-  label("Ref Model(s)");                         rmm_vals('m');
-  midrule();
-  label("Context size (\U0001D705)    ");        rmm_vals('k');
   if (hasSketch) {
-  label("Sketch width (\U0001D464)    ");        rmm_vals('w');
-  label("Sketch depth (\U0001D451)    ");        rmm_vals('d');
+    rmm_row("Sketch width (\U0001D464)    ", 'w');
+    rmm_row("Sketch depth (\U0001D451)    ", 'd');
   }
-  label("Inv. repeat  (ir)");                    rmm_vals('i');
-  label("Alpha        (\U0001D6FC)    ");        rmm_vals('a');
-  label("Gamma        (\U0001D6FE)    ");        rmm_vals('g');
+  rmm_row("Inv. repeat  (ir)",               'i');
+  rmm_row("Alpha        (\U0001D6FC)    ",   'a');
+  rmm_row("Gamma        (\U0001D6FE)    ",   'g');
   botrule();  //cerr << '\n';
 
   toprule();
-  label("Ref Substituttional Model(s)");         cerr<<'\n';
+  rstmm_row("Ref Substituttional Model(s)",  'h');
   midrule();
-  label("No. Subst.   (\U0001D70F)    ");        rstmm_vals('t');
-  label("Inv. repeat  (ir)");                    rstmm_vals('i');
-  label("Alpha        (\U0001D6FC)    ");        rstmm_vals('a');
-  label("Gamma        (\U0001D6FE)    ");        rstmm_vals('g');
+  rstmm_row("No. Subst.   (\U0001D70F)    ", 't');
+  rstmm_row("Inv. repeat  (ir)",             'i');
+  rstmm_row("Alpha        (\U0001D6FC)    ", 'a');
+  rstmm_row("Gamma        (\U0001D6FE)    ", 'g');
   botrule();  //cerr << '\n';
 
+  toprule();
+  tmm_row("Tar Model(s)", 'm');
+  midrule();
+  tmm_row("Context size (\U0001D705)    ",   'k');
   hasSketch = false;
   for (const auto& e : tMs)
     if (e.cont==Container::SKETCH_8) { hasSketch=true;  break; }
-  toprule();
-  label("Tar Model(s)");                         tmm_vals('m');
-  midrule();
-  label("Context size (\U0001D705)    ");        tmm_vals('k');
   if (hasSketch) {
-  label("Sketch width (\U0001D464)    ");        tmm_vals('w');
-  label("Sketch depth (\U0001D451)    ");        tmm_vals('d');
+    tmm_row("Sketch width (\U0001D464)    ", 'w');
+    tmm_row("Sketch depth (\U0001D451)    ", 'd');
   }
-  label("Inv. repeat  (ir)");                    tmm_vals('i');
-  label("Alpha        (\U0001D6FC)    ");        tmm_vals('a');
-  label("Gamma        (\U0001D6FE)    ");        tmm_vals('g');
+  tmm_row("Inv. repeat  (ir)", 'i');
+  tmm_row("Alpha        (\U0001D6FC)    ",   'a');
+  tmm_row("Gamma        (\U0001D6FE)    ",   'g');
   botrule();  //cerr << '\n';
 
   toprule();
-  label("Tar Substituttional Model(s)");         cerr<<'\n';
+  tstmm_row("Tar Substituttional Model(s)",  'h');
   midrule();
-  label("No. Subst.   (\U0001D70F)    ");        tstmm_vals('t');
-  label("Inv. repeat  (ir)");                    tstmm_vals('i');
-  label("Alpha        (\U0001D6FC)    ");        tstmm_vals('a');
-  label("Gamma        (\U0001D6FE)    ");        tstmm_vals('g');
+  tstmm_row("No. Subst.   (\U0001D70F)    ", 't');
+  tstmm_row("Inv. repeat  (ir)", 'i');
+  tstmm_row("Alpha        (\U0001D6FC)    ", 'a');
+  tstmm_row("Gamma        (\U0001D6FE)    ", 'g');
   botrule();  //cerr << '\n';
 
   if (!p.compress) {
     toprule();
-    label("Filter & Segment");                   cerr<<'\n';
+    filter_row("Filter & Segment",           'h');
     midrule();
-    label("Window function");                    filter_vals('f');
-    label("Window size");                        filter_vals('w');
+    filter_row("Window function",            'f');
+    filter_row("Window size",                'w');
     if (p.manThresh) {
-    label("Threshold");                          filter_vals('t');
+      filter_row("Threshold",                't');
     }
     botrule();  //cerr << '\n';
   }
 
   toprule();
-  label("Files");        header("Name");    header("Size (B)");      cerr<<'\n';
+  file_row("Files",     "Name", "Size (B)");
   midrule();
-  label("Reference");    file_vals('r');    file_vals('1');          cerr<<'\n';
-  label("Target");       file_vals('t');    file_vals('2');          cerr<<'\n';
+  file_row("Reference", "r",    "1");
+  file_row("Target",    "t",    "2");
   botrule();
-}
-
-inline void FCM::print_info_MM
-(const vector<MMPar>& Ms, u8 colWidth, char c) const {
-  int i = 0;
-  for (const auto& e : Ms) {
-    cerr << setw(colWidth) << left;
-    switch (c) {
-    case 'm':  cerr<<++i;                                              break;
-    case 'k':  cerr<<static_cast<int>(e.k);                            break;
-    case 'w':  cerr<<(e.w==0 ? "0" : "2^"+to_string(int(log2(e.w))));  break;
-    case 'd':  cerr<<static_cast<int>(e.d);                            break;
-    case 'i':  cerr<<(e.ir ? "yes" : "no");/*todo 0 1 2 be ja yes no*/ break;
-    case 'a':  cerr<<e.alpha;                                          break;
-    case 'g':  cerr<<e.gamma;                                          break;
-    default:                                                           break;
-    }
-  }
-  cerr << '\n';
-}
-
-inline void FCM::print_info_STMM
-(const vector<MMPar>& Ms, u8 colWidth, char c) const {
-  for (const auto& e : Ms) {
-    cerr << setw(colWidth) << left;
-    if (e.child)
-      switch (c) {
-      case 't':  cerr<<static_cast<int>(e.child->thresh);  break;
-      case 'i':  cerr<<(e.child->ir ? "yes" : "no");       break;
-      case 'a':  cerr<<e.child->alpha;                     break;
-      case 'g':  cerr<<e.child->gamma;                     break;
-      default:                                             break;
-      }
-    else
-      cerr<<'-';
-  }
-  cerr << '\n';
 }
 
 inline void FCM::alloc_model () {
