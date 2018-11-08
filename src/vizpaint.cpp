@@ -504,24 +504,29 @@ inline void VizPaint::show_info (VizParam& p, const string& ref,
   const auto header   = [&] (const string& s){cerr<<setw(2*colWidth)<<left<<s;};
   const auto design_vals = [&] (char c) {
     cerr << setw(colWidth) << left;
-    if      (c=='w') cerr<<p.width;
-    else if (c=='s') cerr<<p.space;
-    else if (c=='f') cerr<<p.mult;
-    else if (c=='b') cerr<<p.start;
-    else if (c=='m') cerr<<p.min;
-    else if (c=='r') cerr<<(p.regular ? "yes" : "no");
-    else if (c=='i') cerr<<(p.inverse ? "yes" : "no");
-    else if (c=='l') cerr<<p.link;
+    switch (c) {
+    case 'w':  cerr<<p.width;                     break;
+    case 's':  cerr<<p.space;                     break;
+    case 'f':  cerr<<p.mult;                      break;
+    case 'b':  cerr<<p.start;                     break;
+    case 'm':  cerr<<p.min;                       break;
+    case 'r':  cerr<<(p.regular ? "yes" : "no");  break;
+    case 'i':  cerr<<(p.inverse ? "yes" : "no");  break;
+    case 'l':  cerr<<p.link;                      break;
+    default:                                      break;
+    }
     cerr << '\n';
   };
   const auto file_vals = [&] (char c) {
     cerr << setw(2*colWidth) << left;
-    if      (c=='1') {cerr.imbue(locale("en_US.UTF8"));  cerr<<n_refBases;}
-    else if (c=='r') cerr<<ref;
-    else if (c=='2') {cerr.imbue(locale("en_US.UTF8"));  cerr<<n_tarBases;}
-    else if (c=='t') cerr<<tar;
-    else if (c=='i') cerr<<p.image;
-    else             cerr<<'-';
+    switch (c) {
+    case '1':  cerr.imbue(locale("en_US.UTF8"));  cerr<<n_refBases;  break;
+    case 'r':  cerr<<ref;                                            break;
+    case '2':  cerr.imbue(locale("en_US.UTF8"));  cerr<<n_tarBases;  break;
+    case 't':  cerr<<tar;                                            break;
+    case 'i':  cerr<<p.image;                                        break;
+    default:   cerr<<'-';                                            break;
+    }
   };
 
   toprule();
