@@ -25,20 +25,26 @@ class FCM {   // Finite-context models
 ////  void report     (const Param&) const;
 
  private:
-  vector<MMPar>                 Ms;     // Markov models
-  vector<STMMPar>               TMs;    // Tolerant Markov models
+  vector<MMPar>                 rMs;     // Ref Markov models
+  vector<STMMPar>               rTMs;    // Ref Tolerant Markov models
+  vector<MMPar>                 tMs;     // Tar Markov models
+  vector<STMMPar>               tTMs;    // Tar Tolerant Markov models
   vector<shared_ptr<Table64>>   tbl64;
   vector<shared_ptr<Table32>>   tbl32;
   vector<shared_ptr<LogTable8>> lgtbl8;
   vector<shared_ptr<CMLS4>>     cmls4;
 
-  void config (const Param&);       // Set models parameters
-  void set_cont ();
-  void show_info (const Param&) const;// Show inputs information on the screen
-  void alloc_model ();              // Allocate memory to models
+  void config (string&&, string&&);      // Set models parameters
+  template <typename Iter>
+  void set_Ms_TMs (Iter, Iter, vector<MMPar>&, vector<STMMPar>&);
+  void set_cont (vector<MMPar>&);
+  void show_info (const Param&) const;  // Show inputs information on the screen
+  void print_info_MM (const vector<MMPar>&, u8, char) const;
+  void print_info_STMM (const vector<MMPar>&, u8, char) const;
+  void alloc_model ();                  // Allocate memory to models
 
-  void store_1 (const Param&);      // Build models one thread
-  void store_n (const Param&);      // Build models multiple threads
+  void store_1 (const Param&);          // Build models one thread
+  void store_n (const Param&);          // Build models multiple threads
   template <typename Mask, typename ContIter>
   void store_impl (const string&, Mask, ContIter);  // Fill data struct
 

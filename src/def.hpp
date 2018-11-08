@@ -76,12 +76,13 @@ static constexpr float DEF_ALPHA    {0.001};// Default alpha for models
 static constexpr float DEF_GAMMA    {0.9};  // Default gamma for multiple models
 static constexpr u8    DEF_PRF_PREC {3};  // Precisions for floats in Inf. prof
 static constexpr u8    DEF_FIL_PREC {3};  // Precisions for floats in filt. file
-static const string    FMT_SEQ      {"seq"}; // Format for bare seq file
-static const string    FMT_PRF      {"prf"}; // Format for inf. profile file
-static const string    FMT_POS      {"pos"}; // Format for positions file
-static const string    FMT_FIL      {"fil"}; // Format for filtered files
-static const string    LBL_SEG      {"s"};   // Label for segment files
-static const string    LBL_BAK      {"_bk"}; // Label for backup files
+static const string    FMT_SEQ      {"seq"};   // Format of bare seq file
+static const string    FMT_PRF      {"prf"};   // Format of inf. profile file
+static const string    FMT_POS      {"pos"};   // Format of positions file
+static const string    FMT_FIL      {"fil"};   // Format of filtered files
+static const string    FMT_SLF      {"slf"};   // Format of self complex. files
+static const string    LBL_SEG      {"s"};     // Label of segment files
+static const string    LBL_BAK      {"_bk"};   // Label of backup files
 static const string    POS_HDR      {"#SCF"};  // Header of positions file
 static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
@@ -105,7 +106,7 @@ enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8}; //Data structs
 //enum class Mode {MM, STMM};
 enum class WType     {RECTANGULAR, HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH,
                       SINE, NUTTALL};  // Types of windowing function
-enum class Format    {PROFILE, FILTER, POSITION, SEGMENT};
+enum class Format    {PROFILE, FILTER, POSITION, SEGMENT, SELF};
 enum class FileType  {SEQ, FASTA, FASTQ};
 
 // Macro
@@ -203,7 +204,11 @@ static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
   "8,0,0.1,0.95:4,0,1,0.95"                                           // Level 4
 };
 static const vector<string> REFFREE_LEVEL {
-  "2,0,1,0"                                                  // Level 0
+  "12,1,0.001,0.97",                                                  // Level 0
+  "12,1,0.001,0.97",                                                  // Level 1
+  "12,1,0.001,0.97",                                                  // Level 2
+  "12,1,0.001,0.97",                                                  // Level 3
+  "12,1,0.001,0.97"                                                   // Level 4
 };
 
 // Struct

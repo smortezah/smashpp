@@ -13,13 +13,23 @@ using namespace smashpp;
 
 FCM::FCM (Param& p) {
   aveEnt = static_cast<prec_t>(0);
-  config(p);
+  config(std::move(p.rmodelsPars), std::move(p.tmodelsPars));
   if (p.verbose && p.showInfo) { show_info(p);    p.showInfo=false; }
   alloc_model();
 }
 
-inline void FCM::config (const Param& p) {
-  vector<string> mdls;  split(p.rmodelsPars.begin(),p.rmodelsPars.end(),':',mdls);
+inline void FCM::config (string&& rmodelsPars, string&& tmodelsPars) {
+  set_Ms_TMs(rmodelsPars.begin(), rmodelsPars.end(), rMs, rTMs);
+  set_cont(rMs);
+
+  set_Ms_TMs(tmodelsPars.begin(), tmodelsPars.end(), tMs, tTMs);
+  set_cont(tMs);
+}
+
+template <typename Iter>
+inline void FCM::set_Ms_TMs
+(Iter begin, Iter end, vector<MMPar>& Ms, vector<STMMPar>& TMs) {
+  vector<string> mdls;      split(begin, end, ':', mdls);
   for (const auto& e : mdls) {
     // Markov and tolerant models
     vector<string> m_tm;    split(e.begin(), e.end(), '/', m_tm);
@@ -34,7 +44,7 @@ inline void FCM::config (const Param& p) {
           MMPar(static_cast<u8>(stoi(m[0])), static_cast<u8>(stoi(m[1])),
                 stof(m[2]), stof(m[3])));
     }
-    else if (m.size() == 6){
+    else if (m.size() == 6) {
       Ms.emplace_back(
         MMPar(static_cast<u8>(stoi(m[0])), pow2(stoull(m[1])),
               static_cast<u8>(stoi(m[2])), static_cast<u8>(stoi(m[3])),
@@ -51,10 +61,9 @@ inline void FCM::config (const Param& p) {
       Ms.back().child = make_shared<STMMPar>(TMs.back());
     }
   }
-  set_cont();    // Set modes: TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8
 }
 
-inline void FCM::set_cont () {
+inline void FCM::set_cont (vector<MMPar>& Ms) {
   for (auto& m : Ms) {
     if      (m.k > K_MAX_LGTBL8)    m.cont = Container::SKETCH_8;
     else if (m.k > K_MAX_TBL32)     m.cont = Container::LOG_TABLE_8;
@@ -62,45 +71,6 @@ inline void FCM::set_cont () {
     else                            m.cont = Container::TABLE_64;
   }
 }
-
-//inline void FCM::show_info (const Param& p) const {
-//  for (auto i=0u, j=0u; i != Ms.size(); ++i) {
-//    cerr
-//      << "Model " << i+1 << ':'                                          <<'\n'
-//      << "  [+] Context order ............ " << (int)Ms[i].k             <<'\n';
-//    if (Ms[i].w)  cerr
-//      << "  [+] Width of sketch .......... " << Ms[i].w                  <<'\n';
-//    if (Ms[i].d)  cerr
-//      << "  [+] Depth of sketch .......... " << (int)Ms[i].d             <<'\n';
-//    cerr
-//      << "  [+] Inverted repeats ......... " << (Ms[i].ir ? "yes" : "no")<<'\n'
-//      << "  [+] Alpha .................... " << Ms[i].alpha              <<'\n'
-//      << "  [+] Gamma .................... " << Ms[i].gamma              <<'\n'
-//                                                                         <<'\n';
-//    if (Ms[i].child) {
-//      cerr
-//      << "Substitutional Tolerant Model, based on Model " << i+1 << ':'  <<'\n'
-//      << "  [+] Substitutions allowed .... " << (int)TMs[j].thresh       <<'\n'
-//      << "  [+] Inverted repeats ......... " << (TMs[j].ir ? "yes":"no") <<'\n'
-//      << "  [+] Alpha .................... " << TMs[j].alpha             <<'\n'
-//      << "  [+] Gamma .................... " << TMs[j].gamma             <<'\n'
-//                                                                         <<'\n';
-//      ++j;
-//    }
-//  }
-//  cerr<< "Reference file:"                                               <<'\n'
-//      << "  [+] Name ..................... " << p.ref                    <<'\n'
-//      << "  [+] Size (bytes) ............. " << file_size(p.ref)         <<'\n'
-//                                                                         <<'\n'
-//      << "Target file:"                                                  <<'\n'
-//      << "  [+] Name ..................... " << p.tar                    <<'\n'
-//      << "  [+] Size (bytes) ............. " << file_size(p.tar)         <<'\n'
-//                                                                         <<'\n'
-//      << "Filter and segment:"                                           <<'\n'
-//      << "  [+] Windowing function ....... " << p.print_win_type()       <<'\n'
-//      << "  [+] Window size .............. " << p.wsize                  <<'\n'
-//      << "  [+] Threshold ................ " << p.thresh                 <<'\n';
-//}
 
 inline void FCM::show_info (const Param& p) const {
   const u8 lblWidth=20, colWidth=8,
@@ -114,39 +84,10 @@ inline void FCM::show_info (const Param& p) const {
   const auto botrule  = [&] () { rule(tblWidth, " "); };
   const auto label    = [&] (const string& s){cerr<<setw(lblWidth)  <<left<<s;};
   const auto header   = [&] (const string& s){cerr<<setw(2*colWidth)<<left<<s;};
-  const auto rmm_vals = [&] (char c) {
-    int i = 0;
-    for (const auto& e : Ms) {
-      cerr << setw(colWidth) << left;
-      switch (c) {
-      case 'm':  cerr<<++i;                                              break;
-      case 'k':  cerr<<static_cast<int>(e.k);                            break;
-      case 'w':  cerr<<(e.w==0 ? "0" : "2^"+to_string(int(log2(e.w))));  break;
-      case 'd':  cerr<<static_cast<int>(e.d);                            break;
-      case 'i':  cerr<<(e.ir ? "yes" : "no");/*todo 0 1 2 be ja yes no*/ break;
-      case 'a':  cerr<<e.alpha;                                          break;
-      case 'g':  cerr<<e.gamma;                                          break;
-      default:                                                           break;
-      }
-    }
-    cerr << '\n';
-  };
-  const auto rstmm_vals = [&] (char c) {
-    for (const auto& e : Ms) {
-      cerr << setw(colWidth) << left;
-      if (e.child)
-        switch (c) {
-        case 't':  cerr<<static_cast<int>(e.child->thresh);  break;
-        case 'i':  cerr<<(e.child->ir ? "yes" : "no");       break;
-        case 'a':  cerr<<e.child->alpha;                     break;
-        case 'g':  cerr<<e.child->gamma;                     break;
-        default:                                             break;
-        }
-      else
-        cerr<<'-';
-    }
-    cerr << '\n';
-  };
+  const auto rmm_vals   = [&] (char c) { print_info_MM  (rMs, colWidth, c); };
+  const auto rstmm_vals = [&] (char c) { print_info_STMM(rMs, colWidth, c); };
+  const auto tmm_vals   = [&] (char c) { print_info_MM  (tMs, colWidth, c); };
+  const auto tstmm_vals = [&] (char c) { print_info_STMM(tMs, colWidth, c); };
   const auto filter_vals = [&] (char c) {
     cerr << setw(colWidth) << left;
     switch (c) {
@@ -168,25 +109,56 @@ inline void FCM::show_info (const Param& p) const {
     }
   };
 
+  bool hasSketch = false;
+  for (const auto& e : rMs)
+    if (e.cont==Container::SKETCH_8) { hasSketch=true;  break; }
   toprule();
-  label("Ref model(s)");                         rmm_vals('m');
+  label("Ref Model(s)");                         rmm_vals('m');
   midrule();
   label("Context size (\U0001D705)    ");        rmm_vals('k');
+  if (hasSketch) {
   label("Sketch width (\U0001D464)    ");        rmm_vals('w');
   label("Sketch depth (\U0001D451)    ");        rmm_vals('d');
+  }
   label("Inv. repeat  (ir)");                    rmm_vals('i');
   label("Alpha        (\U0001D6FC)    ");        rmm_vals('a');
   label("Gamma        (\U0001D6FE)    ");        rmm_vals('g');
   botrule();  //cerr << '\n';
 
   toprule();
-  label("Ref substituttional Model(s)");         cerr<<'\n';
+  label("Ref Substituttional Model(s)");         cerr<<'\n';
   midrule();
   label("No. Subst.   (\U0001D70F)    ");        rstmm_vals('t');
   label("Inv. repeat  (ir)");                    rstmm_vals('i');
   label("Alpha        (\U0001D6FC)    ");        rstmm_vals('a');
   label("Gamma        (\U0001D6FE)    ");        rstmm_vals('g');
   botrule();  //cerr << '\n';
+
+  hasSketch = false;
+  for (const auto& e : tMs)
+    if (e.cont==Container::SKETCH_8) { hasSketch=true;  break; }
+  toprule();
+  label("Tar Model(s)");                         tmm_vals('m');
+  midrule();
+  label("Context size (\U0001D705)    ");        tmm_vals('k');
+  if (hasSketch) {
+  label("Sketch width (\U0001D464)    ");        tmm_vals('w');
+  label("Sketch depth (\U0001D451)    ");        tmm_vals('d');
+  }
+  label("Inv. repeat  (ir)");                    tmm_vals('i');
+  label("Alpha        (\U0001D6FC)    ");        tmm_vals('a');
+  label("Gamma        (\U0001D6FE)    ");        tmm_vals('g');
+  botrule();  //cerr << '\n';
+
+  toprule();
+  label("Tar Substituttional Model(s)");         cerr<<'\n';
+  midrule();
+  label("No. Subst.   (\U0001D70F)    ");        tstmm_vals('t');
+  label("Inv. repeat  (ir)");                    tstmm_vals('i');
+  label("Alpha        (\U0001D6FC)    ");        tstmm_vals('a');
+  label("Gamma        (\U0001D6FE)    ");        tstmm_vals('g');
+  botrule();  //cerr << '\n';
+
   if (!p.compress) {
     toprule();
     label("Filter & Segment");                   cerr<<'\n';
@@ -207,8 +179,45 @@ inline void FCM::show_info (const Param& p) const {
   botrule();
 }
 
+inline void FCM::print_info_MM
+(const vector<MMPar>& Ms, u8 colWidth, char c) const {
+  int i = 0;
+  for (const auto& e : Ms) {
+    cerr << setw(colWidth) << left;
+    switch (c) {
+    case 'm':  cerr<<++i;                                              break;
+    case 'k':  cerr<<static_cast<int>(e.k);                            break;
+    case 'w':  cerr<<(e.w==0 ? "0" : "2^"+to_string(int(log2(e.w))));  break;
+    case 'd':  cerr<<static_cast<int>(e.d);                            break;
+    case 'i':  cerr<<(e.ir ? "yes" : "no");/*todo 0 1 2 be ja yes no*/ break;
+    case 'a':  cerr<<e.alpha;                                          break;
+    case 'g':  cerr<<e.gamma;                                          break;
+    default:                                                           break;
+    }
+  }
+  cerr << '\n';
+}
+
+inline void FCM::print_info_STMM
+(const vector<MMPar>& Ms, u8 colWidth, char c) const {
+  for (const auto& e : Ms) {
+    cerr << setw(colWidth) << left;
+    if (e.child)
+      switch (c) {
+      case 't':  cerr<<static_cast<int>(e.child->thresh);  break;
+      case 'i':  cerr<<(e.child->ir ? "yes" : "no");       break;
+      case 'a':  cerr<<e.child->alpha;                     break;
+      case 'g':  cerr<<e.child->gamma;                     break;
+      default:                                             break;
+      }
+    else
+      cerr<<'-';
+  }
+  cerr << '\n';
+}
+
 inline void FCM::alloc_model () {
-  for (const auto& m : Ms) {
+  for (const auto& m : rMs) {
     switch (m.cont) {
     case Container::SKETCH_8:
       cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));    break;
@@ -223,7 +232,7 @@ inline void FCM::alloc_model () {
 }
 
 void FCM::store (const Param& p) {
-  const auto nMdl = Ms.size();
+  const auto nMdl = rMs.size();
   cerr << "Building the model" << (nMdl==1 ?"" :"s") << " based on \"" << p.ref
        << "\" (level " << static_cast<u16>(p.level) << ")...\n";
 
@@ -242,7 +251,7 @@ void FCM::store (const Param& p) {
 inline void FCM::store_1 (const Param& p) {
   auto tbl64_iter=tbl64.begin();      auto tbl32_iter=tbl32.begin();
   auto lgtbl8_iter=lgtbl8.begin();    auto cmls4_iter=cmls4.begin();
-  for (const auto& m : Ms) {    // Mask: 1<<2k - 1 = 4^k - 1
+  for (const auto& m : rMs) {    // Mask: 1<<2k - 1 = 4^k - 1
     switch (m.cont) {
     case Container::SKETCH_8:
       store_impl(p.ref, (1ull<<(m.k<<1u))-1ull/*Mask 64*/, cmls4_iter++); break;
@@ -261,25 +270,25 @@ inline void FCM::store_1 (const Param& p) {
 inline void FCM::store_n (const Param& p) {
   auto tbl64_iter=tbl64.begin();      auto tbl32_iter=tbl32.begin();
   auto lgtbl8_iter=lgtbl8.begin();    auto cmls4_iter=cmls4.begin();
-  const auto vThrSz = (p.nthr < Ms.size()) ? p.nthr : Ms.size();
+  const auto vThrSz = (p.nthr < rMs.size()) ? p.nthr : rMs.size();
   vector<std::thread> thrd(vThrSz);
-  for (u8 i=0; i!=Ms.size(); ++i) {    // Mask: 1<<2k-1 = 4^k-1
-    switch (Ms[i].cont) {
+  for (u8 i=0; i!=rMs.size(); ++i) {    // Mask: 1<<2k-1 = 4^k-1
+    switch (rMs[i].cont) {
     case Container::SKETCH_8:
       thrd[i % vThrSz] = std::thread(&FCM::store_impl<u64,decltype(cmls4_iter)>,
-        this, std::cref(p.ref), (1ull << (Ms[i].k << 1u)) - 1ull, cmls4_iter++);
+        this, std::cref(p.ref), (1ull << (rMs[i].k << 1u)) - 1ull, cmls4_iter++);
       break;
     case Container::LOG_TABLE_8:
       thrd[i % vThrSz] =std::thread(&FCM::store_impl<u32,decltype(lgtbl8_iter)>,
-        this, std::cref(p.ref), (1ul << (Ms[i].k << 1u)) - 1ul, lgtbl8_iter++);
+        this, std::cref(p.ref), (1ul << (rMs[i].k << 1u)) - 1ul, lgtbl8_iter++);
       break;
     case Container::TABLE_32:
       thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32,decltype(tbl32_iter)>,
-        this, std::cref(p.ref), (1ul << (Ms[i].k << 1u)) - 1ul, tbl32_iter++);
+        this, std::cref(p.ref), (1ul << (rMs[i].k << 1u)) - 1ul, tbl32_iter++);
       break;
     case Container::TABLE_64:
       thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>,
-        this, std::cref(p.ref), (1ul << (Ms[i].k << 1u)) - 1ul, tbl64_iter++);
+        this, std::cref(p.ref), (1ul << (rMs[i].k << 1u)) - 1ul, tbl64_iter++);
       break;
     default:
       err("the models cannot be built.");
@@ -312,8 +321,8 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 void FCM::compress (const Param& p) {
   cerr << OUT_SEP << "Compressing \"" << p.tar << "\"...\n";
 
-  if (Ms.size()==1 && TMs.empty())  // 1 MM
-    switch (Ms[0].cont) {
+  if (rMs.size()==1 && rTMs.empty())  // 1 MM
+    switch (rMs[0].cont) {
     case Container::SKETCH_8:     compress_1(p, cmls4.begin());   break;
     case Container::LOG_TABLE_8:  compress_1(p, lgtbl8.begin());  break;
     case Container::TABLE_32:     compress_1(p, tbl32.begin());   break;
@@ -330,19 +339,20 @@ void FCM::compress (const Param& p) {
 
 void FCM::reffree_compress (const Param& p) {
   //todo
-  cerr<<"hi";
+//  ofstream sf(gen_name("", p.seq, Format::SELF));
+//  sf.close();
 }
 
 template <typename ContIter>
 inline void FCM::compress_1 (const Param& par, ContIter cont) {
   // Ctx, Mir (int) sliding through the dataset
-  u64      ctx{0},   ctxIr{(1ull<<(Ms[0].k<<1u))-1};
+  u64      ctx{0},   ctxIr{(1ull<<(rMs[0].k<<1u))-1};
   u64      symsNo{0};            // No. syms in target file, except \n
   prec_t   sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(par.tar);
   ofstream pf(gen_name(par.ref, par.tar, Format::PROFILE));
-  ProbPar  pp{Ms[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
-              static_cast<u8>(Ms[0].k<<1u)};
+  ProbPar  pp{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
+              static_cast<u8>(rMs[0].k<<1u)};
   const auto totalSize = file_size(par.tar);
 
   for (vector<char> buffer(FILE_BUF,0); tf.peek()!=EOF;) {
@@ -352,7 +362,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
 //      while (tf.get(c)) { // Slower
       if (c!='N' && c!='\n') {
         ++symsNo;
-        if (Ms[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
+        if (rMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
           pp.config(c, ctx);
           array<decltype((*cont)->query(0)), 4> f{};
           freqs(f, cont, pp.l);
@@ -387,11 +397,11 @@ inline void FCM::compress_n (const Param& par) {
   ofstream pf(gen_name(par.ref, par.tar, Format::PROFILE));
   auto cp = make_shared<CompressPar>();
   // Ctx, Mir (int) sliding through the dataset
-  const auto nMdl = static_cast<u8>(Ms.size() + TMs.size());
+  const auto nMdl = static_cast<u8>(rMs.size() + rTMs.size());
   cp->nMdl = nMdl;
   cp->ctx.resize(nMdl);        // Fill with zeros (resize)
   cp->ctxIr.reserve(nMdl);
-  for (const auto& mm : Ms) {  // Mask: 1<<2k - 1 = 4^k - 1
+  for (const auto& mm : rMs) {  // Mask: 1<<2k - 1 = 4^k - 1
     cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
     if (mm.child)  cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
   }
@@ -399,7 +409,7 @@ inline void FCM::compress_n (const Param& par) {
   cp->wNext.resize(nMdl, static_cast<prec_t>(0));
   cp->pp.reserve(nMdl);
   auto maskIter = cp->ctxIr.begin();
-  for (const auto& mm : Ms) {
+  for (const auto& mm : rMs) {
     cp->pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
     if (mm.child)  cp->pp.emplace_back(
                      mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
@@ -421,7 +431,7 @@ inline void FCM::compress_n (const Param& par) {
         auto lgtbl8_it=lgtbl8.begin();  auto cmls4_it=cmls4.begin();
 
         u8 n = 0;  // Counter for the models
-        for (const auto& mm : Ms) {
+        for (const auto& mm : rMs) {
           cp->mm = mm;
           switch (mm.cont) {
           case Container::SKETCH_8:    compress_n_impl(cp,cmls4_it++, n); break;
