@@ -229,6 +229,7 @@ inline static string gen_name
   case Format::FILTER:    return ref+"-"+tar+"."+FMT_FIL;
   case Format::POSITION:  return ref+"-"+tar+"."+FMT_POS;
   case Format::SEGMENT:   return ref+"-"+tar+"-"+LBL_SEG;
+  case Format::SELF:      return tar+"."+FMT_SLF;
   default:                return "";
   }
 }
