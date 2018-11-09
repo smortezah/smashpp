@@ -21,7 +21,7 @@ class FCM {   // Finite-context models
   explicit FCM  (Param&);
   void store    (const Param&);         // Build FCM (finite-context models)
   void compress (const Param&);
-  void reffree_compress (const Param&);
+  void self_compress (const Param&);
 ////  void report     (const Param&) const;
 
  private:
@@ -56,7 +56,12 @@ class FCM {   // Finite-context models
   template <typename ContIter>
   void compress_n_child (shared_ptr<CompressPar>, ContIter, u8) const;
 
-//  template <typename OutT, typename ContIter, typename ProbParIter>
+  void self_compress_alloc ();
+  template <typename ContIter>
+  void self_compress_1 (const Param&, ContIter);
+
+
+    //  template <typename OutT, typename ContIter, typename ProbParIter>
 //  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
   template <typename OutT, typename ContIter>
   void freqs (array<OutT,4>&, ContIter, u64) const;
