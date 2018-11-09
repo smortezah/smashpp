@@ -59,7 +59,13 @@ class FCM {   // Finite-context models
   void self_compress_alloc ();
   template <typename ContIter>
   void self_compress_1 (const Param&, ContIter);
-
+  void self_compress_n (const Param&);
+  template <typename ContIter>
+  void self_compress_n_impl (shared_ptr<CompressPar>, ContIter, u8&) const;
+  template <typename ContIter>
+  void self_compress_n_parent (shared_ptr<CompressPar>, ContIter, u8) const;
+  template <typename ContIter>
+  void self_compress_n_child (shared_ptr<CompressPar>, ContIter, u8) const;
 
     //  template <typename OutT, typename ContIter, typename ProbParIter>
 //  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
