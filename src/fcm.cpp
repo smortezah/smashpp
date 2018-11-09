@@ -375,7 +375,7 @@ void FCM::reffree_compress (const Param& p) {
     case Container::TABLE_64:
 
       // Ctx, Mir (int) sliding through the dataset
-      u64      ctx{0},   ctxIr{(1ull<<(tMs[0].k<<1u))-1};
+      u64      ctx{0},   ctxIr{(1ull<<tMs[0].k)-1};
       u64      symsNo{0};            // No. syms in target file, except \n
       prec_t   sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
       ifstream inF(p.seq);
@@ -397,6 +397,7 @@ void FCM::reffree_compress (const Param& p) {
               freqs(f, cont, pp.l);
               const auto entr = entropy(prob(f.begin(), &pp));
 //              pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+cout << entr<<'\n';//todo
               sumEnt += entr;
 
               update_ctx(ctx, &pp);
