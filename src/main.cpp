@@ -67,7 +67,7 @@ int main (int argc, char* argv[]) {
 //        }
           //todo
           par.seq = tempRef;
-          models->reffree_compress(par);
+        models->self_compress(par);
 
 //        cerr <<"\n===[ Building reference map for each target pattern ]=======";
 //        // Consider the ref as new tar and the tar segments as new refs
