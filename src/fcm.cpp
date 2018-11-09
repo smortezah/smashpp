@@ -399,7 +399,6 @@ void FCM::reffree_compress (const Param& p) {
 //              pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
               sumEnt += entr;
 
-////              ctx = (pp.l & mask) | NUM[static_cast<u8>(c)];
               update_ctx(ctx, &pp);
               (*cont)->update(ctx);
             }

@@ -58,7 +58,7 @@ int main (int argc, char* argv[]) {
 //        auto filter = make_shared<Filter>(par);
 //        filter->smooth_seg(par);                // Filter and segment
 //        filter->extract_seg(par.ref, par.tar);  // Extract segs from target
-//
+
 //        //todo ref-free compress all extracted regions
 //        const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
 //        for (u64 i=0; i!=filter->nSegs; ++i) {
