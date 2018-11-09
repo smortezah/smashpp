@@ -926,7 +926,8 @@ inline prec_t FCM::prob (FreqIter fFirst, ProbParIter pp) const {
 
 inline prec_t FCM::entropy (prec_t P) const {
   // First version
-  return -log2(P);
+  return log2(1/P);
+//  return -log2(P);
 
   // Second version
 //  static auto prevP  = static_cast<prec_t>(1); // Can't be zero
