@@ -368,7 +368,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
         ++symsNo;
         if (rMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
           pp.config(c, ctx);
-          array<decltype((*cont)->query(0)), 4> f{};
+          array<decltype((*cont)->query(0)), 4> f {};
           freqs(f, cont, pp.l);
           const auto entr = entropy(prob(f.begin(), &pp));
           pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
@@ -451,7 +451,6 @@ inline void FCM::compress_n (const Param& par) {
         pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << ent << '\n';
         normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
 ////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
-
         sumEnt += ent;
         show_progress(symsNo, totalSize);
       }
@@ -535,10 +534,9 @@ inline void FCM::compress_n_child
 }
 
 void FCM::self_compress (const Param& p) {
-//  ofstream sf(gen_name("", p.seq, Format::SELF));
   cerr << OUT_SEP << "Compressing \"" << p.seq << "\"...\n";
   self_compress_alloc();
-  
+
   if (tMs.size()==1 && tTMs.empty())  // 1 MM
     switch (tMs[0].cont) {
     case Container::SKETCH_8:     self_compress_1(p, cmls4.begin());   break;
@@ -546,68 +544,10 @@ void FCM::self_compress (const Param& p) {
     case Container::TABLE_32:     self_compress_1(p, tbl32.begin());   break;
     case Container::TABLE_64:     self_compress_1(p, tbl64.begin());   break;
     }
-//  else
-//    compress_n(p);
+  else
+    self_compress_n(p);
 
   cerr << "Done!\n";
-
-
-
-      // Ctx, Mir (int) sliding through the dataset
-      u64      ctx{0},   ctxIr{(1ull<<(tMs[0].k<<1u))-1};
-      u64      symsNo{0};            // No. syms in target file, except \n
-      prec_t   sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
-      ifstream seqF(p.seq);
-      ProbPar  pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
-                  static_cast<u8>(tMs[0].k<<1u)};
-      const auto totalSize = file_size(p.seq);
-
-      auto cont = tbl64.begin();
-
-      for (vector<char> buffer(FILE_BUF,0); seqF.peek()!=EOF;) {
-        seqF.read(buffer.data(), FILE_BUF);
-        for (auto it=buffer.begin(); it!=buffer.begin()+seqF.gcount(); ++it) {
-          const auto c = *it;
-          if (c!='N' && c!='\n') {
-            ++symsNo;
-            if (tMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
-              pp.config(c, ctx);
-              array<decltype((*cont)->query(0)), 4> f{};
-              freqs(f, cont, pp.l);
-              const auto entr = entropy(prob(f.begin(), &pp));
-//              pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
-              cout << setprecision(DEF_PRF_PREC) << entr<<'\n';//todo
-              sumEnt += entr;
-
-              (*cont)->update(pp.l | pp.numSym);
-              update_ctx(ctx, &pp);
-            }
-            else {
-              pp.config_ir(c, ctx, ctxIr);
-              array<decltype(2*(*cont)->query(0)),4> f {};
-              freqs_ir(f, cont, &pp);
-              const auto entr = entropy(prob(f.begin(), &pp));
-//              pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
-              cout << setprecision(DEF_PRF_PREC) << entr<<'\n';//todo
-              sumEnt += entr;
-
-              (*cont)->update(pp.l | pp.numSym);
-              update_ctx_ir(ctx, ctxIr, &pp);
-            }
-
-            show_progress(symsNo, totalSize);
-          }
-        }
-      }
-
-    remove_progress_trace();
-    seqF.close();
-    cerr <<"---\n"<< std::fixed << setprecision(DEF_PRF_PREC) << sumEnt/symsNo;
-    break;
-  }
-
-
-//  sf.close();
 }
 
 inline void FCM::self_compress_alloc () {
@@ -632,57 +572,196 @@ inline void FCM::self_compress_alloc () {
 }
 
 template <typename ContIter>
-inline void FCM::self_compress_1 (const smashpp::Param&, ContIter) {
-    // Ctx, Mir (int) sliding through the dataset
-    u64      ctx{0},   ctxIr{(1ull<<(tMs[0].k<<1u))-1};
-    u64      symsNo{0};            // No. syms in target file, except \n
-    prec_t   sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
-    ifstream seqF(p.seq);
-    ProbPar  pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
-                static_cast<u8>(tMs[0].k<<1u)};
-    const auto totalSize = file_size(p.seq);
+inline void FCM::self_compress_1 (const smashpp::Param& par, ContIter cont) {
+  u64      ctx{0},   ctxIr{(1ull<<(tMs[0].k<<1u))-1};
+  u64      symsNo{0};
+  prec_t   sumEnt{0};
+  ifstream seqF(par.seq);
+  ProbPar  pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
+              static_cast<u8>(tMs[0].k<<1u)};
+  const auto totalSize = file_size(par.seq);
 
-    auto cont = tbl64.begin();
-
-    for (vector<char> buffer(FILE_BUF,0); seqF.peek()!=EOF;) {
-      seqF.read(buffer.data(), FILE_BUF);
-      for (auto it=buffer.begin(); it!=buffer.begin()+seqF.gcount(); ++it) {
-        const auto c = *it;
-        if (c!='N' && c!='\n') {
-          ++symsNo;
-          if (tMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
-            pp.config(c, ctx);
-            array<decltype((*cont)->query(0)), 4> f{};
-            freqs(f, cont, pp.l);
-            const auto entr = entropy(prob(f.begin(), &pp));
-//            pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
-            cout << setprecision(DEF_PRF_PREC) << entr<<'\n';//todo
-            sumEnt += entr;
-
-            (*cont)->update(pp.l | pp.numSym);
-            update_ctx(ctx, &pp);
-          }
-          else {
-            pp.config_ir(c, ctx, ctxIr);
-            array<decltype(2*(*cont)->query(0)),4> f {};
-            freqs_ir(f, cont, &pp);
-            const auto entr = entropy(prob(f.begin(), &pp));
-//            pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
-            cout << setprecision(DEF_PRF_PREC) << entr<<'\n';//todo
-            sumEnt += entr;
-
-            (*cont)->update(pp.l | pp.numSym);
-            update_ctx_ir(ctx, ctxIr, &pp);
-          }
-
-          show_progress(symsNo, totalSize);
+  for (vector<char> buffer(FILE_BUF,0); seqF.peek()!=EOF;) {
+    seqF.read(buffer.data(), FILE_BUF);
+    for (auto it=buffer.begin(); it!=buffer.begin()+seqF.gcount(); ++it) {
+      const auto c = *it;
+      if (c!='N' && c!='\n') {
+        ++symsNo;
+        if (tMs[0].ir == 0) {
+          pp.config(c, ctx);
+          array<decltype((*cont)->query(0)), 4> f {};
+          freqs(f, cont, pp.l);
+          const auto entr = entropy(prob(f.begin(), &pp));
+          cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr<<'\n';//todo comment
+          sumEnt += entr;
+          (*cont)->update(pp.l | pp.numSym);
+          update_ctx(ctx, &pp);
         }
+        else {
+          pp.config_ir(c, ctx, ctxIr);
+          array<decltype(2*(*cont)->query(0)),4> f {};
+          freqs_ir(f, cont, &pp);
+          const auto entr = entropy(prob(f.begin(), &pp));
+          cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr<<'\n';//todo comment
+          sumEnt += entr;
+          (*cont)->update(pp.l | pp.numSym);
+          update_ctx_ir(ctx, ctxIr, &pp);
+        }
+        show_progress(symsNo, totalSize);
       }
     }
-
+  }
   remove_progress_trace();
+  ofstream sf(gen_name("", par.seq, Format::SELF));
+  sf << std::fixed << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
+  sf.close();
   seqF.close();
-  cerr <<"---\n"<< std::fixed << setprecision(DEF_PRF_PREC) << sumEnt/symsNo;
+}
+
+inline void FCM::self_compress_n (const Param& par) {
+  u64 symsNo{0};
+  prec_t sumEnt{0};
+  ifstream seqF(par.seq);
+  auto cp = make_shared<CompressPar>();
+  const auto nMdl = static_cast<u8>(tMs.size() + tTMs.size());
+  cp->nMdl = nMdl;
+  cp->ctx.resize(nMdl);        // Fill with zeros (resize)
+  cp->ctxIr.reserve(nMdl);
+  for (const auto& mm : tMs) {  // Mask: 1<<2k - 1 = 4^k - 1
+    cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+    if (mm.child)  cp->ctxIr.emplace_back((1ull<<(mm.k<<1))-1);
+  }
+  cp->w.resize(nMdl, static_cast<prec_t>(1)/nMdl);
+  cp->wNext.resize(nMdl, static_cast<prec_t>(0));
+  cp->pp.reserve(nMdl);
+  auto maskIter = cp->ctxIr.begin();
+  for (const auto& mm : tMs) {
+    cp->pp.emplace_back(mm.alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+    if (mm.child)  cp->pp.emplace_back(
+                     mm.child->alpha, *maskIter++, static_cast<u8>(mm.k<<1u));
+  }
+  const auto totalSize = file_size(par.seq);
+
+  for (vector<char> buffer(FILE_BUF,0); seqF.peek()!=EOF;) {
+    seqF.read(buffer.data(), FILE_BUF);
+    for (auto it=buffer.begin(); it!=buffer.begin()+seqF.gcount(); ++it) {
+      const auto c = *it;
+      if (c!='N' && c!='\n') {
+        ++symsNo;
+        cp->c=c;                        cp->nSym=NUM[static_cast<u8>(c)];
+        cp->ppIt=cp->pp.begin();
+        cp->ctxIt=cp->ctx.begin();      cp->ctxIrIt=cp->ctxIr.begin();
+        cp->probs.clear();              cp->probs.reserve(nMdl);
+        auto tbl64_it=tbl64.begin();    auto tbl32_it=tbl32.begin();
+        auto lgtbl8_it=lgtbl8.begin();  auto cmls4_it=cmls4.begin();
+
+        u8 n = 0;  // Counter for the models
+        for (const auto& mm : tMs) {
+          cp->mm = mm;
+          switch (mm.cont) {
+          case Container::SKETCH_8:
+            self_compress_n_impl(cp, cmls4_it++,  n);  break;
+          case Container::LOG_TABLE_8:
+            self_compress_n_impl(cp, lgtbl8_it++, n);  break;
+          case Container::TABLE_32:
+            self_compress_n_impl(cp, tbl32_it++,  n);  break;
+          case Container::TABLE_64:
+            self_compress_n_impl(cp, tbl64_it++,  n);  break;
+          }
+          ++n;
+          ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
+        }
+
+        const auto ent=entropy(cp->w.begin(),cp->probs.begin(),cp->probs.end());
+        cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << ent << '\n';
+        normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
+////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
+        sumEnt += ent;
+        show_progress(symsNo, totalSize);
+      }
+    }
+  }
+  remove_progress_trace();
+  //todo
+  cerr<<std::fixed << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
+//  ofstream sf(gen_name("", par.seq, Format::SELF));
+//  sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
+//  sf.close();
+  seqF.close();
+}
+
+template <typename ContIter>
+inline void FCM::self_compress_n_impl
+(shared_ptr<CompressPar> cp, ContIter cont, u8& n) const {
+  self_compress_n_parent(cp, cont, n);
+  if (cp->mm.child) {
+    ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
+    self_compress_n_child(cp, cont, ++n);
+  }
+}
+
+template <typename ContIter>
+inline void FCM::self_compress_n_parent
+(shared_ptr<CompressPar> cp, ContIter cont, u8 n) const {
+  const auto weight_next = [=] (prec_t w, prec_t g, prec_t p) -> prec_t {
+    return pow(w, g) * p;
+  };
+
+  if (cp->mm.ir == 0) {
+    cp->ppIt->config(cp->c, *cp->ctxIt);
+    array<decltype((*cont)->query(0)),4> f {};
+    freqs(f, cont, cp->ppIt->l);
+    const auto P = prob(f.begin(), cp->ppIt);
+    cp->probs.emplace_back(P);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    (*cont)->update(cp->ppIt->l | cp->ppIt->numSym);
+    update_ctx(*cp->ctxIt, cp->ppIt);
+  }
+  else {
+    cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);
+    array<decltype(2*(*cont)->query(0)),4> f {};
+    freqs_ir(f, cont, cp->ppIt);
+    const auto P = prob(f.begin(), cp->ppIt);
+    cp->probs.emplace_back(P);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    (*cont)->update(cp->ppIt->l | cp->ppIt->numSym);
+    update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
+  }
+}
+
+template <typename ContIter>
+inline void FCM::self_compress_n_child
+(shared_ptr<CompressPar> cp, ContIter cont, u8 n) const {
+  const auto weight_next = [=](prec_t w, prec_t g, prec_t p) -> prec_t {
+    return pow(w, g) * p;
+  };
+
+  if (cp->mm.child->ir == 0) {
+    cp->ppIt->config(cp->c, *cp->ctxIt);
+    array<decltype((*cont)->query(0)),4> f {};
+    freqs(f, cont, cp->ppIt->l);
+    const auto P = prob(f.begin(), cp->ppIt);
+    cp->probs.emplace_back(P);
+    correct_stmm(cp, f.begin());
+//    if (correct_stmm(cp,f.begin()))
+//      fill(cp->wNext.begin(),cp->wNext.end(),static_cast<prec_t>(1)/cp->nMdl);
+//    else
+      cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
+    update_ctx(*cp->ctxIt, cp->ppIt);
+  }
+  else {
+    cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
+    array<decltype(2*(*cont)->query(0)),4> f {};
+    freqs_ir(f, cont, cp->ppIt);
+    const auto P = prob(f.begin(), cp->ppIt);
+    cp->probs.emplace_back(P);
+    correct_stmm(cp, f.begin());
+//    if (correct_stmm(cp,f.begin()))
+//      fill(cp->wNext.begin(),cp->wNext.end(),static_cast<prec_t>(1)/cp->nMdl);
+//    else
+      cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
+    update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
+  }
 }
 
 //// Called from main -- MUST NOT be inline
