@@ -350,10 +350,72 @@ void FCM::compress (const Param& p) {
 void FCM::reffree_compress (const Param& p) {
   //todo
 //  ofstream sf(gen_name("", p.seq, Format::SELF));
-//  for (auto e : lgtbl8) {
-//    e.reset();
-//  }
-//  lgtbl8.clear();
+
+  for (auto e : cmls4)   e.reset();    cmls4.clear();
+  for (auto e : lgtbl8)  e.reset();    lgtbl8.clear();
+  for (auto e : tbl32)   e.reset();    tbl32.clear();
+  for (auto e : tbl64)   e.reset();    tbl64.clear();
+  for (const auto& m : tMs) {
+    switch (m.cont) {
+    case Container::SKETCH_8:
+      cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));    break;
+    case Container::LOG_TABLE_8:
+      lgtbl8.emplace_back(make_shared<LogTable8>(m.k));    break;
+    case Container::TABLE_32:
+      tbl32.emplace_back(make_shared<Table32>(m.k));       break;
+    case Container::TABLE_64:
+      tbl64.emplace_back(make_shared<Table64>(m.k));       break;
+    }
+  }
+
+
+  cerr << OUT_SEP << "Compressing \"" << p.seq << "\"...\n";
+  if (tMs.size()==1 && tTMs.empty())  // 1 MM
+    switch (tMs[0].cont) {
+    case Container::TABLE_64:
+
+      // Ctx, Mir (int) sliding through the dataset
+      u64      ctx{0},   ctxIr{(1ull<<(tMs[0].k<<1u))-1};
+      u64      symsNo{0};            // No. syms in target file, except \n
+      prec_t   sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
+      ifstream inF(p.seq);
+      ProbPar  pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
+                  static_cast<u8>(tMs[0].k<<1u)};
+      const auto totalSize = file_size(p.seq);
+
+      auto cont = tbl64.begin();
+
+      for (vector<char> buffer(FILE_BUF,0); inF.peek()!=EOF;) {
+        inF.read(buffer.data(), FILE_BUF);
+        for (auto it=buffer.begin(); it!=buffer.begin()+inF.gcount(); ++it) {
+          const auto c = *it;
+          if (c!='N' && c!='\n') {
+            ++symsNo;
+            if (tMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
+              pp.config(c, ctx);
+              array<decltype((*cont)->query(0)), 4> f{};
+              freqs(f, cont, pp.l);
+              const auto entr = entropy(prob(f.begin(), &pp));
+//              pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+              sumEnt += entr;
+
+////              ctx = (pp.l & mask) | NUM[static_cast<u8>(c)];
+              update_ctx(ctx, &pp);
+              (*cont)->update(ctx);
+            }
+
+            show_progress(symsNo, totalSize);
+          }
+        }
+      }
+
+    remove_progress_trace();
+    inF.close();
+    cerr << std::fixed << setprecision(DEF_PRF_PREC) << sumEnt/symsNo;
+    break;
+  }
+
+
 //  sf.close();
 }
 

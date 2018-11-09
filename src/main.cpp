@@ -52,20 +52,22 @@ int main (int argc, char* argv[]) {
       else {
         const auto tempRef=par.ref, tempTar=par.tar;
         auto models = make_shared<FCM>(par);    // == auto* models=new FCM(par);
-        models->store(par);                     // Build models
-        models->compress(par);                  // Compress
-        if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
-        auto filter = make_shared<Filter>(par);
-        filter->smooth_seg(par);                // Filter and segment
-        filter->extract_seg(par.ref, par.tar);  // Extract segs from target
-
-        //todo ref-free compress all extracted regions
-        const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
-        for (u64 i=0; i!=1; ++i) {
-          par.seq = segName+to_string(i);
+//        models->store(par);                     // Build models
+//        models->compress(par);                  // Compress
+//        if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
+//        auto filter = make_shared<Filter>(par);
+//        filter->smooth_seg(par);                // Filter and segment
+//        filter->extract_seg(par.ref, par.tar);  // Extract segs from target
+//
+//        //todo ref-free compress all extracted regions
+//        const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
+//        for (u64 i=0; i!=filter->nSegs; ++i) {
+//          par.seq = segName+to_string(i);
+//          models->reffree_compress(par);
+//        }
+          //todo
+          par.seq = tempRef;
           models->reffree_compress(par);
-        }
-
 
 //        cerr <<"\n===[ Building reference map for each target pattern ]=======";
 //        // Consider the ref as new tar and the tar segments as new refs
