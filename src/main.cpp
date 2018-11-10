@@ -66,7 +66,7 @@ int main (int argc, char* argv[]) {
 //          models->reffree_compress(par);
 //        }
           //todo
-          par.seq = tempRef;
+        par.seq = tempRef;
         models->self_compress(par);
 
 //        cerr <<"\n===[ Building reference map for each target pattern ]=======";
