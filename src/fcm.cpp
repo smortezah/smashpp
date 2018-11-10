@@ -714,6 +714,7 @@ inline void FCM::self_compress_n_parent
     const auto P = prob(f.begin(), cp->ppIt);
     cp->probs.emplace_back(P);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    //todo vaghti child darim nabayad inja update konim
     (*cont)->update(cp->ppIt->l | cp->ppIt->numSym);
     update_ctx(*cp->ctxIt, cp->ppIt);
   }
