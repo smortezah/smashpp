@@ -399,7 +399,7 @@ void Filter::extract_seg (const string& ref, const string& tar) const {
   check_file(gen_name(ref,tar,Format::POSITION));
   ifstream ff(gen_name(ref,tar,Format::POSITION));
   const auto segName = gen_name(ref,tar,Format::SEGMENT);
-  auto subseq = make_shared<SubSeq>();
+  auto subseq = make_unique<SubSeq>();
   subseq->inName = tar;
   u64 i = 0;
   for (string beg, end, ent; ff>>beg>>end>>ent; ++i) {

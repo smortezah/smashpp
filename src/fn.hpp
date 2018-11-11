@@ -210,7 +210,7 @@ inline static u64 file_lines (const string& name) {
 }
 
 // Must be inline
-inline static void extract_subseq (const shared_ptr<SubSeq>& subseq) {
+inline static void extract_subseq (const unique_ptr<SubSeq>& subseq) {
   ifstream fIn(subseq->inName);
   ofstream fOut(subseq->outName);
 
