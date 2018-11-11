@@ -29,10 +29,10 @@ class FCM {   // Finite-context models
   vector<STMMPar>               rTMs;    // Ref Tolerant Markov models
   vector<MMPar>                 tMs;     // Tar Markov models
   vector<STMMPar>               tTMs;    // Tar Tolerant Markov models
-  vector<shared_ptr<Table64>>   tbl64;
-  vector<shared_ptr<Table32>>   tbl32;
-  vector<shared_ptr<LogTable8>> lgtbl8;
-  vector<shared_ptr<CMLS4>>     cmls4;
+  vector<unique_ptr<Table64>>   tbl64;
+  vector<unique_ptr<Table32>>   tbl32;
+  vector<unique_ptr<LogTable8>> lgtbl8;
+  vector<unique_ptr<CMLS4>>     cmls4;
 
   void config (string&&, string&&);      // Set models parameters
   template <typename Iter>
