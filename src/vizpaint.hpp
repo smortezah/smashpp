@@ -2,7 +2,6 @@
 #define VIZPAINT_H_INCLUDED
 
 #include "vizdef.hpp"
-//#include "vizparam.hpp"
 #include "par.hpp"
 
 namespace smashpp {
@@ -125,8 +124,8 @@ class VizPaint {
   void     print_tail  (ofstream&)                 const;
   template <typename Value>
   double   get_point   (Value)                     const;
-  void     plot_legend (ofstream&, shared_ptr<Rectangle>,
-                        shared_ptr<Gradient>, shared_ptr<Text>) const;
+  void     plot_legend (ofstream&, unique_ptr<Rectangle>,
+                        unique_ptr<Gradient>, unique_ptr<Text>) const;
 //  void plot_legend_simil (ofstream&, string&&, string&&) const;
   void     plot_legend_nrc   (ofstream&)           const;
   void     plot_legend_redun (ofstream&)           const;
