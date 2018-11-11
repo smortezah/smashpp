@@ -182,14 +182,16 @@ inline void Filter::welch () { // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
     const u32 den = (wsize-1) >> 1u;
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
       window[n] = window[last-n]
-                = static_cast<float>(1 - pow(static_cast<float>(n)/den - 1, 2));
+                = static_cast<float>(1 - Power(static_cast<float>(n)/den-1, 2));
+//              = static_cast<float>(1 - pow(static_cast<float>(n)/den - 1, 2));
   }
   else {
     const auto num = 2.0f;
     const u32  den = wsize - 1;
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
       window[n] = window[last-n]
-                = static_cast<float>(1 - pow(n*num/den - 1, 2));
+                = static_cast<float>(1 - Power(n*num/den - 1, 2));
+//                = static_cast<float>(1 - pow(n*num/den - 1, 2));
   }
 }
 
