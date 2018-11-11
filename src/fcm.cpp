@@ -230,13 +230,13 @@ inline void FCM::alloc_model () {
   for (const auto& m : rMs) {
     switch (m.cont) {
     case Container::SKETCH_8:
-      cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));    break;
+      cmls4.emplace_back(make_unique<CMLS4>(m.w, m.d));    break;
     case Container::LOG_TABLE_8:
-      lgtbl8.emplace_back(make_shared<LogTable8>(m.k));    break;
+      lgtbl8.emplace_back(make_unique<LogTable8>(m.k));    break;
     case Container::TABLE_32:
-      tbl32.emplace_back(make_shared<Table32>(m.k));       break;
+      tbl32.emplace_back(make_unique<Table32>(m.k));       break;
     case Container::TABLE_64:
-      tbl64.emplace_back(make_shared<Table64>(m.k));       break;
+      tbl64.emplace_back(make_unique<Table64>(m.k));       break;
     }
   }
 }
@@ -551,22 +551,22 @@ void FCM::self_compress (const Param& p) {
 }
 
 inline void FCM::self_compress_alloc () {
-  for (auto e : cmls4)     e.reset();
-  for (auto e : lgtbl8)    e.reset();
-  for (auto e : tbl32)     e.reset();
-  for (auto e : tbl64)     e.reset();
+  for (auto& e : cmls4)     e.reset();
+  for (auto& e : lgtbl8)    e.reset();
+  for (auto& e : tbl32)     e.reset();
+  for (auto& e : tbl64)     e.reset();
   cmls4.clear();    lgtbl8.clear();    tbl32.clear();    tbl64.clear();
 
   for (const auto& m : tMs) {
     switch (m.cont) {
     case Container::SKETCH_8:
-      cmls4.emplace_back(make_shared<CMLS4>(m.w, m.d));    break;
+      cmls4.emplace_back(make_unique<CMLS4>(m.w, m.d));    break;
     case Container::LOG_TABLE_8:
-      lgtbl8.emplace_back(make_shared<LogTable8>(m.k));    break;
+      lgtbl8.emplace_back(make_unique<LogTable8>(m.k));    break;
     case Container::TABLE_32:
-      tbl32.emplace_back(make_shared<Table32>(m.k));       break;
+      tbl32.emplace_back(make_unique<Table32>(m.k));       break;
     case Container::TABLE_64:
-      tbl64.emplace_back(make_shared<Table64>(m.k));       break;
+      tbl64.emplace_back(make_unique<Table64>(m.k));       break;
     }
   }
 }
