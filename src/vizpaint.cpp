@@ -208,11 +208,11 @@ void VizPaint::print_plot (VizParam& p) {
   print_head(fPlot, PAINT_CX + width + space + width + PAINT_CX,
                     maxSize + PAINT_EXTRA);
 
-  auto line   = make_shared<Line>();
+  auto line   = make_unique<Line>();
   line->width = 2.0;
-  auto rect   = make_shared<Rectangle>();
-  auto poly   = make_shared<Polygon>();
-  auto text   = make_shared<Text>();
+  auto rect   = make_unique<Rectangle>();
+  auto poly   = make_unique<Polygon>();
+  auto text   = make_unique<Text>();
 
   rect->color  = backColor;
   rect->origin = Point(0, 0);
@@ -834,9 +834,9 @@ inline double VizPaint::get_point (Value p) const {
   return 5 * p / static_cast<double>(ratio);
 }
 
-inline void VizPaint::plot_legend (ofstream& f, shared_ptr<Rectangle> rect,
-                                   shared_ptr<Gradient> grad,
-                                   shared_ptr<Text> title) const {
+inline void VizPaint::plot_legend (ofstream& f, unique_ptr<Rectangle> rect,
+                                   unique_ptr<Gradient> grad,
+                                   unique_ptr<Text> title) const {
   rect->height = 12;
   const auto id = to_string(rect->origin.x)+to_string(rect->origin.y);
   f << "<defs> <linearGradient id=\"grad"+id+"\" "
@@ -852,7 +852,7 @@ inline void VizPaint::plot_legend (ofstream& f, shared_ptr<Rectangle> rect,
     "x=\""      << PREC << rect->origin.x << "\" "
     "y=\""      << PREC << rect->origin.y << "\" />\n";
 
-  auto text        = make_shared<Text>();
+  auto text        = make_unique<Text>();
   text->origin     = Point(rect->origin.x-1, rect->origin.y+rect->height-1.5);
   text->label      = "-";
   text->textAnchor = "end";
@@ -874,15 +874,15 @@ inline void VizPaint::plot_legend (ofstream& f, shared_ptr<Rectangle> rect,
 //inline void VizPaint::plot_legend_simil (ofstream& f, string&& start,
 //                                                      string&& stop) const {
 //  const auto vert = 15;
-//  auto grad    = make_shared<Gradient>();
+//  auto grad    = make_unique<Gradient>();
 //  grad->startColor = std::move(start);
 //  grad->stopColor  = std::move(stop);
-//  auto text    = make_shared<Text>();
+//  auto text    = make_unique<Text>();
 //  text->origin = Point(cx+width+space/2, vert-2);
 //  text->label  = "SIMILARITY";
 //  text->textAnchor = "middle";
 //  text->fontSize   = 9;
-//  auto rect    = make_shared<Rectangle>();
+//  auto rect    = make_unique<Rectangle>();
 //  rect->origin = Point(cx+width/2-space/2-4, vert);
 //  rect->width  = 2*space+38;
 //  plot_legend(f, rect, grad, text);
@@ -890,32 +890,32 @@ inline void VizPaint::plot_legend (ofstream& f, shared_ptr<Rectangle> rect,
 
 inline void VizPaint::plot_legend_nrc (ofstream& f) const {
   const auto vert = 17;
-  auto grad    = make_shared<Gradient>();
+  auto grad    = make_unique<Gradient>();
   grad->startColor = nrc_color(0);
   grad->stopColor  = nrc_color(2);
-  auto text    = make_shared<Text>();
+  auto text    = make_unique<Text>();
   text->origin = Point(cx+width+space/2, vert-3);
   text->label  = "NRC";
   text->textAnchor = "middle";
   text->fontSize   = 9;
-  auto rect    = make_shared<Rectangle>();
+  auto rect    = make_unique<Rectangle>();
   rect->origin = Point(cx, vert);
   rect->width  = width+space+width;
-  plot_legend(f, rect, grad, text);
+  plot_legend(f, std::move(rect), std::move(grad), std::move(text));
 }
 
 inline void VizPaint::plot_legend_redun (ofstream& f) const {
   const auto vert = 17;
-  auto grad    = make_shared<Gradient>();
+  auto grad    = make_unique<Gradient>();
   grad->startColor = redun_color(0);
   grad->stopColor  = redun_color(2);
-  auto text    = make_shared<Text>();
+  auto text    = make_unique<Text>();
   text->origin = Point(cx+width+space/2, vert+36);
   text->label  = "REDUNDANCY";
   text->textAnchor = "middle";
   text->fontSize   = 9;
-  auto rect    = make_shared<Rectangle>();
+  auto rect    = make_unique<Rectangle>();
   rect->origin = Point(cx, vert+15);
   rect->width  = width+space+width;
-  plot_legend(f, rect, grad, text);
+  plot_legend(f, std::move(rect), std::move(grad), std::move(text));
 }

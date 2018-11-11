@@ -13,7 +13,7 @@ int main (int argc, char* argv[]) {
     par.parse(argc, argv);
 
     cerr << endl;
-    auto paint = make_shared<VizPaint>();
+    auto paint = make_unique<VizPaint>();
     paint->print_plot(par);
     cerr << endl;
 
