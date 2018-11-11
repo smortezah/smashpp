@@ -179,6 +179,16 @@ inline static auto pow2 (T base) {  // Must be inline
   return std::pow(base, static_cast<T>(2));
 }
 
+// From http://martin.ankerl.com/2007/10/04/
+// optimized-pow-approximation-for-java-and-c-c/
+inline static auto Power (double base, double exponent) {
+  int tmp  = (*(1 + (int*) &base)),
+      tmp2 = int(exponent * (tmp-1072632447) + 1072632447);
+  double p = 0.0;
+  *(1 + (int*) &p) = tmp2;
+  return p;
+}
+
 inline static void check_file (const string& name) {  // Must be inline
   ifstream f(name);
   if (!f) {

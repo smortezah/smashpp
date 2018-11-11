@@ -475,7 +475,8 @@ template <typename ContIter>
 inline void FCM::compress_n_parent
 (unique_ptr<CompressPar>& cp, ContIter cont, u8 n) const {
   const auto weight_next = [=] (prec_t w, prec_t g, prec_t p) -> prec_t {
-    return pow(w, g) * p;
+//    return pow(w, g) * p;
+    return Power(w, g) * p;
   };
 
   if (cp->mm.ir == 0) {
@@ -502,7 +503,8 @@ template <typename ContIter>
 inline void FCM::compress_n_child
 (unique_ptr<CompressPar>& cp, ContIter cont, u8 n) const {
   const auto weight_next = [=](prec_t w, prec_t g, prec_t p) -> prec_t {
-    return pow(w, g) * p;
+//    return pow(w, g) * p;
+    return Power(w, g) * p;
   };
 
   if (cp->mm.child->ir == 0) {
@@ -706,7 +708,8 @@ template <typename ContIter>
 inline void FCM::self_compress_n_parent
 (unique_ptr<CompressPar>& cp, ContIter cont, u8 n, u64& valUpd) const {
   const auto weight_next = [=] (prec_t w, prec_t g, prec_t p) -> prec_t {
-    return pow(w, g) * p;
+//    return pow(w, g) * p;
+    return Power(w, g) * p;
   };
 
   if (cp->mm.ir == 0) {
@@ -735,7 +738,8 @@ template <typename ContIter>
 inline void FCM::self_compress_n_child
 (unique_ptr<CompressPar>& cp, ContIter cont, u8 n) const {
   const auto weight_next = [=](prec_t w, prec_t g, prec_t p) -> prec_t {
-    return pow(w, g) * p;
+//    return pow(w, g) * p;
+    return Power(w, g) * p;
   };
 
   if (cp->mm.child->ir == 0) {
