@@ -65,8 +65,6 @@ class FCM {   // Finite-context models
   template <typename ContIter>
   void self_compress_n_parent (unique_ptr<CompressPar>&, ContIter, u8,
                                u64&) const;
-  template <typename ContIter>
-  void self_compress_n_child (unique_ptr<CompressPar>&, ContIter, u8) const;
 
     //  template <typename OutT, typename ContIter, typename ProbParIter>
 //  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
@@ -76,8 +74,6 @@ class FCM {   // Finite-context models
   void freqs_ir (array<OutT,4>&, ContIter, ProbParIter) const;
   template <typename FreqIter>
   void correct_stmm (unique_ptr<CompressPar>&, FreqIter) const;
-  template <typename FreqIter>
-  u8 best_id (FreqIter) const;
 #ifdef ARRAY_HISTORY
   template <typename History, typename Value>
   void update_hist_stmm (History&, Value) const;

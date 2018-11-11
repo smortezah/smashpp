@@ -699,7 +699,7 @@ inline void FCM::self_compress_n_impl
   self_compress_n_parent(cp, cont, n, valUpd);
   if (cp->mm.child) {
     ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
-    self_compress_n_child(cp, cont, ++n);
+    compress_n_child(cp, cont, ++n);
   }
   (*cont)->update(valUpd);
 }
@@ -730,42 +730,6 @@ inline void FCM::self_compress_n_parent
     cp->probs.emplace_back(P);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
     valUpd = cp->ppIt->l | cp->ppIt->numSym;
-    update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
-  }
-}
-
-template <typename ContIter>
-inline void FCM::self_compress_n_child
-(unique_ptr<CompressPar>& cp, ContIter cont, u8 n) const {
-  const auto weight_next = [=](prec_t w, prec_t g, prec_t p) -> prec_t {
-//    return pow(w, g) * p;
-    return Power(w, g) * p;
-  };
-
-  if (cp->mm.child->ir == 0) {
-    cp->ppIt->config(cp->c, *cp->ctxIt);
-    array<decltype((*cont)->query(0)),4> f {};
-    freqs(f, cont, cp->ppIt->l);
-    const auto P = prob(f.begin(), cp->ppIt);
-    cp->probs.emplace_back(P);
-    correct_stmm(cp, f.begin());
-//    if (correct_stmm(cp,f.begin()))
-//      fill(cp->wNext.begin(),cp->wNext.end(),static_cast<prec_t>(1)/cp->nMdl);
-//    else
-      cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
-    update_ctx(*cp->ctxIt, cp->ppIt);
-  }
-  else {
-    cp->ppIt->config_ir(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
-    array<decltype(2*(*cont)->query(0)),4> f {};
-    freqs_ir(f, cont, cp->ppIt);
-    const auto P = prob(f.begin(), cp->ppIt);
-    cp->probs.emplace_back(P);
-    correct_stmm(cp, f.begin());
-//    if (correct_stmm(cp,f.begin()))
-//      fill(cp->wNext.begin(),cp->wNext.end(),static_cast<prec_t>(1)/cp->nMdl);
-//    else
-      cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
@@ -818,6 +782,19 @@ inline void FCM::freqs_ir
 template <typename FreqIter>
 inline void FCM::correct_stmm
 (unique_ptr<CompressPar>& cp, FreqIter fFirst) const {
+  const auto best_id = [&] (FreqIter fFirst) {
+//  if (are_all(fFirst, 0) || are_all(fFirst, 1)) {
+//  if (are_all(fFirst, 0)) { // The same as GeCo
+    if (are_all(fFirst, 1)) { // Seems to be the best
+      return static_cast<u8>(255);
+    }
+    const auto maxPos = std::max_element(fFirst, fFirst+CARDIN);
+    if (has_multi_max(fFirst, maxPos)) {
+      return static_cast<u8>(254);
+    }
+    return static_cast<u8>(maxPos-fFirst);
+  };
+
   auto stmm = cp->mm.child;
   const auto best = best_id(fFirst);
   if (stmm->enabled) {
@@ -868,20 +845,6 @@ inline void FCM::correct_stmm
 ////  }
 ////  return false;
 ////}
-
-template <typename FreqIter>
-inline u8 FCM::best_id (FreqIter fFirst) const {
-//  if (are_all(fFirst, 0) || are_all(fFirst, 1)) {
-//  if (are_all(fFirst, 0)) { // The same as GeCo
-  if (are_all(fFirst, 1)) { // Seems to be the best
-    return static_cast<u8>(255);
-  }
-  const auto maxPos = std::max_element(fFirst, fFirst+CARDIN);
-  if (has_multi_max(fFirst, maxPos)) {
-    return static_cast<u8>(254);
-  }
-  return maxPos-fFirst;
-}
 
 #ifdef ARRAY_HISTORY
 template <typename History, typename Value>

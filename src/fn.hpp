@@ -114,17 +114,6 @@ inline static bool are_all (Iter first, Value val) {
                      [val](u64 i){ return i==static_cast<u64>(val); });
 }
 
-template <typename Iter, typename Value>
-inline static bool is_any (Iter first, Value val) {
-  return std::any_of(first, first+CARDIN,
-                     [val](u64 i){ return i==static_cast<u64>(val); });
-}
-
-template <typename Iter>
-inline static bool are_all_zero (Iter first) {
-  return std::all_of(first, first+CARDIN, [](u64 i){ return i==0; });
-}
-
 template <typename Iter>
 inline static bool has_multi_max (Iter first) {
   auto last = first + CARDIN;
@@ -153,12 +142,6 @@ inline static u8 best_sym_abs (Iter first) {
   return static_cast<u8>(has_multi_max(first, max_pos) ? 255 : max_pos-first);
 }
 
-//template <typename Iter>
-//void normalize (Iter first, Iter last) {
-//  for (const auto sum=std::accumulate(first,last,static_cast<prec_t>(0));
-//       first!=last; ++first)
-//    *first /= sum;    // *first = *first / sum;
-//}
 template <typename OutIter, typename InIter>
 inline static void normalize (OutIter oFirst, InIter iFirst, InIter iLast) {
   const auto sumInv =
