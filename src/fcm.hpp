@@ -63,7 +63,8 @@ class FCM {   // Finite-context models
   template <typename ContIter>
   void self_compress_n_impl (shared_ptr<CompressPar>, ContIter, u8&) const;
   template <typename ContIter>
-  void self_compress_n_parent (shared_ptr<CompressPar>, ContIter, u8) const;
+  void self_compress_n_parent (shared_ptr<CompressPar>, ContIter, u8,
+                               u64&) const;
   template <typename ContIter>
   void self_compress_n_child (shared_ptr<CompressPar>, ContIter, u8) const;
 
