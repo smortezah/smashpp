@@ -693,16 +693,18 @@ inline void FCM::self_compress_n (const Param& par) {
 template <typename ContIter>
 inline void FCM::self_compress_n_impl
 (shared_ptr<CompressPar> cp, ContIter cont, u8& n) const {
-  self_compress_n_parent(cp, cont, n);
+  u64 valUpd = 0;
+  self_compress_n_parent(cp, cont, n, valUpd);
   if (cp->mm.child) {
     ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
     self_compress_n_child(cp, cont, ++n);
   }
+  (*cont)->update(valUpd);
 }
 
 template <typename ContIter>
 inline void FCM::self_compress_n_parent
-(shared_ptr<CompressPar> cp, ContIter cont, u8 n) const {
+(shared_ptr<CompressPar> cp, ContIter cont, u8 n, u64& valUpd) const {
   const auto weight_next = [=] (prec_t w, prec_t g, prec_t p) -> prec_t {
     return pow(w, g) * p;
   };
@@ -714,8 +716,7 @@ inline void FCM::self_compress_n_parent
     const auto P = prob(f.begin(), cp->ppIt);
     cp->probs.emplace_back(P);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
-    //todo vaghti child darim nabayad inja update konim
-    (*cont)->update(cp->ppIt->l | cp->ppIt->numSym);
+    valUpd = cp->ppIt->l | cp->ppIt->numSym;
     update_ctx(*cp->ctxIt, cp->ppIt);
   }
   else {
@@ -725,7 +726,7 @@ inline void FCM::self_compress_n_parent
     const auto P = prob(f.begin(), cp->ppIt);
     cp->probs.emplace_back(P);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
-    (*cont)->update(cp->ppIt->l | cp->ppIt->numSym);
+    valUpd = cp->ppIt->l | cp->ppIt->numSym;
     update_ctx_ir(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }

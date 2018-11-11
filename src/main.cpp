@@ -28,24 +28,24 @@ int main (int argc, char* argv[]) {
     if (has(argv, argv+argc, string("-viz"))) {
       VizParam vizpar;
       vizpar.parse(argc, argv);
-      auto paint = make_shared<VizPaint>();
+      auto paint = make_unique<VizPaint>();
       paint->print_plot(vizpar);
     }
     else {
       Param par;
       par.parse(argc, argv);                    // Parse the command
       if (par.compress) {
-        auto models = make_shared<FCM>(par);
+        auto models = make_unique<FCM>(par);
         models->store(par);
         models->compress(par);
         if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
       }
       else if (par.filter) {
-        auto filter = make_shared<Filter>(par);
+        auto filter = make_unique<Filter>(par);
         filter->smooth_seg(par);
       }
       else if (par.segment) {
-        auto filter = make_shared<Filter>(par);
+        auto filter = make_unique<Filter>(par);
         filter->smooth_seg(par);
         filter->extract_seg(par.ref, par.tar);
       }
