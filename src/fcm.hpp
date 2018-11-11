@@ -50,23 +50,23 @@ class FCM {   // Finite-context models
   void compress_1 (const Param&, ContIter); // Compress with 1 Markov model
   void compress_n (const Param&);           // Compress with n Markov Models
   template <typename ContIter>
-  void compress_n_impl (shared_ptr<CompressPar>, ContIter, u8&) const;
+  void compress_n_impl (unique_ptr<CompressPar>&, ContIter, u8&) const;
   template <typename ContIter>
-  void compress_n_parent (shared_ptr<CompressPar>, ContIter, u8) const;
+  void compress_n_parent (unique_ptr<CompressPar>&, ContIter, u8) const;
   template <typename ContIter>
-  void compress_n_child (shared_ptr<CompressPar>, ContIter, u8) const;
+  void compress_n_child (unique_ptr<CompressPar>&, ContIter, u8) const;
 
   void self_compress_alloc ();
   template <typename ContIter>
   void self_compress_1 (const Param&, ContIter);
   void self_compress_n (const Param&);
   template <typename ContIter>
-  void self_compress_n_impl (shared_ptr<CompressPar>, ContIter, u8&) const;
+  void self_compress_n_impl (unique_ptr<CompressPar>&, ContIter, u8&) const;
   template <typename ContIter>
-  void self_compress_n_parent (shared_ptr<CompressPar>, ContIter, u8,
+  void self_compress_n_parent (unique_ptr<CompressPar>&, ContIter, u8,
                                u64&) const;
   template <typename ContIter>
-  void self_compress_n_child (shared_ptr<CompressPar>, ContIter, u8) const;
+  void self_compress_n_child (unique_ptr<CompressPar>&, ContIter, u8) const;
 
     //  template <typename OutT, typename ContIter, typename ProbParIter>
 //  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
@@ -75,7 +75,7 @@ class FCM {   // Finite-context models
   template <typename OutT, typename ContIter, typename ProbParIter>
   void freqs_ir (array<OutT,4>&, ContIter, ProbParIter) const;
   template <typename FreqIter>
-  void correct_stmm (shared_ptr<CompressPar>, FreqIter) const;
+  void correct_stmm (unique_ptr<CompressPar>&, FreqIter) const;
   template <typename FreqIter>
   u8 best_id (FreqIter) const;
 #ifdef ARRAY_HISTORY

@@ -399,7 +399,7 @@ inline void FCM::compress_n (const Param& par) {
   prec_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(par.tar);
   ofstream pf(gen_name(par.ref, par.tar, Format::PROFILE));
-  auto cp = make_shared<CompressPar>();
+  auto cp = make_unique<CompressPar>();
   // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = static_cast<u8>(rMs.size() + rTMs.size());
   cp->nMdl = nMdl;
@@ -463,7 +463,7 @@ inline void FCM::compress_n (const Param& par) {
 
 template <typename ContIter>
 inline void FCM::compress_n_impl
-(shared_ptr<CompressPar> cp, ContIter cont, u8& n) const {
+(unique_ptr<CompressPar>& cp, ContIter cont, u8& n) const {
   compress_n_parent(cp, cont, n);
   if (cp->mm.child) {
     ++cp->ppIt;  ++cp->ctxIt;  ++cp->ctxIrIt;
@@ -473,7 +473,7 @@ inline void FCM::compress_n_impl
 
 template <typename ContIter>
 inline void FCM::compress_n_parent
-(shared_ptr<CompressPar> cp, ContIter cont, u8 n) const {
+(unique_ptr<CompressPar>& cp, ContIter cont, u8 n) const {
   const auto weight_next = [=] (prec_t w, prec_t g, prec_t p) -> prec_t {
     return pow(w, g) * p;
   };
@@ -500,7 +500,7 @@ inline void FCM::compress_n_parent
 
 template <typename ContIter>
 inline void FCM::compress_n_child
-(shared_ptr<CompressPar> cp, ContIter cont, u8 n) const {
+(unique_ptr<CompressPar>& cp, ContIter cont, u8 n) const {
   const auto weight_next = [=](prec_t w, prec_t g, prec_t p) -> prec_t {
     return pow(w, g) * p;
   };
@@ -622,7 +622,7 @@ inline void FCM::self_compress_n (const Param& par) {
   u64 symsNo{0};
   prec_t sumEnt{0};
   ifstream seqF(par.seq);
-  auto cp = make_shared<CompressPar>();
+  auto cp = make_unique<CompressPar>();
   const auto nMdl = static_cast<u8>(tMs.size() + tTMs.size());
   cp->nMdl = nMdl;
   cp->ctx.resize(nMdl);        // Fill with zeros (resize)
@@ -692,7 +692,7 @@ inline void FCM::self_compress_n (const Param& par) {
 
 template <typename ContIter>
 inline void FCM::self_compress_n_impl
-(shared_ptr<CompressPar> cp, ContIter cont, u8& n) const {
+(unique_ptr<CompressPar>& cp, ContIter cont, u8& n) const {
   u64 valUpd = 0;
   self_compress_n_parent(cp, cont, n, valUpd);
   if (cp->mm.child) {
@@ -704,7 +704,7 @@ inline void FCM::self_compress_n_impl
 
 template <typename ContIter>
 inline void FCM::self_compress_n_parent
-(shared_ptr<CompressPar> cp, ContIter cont, u8 n, u64& valUpd) const {
+(unique_ptr<CompressPar>& cp, ContIter cont, u8 n, u64& valUpd) const {
   const auto weight_next = [=] (prec_t w, prec_t g, prec_t p) -> prec_t {
     return pow(w, g) * p;
   };
@@ -733,7 +733,7 @@ inline void FCM::self_compress_n_parent
 
 template <typename ContIter>
 inline void FCM::self_compress_n_child
-(shared_ptr<CompressPar> cp, ContIter cont, u8 n) const {
+(unique_ptr<CompressPar>& cp, ContIter cont, u8 n) const {
   const auto weight_next = [=](prec_t w, prec_t g, prec_t p) -> prec_t {
     return pow(w, g) * p;
   };
@@ -813,7 +813,7 @@ inline void FCM::freqs_ir
 
 template <typename FreqIter>
 inline void FCM::correct_stmm
-(shared_ptr<CompressPar> cp, FreqIter fFirst) const {
+(unique_ptr<CompressPar>& cp, FreqIter fFirst) const {
   auto stmm = cp->mm.child;
   const auto best = best_id(fFirst);
   if (stmm->enabled) {
@@ -838,7 +838,7 @@ inline void FCM::correct_stmm
 }
 ////template <typename FreqIter>
 ////inline bool FCM::correct_stmm
-////(shared_ptr<CompressPar> cp, const FreqIter& fFirst) {
+////(unique_ptr<CompressPar>& cp, const FreqIter& fFirst) {
 ////  auto stmm = cp->mm.child;
 ////  const auto best = best_id(fFirst);
 ////  if (stmm->enabled) {
