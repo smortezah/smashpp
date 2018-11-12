@@ -72,6 +72,7 @@ class FCM {   // Finite-context models
   void freqs (array<OutT,4>&, ContIter, u64) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   void freqs_ir (array<OutT,4>&, ContIter, ProbParIter) const;
+  prec_t weight_next (prec_t, prec_t, prec_t) const;
   template <typename FreqIter>
   void correct_stmm (unique_ptr<CompressPar>&, FreqIter) const;
 #ifdef ARRAY_HISTORY

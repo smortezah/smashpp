@@ -474,11 +474,6 @@ inline void FCM::compress_n_impl
 template <typename ContIter>
 inline void FCM::compress_n_parent
 (unique_ptr<CompressPar>& cp, ContIter cont, u8 n) const {
-  const auto weight_next = [=] (prec_t w, prec_t g, prec_t p) -> prec_t {
-//    return pow(w, g) * p;
-    return Power(w, g) * p;
-  };
-
   if (cp->mm.ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*cont)->query(0)),4> f {};
@@ -502,11 +497,6 @@ inline void FCM::compress_n_parent
 template <typename ContIter>
 inline void FCM::compress_n_child
 (unique_ptr<CompressPar>& cp, ContIter cont, u8 n) const {
-  const auto weight_next = [=](prec_t w, prec_t g, prec_t p) -> prec_t {
-//    return pow(w, g) * p;
-    return Power(w, g) * p;
-  };
-
   if (cp->mm.child->ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*cont)->query(0)),4> f {};
@@ -707,11 +697,6 @@ inline void FCM::self_compress_n_impl
 template <typename ContIter>
 inline void FCM::self_compress_n_parent
 (unique_ptr<CompressPar>& cp, ContIter cont, u8 n, u64& valUpd) const {
-  const auto weight_next = [=] (prec_t w, prec_t g, prec_t p) -> prec_t {
-//    return pow(w, g) * p;
-    return Power(w, g) * p;
-  };
-
   if (cp->mm.ir == 0) {
     cp->ppIt->config(cp->c, *cp->ctxIt);
     array<decltype((*cont)->query(0)),4> f {};
@@ -777,6 +762,11 @@ inline void FCM::freqs_ir
         (*cont)->query(pp->l | 2ull) + (*cont)->query((1ull<<pp->shl) | pp->r)),
        static_cast<OutT>(
         (*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r))};
+}
+
+inline prec_t FCM::weight_next (prec_t w, prec_t g, prec_t p) const {
+//    return pow(w, g) * p;
+    return Power(w, g) * p;
 }
 
 template <typename FreqIter>
