@@ -34,6 +34,7 @@ int main (int argc, char* argv[]) {
     else {
       Param par;
       par.parse(argc, argv);                    // Parse the command
+
       if (par.compress) {
         auto models = make_unique<FCM>(par);
         models->store(par);

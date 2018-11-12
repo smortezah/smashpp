@@ -27,7 +27,7 @@ class Table64 {
   
  private:
   vector<u64> tbl;                      // Table of 64 bit counters
-  u8          k /*:BIT_K*/;             // Ctx size
+  u8          k;             // Ctx size
 //  u64         tot;                      // Total # elements so far
 };
 }
