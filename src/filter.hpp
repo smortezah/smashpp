@@ -21,7 +21,7 @@ class Filter {
 
  private:
   WType         wtype;
-  u32           wsize /*:BIT_WSIZE*/;
+  u32           wsize;
   vector<float> window;
 
   void config              (const Param&);

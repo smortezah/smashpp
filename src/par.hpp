@@ -16,11 +16,11 @@ namespace smashpp {
 class Param {   // Parameters
  public:
   string   ref, tar, seq;
-  u8       level /*:BIT_LEVEL*/;
+  u8       level;
   bool     verbose;
-  u8       nthr  /*:BIT_THREAD*/;
+  u8       nthr;
   string   rmodelsPars, tmodelsPars;
-  u32      wsize /*:BIT_WSIZE*/;
+  u32      wsize;
   string   wtype;
   u64      sampleStep;
   float    thresh;
