@@ -1,7 +1,13 @@
+**/CMakeFiles
+
+*.prf
+goose-*
+*_bk
+
+smashpp
 GeCo
 HS18.fa
 ac
-goose-*
 gprof2dot.py
 refl
 refm
@@ -9,4 +15,7 @@ refs
 tarl
 tarm
 tars
-*_bk
+
+CMakeCache.txt
+Makefile
+cmake_install.cmake
