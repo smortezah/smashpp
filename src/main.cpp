@@ -66,7 +66,7 @@ int main (int argc, char* argv[]) {
 //          par.seq = segName+to_string(i);
 //          models->reffree_compress(par);
 //        }
-          //todo
+        // todo
         par.seq = tempRef;
         models->self_compress(par);
 
