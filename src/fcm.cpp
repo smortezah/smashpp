@@ -628,7 +628,7 @@ inline void FCM::self_compress_1 (const smashpp::Param& par, ContIter cont) {
           const auto entr = entropy(prob(f.begin(), &pp));
           cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';//todo comment
           sumEnt += entr;
-          (*cont)->update(pp.l | pp.numSym);//todo
+          (*cont)->update((pp.revNumSym<<pp.shl) | pp.r);
           update_ctx_ir1(ctxIr, &pp);
         }
         else if (tMs[0].ir == 2) {
@@ -756,7 +756,7 @@ inline void FCM::self_compress_n_parent
     const auto P = prob(f.begin(), cp->ppIt);
     cp->probs.emplace_back(P);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
-    valUpd = cp->ppIt->l | cp->ppIt->numSym;//todo
+    valUpd = (cp->ppIt->revNumSym<<cp->ppIt->shl) | cp->ppIt->r;
     update_ctx_ir1(*cp->ctxIrIt, cp->ppIt);
   }
   else if (cp->mm.ir == 2) {
