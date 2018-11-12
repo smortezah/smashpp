@@ -60,11 +60,13 @@ struct ProbPar {
   u8     revNumSym;
 
   ProbPar () = default;
-  ProbPar (prec_t a, u64 m, u8 sh)
-    : alpha(a), sAlpha(CARDIN*alpha), mask(m), shl(sh) {}
+  ProbPar (prec_t alpha_, u64 mask_, u8 shiftLeft_)
+    : alpha(alpha_), sAlpha(CARDIN*alpha), mask(mask_), shl(shiftLeft_) {}
   void config_ir0 (u64);
   void config_ir0 (u8);
   void config_ir0 (char, u64);
+  void config_ir1 (u8);
+  void config_ir1 (char, u64);
   void config_ir2 (u8);
   void config_ir2 (char, u64, u64);
 };
@@ -80,6 +82,17 @@ inline void ProbPar::config_ir0 (u8 nsym) {
 inline void ProbPar::config_ir0 (char c, u64 ctx) {
   numSym = NUM[static_cast<u8>(c)];
   l      = ctx<<2u;
+}
+
+inline void ProbPar::config_ir1 (u8 nsym) {
+  numSym    = nsym;
+  revNumSym = static_cast<u8>(3 - nsym);
+}
+
+inline void ProbPar::config_ir1 (char c, u64 ctxIr) {
+  numSym    = NUM[static_cast<u8>(c)];
+  revNumSym = static_cast<u8>(3 - numSym);
+  r         = ctxIr>>2u;
 }
 
 inline void ProbPar::config_ir2 (u8 nsym) {

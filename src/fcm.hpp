@@ -66,10 +66,10 @@ class FCM {   // Finite-context models
   void self_compress_n_parent (unique_ptr<CompressPar>&, ContIter, u8,
                                u64&) const;
 
-    //  template <typename OutT, typename ContIter, typename ProbParIter>
-//  void freqs    (array<OutT,4>&, ContIter, ProbParIter)   const;
   template <typename OutT, typename ContIter>
   void freqs_ir0 (array<OutT,4>&, ContIter, u64) const;
+  template <typename OutT, typename ContIter>
+  void freqs_ir1 (array<OutT,4>&, ContIter, u64, u64) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   void freqs_ir2 (array<OutT,4>&, ContIter, ProbParIter) const;
   prec_t weight_next (prec_t, prec_t, prec_t) const;
@@ -91,7 +91,7 @@ class FCM {   // Finite-context models
   void miss_stmm (Par) const;
 #endif
   template <typename FreqIter, typename ProbParIter>
-  prec_t prob (FreqIter, ProbParIter) const; //Probability
+  prec_t prob (FreqIter, ProbParIter) const;
   prec_t entropy (prec_t) const;
   template <typename WIter, typename PIter>
   prec_t entropy (WIter, PIter, PIter) const;
@@ -100,9 +100,11 @@ class FCM {   // Finite-context models
 //  template <typename OutIter, typename InIter>
 //  void update_weights (OutIter, InIter, InIter) const;
   template <typename ProbParIter>
-  void update_ctx (u64&, ProbParIter) const;
+  void update_ctx_ir0 (u64&, ProbParIter) const;
   template <typename ProbParIter>
-  void update_ctx_ir (u64&, u64&, ProbParIter) const;
+  void update_ctx_ir1 (u64&, ProbParIter) const;
+  template <typename ProbParIter>
+  void update_ctx_ir2 (u64&, u64&, ProbParIter) const;
 };
 }
 
