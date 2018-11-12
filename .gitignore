@@ -1,21 +1,44 @@
 **/CMakeFiles
 
 *.prf
+*.co
+*.iae
+*.slf
+*.cbp
+*.svg
+*.png
 goose-*
 *_bk
 
 smashpp
 GeCo
+gmon.out
+callgrind.out*
+out
+geco-w*
+refs-tars-s*
+refs-tars.fil*
+refs-tars.pos
+eleanora*
 HS18.fa
+viruses.fasta
+b
 ac
 gprof2dot.py
+perf.data*
 refl
 refm
 refs
 tarl
 tarm
 tars
+test
 
 CMakeCache.txt
 Makefile
 cmake_install.cmake
+
+report
+
+cmsk2.h
+cmsk2.cpp
