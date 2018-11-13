@@ -39,7 +39,6 @@ int main (int argc, char* argv[]) {
         auto models = make_unique<FCM>(par);
         models->store(par);
         models->compress(par);
-        if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
       }
       else if (par.filter) {
         auto filter = make_unique<Filter>(par);
