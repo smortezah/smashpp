@@ -707,7 +707,7 @@ inline void FCM::self_compress_n (const Param& par) {
         }
 
         const auto ent=entropy(cp->w.begin(),cp->probs.begin(),cp->probs.end());
-        cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << ent << '\n';
+        // cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << ent << '\n';
         normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
 ////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
         sumEnt += ent;
@@ -716,11 +716,9 @@ inline void FCM::self_compress_n (const Param& par) {
     }
   }
   remove_progress_trace();
-  //todo
-  cerr<<std::fixed << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
-//  ofstream sf(gen_name("", par.seq, Format::SELF));
-//  sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
-//  sf.close();
+  ofstream sf(gen_name("", par.seq, Format::SELF));
+  sf << std::fixed << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
+  sf.close();
   seqF.close();
 }
 

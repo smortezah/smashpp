@@ -317,7 +317,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
   seg->thresh = p.thresh;
-  auto winBeg=window.begin(), winEnd=window.end();
+  const auto winBeg=window.begin(), winEnd=window.end();
   auto sWeight = accumulate(winBeg+(wsize>>1u), winEnd, 0.f);
   string num;
   auto sum = 0.f;
