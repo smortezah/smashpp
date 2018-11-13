@@ -15,29 +15,32 @@
 namespace smashpp {
 class Param {   // Parameters
  public:
-  string   ref, tar, seq;
-  u8       level;
-  bool     verbose;
-  u8       nthr;
-  string   rmodelsPars, tmodelsPars;
-  u32      wsize;
-  string   wtype;
-  u64      sampleStep;
-  float    thresh;
-  bool     manThresh;
-  bool     saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
-  FileType refType, tarType;
-  bool     showInfo;
-  string   report;
-  bool     compress, filter, segment;
+  string       ref, tar, seq;
+  u8           level;
+  bool         verbose;
+  u8           nthr;
+  string       rmodelsPars, tmodelsPars;
+  u32          wsize;
+  string       wtype;
+  u64          sampleStep;
+  float        thresh;
+  bool         manThresh, manFilterScale;
+  FilterScale filterScale;
+  bool        saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
+  FileType    refType, tarType;
+  bool        showInfo;
+  string      report;
+  bool        compress, filter, segment;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
              wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
-             manThresh(false), saveSeq(false), saveProfile(false),
-             saveFilter(false), saveSegment(false), saveAll(false),
-             refType(FileType::SEQ), tarType(FileType::SEQ), showInfo(true),
-             compress(false), filter(false), segment(false) {}
+             manThresh(false), manFilterScale(false), 
+             filterScale(FilterScale::L),
+             saveSeq(false), 
+             saveProfile(false), saveFilter(false), saveSegment(false), 
+             saveAll(false), refType(FileType::SEQ), tarType(FileType::SEQ), 
+             showInfo(true), compress(false), filter(false), segment(false) {}
 
   void parse (int, char**&);
   string print_win_type () const;
@@ -78,11 +81,11 @@ inline void Param::parse (int argc, char**& argv) {
     else if (*i=="-compress")                      compress=true;
     else if (*i=="-filter")                        filter=true;
     else if (*i=="-segment")                       segment=true;
-    else if (*i=="-sb" || *i=="--save_seq")        saveSeq=true;
-    else if (*i=="-sp" || *i=="--save_profile")    saveProfile=true;
-    else if (*i=="-sf" || *i=="--save_fitler")     saveFilter=true;
-    else if (*i=="-ss" || *i=="--save_segment")    saveSegment=true;
-    else if (*i=="-sa" || *i=="--save_all")        saveAll=true;
+    else if (*i=="-sb" || *i=="--save-seq")        saveSeq=true;
+    else if (*i=="-sp" || *i=="--save-profile")    saveProfile=true;
+    else if (*i=="-sf" || *i=="--save-fitler")     saveFilter=true;
+    else if (*i=="-ss" || *i=="--save-segment")    saveSegment=true;
+    else if (*i=="-sa" || *i=="--save-all")        saveAll=true;
     else if (*i=="-t"  || *i=="--tar") {
       if (i+1 != vArgs.end()) { tar=*++i;  check_file(tar); }
       else error("target file not specified. Use \"-t fileName\".");
@@ -94,17 +97,24 @@ inline void Param::parse (int argc, char**& argv) {
     else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
       level = static_cast<u8>(stoi(*++i));
       def_if_not_in_range("Level", level, MIN_LVL, MAX_LVL, DEF_LVL);
+      //todo
+      if (level < MIN_LVL || level > MAX_LVL) {
+        level = DEF_LVL;
+        warning("\"Level\" not in valid range "
+                "["+to_string(MIN_LVL)+";"+to_string(MAX_LVL)+"]. "
+                "Default value \""+to_string(DEF_LVL)+"\" been set.");
+      }
     }
     else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
       nthr = static_cast<u8>(stoi(*++i));
       def_if_not_in_range("Number of threads", nthr, MIN_THR,MAX_THR,DEF_THR);
     }
-    else if ((*i=="-rm" || *i=="--ref_model") && i+1!=vArgs.end()) {
+    else if ((*i=="-rm" || *i=="--ref-model") && i+1!=vArgs.end()) {
       rmodelsPars = *++i;
       if (rmodelsPars[0]=='-' || rmodelsPars.empty())
         error("incorrect reference model parameters.");
     }
-    else if ((*i=="-tm" || *i=="--tar_model") && i+1!=vArgs.end()) {
+    else if ((*i=="-tm" || *i=="--tar-model") && i+1!=vArgs.end()) {
       tmodelsPars = *++i;
       if (tmodelsPars[0]=='-' || tmodelsPars.empty())
         error("incorrect target model parameters.");
@@ -124,6 +134,16 @@ inline void Param::parse (int argc, char**& argv) {
     else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end()) {
       manThresh = true;
       thresh = stof(*++i);
+      warn_if_not_in_range("Threshold", thresh, MIN_THRESH, MAX_THRESH, DEF_THRESH);
+      warn_if_equal("Threshold", thresh, 0, DEF_THRESH);
+    }
+    else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=vArgs.end()) {
+      manFilterScale = true;
+      const auto fs = *++i;
+      if      (fs=="S")  filterScale=FilterScale::S;
+      else if (fs=="M")  filterScale=FilterScale::M;
+      else if (fs=="L")  filterScale=FilterScale::L; 
+      //todo check range
     }
     else if (*i=="-R"  || *i=="--report")
       report = (i+1!=vArgs.end()) ? *++i : "report.txt";
@@ -140,12 +160,14 @@ inline void Param::parse (int argc, char**& argv) {
     error("reference file not specified. Use \"-r fileName\".");
 
   if (!has(vArgs.begin(), vArgs.end(), "-rm") &&
-      !has(vArgs.begin(), vArgs.end(), "--ref_model"))
+      !has(vArgs.begin(), vArgs.end(), "--ref-model"))
     rmodelsPars = LEVEL[level];
   if (!has(vArgs.begin(), vArgs.end(), "-tm") &&
-      !has(vArgs.begin(), vArgs.end(), "--tar_model"))
+      !has(vArgs.begin(), vArgs.end(), "--tar-model"))
     tmodelsPars = REFFREE_LEVEL[level];
 
+  manFilterScale = !manThresh;
+  
   keep_in_range(wsize, 0ull, min(file_size(ref),file_size(tar)));
 
   // Fasta/Fastq to Seq
@@ -180,44 +202,46 @@ inline void Param::help () const {
     "                                                                        \n"
     "DESCRIPTION                                                             \n"
     "  Mandatory arguments:                                                  \n"
-    "  -r,  --ref [FILE]      reference file (Seq/Fasta/Fastq)               \n"
-    "  -t,  --tar [FILE]      target file    (Seq/Fasta/Fastq)               \n"
+    "  -r,  --ref [FILE]          reference file (Seq/Fasta/Fastq)           \n"
+    "  -t,  --tar [FILE]          target file    (Seq/Fasta/Fastq)           \n"
     "                                                                        \n"
     "  Options:                                                              \n"
-    "  -v,  --verbose         more information                               \n"
-    "  -l,  --level [NUM]     levels of compression [0;4]                    \n"
-    "  -n,  --nthr  [NUM]     number of threads                              \n"
-    "  -w,  --wsize [NUM]     window size                <-- filter          \n"
-    "  -wt, --wtype [...]     type of windowing function <-- filter          \n"
-    "                           [0 | rectangular] [1 | hamming]              \n"
-    "                           [2 | hann]        [3 | blackman]             \n"
-    "                           [4 | triangular]  [5 | welch]                \n"
-    "                           [6 | sine]        [7 | nuttall]              \n"
-    "  -d,  --step   [NUM]    sampling steps             <-- filter          \n"
-    "  -th, --thresh [NUM]    threshold                  <-- filter          \n"
-    "  -sb, --save_seq        save sequence (input is Fasta/Fastq)           \n"
-    "  -sp, --save_profile    save profile                                   \n"
-    "  -sf, --save_filter     save filtered file                             \n"
-    "  -ss, --save_segment    save segmented file(s)                         \n"
-    "  -sa, --save_all        save profile, filetered and                    \n"
-    "                           segmented files                              \n"
-    "  -R,  --report          save results in the \"report\" file            \n"
-    "  -h,  --help            usage guide                                    \n"
-    "  -rm, --ref_model [\U0001D705,[\U0001D464,\U0001D451,]ir,\U0001D6FC,"
+    "  -v,  --verbose             more information                           \n"
+    "  -l,  --level [NUM]         levels of compression [0;4]                \n"
+    "  -n,  --nthr  [NUM]         number of threads                          \n"
+    "  -fs, --filter-scale [...]  scale of the filter        <-- filter      \n"
+    "                               [S|small] [M|medium] [L|large]           \n"
+    "  -w,  --wsize [NUM]         window size                <-- filter      \n"
+    "  -wt, --wtype [...]         type of windowing function <-- filter      \n"
+    "                               [0|rectangular] | [1|hamming]  |         \n"
+    "                               [2|hann]        | [3|blackman] |         \n"
+    "                               [4|triangular]  | [5|welch]    |         \n"
+    "                               [6|sine]        | [7|nuttall]  |         \n"
+    "  -d,  --step   [NUM]        sampling steps             <-- filter      \n"
+    "  -th, --thresh [NUM]        threshold                  <-- filter      \n"
+    "  -sp, --save-profile        save profile                               \n"
+    "  -sf, --save-filter         save filtered file                         \n"
+    "  -sb, --save-seq            save sequence (input is Fasta/Fastq)       \n"
+    "  -ss, --save-segment        save segmented file(s)                     \n"
+    "  -sa, --save-all            save profile, filetered and                \n"
+    "                               segmented files                          \n"
+    "  -R,  --report              save results in the \"report\" file        \n"
+    "  -h,  --help                usage guide                                \n"
+    "  -rm, --ref-model [\U0001D705,[\U0001D464,\U0001D451,]ir,\U0001D6FC,"
                          "\U0001D6FE/\U0001D70F,ir,\U0001D6FC,\U0001D6FE:...]\n"
-    "  -tm, --tar_model [...]                                                .\n"
-    "                         parameters of models                           \n"
-    "                           \U0001D705:  context size                    \n"
-    "                           \U0001D464:  width of sketch in log2 form,   \n"
-    "                                 e.g., set 10 for w=2^10=1024           \n"
-    "                           \U0001D451:  depth of sketch                 \n"
-    "                           ir: inverted repeat (0 | 1 | 2)              \n"
-    "                               [0]: regular (not inverted)              \n"
-    "                               [1]: inverted, solely                    \n"
-    "                               [2]: both regular and inverted           \n"
-    "                           \U0001D6FC:  estimator                       \n"
-    "                           \U0001D6FE:  forgetting factor [0;1)         \n"
-    "                           \U0001D70F:  threshold (# substitutions)     \n"
+    "  -tm, --tar-model [...]                                                \n"
+    "                             parameters of models                       \n"
+    "                               \U0001D705:  context size                \n"
+    "                               \U0001D464:  width of sketch in log2 form,\n"
+    "                                     e.g., set 10 for w=2^10=1024       \n"
+    "                               \U0001D451:  depth of sketch             \n"
+    "                               ir: inverted repeat (0|1|2)              \n"
+    "                                   [0]: regular (not inverted)          \n"
+    "                                   [1]: inverted, solely                \n"
+    "                                   [2]: both regular and inverted       \n"
+    "                               \U0001D6FC:  estimator                   \n"
+    "                               \U0001D6FE:  forgetting factor [0;1)     \n"
+    "                               \U0001D70F:  threshold (# substitutions) \n"
     "                                                                        \n"
     "COPYRIGHT                                                               \n"
     "  Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro.         \n"
