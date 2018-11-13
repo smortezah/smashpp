@@ -11,7 +11,8 @@ void Segment::partition (ofstream& posF, float filtered) {
     begun = false;
     if (begPos != endPos) {
       ++nSegs;
-      posF << begPos << '\t' << endPos << '\t' << sumEnt/numEnt << '\n';
+      posF << begPos << '\t' << endPos << '\t' 
+           << std::fixed << setprecision(DEF_FIL_PREC) << sumEnt/numEnt << '\n';
     }
     begPos = endPos = 0;
     sumEnt = 0;
@@ -31,6 +32,7 @@ void Segment::partition (ofstream& posF, float filtered) {
 void Segment::partition_last (ofstream& ff) {
   if (begPos != endPos) {
     ++nSegs;
-    ff << begPos << '\t' << endPos << '\t' << sumEnt/numEnt << '\n';
+    ff << begPos << '\t' << endPos << '\t'
+       << std::fixed << setprecision(DEF_FIL_PREC) << sumEnt/numEnt << '\n';
   }
 }

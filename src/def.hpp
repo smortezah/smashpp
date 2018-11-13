@@ -187,7 +187,7 @@ static constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3
 //  0, 0, 0
 //};
 static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
-  "14,1,0.005,0.95",                                                  // Level 0
+  "14,2,0.005,0.95",                                                  // Level 0
   "14,1,0.005,0.95:6,0,0.1,0.95",                                     // Level 1
   "20,1,0.002,0.95",                                                  // Level 2
   "18,1,0.002,0.95/3,1,0.02,0.95:13,1,0.01,0.95:6,0,0.1,0.95",        // Level 3
@@ -195,7 +195,7 @@ static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
   "8,0,0.1,0.95:4,0,1,0.95"                                           // Level 4
 };
 static const vector<string> REFFREE_LEVEL {
-  "2,0,1,0",                                                         // Level 0
+  "14,2,0.005,0.95",                                                  // Level 0
   "10,0,1,0",                                                         // Level 1
   "10,0,1,0",                                                         // Level 2
   "10,0,1,0",                                                         // Level 3
