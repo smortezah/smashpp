@@ -13,7 +13,8 @@ Filter::Filter (const Param& p) {
 
 inline void Filter::config (const Param& p) {
   config_wtype(p.wtype);
-  wsize = is_odd(p.wsize) ? p.wsize : p.wsize+1;
+  wsize = is_odd(p.wsize/p.sampleStep) ? p.wsize/p.sampleStep 
+                                       : p.wsize/p.sampleStep + 1;
   window.resize(wsize);
   if ((p.filter || p.segment) && p.verbose)  show_info(p);
 }

@@ -341,4 +341,5 @@ inline static void def_if_not_in_range (const string& variable, string& val,
 }
 }
 
+
 #endif //PROJECT_FN_HPP
