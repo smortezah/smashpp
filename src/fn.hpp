@@ -83,6 +83,13 @@ inline static void err (const string& msg) {
   cerr << "Error: " << msg << '\n';
 }
 
+inline static void warning (const string& msg) {
+  cerr << "Warning: " << msg << '\n';
+}
+inline static void warning (string&& msg) {
+  cerr << "Warning: " << msg << '\n';
+}
+
 template <typename Iter, typename Element>
 inline static bool has (Iter first, Iter last, Element elem) {
   return std::find(first, last, elem) != last;
@@ -319,27 +326,48 @@ inline static void keep_in_range (Val& val, MinVal min, MaxVal max) {
   else if (val > max)    val = max;
 }
 
+//todo
 template <typename Val, typename MinVal, typename MaxVal, typename DefaultVal>
 inline static void def_if_not_in_range
-(const string& variable, Val& val, MinVal min, MaxVal max, DefaultVal def) {
+(string&& variable, Val& val, MinVal min, MaxVal max, DefaultVal def) {
   if (val < min || val > max) {
     val = def;
-    cerr << "\""+variable+"\" not in valid "
-            "range ["+to_string(min)+";"+to_string(max)+"]. "
-            "Default value \""+to_string(def)+"\" been set.\n";
+    warning("\""+variable+"\" not in valid range "
+            "["+to_string(min)+";"+to_string(max)+"]. Default value "
+            "\""+to_string(def)+"\" been set.");
   }
 }
 
-inline static void def_if_not_in_range (const string& variable, string& val,
-                                        const string& min, const string& max,
+inline static void def_if_not_in_range (string&& variable, string& val, 
+                                        const string& min, const string& max, 
                                         const string& def) {
   if (stoull(val) < stoull(min) || stoull(val) > stoull(max)) {
     val = to_string(stoull(def));
-    cerr << "\""+variable+"\" not in valid range ["+min+";"+max+"]. "
-            "Default value \""+def+"\" been set.";
+    warning("\""+variable+"\" not in valid range ["+min+";"+max+"]. Default "
+            "value \""+def+"\" been set.");
+  }
+}
+
+template <typename Val, typename MinVal, typename MaxVal, typename DefaultVal>
+inline static void warn_if_not_in_range
+(string&& variable, Val& val, MinVal min, MaxVal max, DefaultVal def) {
+  if (val < min || val > max) {
+    val = def;
+    warning("\""+variable+"\" not in valid range "
+            "["+to_string(min)+";"+to_string(max)+"]. Will be automatically "
+            "corrected.");
+  }
+}
+
+template <typename Val, typename ToVal, typename DefaultVal>
+inline static void warn_if_equal
+(string&& variable, Val& val, ToVal val2, DefaultVal def) {
+  if (val == val2) {
+    val = def;
+    warning("\""+variable+"\" cannot be "+to_string(val2)+". Will be "
+            "automatically corrected.");
   }
 }
 }
-
 
 #endif //PROJECT_FN_HPP

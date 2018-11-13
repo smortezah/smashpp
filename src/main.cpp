@@ -21,10 +21,6 @@
 using namespace smashpp;
 
 
-
-//todo
-#include <thread>
-
 int main (int argc, char* argv[]) {
   try {
     const auto t0{now()};

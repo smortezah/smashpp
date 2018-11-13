@@ -60,7 +60,10 @@ static constexpr u32   MAX_WS       {100000}; // Max window size -- filter
 static const string    DEF_WT       {"2"};// Default window type -- filter
 static const string    MIN_WT       {"0"};   // Min window type  -- filter
 static const string    MAX_WT       {"7"};   // Max window type  -- filter
+static const string    DEF_FS       {"L"};// Default filter scale-- filter
 static constexpr float DEF_THRESH   {1.5};// Default threshold   -- filter
+static constexpr float MIN_THRESH   {0};  // Min threshold       -- filter
+static constexpr float MAX_THRESH   {20}; // Max threshold       -- filter
 static constexpr u8    CARDIN       {4};  // CARDINALITY = Alphabet size
 static constexpr u8    IRMAGIC      {3};  // Calc Mir syms based on syms
 static constexpr u8    K_MAX_TBL64  {11}; // Max ctx dept. table 64 (128 MB mem)
@@ -93,12 +96,14 @@ static constexpr int   FILE_BUF     {8*1024};  // 8K
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDIN>>;
 
 // Enum
-enum class Container {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8}; //Data structs
+enum class Container   {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};//Data struct
 //enum class Mode {MM, STMM};
-enum class WType     {RECTANGULAR, HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH,
-                      SINE, NUTTALL};  // Types of windowing function
-enum class Format    {PROFILE, FILTER, POSITION, SEGMENT, SELF};
-enum class FileType  {SEQ, FASTA, FASTQ};
+enum class WType       {RECTANGULAR, HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH,
+                        SINE, NUTTALL};  // Types of windowing function
+enum class Format      {PROFILE, FILTER, POSITION, SEGMENT, SELF};
+enum class FileType    {SEQ, FASTA, FASTQ};
+enum class FilterScale {S, M, L};
+enum class Problem     {WARNING, ERROR};
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n
