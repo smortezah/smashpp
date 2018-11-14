@@ -45,10 +45,16 @@ class ValRange {
 
 template <typename Value>
 inline void ValRange<Value>::assert (Value& val) {
+  bool isFloat = false;
+  if (typeid(Value)==typeid(float) || typeid(Value)==typeid(double))
+    isFloat=true;
+
   const auto append_msg = [&] (string&& msg) {
     message = "\""+label+"\" not in valid range " + msg;
-    if (initMode == "default") 
-      message += "Default value \""+to_string(def)+"\" been set.";
+    if (initMode == "default") {
+      message += "Default value \""+
+        (isFloat ? string_format("%.1f",def) : to_string(def)) +"\" been set.";
+    }
     else if (initMode == "auto")
       message += "Will be automatically modified.";
     message += "\n";
@@ -56,19 +62,31 @@ inline void ValRange<Value>::assert (Value& val) {
   
   if (criterion=="[]" && (val>max || val<min)) {
     inRange = false;
-    append_msg(std::move("["+to_string(min)+";"+to_string(max)+"]. "));
+    string s = "["+
+      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
+               : (to_string(min)+";"+to_string(max))) +"]. ";
+    append_msg(std::move(s));
   }
   else if (criterion=="[)" && (val>=max || val<min)) {
     inRange = false;
-    append_msg(std::move("["+to_string(min)+";"+to_string(max)+"). "));
+    string s = "["+
+      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
+               : (to_string(min)+";"+to_string(max))) +"). ";
+    append_msg(std::move(s));
   }
   else if (criterion=="(]" && (val>max || val<=min)) {
     inRange = false;
-    append_msg(std::move("("+to_string(min)+";"+to_string(max)+"]. "));
+    string s = "("+
+      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
+               : (to_string(min)+";"+to_string(max))) +"]. ";
+    append_msg(std::move(s));
   }
   else if (criterion=="()" && (val>=max || val<=min)) {
     inRange = false;
-    append_msg(std::move("("+to_string(min)+";"+to_string(max)+"). "));
+    string s = "("+
+      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
+               : (to_string(min)+";"+to_string(max))) +"). ";
+    append_msg(std::move(s));
   }
   
   if (!inRange) {
