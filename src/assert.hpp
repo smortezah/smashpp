@@ -46,7 +46,7 @@ class ValRange {
 template <typename Value>
 inline void ValRange<Value>::assert (Value& val) {
   bool isFloat = false;
-  if (typeid(Value)==typeid(float) || typeid(Value)==typeid(double))
+  if (std::is_floating_point<Value>::value)
     isFloat=true;
 
   const auto append_msg = [&] (string&& msg) {
@@ -102,9 +102,9 @@ class ValSet {
  public:
   ValSet () = default;
   ValSet (vector<Value> set_, Value d_, string&& l_, string&& m_, 
-          Problem p_)
+          Problem p_, bool inRng_)
           : set(set_), def(d_), label(move(l_)), initMode(move(m_)),
-            problem(p_), inRange(true) {}
+            problem(p_), inRange(inRng_) {}
   void assert (Value&);
 
  private:
@@ -118,6 +118,8 @@ class ValSet {
 
 template <typename Value>
 inline void ValSet<Value>::assert (Value& val) {
+  if (inRange)  return;
+
   const auto append_msg = [&] (string&& msg) {
     message = "\""+label+"\" not in valid range " + msg + "\n";
     if (initMode == "default") 
@@ -126,7 +128,7 @@ inline void ValSet<Value>::assert (Value& val) {
       message += "Will be automatically modified.";
     message += "\n";
   };
-  
+
   if (!has(set.begin(), set.end(), val)) {
     inRange = false;
 

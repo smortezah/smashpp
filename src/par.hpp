@@ -38,7 +38,7 @@ class Param {   // Parameters
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
              wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
              manWSize(false), manThresh(false), manFilterScale(false), 
-             filterScale(FilterScale::L),
+             filterScale(DEF_FS),
              saveSeq(false), 
              saveProfile(false), saveFilter(false), saveSegment(false), 
              saveAll(false), refType(FileType::SEQ), tarType(FileType::SEQ), 
@@ -129,9 +129,19 @@ inline void Param::parse (int argc, char**& argv) {
       range->assert(wsize);
     }
     else if ((*i=="-wt"|| *i=="--wtype") && i+1!=vArgs.end()) {
-      wtype = win_type(*++i);
+      const auto is_win_type = [] (const string& t) {
+        if (t=="0" || t=="rectangular" || t=="1" || t=="hamming"  ||
+            t=="2" || t=="hann"        || t=="3" || t=="blackman" ||
+            t=="4" || t=="triangular"  || t=="5" || t=="welch"    ||
+            t=="6" || t=="sine"        || t=="7" || t=="nuttall")
+           return true;
+        return false;
+      };
+      // wtype = win_type(*++i);
+
+      // print_win_type();
       auto set = make_unique<ValSet<WType>>(SET_WTYPE, DEF_WT, 
-        "Window type", "default", Problem::WARNING);
+        "Window type", "default", Problem::WARNING, is_win_type(*++i));
       set->assert(wtype);
     }
     else if ((*i=="-d" || *i=="--step") && i+1!=vArgs.end()) {
@@ -146,12 +156,13 @@ inline void Param::parse (int argc, char**& argv) {
       range->assert(thresh);
     }
     else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=vArgs.end()) {
-      manFilterScale = true;
-      filterScale = filter_scale(*++i);
-      //todo check range
+      filterScale=filter_scale(*++i);
+      cerr<<print_filter_scale();
+      // manFilterScale = true;
+      // filterScale = filter_scale(*++i);
       // auto set = make_unique<ValSet<FilterScale>>(SET_FSCALE, DEF_FS, 
       //   "Filter scale", "default", Problem::WARNING);
-      // set->assert(fs);
+      // set->assert(filterScale);
     }
     else if (*i=="-R"  || *i=="--report")
       report = (i+1!=vArgs.end()) ? *++i : "report.txt";
@@ -284,10 +295,10 @@ inline string Param::print_win_type () const {
   }
 }
 
-inline FilterScale Param::filter_scale (const string& fs) const {
-  if      (fs=="S")  return FilterScale::S;
-  else if (fs=="M")  return FilterScale::M;
-  else if (fs=="L")  return FilterScale::L; 
+inline FilterScale Param::filter_scale (const string& s) const {
+  if      (s=="S" || s=="small")   return FilterScale::S;
+  else if (s=="M" || s=="medium")  return FilterScale::M;
+  else if (s=="L" || s=="large")   return FilterScale::L; 
 }
 
 inline string Param::print_filter_scale () const {
@@ -300,59 +311,24 @@ inline string Param::print_filter_scale () const {
 }
 
 inline static string conv_to_string (WType val) {
-  // if (std::is_same<Value, WType>::value)
-  if (typeid(Value) == typeid(WType))
-    switch (val) {
-      case WType::RECTANGULAR:  return "0|rectangular";  break;
-      case WType::HAMMING:      return "1|hamming";      break;
-      case WType::HANN:         return "2|hann";         break;
-      case WType::BLACKMAN:     return "3|blackman";     break;
-      case WType::TRIANGULAR:   return "4|triangular";   break;
-      case WType::WELCH:        return "5|welch";        break;
-      case WType::SINE:         return "6|sine";         break;
-      case WType::NUTTALL:      return "7|nuttall";      break;
-    }
-  else
-    switch (val) {
-      case FilterScale::S:      return "S|small";        break;
-      case FilterScale::M:      return "M|medium";       break;
-      case FilterScale::L:      return "L|large";        break;
-    }
+  switch (val) {
+    case WType::RECTANGULAR:  return "0|rectangular";  break;
+    case WType::HAMMING:      return "1|hamming";      break;
+    case WType::HANN:         return "2|hann";         break;
+    case WType::BLACKMAN:     return "3|blackman";     break;
+    case WType::TRIANGULAR:   return "4|triangular";   break;
+    case WType::WELCH:        return "5|welch";        break;
+    case WType::SINE:         return "6|sine";         break;
+    case WType::NUTTALL:      return "7|nuttall";      break;
+  }
 }
-
-template <typename Value>
-inline static string conv_to_string (Value val) {
-  // if (std::is_same<Value, WType>::value)
-  if (typeid(Value) == typeid(WType))
-    switch (val) {
-      case WType::RECTANGULAR:  return "0|rectangular";  break;
-      case WType::HAMMING:      return "1|hamming";      break;
-      case WType::HANN:         return "2|hann";         break;
-      case WType::BLACKMAN:     return "3|blackman";     break;
-      case WType::TRIANGULAR:   return "4|triangular";   break;
-      case WType::WELCH:        return "5|welch";        break;
-      case WType::SINE:         return "6|sine";         break;
-      case WType::NUTTALL:      return "7|nuttall";      break;
-    }
-  else
-    switch (val) {
-      case FilterScale::S:      return "S|small";        break;
-      case FilterScale::M:      return "M|medium";       break;
-      case FilterScale::L:      return "L|large";        break;
-    }
+inline static string conv_to_string (FilterScale val) {
+  switch (val) {
+    case FilterScale::S:      return "S|small";        break;
+    case FilterScale::M:      return "M|medium";       break;
+    case FilterScale::L:      return "L|large";        break;
+  }
 }
-// inline static string win_type_equiv (WType wtype) {
-//   switch (wtype) {
-//     case WType::RECTANGULAR:  return "0|rectangular";  break;
-//     case WType::HAMMING:      return "1|hamming";      break;
-//     case WType::HANN:         return "2|hann";         break;
-//     case WType::BLACKMAN:     return "3|blackman";     break;
-//     case WType::TRIANGULAR:   return "4|triangular";   break;
-//     case WType::WELCH:        return "5|welch";        break;
-//     case WType::SINE:         return "6|sine";         break;
-//     case WType::NUTTALL:      return "7|nuttall";      break;
-//   }
-// }
 
 inline void VizParam::parse (int argc, char**& argv) {
   if (argc < 3) { help();  throw EXIT_SUCCESS; }
