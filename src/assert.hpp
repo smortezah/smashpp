@@ -121,7 +121,7 @@ inline void ValSet<Value>::assert (Value& val) {
   const auto append_msg = [&] (string&& msg) {
     message = "\""+label+"\" not in valid range " + msg + "\n";
     if (initMode == "default") 
-      message += "Default value \""+win_type_equiv(def)+"\" been set.";
+      message += "Default value \""+conv_to_string(def)+"\" been set.";
     else if (initMode == "auto")
       message += "Will be automatically modified.";
     message += "\n";
@@ -132,11 +132,11 @@ inline void ValSet<Value>::assert (Value& val) {
 
     string msg = "{";
     for (auto it=set.begin(); it!=set.begin()+3; ++it)  
-      msg += win_type_equiv(*it)+", ";
+      msg += conv_to_string(*it)+", ";
     msg += "\n";
     for (auto it=set.begin()+3; it!=set.end()-1; ++it)
-      msg += win_type_equiv(*it)+", ";
-    msg += win_type_equiv(set.back())+"}. ";
+      msg += conv_to_string(*it)+", ";
+    msg += conv_to_string(set.back())+"}. ";
 
     append_msg(std::move(msg));
   }

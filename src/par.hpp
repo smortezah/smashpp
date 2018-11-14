@@ -16,16 +16,16 @@
 namespace smashpp {
 class Param {   // Parameters
  public:
-  string       ref, tar, seq;
-  u8           level;
-  bool         verbose;
-  u8           nthr;
-  string       rmodelsPars, tmodelsPars;
-  u32          wsize;
-  WType        wtype;
-  u64          sampleStep;
-  float        thresh;
-  bool         manThresh, manFilterScale;
+  string      ref, tar, seq;
+  u8          level;
+  bool        verbose;
+  u8          nthr;
+  string      rmodelsPars, tmodelsPars;
+  u32         wsize;
+  WType       wtype;
+  u64         sampleStep;
+  float       thresh;
+  bool        manWSize, manThresh, manFilterScale;
   FilterScale filterScale;
   bool        saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
   FileType    refType, tarType;
@@ -37,7 +37,7 @@ class Param {   // Parameters
   //todo clean
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
              wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
-             manThresh(false), manFilterScale(false), 
+             manWSize(false), manThresh(false), manFilterScale(false), 
              filterScale(FilterScale::L),
              saveSeq(false), 
              saveProfile(false), saveFilter(false), saveSegment(false), 
@@ -47,6 +47,8 @@ class Param {   // Parameters
   void parse (int, char**&);
   WType win_type (const string&) const;
   string print_win_type () const;
+  FilterScale filter_scale (const string&) const;
+  string print_filter_scale () const;
 
  private:
   void help () const;
@@ -91,11 +93,11 @@ inline void Param::parse (int argc, char**& argv) {
     else if (*i=="-sa" || *i=="--save-all")        saveAll=true;
     else if (*i=="-t"  || *i=="--tar") {
       if (i+1 != vArgs.end()) { tar=*++i;  check_file(tar); }
-      else error("target file not specified. Use \"-t fileName\".");
+      else error("target file not specified. Use \"-t <fileName>\".");
     }
     else if (*i=="-r"  || *i=="--ref") {
       if (i+1 != vArgs.end()) { ref=*++i;  check_file(ref); }
-      else error("reference file not specified. Use \"-r fileName\".");
+      else error("reference file not specified. Use \"-r <fileName>\".");
     }
     else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
       level = static_cast<u8>(stoi(*++i));
@@ -120,6 +122,7 @@ inline void Param::parse (int argc, char**& argv) {
         error("incorrect target model parameters.");
     }
     else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
+      manWSize = true;
       wsize = static_cast<u32>(stoi(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_WS, MAX_WS, DEF_WS, 
         "Window size", "[]", "default", Problem::WARNING);
@@ -144,10 +147,7 @@ inline void Param::parse (int argc, char**& argv) {
     }
     else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=vArgs.end()) {
       manFilterScale = true;
-      const auto fs = *++i;
-      if      (fs=="S")  filterScale=FilterScale::S;
-      else if (fs=="M")  filterScale=FilterScale::M;
-      else if (fs=="L")  filterScale=FilterScale::L; 
+      filterScale = filter_scale(*++i);
       //todo check range
       // auto set = make_unique<ValSet<FilterScale>>(SET_FSCALE, DEF_FS, 
       //   "Filter scale", "default", Problem::WARNING);
@@ -163,9 +163,9 @@ inline void Param::parse (int argc, char**& argv) {
   const bool has_r   {has(vArgs.begin(), vArgs.end(), "-r")};
   const bool has_ref {has(vArgs.begin(), vArgs.end(), "--ref")};
   if (!has_t && !has_tar)
-    error("target file not specified. Use \"-t fileName\".");
+    error("target file not specified. Use \"-t <fileName>\".");
   else if (!has_r && !has_ref)
-    error("reference file not specified. Use \"-r fileName\".");
+    error("reference file not specified. Use \"-r <fileName>\".");
 
   if (!has(vArgs.begin(), vArgs.end(), "-rm") &&
       !has(vArgs.begin(), vArgs.end(), "--ref-model"))
@@ -284,18 +284,75 @@ inline string Param::print_win_type () const {
   }
 }
 
-inline static string win_type_equiv (WType wtype) {
-  switch (wtype) {
-    case WType::RECTANGULAR:  return "0|rectangular";  break;
-    case WType::HAMMING:      return "1|hamming";      break;
-    case WType::HANN:         return "2|hann";         break;
-    case WType::BLACKMAN:     return "3|blackman";     break;
-    case WType::TRIANGULAR:   return "4|triangular";   break;
-    case WType::WELCH:        return "5|welch";        break;
-    case WType::SINE:         return "6|sine";         break;
-    case WType::NUTTALL:      return "7|nuttall";      break;
+inline FilterScale Param::filter_scale (const string& fs) const {
+  if      (fs=="S")  return FilterScale::S;
+  else if (fs=="M")  return FilterScale::M;
+  else if (fs=="L")  return FilterScale::L; 
+}
+
+inline string Param::print_filter_scale () const {
+  switch (filterScale) {
+    case FilterScale::S:  return "Small";   break;
+    case FilterScale::M:  return "Medium";  break;
+    case FilterScale::L:  return "Large";   break;
+    default:              return "Large";
   }
 }
+
+inline static string conv_to_string (WType val) {
+  // if (std::is_same<Value, WType>::value)
+  if (typeid(Value) == typeid(WType))
+    switch (val) {
+      case WType::RECTANGULAR:  return "0|rectangular";  break;
+      case WType::HAMMING:      return "1|hamming";      break;
+      case WType::HANN:         return "2|hann";         break;
+      case WType::BLACKMAN:     return "3|blackman";     break;
+      case WType::TRIANGULAR:   return "4|triangular";   break;
+      case WType::WELCH:        return "5|welch";        break;
+      case WType::SINE:         return "6|sine";         break;
+      case WType::NUTTALL:      return "7|nuttall";      break;
+    }
+  else
+    switch (val) {
+      case FilterScale::S:      return "S|small";        break;
+      case FilterScale::M:      return "M|medium";       break;
+      case FilterScale::L:      return "L|large";        break;
+    }
+}
+
+template <typename Value>
+inline static string conv_to_string (Value val) {
+  // if (std::is_same<Value, WType>::value)
+  if (typeid(Value) == typeid(WType))
+    switch (val) {
+      case WType::RECTANGULAR:  return "0|rectangular";  break;
+      case WType::HAMMING:      return "1|hamming";      break;
+      case WType::HANN:         return "2|hann";         break;
+      case WType::BLACKMAN:     return "3|blackman";     break;
+      case WType::TRIANGULAR:   return "4|triangular";   break;
+      case WType::WELCH:        return "5|welch";        break;
+      case WType::SINE:         return "6|sine";         break;
+      case WType::NUTTALL:      return "7|nuttall";      break;
+    }
+  else
+    switch (val) {
+      case FilterScale::S:      return "S|small";        break;
+      case FilterScale::M:      return "M|medium";       break;
+      case FilterScale::L:      return "L|large";        break;
+    }
+}
+// inline static string win_type_equiv (WType wtype) {
+//   switch (wtype) {
+//     case WType::RECTANGULAR:  return "0|rectangular";  break;
+//     case WType::HAMMING:      return "1|hamming";      break;
+//     case WType::HANN:         return "2|hann";         break;
+//     case WType::BLACKMAN:     return "3|blackman";     break;
+//     case WType::TRIANGULAR:   return "4|triangular";   break;
+//     case WType::WELCH:        return "5|welch";        break;
+//     case WType::SINE:         return "6|sine";         break;
+//     case WType::NUTTALL:      return "7|nuttall";      break;
+//   }
+// }
 
 inline void VizParam::parse (int argc, char**& argv) {
   if (argc < 3) { help();  throw EXIT_SUCCESS; }
