@@ -149,6 +149,9 @@ inline void Param::parse (int argc, char**& argv) {
       else if (fs=="M")  filterScale=FilterScale::M;
       else if (fs=="L")  filterScale=FilterScale::L; 
       //todo check range
+      // auto set = make_unique<ValSet<FilterScale>>(SET_FSCALE, DEF_FS, 
+      //   "Filter scale", "default", Problem::WARNING);
+      // set->assert(fs);
     }
     else if (*i=="-R"  || *i=="--report")
       report = (i+1!=vArgs.end()) ? *++i : "report.txt";
