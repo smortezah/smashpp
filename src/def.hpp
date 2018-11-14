@@ -43,9 +43,10 @@ enum class FileType    {SEQ, FASTA, FASTQ};
 enum class FilterScale {S, M, L};
 enum class Problem     {WARNING, ERROR};
 
-const vector<WType> SET_WTYPE 
-{WType::RECTANGULAR, WType::HAMMING, WType::HANN, WType::BLACKMAN,
- WType::TRIANGULAR, WType::WELCH, WType::SINE, WType::NUTTALL};
+const vector<WType> SET_WTYPE {WType::RECTANGULAR, WType::HAMMING, WType::HANN,
+  WType::BLACKMAN, WType::TRIANGULAR, WType::WELCH, WType::SINE,WType::NUTTALL};
+const vector<FilterScale> SET_FSCALE {FilterScale::S, FilterScale::M, 
+  FilterScale::L};
 
 // Metaprogram
 // Power a^n
@@ -71,8 +72,8 @@ static constexpr u8    MAX_LVL      {4};  // Max level
 static constexpr u32   DEF_WS       {256};// Default window size -- filter
 static constexpr u32   MIN_WS       {1};      // Min window size -- filter
 static constexpr u32   MAX_WS       {100000}; // Max window size -- filter
-static const WType     DEF_WT       {WType::HANN};// Default window type -- filter
-static const string    DEF_FS       {"L"};// Default filter scale-- filter
+static constexpr WType DEF_WT       {WType::HANN};   //Def window type -- filter
+static constexpr FilterScale DEF_FS {FilterScale::L};//Def filter scale-- filter
 static constexpr float DEF_THRESH   {1.5};// Default threshold   -- filter
 static constexpr float MIN_THRESH   {0};  // Min threshold       -- filter
 static constexpr float MAX_THRESH   {20}; // Max threshold       -- filter
