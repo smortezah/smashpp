@@ -119,10 +119,11 @@ inline void FCM::show_info (const Param& p) const {
   const auto info_filter = [&] (char c) {
     cerr << setw(colWidth) << left;
     switch (c) {
-    case 'f':  cerr<<p.print_win_type();  break;
-    case 'w':  cerr<<p.wsize;             break;
-    case 't':  cerr<<p.thresh;            break;
-    default:                              break;
+    case 'f':  cerr<<p.print_win_type();      break;
+    case 's':  cerr<<p.print_filter_scale();  break;
+    case 'w':  cerr<<p.wsize;                 break;
+    case 't':  cerr<<p.thresh;                break;
+    default:                                  break;
     }
   };
   const auto info_file = [&] (char c) {
@@ -212,6 +213,9 @@ inline void FCM::show_info (const Param& p) const {
     filter_row("Filter & Segment",           'h');
     midrule();
     filter_row("Window function",            'f');
+    if (p.manFilterScale && !p.manWSize) {
+    filter_row("Filter scale",               's');
+    }
     filter_row("Window size",                'w');
     if (p.manThresh) {
       filter_row("Threshold",                't');
