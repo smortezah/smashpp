@@ -8,6 +8,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include "assert.hpp"
 #include "def.hpp"
 #include "fn.hpp"
 #include "vizdef.hpp"
@@ -96,14 +97,9 @@ inline void Param::parse (int argc, char**& argv) {
     }
     else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
       level = static_cast<u8>(stoi(*++i));
-      def_if_not_in_range("Level", level, MIN_LVL, MAX_LVL, DEF_LVL);
-      //todo
-      if (level < MIN_LVL || level > MAX_LVL) {
-        level = DEF_LVL;
-        warning("\"Level\" not in valid range "
-                "["+to_string(MIN_LVL)+";"+to_string(MAX_LVL)+"]. "
-                "Default value \""+to_string(DEF_LVL)+"\" been set.");
-      }
+      auto range = make_unique<ValRange<u8>>(MIN_LVL, MAX_LVL, DEF_LVL, "Level",
+        "[]", "default", Problem::WARNING);
+      range->assert(level);
     }
     else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
       nthr = static_cast<u8>(stoi(*++i));
@@ -134,8 +130,8 @@ inline void Param::parse (int argc, char**& argv) {
     else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end()) {
       manThresh = true;
       thresh = stof(*++i);
-      warn_if_not_in_range("Threshold", thresh, MIN_THRESH, MAX_THRESH, DEF_THRESH);
-      warn_if_equal("Threshold", thresh, 0, DEF_THRESH);
+      // warn_if_not_in_range("Threshold", thresh, MIN_THRESH, MAX_THRESH, DEF_THRESH);
+      // warn_if_equal("Threshold", thresh, 0, DEF_THRESH);
     }
     else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=vArgs.end()) {
       manFilterScale = true;
