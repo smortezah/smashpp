@@ -15,6 +15,22 @@
 #include "def.hpp"
 
 namespace smashpp {
+inline static string bold (string&& text) {
+  return "\033[1m"+text+"\033[0m";
+}
+inline static string italic (string&& text) {
+  return "\033[3m"+text+"\033[0m";
+}
+inline static string underline (string&& text) {
+  return "\033[4m"+text+"\033[0m";
+}
+inline static string highlight (string&& text) {
+  return "\033[7m"+text+"\033[0m";
+}
+inline static string bold_red (string&& text) {
+  return "\033[1m\033[38;5;1m"+text+"\033[0m";
+}
+
 template <typename Input>
 inline static bool is_u8 (Input&& in) {
   return typeid(in)==typeid(u8);
@@ -72,22 +88,24 @@ inline static void split (InIter first, InIter last, char delim, Vec& vOut) {
 }
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
-inline static void error (const string& msg) {
-  throw std::runtime_error ("Error: " + msg + "\n");
-}
+//todo remove
+// inline static void error (const string& msg) {
+//   throw std::runtime_error ("Error: " + msg + "\n");
+// }
 inline static void error (string&& msg) {
-  throw std::runtime_error ("Error: " + msg + "\n");
+  throw std::runtime_error (bold_red("Error: ") + msg + "\n");
 }
 
-inline static void err (const string& msg) {
-  cerr << "Error: " << msg << '\n';
+inline static void err (string&& msg) {
+  cerr << bold_red("Error: ") << msg << '\n';
 }
 
-inline static void warning (const string& msg) {
-  cerr << "Warning: " << msg << '\n';
-}
+//todo remove
+// inline static void warning (const string& msg) {
+//   cerr << bold("Warning: ") << msg << '\n';
+// }
 inline static void warning (string&& msg) {
-  cerr << "Warning: " << msg << '\n';
+  cerr << bold("Warning: ") << msg << '\n';
 }
 
 template <typename Iter, typename Element>
@@ -326,7 +344,7 @@ inline static void keep_in_range (Val& val, MinVal min, MaxVal max) {
   else if (val > max)    val = max;
 }
 
-//todo
+//todo remove
 template <typename Val, typename MinVal, typename MaxVal, typename DefaultVal>
 inline static void def_if_not_in_range
 (string&& variable, Val& val, MinVal min, MaxVal max, DefaultVal def) {

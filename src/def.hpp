@@ -33,6 +33,18 @@ using u64    = unsigned long long;
 using dur_t  = std::chrono::duration<double>;
 using prec_t = double;  // Precision type -- MUST be double
 
+// Enum
+enum class Container   {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};//Data struct
+//enum class Mode {MM, STMM};
+enum class WType       {RECTANGULAR, HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH,
+                        SINE, NUTTALL};  // Types of windowing function
+enum class Format      {PROFILE, FILTER, POSITION, SEGMENT, SELF};
+enum class FileType    {SEQ, FASTA, FASTQ};
+enum class FilterScale {S, M, L};
+enum class Problem     {WARNING, ERROR};
+
+const vector<WType> SET_WTYPE {WType::RECTANGULAR, WType::HAMMING};
+
 // Metaprogram
 // Power a^n
 constexpr u64 sqr (u64 a) { return a * a; }
@@ -57,9 +69,7 @@ static constexpr u8    MAX_LVL      {4};  // Max level
 static constexpr u32   DEF_WS       {256};// Default window size -- filter
 static constexpr u32   MIN_WS       {1};      // Min window size -- filter
 static constexpr u32   MAX_WS       {100000}; // Max window size -- filter
-static const string    DEF_WT       {"2"};// Default window type -- filter
-static const string    MIN_WT       {"0"};   // Min window type  -- filter
-static const string    MAX_WT       {"7"};   // Max window type  -- filter
+static const WType     DEF_WT       {WType::HANN};// Default window type -- filter
 static const string    DEF_FS       {"L"};// Default filter scale-- filter
 static constexpr float DEF_THRESH   {1.5};// Default threshold   -- filter
 static constexpr float MIN_THRESH   {0};  // Min threshold       -- filter
@@ -94,16 +104,6 @@ static constexpr int   FILE_BUF     {8*1024};  // 8K
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDIN>>;
-
-// Enum
-enum class Container   {TABLE_64, TABLE_32, LOG_TABLE_8, SKETCH_8};//Data struct
-//enum class Mode {MM, STMM};
-enum class WType       {RECTANGULAR, HAMMING, HANN, BLACKMAN, TRIANGULAR, WELCH,
-                        SINE, NUTTALL};  // Types of windowing function
-enum class Format      {PROFILE, FILTER, POSITION, SEGMENT, SELF};
-enum class FileType    {SEQ, FASTA, FASTQ};
-enum class FilterScale {S, M, L};
-enum class Problem     {WARNING, ERROR};
 
 // Macro
 //#define LOOP16(n)  n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n

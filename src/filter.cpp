@@ -12,23 +12,24 @@ Filter::Filter (const Param& p) {
 }
 
 inline void Filter::config (const Param& p) {
-  config_wtype(p.wtype);
+  // config_wtype(p.wtype);//todo remove
+  wtype = p.wtype;
   wsize = is_odd(p.wsize/p.sampleStep) ? p.wsize/p.sampleStep 
                                        : p.wsize/p.sampleStep + 1;
   window.resize(wsize);
   if ((p.filter || p.segment) && p.verbose)  show_info(p);
 }
-
-inline void Filter::config_wtype (const string& t) {
-  if      (t=="0" || t=="rectangular")   wtype = WType::RECTANGULAR;
-  else if (t=="1" || t=="hamming")       wtype = WType::HAMMING;
-  else if (t=="2" || t=="hann")          wtype = WType::HANN;
-  else if (t=="3" || t=="blackman")      wtype = WType::BLACKMAN;
-  else if (t=="4" || t=="triangular")    wtype = WType::TRIANGULAR;
-  else if (t=="5" || t=="welch")         wtype = WType::WELCH;
-  else if (t=="6" || t=="sine")          wtype = WType::SINE;
-  else if (t=="7" || t=="nuttall")       wtype = WType::NUTTALL;
-}
+//todo remove
+// inline void Filter::config_wtype (const string& t) {
+//   if      (t=="0" || t=="rectangular")   wtype = WType::RECTANGULAR;
+//   else if (t=="1" || t=="hamming")       wtype = WType::HAMMING;
+//   else if (t=="2" || t=="hann")          wtype = WType::HANN;
+//   else if (t=="3" || t=="blackman")      wtype = WType::BLACKMAN;
+//   else if (t=="4" || t=="triangular")    wtype = WType::TRIANGULAR;
+//   else if (t=="5" || t=="welch")         wtype = WType::WELCH;
+//   else if (t=="6" || t=="sine")          wtype = WType::SINE;
+//   else if (t=="7" || t=="nuttall")       wtype = WType::NUTTALL;
+// }
 
 inline void Filter::show_info (const Param& p) const {
   const u8 lblWidth=19, colWidth=8,

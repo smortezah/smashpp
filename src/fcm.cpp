@@ -272,8 +272,8 @@ inline void FCM::store_1 (const Param& p) {
       store_impl(p.ref, (1ul<<(m.k<<1u))-1ul /*Mask 32*/, tbl32_iter++);  break;
     case Container::TABLE_64:
       store_impl(p.ref, (1ul<<(m.k<<1u))-1ul /*Mask 32*/, tbl64_iter++);  break;
-    default:
-      err("the models cannot be built.");
+    // default:
+    //   err("the models cannot be built.");
     }
   }
 }
@@ -301,8 +301,8 @@ inline void FCM::store_n (const Param& p) {
       thrd[i % vThrSz] = std::thread(&FCM::store_impl<u32,decltype(tbl64_iter)>,
         this, std::cref(p.ref), (1ul << (rMs[i].k << 1u)) - 1ul, tbl64_iter++);
       break;
-    default:
-      err("the models cannot be built.");
+    // default:
+    //   err("the models cannot be built.");
     }
     // Join
     if ((i+1) % vThrSz == 0)
