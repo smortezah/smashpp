@@ -134,14 +134,12 @@ inline void Param::parse (int argc, char**& argv) {
             t=="2" || t=="hann"        || t=="3" || t=="blackman" ||
             t=="4" || t=="triangular"  || t=="5" || t=="welch"    ||
             t=="6" || t=="sine"        || t=="7" || t=="nuttall")
-           return true;
+          return true;
         return false;
       };
-      // wtype = win_type(*++i);
-
-      // print_win_type();
-      auto set = make_unique<ValSet<WType>>(SET_WTYPE, DEF_WT, 
-        "Window type", "default", Problem::WARNING, is_win_type(*++i));
+      const string cmd {*++i};
+      auto set = make_unique<ValSet<WType>>(SET_WTYPE, DEF_WT, "Window type",
+        "default", Problem::WARNING, win_type(cmd), is_win_type(cmd));
       set->assert(wtype);
     }
     else if ((*i=="-d" || *i=="--step") && i+1!=vArgs.end()) {
@@ -156,13 +154,18 @@ inline void Param::parse (int argc, char**& argv) {
       range->assert(thresh);
     }
     else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=vArgs.end()) {
-      filterScale=filter_scale(*++i);
-      cerr<<print_filter_scale();
-      // manFilterScale = true;
-      // filterScale = filter_scale(*++i);
-      // auto set = make_unique<ValSet<FilterScale>>(SET_FSCALE, DEF_FS, 
-      //   "Filter scale", "default", Problem::WARNING);
-      // set->assert(filterScale);
+      manFilterScale = true;
+      const auto is_filter_scale = [] (const string& s) {
+        if (s=="S" || s=="small" || s=="M" || s=="medium" || 
+            s=="L" || s=="large")
+          return true;
+        return false;
+      };
+      const string cmd {*++i};
+      auto set = make_unique<ValSet<FilterScale>>(SET_FSCALE, DEF_FS,
+        "Filter scale", "default", Problem::WARNING, filter_scale(cmd),
+        is_filter_scale(cmd));
+      set->assert(filterScale);
     }
     else if (*i=="-R"  || *i=="--report")
       report = (i+1!=vArgs.end()) ? *++i : "report.txt";
@@ -190,9 +193,9 @@ inline void Param::parse (int argc, char**& argv) {
   keep_in_range(wsize, 0ull, min(file_size(ref),file_size(tar)));
 
   // Fasta/Fastq to Seq
-  auto convert_to_seq = [&] (const string& s, const FileType& type) {
-    rename(s.c_str(), (s+LBL_BAK).c_str());
-    to_seq(s+LBL_BAK, s, type);
+  auto convert_to_seq = [&] (const string& f, const FileType& type) {
+    rename(f.c_str(), (f+LBL_BAK).c_str());
+    to_seq(f+LBL_BAK, f, type);
   };
   refType = file_type(ref);
   if      (refType==FileType::FASTA)  convert_to_seq(ref, FileType::FASTA);
@@ -226,22 +229,22 @@ inline void Param::help () const {
     "                                                                        \n"
     "  Options:                                                              \n"
     "  -v,  --verbose             more information                           \n"
-    "  -l,  --level [NUM]         levels of compression [0;4]                \n"
-    "  -n,  --nthr  [NUM]         number of threads                          \n"
+    "  -l,  --level [INT]         levels of compression [0;4]                \n"
+    "  -n,  --nthr  [INT]         number of threads                          \n"
     "  -fs, --filter-scale [...]  scale of the filter        <-- filter      \n"
     "                               [S|small] [M|medium] [L|large]           \n"
-    "  -w,  --wsize [NUM]         window size                <-- filter      \n"
+    "  -w,  --wsize [INT]         window size                <-- filter      \n"
     "  -wt, --wtype [...]         type of windowing function <-- filter      \n"
     "                               [0|rectangular] | [1|hamming]  |         \n"
     "                               [2|hann]        | [3|blackman] |         \n"
     "                               [4|triangular]  | [5|welch]    |         \n"
     "                               [6|sine]        | [7|nuttall]  |         \n"
-    "  -d,  --step   [NUM]        sampling steps             <-- filter      \n"
-    "  -th, --thresh [NUM]        threshold                  <-- filter      \n"
+    "  -d,  --step   [INT]        sampling steps             <-- filter      \n"
+    "  -th, --thresh [FLOAT]      threshold                  <-- filter      \n"
     "  -sp, --save-profile        save profile                               \n"
     "  -sf, --save-filter         save filtered file                         \n"
     "  -sb, --save-seq            save sequence (input is Fasta/Fastq)       \n"
-    "  -ss, --save-segment        save segmented file(s)                     \n"
+    "  -ss, --save-segment        save segmented file(f)                     \n"
     "  -sa, --save-all            save profile, filetered and                \n"
     "                               segmented files                          \n"
     "  -R,  --report              save results in the \"report\" file        \n"
@@ -307,26 +310,6 @@ inline string Param::print_filter_scale () const {
     case FilterScale::M:  return "Medium";  break;
     case FilterScale::L:  return "Large";   break;
     default:              return "Large";
-  }
-}
-
-inline static string conv_to_string (WType val) {
-  switch (val) {
-    case WType::RECTANGULAR:  return "0|rectangular";  break;
-    case WType::HAMMING:      return "1|hamming";      break;
-    case WType::HANN:         return "2|hann";         break;
-    case WType::BLACKMAN:     return "3|blackman";     break;
-    case WType::TRIANGULAR:   return "4|triangular";   break;
-    case WType::WELCH:        return "5|welch";        break;
-    case WType::SINE:         return "6|sine";         break;
-    case WType::NUTTALL:      return "7|nuttall";      break;
-  }
-}
-inline static string conv_to_string (FilterScale val) {
-  switch (val) {
-    case FilterScale::S:      return "S|small";        break;
-    case FilterScale::M:      return "M|medium";       break;
-    case FilterScale::L:      return "L|large";        break;
   }
 }
 

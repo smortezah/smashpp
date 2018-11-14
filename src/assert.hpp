@@ -15,13 +15,6 @@ static void assert_empty_elem (const Container& cont, string&& msg) { //Empty el
     if (e.size() == 0)
       error(std::move(msg));
 }
-//todo remove
-// template <typename Container>
-// static void assert_empty_elem (const Container& cont, const string& msg) {
-//   for (const auto &e : cont)
-//     if (e.size() == 0)
-//       error(std::move(msg));
-// }
 
 
 template <typename Value>
@@ -36,11 +29,11 @@ class ValRange {
   void assert (Value&);
 
  private:
-  Value         min, max, def;
-  string        label, criterion, initMode;
-  Problem       problem;
-  bool          inRange;
-  string        message;
+  Value   min, max, def;
+  string  label, criterion, initMode;
+  Problem problem;
+  bool    inRange;
+  string  message;
 };
 
 template <typename Value>
@@ -102,14 +95,14 @@ class ValSet {
  public:
   ValSet () = default;
   ValSet (vector<Value> set_, Value d_, string&& l_, string&& m_, 
-          Problem p_, bool inRng_)
+          Problem p_, Value c_, bool i)
           : set(set_), def(d_), label(move(l_)), initMode(move(m_)),
-            problem(p_), inRange(inRng_) {}
+            problem(p_), cmd(c_), inRange(i) {}
   void assert (Value&);
 
  private:
-  Value         def;
   vector<Value> set;
+  Value         cmd, def;
   string        label, initMode;
   Problem       problem;
   bool          inRange;
@@ -118,10 +111,11 @@ class ValSet {
 
 template <typename Value>
 inline void ValSet<Value>::assert (Value& val) {
-  if (inRange)  return;
+  if (inRange) { val=cmd;  return; }
 
+  val = def;
   const auto append_msg = [&] (string&& msg) {
-    message = "\""+label+"\" not in valid range " + msg + "\n";
+    message = "\""+label+"\" not in valid set " + msg + "\n";
     if (initMode == "default") 
       message += "Default value \""+conv_to_string(def)+"\" been set.";
     else if (initMode == "auto")
@@ -129,25 +123,24 @@ inline void ValSet<Value>::assert (Value& val) {
     message += "\n";
   };
 
-  if (!has(set.begin(), set.end(), val)) {
-    inRange = false;
-
-    string msg = "{";
-    for (auto it=set.begin(); it!=set.begin()+3; ++it)  
+  string msg = "{";
+  const auto setSize = set.size();
+  if (setSize <= 2) {
+    for (auto it=set.begin(); it!=set.end()-1; ++it)  
+      msg += conv_to_string(*it)+", ";
+  }
+  else {
+    for (auto it=set.begin(); it!=set.begin()+2; ++it)  
       msg += conv_to_string(*it)+", ";
     msg += "\n";
-    for (auto it=set.begin()+3; it!=set.end()-1; ++it)
+    for (auto it=set.begin()+2; it!=set.end()-1; ++it)
       msg += conv_to_string(*it)+", ";
-    msg += conv_to_string(set.back())+"}. ";
+  }
+  msg += conv_to_string(set.back())+"}. ";
 
-    append_msg(std::move(msg));
-  }
-  
-  if (!inRange) {
-    val = def;
-    if      (problem==Problem::WARNING)  warning(std::move(message));
-    else if (problem==Problem::ERROR)    error(std::move(message));
-  }
+  append_msg(std::move(msg));
+  if      (problem==Problem::WARNING)  warning(std::move(message));
+  else if (problem==Problem::ERROR)    error(std::move(message));
 }
 }
 
