@@ -127,10 +127,9 @@ inline void Param::parse (int argc, char**& argv) {
     }
     else if ((*i=="-wt"|| *i=="--wtype") && i+1!=vArgs.end()) {
       wtype = win_type(*++i);
-      // auto range = make_unique<ValRange<int,WType>>(SET_WTYPE, DEF_WT, 
-      //   "Window type", "default", Problem::WARNING);
-      // range->assert(wtype);
-      // def_if_not_in_range("Window type", wtype, MIN_WT, MAX_WT, DEF_WT);
+      auto set = make_unique<ValSet<WType>>(SET_WTYPE, DEF_WT, 
+        "Window type", "default", Problem::WARNING);
+      set->assert(wtype);
     }
     else if ((*i=="-d" || *i=="--step") && i+1!=vArgs.end()) {
       sampleStep = stoull(*++i);
@@ -139,8 +138,9 @@ inline void Param::parse (int argc, char**& argv) {
     else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end()) {
       manThresh = true;
       thresh = stof(*++i);
-      // warn_if_not_in_range("Threshold", thresh, MIN_THRESH, MAX_THRESH, DEF_THRESH);
-      // warn_if_equal("Threshold", thresh, 0, DEF_THRESH);
+      auto range = make_unique<ValRange<float>>(MIN_THRESH, MAX_THRESH, 
+        DEF_THRESH, "Threshold", "(]", "default", Problem::WARNING);
+      range->assert(thresh);
     }
     else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=vArgs.end()) {
       manFilterScale = true;

@@ -43,7 +43,9 @@ enum class FileType    {SEQ, FASTA, FASTQ};
 enum class FilterScale {S, M, L};
 enum class Problem     {WARNING, ERROR};
 
-const vector<WType> SET_WTYPE {WType::RECTANGULAR, WType::HAMMING};
+const vector<WType> SET_WTYPE 
+{WType::RECTANGULAR, WType::HAMMING, WType::HANN, WType::BLACKMAN,
+ WType::TRIANGULAR, WType::WELCH, WType::SINE, WType::NUTTALL};
 
 // Metaprogram
 // Power a^n

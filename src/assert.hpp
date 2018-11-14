@@ -51,6 +51,7 @@ inline void ValRange<Value>::assert (Value& val) {
       message += "Default value \""+to_string(def)+"\" been set.";
     else if (initMode == "auto")
       message += "Will be automatically modified.";
+    message += "\n";
   };
   
   if (criterion=="[]" && (val>max || val<min)) {
@@ -99,36 +100,34 @@ class ValSet {
 
 template <typename Value>
 inline void ValSet<Value>::assert (Value& val) {
-  // const auto append_msg = [&] (string&& msg) {
-  //   message = "\""+label+"\" not in valid range " + msg;
-  //   if (initMode == "default") 
-  //     message += "Default value \""+to_string(def)+"\" been set.";
-  //   else if (initMode == "auto")
-  //     message += "Will be automatically modified.";
-  // };
+  const auto append_msg = [&] (string&& msg) {
+    message = "\""+label+"\" not in valid range " + msg + "\n";
+    if (initMode == "default") 
+      message += "Default value \""+win_type_equiv(def)+"\" been set.";
+    else if (initMode == "auto")
+      message += "Will be automatically modified.";
+    message += "\n";
+  };
   
-  // if (criterion=="[]" && (val>max || val<min)) {
-  //   inRange = false;
-  //   append_msg(std::move("["+to_string(min)+";"+to_string(max)+"]. "));
-  // }
-  // else if (criterion=="[)" && (val>=max || val<min)) {
-  //   inRange = false;
-  //   append_msg(std::move("["+to_string(min)+";"+to_string(max)+"). "));
-  // }
-  // else if (criterion=="(]" && (val>max || val<=min)) {
-  //   inRange = false;
-  //   append_msg(std::move("("+to_string(min)+";"+to_string(max)+"]. "));
-  // }
-  // else if (criterion=="()" && (val>=max || val<=min)) {
-  //   inRange = false;
-  //   append_msg(std::move("("+to_string(min)+";"+to_string(max)+"). "));
-  // }
+  if (!has(set.begin(), set.end(), val)) {
+    inRange = false;
+
+    string msg = "{";
+    for (auto it=set.begin(); it!=set.begin()+3; ++it)  
+      msg += win_type_equiv(*it)+", ";
+    msg += "\n";
+    for (auto it=set.begin()+3; it!=set.end()-1; ++it)
+      msg += win_type_equiv(*it)+", ";
+    msg += win_type_equiv(set.back())+"}. ";
+
+    append_msg(std::move(msg));
+  }
   
-  // if (!inRange) {
-  //   val = def;
-  //   if      (problem==Problem::WARNING)  warning(std::move(message));
-  //   else if (problem==Problem::ERROR)    error(std::move(message));
-  // }
+  if (!inRange) {
+    val = def;
+    if      (problem==Problem::WARNING)  warning(std::move(message));
+    else if (problem==Problem::ERROR)    error(std::move(message));
+  }
 }
 }
 
