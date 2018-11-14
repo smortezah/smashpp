@@ -27,24 +27,52 @@ template <typename Value>
 class ValRange {
  public:
   ValRange () = default;
-  void assert ();
+  ValRange (Value min_, Value max_, Value d_, string&& l_, string&& c_,
+            string&& m_, Problem p_) 
+            : min(min_), max(max_), def(d_), label(move(l_)),
+              criterion(move(c_)), initMode(move(m_)), problem(p_),
+              inRange(true) {}
+  void assert (Value& value);
 
  private:
-  Value   val, min, max, def, valToComp;
+  Value   min, max, def;
   string  label, criterion, initMode;
   Problem problem;
+  bool    inRange;
+  string  message;
 };
 
 template <typename Value>
-inline void ValRange<Value>::assert () {
-  if (problem == Problem::WARNING) {
-    if (criterion == "[]") {
-      if (val <= min || val >= max) {
-        const auto msg = "\""+variable+"\" not in valid range "
-            "["+to_string(min)+";"+to_string(max)+"]. Default value "
-            "\""+to_string(def)+"\" been set.";
-      }
-    }
+inline void ValRange<Value>::assert (Value& val) {
+  const auto append_msg = [&] (string&& msg) {
+    message = "\""+label+"\" not in valid range " + msg;
+    if (initMode == "default") 
+      message += "Default value \""+to_string(def)+"\" been set.";
+    else if (initMode == "auto")
+      message += "Will be automatically modified.";
+  };
+  
+  if (criterion=="[]" && (val>max || val<min)) {
+    inRange = false;
+    append_msg(move("["+to_string(min)+";"+to_string(max)+"]. "));
+  }
+  else if (criterion=="[)" && (val>=max || val<min)) {
+    inRange = false;
+    append_msg(move("["+to_string(min)+";"+to_string(max)+"). "));
+  }
+  else if (criterion=="(]" && (val>max || val<=min)) {
+    inRange = false;
+    append_msg(move("("+to_string(min)+";"+to_string(max)+"]. "));
+  }
+  else if (criterion=="()" && (val>=max || val<=min)) {
+    inRange = false;
+    append_msg(move("("+to_string(min)+";"+to_string(max)+"). "));
+  }
+  
+  if (!inRange) {
+    val = def;
+    if      (problem==Problem::WARNING)  warning(move(message));
+    else if (problem==Problem::ERROR)    error(move(message));
   }
 }
 }

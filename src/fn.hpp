@@ -348,26 +348,26 @@ inline static void def_if_not_in_range (string&& variable, string& val,
   }
 }
 
-template <typename Val, typename MinVal, typename MaxVal, typename DefaultVal>
-inline static void warn_if_not_in_range
-(string&& variable, Val& val, MinVal min, MaxVal max, DefaultVal def) {
-  if (val < min || val > max) {
-    val = def;
-    warning("\""+variable+"\" not in valid range "
-            "["+to_string(min)+";"+to_string(max)+"]. Will be automatically "
-            "corrected.");
-  }
-}
+// template <typename Val, typename MinVal, typename MaxVal, typename DefaultVal>
+// inline static void warn_if_not_in_range
+// (string&& variable, Val& val, MinVal min, MaxVal max, DefaultVal def) {
+//   if (val < min || val > max) {
+//     val = def;
+//     warning("\""+variable+"\" not in valid range "
+//             "["+to_string(min)+";"+to_string(max)+"]. Will be automatically "
+//             "corrected.");
+//   }
+// }
 
-template <typename Val, typename ToVal, typename DefaultVal>
-inline static void warn_if_equal
-(string&& variable, Val& val, ToVal val2, DefaultVal def) {
-  if (val == val2) {
-    val = def;
-    warning("\""+variable+"\" cannot be "+to_string(val2)+". Will be "
-            "automatically corrected.");
-  }
-}
+// template <typename Val, typename ToVal, typename DefaultVal>
+// inline static void warn_if_equal
+// (string&& variable, Val& val, ToVal val2, DefaultVal def) {
+//   if (val == val2) {
+//     val = def;
+//     warning("\""+variable+"\" cannot be "+to_string(val2)+". Will be "
+//             "automatically corrected.");
+//   }
+// }
 }
 
 #endif //PROJECT_FN_HPP
