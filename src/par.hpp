@@ -22,7 +22,7 @@ class Param {   // Parameters
   u8           nthr;
   string       rmodelsPars, tmodelsPars;
   u32          wsize;
-  string       wtype;
+  WType        wtype;
   u64          sampleStep;
   float        thresh;
   bool         manThresh, manFilterScale;
@@ -34,6 +34,7 @@ class Param {   // Parameters
   bool        compress, filter, segment;
 
   // Define Param::Param(){} in *.hpp => compile error
+  //todo clean
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
              wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
              manThresh(false), manFilterScale(false), 
@@ -44,6 +45,7 @@ class Param {   // Parameters
              showInfo(true), compress(false), filter(false), segment(false) {}
 
   void parse (int, char**&);
+  WType win_type (const string&) const;
   string print_win_type () const;
 
  private:
@@ -97,13 +99,15 @@ inline void Param::parse (int argc, char**& argv) {
     }
     else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
       level = static_cast<u8>(stoi(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_LVL, MAX_LVL, DEF_LVL, "Level",
-        "[]", "default", Problem::WARNING);
+      auto range = make_unique<ValRange<u8>>(MIN_LVL, MAX_LVL, DEF_LVL, 
+        "Level", "[]", "default", Problem::WARNING);
       range->assert(level);
     }
     else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
       nthr = static_cast<u8>(stoi(*++i));
-      def_if_not_in_range("Number of threads", nthr, MIN_THR,MAX_THR,DEF_THR);
+      auto range = make_unique<ValRange<u8>>(MIN_THR, MAX_THR, DEF_THR, 
+        "Number of threads", "[]", "default", Problem::WARNING);
+      range->assert(nthr);
     }
     else if ((*i=="-rm" || *i=="--ref-model") && i+1!=vArgs.end()) {
       rmodelsPars = *++i;
@@ -117,11 +121,16 @@ inline void Param::parse (int argc, char**& argv) {
     }
     else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
       wsize = static_cast<u32>(stoi(*++i));
-      def_if_not_in_range("Window size", wsize, MIN_WS, MAX_WS, DEF_WS);
+      auto range = make_unique<ValRange<u32>>(MIN_WS, MAX_WS, DEF_WS, 
+        "Window size", "[]", "default", Problem::WARNING);
+      range->assert(wsize);
     }
     else if ((*i=="-wt"|| *i=="--wtype") && i+1!=vArgs.end()) {
-      wtype = *++i;
-      def_if_not_in_range("Window type", wtype, MIN_WT, MAX_WT, DEF_WT);
+      wtype = win_type(*++i);
+      // auto range = make_unique<ValRange<int,WType>>(SET_WTYPE, DEF_WT, 
+      //   "Window type", "default", Problem::WARNING);
+      // range->assert(wtype);
+      // def_if_not_in_range("Window type", wtype, MIN_WT, MAX_WT, DEF_WT);
     }
     else if ((*i=="-d" || *i=="--step") && i+1!=vArgs.end()) {
       sampleStep = stoull(*++i);
@@ -247,17 +256,42 @@ inline void Param::help () const {
     "  NOT ANY WARRANTY, to the extent permitted by law.                "<<endl;
 }
 
-inline string Param::print_win_type () const {
-  if      (wtype=="0" || wtype=="rectangular")    return "Rectangular";
-  else if (wtype=="1" || wtype=="hamming")        return "Hamming";
-  else if (wtype=="2" || wtype=="hann")           return "Hann";
-  else if (wtype=="3" || wtype=="blackman")       return "Blackman";
-  else if (wtype=="4" || wtype=="triangular")     return "Triangular";
-  else if (wtype=="5" || wtype=="welch")          return "Welch";
-  else if (wtype=="6" || wtype=="sine")           return "Sine";
-  else if (wtype=="7" || wtype=="nuttall")        return "Nuttall";
+inline WType Param::win_type (const string& t) const {
+  if      (t=="0" || t=="rectangular")   return WType::RECTANGULAR;
+  else if (t=="1" || t=="hamming")       return WType::HAMMING;
+  else if (t=="2" || t=="hann")          return WType::HANN;
+  else if (t=="3" || t=="blackman")      return WType::BLACKMAN;
+  else if (t=="4" || t=="triangular")    return WType::TRIANGULAR;
+  else if (t=="5" || t=="welch")         return WType::WELCH;
+  else if (t=="6" || t=="sine")          return WType::SINE;
+  else if (t=="7" || t=="nuttall")       return WType::NUTTALL;
+}
 
-  return "Rectangular";
+inline string Param::print_win_type () const {
+  switch (wtype) {
+    case WType::RECTANGULAR:  return "Rectangular";  break;
+    case WType::HAMMING:      return "Hamming";      break;
+    case WType::HANN:         return "Hann";         break;
+    case WType::BLACKMAN:     return "Blackman";     break;
+    case WType::TRIANGULAR:   return "Triangular";   break;
+    case WType::WELCH:        return "Welch";        break;
+    case WType::SINE:         return "Sine";         break;
+    case WType::NUTTALL:      return "Nuttall";      break;
+    default:                  return "Rectangular";
+  }
+}
+
+inline static string win_type_equiv (WType wtype) {
+  switch (wtype) {
+    case WType::RECTANGULAR:  return "0|rectangular";  break;
+    case WType::HAMMING:      return "1|hamming";      break;
+    case WType::HANN:         return "2|hann";         break;
+    case WType::BLACKMAN:     return "3|blackman";     break;
+    case WType::TRIANGULAR:   return "4|triangular";   break;
+    case WType::WELCH:        return "5|welch";        break;
+    case WType::SINE:         return "6|sine";         break;
+    case WType::NUTTALL:      return "7|nuttall";      break;
+  }
 }
 
 inline void VizParam::parse (int argc, char**& argv) {
