@@ -88,10 +88,6 @@ inline static void split (InIter first, InIter last, char delim, Vec& vOut) {
 }
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
-//todo remove
-// inline static void error (const string& msg) {
-//   throw std::runtime_error ("Error: " + msg + "\n");
-// }
 inline static void error (string&& msg) {
   throw std::runtime_error (bold_red("Error: ") + msg + "\n");
 }
@@ -100,12 +96,21 @@ inline static void err (string&& msg) {
   cerr << bold_red("Error: ") << msg << '\n';
 }
 
-//todo remove
-// inline static void warning (const string& msg) {
-//   cerr << bold("Warning: ") << msg << '\n';
-// }
 inline static void warning (string&& msg) {
-  cerr << bold("Warning: ") << msg << '\n';
+  string message = bold("Warning: ");
+  constexpr auto initSize = 9;  // Size of "Warning: "
+  if (msg.size() <= TEXTWIDTH-initSize) {
+    message += msg;
+  }
+  else {
+    message += msg.substr(0, TEXTWIDTH-initSize) + "\n";
+    u8 i = 0;
+    for (u8 j=0; j!=(msg.size()-(TEXTWIDTH-initSize))/TEXTWIDTH; ++j, ++i)
+      message += msg.substr(TEXTWIDTH-initSize+i*TEXTWIDTH, TEXTWIDTH) + "\n";
+    message += msg.substr(TEXTWIDTH-initSize+i*TEXTWIDTH);
+  }
+  
+  cerr << message << '\n';
 }
 
 template <typename Iter, typename Element>
