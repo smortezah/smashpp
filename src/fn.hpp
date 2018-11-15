@@ -87,30 +87,29 @@ inline static void split (InIter first, InIter last, char delim, Vec& vOut) {
   }
 }
 
+inline static void wrap_text (string& text) {
+  for (u8 n=0; n<text.size()/TEXTWIDTH; ++n)
+    text.insert(text.begin()+(n+1)*TEXTWIDTH+n, '\n');
+}
+
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
 inline static void error (string&& msg) {
-  throw std::runtime_error (bold_red("Error: ") + msg + "\n");
+  string message = "Error: " + std::move(msg);
+  wrap_text(message);
+  throw std::runtime_error (bold_red(message.substr(0,6)) + 
+                            message.substr(6) + "\n");
 }
 
 inline static void err (string&& msg) {
-  cerr << bold_red("Error: ") << msg << '\n';
+  string message = "Error: " + std::move(msg);
+  wrap_text(message);
+  cerr << bold_red(message.substr(0,6)) << message.substr(6) << '\n';
 }
 
 inline static void warning (string&& msg) {
-  string message = bold("Warning: ");
-  constexpr auto initSize = 9;  // Size of "Warning: "
-  if (msg.size() <= TEXTWIDTH-initSize) {
-    message += msg;
-  }
-  else {
-    message += msg.substr(0, TEXTWIDTH-initSize) + "\n";
-    u8 i = 0;
-    for (u8 j=0; j!=(msg.size()-(TEXTWIDTH-initSize))/TEXTWIDTH; ++j, ++i)
-      message += msg.substr(TEXTWIDTH-initSize+i*TEXTWIDTH, TEXTWIDTH) + "\n";
-    message += msg.substr(TEXTWIDTH-initSize+i*TEXTWIDTH);
-  }
-  
-  cerr << message << '\n';
+  string message = "Warning: " + std::move(msg);
+  wrap_text(message);
+  cerr << bold(message.substr(0,8)) << message.substr(8) << '\n';
 }
 
 template <typename Iter, typename Element>
