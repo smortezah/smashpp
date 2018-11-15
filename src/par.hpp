@@ -292,9 +292,7 @@ inline void Param::help () const {
                                                                   "redistri- \n"
     "  bute copies of this Free software under the terms of the GNU (Gen-    \n"
     "  eral Public License) v3 <http://www.gnu.org/licenses/gpl.html>.       \n"
-    "  There is NOT ANY WARRANTY, to the extent permitted by law."       
-    "" //todo
-    <<endl;
+    "  There is NOT ANY WARRANTY, to the extent permitted by law."       <<endl;
 }
 
 inline WType Param::win_type (const string& t) const {

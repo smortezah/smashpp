@@ -1,12 +1,9 @@
-//                                               ,,                           
-//   .M"""bgd                                  `7MM                           
-//  ,MI    "Y                                    MM                           
-//  `MMb.    `7MMpMMMb.pMMMb.   ,6"Yb.  ,pP"Ybd  MMpMMMb.     M         M     
-//    `YMMNq.  MM    MM    MM  8)   MM  8I   `"  MM    MM     M         M     
-//  .     `MM  MM    MM    MM   ,pm9MM  `YMMMa.  MM    MM mmmmMmmmm mmmmMmmmm 
-//  Mb     dM  MM    MM    MM  8M   MM  L.   I8  MM    MM     M         M     
-//  P"Ybmmd" .JMML  JMML  JMML.`Moo9^Yo.M9mmmP'.JMML  JMML.   M         M     
-
+//    ____                      _                 
+//   / ___| _ __ ___   __ _ ___| |__    _     _   
+//   \___ \| '_ ` _ \ / _` / __| '_ \ _| |_ _| |_ 
+//    ___) | | | | | | (_| \__ \ | | |_   _|_   _|
+//   |____/|_| |_| |_|\__,_|___/_| |_| |_|   |_|  
+//
 //                 ```.```                 
 //           `-/oydmmmmmmmmdho:`           
 //          `smNNMMMMMMMMMNNMMNd+`         
@@ -33,6 +30,7 @@
 // +++++++++++ohmmmmmmmNmddmmmdyysoooo+++++
 // +++++++++++oossyyyhmmhhhhhhyysoooo++++++
 // o+++++++++++++oosyhddyhhhyyssooo++++++++
+
 //
 // Created by morteza on 02-02-2018.
 //
