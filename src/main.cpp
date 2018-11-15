@@ -115,3 +115,84 @@ int main (int argc, char* argv[]) {
   
   return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// #include <iostream>
+// #include <fstream>
+// #include <cstdlib>
+// #include <string>
+// #include <cctype>
+// #include <functional>
+
+// using namespace std;
+
+// template <typename T, typename F>
+// void ltrimws(basic_string<T> &s, F f)
+// {
+//   if (s.empty())
+//     return;
+
+//   typename basic_string<T>::iterator p;
+//   for (p = s.end(); p != s.begin() && f(*--p);)
+//     ;
+
+//   if (!f(*p))
+//     p++;
+
+//   s.erase(p, s.end());
+// }
+
+// // Overloads to make cleaner calling for client code
+// void ltrimws(string &s)
+// {
+//   // rtrimws(s, isspace);
+//   ltrimws(s, static_cast<int (&)(int)>(isspace));
+// }
+
+
+// void textWrap(istream &in)
+// {
+// string out;
+// size_t width = 50;
+//   string tmp;
+//   char cur = '\0';
+//   char last = '\0';
+//   size_t i = 0;
+
+//   while (in.get(cur))
+//   {
+//     if (++i == width)
+//     {
+//       ltrimws(tmp); // ltrim as in Recipe
+//       out += "\n" + tmp; // 4.1
+//       i = tmp.length();
+//       tmp.clear();
+//     }
+//     else if (isspace(cur) && // This is the end of
+//              !isspace(last)) // a word
+//     {
+//       out += tmp;
+//       tmp.clear();
+//     }
+//     tmp += cur;
+//     last = cur;
+//   }
+
+//   cerr<<out;
+// }
+
+// int main(int argc, char **argv)
+// {
+//   ifstream in(argv[1]);
+//   textWrap(in);
+// }
