@@ -88,8 +88,35 @@ inline static void split (InIter first, InIter last, char delim, Vec& vOut) {
 }
 
 inline static void wrap_text (string& text) {
-  for (u8 n=0; n<text.size()/TEXTWIDTH; ++n)
-    text.insert(text.begin() + (n+1)*TEXTWIDTH + n, '\n');
+  constexpr auto width = TEXTWIDTH;
+  string out, word;
+  char curr, last;
+  u64 pos = 0;
+
+  for (auto c : text) {
+    if (++pos == width) {
+      if (word.empty())  
+        return;
+
+      auto p = word.end();
+      while (p!=word.begin() && *--p!=' ');
+      if (*p == ' ') 
+        word = string(++p, word.end());
+
+      out += "\n" + word;
+      pos  = word.length();
+      word.clear();
+    }
+    else if (c==' ' && last!=' ') {
+      out += word;
+      word.clear();
+    }
+    word += c;
+    last  = c;
+  }
+  out += word;
+  
+  text = move(out);
 }
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
