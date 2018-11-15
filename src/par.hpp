@@ -210,24 +210,26 @@ inline void Param::parse (int argc, char**& argv) {
 
 inline void Param::help () const {
   cerr <<
-    "NAME                                                                    \n"
+    // "NAME                                                                    \n"
+    bold("NAME")                                                          <<"\n"
     "  Smash++ v"<<VERSION<< " - rearrangements finder                       \n"
     "                                                                        \n"
-    "AUTHOR                                                                  \n"
+    +bold("AUTHOR")                                                       <<"\n"
     "  Morteza Hosseini    seyedmorteza@ua.pt                                \n"
     "                                                                        \n"
-    "SYNOPSIS                                                                \n"
-    "  ./smashpp [OPTION]...  -r [REF_FILE] -t [TAR_FILE]                    \n"
+    +bold("SYNOPSIS")                                                     <<"\n"
+    "  ./smashpp ["+underline("OPTIONS")+"]...  "
+             "-r ["+underline("REF-FILE")+"] -t ["+underline("TAR-FILE")+"]  \n"
     "                                                                        \n"
-    "SAMPLE                                                                  \n"
+    +bold("SAMPLE")                                                       <<"\n"
 //    "  ./smashpp -t TAR -r REF                                             \n"
     "                                                                        \n"
-    "DESCRIPTION                                                             \n"
-    "  Mandatory arguments:                                                  \n"
+    +bold("DESCRIPTION")                                                  <<"\n"
+    +italic("  Mandatory arguments")+":"                                  <<"\n"
     "  -r,  --ref [FILE]          reference file (Seq/Fasta/Fastq)           \n"
     "  -t,  --tar [FILE]          target file    (Seq/Fasta/Fastq)           \n"
     "                                                                        \n"
-    "  Options:                                                              \n"
+    +italic("  Options")+":"                                              <<"\n"
     "  -v,  --verbose             more information                           \n"
     "  -l,  --level [INT]         levels of compression [0;4]                \n"
     "  -n,  --nthr  [INT]         number of threads                          \n"
@@ -265,7 +267,7 @@ inline void Param::help () const {
     "                               \U0001D6FE:  forgetting factor [0;1)     \n"
     "                               \U0001D70F:  threshold (# substitutions) \n"
     "                                                                        \n"
-    "COPYRIGHT                                                               \n"
+    +bold("COPYRIGHT")                                                    <<"\n"
     "  Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro.         \n"
     "  You may redistribute copies of this Free software                     \n"
     "  under the terms of the GNU - General Public License                   \n"
@@ -332,27 +334,39 @@ inline void VizParam::parse (int argc, char**& argv) {
       image = *++i;
     else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
       link = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range("Link", link, MIN_LINK, MAX_LINK, DEF_LINK);
+      auto range = make_unique<ValRange<u32>>(MIN_LINK, MAX_LINK, DEF_LINK, 
+        "Link", "[]", "default", Problem::WARNING);
+      range->assert(link);
     }
     else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
       width = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range("Width", width, MIN_WIDT, MAX_WIDT, DEF_WIDT);
+      auto range = make_unique<ValRange<u32>>(MIN_WIDT, MAX_WIDT, DEF_WIDT,
+        "Width", "[]", "default", Problem::WARNING);
+      range->assert(width);
     }
     else if ((*i=="-s" || *i=="--space") && i+1!=vArgs.end()) {
       space = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range("Space", space, MIN_SPAC, MAX_SPAC, DEF_SPAC);
+      auto range = make_unique<ValRange<u32>>(MIN_SPAC, MAX_SPAC, DEF_SPAC,
+        "Space", "[]", "default", Problem::WARNING);
+      range->assert(space);
     }
     else if ((*i=="-m" || *i=="--mult")  && i+1!=vArgs.end()) {
       mult = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range("Mult", mult, MIN_MULT, MAX_MULT, DEF_MULT);
+      auto range = make_unique<ValRange<u32>>(MIN_MULT, MAX_MULT, DEF_MULT,
+        "Mult", "[]", "default", Problem::WARNING);
+      range->assert(mult);
     }
     else if ((*i=="-b" || *i=="--begin") && i+1!=vArgs.end()) {
       start = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range("Begin", start, MIN_BEGI, MAX_BEGI, DEF_BEGI);
+      auto range = make_unique<ValRange<u32>>(MIN_BEGI, MAX_BEGI, DEF_BEGI,
+        "Begin", "[]", "default", Problem::WARNING);
+      range->assert(start);
     }
     else if ((*i=="-c" || *i=="--min")   && i+1!=vArgs.end()) {
       min = static_cast<u32>(stoul(*++i));
-      def_if_not_in_range("Min", min, MIN_MINP, MAX_MINP, DEF_MINP);
+      auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, DEF_MINP,
+        "Min", "[]", "default", Problem::WARNING);
+      range->assert(min);
     }
   }
   posFile = vArgs.back();
