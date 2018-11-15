@@ -377,22 +377,22 @@ inline static void keep_in_range (Val& val, MinVal min, MaxVal max) {
 
 inline static string conv_to_string (WType val) {
   switch (val) {
-    case WType::RECTANGULAR:  return "0|rectangular";  break;
-    case WType::HAMMING:      return "1|hamming";      break;
-    case WType::HANN:         return "2|hann";         break;
-    case WType::BLACKMAN:     return "3|blackman";     break;
-    case WType::TRIANGULAR:   return "4|triangular";   break;
-    case WType::WELCH:        return "5|welch";        break;
-    case WType::SINE:         return "6|sine";         break;
-    case WType::NUTTALL:      return "7|nuttall";      break;
+  case WType::RECTANGULAR:  return "0|rectangular";  break;
+  case WType::HAMMING:      return "1|hamming";      break;
+  case WType::HANN:         return "2|hann";         break;
+  case WType::BLACKMAN:     return "3|blackman";     break;
+  case WType::TRIANGULAR:   return "4|triangular";   break;
+  case WType::WELCH:        return "5|welch";        break;
+  case WType::SINE:         return "6|sine";         break;
+  case WType::NUTTALL:      return "7|nuttall";      break;
   }
 }
 
 inline static string conv_to_string (FilterScale val) {
   switch (val) {
-    case FilterScale::S:      return "S|small";        break;
-    case FilterScale::M:      return "M|medium";       break;
-    case FilterScale::L:      return "L|large";        break;
+  case FilterScale::S:      return "S|small";        break;
+  case FilterScale::M:      return "M|medium";       break;
+  case FilterScale::L:      return "L|large";        break;
   }
 }
 }

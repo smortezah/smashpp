@@ -25,7 +25,7 @@ class Filter {
   vector<float> window;
 
   void config              (const Param&);
-  void config_wtype        (const string&);
+  void config_wsize        (const Param&);
   void show_info           (const Param&) const;
   void make_window         ();
   void hamming             ();

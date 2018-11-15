@@ -13,10 +13,26 @@ Filter::Filter (const Param& p) {
 
 inline void Filter::config (const Param& p) {
   wtype = p.wtype;
-  wsize = is_odd(p.wsize/p.sampleStep) ? p.wsize/p.sampleStep 
-                                       : p.wsize/p.sampleStep + 1;
-  window.resize(wsize);
+  config_wsize(p);
   if ((p.filter || p.segment) && p.verbose)  show_info(p);
+}
+
+inline void Filter::config_wsize (const Param& p) {
+  if (p.manFilterScale) {
+    const auto biggest = min(file_size(p.tar), file_size(p.ref));
+    const auto lg      = log10(biggest/p.sampleStep);
+
+    switch (p.filterScale) {
+    case FilterScale::S:  wsize=pow(2, 2*lg)   + 1;  break;
+    case FilterScale::M:  wsize=pow(2, 2*lg+1) + 1;  break;
+    case FilterScale::L:  wsize=pow(2, 2*lg+2) + 1;  break;
+    }
+  }
+  else {
+    wsize = is_odd(p.wsize/p.sampleStep) ? p.wsize/p.sampleStep 
+                                         : p.wsize/p.sampleStep + 1;
+  }
+  window.resize(wsize);
 }
 
 inline void Filter::show_info (const Param& p) const {
@@ -57,10 +73,12 @@ inline void Filter::show_info (const Param& p) const {
   label("Filter & Segment");          cerr<<'\n';
   midrule();
   label("Window function");           filter_vals('f');
-  if (p.manFilterScale && !p.manWSize) {
+  if (p.manFilterScale) {
   label("Filter scale");              filter_vals('s');
   }
+  if (!p.manFilterScale) {
   label("Window size");               filter_vals('w');
+  }
   if (p.manThresh) {
   label("Threshold");                 filter_vals('t');
   }
