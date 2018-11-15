@@ -189,6 +189,7 @@ inline void Param::parse (int argc, char**& argv) {
     tmodelsPars = REFFREE_LEVEL[level];
 
   manFilterScale = !manThresh;
+  manFilterScale = !manWSize;
   
   keep_in_range(wsize, 0ull, min(file_size(ref),file_size(tar)));
 
@@ -288,15 +289,15 @@ inline WType Param::win_type (const string& t) const {
 
 inline string Param::print_win_type () const {
   switch (wtype) {
-    case WType::RECTANGULAR:  return "Rectangular";  break;
-    case WType::HAMMING:      return "Hamming";      break;
-    case WType::HANN:         return "Hann";         break;
-    case WType::BLACKMAN:     return "Blackman";     break;
-    case WType::TRIANGULAR:   return "Triangular";   break;
-    case WType::WELCH:        return "Welch";        break;
-    case WType::SINE:         return "Sine";         break;
-    case WType::NUTTALL:      return "Nuttall";      break;
-    default:                  return "Rectangular";
+  case WType::RECTANGULAR:  return "Rectangular";  break;
+  case WType::HAMMING:      return "Hamming";      break;
+  case WType::HANN:         return "Hann";         break;
+  case WType::BLACKMAN:     return "Blackman";     break;
+  case WType::TRIANGULAR:   return "Triangular";   break;
+  case WType::WELCH:        return "Welch";        break;
+  case WType::SINE:         return "Sine";         break;
+  case WType::NUTTALL:      return "Nuttall";      break;
+  default:                  return "Rectangular";
   }
 }
 
@@ -308,10 +309,10 @@ inline FilterScale Param::filter_scale (const string& s) const {
 
 inline string Param::print_filter_scale () const {
   switch (filterScale) {
-    case FilterScale::S:  return "Small";   break;
-    case FilterScale::M:  return "Medium";  break;
-    case FilterScale::L:  return "Large";   break;
-    default:              return "Large";
+  case FilterScale::S:  return "Small";   break;
+  case FilterScale::M:  return "Medium";  break;
+  case FilterScale::L:  return "Large";   break;
+  default:              return "Large";
   }
 }
 
