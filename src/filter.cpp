@@ -52,7 +52,7 @@ inline void Filter::show_info (const Param& p) const {
     switch (c) {
     case 'f':  cerr<<p.print_win_type();      break;
     case 's':  cerr<<p.print_filter_scale();  break;
-    case 'w':  cerr<<p.wsize;                 break;
+    case 'w':  cerr<<wsize;                   break;
     case 't':  cerr<<p.thresh;                break;
     default:                                  break;
     }
@@ -73,12 +73,10 @@ inline void Filter::show_info (const Param& p) const {
   label("Filter & Segment");          cerr<<'\n';
   midrule();
   label("Window function");           filter_vals('f');
-  if (p.manFilterScale) {
+  if (p.manFilterScale || !p.manWSize) {
   label("Filter scale");              filter_vals('s');
   }
-  if (!p.manFilterScale) {
   label("Window size");               filter_vals('w');
-  }
   if (p.manThresh) {
   label("Threshold");                 filter_vals('t');
   }
