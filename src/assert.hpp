@@ -115,7 +115,7 @@ inline void ValSet<Value>::assert (Value& val) {
 
   val = def;
   const auto append_msg = [&] (string&& msg) {
-    message = "\""+label+"\" not in valid set " + msg + "\n";
+    message = "\""+label+"\" not in valid set " + msg;
     if (initMode == "default") 
       message += "Default value \""+conv_to_string(def)+"\" been set.";
     else if (initMode == "auto")
@@ -124,18 +124,8 @@ inline void ValSet<Value>::assert (Value& val) {
   };
 
   string msg = "{";
-  const auto setSize = set.size();
-  if (setSize <= 2) {
-    for (auto it=set.begin(); it!=set.end()-1; ++it)  
-      msg += conv_to_string(*it)+", ";
-  }
-  else {
-    for (auto it=set.begin(); it!=set.begin()+2; ++it)  
-      msg += conv_to_string(*it)+", ";
-    msg += "\n";
-    for (auto it=set.begin()+2; it!=set.end()-1; ++it)
-      msg += conv_to_string(*it)+", ";
-  }
+  for (auto it=set.begin(); it!=set.end()-1; ++it)
+    msg += conv_to_string(*it)+", ";
   msg += conv_to_string(set.back())+"}. ";
 
   append_msg(std::move(msg));
