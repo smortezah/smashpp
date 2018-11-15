@@ -89,7 +89,7 @@ inline static void split (InIter first, InIter last, char delim, Vec& vOut) {
 
 inline static void wrap_text (string& text) {
   for (u8 n=0; n<text.size()/TEXTWIDTH; ++n)
-    text.insert(text.begin()+(n+1)*TEXTWIDTH+n, '\n');
+    text.insert(text.begin() + (n+1)*TEXTWIDTH + n, '\n');
 }
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
@@ -368,49 +368,6 @@ inline static string conv_to_string (FilterScale val) {
     case FilterScale::L:      return "L|large";        break;
   }
 }
-
-//todo remove
-template <typename Val, typename MinVal, typename MaxVal, typename DefaultVal>
-inline static void def_if_not_in_range
-(string&& variable, Val& val, MinVal min, MaxVal max, DefaultVal def) {
-  if (val < min || val > max) {
-    val = def;
-    warning("\""+variable+"\" not in valid range "
-            "["+to_string(min)+";"+to_string(max)+"]. Default value "
-            "\""+to_string(def)+"\" been set.");
-  }
-}
-
-inline static void def_if_not_in_range (string&& variable, string& val, 
-                                        const string& min, const string& max, 
-                                        const string& def) {
-  if (stoull(val) < stoull(min) || stoull(val) > stoull(max)) {
-    val = to_string(stoull(def));
-    warning("\""+variable+"\" not in valid range ["+min+";"+max+"]. Default "
-            "value \""+def+"\" been set.");
-  }
-}
-
-// template <typename Val, typename MinVal, typename MaxVal, typename DefaultVal>
-// inline static void warn_if_not_in_range
-// (string&& variable, Val& val, MinVal min, MaxVal max, DefaultVal def) {
-//   if (val < min || val > max) {
-//     val = def;
-//     warning("\""+variable+"\" not in valid range "
-//             "["+to_string(min)+";"+to_string(max)+"]. Will be automatically "
-//             "corrected.");
-//   }
-// }
-
-// template <typename Val, typename ToVal, typename DefaultVal>
-// inline static void warn_if_equal
-// (string&& variable, Val& val, ToVal val2, DefaultVal def) {
-//   if (val == val2) {
-//     val = def;
-//     warning("\""+variable+"\" cannot be "+to_string(val2)+". Will be "
-//             "automatically corrected.");
-//   }
-// }
 }
 
 #endif //PROJECT_FN_HPP
