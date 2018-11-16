@@ -33,49 +33,64 @@ To see the possible options for Smash++, type:
 ```
 which provides the following:
 ```
-SYNOPSIS                                                                
-  ./smashpp [OPTION]...  -r [REF_FILE] -t [TAR_FILE]                    
+NAME
+  Smash++ v18.11 - rearrangements finder                       
                                                                         
-SAMPLE                                                                  
+SYNOPSIS
+  ./smashpp [OPTIONS]... -r [REF-FILE] -t [TAR-FILE]
                                                                         
-DESCRIPTION                                                             
-  Mandatory arguments:                                                  
-  -r,  --ref [FILE]      reference file (Seq/Fasta/Fastq)               
-  -t,  --tar [FILE]      target file    (Seq/Fasta/Fastq)               
+SAMPLE
                                                                         
-  Options:                                                              
-  -v,  --verbose         more information                               
-  -l,  --level [NUM]     levels of compression [0;4]                    
-  -n,  --nthr  [NUM]     number of threads                              
-  -w,  --wsize [NUM]     window size                <-- filter          
-  -wt, --wtype [...]     type of windowing function <-- filter          
-                           [0 | rectangular] [1 | hamming]              
-                           [2 | hann]        [3 | blackman]             
-                           [4 | triangular]  [5 | welch]                
-                           [6 | sine]        [7 | nuttall]              
-  -d,  --step   [NUM]    sampling steps             <-- filter          
-  -th, --thresh [NUM]    threshold                  <-- filter          
-  -sb, --save_seq        save sequence (input is Fasta/Fastq)           
-  -sp, --save_profile    save profile                                   
-  -sf, --save_filter     save filtered file                             
-  -ss, --save_segment    save segmented file(s)                         
-  -sa, --save_all        save profile, filetered and                    
-                           segmented files                              
-  -R,  --report          save results in the "report" file            
-  -h,  --help            usage guide                                    
-  -m,  --model [𝜅,[𝑤,𝑑,]ir,𝛼,𝛾/𝜏,ir,𝛼,𝛾:...]
-                         parameters of models                           
-                           𝜅:  context size                    
-                           𝑤:  width of sketch in log2 form,   
-                                 e.g., set 10 for w=2^10=1024           
-                           𝑑:  depth of sketch                 
-                           ir: inverted repeat (0 | 1 | 2)              
-                               [0]: regular (not inverted)              
-                               [1]: inverted, solely                    
-                               [2]: both regular and inverted           
-                           𝛼:  estimator                       
-                           𝛾:  forgetting factor [0;1)         
-                           𝜏:  threshold (# substitutions)
+DESCRIPTION
+  Mandatory arguments:
+  -r,  --ref FILE            reference file (Seq/Fasta/Fastq)
+  -t,  --tar FILE            target file    (Seq/Fasta/Fastq)
+                                                                        
+  Options:
+  -v,  --verbose             more information
+  -l,  --level INT           level of compression [0;4]     COMPRESS  
+  
+  -n,  --nthr  INT           number of threads [1;8]  
+  -fs, --filter-scale S|M|L  scale of the filter {S|small,    FILTER
+                             M|medium, L|large}
+  -w,  --wsize INT           window size [1;100000]           FILTER
+  -wt, --wtype [0;7]         type of windowing function       FILTER
+                             {0|rectangular, 1|hamming, 2|hann,
+                             3|blackman, 4|triangular, 5|welch,
+                             6|sine, 7|nuttall}
+  -d,  --step   INT          sampling steps                   FILTER
+  -th, --thresh FLOAT        threshold [0.0;20.0]             FILTER
+  -sp, --save-profile        save profile                       SAVE
+  -sf, --save-filter         save filtered file                 SAVE
+  -sb, --save-seq            save sequence (input: Fasta/Fastq) SAVE
+  -ss, --save-segment        save segmented files               SAVE
+  -sa, --save-all            save profile, filetered and        SAVE
+                             segmented files
+  -R,  --report              save results in file "report"    REPORT
+  -h,  --help                usage guide
+  -rm, --ref-model [𝜅,[𝑤,𝑑,]ir,𝛼,𝛾/𝜏,ir,𝛼,𝛾:...]               MODEL
+  -tm, --tar-model [𝜅,[𝑤,𝑑,]ir,𝛼,𝛾/𝜏,ir,𝛼,𝛾:...]               MODEL
+                             parameters of models                       
+                       (INT) 𝜅:  context size        
+                       (INT) 𝑤:  width of sketch in log2 form, 
+                                 e.g., set 10 for w=2^10=1024
+                       (INT) 𝑑:  depth of sketch
+                             ir: inverted repeat (0|1|2)
+                                 0: regular (not inverted)
+                                 1: inverted, solely
+                                 2: both regular and inverted
+                     (FLOAT) 𝛼:  estimator
+                     (FLOAT) 𝛾:  forgetting factor [0.0;1.0) 
+                       (INT) 𝜏:  threshold (no. substitutions) 
+                                                                        
+AUTHOR
+  Morteza Hosseini           seyedmorteza@ua.pt
+                                                                        
+COPYRIGHT
+  Copyright (C) 2018, IEETA, University of Aveiro. You may redistri- 
+  bute copies of this Free software under the terms of the GNU (Gen-    
+  eral Public License) v3 <http://www.gnu.org/licenses/gpl.html>.       
+  There is NOT ANY WARRANTY, to the extent permitted by law.
 ```
 
 To see the options for Smash++ Visualizer, type:
