@@ -210,11 +210,12 @@ inline void Param::parse (int argc, char**& argv) {
 }
 
 inline void Param::help () const {
-  const auto b  = [] (string&& s) { return bold(std::move(s));      };
-  const auto it = [] (string&& s) { return italic(std::move(s));    };
-  const auto ul = [] (string&& s) { return underline(std::move(s)); };
-  const auto hl = [] (string&& s) { return highlight(std::move(s)); };
-  const auto br = [] (string&& s) { return bold_red(std::move(s));  };
+  const auto b   = [] (string&& s) { return bold(std::move(s));          };
+  const auto it  = [] (string&& s) { return italic(std::move(s));        };
+  const auto fit = [] (string&& s) { return faint(italic(std::move(s))); };
+  const auto ul  = [] (string&& s) { return underline(std::move(s));     };
+  const auto hl  = [] (string&& s) { return highlight(std::move(s));     };
+  const auto br  = [] (string&& s) { return bold_red(std::move(s));      };
 
   cerr <<
     b("NAME")+                                                              "\n"
@@ -238,46 +239,46 @@ inline void Param::help () const {
     "  "+b("-v")+",  "+b("--verbose")+"             more information"       "\n"
     "  "+b("-l")+",  "+b("--level")+" "+ul("INT")+"           "
                                  "level of compression ["+to_string(MIN_LVL)+";"
-                              +to_string(MAX_LVL)+"]     "+hl("COMPRESS")+"  \n"
+                             +to_string(MAX_LVL)+"]     "+fit("COMPRESS")+"  \n"
     "  "+b("-n")+",  "+b("--nthr")+"  "+ul("INT")+"           "
                                     "number of threads ["+to_string(MIN_THR)+";"
                                                      +to_string(MAX_THR)+"]  \n"
     "  "+b("-fs")+", "+b("--filter-scale")+" S|M|L  "
-                           "scale of the filter {S|small,    "+hl("FILTER")+"\n"
+                          "scale of the filter {S|small,    "+fit("FILTER")+"\n"
     "                             M|medium, L|large}"             "\n"
     "  "+b("-w")+",  "+b("--wsize")+" "+ul("INT")+"           "
                                            "window size ["+to_string(MIN_WS)+";"
-                             +to_string(MAX_WS)+"]           "+hl("FILTER")+"\n"
+                            +to_string(MAX_WS)+"]           "+fit("FILTER")+"\n"
     "  "+b("-wt")+", "+b("--wtype")+" [0;7]         "
-                           "type of windowing function       "+hl("FILTER")+"\n"
+                          "type of windowing function       "+fit("FILTER")+"\n"
     "                             {0|rectangular, 1|hamming, 2|hann,"       "\n"
     "                             3|blackman, 4|triangular, 5|welch,"       "\n"
     "                             6|sine, 7|nuttall}"                       "\n"
     "  "+b("-d")+",  "+b("--step")+"   "+ul("INT")+"          "
-                           "sampling steps                   "+hl("FILTER")+"\n"
+                          "sampling steps                   "+fit("FILTER")+"\n"
     "  "+b("-th")+", "+b("--thresh")+" "+ul("FLOAT")+"        "
                               "threshold ["+string_format("%.1f",MIN_THRESH)+";"
-            +string_format("%.1f",MAX_THRESH)+"]             "+hl("FILTER")+"\n"
+           +string_format("%.1f",MAX_THRESH)+"]             "+fit("FILTER")+"\n"
     "  "+b("-sp")+", "+b("--save-profile")+"        "
-                           "save profile                       "+hl("SAVE")+"\n"
+                          "save profile                       "+fit("SAVE")+"\n"
     "  "+b("-sf")+", "+b("--save-filter")+"         "
-                           "save filtered file                 "+hl("SAVE")+"\n"
+                          "save filtered file                 "+fit("SAVE")+"\n"
     "  "+b("-sb")+", "+b("--save-seq")+"            "
-                           "save sequence (input: Fasta/Fastq) "+hl("SAVE")+"\n"
+                          "save sequence (input: Fasta/Fastq) "+fit("SAVE")+"\n"
     "  "+b("-ss")+", "+b("--save-segment")+"        "
-                           "save segmented files               "+hl("SAVE")+"\n"
+                          "save segmented files               "+fit("SAVE")+"\n"
     "  "+b("-sa")+", "+b("--save-all")+"            "
-                           "save profile, filetered and        "+hl("SAVE")+"\n"
+                          "save profile, filetered and        "+fit("SAVE")+"\n"
     "                             segmented files"                          "\n"
     "  "+b("-R")+",  "+b("--report")+"              "
-                         "save results in file \"report\"    "+hl("REPORT")+"\n"
+                        "save results in file \"report\"    "+fit("REPORT")+"\n"
     "  "+b("-h")+",  "+b("--help")+"                usage guide"            "\n"
     "  "+b("-rm")+", "+b("--ref-model")+" [\U0001D705,[\U0001D464,\U0001D451,]"
            "ir,\U0001D6FC,\U0001D6FE/\U0001D70F,ir,\U0001D6FC,\U0001D6FE:...]"
-                                              "               "+hl("MODEL")+"\n"
+                                             "               "+fit("MODEL")+"\n"
     "  "+b("-tm")+", "+b("--tar-model")+" [\U0001D705,[\U0001D464,\U0001D451,]"
            "ir,\U0001D6FC,\U0001D6FE/\U0001D70F,ir,\U0001D6FC,\U0001D6FE:...]"
-                                              "               "+hl("MODEL")+"\n"
+                                             "               "+fit("MODEL")+"\n"
     "                             parameters of models                       \n"
     "                       ("+ul("INT")+") \U0001D705:  context size        \n"
     "                       ("+ul("INT")+") \U0001D464:  width of sketch in "
@@ -403,71 +404,79 @@ inline void VizParam::parse (int argc, char**& argv) {
 }
 
 inline void VizParam::help () const {
-  const auto b  = [] (string&& s) { return bold(std::move(s));      };
-  const auto it = [] (string&& s) { return italic(std::move(s));    };
-  const auto ul = [] (string&& s) { return underline(std::move(s)); };
-  const auto hl = [] (string&& s) { return highlight(std::move(s)); };
-  const auto br = [] (string&& s) { return bold_red(std::move(s));  };
+  const auto b   = [] (string&& s) { return bold(std::move(s));          };
+  const auto it  = [] (string&& s) { return italic(std::move(s));        };
+  const auto fit = [] (string&& s) { return faint(italic(std::move(s))); };
+  const auto ul  = [] (string&& s) { return underline(std::move(s));     };
+  const auto hl  = [] (string&& s) { return highlight(std::move(s));     };
+  const auto br  = [] (string&& s) { return bold_red(std::move(s));      };
 
-  cerr <<
-    b("NAME")                                                              +"\n"
-    "  Smash++ Visualizer v"<<VERSION<<" - Visualization of Samsh++ output   \n"
-    "                                                                        \n"
-    +b("SYNOPSIS")                                                         +"\n"
-    "  ./smashpp -viz ["+ul("OPTION")+"]...  "
-             "-o ["+ul("SVG-FILE")+"] "+ul("POS-FILE")+"]"                  "\n"
-    "                                                                        \n"
-    +b("SAMPLE")                                                           +"\n"
+  cerr 
+  << b("NAME")                                                            <<'\n'
+  << "  Smash++ Visualizer v" << VERSION << " - "
+     "Visualization of Samsh++ output"                                    <<'\n'
+  <<                                                                        '\n'
+  << b("SYNOPSIS")                                                        <<'\n'
+  << "  ./smashpp -viz [" << ul("OPTION")   << "]...  "
+     "-o [" << ul("SVG-FILE") << "] " << ul("POS-FILE") << "]"            <<'\n'
+  <<                                                                        '\n'
+  << b("SAMPLE")                                                          <<'\n'
 //    "  ./smashpp -viz -sp -sn -o out.svg ab.pos                            \n"
-    "                                                                        \n"
-    +b("DESCRIPTION")                                                      +"\n"
-    "  "+it("Mandatory arguments")+":"                                      "\n"
-    "  "+ul("POS-FILE")+
-              "                   positions file, generated by Smash++"     "\n"
-    "                             tool (*.pos)"                             "\n"
-    "                                                                        \n"
-    "  "+it("Options")+":"                                                  "\n"
-    "  "+b("-v")+",  "+b("--verbose")+"             more information"       "\n"
-    "  "+b("-o")+",  "+b("--out")+" "+ul("SVG-FILE")+
-                                                   "        output image name\n"
-    "  "+b("-sp")+", "+b("--show-pos")+"            show positions"         "\n"
-    "  "+b("-sn")+", "+b("--show-nrc")+"            show normalized relative \n"
-    "                             compression (NRC)"                        "\n"
-    "  "+b("-sr")+", "+b("--show-redun")+"          show self complexity"   "\n"
-    "  "+b("-ni")+", "+b("--dont-show-inv")+"       do NOT show inverse maps \n"
-    "  "+b("-nr")+", "+b("--dont-show-reg")+"       do NOT show regular maps \n"
-    "  "+b("-l")+",  "+b("--link")+"  "+ul("INT")+
-         "           type of the link between maps ["+to_string(MIN_LINK)+";"
-                                                     +to_string(MAX_LINK)+"] \n"
-    "  "+b("-w")+",  "+b("--width")+" "+ul("INT")+
-           "           width of the image sequence ["+to_string(MIN_WIDT)+";"
-                                                     +to_string(MAX_WIDT)+"] \n"
-    "  "+b("-s")+",  "+b("--space")+" "+ul("INT")+
-               "           space between sequences ["+to_string(MIN_SPAC)+";"
-                                                     +to_string(MAX_SPAC)+"] \n"
-    "  "+b("-m")+",  "+b("--mult")+"  "+ul("INT")+
-                                       "           multiplication factor for \n"
-            "                             color ID ["+to_string(MIN_MULT)+";"
-                                                     +to_string(MAX_MULT)+"] \n"
-    "  "+b("-b")+",  "+b("--begin")+" "+ul("INT")+
-                 "           beginning of color ID ["+to_string(MIN_BEGI)+";"
-                                                     +to_string(MAX_BEGI)+"] \n"
-    "  "+b("-c")+",  "+b("--min")+"   "+ul("INT")+
-                                           "           minimum block size to \n"
-    "                             consider ["+to_string(MIN_MINP)+";"
-                                             +to_string(MAX_MINP)+"]"       "\n"
-    "  "+b("-h")+",  "+b("--help")+"                usage guide              \n"
-    "                                                                        \n"
-    +b("AUTHORS")                                                          +"\n"
-    "  Morteza Hosseini           seyedmorteza@ua.pt"                       "\n"
-    "  Diogo   Pratas             pratas@ua.pt"                             "\n"
-    "                                                                        \n"
-    +b("COPYRIGHT")                                                        +"\n"
-    "  Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro. You may "
-                                                                  "redistri- \n"
-    "  bute copies of this Free software under the terms of the GNU (Gen-    \n"
-    "  eral Public License) v3 <http://www.gnu.org/licenses/gpl.html>.       \n"
-    "  There is NOT ANY WARRANTY, to the extent permitted by law."       <<endl;
+  <<                                                                        '\n'
+  << b("DESCRIPTION")                                                     <<'\n'
+  << "  " << it("Mandatory arguments") << ":"                             <<'\n'
+  << "  " << ul("POS-FILE") << "                   "
+     "positions file, enerated by      " << fit("INPUT")                  <<'\n'
+  << "                             Smash++ tool (*.pos)"                  <<'\n'
+  <<                                                                        '\n'
+  << "  " << it("Options") << ":"                                         <<'\n'
+  << "  " << b("-v")  << ",  " << b("--verbose") << "             "
+     "more information"                                                   <<'\n'
+  << "  " << b("-o")  << ",  " << b("--out") << " " << ul("SVG-FILE") <<
+     "        output image name               " << fit("OUTPUT")           <<'\n'
+  << "  " << b("-sp") << ", "  << b("--show-pos") << "            "
+     "show positions                    " << fit("SHOW")                  <<'\n'
+  << "  " << b("-sn") << ", "  << b("--show-nrc") << "            "
+     "show normalized relative          " << fit("SHOW")                  <<'\n'
+  << "                             compression (NRC)"                     <<'\n'
+  << "  " << b("-sr") << ", " << b("--show-redun") << "          "
+     "show self complexity              " << fit("SHOW")                  <<'\n'
+  << "  " << b("-ni") << ", " << b("--dont-show-inv") << "       "
+     "do NOT show inverse maps       " << fit("NO SHOW")                  <<'\n'
+  << "  " << b("-nr") << ", " << b("--dont-show-reg") << "       "
+     "do NOT show regular maps       " << fit("NO SHOW")                  <<'\n'
+  << "  " << b("-l") << ",  " << b("--link") << "  " << ul("INT") <<
+     "           type of the link between maps "
+     "[" << to_string(MIN_LINK) << ";" << to_string(MAX_LINK) << "]"      <<'\n'
+  << "  " << b("-w") << ",  " << b("--width") << " " << ul("INT") <<
+     "           width of the image sequence "
+     "[" << to_string(MIN_WIDT) << ";" << to_string(MAX_WIDT) << "]"      <<'\n'
+  << "  " << b("-s") << ",  " << b("--space") << " " << ul("INT") <<
+     "           space between sequences "
+     "[" << to_string(MIN_SPAC) << ";" << to_string(MAX_SPAC) << "]"      <<'\n'
+  << "  " << b("-m") << ",  " << b("--mult") << "  " << ul("INT") <<
+     "           multiplication factor for"                               <<'\n'
+  << "                             color ID "
+     "[" << to_string(MIN_MULT) << ";" << to_string(MAX_MULT)+"]"         <<'\n'
+  << "  " << b("-b") << ",  " << b("--begin") << " " << ul("INT") <<
+     "           beginning of color ID "
+     "[" << to_string(MIN_BEGI) << ";" << to_string(MAX_BEGI) << "]"      <<'\n'
+  << "  " << b("-c") << ",  " << b("--min") << "   " << ul("INT") <<
+     "           minimum block size to"                                   <<'\n'
+  << "                             consider "
+     "[" << to_string(MIN_MINP) << ";" << to_string(MAX_MINP) << "]"      <<'\n'
+  << "  " << b("-h") << ",  " << b("--help") << "                usage guide \n"
+  <<                                                                        '\n'
+  << b("AUTHORS")                                                         <<'\n'
+  << "  Morteza Hosseini           seyedmorteza@ua.pt"                    <<'\n'
+  << "  Diogo   Pratas             pratas@ua.pt"                          <<'\n'
+  <<                                                                        '\n'
+  << b("COPYRIGHT")                                                       <<'\n'
+  << "  Copyright (C) " << DEV_YEARS << ", IEETA, University of Aveiro. You "
+     "may redistri-"                                                        "\n"
+  << "  bute copies of this Free software under the terms of the GNU (Gen-   \n"
+  << "  eral Public License) v3 <http://www.gnu.org/licenses/gpl.html>.      \n"
+  << "  There is NOT ANY WARRANTY, to the extent permitted by law."      <<endl;
 }
 }
 
