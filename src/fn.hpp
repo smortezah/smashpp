@@ -18,6 +18,9 @@ namespace smashpp {
 inline static string bold (string&& text) {
   return "\033[1m"+text+"\033[0m";
 }
+inline static string faint (string&& text) {
+  return "\033[2m"+text+"\033[0m";
+}
 inline static string italic (string&& text) {
   return "\033[3m"+text+"\033[0m";
 }
