@@ -223,7 +223,7 @@ inline void Param::help () const {
   <<                                                                        '\n'
   << b("SYNOPSIS")                                                        <<'\n'
   << "  ./smashpp [" << ul("OPTIONS") << "]...  "
-     "-r [" << ul("REF-FILE") << "] t [" << ul("TAR-FILE") << "]"         <<'\n'
+     "-r [" << ul("REF-FILE") << "] -t [" << ul("TAR-FILE") << "]"        <<'\n'
   <<                                                                        '\n'
   << b("SAMPLE")                                                          <<'\n'
 //    "  ./smashpp -t TAR -r REF                                             \n"
