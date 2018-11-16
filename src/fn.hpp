@@ -223,13 +223,34 @@ inline static auto pow2 (T base) {  // Must be inline
 
 // From http://martin.ankerl.com/2007/10/04/
 // optimized-pow-approximation-for-java-and-c-c/
-inline static auto Power (double base, double exponent) {
-  int tmp  = (*(1 + (int*) &base)),
-      tmp2 = int(exponent * (tmp-1072632447) + 1072632447);
-  double p = 0.0;
-  *(1 + (int*) &p) = tmp2;
-  return p;
+inline static double Power (double base, double exponent) {
+  union {
+    double d;
+    int x[2];
+  } u = { base };
+  u.x[1] = int(exponent * (u.x[1] - 1072632447) + 1072632447);
+  u.x[0] = 0;
+  return u.d;
 }
+// inline static auto Power (double base, double exponent) {
+//   int tmp  = (*(1 + (int*) &base)),
+//       tmp2 = int(exponent * (tmp-1072632447) + 1072632447);
+//   double p = 0.0;
+//   *(1 + (int*) &p) = tmp2;
+//   return p;
+// }
+// inline double Power(const double a, const double b) {
+//   union {
+//     double d;
+//     struct {
+//       int a;
+//       int b;
+//     } s;
+//   } u = { a };
+//   u.s.b = (int)(b * (u.s.b - 1072632447) + 1072632447);
+//   u.s.a = 0;
+//   return u.d;
+// }
 
 inline static void check_file (const string& name) {  // Must be inline
   ifstream f(name);
