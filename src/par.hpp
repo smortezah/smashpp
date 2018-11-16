@@ -237,14 +237,17 @@ inline void Param::help () const {
     "  "+it("Options")+":"                                                  "\n"
     "  "+b("-v")+",  "+b("--verbose")+"             more information"       "\n"
     "  "+b("-l")+",  "+b("--level")+" "+ul("INT")+"           "
-                         "level of compression [0;4]     "+hl("COMPRESS")+"  \n"
+                                 "level of compression ["+to_string(MIN_LVL)+";"
+                              +to_string(MAX_LVL)+"]     "+hl("COMPRESS")+"  \n"
     "  "+b("-n")+",  "+b("--nthr")+"  "+ul("INT")+"           "
-                                                   "number of threads [1;8]  \n"
+                                    "number of threads ["+to_string(MIN_THR)+";"
+                                                     +to_string(MAX_THR)+"]  \n"
     "  "+b("-fs")+", "+b("--filter-scale")+" S|M|L  "
                            "scale of the filter {S|small,    "+hl("FILTER")+"\n"
     "                             M|medium, L|large}"             "\n"
     "  "+b("-w")+",  "+b("--wsize")+" "+ul("INT")+"           "
-                           "window size [1;100000]           "+hl("FILTER")+"\n"
+                                           "window size ["+to_string(MIN_WS)+";"
+                             +to_string(MAX_WS)+"]           "+hl("FILTER")+"\n"
     "  "+b("-wt")+", "+b("--wtype")+" [0;7]         "
                            "type of windowing function       "+hl("FILTER")+"\n"
     "                             {0|rectangular, 1|hamming, 2|hann,"       "\n"
@@ -253,7 +256,8 @@ inline void Param::help () const {
     "  "+b("-d")+",  "+b("--step")+"   "+ul("INT")+"          "
                            "sampling steps                   "+hl("FILTER")+"\n"
     "  "+b("-th")+", "+b("--thresh")+" "+ul("FLOAT")+"        "
-                           "threshold [0.0;20.0]             "+hl("FILTER")+"\n"
+                              "threshold ["+string_format("%.1f",MIN_THRESH)+";"
+            +string_format("%.1f",MAX_THRESH)+"]             "+hl("FILTER")+"\n"
     "  "+b("-sp")+", "+b("--save-profile")+"        "
                            "save profile                       "+hl("SAVE")+"\n"
     "  "+b("-sf")+", "+b("--save-filter")+"         "
@@ -280,7 +284,7 @@ inline void Param::help () const {
                                                                  "log2 form, \n"
     "                                 e.g., set 10 for w=2^10=1024"         "\n"
     "                       ("+ul("INT")+") \U0001D451:  depth of sketch"   "\n"
-    "                             ir: inverted repeat (0|1|2)"              "\n"
+    "                             ir: inverted repeat {0, 1, 2}"            "\n"
     "                                 0: regular (not inverted)"            "\n"
     "                                 1: inverted, solely"                  "\n"
     "                                 2: both regular and inverted"         "\n"
@@ -293,7 +297,7 @@ inline void Param::help () const {
     +b("AUTHOR")                                                           +"\n"
     "  Morteza Hosseini           seyedmorteza@ua.pt"                       "\n"
     "                                                                        \n"
-    +b("COPYRIGHT")                                                     +"\n"
+    +b("COPYRIGHT")                                                        +"\n"
     "  Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro. You may "
                                                                   "redistri- \n"
     "  bute copies of this Free software under the terms of the GNU (Gen-    \n"
@@ -351,11 +355,11 @@ inline void VizParam::parse (int argc, char**& argv) {
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
     if      (*i=="-h"  || *i=="--help") { help();   throw EXIT_SUCCESS; }
     else if (*i=="-v"  || *i=="--verbose")          verbose=true;
-    else if (*i=="-sp" || *i=="--show_pos")         showPos=true;
-    else if (*i=="-sn" || *i=="--show_nrc")         showNRC=true;
-    else if (*i=="-sr" || *i=="--show_redun")       showRedun=true;
-    else if (*i=="-i"  || *i=="--dont_show_inv")    inverse=false;
-    else if (*i=="-r"  || *i=="--dont_show_reg")    regular=false;
+    else if (*i=="-sp" || *i=="--show-pos")         showPos=true;
+    else if (*i=="-sn" || *i=="--show-nrc")         showNRC=true;
+    else if (*i=="-sr" || *i=="--show-redun")       showRedun=true;
+    else if (*i=="-ni" || *i=="--dont-show-inv")    inverse=false;
+    else if (*i=="-nr" || *i=="--dont-show-reg")    regular=false;
     else if ((*i=="-o" || *i=="--out")   && i+1!=vArgs.end())
       image = *++i;
     else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
@@ -399,48 +403,71 @@ inline void VizParam::parse (int argc, char**& argv) {
 }
 
 inline void VizParam::help () const {
+  const auto b  = [] (string&& s) { return bold(std::move(s));      };
+  const auto it = [] (string&& s) { return italic(std::move(s));    };
+  const auto ul = [] (string&& s) { return underline(std::move(s)); };
+  const auto hl = [] (string&& s) { return highlight(std::move(s)); };
+  const auto br = [] (string&& s) { return bold_red(std::move(s));  };
+
   cerr <<
-    "NAME                                                                    \n"
+    b("NAME")                                                              +"\n"
     "  Smash++ Visualizer v"<<VERSION<<" - Visualization of Samsh++ output   \n"
     "                                                                        \n"
-    "AUTHORS                                                                 \n"
-    "  Morteza Hosseini    seyedmorteza@ua.pt                                \n"
-    "  Diogo   Pratas      pratas@ua.pt                                      \n"
+    +b("SYNOPSIS")                                                         +"\n"
+    "  ./smashpp -viz ["+ul("OPTION")+"]...  "
+             "-o ["+ul("SVG-FILE")+"] "+ul("POS-FILE")+"]"                  "\n"
     "                                                                        \n"
-    "SYNOPSIS                                                                \n"
-    "  ./smashpp -viz [OPTION]...  -o [SVG_FILE] [POS_FILE]                  \n"
-    "                                                                        \n"
-    "SAMPLE                                                                  \n"
+    +b("SAMPLE")                                                           +"\n"
 //    "  ./smashpp -viz -sp -sn -o out.svg ab.pos                            \n"
     "                                                                        \n"
-    "DESCRIPTION                                                             \n"
-    "  Mandatory arguments:                                                  \n"
-    "  [POS_FILE]               positions file, generated by                 \n"
-    "                             Smash++ tool (*.pos)                       \n"
+    +b("DESCRIPTION")                                                      +"\n"
+    "  "+it("Mandatory arguments")+":"                                      "\n"
+    "  "+ul("POS-FILE")+
+              "                   positions file, generated by Smash++"     "\n"
+    "                             tool (*.pos)"                             "\n"
     "                                                                        \n"
-    "  Options:                                                              \n"
-    "  -v,  --verbose           more information                             \n"
-    "  -o,  --out [SVG_FILE]    output image filename with map               \n"
-    "  -sp, --show_pos          show positions                               \n"
-    "  -sn, --show_nrc          show normalized relative                     \n"
-    "                             compression (NRC)                          \n"
-    "  -sr, --show_redun        show self complexity                         \n"
-    "  -l,  --link  [NUM]       type of the link between maps [0;5]          \n"
-    "  -w,  --width [NUM]       width of the image sequence                  \n"
-    "  -s,  --space [NUM]       space between sequences                      \n"
-    "  -m,  --mult  [NUM]       multiplication factor for color ID           \n"
-    "  -b,  --begin [NUM]       color id beginning of color ID               \n"
-    "  -c,  --min   [NUM]       minimum block size to consider               \n"
-    "  -i,  --dont_show_inv     do NOT show inverse maps                     \n"
-    "  -r,  --dont_show_reg     do NOT show regular maps                     \n"
-    "  -h,  --help              usage guide                                  \n"
+    "  "+it("Options")+":"                                                  "\n"
+    "  "+b("-v")+",  "+b("--verbose")+"             more information"       "\n"
+    "  "+b("-o")+",  "+b("--out")+" "+ul("SVG-FILE")+
+                                                   "        output image name\n"
+    "  "+b("-sp")+", "+b("--show-pos")+"            show positions"         "\n"
+    "  "+b("-sn")+", "+b("--show-nrc")+"            show normalized relative \n"
+    "                             compression (NRC)"                        "\n"
+    "  "+b("-sr")+", "+b("--show-redun")+"          show self complexity"   "\n"
+    "  "+b("-ni")+", "+b("--dont-show-inv")+"       do NOT show inverse maps \n"
+    "  "+b("-nr")+", "+b("--dont-show-reg")+"       do NOT show regular maps \n"
+    "  "+b("-l")+",  "+b("--link")+"  "+ul("INT")+
+         "           type of the link between maps ["+to_string(MIN_LINK)+";"
+                                                     +to_string(MAX_LINK)+"] \n"
+    "  "+b("-w")+",  "+b("--width")+" "+ul("INT")+
+           "           width of the image sequence ["+to_string(MIN_WIDT)+";"
+                                                     +to_string(MAX_WIDT)+"] \n"
+    "  "+b("-s")+",  "+b("--space")+" "+ul("INT")+
+               "           space between sequences ["+to_string(MIN_SPAC)+";"
+                                                     +to_string(MAX_SPAC)+"] \n"
+    "  "+b("-m")+",  "+b("--mult")+"  "+ul("INT")+
+                                       "           multiplication factor for \n"
+            "                             color ID ["+to_string(MIN_MULT)+";"
+                                                     +to_string(MAX_MULT)+"] \n"
+    "  "+b("-b")+",  "+b("--begin")+" "+ul("INT")+
+                 "           beginning of color ID ["+to_string(MIN_BEGI)+";"
+                                                     +to_string(MAX_BEGI)+"] \n"
+    "  "+b("-c")+",  "+b("--min")+"   "+ul("INT")+
+                                           "           minimum block size to \n"
+    "                             consider ["+to_string(MIN_MINP)+";"
+                                             +to_string(MAX_MINP)+"]"       "\n"
+    "  "+b("-h")+",  "+b("--help")+"                usage guide              \n"
     "                                                                        \n"
-    "COPYRIGHT                                                               \n"
-    "  Copyright (C) "<<DEV_YEARS<<", IEETA, University of Aveiro.           \n"
-    "  You may redistribute copies of this Free software                     \n"
-    "  under the terms of the GNU - General Public License                   \n"
-    "  v3 <http://www.gnu.org/licenses/gpl.html>. There is                   \n"
-    "  NOT ANY WARRANTY, to the extent permitted by law.                "<<endl;
+    +b("AUTHORS")                                                          +"\n"
+    "  Morteza Hosseini           seyedmorteza@ua.pt"                       "\n"
+    "  Diogo   Pratas             pratas@ua.pt"                             "\n"
+    "                                                                        \n"
+    +b("COPYRIGHT")                                                        +"\n"
+    "  Copyright (C) "<< DEV_YEARS <<", IEETA, University of Aveiro. You may "
+                                                                  "redistri- \n"
+    "  bute copies of this Free software under the terms of the GNU (Gen-    \n"
+    "  eral Public License) v3 <http://www.gnu.org/licenses/gpl.html>.       \n"
+    "  There is NOT ANY WARRANTY, to the extent permitted by law."       <<endl;
 }
 }
 

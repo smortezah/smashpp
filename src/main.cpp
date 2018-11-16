@@ -4,32 +4,32 @@
 //    ___) | | | | | | (_| \__ \ | | |_   _|_   _|
 //   |____/|_| |_| |_|\__,_|___/_| |_| |_|   |_|  
 //
-//                 ```.```                 
-//           `-/oydmmmmmmmmdho:`           
-//          `smNNMMMMMMMMMNNMMNd+`         
-//          :hNNNmmdhhmmddddmmNNNh`        
-//         sNNmy+/::--:::--::/ohNN/        
-//        .NMNs/:----.-..-----:/hNy        
-//        :NMm+::---........--:/sNd`       
-//        -NNd/://+oo+/-:/+o+///sNh        
-//        `dNh/+yyhdddy:/dmmhhyooNo        
-//        `sds:+syydhho.-yddhys++h-        
-//        `+y+:---:::::.-:///:::/s-        
-//         :+/:--...-:-.--:-..-:/+-        
-//         .//::----:+oooo/:---:/:`        
-//          .//:::://+yyys//::///`         
-//           .++//+sssyyyssyo+++-          
-//            /+++//:/osso//+++/           
-//            :ooo+/::://///+oo.           
-//          `:/ossssoo+oooosssoso.         
-//         `sm++ossyyyyyyyyyso+smh`        
-//      ``.smdo++ossssyyyysoo++hNNh/.`     
-//  `.-:/+odmNmysoooooossoooshmNNNmsso/.`  
-// /+++++++odNNNNmdhhyssyhdmNNNNNdyooo+++/:
-// ++++++++++ymNNNNNNmddmmmNNNNmhssooo+++++
-// +++++++++++ohmmmmmmmNmddmmmdyysoooo+++++
-// +++++++++++oossyyyhmmhhhhhhyysoooo++++++
-// o+++++++++++++oosyhddyhhhyyssooo++++++++
+//                 ```.```                                       
+//           `-/oydmmmmmmmmdho:`                        
+//          `smNNMMMMMMMMMNNMMNd+`                      
+//          :hNNNmmdhhmmddddmmNNNh`                     
+//         sNNmy+/::--:::--::/ohNN/                     
+//        .NMNs/:----.-..-----:/hNy                     
+//        :NMm+::---........--:/sNd`                    
+//        -NNd/://+oo+/-:/+o+///sNh                     
+//        `dNh/+yyhdddy:/dmmhhyooNo                     
+//        `sds:+syydhho.-yddhys++h-                     
+//        `+y+:---:::::.-:///:::/s-                     
+//         :+/:--...-:-.--:-..-:/+-                     
+//         .//::----:+oooo/:---:/:`                     
+//          .//:::://+yyys//::///`                      
+//           .++//+sssyyyssyo+++-                       
+//            /+++//:/osso//+++/                        
+//            :ooo+/::://///+oo.                        
+//          `:/ossssoo+oooosssoso.                      
+//         `sm++ossyyyyyyyyyso+smh`                     
+//      ``.smdo++ossssyyyysoo++hNNh/.`                  
+//  `.-:/+odmNmysoooooossoooshmNNNmsso/.`               
+// /+++++++odNNNNmdhhyssyhdmNNNNNdyooo+++/:             
+// ++++++++++ymNNNNNNmddmmmNNNNmhssooo+++++             
+// +++++++++++ohmmmmmmmNmddmmmdyysoooo+++++             
+// +++++++++++oossyyyhmmhhhhhhyysoooo++++++             
+// o+++++++++++++oosyhddyhhhyyssooo++++++++             
 
 //
 // Created by morteza on 02-02-2018.
@@ -59,8 +59,8 @@ int main (int argc, char* argv[]) {
     const auto t0{now()};
 
     if (has(argv, argv+argc, string("-viz"))) {
-    //   VizParam vizpar;
-    //   vizpar.parse(argc, argv);
+      VizParam vizpar;
+      vizpar.parse(argc, argv);
     //   auto paint = make_unique<VizPaint>();
     //   paint->print_plot(vizpar);
     }

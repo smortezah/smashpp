@@ -19,7 +19,7 @@ add_executable(smashpp  src/main.cpp
                         # src/fn.hpp
                         # src/mdlpar.hpp
                         # src/vizpaint.cpp
-                        # src/vizdef.hpp
+                        src/vizdef.hpp
                         )
 
 
