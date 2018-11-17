@@ -563,19 +563,19 @@ inline void FCM::compress_n_child
   }
 }
 
-void FCM::self_compress (const Param& p) {
+void FCM::self_compress (const Param& p, u64 ID) {
   cerr << OUT_SEP << "Compressing \"" << p.seq << "\"...\n";
   self_compress_alloc();
 
   if (tMs.size()==1 && tTMs.empty())  // 1 MM
     switch (tMs[0].cont) {
-    case Container::SKETCH_8:     self_compress_1(p, cmls4.begin());   break;
-    case Container::LOG_TABLE_8:  self_compress_1(p, lgtbl8.begin());  break;
-    case Container::TABLE_32:     self_compress_1(p, tbl32.begin());   break;
-    case Container::TABLE_64:     self_compress_1(p, tbl64.begin());   break;
+    case Container::SKETCH_8:    self_compress_1(p, cmls4.begin(),  ID);  break;
+    case Container::LOG_TABLE_8: self_compress_1(p, lgtbl8.begin(), ID);  break;
+    case Container::TABLE_32:    self_compress_1(p, tbl32.begin(),  ID);  break;
+    case Container::TABLE_64:    self_compress_1(p, tbl64.begin(),  ID);  break;
     }
   else
-    self_compress_n(p);
+    self_compress_n(p, ID);
 
   cerr << "Done!\n";
 }
@@ -602,7 +602,8 @@ inline void FCM::self_compress_alloc () {
 }
 
 template <typename ContIter>
-inline void FCM::self_compress_1 (const smashpp::Param& par, ContIter cont) {
+inline void FCM::self_compress_1 
+(const smashpp::Param& par, ContIter cont, u64 ID) {
   u64      ctx{0},   ctxIr{(1ull<<(tMs[0].k<<1u))-1};
   u64      symsNo{0};
   prec_t   sumEnt{0};
@@ -622,7 +623,7 @@ inline void FCM::self_compress_1 (const smashpp::Param& par, ContIter cont) {
           array<decltype((*cont)->query(0)), 4> f {};
           freqs_ir0(f, cont, pp.l);
           const auto entr = entropy(prob(f.begin(), &pp));
-          cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';//todo comment
+          // cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';//todo comment
           sumEnt += entr;
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir0(ctx, &pp);
@@ -652,13 +653,16 @@ inline void FCM::self_compress_1 (const smashpp::Param& par, ContIter cont) {
     }
   }
   remove_progress_trace();
-  ofstream sf(gen_name("", par.seq, Format::SELF));
-  sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
-  sf.close();
+  // mut.lock();
+  selfEnt[ID] = sumEnt/symsNo;
+  // mut.unlock();
+  // ofstream sf(gen_name("", par.seq, Format::SELF));
+  // sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
+  // sf.close();
   seqF.close();
 }
 
-inline void FCM::self_compress_n (const Param& par) {
+inline void FCM::self_compress_n (const Param& par, u64 ID) {
   u64 symsNo{0};
   prec_t sumEnt{0};
   ifstream seqF(par.seq);
@@ -722,9 +726,12 @@ inline void FCM::self_compress_n (const Param& par) {
     }
   }
   remove_progress_trace();
-  ofstream sf(gen_name("", par.seq, Format::SELF));
-  sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
-  sf.close();
+  // mut.lock();
+  selfEnt[ID] = sumEnt/symsNo;
+  // mut.unlock();
+  // ofstream sf(gen_name("", par.seq, Format::SELF));
+  // sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
+  // sf.close();
   seqF.close();
 }
 
@@ -775,22 +782,30 @@ inline void FCM::self_compress_n_parent
   }
 }
 
-void FCM::aggregate_slf (const Param& p) {
-  const auto segName = gen_name(p.ref, p.tar, Format::SEGMENT);
+void FCM::aggregate_slf (const Param& p) const {
   const auto posName = gen_name(p.ref, p.tar, Format::POSITION);
   fstream pf(posName);
-  auto i = 0;
 
-  for (string tmp1,tmp2,tmp3; pf>>tmp1>>tmp2>>tmp3; ++i) {
-    string selfEnt;
-    ifstream sf(gen_name("", segName+to_string(i), Format::SELF));
-    sf >> selfEnt;
-    sf.close();
-    // remove((segName+to_string(i)).c_str());
-
-    pf << '\t' << selfEnt << '\n';
-    pf.seekp(ios::cur);
+  u64 i=0;
+  for(char c;pf.get(c);){
+    if(c=='\n'){
+      pf.unget();
+      pf << '\t' << std::fixed << setprecision(3) << selfEnt[i++] << '\n';
+    }
   }
+
+  // for (u64 i=0; i!=selfEnt.size(); ++i) {
+  //   for(char c=' ';c!='\n';) 
+  //   pf.get(c);
+    
+  //   // u64 i=0;
+  //   // for(string tmp1, tmp2, tmp3, tmp4; pf >> tmp1 >> tmp2 >> tmp3;++i) {
+  // //   string tmp1, tmp2, tmp3, tmp4;
+  // //   pf >> tmp1 >> tmp2 >> tmp3;
+  //   pf << '\t' << std::fixed << setprecision(3) << selfEnt[i] /*<< '\n'*/;
+  //   // pf >> tmp4;
+  // //   // pf.seekp(ios::cur);
+  // }
 
   pf.close();
 }

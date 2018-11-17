@@ -16,13 +16,14 @@
 namespace smashpp {
 class FCM {   // Finite-context models
  public:
-  prec_t aveEnt;
+  prec_t         aveEnt;
+  vector<prec_t> selfEnt;
   
   explicit FCM  (Param&);
   void store    (const Param&);         // Build FCM (finite-context models)
   void compress (const Param&);
-  void self_compress (const Param&);
-  void aggregate_slf (const Param&);
+  void self_compress (const Param&, u64);
+  void aggregate_slf (const Param&) const;
 ////  void report     (const Param&) const;
 
  private:
@@ -59,8 +60,8 @@ class FCM {   // Finite-context models
 
   void self_compress_alloc ();
   template <typename ContIter>
-  void self_compress_1 (const Param&, ContIter);
-  void self_compress_n (const Param&);
+  void self_compress_1 (const Param&, ContIter, u64);
+  void self_compress_n (const Param&, u64);
   template <typename ContIter>
   void self_compress_n_impl (unique_ptr<CompressPar>&, ContIter, u8&) const;
   template <typename ContIter>
