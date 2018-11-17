@@ -13,7 +13,7 @@ static constexpr u32    MAX_LINK        {5};
 static constexpr u32    DEF_WIDT        {30};
 static constexpr u32    MIN_WIDT        {10};
 static constexpr u32    MAX_WIDT        {200};
-static constexpr u32    DEF_SPAC        {70};
+static constexpr u32    DEF_SPAC        {80};
 static constexpr u32    MIN_SPAC        {0};
 static constexpr u32    MAX_SPAC        {200};
 static constexpr u32    DEF_MULT        {46};  // 5 colors without overlapping

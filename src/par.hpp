@@ -80,6 +80,7 @@ inline void Param::parse (int argc, char**& argv) {
   for (int i=0; i!=argc; ++i)
     vArgs.emplace_back(static_cast<string>(argv[i]));
 
+  bool man_rm=false, man_tm=false;
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
     if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
     else if (*i=="-v"  || *i=="--verbose")         verbose=true;
@@ -112,11 +113,13 @@ inline void Param::parse (int argc, char**& argv) {
       range->assert(nthr);
     }
     else if ((*i=="-rm" || *i=="--ref-model") && i+1!=vArgs.end()) {
+      man_rm = true;
       rmodelsPars = *++i;
       if (rmodelsPars[0]=='-' || rmodelsPars.empty())
         error("incorrect reference model parameters.");
     }
     else if ((*i=="-tm" || *i=="--tar-model") && i+1!=vArgs.end()) {
+      man_tm = true;
       tmodelsPars = *++i;
       if (tmodelsPars[0]=='-' || tmodelsPars.empty())
         error("incorrect target model parameters.");
@@ -181,12 +184,14 @@ inline void Param::parse (int argc, char**& argv) {
   else if (!has_r && !has_ref)
     error("reference file not specified. Use \"-r <fileName>\".");
 
-  if (!has(vArgs.begin(), vArgs.end(), "-rm") &&
-      !has(vArgs.begin(), vArgs.end(), "--ref-model"))
+  if (!man_rm && !man_tm) {
     rmodelsPars = LEVEL[level];
-  if (!has(vArgs.begin(), vArgs.end(), "-tm") &&
-      !has(vArgs.begin(), vArgs.end(), "--tar-model"))
     tmodelsPars = REFFREE_LEVEL[level];
+  }
+  else if (!man_rm && man_tm)   
+    rmodelsPars = tmodelsPars;
+  else if (man_rm  && !man_tm)  
+    tmodelsPars = rmodelsPars;
 
   manFilterScale = !manThresh;
   manFilterScale = !manWSize;
@@ -436,7 +441,7 @@ inline void VizParam::help () const {
   << "  " << b("-v")  << ",  " << b("--verbose") << "             "
      "more information"                                                   <<'\n'
   << "  " << b("-o")  << ",  " << b("--out") << " " << ul("SVG-FILE") <<
-     "        output image name               " << fit("OUTPUT")          <<'\n'
+     "        output image name (*.svg)       " << fit("OUTPUT")          <<'\n'
   << "  " << b("-sp") << ", "  << b("--show-pos") << "            "
      "show positions                    " << fit("SHOW")                  <<'\n'
   << "  " << b("-sn") << ", "  << b("--show-nrc") << "            "
