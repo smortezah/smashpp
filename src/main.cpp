@@ -131,7 +131,7 @@ int main (int argc, char* argv[]) {
           models = make_unique<FCM>(par);
           models->store(par);
           models->compress(par);
-          if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
+          // if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
           filter = make_unique<Filter>(par);
           filter->smooth_seg(par);
           filter->extract_seg(par.ref, par.tar);

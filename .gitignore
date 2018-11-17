@@ -9,6 +9,10 @@
 *.png
 goose-*
 *_bk
+refs-tars*
+refm-tarm*
+refl-tarl*
+final-*
 
 smashpp
 GeCo
@@ -42,22 +46,3 @@ report
 
 cmsk2.h
 cmsk2.cpp
-
-refl-tarl.pos
-refm-tarm.pos
-refm-tarm.pos
-refm-tarm-s0
-refm-tarm-s1
-refm-tarm.pos
-refm-tarm.pos
-refm-tarm-s0-refm.pos
-refm-tarm-s0-refm-s0
-refm-tarm-s0-refm-s1
-refm-tarm-s1-refm.pos
-refm-tarm-s1-refm-s0
-refm-tarm-s1-refm-s1
-refm-tarm-s1-refm-s1
-refm-tarm.pos
-final-refm-tarm.pos
-refm-tarm.pos
-refm-tarm.pos
