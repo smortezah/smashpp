@@ -205,10 +205,11 @@ static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
 };
 static const vector<string> REFFREE_LEVEL {
   "14,2,0.005,0.95",                                                  // Level 0
-  "10,0,1,0",                                                         // Level 1
-  "10,0,1,0",                                                         // Level 2
-  "10,0,1,0",                                                         // Level 3
-  "10,0,1,0"                                                          // Level 4
+  "14,1,0.005,0.95:6,0,0.1,0.95",                                     // Level 1
+  "20,1,0.002,0.95",                                                  // Level 2
+  "18,1,0.002,0.95/3,1,0.02,0.95:13,1,0.01,0.95:6,0,0.1,0.95",        // Level 3
+  "20,1,0.002,0.95/5,1,0.05,0.95:14,1,0.005,0.95/3,1,1,0.95:"
+  "8,0,0.1,0.95:4,0,1,0.95"                                           // Level 4
 };
 
 // Struct
