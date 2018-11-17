@@ -104,7 +104,7 @@ int main (int argc, char* argv[]) {
         filter->extract_seg(par.ref, par.tar);
       }
       else {
-        const auto tempRef=par.ref, tempTar=par.tar;
+        const auto origRef=par.ref, origTar=par.tar;
         auto models = make_unique<FCM>(par);    // == auto* models=new FCM(par);
         models->store(par);                     // Build models
         models->compress(par);                  // Compress
@@ -112,6 +112,7 @@ int main (int argc, char* argv[]) {
         auto filter = make_unique<Filter>(par);
         filter->smooth_seg(par);                // Filter and segment
         filter->extract_seg(par.ref, par.tar);  // Extract segs from target
+        // Ref-free compress
         models->selfEnt.reserve(filter->nSegs);
         const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
         for (u64 i=0; i!=filter->nSegs; ++i) {
@@ -119,24 +120,33 @@ int main (int argc, char* argv[]) {
           models->self_compress(par, i);
         }
         models->aggregate_slf(par);
+         
+        // Consider the ref as new tar and segments of the tar as new refs
+        cerr <<"\n===[ Building reference map for each target pattern ]=====\n";
+        const auto newTar  = par.ref;
+        par.tar = newTar;
+        const auto tarSegs = filter->nSegs;
+        for (u64 i=0; i!=tarSegs; ++i) {
+          par.ref = segName+to_string(i);
+          models = make_unique<FCM>(par);
+          models->store(par);
+          models->compress(par);
+          if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
+          filter = make_unique<Filter>(par);
+          filter->smooth_seg(par);
+          filter->extract_seg(par.ref, par.tar);
+          // Ref-free compress
+          models->selfEnt.reserve(filter->nSegs);
+          const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
+          for (u64 i=0; i!=filter->nSegs; ++i) {
+            par.seq = segName+to_string(i);
+            models->self_compress(par, i);
+          }
+          models->aggregate_slf(par);
+        }
+        
+        filter->aggregate_pos(origRef, origTar);
 
-//        cerr <<"\n===[ Building reference map for each target pattern ]=======";
-//        // Consider the ref as new tar and the tar segments as new refs
-//        const auto newTar  = par.ref;
-//        const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
-//        par.tar = newTar;
-//        for (u64 i=0; i!=filter->nSegs; ++i) {
-//          par.ref = segName+to_string(i);
-//          models = make_unique<FCM>(par);
-//          models->store(par);
-//          models->compress(par);
-//          if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
-//          filter = make_unique<Filter>(par);
-//          filter->smooth_seg(par);
-//          //todo extract and ref-free compress all extracted regions
-//        }
-//        filter->aggregate_pos(tempRef, tempTar);
-//
 //        for (u64 i=0; i!=filter->nSegs; ++i)
 //          if (!par.saveAll && !par.saveSegment)
 //            remove((segName+to_string(i)).c_str());

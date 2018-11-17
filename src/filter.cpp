@@ -100,6 +100,7 @@ void Filter::smooth_seg (const Param& p) {
     make_window();
     p.saveFilter ? smooth_seg_non_rect<true>(p) : smooth_seg_non_rect<false>(p);
   }
+
   if (!p.saveAll && !p.saveProfile)
     remove((gen_name(p.ref,p.tar,Format::PROFILE)).c_str());
   if (!p.saveAll && !p.saveFilter)
@@ -429,12 +430,15 @@ void Filter::aggregate_pos (const string& origin, const string& dest) const {
   ffinal << POS_HDR <<'\t'<< origin <<'\t'<< to_string(file_size(origin))
                     <<'\t'<< dest   <<'\t'<< to_string(file_size(dest)) << '\n';
   int i = 0;
-  for (string begDir, endDir, entDir; fDirect>>begDir>>endDir>>entDir; ++i) {
+  for (string begDir, endDir, entDir, selfEntDir; 
+       fDirect >> begDir >> endDir >> entDir >> selfEntDir; ++i) {
     const string refRev = gen_name(origin, dest, Format::SEGMENT)+to_string(i);
     ifstream fReverse(gen_name(refRev, origin, Format::POSITION));
-    for (string begRev, endRev, entRev; fReverse>>begRev>>endRev>>entRev;) {
-      ffinal << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< 'A' <<'\t'
-             << begDir <<'\t'<< endDir <<'\t'<< entDir <<'\t'<< 'A' << '\n';
+    for (string begRev, endRev, entRev, selfEntRev;
+         fReverse >> begRev >> endRev >> entRev >> selfEntRev;) {
+      ffinal 
+        << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< selfEntRev <<'\t'
+        << begDir <<'\t'<< endDir <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';
     }
     fReverse.close();
   }
