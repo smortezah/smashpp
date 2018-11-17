@@ -102,9 +102,9 @@ void Filter::smooth_seg (const Param& p) {
   }
 
   if (!p.saveAll && !p.saveProfile)
-    remove((gen_name(p.ref,p.tar,Format::PROFILE)).c_str());
+    remove((gen_name(p.ID, p.ref,p.tar,Format::PROFILE)).c_str());
   if (!p.saveAll && !p.saveFilter)
-    remove((gen_name(p.ref,p.tar,Format::FILTER)).c_str());
+    remove((gen_name(p.ID, p.ref,p.tar,Format::FILTER)).c_str());
 
   cerr << "Done!\n";
 //  if (p.verbose)
@@ -233,9 +233,9 @@ inline void Filter::nuttall () {
 
 template <bool SaveFilter>
 inline void Filter::smooth_seg_rect (const Param& p) {
-  const auto profileName  = gen_name(p.ref, p.tar, Format::PROFILE),
-             filterName   = gen_name(p.ref, p.tar, Format::FILTER),
-             positionName = gen_name(p.ref, p.tar, Format::POSITION);
+  const auto profileName  = gen_name(p.ID, p.ref, p.tar, Format::PROFILE),
+             filterName   = gen_name(p.ID, p.ref, p.tar, Format::FILTER),
+             positionName = gen_name(p.ID, p.ref, p.tar, Format::POSITION);
   check_file(profileName);
   ifstream prfF(profileName);
   ofstream filF(filterName);
@@ -318,9 +318,9 @@ inline void Filter::smooth_seg_rect (const Param& p) {
 
 template <bool SaveFilter>
 inline void Filter::smooth_seg_non_rect (const Param& p) {
-  const auto profileName  = gen_name(p.ref, p.tar, Format::PROFILE),
-             filterName   = gen_name(p.ref, p.tar, Format::FILTER),
-             positionName = gen_name(p.ref, p.tar, Format::POSITION);
+  const auto profileName  = gen_name(p.ID, p.ref, p.tar, Format::PROFILE),
+             filterName   = gen_name(p.ID, p.ref, p.tar, Format::FILTER),
+             positionName = gen_name(p.ID, p.ref, p.tar, Format::POSITION);
   check_file(profileName);
   ifstream prfF(profileName);
   ofstream filF(filterName);
@@ -408,10 +408,10 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   nSegs = seg->nSegs;
 }
 
-void Filter::extract_seg (const string& ref, const string& tar) const {
-  check_file(gen_name(ref,tar,Format::POSITION));
-  ifstream ff(gen_name(ref,tar,Format::POSITION));
-  const auto segName = gen_name(ref,tar,Format::SEGMENT);
+void Filter::extract_seg (u32 ID, const string& ref, const string& tar) const {
+  check_file(gen_name(ID, ref,tar,Format::POSITION));
+  ifstream ff(gen_name(ID, ref,tar,Format::POSITION));
+  const auto segName = gen_name(ID, ref,tar,Format::SEGMENT);
   auto subseq = make_unique<SubSeq>();
   subseq->inName = tar;
   u64 i = 0;
@@ -424,16 +424,18 @@ void Filter::extract_seg (const string& ref, const string& tar) const {
   ff.close();
 }
 
-void Filter::aggregate_pos (const string& origin, const string& dest) const {
-  ifstream fDirect(gen_name(origin, dest, Format::POSITION));
-  ofstream ffinal("final-"+gen_name(origin, dest, Format::POSITION));
+void Filter::aggregate_pos 
+(u32 ID, const string& origin, const string& dest) const {
+  ifstream fDirect(gen_name(ID, origin, dest, Format::POSITION));
+  ofstream ffinal("final-"+gen_name(ID, origin, dest, Format::POSITION));
   ffinal << POS_HDR <<'\t'<< origin <<'\t'<< to_string(file_size(origin))
                     <<'\t'<< dest   <<'\t'<< to_string(file_size(dest)) << '\n';
   int i = 0;
   for (string begDir, endDir, entDir, selfEntDir; 
        fDirect >> begDir >> endDir >> entDir >> selfEntDir; ++i) {
-    const string refRev = gen_name(origin, dest, Format::SEGMENT)+to_string(i);
-    ifstream fReverse(gen_name(refRev, origin, Format::POSITION));
+    const string refRev = 
+      gen_name(ID, origin, dest, Format::SEGMENT)+to_string(i);
+    ifstream fReverse(gen_name(ID, refRev, origin, Format::POSITION));
     for (string begRev, endRev, entRev, selfEntRev;
          fReverse >> begRev >> endRev >> entRev >> selfEntRev;) {
       ffinal 

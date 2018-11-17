@@ -32,6 +32,7 @@ class Param {   // Parameters
   bool        showInfo;
   string      report;
   bool        compress, filter, segment;
+  u32         ID;
 
   // Define Param::Param(){} in *.hpp => compile error
   //todo clean
