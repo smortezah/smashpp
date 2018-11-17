@@ -112,10 +112,11 @@ int main (int argc, char* argv[]) {
         auto filter = make_unique<Filter>(par);
         filter->smooth_seg(par);                // Filter and segment
         filter->extract_seg(par.ref, par.tar);  // Extract segs from target
+        models->selfEnt.reserve(filter->nSegs);
         const auto segName = gen_name(par.ref, par.tar, Format::SEGMENT);
         for (u64 i=0; i!=filter->nSegs; ++i) {
           par.seq = segName+to_string(i);
-          models->self_compress(par);
+          models->self_compress(par, i);
         }
         models->aggregate_slf(par);
 
