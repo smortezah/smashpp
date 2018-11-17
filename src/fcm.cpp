@@ -632,7 +632,7 @@ inline void FCM::self_compress_1 (const smashpp::Param& par, ContIter cont) {
           array<decltype(2*(*cont)->query(0)),4> f {};
           freqs_ir1(f, cont, pp.shl, pp.r);
           const auto entr = entropy(prob(f.begin(), &pp));
-          cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';//todo comment
+          // cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';//todo comment
           sumEnt += entr;
           (*cont)->update((pp.revNumSym<<pp.shl) | pp.r);
           update_ctx_ir1(ctxIr, &pp);
@@ -642,7 +642,7 @@ inline void FCM::self_compress_1 (const smashpp::Param& par, ContIter cont) {
           array<decltype(2*(*cont)->query(0)),4> f {};
           freqs_ir2(f, cont, &pp);
           const auto entr = entropy(prob(f.begin(), &pp));
-          cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';//todo comment
+          // cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';//todo comment
           sumEnt += entr;
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
@@ -653,7 +653,7 @@ inline void FCM::self_compress_1 (const smashpp::Param& par, ContIter cont) {
   }
   remove_progress_trace();
   ofstream sf(gen_name("", par.seq, Format::SELF));
-  sf << std::fixed << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
+  sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
   sf.close();
   seqF.close();
 }
@@ -723,7 +723,7 @@ inline void FCM::self_compress_n (const Param& par) {
   }
   remove_progress_trace();
   ofstream sf(gen_name("", par.seq, Format::SELF));
-  sf << std::fixed << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
+  sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
   sf.close();
   seqF.close();
 }
@@ -773,6 +773,26 @@ inline void FCM::self_compress_n_parent
     valUpd = cp->ppIt->l | cp->ppIt->numSym;
     update_ctx_ir2(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
+}
+
+void FCM::aggregate_slf (const Param& p) {
+  const auto segName = gen_name(p.ref, p.tar, Format::SEGMENT);
+  const auto posName = gen_name(p.ref, p.tar, Format::POSITION);
+  fstream pf(posName);
+  auto i = 0;
+
+  for (string tmp1,tmp2,tmp3; pf>>tmp1>>tmp2>>tmp3; ++i) {
+    string selfEnt;
+    ifstream sf(gen_name("", segName+to_string(i), Format::SELF));
+    sf >> selfEnt;
+    sf.close();
+    // remove((segName+to_string(i)).c_str());
+
+    pf << '\t' << selfEnt << '\n';
+    pf.seekp(ios::cur);
+  }
+
+  pf.close();
 }
 
 //// Called from main -- MUST NOT be inline

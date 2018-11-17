@@ -22,6 +22,7 @@ class FCM {   // Finite-context models
   void store    (const Param&);         // Build FCM (finite-context models)
   void compress (const Param&);
   void self_compress (const Param&);
+  void aggregate_slf (const Param&);
 ////  void report     (const Param&) const;
 
  private:

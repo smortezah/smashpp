@@ -214,8 +214,6 @@ inline void Param::help () const {
   const auto it  = [] (string&& s) { return italic(std::move(s));        };
   const auto fit = [] (string&& s) { return faint(italic(std::move(s))); };
   const auto ul  = [] (string&& s) { return underline(std::move(s));     };
-  const auto hl  = [] (string&& s) { return highlight(std::move(s));     };
-  const auto br  = [] (string&& s) { return bold_red(std::move(s));      };
 
   cerr 
   << b("NAME")                                                            <<'\n'
@@ -264,13 +262,13 @@ inline void Param::help () const {
      string_format("%.1f",MIN_THRESH) << ";" << string_format("%.1f",MAX_THRESH)
      << "]             " << fit("FILTER")                                 <<'\n'
   << "  " << b("-sp") << ", " << b("--save-profile") << "        "
-     "save profile                       " << fit("SAVE")                 <<'\n'
+     "save profile (*.prf)               " << fit("SAVE")                 <<'\n'
   << "  " << b("-sf") << ", " << b("--save-filter") << "         "
-     "save filtered file                 " << fit("SAVE")                 <<'\n'
+     "save filtered file (*.fil)         " << fit("SAVE")                 <<'\n'
   << "  " << b("-sb") << ", " << b("--save-seq") << "            "
      "save sequence (input: Fasta/Fastq) " << fit("SAVE")                 <<'\n'
   << "  " << b("-ss") << ", " << b("--save-segment") << "        "
-     "save segmented files               " << fit("SAVE")                 <<'\n'
+     "save segmented files (*-s\U00002099)        " << fit("SAVE")        <<'\n'
   << "  " << b("-sa") << ", " << b("--save-all") << "            "
      "save profile, filetered and        " << fit("SAVE")                 <<'\n'
   << "                             segmented files"                       <<'\n'
@@ -320,6 +318,7 @@ inline WType Param::win_type (const string& t) const {
   else if (t=="5" || t=="welch")         return WType::WELCH;
   else if (t=="6" || t=="sine")          return WType::SINE;
   else if (t=="7" || t=="nuttall")       return WType::NUTTALL;
+  else                                   return WType::HANN;
 }
 
 inline string Param::print_win_type () const {
@@ -339,7 +338,8 @@ inline string Param::print_win_type () const {
 inline FilterScale Param::filter_scale (const string& s) const {
   if      (s=="S" || s=="small")   return FilterScale::S;
   else if (s=="M" || s=="medium")  return FilterScale::M;
-  else if (s=="L" || s=="large")   return FilterScale::L; 
+  else if (s=="L" || s=="large")   return FilterScale::L;
+  else                             return FilterScale::L;
 }
 
 inline string Param::print_filter_scale () const {
@@ -413,8 +413,6 @@ inline void VizParam::help () const {
   const auto it  = [] (string&& s) { return italic(std::move(s));        };
   const auto fit = [] (string&& s) { return faint(italic(std::move(s))); };
   const auto ul  = [] (string&& s) { return underline(std::move(s));     };
-  const auto hl  = [] (string&& s) { return highlight(std::move(s));     };
-  const auto br  = [] (string&& s) { return bold_red(std::move(s));      };
 
   cerr 
   << b("NAME")                                                            <<'\n'

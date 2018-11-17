@@ -93,7 +93,7 @@ inline static void split (InIter first, InIter last, char delim, Vec& vOut) {
 inline static void wrap_text (string& text) {
   constexpr auto width = TEXTWIDTH;
   string out, word;
-  char curr, last;
+  char last = '\0';
   u64 pos = 0;
 
   for (auto c : text) {
@@ -409,6 +409,7 @@ inline static string conv_to_string (WType val) {
   case WType::WELCH:        return "5|welch";        break;
   case WType::SINE:         return "6|sine";         break;
   case WType::NUTTALL:      return "7|nuttall";      break;
+  default:                  return "2|hann";
   }
 }
 
@@ -417,6 +418,7 @@ inline static string conv_to_string (FilterScale val) {
   case FilterScale::S:      return "S|small";        break;
   case FilterScale::M:      return "M|medium";       break;
   case FilterScale::L:      return "L|large";        break;
+  default:                  return "L|large";
   }
 }
 }
