@@ -296,13 +296,13 @@ inline static void extract_subseq (const unique_ptr<SubSeq>& subseq) {
 }
 
 inline static string gen_name
-(const string& ref, const string& tar, const Format& frmt) {
+(u32 ID, const string& ref, const string& tar, const Format& frmt) {
   switch (frmt) {
-  case Format::PROFILE:   return ref+"-"+tar+"."+FMT_PRF;
-  case Format::FILTER:    return ref+"-"+tar+"."+FMT_FIL;
-  case Format::POSITION:  return ref+"-"+tar+"."+FMT_POS;
-  case Format::SEGMENT:   return ref+"-"+tar+"-"+LBL_SEG;
-  case Format::SELF:      return tar+"."+FMT_SLF;
+  case Format::PROFILE:   return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_PRF;
+  case Format::FILTER:    return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_FIL;
+  case Format::POSITION:  return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_POS;
+  case Format::SEGMENT:   return to_string(ID)+"-"+ref+"-"+tar+"-"+LBL_SEG;
+  case Format::SELF:      return to_string(ID)+"-"+tar+"."+FMT_SLF;
   default:                return "";
   }
 }

@@ -362,7 +362,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
   u64      symsNo{0};            // No. syms in target file, except \n
   prec_t   sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(par.tar);
-  ofstream pf(gen_name(par.ref, par.tar, Format::PROFILE));
+  ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
   ProbPar  pp{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
               static_cast<u8>(rMs[0].k<<1u)};
   const auto totalSize = file_size(par.tar);
@@ -414,7 +414,7 @@ inline void FCM::compress_n (const Param& par) {
   u64 symsNo{0};               // No. syms in target file, except \n
   prec_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(par.tar);
-  ofstream pf(gen_name(par.ref, par.tar, Format::PROFILE));
+  ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
   auto cp = make_unique<CompressPar>();
   // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = static_cast<u8>(rMs.size() + rTMs.size());
@@ -656,9 +656,6 @@ inline void FCM::self_compress_1
   // mut.lock();
   selfEnt[ID] = sumEnt/symsNo;
   // mut.unlock();
-  // ofstream sf(gen_name("", par.seq, Format::SELF));
-  // sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
-  // sf.close();
   seqF.close();
 }
 
@@ -729,9 +726,6 @@ inline void FCM::self_compress_n (const Param& par, u64 ID) {
   // mut.lock();
   selfEnt[ID] = sumEnt/symsNo;
   // mut.unlock();
-  // ofstream sf(gen_name("", par.seq, Format::SELF));
-  // sf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << sumEnt/symsNo << '\n';
-  // sf.close();
   seqF.close();
 }
 
@@ -783,7 +777,7 @@ inline void FCM::self_compress_n_parent
 }
 
 void FCM::aggregate_slf (const Param& p) const {
-  const auto posName = gen_name(p.ref, p.tar, Format::POSITION);
+  const auto posName = gen_name(p.ID, p.ref, p.tar, Format::POSITION);
   rename(posName.c_str(), (posName+LBL_BAK).c_str());
   ifstream pfOld(posName+LBL_BAK);
   ofstream pf(posName);
