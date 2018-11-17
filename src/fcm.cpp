@@ -784,29 +784,17 @@ inline void FCM::self_compress_n_parent
 
 void FCM::aggregate_slf (const Param& p) const {
   const auto posName = gen_name(p.ref, p.tar, Format::POSITION);
-  fstream pf(posName);
+  rename(posName.c_str(), (posName+LBL_BAK).c_str());
+  ifstream pfOld(posName+LBL_BAK);
+  ofstream pf(posName);
+  u64 i = 0;
 
-  u64 i=0;
-  for(char c;pf.get(c);){
-    if(c=='\n'){
-      pf.unget();
-      pf << '\t' << std::fixed << setprecision(3) << selfEnt[i++] << '\n';
-    }
+  for (string line; getline(pfOld, line); ++i) {
+    pf << line << '\t'
+       << std::fixed << setprecision(DEF_FIL_PREC) << selfEnt[i] << '\n';
   }
 
-  // for (u64 i=0; i!=selfEnt.size(); ++i) {
-  //   for(char c=' ';c!='\n';) 
-  //   pf.get(c);
-    
-  //   // u64 i=0;
-  //   // for(string tmp1, tmp2, tmp3, tmp4; pf >> tmp1 >> tmp2 >> tmp3;++i) {
-  // //   string tmp1, tmp2, tmp3, tmp4;
-  // //   pf >> tmp1 >> tmp2 >> tmp3;
-  //   pf << '\t' << std::fixed << setprecision(3) << selfEnt[i] /*<< '\n'*/;
-  //   // pf >> tmp4;
-  // //   // pf.seekp(ios::cur);
-  // }
-
+  pfOld.close();  remove((posName+LBL_BAK).c_str());
   pf.close();
 }
 
