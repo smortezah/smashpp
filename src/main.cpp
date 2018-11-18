@@ -114,15 +114,16 @@ int main (int argc, char* argv[]) {
           if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
           auto filter = make_unique<Filter>(par);
           filter->smooth_seg(par);              // Filter and segment
-          // filter->extract_seg(par.ID, par.ref, par.tar);  // Extract from tar
-          // // Ref-free compress
-          // models->selfEnt.reserve(filter->nSegs);
-          // auto segName = 
-          //   gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
-          // for (u64 i=0; i!=filter->nSegs; ++i) {
-          //   par.seq = segName+to_string(i);
-          //   models->self_compress(par, i);
-          // }
+          filter->extract_seg(par.ID, par.ref, par.tar);  // Extract from tar
+          cerr << TERMINAL_SEP;
+          // Ref-free compress
+          models->selfEnt.reserve(filter->nSegs);
+          auto segName = 
+            gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
+          for (u64 i=0; i!=filter->nSegs; ++i) {
+            par.seq = segName+to_string(i);
+            models->self_compress(par, i);
+          }
           // models->aggregate_slf(par);
           
           // // Consider the ref as new tar and segments of the tar as new refs

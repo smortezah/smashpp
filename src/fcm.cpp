@@ -353,7 +353,7 @@ void FCM::compress (const Param& p) {
   else
     compress_n(p);
 
-  cerr << message << "finished. Average Entropy="
+  cerr << message << "finished. Average entropy="
        << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps.\n";
   // cerr << "Done!\n";
 // //  if (p.verbose)
@@ -573,7 +573,9 @@ inline void FCM::compress_n_child
 }
 
 void FCM::self_compress (const Param& p, u64 ID) {
-  cerr << OUT_SEP << "Compressing \"" << p.seq << "\"...\n";
+  // cerr << OUT_SEP << "Compressing \"" << p.seq << "\"...\n";
+  message = "Compressing " + italic(p.seq) + " ";
+
   self_compress_alloc();
 
   if (tMs.size()==1 && tTMs.empty())  // 1 MM
@@ -586,7 +588,9 @@ void FCM::self_compress (const Param& p, u64 ID) {
   else
     self_compress_n(p, ID);
 
-  cerr << "Done!\n";
+  cerr << message << "finished. Average entropy="
+       << std::fixed << setprecision(DEF_PRF_PREC) << selfEnt[ID] << " bps.\n";
+  // cerr << "Done!\n";
 }
 
 inline void FCM::self_compress_alloc () {
@@ -657,11 +661,11 @@ inline void FCM::self_compress_1
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
-        show_progress(symsNo, totalSize);
+        show_progress(symsNo, totalSize, message);
       }
     }
   }
-  remove_progress_trace();
+  // remove_progress_trace();
   // mut.lock();
   selfEnt[ID] = sumEnt/symsNo;
   // mut.unlock();
@@ -727,11 +731,11 @@ inline void FCM::self_compress_n (const Param& par, u64 ID) {
         normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
 ////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
         sumEnt += ent;
-        show_progress(symsNo, totalSize);
+        show_progress(symsNo, totalSize, message);
       }
     }
   }
-  remove_progress_trace();
+  // remove_progress_trace();
   // mut.lock();
   selfEnt[ID] = sumEnt/symsNo;
   // mut.unlock();

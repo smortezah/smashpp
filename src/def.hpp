@@ -96,13 +96,13 @@ static const string    FMT_SEQ      {"seq"};   // Format of bare seq file
 static const string    FMT_PRF      {"prf"};   // Format of inf. profile file
 static const string    FMT_POS      {"pos"};   // Format of positions file
 static const string    FMT_FIL      {"fil"};   // Format of filtered files
-static const string    FMT_SLF      {"slf"};   // Format of self complex. files
 static const string    LBL_SEG      {"s"};     // Label of segment files
 static const string    LBL_BAK      {"_bk"};   // Label of backup files
 static const string    POS_HDR      {"#SCF"};  // Header of positions file
 static constexpr float PI           {3.14159265f};
 //const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
 static const string    OUT_SEP      {"\n"};
+static const string    TERMINAL_SEP {". . . . . . . . . . . . . . . . . . .\n"};
 static constexpr int   FILE_BUF     {8*1024};  // 8K
 static constexpr u8    TEXTWIDTH    {65};
 
