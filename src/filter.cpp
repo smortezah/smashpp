@@ -91,7 +91,8 @@ inline void Filter::show_info (const Param& p) const {
 }
 
 void Filter::smooth_seg (const Param& p) {
-  cerr << OUT_SEP << "Filtering and segmenting \"" << p.tar << "\"...\n";
+  // cerr << OUT_SEP << "Filtering and segmenting \"" << p.tar << "\"...\n";
+  message = "Filtering & segmenting " + italic(p.tar) + " ";
 
   if (wtype == WType::RECTANGULAR) {
     p.saveFilter ? smooth_seg_rect<true>(p) : smooth_seg_rect<false>(p);
@@ -106,9 +107,11 @@ void Filter::smooth_seg (const Param& p) {
   if (!p.saveAll && !p.saveFilter)
     remove((gen_name(p.ID, p.ref,p.tar,Format::FILTER)).c_str());
 
-  cerr << "Done!\n";
-//  if (p.verbose)
-    cerr << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") <<".\n";
+  cerr << message << "finished. "
+       << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") << ".\n";
+//   cerr << "Done!\n";
+// //  if (p.verbose)
+//     cerr << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") <<".\n";
 }
 
 inline void Filter::make_window () {
@@ -257,7 +260,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     const auto val = stof(num);
     seq.emplace_back(val);
     sum += val;
-    show_progress(++symsNo, totalSize);
+    show_progress(++symsNo, totalSize, message);
     jump_lines();
   }
   filtered = sum / seq.size();
@@ -275,7 +278,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     if (SaveFilter)
       filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
     seg->partition(posF, filtered);
-    show_progress(++symsNo, totalSize);
+    show_progress(++symsNo, totalSize, message);
     jump_lines();
   }
 
@@ -291,7 +294,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     seg->partition(posF, filtered);
     seq[idx] = val;
     idx = (idx+1) % wsize;
-    show_progress(++symsNo, totalSize);
+    show_progress(++symsNo, totalSize, message);
     jump_lines();
   }
   prfF.close();
@@ -305,12 +308,12 @@ inline void Filter::smooth_seg_rect (const Param& p) {
       filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
     seg->partition(posF, filtered);
     idx = (idx+1) % wsize;
-    show_progress(++symsNo, totalSize);
+    show_progress(++symsNo, totalSize, message);
   }
   seg->partition_last(posF);
-  show_progress(++symsNo, totalSize);
+  show_progress(++symsNo, totalSize, message);
 
-  remove_progress_trace();
+  // remove_progress_trace();
   posF.close();  filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
   nSegs = seg->nSegs;
@@ -349,7 +352,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   if (SaveFilter)
     filF /*<< std::fixed*/ << setprecision(DEF_FIL_PREC) << filtered << '\n';
   seg->partition(posF, filtered);
-  show_progress(++symsNo, totalSize);
+  show_progress(++symsNo, totalSize, message);
 
   // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
@@ -361,7 +364,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
     if (SaveFilter)
       filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
     seg->partition(posF, filtered);
-    show_progress(++symsNo, totalSize);
+    show_progress(++symsNo, totalSize, message);
     jump_lines();
   }
 
@@ -377,7 +380,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
     if (SaveFilter)
       filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
     seg->partition(posF, filtered);
-    show_progress(++symsNo, totalSize);
+    show_progress(++symsNo, totalSize, message);
     jump_lines();
   }
   prfF.close();
@@ -397,12 +400,12 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
     if (SaveFilter)
       filF /*<< std::fixed*/<< setprecision(DEF_FIL_PREC) << filtered << '\n';
     seg->partition(posF, filtered);
-    show_progress(++symsNo, totalSize);
+    show_progress(++symsNo, totalSize, message);
   }
   seg->partition_last(posF);
-  show_progress(++symsNo, totalSize);
+  show_progress(++symsNo, totalSize, message);
 
-  remove_progress_trace();
+  // remove_progress_trace();
   posF.close();  filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
   nSegs = seg->nSegs;

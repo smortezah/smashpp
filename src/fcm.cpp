@@ -250,8 +250,11 @@ inline void FCM::alloc_model () {
 
 void FCM::store (const Param& p) {
   const auto nMdl = rMs.size();
-  cerr << "Building the model" << (nMdl==1 ?"" :"s") << " based on \"" << p.ref
-       << "\" (level " << static_cast<u16>(p.level) << ")...\n";
+  // cerr << "Building the model" << (nMdl==1 ?"" :"s") << " based on \"" << p.ref
+  //      << "\" (level " << static_cast<u16>(p.level) << ")...\n";
+  message = "Building the model";    if (nMdl!=1) message+="s";
+  message += " of " + italic(p.ref) + " ";
+  cerr << message << "...";
 
   (p.nthr==1 || nMdl==1) ? store_1(p) : store_n(p)/*Mult thr*/;
 
@@ -262,7 +265,8 @@ void FCM::store (const Param& p) {
 //  for(auto a:cmls4)a->print();cerr<<'\n';
   #endif
 
-  cerr << "Done!\n";
+  cerr << "\r" << message << "finished.\n";
+  // cerr << "Done!\n";
 }
 
 inline void FCM::store_1 (const Param& p) {
@@ -336,7 +340,8 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 }
 
 void FCM::compress (const Param& p) {
-  cerr << OUT_SEP << "Compressing \"" << p.tar << "\"...\n";
+  // cerr << OUT_SEP << "Compressing \"" << p.tar << "\"...\n";
+  message = "Compressing " + italic(p.tar) + " ";
 
   if (rMs.size()==1 && rTMs.empty())  // 1 MM
     switch (rMs[0].cont) {
@@ -348,10 +353,12 @@ void FCM::compress (const Param& p) {
   else
     compress_n(p);
 
-  cerr << "Done!\n";
-//  if (p.verbose)
-    cerr << "Average Entropy = "
-         << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps\n";
+  cerr << message << "finished. Average Entropy="
+       << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps.\n";
+  // cerr << "Done!\n";
+// //  if (p.verbose)
+//     cerr << "Average Entropy = "
+//          << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps\n";
 }
 
 template <typename ContIter>
@@ -401,11 +408,12 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
           sumEnt += entr;
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
-        show_progress(symsNo, totalSize);
+        show_progress(symsNo, totalSize, message);
+        // show_progress(symsNo, totalSize);
       }
     }
   }
-  remove_progress_trace();
+  // remove_progress_trace();
   tf.close();  pf.close();
   aveEnt = sumEnt/symsNo;
 }
@@ -468,11 +476,12 @@ inline void FCM::compress_n (const Param& par) {
         normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
 ////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
         sumEnt += ent;
-        show_progress(symsNo, totalSize);
+        show_progress(symsNo, totalSize, message);
+        // show_progress(symsNo, totalSize);
       }
     }
   }
-  remove_progress_trace();
+  // remove_progress_trace();
   tf.close();  pf.close();
   aveEnt = sumEnt/symsNo;
 }

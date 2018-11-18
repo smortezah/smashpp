@@ -23,6 +23,7 @@ class Filter {
   WType         wtype;
   u32           wsize;
   vector<float> window;
+  string        message;
 
   void config              (const Param&);
   void config_wsize        (const Param&);
