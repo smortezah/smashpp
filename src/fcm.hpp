@@ -35,6 +35,7 @@ class FCM {   // Finite-context models
   vector<unique_ptr<Table32>>   tbl32;
   vector<unique_ptr<LogTable8>> lgtbl8;
   vector<unique_ptr<CMLS4>>     cmls4;
+  string                        message;
 
   void config (string&&, string&&);      // Set models parameters
   template <typename Iter>

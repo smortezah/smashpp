@@ -18,19 +18,37 @@ namespace smashpp {
 inline static string bold (string&& text) {
   return "\033[1m"+text+"\033[0m";
 }
+inline static string bold (const string& text) {
+  return "\033[1m"+text+"\033[0m";
+}
 inline static string faint (string&& text) {
+  return "\033[2m"+text+"\033[0m";
+}
+inline static string faint (const string& text) {
   return "\033[2m"+text+"\033[0m";
 }
 inline static string italic (string&& text) {
   return "\033[3m"+text+"\033[0m";
 }
+inline static string italic (const string& text) {
+  return "\033[3m"+text+"\033[0m";
+}
 inline static string underline (string&& text) {
+  return "\033[4m"+text+"\033[0m";
+}
+inline static string underline (const string& text) {
   return "\033[4m"+text+"\033[0m";
 }
 inline static string highlight (string&& text) {
   return "\033[7m"+text+"\033[0m";
 }
+inline static string highlight (const string& text) {
+  return "\033[7m"+text+"\033[0m";
+}
 inline static string bold_red (string&& text) {
+  return "\033[1m\033[38;5;1m"+text+"\033[0m";
+}
+inline static string bold_red (const string& text) {
   return "\033[1m\033[38;5;1m"+text+"\033[0m";
 }
 
@@ -298,11 +316,17 @@ inline static void extract_subseq (const unique_ptr<SubSeq>& subseq) {
 inline static string gen_name
 (u32 ID, const string& ref, const string& tar, const Format& frmt) {
   switch (frmt) {
-  case Format::PROFILE:   return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_PRF;
-  case Format::FILTER:    return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_FIL;
-  case Format::POSITION:  return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_POS;
-  case Format::SEGMENT:   return to_string(ID)+"-"+ref+"-"+tar+"-"+LBL_SEG;
+  case Format::PROFILE:   return to_string(ID)+"-"+tar+"."+FMT_PRF;
+  case Format::FILTER:    return to_string(ID)+"-"+tar+"."+FMT_FIL;
+  case Format::POSITION:  return to_string(ID)+"-"+tar+"."+FMT_POS;
+  case Format::SEGMENT:   return to_string(ID)+"-"+tar+"-"+LBL_SEG;
   case Format::SELF:      return to_string(ID)+"-"+tar+"."+FMT_SLF;
+  //todo
+  // case Format::PROFILE:   return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_PRF;
+  // case Format::FILTER:    return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_FIL;
+  // case Format::POSITION:  return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_POS;
+  // case Format::SEGMENT:   return to_string(ID)+"-"+ref+"-"+tar+"-"+LBL_SEG;
+  // case Format::SELF:      return to_string(ID)+"-"+tar+"."+FMT_SLF;
   default:                return "";
   }
 }
@@ -378,6 +402,11 @@ inline static void show_progress (ValuePos pos, Value total) {
     cerr << "Progress: [" << static_cast<int>((pos*100) / total) << "%]\r";
 //    flush(cerr);
   }
+}
+template <typename ValuePos, typename Value>
+inline static void show_progress (ValuePos pos, Value total, const string& msg){
+  if (total>100 && pos%(total/100)==0)
+    cerr << msg << "[" << static_cast<int>((pos*100) / total) << "%]\r";
 }
 
 inline static void remove_progress_trace () {
