@@ -104,10 +104,9 @@ int main (int argc, char* argv[]) {
         filter->extract_seg(par.ID, par.ref, par.tar);
       }
       else {
-        // for (int timesRunning=0; timesRunning!=2; ++timesRunning) {
-        for (int timesRunning=0; timesRunning!=1; ++timesRunning) {//todo test
-          par.ID = timesRunning;
-          const auto origRef=par.ref, origTar=par.tar;
+        const auto origRef=par.ref, origTar=par.tar;
+        for (int timesRunning=0; timesRunning!=2; ++timesRunning) {
+          par.ID = timesRunning;    par.ref=origRef;    par.tar=origTar;
           auto models = make_unique<FCM>(par);  // == auto* models=new FCM(par);
           models->store(par);                   // Build models
           models->compress(par);                // Compress
@@ -118,7 +117,7 @@ int main (int argc, char* argv[]) {
           cerr << TERM_SEP;
           // Ref-free compress
           models->selfEnt.reserve(filter->nSegs);
-          auto segName = 
+          const auto segName = 
             gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
           for (u64 i=0; i!=filter->nSegs; ++i) {
             par.seq = segName+to_string(i);
@@ -132,8 +131,7 @@ int main (int argc, char* argv[]) {
                << '\n';
           const auto newTar = par.ref;
           par.tar = newTar;
-          // const auto tarSegs = filter->nSegs;
-          const auto tarSegs = 1;//todo remove
+          const auto tarSegs = filter->nSegs;
           for (u64 i=0; i!=tarSegs; ++i) {
             par.ref = segName+to_string(i);
             models = make_unique<FCM>(par);
@@ -144,22 +142,23 @@ int main (int argc, char* argv[]) {
             filter->smooth_seg(par);
             filter->extract_seg(par.ID, par.ref, par.tar);
             cerr << TERM_SEP;
-          //   // Ref-free compress
-          //   models->selfEnt.reserve(filter->nSegs);
-          //   segName = gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
-          //   for (u64 j=0; j!=filter->nSegs; ++j) {
-          //     par.seq = segName+to_string(j);
-          //     models->self_compress(par, j);
-          //   }
-          //   models->aggregate_slf(par);
+            // Ref-free compress
+            models->selfEnt.reserve(filter->nSegs);
+            const auto selfSegName = 
+              gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
+            for (u64 j=0; j!=filter->nSegs; ++j) {
+              par.seq = selfSegName+to_string(j);
+              models->self_compress(par, j);
+              remove(par.seq.c_str());
+            }
+            models->aggregate_slf(par);
+            cerr << TERM_SEP;
           }
-          
-          // filter->aggregate_pos(par.ID, origRef, origTar);
+          filter->aggregate_pos(par.ID, origRef, origTar);
 
-          // for (u64 i=0; i!=filter->nSegs; ++i)
-          //   if (!par.saveAll && !par.saveSegment)
-          //     remove((segName+to_string(i)).c_str());
-   
+          for (u64 i=0; i!=filter->nSegs; ++i)
+            if (!par.saveAll && !par.saveSegment)
+              remove((segName+to_string(i)).c_str());
           // Remove temporary sequences generated from Fasta/Fastq input files
           if (!par.saveSeq) {
             if (par.refType==FileType::FASTA || par.refType==FileType::FASTQ) {
