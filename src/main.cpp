@@ -130,9 +130,10 @@ int main (int argc, char* argv[]) {
           cerr << '\n' 
                << "===[ Building reference map for each target pattern ]====="
                << '\n';
-          const auto newTar  = par.ref;
+          const auto newTar = par.ref;
           par.tar = newTar;
-          const auto tarSegs = filter->nSegs;
+          // const auto tarSegs = filter->nSegs;
+          const auto tarSegs = 1;//todo remove
           for (u64 i=0; i!=tarSegs; ++i) {
             par.ref = segName+to_string(i);
             models = make_unique<FCM>(par);
@@ -143,14 +144,14 @@ int main (int argc, char* argv[]) {
             filter->smooth_seg(par);
             filter->extract_seg(par.ID, par.ref, par.tar);
             cerr << TERM_SEP;
-            // // Ref-free compress
-            // models->selfEnt.reserve(filter->nSegs);
-            // segName = gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
-            // for (u64 i=0; i!=filter->nSegs; ++i) {
-            //   par.seq = segName+to_string(i);
-            //   models->self_compress(par, i);
-            // }
-            // models->aggregate_slf(par);
+          //   // Ref-free compress
+          //   models->selfEnt.reserve(filter->nSegs);
+          //   segName = gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
+          //   for (u64 j=0; j!=filter->nSegs; ++j) {
+          //     par.seq = segName+to_string(j);
+          //     models->self_compress(par, j);
+          //   }
+          //   models->aggregate_slf(par);
           }
           
           // filter->aggregate_pos(par.ID, origRef, origTar);

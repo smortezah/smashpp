@@ -412,13 +412,13 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
 }
 
 void Filter::extract_seg (u32 ID, const string& ref, const string& tar) const {
-  check_file(gen_name(ID, ref,tar,Format::POSITION));
-  ifstream ff(gen_name(ID, ref,tar,Format::POSITION));
+  check_file(gen_name(ID, ref, tar, Format::POSITION));
+  ifstream ff(gen_name(ID, ref, tar, Format::POSITION));
   const auto segName = gen_name(ID, ref,tar,Format::SEGMENT);
   auto subseq = make_unique<SubSeq>();
   subseq->inName = tar;
   u64 i = 0;
-  for (string beg, end, ent; ff>>beg>>end>>ent; ++i) {
+  for (string beg,end,ent; ff>>beg>>end>>ent; ++i) {
     subseq->outName = segName+to_string(i);
     subseq->begPos  = stoull(beg);
     subseq->size    = static_cast<streamsize>(stoull(end)-subseq->begPos+1);
