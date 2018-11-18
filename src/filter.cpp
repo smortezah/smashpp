@@ -430,6 +430,7 @@ void Filter::extract_seg (u32 ID, const string& ref, const string& tar) const {
 void Filter::aggregate_pos 
 (u32 ID, const string& origin, const string& dest) const {
   ifstream fDirect(gen_name(ID, origin, dest, Format::POSITION));
+  ifstream fReverse;
   ofstream ffinal("final-"+gen_name(ID, origin, dest, Format::POSITION));
   ffinal << POS_HDR <<'\t'<< origin <<'\t'<< to_string(file_size(origin))
                     <<'\t'<< dest   <<'\t'<< to_string(file_size(dest)) << '\n';
@@ -438,7 +439,7 @@ void Filter::aggregate_pos
        fDirect >> begDir >> endDir >> entDir >> selfEntDir; ++i) {
     const string refRev = 
       gen_name(ID, origin, dest, Format::SEGMENT)+to_string(i);
-    ifstream fReverse(gen_name(ID, refRev, origin, Format::POSITION));
+    fReverse.open(gen_name(ID, refRev, origin, Format::POSITION));
     for (string begRev, endRev, entRev, selfEntRev;
          fReverse >> begRev >> endRev >> entRev >> selfEntRev;) {
       ffinal 
@@ -446,8 +447,11 @@ void Filter::aggregate_pos
         << begDir <<'\t'<< endDir <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';
     }
     fReverse.close();
+    remove((gen_name(ID, refRev, origin, Format::POSITION)).c_str());
   }
-  fDirect.close();  ffinal.close();
+  fDirect.close();
+  remove((gen_name(ID, origin, dest, Format::POSITION)).c_str());
+  ffinal.close();
 }
 
 #ifdef BENCH
