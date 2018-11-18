@@ -320,7 +320,6 @@ inline static string gen_name
   case Format::FILTER:    return to_string(ID)+"-"+tar+"."+FMT_FIL;
   case Format::POSITION:  return to_string(ID)+"-"+tar+"."+FMT_POS;
   case Format::SEGMENT:   return to_string(ID)+"-"+tar+"-"+LBL_SEG;
-  case Format::SELF:      return to_string(ID)+"-"+tar+"."+FMT_SLF;
   //todo
   // case Format::PROFILE:   return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_PRF;
   // case Format::FILTER:    return to_string(ID)+"-"+ref+"-"+tar+"."+FMT_FIL;
