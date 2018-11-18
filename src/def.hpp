@@ -100,11 +100,12 @@ static const string    LBL_SEG      {"s"};     // Label of segment files
 static const string    LBL_BAK      {"_bk"};   // Label of backup files
 static const string    POS_HDR      {"#SCF"};  // Header of positions file
 static constexpr float PI           {3.14159265f};
-//const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
-static const string    OUT_SEP      {"\n"};
-static const string    TERMINAL_SEP {". . . . . . . . . . . . . . . . . . .\n"};
 static constexpr int   FILE_BUF     {8*1024};  // 8K
 static constexpr u8    TEXTWIDTH    {65};
+//const  string          OUT_SEP      {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"};
+static const string    OUT_SEP      {"\n"};
+static const string    TERM_SEP     {". . . . . . . . . . . . . . . . . . . . "
+                                     ". . . . . . . . .\n"};
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDIN>>;
