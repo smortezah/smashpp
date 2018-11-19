@@ -524,9 +524,21 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
         }//5
       }
       else if (min0[i] == min1[j]) {
-        if (max0[i]>min1[j] && max0[i]<max1[j]) {}//6
-        else if (max0[i] == max1[j]) {}//7
-        else if (max0[i] > max1[j]) {}//8
+        if (max0[i]>min1[j] && max0[i]<max1[j]) {//6 position che rangi neveshte she?
+          if ((max0[i]-min0[i]) >= INTRSCT_COEF*(max1[j]-min1[j]))
+            whichToPrint[i].emplace_back(printSelect(entTar0[i], entTar1[j]));
+          else
+            whichToPrint[i].emplace_back(2);
+        }
+        else if (max0[i] == max1[j]) {//7
+          whichToPrint[i].emplace_back(printSelect(entTar0[i], entTar1[j]));
+        }
+        else if (max0[i] > max1[j]) {//8 position che rangi neveshte she?
+          if ((max1[j]-min1[j]) >= INTRSCT_COEF*(max0[i]-min0[i]))
+            whichToPrint[i].emplace_back(printSelect(entTar0[i], entTar1[j]));
+          else
+            whichToPrint[i].emplace_back(2);
+        }
       }
       else if (min0[i]>min1[j] && max0[i]<=max1[j]) {//9, 10
         if ((max0[i]-min0[i]) >= INTRSCT_COEF*(max1[j]-min1[j]))
