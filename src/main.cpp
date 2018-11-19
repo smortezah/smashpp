@@ -105,80 +105,81 @@ int main (int argc, char* argv[]) {
       }
       else {
         const auto origRef=par.ref, origTar=par.tar;
-        for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
-          par.ID = timesRunning;    par.ref=origRef;    par.tar=origTar;
-          auto models = make_unique<FCM>(par);  // == auto* models=new FCM(par);
-          for (auto& e : models->rMs)   e.ir=timesRunning;
-          for (auto& e : models->rTMs)  e.ir=timesRunning;
-          for (auto& e : models->tMs)   e.ir=timesRunning;
-          for (auto& e : models->tTMs)  e.ir=timesRunning;
-          models->store(par);                   // Build models
-          models->compress(par);                // Compress
-          if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
-          auto filter = make_unique<Filter>(par);
-          filter->smooth_seg(par);              // Filter and segment
-          filter->extract_seg(par.ID, par.ref, par.tar);  // Extract from tar
-          cerr << TERM_SEP;
-          // Ref-free compress
-          models->selfEnt.reserve(filter->nSegs);
-          const auto segName = 
-            gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
-          for (u64 i=0; i!=filter->nSegs; ++i) {
-            par.seq = segName+to_string(i);
-            models->self_compress(par, i);
-          }
-          models->aggregate_slf(par);
+        // for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
+        //   par.ID = timesRunning;    par.ref=origRef;    par.tar=origTar;
+        //   auto models = make_unique<FCM>(par);  // == auto* models=new FCM(par);
+        //   for (auto& e : models->rMs)   e.ir=timesRunning;
+        //   for (auto& e : models->rTMs)  e.ir=timesRunning;
+        //   for (auto& e : models->tMs)   e.ir=timesRunning;
+        //   for (auto& e : models->tTMs)  e.ir=timesRunning;
+        //   models->store(par);                   // Build models
+        //   models->compress(par);                // Compress
+        //   if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
+        //   auto filter = make_unique<Filter>(par);
+        //   filter->smooth_seg(par);              // Filter and segment
+        //   filter->extract_seg(par.ID, par.ref, par.tar);  // Extract from tar
+        //   cerr << TERM_SEP;
+        //   // Ref-free compress
+        //   models->selfEnt.reserve(filter->nSegs);
+        //   const auto segName = 
+        //     gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
+        //   for (u64 i=0; i!=filter->nSegs; ++i) {
+        //     par.seq = segName+to_string(i);
+        //     models->self_compress(par, i);
+        //   }
+        //   models->aggregate_slf(par);
           
-          // Consider the ref as new tar and segments of the tar as new refs
-          cerr << '\n' 
-               << "===[ Building reference map for each target pattern ]====="
-               << '\n';
-          const auto newTar = par.ref;
-          par.tar = newTar;
-          const auto tarSegs = filter->nSegs;
-          for (u64 i=0; i!=tarSegs; ++i) {
-            par.ref = segName+to_string(i);
-            models = make_unique<FCM>(par);
-            models->store(par);
-            models->compress(par);
-            if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
-            filter = make_unique<Filter>(par);
-            filter->smooth_seg(par);
-            filter->extract_seg(par.ID, par.ref, par.tar);
-            cerr << TERM_SEP;
-            // Ref-free compress
-            models->selfEnt.reserve(filter->nSegs);
-            const auto selfSegName = 
-              gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
-            for (u64 j=0; j!=filter->nSegs; ++j) {
-              par.seq = selfSegName+to_string(j);
-              models->self_compress(par, j);
-              if (!par.saveAll && !par.saveSegment)
-                remove(par.seq.c_str());
-            }
-            models->aggregate_slf(par);
-            cerr << TERM_SEP;
-          }
-          filter->aggregate_mid_pos(par.ID, origRef, origTar);
+        //   // Consider the ref as new tar and segments of the tar as new refs
+        //   cerr << '\n' 
+        //        << "===[ Building reference map for each target pattern ]====="
+        //        << '\n';
+        //   const auto newTar = par.ref;
+        //   par.tar = newTar;
+        //   const auto tarSegs = filter->nSegs;
+        //   for (u64 i=0; i!=tarSegs; ++i) {
+        //     par.ref = segName+to_string(i);
+        //     models = make_unique<FCM>(par);
+        //     models->store(par);
+        //     models->compress(par);
+        //     if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
+        //     filter = make_unique<Filter>(par);
+        //     filter->smooth_seg(par);
+        //     filter->extract_seg(par.ID, par.ref, par.tar);
+        //     cerr << TERM_SEP;
+        //     // Ref-free compress
+        //     models->selfEnt.reserve(filter->nSegs);
+        //     const auto selfSegName = 
+        //       gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
+        //     for (u64 j=0; j!=filter->nSegs; ++j) {
+        //       par.seq = selfSegName+to_string(j);
+        //       models->self_compress(par, j);
+        //       if (!par.saveAll && !par.saveSegment)
+        //         remove(par.seq.c_str());
+        //     }
+        //     models->aggregate_slf(par);
+        //     cerr << TERM_SEP;
+        //   }
+        //   filter->aggregate_mid_pos(par.ID, origRef, origTar);
 
-          for (u64 i=0; i!=tarSegs; ++i)
-            if (!par.saveAll && !par.saveSegment)
-              remove((segName+to_string(i)).c_str());
-          // Remove temporary sequences generated from Fasta/Fastq input files
-          if (!par.saveSeq) {
-            if (par.refType==FileType::FASTA || par.refType==FileType::FASTQ) {
-              remove(origRef.c_str());
-              rename((origRef+LBL_BAK).c_str(), origRef.c_str());
-            }
-            if (par.tarType==FileType::FASTA || par.tarType==FileType::FASTQ) {
-              remove(origTar.c_str());
-              rename((origTar+LBL_BAK).c_str(), origTar.c_str());
-            }
-          }
+        //   for (u64 i=0; i!=tarSegs; ++i)
+        //     if (!par.saveAll && !par.saveSegment)
+        //       remove((segName+to_string(i)).c_str());
+        //   // Remove temporary sequences generated from Fasta/Fastq input files
+        //   if (!par.saveSeq) {
+        //     if (par.refType==FileType::FASTA || par.refType==FileType::FASTQ) {
+        //       remove(origRef.c_str());
+        //       rename((origRef+LBL_BAK).c_str(), origRef.c_str());
+        //     }
+        //     if (par.tarType==FileType::FASTA || par.tarType==FileType::FASTQ) {
+        //       remove(origTar.c_str());
+        //       rename((origTar+LBL_BAK).c_str(), origTar.c_str());
+        //     }
+        //   }
+        // }
 
-          filter->aggregate_final_pos(timesRunning, origRef, origTar);
-        }
-
+        auto filter = make_unique<Filter>(par);
+        filter->aggregate_final_pos(origRef, origTar);
+        
 
 // //        // Report
 // //        models->report(par); // Without "-R" does nothing

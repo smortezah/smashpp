@@ -440,8 +440,10 @@ void Filter::aggregate_mid_pos
     fReverse.open(gen_name(ID, refRev, origin, Format::POSITION));
     for (string begRev, endRev, entRev, selfEntRev;
          fReverse >> begRev >> endRev >> entRev >> selfEntRev;) {
-      fmid << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< selfEntRev <<'\t'
-           << begDir <<'\t'<< endDir <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';
+      fmid << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< selfEntRev <<'\t';
+      if      (ID==0)  fmid << begDir <<'\t'<< endDir;
+      else if (ID==1)  fmid << endDir <<'\t'<< begDir;
+      fmid <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';
     }
     fReverse.close();
     remove((gen_name(ID, refRev, origin, Format::POSITION)).c_str());
@@ -451,22 +453,119 @@ void Filter::aggregate_mid_pos
   fmid.close();
 }
 
-void Filter::aggregate_final_pos 
-(u32 ID, const string& ref, const string& tar) const {
-  const auto midfName = LBL_MID+"-"+gen_name(ID, ref, tar, Format::POSITION);
-  ifstream midf(midfName);
-  ofstream finf(ref+"-"+tar+"."+FMT_POS, ios::app);
-  const u64 size = file_size(midfName);
-  vector<char> buffer(size, 0);
+void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
+  const auto midf0Name = LBL_MID+"-"+gen_name(0, ref, tar, Format::POSITION),
+             midf1Name = LBL_MID+"-"+gen_name(1, ref, tar, Format::POSITION);
+  ifstream midf0(midf0Name), midf1(midf1Name);
+  // ofstream finf(ref+"-"+tar+"."+FMT_POS, ios::app);
 
-  midf.read (buffer.data(), size);
-  if (ID == 0)
-    finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
-                    <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';
-  finf.write(buffer.data(), size);
+  vector<u64> begTar0, endTar0, entTar0;
+  vector<u64> begTar1, endTar1, entTar1;
+  for (string begRef,endRef,entRef,selfEntRef,begTar,endTar,entTar,selfEntTar;
+       midf0 >> begRef >> endRef >> entRef >> selfEntRef
+             >> begTar >> endTar >> entTar >> selfEntTar;) {
+    begTar0.emplace_back(stoull(begTar));
+    endTar0.emplace_back(stoull(endTar));
+    entTar0.emplace_back(stoull(entTar));
+  }
+  for (string begRef,endRef,entRef,selfEntRef,begTar,endTar,entTar,selfEntTar;
+       midf1 >> begRef >> endRef >> entRef >> selfEntRef
+             >> begTar >> endTar >> entTar >> selfEntTar;) {
+    begTar1.emplace_back(stoull(begTar));
+    endTar1.emplace_back(stoull(endTar));
+    entTar1.emplace_back(stoull(entTar));
+  }
 
-  midf.close();  remove(midfName.c_str());
-  finf.close();
+  vector<u64> min0, max0, min1, max1;
+  for (u64 i=0; i!=begTar0.size(); ++i) {
+    if (begTar0[i] < endTar0[i]) {
+      min0.emplace_back(begTar0[i]);
+      max0.emplace_back(endTar0[i]);
+    }
+    else {
+      min0.emplace_back(endTar0[i]);
+      max0.emplace_back(begTar0[i]);
+    }
+  }
+  for (u64 i=0; i!=begTar1.size(); ++i) {
+    if (begTar1[i] < endTar1[i]) {
+      min1.emplace_back(begTar1[i]);
+      max1.emplace_back(endTar1[i]);
+    }
+    else {
+      min1.emplace_back(endTar1[i]);
+      max1.emplace_back(begTar1[i]);
+    }
+  }
+
+  vector<vector<u8>> whichToPrint;
+  whichToPrint.reserve(begTar0.size()*begTar1.size());
+  const auto printSelect = [=] (prec_t a, prec_t b) { return (a<=b) ? 0 : 1; };
+  for (u64 i=0; i!=begTar0.size(); ++i) {
+    for (u64 j=0; j!=begTar1.size(); ++j) {
+      if (min0[i] < min1[j]) {
+        if      (max0[i] < min1[j]) {//1
+          whichToPrint[i].emplace_back(2);
+        }
+        else if (max0[i] == min1[j]) {//2
+          whichToPrint[i].emplace_back(2); //todo chack kon pos ha ru ham nayofte
+        }
+        else if (max0[i]>min1[j] && max0[i]<=max1[j]) {//3, 4
+          if ((max0[i]-min1[j]) >= INTRSCT_COEF*(max1[j]-min0[i]))
+            whichToPrint[i].emplace_back(printSelect(entTar0[i], entTar1[j]));
+          else
+            whichToPrint[i].emplace_back(2);
+        }
+        else if (max0[i] > max1[j]) {
+          if ((max1[j]-min1[j]) >= INTRSCT_COEF*(max0[i]-min0[i]))
+            whichToPrint[i].emplace_back(printSelect(entTar0[i], entTar1[j]));
+          else
+            whichToPrint[i].emplace_back(2);
+        }//5
+      }
+      else if (min0[i] == min1[j]) {
+        if (max0[i]>min1[j] && max0[i]<max1[j]) {}//6
+        else if (max0[i] == max1[j]) {}//7
+        else if (max0[i] > max1[j]) {}//8
+      }
+      else if (min0[i]>min1[j] && max0[i]<=max1[j]) {//9, 10
+        if ((max0[i]-min0[i]) >= INTRSCT_COEF*(max1[j]-min1[j]))
+          whichToPrint[i].emplace_back(printSelect(entTar0[i], entTar1[j]));
+        else
+          whichToPrint[i].emplace_back(2);
+      }
+      else if (min0[i]>min1[j] && min0[i]<max1[j] && max0[i]>max1[j]) {//11
+        if ((max1[j]-min0[i]) >= INTRSCT_COEF*(max0[i]-min1[j]))
+          whichToPrint[i].emplace_back(printSelect(entTar0[i], entTar1[j]));
+        else
+          whichToPrint[i].emplace_back(2);
+      }
+      else if (min0[i] == max1[j]) {//12
+        whichToPrint[i].emplace_back(2); //todo chack kon pos ha ru ham nayofte
+      }
+      else if (min0[i] > max1[j]) {//13
+        whichToPrint[i].emplace_back(2);
+      }
+    }
+  }
+
+for (u64 i=0; i!=begTar0.size(); ++i) {
+  for(auto e:whichToPrint[i]) cerr<<int(e)<<' ';
+  cerr<<'\n';
+}
+
+    // const u64 size0 = file_size(midfName0);
+    // vector<char> buffer(size, 0);
+
+    // midf.read (buffer.data(), size);
+    // if (ID == 0)
+    //   finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
+    //                   <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';
+    // finf.write(buffer.data(), size);
+
+    midf0.close();
+    midf1.close(); //todo remove(midfName.c_str());
+    // finf.close();
 }
 
 #ifdef BENCH
