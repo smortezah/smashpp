@@ -16,8 +16,13 @@
 namespace smashpp {
 class FCM {   // Finite-context models
  public:
-  prec_t         aveEnt;
-  vector<prec_t> selfEnt;
+  prec_t          aveEnt;
+  vector<prec_t>  selfEnt;
+  vector<MMPar>   rMs;    // Ref Markov models
+  vector<STMMPar> rTMs;   // Ref Tolerant Markov models
+  vector<MMPar>   tMs;    // Tar Markov models
+  vector<STMMPar> tTMs;   // Tar Tolerant Markov models
+
   
   explicit FCM  (Param&);
   void store    (const Param&);         // Build FCM (finite-context models)
@@ -27,10 +32,10 @@ class FCM {   // Finite-context models
 ////  void report     (const Param&) const;
 
  private:
-  vector<MMPar>                 rMs;     // Ref Markov models
-  vector<STMMPar>               rTMs;    // Ref Tolerant Markov models
-  vector<MMPar>                 tMs;     // Tar Markov models
-  vector<STMMPar>               tTMs;    // Tar Tolerant Markov models
+  // vector<MMPar>                 rMs;     // Ref Markov models
+  // vector<STMMPar>               rTMs;    // Ref Tolerant Markov models
+  // vector<MMPar>                 tMs;     // Tar Markov models
+  // vector<STMMPar>               tTMs;    // Tar Tolerant Markov models
   vector<unique_ptr<Table64>>   tbl64;
   vector<unique_ptr<Table32>>   tbl32;
   vector<unique_ptr<LogTable8>> lgtbl8;

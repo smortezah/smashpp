@@ -427,13 +427,11 @@ void Filter::extract_seg (u32 ID, const string& ref, const string& tar) const {
   ff.close();
 }
 
-void Filter::aggregate_pos 
+void Filter::aggregate_mid_pos 
 (u32 ID, const string& origin, const string& dest) const {
   ifstream fDirect(gen_name(ID, origin, dest, Format::POSITION));
   ifstream fReverse;
-  ofstream ffinal("final-"+gen_name(ID, origin, dest, Format::POSITION));
-  ffinal << POS_HDR <<'\t'<< origin <<'\t'<< to_string(file_size(origin))
-                    <<'\t'<< dest   <<'\t'<< to_string(file_size(dest)) << '\n';
+  ofstream fmid(LBL_MID+"-"+gen_name(ID, origin, dest, Format::POSITION));
   int i = 0;
   for (string begDir, endDir, entDir, selfEntDir; 
        fDirect >> begDir >> endDir >> entDir >> selfEntDir; ++i) {
@@ -442,16 +440,33 @@ void Filter::aggregate_pos
     fReverse.open(gen_name(ID, refRev, origin, Format::POSITION));
     for (string begRev, endRev, entRev, selfEntRev;
          fReverse >> begRev >> endRev >> entRev >> selfEntRev;) {
-      ffinal 
-        << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< selfEntRev <<'\t'
-        << begDir <<'\t'<< endDir <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';
+      fmid << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< selfEntRev <<'\t'
+           << begDir <<'\t'<< endDir <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';
     }
     fReverse.close();
     remove((gen_name(ID, refRev, origin, Format::POSITION)).c_str());
   }
   fDirect.close();
   remove((gen_name(ID, origin, dest, Format::POSITION)).c_str());
-  ffinal.close();
+  fmid.close();
+}
+
+void Filter::aggregate_final_pos 
+(u32 ID, const string& ref, const string& tar) const {
+  const auto midfName = LBL_MID+"-"+gen_name(ID, ref, tar, Format::POSITION);
+  ifstream midf(midfName);
+  ofstream finf(ref+"-"+tar+"."+FMT_POS, ios::app);
+  const u64 size = file_size(midfName);
+  vector<char> buffer(size, 0);
+
+  midf.read (buffer.data(), size);
+  if (ID == 0)
+    finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
+                    <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';
+  finf.write(buffer.data(), size);
+
+  midf.close();  remove(midfName.c_str());
+  finf.close();
 }
 
 #ifdef BENCH

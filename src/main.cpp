@@ -105,9 +105,13 @@ int main (int argc, char* argv[]) {
       }
       else {
         const auto origRef=par.ref, origTar=par.tar;
-        for (int timesRunning=0; timesRunning!=2; ++timesRunning) {
+        for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
           par.ID = timesRunning;    par.ref=origRef;    par.tar=origTar;
           auto models = make_unique<FCM>(par);  // == auto* models=new FCM(par);
+          for (auto& e : models->rMs)   e.ir=timesRunning;
+          for (auto& e : models->rTMs)  e.ir=timesRunning;
+          for (auto& e : models->tMs)   e.ir=timesRunning;
+          for (auto& e : models->tTMs)  e.ir=timesRunning;
           models->store(par);                   // Build models
           models->compress(par);                // Compress
           if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
@@ -149,14 +153,15 @@ int main (int argc, char* argv[]) {
             for (u64 j=0; j!=filter->nSegs; ++j) {
               par.seq = selfSegName+to_string(j);
               models->self_compress(par, j);
-              remove(par.seq.c_str());
+              if (!par.saveAll && !par.saveSegment)
+                remove(par.seq.c_str());
             }
             models->aggregate_slf(par);
             cerr << TERM_SEP;
           }
-          filter->aggregate_pos(par.ID, origRef, origTar);
+          filter->aggregate_mid_pos(par.ID, origRef, origTar);
 
-          for (u64 i=0; i!=filter->nSegs; ++i)
+          for (u64 i=0; i!=tarSegs; ++i)
             if (!par.saveAll && !par.saveSegment)
               remove((segName+to_string(i)).c_str());
           // Remove temporary sequences generated from Fasta/Fastq input files
@@ -171,7 +176,7 @@ int main (int argc, char* argv[]) {
             }
           }
 
-          par.level += 5;
+          filter->aggregate_final_pos(timesRunning, origRef, origTar);
         }
 
 

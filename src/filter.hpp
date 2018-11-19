@@ -17,7 +17,8 @@ class Filter {
   explicit Filter          (const Param&);
   void smooth_seg          (const Param&);
   void extract_seg         (u32, const string&, const string&) const;
-  void aggregate_pos       (u32, const string&, const string&) const;
+  void aggregate_mid_pos   (u32, const string&, const string&) const;
+  void aggregate_final_pos (u32, const string&, const string&) const;
 
  private:
   WType         wtype;

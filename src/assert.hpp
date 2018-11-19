@@ -44,10 +44,9 @@ inline void ValRange<Value>::assert (Value& val) {
 
   const auto append_msg = [&] (string&& msg) {
     message = "\""+label+"\" not in valid range " + msg;
-    if (initMode == "default") {
-      message += "Default value \""+
-        (isFloat ? string_format("%.1f",def) : to_string(def)) +"\" been set.";
-    }
+    if (initMode == "default")
+      message += "Default value "+
+        (isFloat ? string_format("%.1f",def) : to_string(def)) +" been set.";
     else if (initMode == "auto")
       message += "Will be automatically modified.";
     message += "\n";
@@ -117,7 +116,7 @@ inline void ValSet<Value>::assert (Value& val) {
   const auto append_msg = [&] (string&& msg) {
     message = "\""+label+"\" not in valid set " + msg;
     if (initMode == "default") 
-      message += "Default value \""+conv_to_string(def)+"\" been set.";
+      message += "Default value "+conv_to_string(def)+" been set.";
     else if (initMode == "auto")
       message += "Will be automatically modified.";
     message += "\n";

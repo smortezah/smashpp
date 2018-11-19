@@ -98,6 +98,7 @@ static const string    FMT_POS      {"pos"};   // Format of positions file
 static const string    FMT_FIL      {"fil"};   // Format of filtered files
 static const string    LBL_SEG      {"s"};     // Label of segment files
 static const string    LBL_BAK      {"_bk"};   // Label of backup files
+static const string    LBL_MID      {"mid"};   // Label of mid position files
 static const string    POS_HDR      {"#SCF"};  // Header of positions file
 static constexpr float PI           {3.14159265f};
 static constexpr int   FILE_BUF     {8*1024};  // 8K
