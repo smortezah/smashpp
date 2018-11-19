@@ -107,6 +107,7 @@ static constexpr u8    TEXTWIDTH    {65};
 static const string    OUT_SEP      {"\n"};
 static const string    TERM_SEP     {". . . . . . . . . . . . . . . . . . . . "
                                      ". . . . . . . . .\n"};
+static constexpr float INTRSCT_COEF {0.8};
 
 // faster than a[]
 //using htbl_t = std::unordered_map<u64, std::array<u64,CARDIN>>;

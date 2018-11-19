@@ -13,8 +13,8 @@ inline void Text::plot (ofstream& f) const {
     "transform=\"" << transform << "\" "
     "style=\"font-size:" << to_string(fontSize) << "px;font-style:normal;"
     "font-variant:normal;font-weight:normal;font-stretch:normal;"
-    "text-align:start;line-height:125%%;writing-mode:lr-tb;"
-    "text-anchor:" << textAnchor << ";font-family:Arial;"
+    "fill:" << color << ";fill-opacity:1;text-align:start;line-height:125%%;"
+    "writing-mode:lr-tb;text-anchor:" << textAnchor << ";font-family:Arial;"
     "-inkscape-font-specification:Arial\">" << label << "</text>\n";
 }
 
@@ -56,7 +56,7 @@ inline void Line::plot (ofstream& f) const {
  */
 inline void Rectangle::plot (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-    ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
+    ";fill-opacity:0.75;stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
@@ -65,7 +65,7 @@ inline void Rectangle::plot (ofstream& f) const {
 
 inline void Rectangle::plot_ir (ofstream& f) const {
   plot(f);
-  f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
+  f << "<rect style=\"fill-opacity:0.75;stroke-width:2;stroke-miterlimit:4;"
     "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
     "id=\"rect6217\" "
     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
@@ -93,7 +93,7 @@ inline void Rectangle::plot_oval_ir (ofstream& f) const {
 
 inline void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-    ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
+    ";fill-opacity:0.8;stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
     "width=\""  << PREC << width/HORIZ_RATIO << "\" "
     "height=\"" << PREC << height            <<"\" "
@@ -111,9 +111,9 @@ inline void Rectangle::plot_nrc_tar (ofstream& f) const {
 }
 
 inline void Rectangle::plot_redun
-  (ofstream& f, u8 showNRC, char refTar = ' ') const {
+(ofstream& f, u8 showNRC, char refTar = ' ') const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-    ";fill-opacity:1;stroke-width:1;stroke-miterlimit:4;"
+    ";fill-opacity:0.8;stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
     "width=\""  << PREC << width/HORIZ_RATIO << "\" "
     "height=\"" << PREC << height            <<"\" "
@@ -244,11 +244,11 @@ void VizPaint::print_plot (VizParam& p) {
   };
   i64 begRef, endRef, begTar, endTar;
   double entRef, entTar;
-  string complRef, complTar;
   u64 n_regular=0, n_inverse=0, n_ignored=0;
 //  const auto similColorStart = p.start;
-  for (; fPos >> begRef>>endRef>>entRef>>complRef
-              >> begTar>>endTar>>entTar>>complTar; ++p.start) {
+  for (string selfRef,selfTar; fPos >> begRef>>endRef>>entRef>>selfRef 
+                                    >> begTar>>endTar>>entTar>>selfTar;
+       ++p.start) {
     if (abs(endRef-begRef)<p.min || abs(begTar-endTar)<p.min) {
       ++n_ignored;
       continue;
@@ -265,6 +265,7 @@ void VizPaint::print_plot (VizParam& p) {
         text->origin = Point(cx - X,
           cy + get_point(begRef) + (get_point(endRef)-get_point(begRef))/2);
         text->label = to_string(begRef) + " - " + to_string(endRef);
+        text->color = customColor(p.start);
         text->plot_pos_ref(fPlot);
       }
       else {
@@ -273,6 +274,7 @@ void VizPaint::print_plot (VizParam& p) {
         text->plot_pos_ref(fPlot);
         text->origin = Point(cx - X, cy + get_point(endRef));
         text->label  = to_string(endRef);
+        text->color  = customColor(p.start);
         text->plot_pos_ref(fPlot);
       }
 
@@ -282,6 +284,7 @@ void VizPaint::print_plot (VizParam& p) {
                              abs(get_point(endTar)-get_point(begTar))/2);
         text->label = to_string(min(begTar,endTar)) + " - " +
                       to_string(max(begTar,endTar));
+        text->color = customColor(p.start);
         text->plot_pos_tar(fPlot);
       }
       else {
@@ -292,6 +295,7 @@ void VizPaint::print_plot (VizParam& p) {
         text->origin = Point(cx + width + space + width + X,
                              cy + get_point(endTar));
         text->label  = to_string(endTar);
+        text->color  = customColor(p.start);
         text->plot_pos_tar(fPlot);
       }
     }

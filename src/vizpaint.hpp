@@ -36,10 +36,10 @@ struct Point {
 class Text {
  public:
   Point  origin;
-  string label, textAnchor, transform;
-  u8 fontSize;
+  string label, textAnchor, transform, color;
+  u8     fontSize;
 
-  Text              () : textAnchor("middle"), fontSize(13) {}
+  Text              () : textAnchor("middle"), color("black"), fontSize(13) {}
   void plot         (ofstream&) const;
   void plot_title   (ofstream&);
   void plot_pos_ref (ofstream&);
