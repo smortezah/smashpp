@@ -617,6 +617,26 @@ inline string VizPaint::rgb_color (u8 hue) const {
   return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
 }
 
+inline string VizPaint::heatmap_color 
+(double lambda, const HeatmapColor& heatmap) const {
+  // CHANGE BEHAVIOUR [SENSITIVITY: NEAR LOW SIMILARITY // COMMENT 4 UNIFORM
+  lambda = (1 + pow(lambda, 3) + tanh(8*(lambda-1))) / 2; 
+
+  double phi = 2 * PI * (heatmap.start/3 + heatmap.rotations*lambda),
+         lambdaGamma = pow(lambda, heatmap.gamma),
+         a = heatmap.hue * lambdaGamma * (1-lambdaGamma)/2,
+         R = lambdaGamma - a*0.14861*cos(phi) + a*1.78277*sin(phi),
+         G = lambdaGamma - a*0.29227*cos(phi) - a*0.90649*sin(phi),
+         B = lambdaGamma + a*1.97294*cos(phi);
+
+  keep_in_range(0.0, R, 1.0);
+  keep_in_range(0.0, G, 1.0);
+  keep_in_range(0.0, B, 1.0);
+
+  // return string_format("#%02X%02X%02X", int(R*255), int(G*255), int(B*255));
+  return string_format("#%02X%02X%02X", int(R*255), int(G*255), int(B*255));
+}
+
 template <typename ValueR, typename ValueG, typename ValueB>
 inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
   return "rgb("+to_string(static_cast<u8>(r))+","
@@ -625,13 +645,15 @@ inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
 }
 
 inline string VizPaint::nrc_color (double entropy) const {
-  keep_in_range(entropy, 0.0, 2.0);
-  return shade_color(0, ceil(255-entropy*75), ceil(255-entropy*75));
+  // keep_in_range(0.0, entropy, 2.0);
+  // return shade_color(0, ceil(255-entropy*75), ceil(255-entropy*75));
+  return heatmap_color(entropy);
 }
 
 inline string VizPaint::redun_color (double entropy) const {
-  keep_in_range(entropy, 0.0, 2.0);
-  return shade_color(ceil(255-entropy*75), ceil(255-entropy*75), 0);
+  // keep_in_range(0.0, entropy, 2.0);
+  // return shade_color(ceil(255-entropy*75), ceil(255-entropy*75), 0);
+  return heatmap_color(entropy);
 }
 
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {

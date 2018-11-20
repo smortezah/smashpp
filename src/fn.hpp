@@ -416,7 +416,7 @@ inline static string string_format(const string& format, Args... args) {
 }
 
 template <typename Val, typename MinVal, typename MaxVal>
-inline static void keep_in_range (Val& val, MinVal min, MaxVal max) {
+inline static void keep_in_range (MinVal min, Val& val, MaxVal max) {
   if      (val < min)    val = min;
   else if (val > max)    val = max;
 }
