@@ -27,6 +27,7 @@ struct HeatmapColor {
 
 struct Gradient {
   string startColor, stopColor;
+  vector<string> offsetColor;
   Gradient () = default;
   Gradient (string start, string stop)
     : startColor(std::move(start)), stopColor(std::move(stop)) {}
@@ -132,9 +133,7 @@ class VizPaint {
   void     print_tail  (ofstream&)                 const;
   template <typename Value>
   double   get_point   (Value)                     const;
-  void     plot_legend (ofstream&, unique_ptr<Rectangle>,
-                        unique_ptr<Gradient>, unique_ptr<Text>) const;
-//  void plot_legend_simil (ofstream&, string&&, string&&) const;
+  void     plot_legend (ofstream&)                 const;
   void     plot_legend_nrc   (ofstream&)           const;
   void     plot_legend_redun (ofstream&)           const;
 };
