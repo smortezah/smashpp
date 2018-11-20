@@ -247,14 +247,14 @@ void VizPaint::print_plot (VizParam& p) {
   double entRef, entTar;
   u64 n_regular=0, n_inverse=0, n_ignored=0;
 //  const auto similColorStart = p.start;
-  for (string selfRef,selfTar; fPos >> begRef>>endRef>>entRef>>selfRef 
+  for (double selfRef,selfTar; fPos >> begRef>>endRef>>entRef>>selfRef 
                                     >> begTar>>endTar>>entTar>>selfTar;
        ++p.start) {
     if (abs(endRef-begRef)<p.min || abs(begTar-endTar)<p.min) {
       ++n_ignored;
       continue;
     }
-
+    
     if (p.showPos) {
       double X = 0;
       if (p.showNRC && p.showRedun)
@@ -315,7 +315,7 @@ void VizPaint::print_plot (VizParam& p) {
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(entRef);
+          rect->color = redun_color(selfRef);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
 
@@ -328,7 +328,7 @@ void VizPaint::print_plot (VizParam& p) {
           rect->plot_nrc_tar(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(entTar);
+          rect->color = redun_color(selfTar);
           rect->plot_redun_tar(fPlot, p.showNRC);
         }
 
@@ -395,7 +395,7 @@ void VizPaint::print_plot (VizParam& p) {
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(entRef);
+          rect->color = redun_color(selfRef);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
 
@@ -408,7 +408,7 @@ void VizPaint::print_plot (VizParam& p) {
           rect->plot_nrc_tar(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(entTar);
+          rect->color = redun_color(selfTar);
           rect->plot_redun_tar(fPlot, p.showNRC);
         }
 
