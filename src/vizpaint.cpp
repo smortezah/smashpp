@@ -13,7 +13,7 @@ inline void Text::plot (ofstream& f) const {
     "dominant-baseline=\"" << dominantBaseline << "\" "
     "transform=\"" << transform << "\" "
     "style=\"font-size:" << to_string(fontSize) << "px;font-style:normal;"
-    "font-variant:normal;font-weight:normal;font-stretch:normal;"
+    "font-variant:normal;font-weight:" << fontWeight << ";font-stretch:normal;"
     "fill:" << color << ";fill-opacity:1;text-align:start;line-height:125%%;"
     "writing-mode:lr-tb;text-anchor:" << textAnchor << ";font-family:Arial;"
     "-inkscape-font-specification:Arial\">" << label << "</text>\n";
@@ -274,6 +274,7 @@ void VizPaint::print_plot (VizParam& p) {
         X = HORIZ_TUNE + width/HORIZ_RATIO;
 
       if (endRef-begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
+        text->fontWeight = "bold";
         text->origin = Point(cx - X,
           cy + get_point(begRef) + (get_point(endRef)-get_point(begRef))/2);
         text->label = to_string(begRef) + " - " + to_string(endRef);
@@ -281,6 +282,7 @@ void VizPaint::print_plot (VizParam& p) {
         text->plot_pos_ref(fPlot, 'm');
       }
       else {
+        text->fontWeight = "bold";
         text->origin = Point(cx - X, cy + get_point(begRef));
         text->label  = to_string(begRef);
         text->color  = customColor(p.start);
@@ -877,7 +879,6 @@ inline double VizPaint::get_point (Value p) const {
 inline void VizPaint::plot_legend (ofstream& f, unique_ptr<Rectangle> rect,
                                    unique_ptr<Gradient> grad,
                                    unique_ptr<Text> title) const {
-  rect->height = 12;
   const auto id = to_string(rect->origin.x)+to_string(rect->origin.y);
   f << "<defs> <linearGradient id=\"grad"+id+"\" "
     "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> "
@@ -894,22 +895,25 @@ inline void VizPaint::plot_legend (ofstream& f, unique_ptr<Rectangle> rect,
 
   auto text        = make_unique<Text>();
   text->dominantBaseline = "middle";
+  text->fontWeight = "bold";
   text->origin     = Point(rect->origin.x-3, rect->origin.y+rect->height/2);
   text->textAnchor = "end";
   // text->label      = "-";
   // text->fontSize   = 17;
   text->label      = "0";
-  text->fontSize   = 9;
+  text->fontSize   = 10;
 
   text->plot(f);
 
+  text->dominantBaseline = "middle";
+  text->fontWeight = "bold";
   text->origin     = Point(rect->origin.x+rect->width+3,
                            rect->origin.y+rect->height/2);
   text->textAnchor = "start";
   // text->label      = "+";
   // text->fontSize   = 14;
   text->label      = "2";
-  text->fontSize   = 9;
+  text->fontSize   = 10;
   text->plot(f);
 
 //  text->transform = "rotate(90,"+to_string(text->origin.x)+","
@@ -936,32 +940,36 @@ inline void VizPaint::plot_legend (ofstream& f, unique_ptr<Rectangle> rect,
 
 inline void VizPaint::plot_legend_nrc (ofstream& f) const {
   const auto vert = 17;
+  auto rect    = make_unique<Rectangle>();
+  rect->origin = Point(cx, vert);
+  rect->width  = width+space+width;
+  rect->height = 12;
   auto grad    = make_unique<Gradient>();
   grad->startColor = nrc_color(0);
   grad->stopColor  = nrc_color(2);
   auto text    = make_unique<Text>();
-  text->origin = Point(cx+width+space/2, vert-3);
+  text->dominantBaseline = "text-after-edge";
+  text->origin = Point(cx+width+space/2, rect->origin.y);
   text->label  = "RELATIVE REDUNDANCY";
   text->textAnchor = "middle";
   text->fontSize   = 9;
-  auto rect    = make_unique<Rectangle>();
-  rect->origin = Point(cx, vert);
-  rect->width  = width+space+width;
   plot_legend(f, std::move(rect), std::move(grad), std::move(text));
 }
 
 inline void VizPaint::plot_legend_redun (ofstream& f) const {
   const auto vert = 17;
+  auto rect    = make_unique<Rectangle>();
+  rect->height = 12;
+  rect->origin = Point(cx, vert+rect->height+3);
+  rect->width  = width+space+width;
   auto grad    = make_unique<Gradient>();
   grad->startColor = redun_color(0);
   grad->stopColor  = redun_color(2);
   auto text    = make_unique<Text>();
-  text->origin = Point(cx+width+space/2, vert+36);
+  text->dominantBaseline = "text-before-edge";
+  text->origin = Point(cx+width+space/2, rect->origin.y+rect->height);
   text->label  = "REDUNDANCY";
   text->textAnchor = "middle";
   text->fontSize   = 9;
-  auto rect    = make_unique<Rectangle>();
-  rect->origin = Point(cx, vert+15);
-  rect->width  = width+space+width;
   plot_legend(f, std::move(rect), std::move(grad), std::move(text));
 }
