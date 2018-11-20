@@ -35,6 +35,10 @@ static constexpr u8     PAINT_LVL_SATUR {160};
 static constexpr u8     PAINT_LVL_VAL   {160};
 static constexpr double HORIZ_TUNE      {5};
 static constexpr double HORIZ_RATIO     {3};
+static constexpr double HEAT_START      {0.35};
+static constexpr double HEAT_ROT        {1.5};
+static constexpr double HEAT_HUE        {1.92};
+static constexpr double HEAT_GAMMA      {0.5};
 }
 
 #endif

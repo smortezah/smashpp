@@ -18,6 +18,13 @@ struct HsvColor {
   explicit HsvColor (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
 };
 
+struct HeatmapColor {
+  double start, rotations, hue, gamma;
+  // HeatmapColor () = default;
+  HeatmapColor () : start(HEAT_START), rotations(HEAT_ROT), hue(HEAT_HUE),
+                    gamma(HEAT_GAMMA) {};
+};
+
 struct Gradient {
   string startColor, stopColor;
   Gradient () = default;
@@ -27,7 +34,6 @@ struct Gradient {
 
 struct Point {
   double x, y;
-
   Point       () = default;
   Point       (double x_, double y_) { config(x_,y_); }
   void config (double x_, double y_) { x=x_;  y=y_; }
@@ -116,6 +122,7 @@ class VizPaint {
   RgbColor hsv_to_rgb  (const HsvColor&)           const;
   HsvColor rgb_to_hsv  (const RgbColor&)           const;
   string   rgb_color   (u8)                        const;
+  string   heatmap_color (double, const HeatmapColor& h=HeatmapColor()) const;
   template <typename ValueR, typename ValueG, typename ValueB>
   string   shade_color (ValueR, ValueG, ValueB)    const;
   string   nrc_color   (double)                    const;
