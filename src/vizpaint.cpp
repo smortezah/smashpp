@@ -488,10 +488,7 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = tarSize;
   rect->plot_chromosome(fPlot);
 
-//  plot_legend_simil(fPlot, customColor(similColorStart),
-//                           customColor(p.start-similColorStart-1));
-  plot_legend_nrc(fPlot);
-  plot_legend_redun(fPlot);
+  plot_legend(fPlot);
 
   print_tail(fPlot);
 
@@ -671,7 +668,7 @@ inline string VizPaint::redun_color (double entropy) const {
 
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {
   f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-    "<!-- IEETA 2014 using Inkscape -->\n""<svg\n"
+    "<!-- IEETA " << DEV_YEARS << " using Inkscape -->\n""<svg\n"
     "xmlns:osb=\"http://www.openswatchbook.org/uri/2009/osb\"\n"
     "xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
     "xmlns:cc=\"http://creativecommons.org/ns#\"\n"
@@ -876,100 +873,87 @@ inline double VizPaint::get_point (Value p) const {
   return 5 * p / static_cast<double>(ratio);
 }
 
-inline void VizPaint::plot_legend (ofstream& f, unique_ptr<Rectangle> rect,
-                                   unique_ptr<Gradient> grad,
-                                   unique_ptr<Text> title) const {
-  const auto id = to_string(rect->origin.x)+to_string(rect->origin.y);
+inline void VizPaint::plot_legend (ofstream& f) const {
+  const auto vert = 17;
+  // Relative redundancy
+  auto rect    = make_unique<Rectangle>();
+  rect->origin = Point(cx, vert);
+  rect->width  = width+space+width;
+  rect->height = 12;
+  auto text    = make_unique<Text>();
+  text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+  text->textAnchor = "middle";
+  text->fontWeight = "bold";
+  text->dominantBaseline = "text-after-edge";
+  text->label  = "RELATIVE REDUNDANCY";
+  text->fontSize   = 9;
+  text->plot(f);
+
+  text->dominantBaseline = "text-before-edge";
+  text->fontWeight = "normal";
+  text->fontSize   = 9;
+  text->origin     = Point(rect->origin.x, rect->origin.y+rect->height);
+  text->label      = "0.0";
+  text->plot(f);
+  text->origin     = Point(rect->origin.x+rect->width/4, 
+                           rect->origin.y+rect->height);
+  text->label      = "0.5";
+  text->plot(f);
+  text->origin     = Point(rect->origin.x+rect->width/2, 
+                           rect->origin.y+rect->height);
+  text->label      = "1.0";
+  text->plot(f);
+  text->origin     = Point(rect->origin.x+(rect->width*3)/4, 
+                           rect->origin.y+rect->height);
+  text->label      = "1.5";
+  text->plot(f);
+  text->origin     = Point(rect->origin.x+rect->width, 
+                           rect->origin.y+rect->height);
+  text->label      = "2.0";
+  text->plot(f);
+
+  auto grad    = make_unique<Gradient>();
+  grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", 
+                       "#f9d057", "#f29e2e", "#e76818", "#d7191c"};
+  const auto offset = [&] (u8 i) { 
+    return to_string(i * 100 / (grad->offsetColor.size() - 1)) + "%";
+  };
+  auto id = to_string(rect->origin.x) + to_string(rect->origin.y);
   f << "<defs> <linearGradient id=\"grad"+id+"\" "
-    "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> "
-    "<stop offset=\"0%\" "
-    "style=\"stop-color:" << grad->startColor << ";stop-opacity:1\" />"
-    "<stop offset=\"100%\" "
-    "style=\"stop-color:" << grad->stopColor  << ";stop-opacity:1\" /> "
-    "</linearGradient> </defs>"
+    "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> ";
+  for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
+    f << "<stop offset=\"" << offset(i) << "\" "
+         "style=\"stop-color:" << grad->offsetColor[i] << ";stop-opacity:1\"/>";
+  }
+  f << "</linearGradient> </defs>"
     "<rect fill=\"url(#grad"+id+")\" "
     "width=\""  << PREC << rect->width    << "\" "
     "height=\"" << PREC << rect->height   << "\" "
     "x=\""      << PREC << rect->origin.x << "\" "
     "y=\""      << PREC << rect->origin.y << "\" />\n";
 
-  auto text        = make_unique<Text>();
-  text->dominantBaseline = "middle";
-  text->fontWeight = "bold";
-  text->origin     = Point(rect->origin.x-3, rect->origin.y+rect->height/2);
-  text->textAnchor = "end";
-  // text->label      = "-";
-  // text->fontSize   = 17;
-  text->label      = "0";
-  text->fontSize   = 10;
-
-  text->plot(f);
-
-  text->dominantBaseline = "middle";
-  text->fontWeight = "bold";
-  text->origin     = Point(rect->origin.x+rect->width+3,
-                           rect->origin.y+rect->height/2);
-  text->textAnchor = "start";
-  // text->label      = "+";
-  // text->fontSize   = 14;
-  text->label      = "2";
-  text->fontSize   = 10;
-  text->plot(f);
-
-//  text->transform = "rotate(90,"+to_string(text->origin.x)+","
-//                    +to_string(text->origin.y)+")";
-  title->plot(f);
-}
-
-//inline void VizPaint::plot_legend_simil (ofstream& f, string&& start,
-//                                                      string&& stop) const {
-//  const auto vert = 15;
-//  auto grad    = make_unique<Gradient>();
-//  grad->startColor = std::move(start);
-//  grad->stopColor  = std::move(stop);
-//  auto text    = make_unique<Text>();
-//  text->origin = Point(cx+width+space/2, vert-2);
-//  text->label  = "SIMILARITY";
-//  text->textAnchor = "middle";
-//  text->fontSize   = 9;
-//  auto rect    = make_unique<Rectangle>();
-//  rect->origin = Point(cx+width/2-space/2-4, vert);
-//  rect->width  = 2*space+38;
-//  plot_legend(f, rect, grad, text);
-//}
-
-inline void VizPaint::plot_legend_nrc (ofstream& f) const {
-  const auto vert = 17;
-  auto rect    = make_unique<Rectangle>();
-  rect->origin = Point(cx, vert);
-  rect->width  = width+space+width;
-  rect->height = 12;
-  auto grad    = make_unique<Gradient>();
-  grad->startColor = nrc_color(0);
-  grad->stopColor  = nrc_color(2);
-  auto text    = make_unique<Text>();
-  text->dominantBaseline = "text-after-edge";
-  text->origin = Point(cx+width+space/2, rect->origin.y);
-  text->label  = "RELATIVE REDUNDANCY";
-  text->textAnchor = "middle";
-  text->fontSize   = 9;
-  plot_legend(f, std::move(rect), std::move(grad), std::move(text));
-}
-
-inline void VizPaint::plot_legend_redun (ofstream& f) const {
-  const auto vert = 17;
-  auto rect    = make_unique<Rectangle>();
-  rect->height = 12;
-  rect->origin = Point(cx, vert+rect->height+3);
-  rect->width  = width+space+width;
-  auto grad    = make_unique<Gradient>();
-  grad->startColor = redun_color(0);
-  grad->stopColor  = redun_color(2);
-  auto text    = make_unique<Text>();
-  text->dominantBaseline = "text-before-edge";
-  text->origin = Point(cx+width+space/2, rect->origin.y+rect->height);
+  // Redundancy
+  rect->origin = Point(cx, vert+rect->height+12);
+  text->origin = Point(rect->origin.x+rect->width/2, 
+                       rect->origin.y+rect->height);
   text->label  = "REDUNDANCY";
-  text->textAnchor = "middle";
   text->fontSize   = 9;
-  plot_legend(f, std::move(rect), std::move(grad), std::move(text));
+  text->fontWeight = "bold";
+  text->plot(f);
+
+  grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", 
+                       "#f9d057", "#f29e2e", "#e76818", "#d7191c"};
+  id = to_string(rect->origin.x) + to_string(rect->origin.y);
+  f << "<defs> <linearGradient id=\"grad"+id+"\" "
+    "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> ";
+  for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
+    f << "<stop offset=\"" << offset(i) << "\" "
+         "style=\"stop-color:" << grad->offsetColor[i] << ";stop-opacity:1\"/>";
+  }
+  f << "</linearGradient> </defs>"
+    "<rect fill=\"url(#grad"+id+")\" "
+    "width=\""  << PREC << rect->width    << "\" "
+    "height=\"" << PREC << rect->height   << "\" "
+    "x=\""      << PREC << rect->origin.x << "\" "
+    "y=\""      << PREC << rect->origin.y << "\" />\n";
 }
