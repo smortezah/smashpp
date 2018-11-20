@@ -238,6 +238,7 @@ void VizPaint::print_plot (VizParam& p) {
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
   if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
+  p.mult = 256 / (file_lines(p.posFile)-3);
 
   auto customColor = [=] (u32 start) {
     return rgb_color(static_cast<u8>(start * p.mult));
@@ -271,6 +272,7 @@ void VizPaint::print_plot (VizParam& p) {
       else {
         text->origin = Point(cx - X, cy + get_point(begRef));
         text->label  = to_string(begRef);
+        text->color  = customColor(p.start);
         text->plot_pos_ref(fPlot);
         text->origin = Point(cx - X, cy + get_point(endRef));
         text->label  = to_string(endRef);
@@ -291,6 +293,7 @@ void VizPaint::print_plot (VizParam& p) {
         text->origin = Point(cx + width + space + width + X,
                              cy + get_point(begTar));
         text->label  = to_string(begTar);
+        text->color  = customColor(p.start);
         text->plot_pos_tar(fPlot);
         text->origin = Point(cx + width + space + width + X,
                              cy + get_point(endTar));

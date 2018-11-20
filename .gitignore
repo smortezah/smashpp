@@ -5,7 +5,7 @@
 *.iae
 *.slf
 *.cbp
-*.svg
+# *.svg
 *.png
 goose-*
 *_bk
@@ -54,3 +54,4 @@ mid-0-refm_tarm.pos
 mid-1-refm_tarm.pos
 mid-1-refm_tarm.pos
 out.jpg
+test.pos
