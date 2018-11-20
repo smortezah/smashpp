@@ -10,6 +10,7 @@ inline void Text::plot (ofstream& f) const {
   f << "<text sodipodi:role=\"line\" id=\"tspan3804\" "
     "x=\"" << PREC << origin.x  << "\" "
     "y=\"" << PREC << origin.y  << "\" "
+    "dominant-baseline=\"" << dominantBaseline << "\" "
     "transform=\"" << transform << "\" "
     "style=\"font-size:" << to_string(fontSize) << "px;font-style:normal;"
     "font-variant:normal;font-weight:normal;font-stretch:normal;"
@@ -20,23 +21,33 @@ inline void Text::plot (ofstream& f) const {
 
 inline void Text::plot_title (ofstream& f) {
   textAnchor = "middle";
-  fontSize = 17;
+  fontSize = 15;
   plot(f);
 }
 
-inline void Text::plot_pos_ref (ofstream& f) {
+inline void Text::plot_pos_ref (ofstream& f, char c) {
   textAnchor = "end";
   origin.x += -5;
-  origin.y += 3;
-  fontSize = 10;
+  switch (c) {
+    case 'b':  dominantBaseline = "hanging";   break;  // begin
+    case 'm':  dominantBaseline = "middle";    break;  // middle
+    case 'e':  dominantBaseline = "baseline";  break;  // end
+    default:                                   break;
+  }
+  fontSize = 9;
   plot(f);
 }
 
-inline void Text::plot_pos_tar (ofstream& f) {
+inline void Text::plot_pos_tar (ofstream& f, char c) {
   textAnchor = "start";
   origin.x += 5;
-  origin.y += 3;
-  fontSize = 10;
+  switch (c) {
+    case 'b':  dominantBaseline = "hanging";   break;  // begin
+    case 'm':  dominantBaseline = "middle";    break;  // middle
+    case 'e':  dominantBaseline = "baseline";  break;  // end
+    default:                                   break;
+  }
+  fontSize = 9;
   plot(f);
 }
 
@@ -267,17 +278,17 @@ void VizPaint::print_plot (VizParam& p) {
           cy + get_point(begRef) + (get_point(endRef)-get_point(begRef))/2);
         text->label = to_string(begRef) + " - " + to_string(endRef);
         text->color = customColor(p.start);
-        text->plot_pos_ref(fPlot);
+        text->plot_pos_ref(fPlot, 'm');
       }
       else {
         text->origin = Point(cx - X, cy + get_point(begRef));
         text->label  = to_string(begRef);
         text->color  = customColor(p.start);
-        text->plot_pos_ref(fPlot);
+        text->plot_pos_ref(fPlot, 'b');
         text->origin = Point(cx - X, cy + get_point(endRef));
         text->label  = to_string(endRef);
         text->color  = customColor(p.start);
-        text->plot_pos_ref(fPlot);
+        text->plot_pos_ref(fPlot, 'e');
       }
 
       if (abs(endTar-begTar) < PAINT_SHORT*max(n_refBases,n_tarBases)) {
@@ -287,19 +298,19 @@ void VizPaint::print_plot (VizParam& p) {
         text->label = to_string(min(begTar,endTar)) + " - " +
                       to_string(max(begTar,endTar));
         text->color = customColor(p.start);
-        text->plot_pos_tar(fPlot);
+        text->plot_pos_tar(fPlot, 'm');
       }
       else {
         text->origin = Point(cx + width + space + width + X,
                              cy + get_point(begTar));
         text->label  = to_string(begTar);
         text->color  = customColor(p.start);
-        text->plot_pos_tar(fPlot);
+        text->plot_pos_tar(fPlot, (endTar>begTar ? 'b' : 'e'));
         text->origin = Point(cx + width + space + width + X,
                              cy + get_point(endTar));
         text->label  = to_string(endTar);
         text->color  = customColor(p.start);
-        text->plot_pos_tar(fPlot);
+        text->plot_pos_tar(fPlot, (endTar>begTar ? 'e' : 'b'));
       }
     }
 
@@ -882,17 +893,23 @@ inline void VizPaint::plot_legend (ofstream& f, unique_ptr<Rectangle> rect,
     "y=\""      << PREC << rect->origin.y << "\" />\n";
 
   auto text        = make_unique<Text>();
-  text->origin     = Point(rect->origin.x-1, rect->origin.y+rect->height-1.5);
-  text->label      = "-";
+  text->dominantBaseline = "middle";
+  text->origin     = Point(rect->origin.x-3, rect->origin.y+rect->height/2);
   text->textAnchor = "end";
-  text->fontSize   = 17;
+  // text->label      = "-";
+  // text->fontSize   = 17;
+  text->label      = "0";
+  text->fontSize   = 9;
+
   text->plot(f);
 
-  text->origin     = Point(rect->origin.x+rect->width+1,
-                           rect->origin.y+rect->height-1.5);
-  text->label      = "+";
+  text->origin     = Point(rect->origin.x+rect->width+3,
+                           rect->origin.y+rect->height/2);
   text->textAnchor = "start";
-  text->fontSize   = 14;
+  // text->label      = "+";
+  // text->fontSize   = 14;
+  text->label      = "2";
+  text->fontSize   = 9;
   text->plot(f);
 
 //  text->transform = "rotate(90,"+to_string(text->origin.x)+","

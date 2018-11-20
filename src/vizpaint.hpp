@@ -42,14 +42,15 @@ struct Point {
 class Text {
  public:
   Point  origin;
-  string label, textAnchor, transform, color;
+  string label, textAnchor, dominantBaseline, transform, color;
   u8     fontSize;
 
-  Text              () : textAnchor("middle"), color("black"), fontSize(13) {}
+  Text              () : textAnchor("middle"), dominantBaseline("middle"), 
+                         color("black"), fontSize(13) {}
   void plot         (ofstream&) const;
   void plot_title   (ofstream&);
-  void plot_pos_ref (ofstream&);
-  void plot_pos_tar (ofstream&);
+  void plot_pos_ref (ofstream&, char);
+  void plot_pos_tar (ofstream&, char);
 };
 
 class Line {
