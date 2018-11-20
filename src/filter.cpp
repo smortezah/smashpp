@@ -457,7 +457,7 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   const auto midf0Name = LBL_MID+"-"+gen_name(0, ref, tar, Format::POSITION),
              midf1Name = LBL_MID+"-"+gen_name(1, ref, tar, Format::POSITION);
   ifstream midf0(midf0Name), midf1(midf1Name);
-  ofstream finf(ref+"-"+tar+"."+FMT_POS, ios::app);
+  ofstream finf(ref+"-"+tar+"."+FMT_POS);
 
   // vector<u64> begTar0, endTar0, entTar0;
   // vector<u64> begTar1, endTar1, entTar1;
@@ -475,7 +475,7 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   //   endTar1.emplace_back(stoull(endTar));
   //   entTar1.emplace_back(stoull(entTar));
   // }
-
+  //
   // vector<u64> min0, max0, min1, max1;
   // for (u64 i=0; i!=begTar0.size(); ++i) {
   //   if (begTar0[i] < endTar0[i]) {
@@ -497,7 +497,7 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   //     max1.emplace_back(begTar1[i]);
   //   }
   // }
-
+  // 
   // vector<vector<u8>> whichToPrint;
   // whichToPrint.reserve(begTar0.size()*begTar1.size());
   // const auto printSelect = [=] (prec_t a, prec_t b) { return (a<=b) ? 0 : 1; };
@@ -560,12 +560,6 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   //     }
   //   }
   // }
-
-//todo for test
-// for (u64 i=0; i!=begTar0.size(); ++i) {
-//   for(auto e:whichToPrint[i]) cerr<<int(e)<<' ';
-//   cerr<<'\n';
-// }
 
   finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
                   <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';

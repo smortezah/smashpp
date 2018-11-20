@@ -238,7 +238,7 @@ void VizPaint::print_plot (VizParam& p) {
 
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
   if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
-  p.mult = 256 / (file_lines(p.posFile)-3);
+  p.mult = 256 / file_lines(p.posFile);
 
   auto customColor = [=] (u32 start) {
     return rgb_color(static_cast<u8>(start * p.mult));
@@ -314,7 +314,7 @@ void VizPaint::print_plot (VizParam& p) {
           rect->color = nrc_color(entRef);
           rect->plot_nrc_ref(fPlot);
         }
-        if (p.showRedun) {//todo
+        if (p.showRedun) {
           rect->color = redun_color(entRef);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
@@ -327,7 +327,7 @@ void VizPaint::print_plot (VizParam& p) {
           rect->color = nrc_color(entTar);
           rect->plot_nrc_tar(fPlot);
         }
-        if (p.showRedun) {//todo
+        if (p.showRedun) {
           rect->color = redun_color(entTar);
           rect->plot_redun_tar(fPlot, p.showNRC);
         }
@@ -394,7 +394,7 @@ void VizPaint::print_plot (VizParam& p) {
           rect->color = nrc_color(entRef);
           rect->plot_nrc_ref(fPlot);
         }
-        if (p.showRedun) {//todo
+        if (p.showRedun) {
           rect->color = redun_color(entRef);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
@@ -407,7 +407,7 @@ void VizPaint::print_plot (VizParam& p) {
           rect->color = nrc_color(entTar);
           rect->plot_nrc_tar(fPlot);
         }
-        if (p.showRedun) {//todo
+        if (p.showRedun) {
           rect->color = redun_color(entTar);
           rect->plot_redun_tar(fPlot, p.showNRC);
         }
@@ -902,7 +902,7 @@ inline void VizPaint::plot_legend_nrc (ofstream& f) const {
   grad->stopColor  = nrc_color(2);
   auto text    = make_unique<Text>();
   text->origin = Point(cx+width+space/2, vert-3);
-  text->label  = "NRC";
+  text->label  = "RELATIVE REDUNDANCY";
   text->textAnchor = "middle";
   text->fontSize   = 9;
   auto rect    = make_unique<Rectangle>();
