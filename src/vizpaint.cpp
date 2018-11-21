@@ -21,7 +21,7 @@ inline void Text::plot (ofstream& f) const {
 
 inline void Text::plot_title (ofstream& f) {
   textAnchor = "middle";
-  fontSize = 15;
+  fontSize = 14;
   plot(f);
 }
 
@@ -213,7 +213,7 @@ void VizPaint::print_plot (VizParam& p) {
   if (watermark!=POS_HDR)  error("unknown file format for positions.");
   if (p.verbose)           show_info(p, ref, tar, n_refBases, n_tarBases);
 
-  cerr << "Plotting ...\n";
+  cerr << "Plotting ...\r";
   config(p.width, p.space, n_refBases, n_tarBases);
 
   print_head(fPlot, PAINT_CX + width + space + width + PAINT_CX,
@@ -254,14 +254,47 @@ void VizPaint::print_plot (VizParam& p) {
   auto customColor = [=] (u32 start) {
     return rgb_color(static_cast<u8>(start * p.mult));
   };
-  i64 begRef, endRef, begTar, endTar;
-  double entRef, entTar;
+
+  vector<Pos> pos;
+  {
+  u64 start {p.start};
+  i64 br, er, bt, et;
+  for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
+    pos.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, start));
+
+  if (p.showPos) {
+    double X = 0;
+    if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
+    else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
+
+    // auto startDupl{p.start};
+    vector<Pos> posDupl{pos};
+    std::sort(posDupl.begin(), posDupl.end(),
+      [](const Pos &lhs, const Pos &rhs) { return lhs.begRef < rhs.begRef; });
+    for (u64 i=0; i!=posDupl.size()-1; ++i) {
+      if (posDupl[i+1].begRef - posDupl[i].begRef 
+          < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+        text->fontWeight = "bold";
+        text->textAnchor = "end";
+        text->dominantBaseline = "text-before-edge";
+        text->origin = Point(cx - X, cy + get_point(posDupl[i].begRef));
+        text->color = customColor(posDupl[i].start);
+        text->label = to_string(posDupl[i].begRef);
+        text->plot_pos_ref(fPlot, 'e');
+        text->origin = Point(cx - X, cy + get_point(posDupl[i].begRef));
+        text->color = customColor(posDupl[i+1].start);
+        text->label = to_string(posDupl[i+1].begRef) + ", ";
+        text->plot_pos_ref(fPlot, 'e');
+      }
+      cerr<<posDupl[i].start<<' ';
+      // ++startDupl;
+    }
+  }
+  }
+
   u64 n_regular=0, n_inverse=0, n_ignored=0;
-//  const auto similColorStart = p.start;
-  for (double selfRef,selfTar; fPos >> begRef>>endRef>>entRef>>selfRef 
-                                    >> begTar>>endTar>>entTar>>selfTar;
-       ++p.start) {
-    if (abs(endRef-begRef)<p.min || abs(begTar-endTar)<p.min) {
+  for (auto e : pos) {
+    if (abs(e.endRef-e.begRef)<p.min || abs(e.begTar-e.endTar)<p.min) {
       ++n_ignored;
       continue;
     }
@@ -273,75 +306,75 @@ void VizPaint::print_plot (VizParam& p) {
       else if (p.showNRC ^ p.showRedun)
         X = HORIZ_TUNE + width/HORIZ_RATIO;
 
-      if (endRef-begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
+      if (e.endRef-e.begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
         text->fontWeight = "bold";
         text->origin = Point(cx - X,
-          cy + get_point(begRef) + (get_point(endRef)-get_point(begRef))/2);
-        text->label = to_string(begRef) + " - " + to_string(endRef);
+          cy+get_point(e.begRef) + (get_point(e.endRef)-get_point(e.begRef))/2);
+        text->label = to_string(e.begRef) + " - " + to_string(e.endRef);
         text->color = customColor(p.start);
         text->plot_pos_ref(fPlot, 'm');
       }
       else {
         text->fontWeight = "bold";
-        text->origin = Point(cx - X, cy + get_point(begRef));
-        text->label  = to_string(begRef);
+        text->origin = Point(cx - X, cy + get_point(e.begRef));
+        text->label  = to_string(e.begRef);
         text->color  = customColor(p.start);
-        text->plot_pos_ref(fPlot, 'b');
-        text->origin = Point(cx - X, cy + get_point(endRef));
-        text->label  = to_string(endRef);
+        // text->plot_pos_ref(fPlot, 'b');
+        text->origin = Point(cx - X, cy + get_point(e.endRef));
+        text->label  = to_string(e.endRef);
         text->color  = customColor(p.start);
         text->plot_pos_ref(fPlot, 'e');
       }
 
-      if (abs(endTar-begTar) < PAINT_SHORT*max(n_refBases,n_tarBases)) {
+      if (abs(e.endTar-e.begTar) < PAINT_SHORT*max(n_refBases,n_tarBases)) {
         text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(min(begTar,endTar)) +
-                             abs(get_point(endTar)-get_point(begTar))/2);
-        text->label = to_string(min(begTar,endTar)) + " - " +
-                      to_string(max(begTar,endTar));
+                             cy + get_point(min(e.begTar,e.endTar)) +
+                             abs(get_point(e.endTar)-get_point(e.begTar))/2);
+        text->label = to_string(min(e.begTar,e.endTar)) + " - " +
+                      to_string(max(e.begTar,e.endTar));
         text->color = customColor(p.start);
         text->plot_pos_tar(fPlot, 'm');
       }
       else {
         text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(begTar));
-        text->label  = to_string(begTar);
+                             cy + get_point(e.begTar));
+        text->label  = to_string(e.begTar);
         text->color  = customColor(p.start);
-        text->plot_pos_tar(fPlot, (endTar>begTar ? 'b' : 'e'));
+        text->plot_pos_tar(fPlot, (e.endTar>e.begTar ? 'b' : 'e'));
         text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(endTar));
-        text->label  = to_string(endTar);
+                             cy + get_point(e.endTar));
+        text->label  = to_string(e.endTar);
         text->color  = customColor(p.start);
-        text->plot_pos_tar(fPlot, (endTar>begTar ? 'e' : 'b'));
+        text->plot_pos_tar(fPlot, (e.endTar>e.begTar ? 'e' : 'b'));
       }
     }
 
-    if (endTar > begTar) {
+    if (e.endTar > e.begTar) {
       if (p.regular) {
         rect->width  = width;
         rect->color  = customColor(p.start);
-        rect->origin = Point(cx, cy + get_point(begRef));
-        rect->height = get_point(endRef-begRef);
+        rect->origin = Point(cx, cy + get_point(e.begRef));
+        rect->height = get_point(e.endRef-e.begRef);
         rect->plot(fPlot);
         if (p.showNRC) {
-          rect->color = nrc_color(entRef, p.color);
+          rect->color = nrc_color(e.entRef, p.color);
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(selfRef, p.color);
+          rect->color = redun_color(e.selfRef, p.color);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
 
         rect->color  = customColor(p.start);
-        rect->origin = Point(cx + width + space, cy + get_point(begTar));
-        rect->height = get_point(endTar-begTar);
+        rect->origin = Point(cx + width + space, cy + get_point(e.begTar));
+        rect->height = get_point(e.endTar-e.begTar);
         rect->plot(fPlot);
         if (p.showNRC) {
-          rect->color = nrc_color(entTar, p.color);
+          rect->color = nrc_color(e.entTar, p.color);
           rect->plot_nrc_tar(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(selfTar, p.color);
+          rect->color = redun_color(e.selfTar, p.color);
           rect->plot_redun_tar(fPlot, p.showNRC);
         }
 
@@ -349,46 +382,46 @@ void VizPaint::print_plot (VizParam& p) {
         case 5:
           poly->lineColor = "grey";
           poly->fillColor = customColor(p.start);
-          poly->one   = Point(cx + width,         cy + get_point(begRef));
-          poly->two   = Point(cx + width,         cy + get_point(endRef));
-          poly->three = Point(cx + width + space, cy + get_point(endTar));
-          poly->four  = Point(cx + width + space, cy + get_point(begTar));
+          poly->one   = Point(cx + width,         cy + get_point(e.begRef));
+          poly->two   = Point(cx + width,         cy + get_point(e.endRef));
+          poly->three = Point(cx + width + space, cy + get_point(e.endTar));
+          poly->four  = Point(cx + width + space, cy + get_point(e.begTar));
           poly->plot(fPlot);
           break;
         case 1:
           line->color = "black";
           line->beg = Point(cx + width,
-                            cy + get_point(begRef+(endRef-begRef)/2.0));
+                            cy + get_point(e.begRef+(e.endRef-e.begRef)/2.0));
           line->end = Point(cx + width + space,
-                            cy + get_point(begTar+(endTar-begTar)/2.0));
+                            cy + get_point(e.begTar+(e.endTar-e.begTar)/2.0));
           line->plot(fPlot);
           break;
         case 2:
           line->color = customColor(p.start);
           line->beg = Point(cx + width,
-                            cy + get_point(begRef+(endRef-begRef)/2.0));
+                            cy + get_point(e.begRef+(e.endRef-e.begRef)/2.0));
           line->end = Point(cx + width + space,
-                            cy + get_point(begTar+(endTar-begTar)/2.0));
+                            cy + get_point(e.begTar+(e.endTar-e.begTar)/2.0));
           line->plot(fPlot);
           break;
         case 3:
           line->color = "black";
-          line->beg = Point(cx + width,         cy + get_point(begRef));
-          line->end = Point(cx + width + space, cy + get_point(begTar));
+          line->beg = Point(cx + width,         cy + get_point(e.begRef));
+          line->end = Point(cx + width + space, cy + get_point(e.begTar));
           line->plot(fPlot);
 
-          line->beg = Point(cx + width,         cy + get_point(endRef));
-          line->end = Point(cx + width + space, cy + get_point(endTar));
+          line->beg = Point(cx + width,         cy + get_point(e.endRef));
+          line->end = Point(cx + width + space, cy + get_point(e.endTar));
           line->plot(fPlot);
           break;
         case 4:
           line->color = customColor(p.start);
-          line->beg = Point(cx + width,         cy + get_point(begRef));
-          line->end = Point(cx + width + space, cy + get_point(begTar));
+          line->beg = Point(cx + width,         cy + get_point(e.begRef));
+          line->end = Point(cx + width + space, cy + get_point(e.begTar));
           line->plot(fPlot);
 
-          line->beg = Point(cx + width,         cy + get_point(endRef));
-          line->end = Point(cx + width + space, cy + get_point(endTar));
+          line->beg = Point(cx + width,         cy + get_point(e.endRef));
+          line->end = Point(cx + width + space, cy + get_point(e.endTar));
           line->plot(fPlot);
           break;
         default:break;
@@ -400,28 +433,28 @@ void VizPaint::print_plot (VizParam& p) {
       if (p.inverse) {
         rect->width  = width;
         rect->color  = customColor(p.start);
-        rect->origin = Point(cx, cy + get_point(begRef));
-        rect->height = get_point(endRef-begRef);
+        rect->origin = Point(cx, cy + get_point(e.begRef));
+        rect->height = get_point(e.endRef-e.begRef);
         rect->plot(fPlot);
         if (p.showNRC) {
-          rect->color = nrc_color(entRef, p.color);
+          rect->color = nrc_color(e.entRef, p.color);
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(selfRef, p.color);
+          rect->color = redun_color(e.selfRef, p.color);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
 
         rect->color  = customColor(p.start);
-        rect->origin = Point(cx + width + space, cy + get_point(endTar));
-        rect->height = get_point(begTar-endTar);
+        rect->origin = Point(cx + width + space, cy + get_point(e.endTar));
+        rect->height = get_point(e.begTar-e.endTar);
         rect->plot_ir(fPlot);
         if (p.showNRC) {
-          rect->color = nrc_color(entTar, p.color);
+          rect->color = nrc_color(e.entTar, p.color);
           rect->plot_nrc_tar(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(selfTar, p.color);
+          rect->color = redun_color(e.selfTar, p.color);
           rect->plot_redun_tar(fPlot, p.showNRC);
         }
 
@@ -429,46 +462,46 @@ void VizPaint::print_plot (VizParam& p) {
         case 5:
           poly->lineColor = "grey";
           poly->fillColor = customColor(p.start);
-          poly->one   = Point(cx + width,         cy + get_point(begRef));
-          poly->two   = Point(cx + width,         cy + get_point(endRef));
-          poly->three = Point(cx + width + space, cy + get_point(endTar));
-          poly->four  = Point(cx + width + space, cy + get_point(begTar));
+          poly->one   = Point(cx + width,         cy + get_point(e.begRef));
+          poly->two   = Point(cx + width,         cy + get_point(e.endRef));
+          poly->three = Point(cx + width + space, cy + get_point(e.endTar));
+          poly->four  = Point(cx + width + space, cy + get_point(e.begTar));
           poly->plot(fPlot);
           break;
         case 1:
           line->color = "green";
           line->beg = Point(cx + width,
-                            cy + get_point(begRef+(endRef-begRef)/2.0));
+                            cy + get_point(e.begRef+(e.endRef-e.begRef)/2.0));
           line->end = Point(cx + width + space,
-                            cy + get_point(endTar+(begTar-endTar)/2.0));
+                            cy + get_point(e.endTar+(e.begTar-e.endTar)/2.0));
           line->plot(fPlot);
           break;
         case 2:
           line->color = customColor(p.start);
           line->beg = Point(cx + width,
-                            cy + get_point(begRef+(endRef-begRef)/2.0));
+                            cy + get_point(e.begRef+(e.endRef-e.begRef)/2.0));
           line->end = Point(cx + width + space,
-                            cy + get_point(endTar+(begTar-endTar)/2.0));
+                            cy + get_point(e.endTar+(e.begTar-e.endTar)/2.0));
           line->plot(fPlot);
           break;
         case 3:
           line->color = "green";
-          line->beg = Point(cx + width,         cy + get_point(begRef));
-          line->end = Point(cx + width + space, cy + get_point(begTar));
+          line->beg = Point(cx + width,         cy + get_point(e.begRef));
+          line->end = Point(cx + width + space, cy + get_point(e.begTar));
           line->plot(fPlot);
 
-          line->beg = Point(cx + width,         cy + get_point(endRef));
-          line->end = Point(cx + width + space, cy + get_point(endTar));
+          line->beg = Point(cx + width,         cy + get_point(e.endRef));
+          line->end = Point(cx + width + space, cy + get_point(e.endTar));
           line->plot(fPlot);
           break;
         case 4:
           line->color = customColor(p.start);
-          line->beg = Point(cx + width,         cy + get_point(begRef));
-          line->end = Point(cx + width + space, cy + get_point(begTar));
+          line->beg = Point(cx + width,         cy + get_point(e.begRef));
+          line->end = Point(cx + width + space, cy + get_point(e.begTar));
           line->plot(fPlot);
 
-          line->beg = Point(cx + width,         cy + get_point(endRef));
-          line->end = Point(cx + width + space, cy + get_point(endTar));
+          line->beg = Point(cx + width,         cy + get_point(e.endRef));
+          line->end = Point(cx + width + space, cy + get_point(e.endTar));
           line->plot(fPlot);
           break;
         default:break;
@@ -476,6 +509,7 @@ void VizPaint::print_plot (VizParam& p) {
         ++n_inverse;
       }
     }
+    ++p.start;
   }
   fPos.seekg(ios::beg);
 
@@ -492,10 +526,11 @@ void VizPaint::print_plot (VizParam& p) {
 
   print_tail(fPlot);
 
-  cerr << "Done!\n";
+  cerr << "Plotting finished.\n";
   if (p.regular)    cerr << "Found "   << n_regular << " regular regions.\n";
   if (p.inverse)    cerr << "Found "   << n_inverse << " inverted regions.\n";
-  if (p.verbose)    cerr << "Ignored " << n_ignored << " regions.\n";
+  // if (p.verbose)    cerr << "Ignored " << n_ignored << " regions.\n";
+  cerr << '\n';
 
   fPos.close();
   fPlot.close();
@@ -901,7 +936,7 @@ inline double VizPaint::get_point (Value p) const {
 }
 
 inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
-  const auto vert = 17;
+  const auto vert = 24;
   // Relative redundancy
   auto rect    = make_unique<Rectangle>();
   if (!p.showNRC && !p.showRedun) {
@@ -918,8 +953,8 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
     rect->width  = 2*(width/HORIZ_RATIO+HORIZ_TUNE)+width+space+width+
                    2*(width/HORIZ_RATIO+HORIZ_TUNE);
   }
-  rect->height = 14;
-  
+  rect->height = 12;
+
   auto text    = make_unique<Text>();
   text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
   text->textAnchor = "middle";
