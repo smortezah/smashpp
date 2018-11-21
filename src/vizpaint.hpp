@@ -48,6 +48,7 @@ class Text {
 
   Text              () : textAnchor("middle"), dominantBaseline("middle"), 
                          color("black"), fontWeight("normal"), fontSize(13) {}
+  Text (const string& lbl_, const string& clr_) { label=lbl_;  color=clr_; }//todo
   void plot         (ofstream&) const;
   void plot_title   (ofstream&);
   void plot_pos_ref (ofstream&, char);
