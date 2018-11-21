@@ -133,7 +133,7 @@ class VizPaint {
   void     print_tail  (ofstream&)                 const;
   template <typename Value>
   double   get_point   (Value)                     const;
-  void     plot_legend (ofstream&, u32)            const;
+  void     plot_legend (ofstream&, const VizParam&) const;
 };
 }
 

@@ -488,7 +488,7 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = tarSize;
   rect->plot_chromosome(fPlot);
 
-  plot_legend(fPlot, p.color);
+  plot_legend(fPlot, p);
 
   print_tail(fPlot);
 
@@ -900,13 +900,26 @@ inline double VizPaint::get_point (Value p) const {
   return 5 * p / static_cast<double>(ratio);
 }
 
-inline void VizPaint::plot_legend (ofstream& f, u32 colorMode) const {
+inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   const auto vert = 17;
   // Relative redundancy
   auto rect    = make_unique<Rectangle>();
-  rect->origin = Point(cx, vert);
-  rect->width  = width+space+width;
-  rect->height = 12;
+  if (!p.showNRC && !p.showRedun) {
+    rect->origin = Point(cx, vert);
+    rect->width = width+space+width;
+  }
+  else if (p.showNRC ^ p.showRedun) {
+    rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
+    rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
+                   width/HORIZ_RATIO+HORIZ_TUNE;
+  }
+  else if (p.showNRC && p.showRedun) {
+    rect->origin = Point(cx-2*(HORIZ_TUNE+width/HORIZ_RATIO), vert);
+    rect->width  = 2*(width/HORIZ_RATIO+HORIZ_TUNE)+width+space+width+
+                   2*(width/HORIZ_RATIO+HORIZ_TUNE);
+  }
+  rect->height = 14;
+  
   auto text    = make_unique<Text>();
   text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
   text->textAnchor = "middle";
@@ -916,18 +929,8 @@ inline void VizPaint::plot_legend (ofstream& f, u32 colorMode) const {
   text->fontSize   = 9;
   text->plot(f);
 
-  text->dominantBaseline = "text-before-edge";
-  text->fontWeight = "normal";
-  text->fontSize   = 9;
-  for (u8 i=0; i!=5; ++i) {
-    text->origin = 
-      Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height);
-    text->label  = string_format("%.1f", i*0.5);
-    text->plot(f);
-  }
-
   auto grad = make_unique<Gradient>();
-  switch (colorMode) {
+  switch (p.color) {
   case 0:
     grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
                 "#f9d057", "#f29e2e", "#e76818", "#d7191c"};              break;
@@ -957,42 +960,73 @@ inline void VizPaint::plot_legend (ofstream& f, u32 colorMode) const {
     "width=\""  << PREC << rect->width    << "\" "
     "height=\"" << PREC << rect->height   << "\" "
     "x=\""      << PREC << rect->origin.x << "\" "
-    "y=\""      << PREC << rect->origin.y << "\" />\n";
+    "y=\""      << PREC << rect->origin.y << "\" ry=\"3\" />\n";
+
+  // text->dominantBaseline = "text-before-edge";
+  text->dominantBaseline = "middle";
+  text->fontWeight = "normal";
+  text->fontSize   = 9;
+  text->textAnchor = "end";
+  text->origin = Point(rect->origin.x-2, rect->origin.y+rect->height/2);
+  text->label  = "0.0";
+  text->fontWeight = "bold";
+  text->plot(f);
+  text->textAnchor = "middle";
+  for (u8 i=1; i!=4; ++i) {
+    text->origin = 
+      Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
+      // Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height);
+    if (p.color==1)  text->color="white";
+    text->label = string_format("%.1f", i*0.5);
+    text->plot(f);
+  }
+  text->textAnchor = "start";
+  text->origin = Point(rect->origin.x+rect->width+2, 
+                       rect->origin.y+rect->height/2);
+  text->color = "black";
+  text->label = "2.0";
+  text->plot(f);
+  text->textAnchor = "middle";
+  text->fontWeight = "normal";
 
   // Redundancy
-  rect->origin = Point(cx, vert+rect->height+12);
+  // rect->origin = Point(cx-2*(HORIZ_TUNE+width/HORIZ_RATIO), 
+  //                      vert+rect->height+12);
+  // text->origin = Point(rect->origin.x+rect->width/2, 
+  //                      rect->origin.y+rect->height);
   text->origin = Point(rect->origin.x+rect->width/2, 
                        rect->origin.y+rect->height);
+  text->dominantBaseline = "text-before-edge";
   text->label  = "REDUNDANCY";
   text->fontSize   = 9;
   text->fontWeight = "bold";
   text->plot(f);
 
-  switch (colorMode) {
-  case 0:
-    grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-                         "#f9d057", "#f29e2e", "#e76818", "#d7191c"};     break;
-  case 1:
-    grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-                         "#217681", "#285285", "#1F2D86", "#000086"};     break;
-  case 2:
-    grad->offsetColor = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
-                         "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
-                         "#A53A66"};                                      break;
-  default:
-    error("undefined color mode.");
-  }
-  id = to_string(rect->origin.x) + to_string(rect->origin.y);
-  f << "<defs> <linearGradient id=\"grad"+id+"\" "
-    "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> ";
-  for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
-    f << "<stop offset=\"" << offset(i) << "\" "
-         "style=\"stop-color:" << grad->offsetColor[i] << ";stop-opacity:1\"/>";
-  }
-  f << "</linearGradient> </defs>"
-    "<rect fill=\"url(#grad"+id+")\" "
-    "width=\""  << PREC << rect->width    << "\" "
-    "height=\"" << PREC << rect->height   << "\" "
-    "x=\""      << PREC << rect->origin.x << "\" "
-    "y=\""      << PREC << rect->origin.y << "\" />\n";
+  // switch (colorMode) {
+  // case 0:
+  //   grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
+  //                        "#f9d057", "#f29e2e", "#e76818", "#d7191c"};     break;
+  // case 1:
+  //   grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
+  //                        "#217681", "#285285", "#1F2D86", "#000086"};     break;
+  // case 2:
+  //   grad->offsetColor = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
+  //                        "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
+  //                        "#A53A66"};                                      break;
+  // default:
+  //   error("undefined color mode.");
+  // }
+  // id = to_string(rect->origin.x) + to_string(rect->origin.y);
+  // f << "<defs> <linearGradient id=\"grad"+id+"\" "
+  //   "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> ";
+  // for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
+  //   f << "<stop offset=\"" << offset(i) << "\" "
+  //        "style=\"stop-color:" << grad->offsetColor[i] << ";stop-opacity:1\"/>";
+  // }
+  // f << "</linearGradient> </defs>"
+  //   "<rect fill=\"url(#grad"+id+")\" "
+  //   "width=\""  << PREC << rect->width    << "\" "
+  //   "height=\"" << PREC << rect->height   << "\" "
+  //   "x=\""      << PREC << rect->origin.x << "\" "
+  //   "y=\""      << PREC << rect->origin.y << "\" ry=\"3\" />\n";
 }
