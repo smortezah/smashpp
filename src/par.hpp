@@ -60,11 +60,14 @@ class VizParam {
   bool   verbose, inverse, regular, showPos, showNRC, showRedun;
   string image;
   u8     link, color;
+  float  opacity;
   u32    width, space, mult, start, min;
   string posFile;
 
   VizParam () : verbose(false), inverse(true), regular(true), showPos(false),                 showNRC(false), showRedun(false), image(DEF_IMAGE), 
-                link(DEF_LINK), color(DEF_COLOR), width(DEF_WIDT), space(DEF_SPAC), mult(DEF_MULT), start(DEF_BEGI), min(DEF_MINP) {}
+                link(DEF_LINK), color(DEF_COLOR), opacity(DEF_OPAC), 
+                width(DEF_WIDT), space(DEF_SPAC), mult(DEF_MULT), 
+                start(DEF_BEGI), min(DEF_MINP) {}
 
   void parse (int, char**&);
 
@@ -380,10 +383,16 @@ inline void VizParam::parse (int argc, char**& argv) {
       range->assert(link);
     }
     else if ((*i=="-c" || *i=="--color")  && i+1!=vArgs.end()) {
-      color = static_cast<u8>(stoul(*++i));
+      color = static_cast<u8>(stoi(*++i));
       auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, DEF_COLOR, 
         "Color", "[]", "default", Problem::WARNING);
       range->assert(color);
+    }
+    else if ((*i=="-p" || *i=="--opacity")  && i+1!=vArgs.end()) {
+      opacity = stof(*++i);
+      auto range = make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, DEF_OPAC, 
+        "Opacity", "[]", "default", Problem::WARNING);
+      range->assert(opacity);
     }
     else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
       width = static_cast<u32>(stoul(*++i));
@@ -459,27 +468,30 @@ inline void VizParam::help () const {
      "do NOT show inverse maps       " << fit("NO SHOW")                  <<'\n'
   << "  " << b("-nr") << ", "  << b("--dont-show-reg") << "       "
      "do NOT show regular maps       " << fit("NO SHOW")                  <<'\n'
-  << "  " << b("-l") << ",  "  << b("--link") << "  " << ul("INT") <<
-     "           type of the link between maps "
+  << "  " << b("-l") << ",  "  << b("--link") << "    " << ul("INT") <<
+     "         type of the link between maps "
      "[" << to_string(MIN_LINK) << ";" << to_string(MAX_LINK) << "]"      <<'\n'
-  << "  " << b("-c") << ",  "  << b("--color") << " " << ul("INT") <<
-     "           color mode "
+  << "  " << b("-c") << ",  "  << b("--color") << "   " << ul("INT") <<
+     "         color mode "
      "[" << to_string(MIN_COLOR) << ";" << to_string(MAX_COLOR) << "]"    <<'\n'
-  << "  " << b("-w") << ",  "  << b("--width") << " " << ul("INT") <<
-     "           width of the image sequence "
+  << "  " << b("-p") << ",  "  << b("--opacity") << " " << ul("FLOAT") <<
+     "       opacity [" << string_format("%.1f",MIN_OPAC) << ";" 
+                        << string_format("%.1f",MAX_OPAC) << "]"          <<'\n'
+  << "  " << b("-w") << ",  "  << b("--width") << "   " << ul("INT") <<
+     "         width of the image sequence "
      "[" << to_string(MIN_WIDT) << ";" << to_string(MAX_WIDT) << "]"      <<'\n'
-  << "  " << b("-s") << ",  "  << b("--space") << " " << ul("INT") <<
-     "           space between sequences "
+  << "  " << b("-s") << ",  "  << b("--space") << "   " << ul("INT") <<
+     "         space between sequences "
      "[" << to_string(MIN_SPAC) << ";" << to_string(MAX_SPAC) << "]"      <<'\n'
-  << "  " << b("-m") << ",  "  << b("--mult") << "  " << ul("INT") <<
-     "           multiplication factor for"                               <<'\n'
+  << "  " << b("-m") << ",  "  << b("--mult") << "    " << ul("INT") <<
+     "         multiplication factor for"                                 <<'\n'
   << "                             color ID "
      "[" << to_string(MIN_MULT) << ";" << to_string(MAX_MULT) << "]"      <<'\n'
-  << "  " << b("-b") << ",  "  << b("--begin") << " " << ul("INT") <<
-     "           beginning of color ID "
+  << "  " << b("-b") << ",  "  << b("--begin") << "   " << ul("INT") <<
+     "         beginning of color ID "
      "[" << to_string(MIN_BEGI) << ";" << to_string(MAX_BEGI) << "]"      <<'\n'
-  << "  " << b("-k") << ",  "  << b("--min") << "   " << ul("INT") <<
-     "           minimum block size to"                                   <<'\n'
+  << "  " << b("-k") << ",  "  << b("--min") << "     " << ul("INT") <<
+     "         minimum block size to"                                     <<'\n'
   << "                             consider "
      "[" << to_string(MIN_MINP) << ";" << to_string(MAX_MINP) << "]"      <<'\n'
   << "  " << b("-h") << ",  " << b("--help") << "                usage guide \n"

@@ -67,7 +67,7 @@ inline void Line::plot (ofstream& f) const {
  */
 inline void Rectangle::plot (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-    ";fill-opacity:0.75;stroke-width:1;stroke-miterlimit:4;"
+    ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
@@ -76,9 +76,9 @@ inline void Rectangle::plot (ofstream& f) const {
 
 inline void Rectangle::plot_ir (ofstream& f) const {
   plot(f);
-  f << "<rect style=\"fill-opacity:0.75;stroke-width:2;stroke-miterlimit:4;"
-    "stroke-dasharray:none;fill:url(#Wavy);fill-rule:nonzero;opacity:1\" "
-    "id=\"rect6217\" "
+  f << "<rect style=\"fill-opacity:" << opacity << ";stroke-width:2;"
+    "stroke-miterlimit:4;stroke-dasharray:none;fill:url(#Wavy);"
+    "fill-rule:nonzero;opacity:1\" id=\"rect6217\" "
     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
     "ry=\"3\" />\n";
@@ -104,7 +104,7 @@ inline void Rectangle::plot_oval_ir (ofstream& f) const {
 
 inline void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-    ";fill-opacity:0.8;stroke-width:1;stroke-miterlimit:4;"
+    ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
     "width=\""  << PREC << width/HORIZ_RATIO << "\" "
     "height=\"" << PREC << height            <<"\" "
@@ -124,7 +124,7 @@ inline void Rectangle::plot_nrc_tar (ofstream& f) const {
 inline void Rectangle::plot_redun
 (ofstream& f, u8 showNRC, char refTar = ' ') const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-    ";fill-opacity:0.8;stroke-width:1;stroke-miterlimit:4;"
+    ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
     "width=\""  << PREC << width/HORIZ_RATIO << "\" "
     "height=\"" << PREC << height            <<"\" "
@@ -222,6 +222,7 @@ void VizPaint::print_plot (VizParam& p) {
   auto line   = make_unique<Line>();
   line->width = 2.0;
   auto rect   = make_unique<Rectangle>();
+  rect->opacity = p.opacity;
   auto poly   = make_unique<Polygon>();
   auto text   = make_unique<Text>();
 
@@ -262,34 +263,31 @@ void VizPaint::print_plot (VizParam& p) {
   for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
     pos.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, start));
 
-  if (p.showPos) {
-    double X = 0;
-    if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-    else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
+  // if (p.showPos) {
+  //   double X = 0;
+  //   if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
+  //   else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
 
-    // auto startDupl{p.start};
-    vector<Pos> posDupl{pos};
-    std::sort(posDupl.begin(), posDupl.end(),
-      [](const Pos &lhs, const Pos &rhs) { return lhs.begRef < rhs.begRef; });
-    for (u64 i=0; i!=posDupl.size()-1; ++i) {
-      if (posDupl[i+1].begRef - posDupl[i].begRef 
-          < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-        text->fontWeight = "bold";
-        text->textAnchor = "end";
-        text->dominantBaseline = "text-before-edge";
-        text->origin = Point(cx - X, cy + get_point(posDupl[i].begRef));
-        text->color = customColor(posDupl[i].start);
-        text->label = to_string(posDupl[i].begRef);
-        text->plot_pos_ref(fPlot, 'e');
-        text->origin = Point(cx - X, cy + get_point(posDupl[i].begRef));
-        text->color = customColor(posDupl[i+1].start);
-        text->label = to_string(posDupl[i+1].begRef) + ", ";
-        text->plot_pos_ref(fPlot, 'e');
-      }
-      cerr<<posDupl[i].start<<' ';
-      // ++startDupl;
-    }
-  }
+  //   vector<Pos> posDupl{pos};
+  //   std::sort(posDupl.begin(), posDupl.end(),
+  //     [] (const Pos &lhs, const Pos &rhs) { return lhs.begRef < rhs.begRef; });
+  //   for (u64 i=0; i!=posDupl.size()-1; ++i) {
+  //     if (posDupl[i+1].begRef - posDupl[i].begRef 
+  //         < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+  //       text->fontWeight = "bold";
+  //       text->dominantBaseline = "text-before-edge";
+  //       text->origin = Point(cx - X, cy + get_point(posDupl[i].begRef));
+  //       text->color = customColor(posDupl[i].start);
+  //       text->label = to_string(posDupl[i].begRef);
+  //       text->plot_pos_ref(fPlot, 'e');
+  //       text->origin = Point(cx - X, cy + get_point(posDupl[i].begRef));
+  //       text->color = customColor(posDupl[i+1].start);
+  //       text->label = to_string(posDupl[i+1].begRef) + ", ";
+  //       text->plot_pos_ref(fPlot, 'e');
+  //     }
+  //     // cerr<<posDupl[i].start<<' ';
+  //   }
+  // }
   }
 
   u64 n_regular=0, n_inverse=0, n_ignored=0;
@@ -319,7 +317,7 @@ void VizPaint::print_plot (VizParam& p) {
         text->origin = Point(cx - X, cy + get_point(e.begRef));
         text->label  = to_string(e.begRef);
         text->color  = customColor(p.start);
-        // text->plot_pos_ref(fPlot, 'b');
+        text->plot_pos_ref(fPlot, 'b');//todo uncomment
         text->origin = Point(cx - X, cy + get_point(e.endRef));
         text->label  = to_string(e.endRef);
         text->color  = customColor(p.start);
