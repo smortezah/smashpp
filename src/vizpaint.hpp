@@ -70,8 +70,9 @@ class Rectangle {
   Point  origin;
   double width, height;
   string color;
+  float  opacity;
 
-  Rectangle             () = default;
+  Rectangle             () : opacity(DEF_OPAC) {}
   void plot             (ofstream&)           const;
   void plot_ir          (ofstream&)           const;
   void plot_oval        (ofstream&)           const;
