@@ -639,11 +639,8 @@ inline string VizPaint::heatmap_color
          G = lambdaGamma - a*0.29227*cos(phi) - a*0.90649*sin(phi),
          B = lambdaGamma + a*1.97294*cos(phi);
 
-  keep_in_range(0.0, R, 1.0);
-  keep_in_range(0.0, G, 1.0);
-  keep_in_range(0.0, B, 1.0);
+  keep_in_range(0.0,R,1.0); keep_in_range(0.0,G,1.0); keep_in_range(0.0,B,1.0);
 
-  // return string_format("#%02X%02X%02X", int(R*255), int(G*255), int(B*255));
   return string_format("#%02X%02X%02X", int(R*255), int(G*255), int(B*255));
 }
 
@@ -657,13 +654,13 @@ inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
 inline string VizPaint::nrc_color (double entropy) const {
   // keep_in_range(0.0, entropy, 2.0);
   // return shade_color(0, ceil(255-entropy*75), ceil(255-entropy*75));
-  return heatmap_color(entropy);
+  return heatmap_color(entropy/2 * (PAINT_CX+width+space+width));
 }
 
 inline string VizPaint::redun_color (double entropy) const {
   // keep_in_range(0.0, entropy, 2.0);
   // return shade_color(ceil(255-entropy*75), ceil(255-entropy*75), 0);
-  return heatmap_color(entropy);
+  return heatmap_color(entropy/2 * (cx+width+space+width));
 }
 
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {
@@ -919,7 +916,7 @@ inline void VizPaint::plot_legend (ofstream& f) const {
     return to_string(i * 100 / (grad->offsetColor.size() - 1)) + "%";
   };
   auto id = to_string(rect->origin.x) + to_string(rect->origin.y);
-  f << "<defs> <linearGradient id=\"grad"+id+"\" "
+  f << "<defs><linearGradient id=\"grad"+id+"\"  "
     "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> ";
   for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
     f << "<stop offset=\"" << offset(i) << "\" "
@@ -941,6 +938,8 @@ inline void VizPaint::plot_legend (ofstream& f) const {
   text->fontWeight = "bold";
   text->plot(f);
 
+  // grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
+  //                      "#217681", "#285285", "#1F2D86", "#000086"};
   grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", 
                        "#f9d057", "#f29e2e", "#e76818", "#d7191c"};
   id = to_string(rect->origin.x) + to_string(rect->origin.y);

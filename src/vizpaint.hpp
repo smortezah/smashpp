@@ -134,8 +134,6 @@ class VizPaint {
   template <typename Value>
   double   get_point   (Value)                     const;
   void     plot_legend (ofstream&)                 const;
-  void     plot_legend_nrc   (ofstream&)           const;
-  void     plot_legend_redun (ofstream&)           const;
 };
 }
 
