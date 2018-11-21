@@ -324,11 +324,11 @@ void VizPaint::print_plot (VizParam& p) {
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
         if (p.showNRC) {
-          rect->color = nrc_color(entRef);
+          rect->color = nrc_color(entRef, p.color);
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(selfRef);
+          rect->color = redun_color(selfRef, p.color);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
 
@@ -337,11 +337,11 @@ void VizPaint::print_plot (VizParam& p) {
         rect->height = get_point(endTar-begTar);
         rect->plot(fPlot);
         if (p.showNRC) {
-          rect->color = nrc_color(entTar);
+          rect->color = nrc_color(entTar, p.color);
           rect->plot_nrc_tar(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(selfTar);
+          rect->color = redun_color(selfTar, p.color);
           rect->plot_redun_tar(fPlot, p.showNRC);
         }
 
@@ -404,11 +404,11 @@ void VizPaint::print_plot (VizParam& p) {
         rect->height = get_point(endRef-begRef);
         rect->plot(fPlot);
         if (p.showNRC) {
-          rect->color = nrc_color(entRef);
+          rect->color = nrc_color(entRef, p.color);
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(selfRef);
+          rect->color = redun_color(selfRef, p.color);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
 
@@ -417,11 +417,11 @@ void VizPaint::print_plot (VizParam& p) {
         rect->height = get_point(begTar-endTar);
         rect->plot_ir(fPlot);
         if (p.showNRC) {
-          rect->color = nrc_color(entTar);
+          rect->color = nrc_color(entTar, p.color);
           rect->plot_nrc_tar(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(selfTar);
+          rect->color = redun_color(selfTar, p.color);
           rect->plot_redun_tar(fPlot, p.showNRC);
         }
 
@@ -488,7 +488,7 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = tarSize;
   rect->plot_chromosome(fPlot);
 
-  plot_legend(fPlot);
+  plot_legend(fPlot, p.color);
 
   print_tail(fPlot);
 
@@ -651,16 +651,46 @@ inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
                +to_string(static_cast<u8>(b))+")";
 }
 
-inline string VizPaint::nrc_color (double entropy) const {
-  // keep_in_range(0.0, entropy, 2.0);
-  // return shade_color(0, ceil(255-entropy*75), ceil(255-entropy*75));
-  return heatmap_color(entropy/2 * (PAINT_CX+width+space+width));
+inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
+  keep_in_range(0.0, entropy, 2.0);
+  // return heatmap_color(entropy/2 * (width+space+width));
+  vector<string> colorSet {};
+  switch (colorMode) {
+  case 0:
+    colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
+                "#f9d057", "#f29e2e", "#e76818", "#d7191c"};              break;
+  case 1:
+    colorSet = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
+                "#217681", "#285285", "#1F2D86", "#000086"};              break;
+  case 2:
+    colorSet = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
+                "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
+                "#A53A66"};                                               break;
+  default:
+    error("undefined color mode.");
+  }
+  return colorSet[entropy / 2 * (colorSet.size() - 1)];
 }
 
-inline string VizPaint::redun_color (double entropy) const {
-  // keep_in_range(0.0, entropy, 2.0);
-  // return shade_color(ceil(255-entropy*75), ceil(255-entropy*75), 0);
-  return heatmap_color(entropy/2 * (cx+width+space+width));
+inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
+  keep_in_range(0.0, entropy, 2.0);
+  // return heatmap_color(entropy/2 * (width+space+width));
+  vector<string> colorSet {};
+  switch (colorMode) {
+  case 0:
+    colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
+                "#f9d057", "#f29e2e", "#e76818", "#d7191c"};              break;
+  case 1:
+    colorSet = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
+                "#217681", "#285285", "#1F2D86", "#000086"};              break;
+  case 2:
+    colorSet = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
+                "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
+                "#A53A66"};                                               break;
+  default:
+    error("undefined color mode.");
+  }
+  return colorSet[entropy / 2 * (colorSet.size() - 1)];
 }
 
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {
@@ -870,7 +900,7 @@ inline double VizPaint::get_point (Value p) const {
   return 5 * p / static_cast<double>(ratio);
 }
 
-inline void VizPaint::plot_legend (ofstream& f) const {
+inline void VizPaint::plot_legend (ofstream& f, u32 colorMode) const {
   const auto vert = 17;
   // Relative redundancy
   auto rect    = make_unique<Rectangle>();
@@ -889,29 +919,29 @@ inline void VizPaint::plot_legend (ofstream& f) const {
   text->dominantBaseline = "text-before-edge";
   text->fontWeight = "normal";
   text->fontSize   = 9;
-  text->origin     = Point(rect->origin.x, rect->origin.y+rect->height);
-  text->label      = "0.0";
-  text->plot(f);
-  text->origin     = Point(rect->origin.x+rect->width/4, 
-                           rect->origin.y+rect->height);
-  text->label      = "0.5";
-  text->plot(f);
-  text->origin     = Point(rect->origin.x+rect->width/2, 
-                           rect->origin.y+rect->height);
-  text->label      = "1.0";
-  text->plot(f);
-  text->origin     = Point(rect->origin.x+(rect->width*3)/4, 
-                           rect->origin.y+rect->height);
-  text->label      = "1.5";
-  text->plot(f);
-  text->origin     = Point(rect->origin.x+rect->width, 
-                           rect->origin.y+rect->height);
-  text->label      = "2.0";
-  text->plot(f);
+  for (u8 i=0; i!=5; ++i) {
+    text->origin = 
+      Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height);
+    text->label  = string_format("%.1f", i*0.5);
+    text->plot(f);
+  }
 
-  auto grad    = make_unique<Gradient>();
-  grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", 
-                       "#f9d057", "#f29e2e", "#e76818", "#d7191c"};
+  auto grad = make_unique<Gradient>();
+  switch (colorMode) {
+  case 0:
+    grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
+                "#f9d057", "#f29e2e", "#e76818", "#d7191c"};              break;
+  case 1:
+    grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
+                "#217681", "#285285", "#1F2D86", "#000086"};              break;
+  case 2:
+    grad->offsetColor = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
+                "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
+                "#A53A66"};                                               break;
+  default:
+    error("undefined color mode.");
+  }
+
   const auto offset = [&] (u8 i) { 
     return to_string(i * 100 / (grad->offsetColor.size() - 1)) + "%";
   };
@@ -938,10 +968,20 @@ inline void VizPaint::plot_legend (ofstream& f) const {
   text->fontWeight = "bold";
   text->plot(f);
 
-  // grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-  //                      "#217681", "#285285", "#1F2D86", "#000086"};
-  grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", 
-                       "#f9d057", "#f29e2e", "#e76818", "#d7191c"};
+  switch (colorMode) {
+  case 0:
+    grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
+                         "#f9d057", "#f29e2e", "#e76818", "#d7191c"};     break;
+  case 1:
+    grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
+                         "#217681", "#285285", "#1F2D86", "#000086"};     break;
+  case 2:
+    grad->offsetColor = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
+                         "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
+                         "#A53A66"};                                      break;
+  default:
+    error("undefined color mode.");
+  }
   id = to_string(rect->origin.x) + to_string(rect->origin.y);
   f << "<defs> <linearGradient id=\"grad"+id+"\" "
     "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> ";

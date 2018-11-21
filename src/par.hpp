@@ -59,13 +59,12 @@ class VizParam {
  public:
   bool   verbose, inverse, regular, showPos, showNRC, showRedun;
   string image;
-  u32    link, width, space, mult, start, min;
+  u8     link, color;
+  u32    width, space, mult, start, min;
   string posFile;
 
-  VizParam () : verbose(false), inverse(true), regular(true), showPos(false),
-                showNRC(false), showRedun(false), image(DEF_IMAGE),
-                link(DEF_LINK), width(DEF_WIDT), space(DEF_SPAC),
-                mult(DEF_MULT), start(DEF_BEGI), min(DEF_MINP) {}
+  VizParam () : verbose(false), inverse(true), regular(true), showPos(false),                 showNRC(false), showRedun(false), image(DEF_IMAGE), 
+                link(DEF_LINK), color(DEF_COLOR), width(DEF_WIDT), space(DEF_SPAC), mult(DEF_MULT), start(DEF_BEGI), min(DEF_MINP) {}
 
   void parse (int, char**&);
 
@@ -375,10 +374,16 @@ inline void VizParam::parse (int argc, char**& argv) {
     else if ((*i=="-o" || *i=="--out")   && i+1!=vArgs.end())
       image = *++i;
     else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
-      link = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_LINK, MAX_LINK, DEF_LINK, 
+      link = static_cast<u8>(stoul(*++i));
+      auto range = make_unique<ValRange<u8>>(MIN_LINK, MAX_LINK, DEF_LINK, 
         "Link", "[]", "default", Problem::WARNING);
       range->assert(link);
+    }
+    else if ((*i=="-c" || *i=="--color")  && i+1!=vArgs.end()) {
+      color = static_cast<u8>(stoul(*++i));
+      auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, DEF_COLOR, 
+        "Color", "[]", "default", Problem::WARNING);
+      range->assert(color);
     }
     else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
       width = static_cast<u32>(stoul(*++i));
@@ -404,7 +409,7 @@ inline void VizParam::parse (int argc, char**& argv) {
         "Begin", "[]", "default", Problem::WARNING);
       range->assert(start);
     }
-    else if ((*i=="-c" || *i=="--min")   && i+1!=vArgs.end()) {
+    else if ((*i=="-k" || *i=="--min")   && i+1!=vArgs.end()) {
       min = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, DEF_MINP,
         "Min", "[]", "default", Problem::WARNING);
@@ -457,6 +462,9 @@ inline void VizParam::help () const {
   << "  " << b("-l") << ",  "  << b("--link") << "  " << ul("INT") <<
      "           type of the link between maps "
      "[" << to_string(MIN_LINK) << ";" << to_string(MAX_LINK) << "]"      <<'\n'
+  << "  " << b("-c") << ",  "  << b("--color") << " " << ul("INT") <<
+     "           color mode "
+     "[" << to_string(MIN_COLOR) << ";" << to_string(MAX_COLOR) << "]"    <<'\n'
   << "  " << b("-w") << ",  "  << b("--width") << " " << ul("INT") <<
      "           width of the image sequence "
      "[" << to_string(MIN_WIDT) << ";" << to_string(MAX_WIDT) << "]"      <<'\n'
@@ -470,7 +478,7 @@ inline void VizParam::help () const {
   << "  " << b("-b") << ",  "  << b("--begin") << " " << ul("INT") <<
      "           beginning of color ID "
      "[" << to_string(MIN_BEGI) << ";" << to_string(MAX_BEGI) << "]"      <<'\n'
-  << "  " << b("-c") << ",  "  << b("--min") << "   " << ul("INT") <<
+  << "  " << b("-k") << ",  "  << b("--min") << "   " << ul("INT") <<
      "           minimum block size to"                                   <<'\n'
   << "                             consider "
      "[" << to_string(MIN_MINP) << ";" << to_string(MAX_MINP) << "]"      <<'\n'
