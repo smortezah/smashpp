@@ -127,13 +127,13 @@ class VizPaint {
   string   heatmap_color (double, const HeatmapColor& h=HeatmapColor()) const;
   template <typename ValueR, typename ValueG, typename ValueB>
   string   shade_color (ValueR, ValueG, ValueB)    const;
-  string   nrc_color   (double)                    const;
-  string   redun_color (double)                    const;
+  string   nrc_color   (double, u32)               const;
+  string   redun_color (double, u32)               const;
   void     print_head  (ofstream&, double, double) const;
   void     print_tail  (ofstream&)                 const;
   template <typename Value>
   double   get_point   (Value)                     const;
-  void     plot_legend (ofstream&)                 const;
+  void     plot_legend (ofstream&, u32)            const;
 };
 }
 

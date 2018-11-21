@@ -7,9 +7,12 @@
 
 namespace smashpp {
 static const     string DEF_IMAGE       {"map.svg"};
-static constexpr u32    DEF_LINK        {5};
-static constexpr u32    MIN_LINK        {1};
-static constexpr u32    MAX_LINK        {5};
+static constexpr u8     DEF_LINK        {5};
+static constexpr u8     MIN_LINK        {1};
+static constexpr u8     MAX_LINK        {5};
+static constexpr u8     DEF_COLOR       {0};
+static constexpr u8     MIN_COLOR       {0};
+static constexpr u8     MAX_COLOR       {2};
 static constexpr u32    DEF_WIDT        {30};
 static constexpr u32    MIN_WIDT        {10};
 static constexpr u32    MAX_WIDT        {200};
