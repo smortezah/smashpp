@@ -271,41 +271,90 @@ void VizPaint::print_plot (VizParam& p) {
     // vector<Pos> posDupl{pos};
     // std::sort(posDupl.begin(), posDupl.end(),
     //   [] (const Pos &lhs, const Pos &rhs) { return lhs.begRef < rhs.begRef; });
-
+    vector<i64> vBegEnd;
+    vector<u64> vBegEnd_start;
+    for (const auto& e : pos) {
+      vBegEnd.emplace_back(e.begRef);
+      vBegEnd.emplace_back(e.endRef);
+      vBegEnd_start.emplace_back(e.start);
+      vBegEnd_start.emplace_back(e.start);
+    }
+    const auto overlap = [=] (i64 first, i64 second) {
+      return abs(first-second) < PAINT_SHORT * max(n_refBases,n_tarBases);
+    };
     const auto tspan = [] (const string& fill, const string& pos) {
       return "<tspan style=\"fill:" + fill + "\">" + pos + ", </tspan>\n";
     };
     string firstLine, line, lastLine;
     vector<string> color_pos;
-    for (u64 i=0; i!=pos.size()-1; ++i) {
-      for (u64 j=i+1; j!=pos.size(); ++j) {
-        if (pos[j].begRef - pos[i].begRef 
-            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+    for (u64 i=0; i<vBegEnd.size(); i+=2) {
+      for (u64 j=i+2; j<vBegEnd.size(); ++j) {
+        firstLine = tspan(
+          customColor(vBegEnd_start[i]), to_string(vBegEnd[i]));
+        if (overlap(vBegEnd[j], vBegEnd[i])) {
           if (!has(color_pos.begin(), color_pos.end(), 
-              customColor(pos[i].start)+to_string(pos[i].begRef))){
-            firstLine = tspan(customColor(pos[i].start),
-                        to_string(pos[i].begRef));
-            color_pos.emplace_back(customColor(pos[i].start)+to_string(pos[i].begRef));
+              customColor(vBegEnd_start[i])+to_string(vBegEnd[i]))) {
+            color_pos.emplace_back(
+              customColor((vBegEnd_start[i]))+to_string(vBegEnd[i]));
           }
           if (!has(color_pos.begin(), color_pos.end(), 
-              customColor(pos[j].start)+to_string(pos[j].begRef))) {
-          line += tspan(customColor(pos[j].start),
-                        to_string(pos[j].begRef));
-          color_pos.emplace_back(customColor(pos[j].start)+to_string(pos[j].begRef));
+              customColor(vBegEnd_start[j])+to_string(vBegEnd[j]))) {
+            color_pos.emplace_back(
+              customColor(vBegEnd_start[j])+to_string(vBegEnd[j]));
+            line += 
+              tspan(customColor(vBegEnd_start[j]), to_string(vBegEnd[j]));
           }
         }
       }
-      if (!(firstLine+line).empty()) {
-        text->fontWeight = "bold";
+      string finalLine {firstLine+line};
+      if (!finalLine.empty()) {
+        if (finalLine[finalLine.size()-11] == ',') 
+          finalLine.erase(finalLine.size()-11, 1);
+        // text->fontWeight = "bold";
         text->dominantBaseline = "text-before-edge";
-        text->origin = Point(cx - X, cy + get_point(pos[i].begRef));
-        if (line[line.size()-11]==',') {line.erase(line.size()-11, 1);}
-        text->label = firstLine + line;
+        text->origin = Point(cx - X, cy + get_point(vBegEnd[i]));
+        text->label = finalLine;
+        cerr<<text->label<<'\n';
         text->plot_pos_ref(fPlot);
+        firstLine.clear();
         line.clear();
-        lastLine.clear();
       }
     }
+
+    // for (u64 i=1; i<vBegEnd.size(); i+=2) {
+    //   for (u64 j=i+1; j<vBegEnd.size(); ++j) {
+    //     if (vBegEnd_start[i] != vBegEnd_start[j]) {
+    //       firstLine = tspan(
+    //         customColor(vBegEnd_start[i]), to_string(vBegEnd[i]));
+    //       if (overlap(vBegEnd[j], vBegEnd[i])) {
+    //         if (!has(color_pos.begin(), color_pos.end(), 
+    //             customColor(vBegEnd_start[i])+to_string(vBegEnd[i]))) {
+    //           color_pos.emplace_back(
+    //             customColor((vBegEnd_start[i]))+to_string(vBegEnd[i]));
+    //         }
+    //         if (!has(color_pos.begin(), color_pos.end(), 
+    //             customColor(vBegEnd_start[j])+to_string(vBegEnd[j]))) {
+    //           line += 
+    //             tspan(customColor(vBegEnd_start[j]), to_string(vBegEnd[j]));
+    //           color_pos.emplace_back(
+    //             customColor(vBegEnd_start[j])+to_string(vBegEnd[j]));
+    //         }
+    //       }
+    //     }
+    //   }
+    //   string finalLine {firstLine+line};
+    //   if (!finalLine.empty()) {
+    //     text->fontWeight = "bold";
+    //     text->dominantBaseline = "text-after-edge";
+    //     text->origin = Point(cx - X, cy + get_point(vBegEnd[i]));
+    //     if (finalLine[finalLine.size()-11]==',') {finalLine.erase(finalLine.size()-11, 1);}
+    //     text->label = finalLine;
+    //     cerr<<text->label<<'\n';
+    //     text->plot_pos_ref(fPlot);
+    //     firstLine.clear();
+    //     line.clear();
+    //   }
+    // }
   }
   }
 
@@ -323,25 +372,25 @@ void VizPaint::print_plot (VizParam& p) {
       else if (p.showNRC ^ p.showRedun)
         X = HORIZ_TUNE + width/HORIZ_RATIO;
 
-      if (e.endRef-e.begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
-        text->fontWeight = "bold";
-        text->origin = Point(cx - X,
-          cy+get_point(e.begRef) + (get_point(e.endRef)-get_point(e.begRef))/2);
-        text->label = to_string(e.begRef) + " - " + to_string(e.endRef);
-        text->color = customColor(p.start);
-        text->plot_pos_ref(fPlot, 'm');
-      }
-      else {
-        text->fontWeight = "bold";
-        text->origin = Point(cx - X, cy + get_point(e.begRef));
-        text->label  = to_string(e.begRef);
-        text->color  = customColor(p.start);
+      // if (e.endRef-e.begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
+      //   text->fontWeight = "bold";
+      //   text->origin = Point(cx - X,
+      //     cy+get_point(e.begRef) + (get_point(e.endRef)-get_point(e.begRef))/2);
+      //   text->label = to_string(e.begRef) + " - " + to_string(e.endRef);
+      //   text->color = customColor(p.start);
+        // text->plot_pos_ref(fPlot, 'm');//todo uncomment
+      // }
+      // else {
+        // text->fontWeight = "bold";
+        // text->origin = Point(cx - X, cy + get_point(e.begRef));
+        // text->label  = to_string(e.begRef);
+        // text->color  = customColor(p.start);
         // text->plot_pos_ref(fPlot, 'b');//todo uncomment
-        text->origin = Point(cx - X, cy + get_point(e.endRef));
-        text->label  = to_string(e.endRef);
-        text->color  = customColor(p.start);
-        text->plot_pos_ref(fPlot, 'e');
-      }
+        // text->origin = Point(cx - X, cy + get_point(e.endRef));
+        // text->label  = to_string(e.endRef);
+        // text->color  = customColor(p.start);
+        // text->plot_pos_ref(fPlot, 'e');//todo uncomment
+      // }
 
       if (abs(e.endTar-e.begTar) < PAINT_SHORT*max(n_refBases,n_tarBases)) {
         text->origin = Point(cx + width + space + width + X,
