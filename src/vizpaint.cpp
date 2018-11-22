@@ -25,7 +25,7 @@ inline void Text::plot_title (ofstream& f) {
   plot(f);
 }
 
-inline void Text::plot_pos_ref (ofstream& f, char c) {
+inline void Text::plot_pos_ref (ofstream& f, char c='\0') {
   textAnchor = "end";
   origin.x += -5;
   switch (c) {
@@ -263,31 +263,50 @@ void VizPaint::print_plot (VizParam& p) {
   for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
     pos.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, start));
 
-  // if (p.showPos) {
-  //   double X = 0;
-  //   if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-  //   else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
+  if (p.showPos) {
+    double X = 0;
+    if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
+    else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
 
-  //   vector<Pos> posDupl{pos};
-  //   std::sort(posDupl.begin(), posDupl.end(),
-  //     [] (const Pos &lhs, const Pos &rhs) { return lhs.begRef < rhs.begRef; });
-  //   for (u64 i=0; i!=posDupl.size()-1; ++i) {
-  //     if (posDupl[i+1].begRef - posDupl[i].begRef 
-  //         < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-  //       text->fontWeight = "bold";
-  //       text->dominantBaseline = "text-before-edge";
-  //       text->origin = Point(cx - X, cy + get_point(posDupl[i].begRef));
-  //       text->color = customColor(posDupl[i].start);
-  //       text->label = to_string(posDupl[i].begRef);
-  //       text->plot_pos_ref(fPlot, 'e');
-  //       text->origin = Point(cx - X, cy + get_point(posDupl[i].begRef));
-  //       text->color = customColor(posDupl[i+1].start);
-  //       text->label = to_string(posDupl[i+1].begRef) + ", ";
-  //       text->plot_pos_ref(fPlot, 'e');
-  //     }
-  //     // cerr<<posDupl[i].start<<' ';
-  //   }
-  // }
+    // vector<Pos> posDupl{pos};
+    // std::sort(posDupl.begin(), posDupl.end(),
+    //   [] (const Pos &lhs, const Pos &rhs) { return lhs.begRef < rhs.begRef; });
+
+    const auto tspan = [] (const string& fill, const string& pos) {
+      return "<tspan style=\"fill:" + fill + "\">" + pos + ", </tspan>\n";
+    };
+    string firstLine, line, lastLine;
+    vector<string> color_pos;
+    for (u64 i=0; i!=pos.size()-1; ++i) {
+      for (u64 j=i+1; j!=pos.size(); ++j) {
+        if (pos[j].begRef - pos[i].begRef 
+            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+          if (!has(color_pos.begin(), color_pos.end(), 
+              customColor(pos[i].start)+to_string(pos[i].begRef))){
+            firstLine = tspan(customColor(pos[i].start),
+                        to_string(pos[i].begRef));
+            color_pos.emplace_back(customColor(pos[i].start)+to_string(pos[i].begRef));
+          }
+          if (!has(color_pos.begin(), color_pos.end(), 
+              customColor(pos[j].start)+to_string(pos[j].begRef))) {
+          line += tspan(customColor(pos[j].start),
+                        to_string(pos[j].begRef));
+          color_pos.emplace_back(customColor(pos[j].start)+to_string(pos[j].begRef));
+          }
+        }
+      }
+      if (!(firstLine+line).empty()) {
+        text->fontWeight = "bold";
+        text->dominantBaseline = "text-before-edge";
+        text->origin = Point(cx - X, cy + get_point(pos[i].begRef));
+        if (line[line.size()-11]==',') {line.erase(line.size()-11, 1);}
+        text->label = firstLine + line;
+        text->plot_pos_ref(fPlot);
+        line.clear();
+        lastLine.clear();
+      }
+    }
+  }
   }
 
   u64 n_regular=0, n_inverse=0, n_ignored=0;
@@ -317,7 +336,7 @@ void VizPaint::print_plot (VizParam& p) {
         text->origin = Point(cx - X, cy + get_point(e.begRef));
         text->label  = to_string(e.begRef);
         text->color  = customColor(p.start);
-        text->plot_pos_ref(fPlot, 'b');//todo uncomment
+        // text->plot_pos_ref(fPlot, 'b');//todo uncomment
         text->origin = Point(cx - X, cy + get_point(e.endRef));
         text->label  = to_string(e.endRef);
         text->color  = customColor(p.start);
