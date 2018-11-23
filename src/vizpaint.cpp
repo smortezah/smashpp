@@ -291,11 +291,20 @@ void VizPaint::print_plot (VizParam& p) {
     i64 printPos = 0;
     char printType = 'b';
     u64 nOverlap = 0;
-    for (auto it=nodes.begin(); it!=nodes.end(); ++it) {
+    for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
       if (it->type=='b' && (it+1)->type=='b') {
         if ((it+1)->position - it->position 
             < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-          if (++nOverlap==1) { printPos=it->position;  printType=it->type; }
+          if (++nOverlap == 1) {
+            if (it->start == (it+1)->start) {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+            else {
+              printPos = it->position;
+              printType = it->type;
+            }
+          }
           line += tspan(customColor(it->start), to_string(it->position));
           lastLine = 
             tspan(customColor((it+1)->start), to_string((it+1)->position));
@@ -308,7 +317,16 @@ void VizPaint::print_plot (VizParam& p) {
       else if (it->type=='b' && (it+1)->type=='e') {
         if ((it+1)->position - it->position 
             < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-          if (++nOverlap==1)  { printPos=it->position;  printType=it->type; }
+          if (++nOverlap == 1) {
+            if (it->start == (it+1)->start) {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+            else {
+              printPos = it->position;
+              printType = it->type;
+            }
+          }
           line += tspan(customColor(it->start), to_string(it->position));
           lastLine = 
             tspan(customColor((it+1)->start), to_string((it+1)->position));
@@ -325,7 +343,16 @@ void VizPaint::print_plot (VizParam& p) {
       else if (it->type=='e' && (it+1)->type=='e') {
         if ((it+1)->position - it->position 
             < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-          if (++nOverlap==1)  { printPos=it->position;  printType=it->type; }
+          if (++nOverlap == 1) {
+            if (it->start == (it+1)->start) {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+            else {
+              printPos = it->position;
+              printType = it->type;
+            }
+          }
           line += tspan(customColor(it->start), to_string(it->position));
           lastLine = 
             tspan(customColor((it+1)->start), to_string((it+1)->position));
@@ -347,18 +374,59 @@ void VizPaint::print_plot (VizParam& p) {
 
         // text->fontWeight = "bold";
         if      (printType=='b')  text->dominantBaseline="text-before-edge";
+        if      (printType=='m')  text->dominantBaseline="middle";
         else if (printType=='e')  text->dominantBaseline="text-after-edge";
         text->origin = Point(cx - X, cy + get_point(printPos));
         text->label = finalLine;
-        // cerr<<text->label<<'\n';
+
+        cerr<<text->label<<'\n';//todo
+
         text->plot_pos_ref(fPlot);
 
         line.clear();
         lastLine.clear();
+
+        //last
+        if (it+2 == nodes.end()) {
+          finalLine = tspan(customColor((it+1)->start), to_string((it+1)  ->position));
+          if (!finalLine.empty()) {
+            if (finalLine[finalLine.size()-11] == ',') 
+              finalLine.erase(finalLine.size()-11, 1);
+          }
+          printPos = (it+1)->position;
+          
+          text->dominantBaseline="text-after-edge";
+          text->origin = Point(cx - X, cy + get_point(printPos));
+          text->label = finalLine;
+          
+          cerr<<text->label<<'\n';//todo
+
+          text->plot_pos_ref(fPlot);
+        }
       }
+      
+      if (it+2 == nodes.end() && nOverlap!=0) {
+        lastLine = tspan(customColor((it+1)->start), to_string((it+1)->position));
 
+        string finalLine {line+lastLine};
+        if (!finalLine.empty()) {
+          if (finalLine[finalLine.size()-11] == ',') 
+            finalLine.erase(finalLine.size()-11, 1);
+        }
+
+        // text->fontWeight = "bold";
+        if      (printType=='b')  text->dominantBaseline="text-before-edge";
+        if      (printType=='m')  text->dominantBaseline="middle";
+        else if (printType=='e')  text->dominantBaseline="text-after-edge";
+        text->origin = Point(cx - X, cy + get_point(printPos));
+        text->label = finalLine;
+
+        cerr<<text->label<<'\n';//todo
+
+        text->plot_pos_ref(fPlot);        
+        break;
+      }
     }
-
   }
   } // End of if (p.showPos)
 
