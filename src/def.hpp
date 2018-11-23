@@ -1,9 +1,4 @@
-//
-// Created by morteza on 02-02-2018.
-//
-
 //#define DEBUG 1
-
 
 #ifndef SMASHPP_DEF_HPP
 #define SMASHPP_DEF_HPP
@@ -230,9 +225,7 @@ struct Pos {
   prec_t entTar, selfTar;
   u64    start;
   Pos (i64 br, i64 er, prec_t nr, prec_t sr, i64 bt, i64 et, prec_t nt, 
-       prec_t st, u64 s) 
-       : begRef(br), endRef(er), entRef(nr), selfRef(sr), begTar(bt), 
-         endTar(et), entTar(nt), selfTar(st), start(s) {}
+    prec_t st, u64 s) : begRef(br), endRef(er), entRef(nr), selfRef(sr), begTar(bt), endTar(et), entTar(nt), selfTar(st), start(s) {}
 };
 
 ////template<u32 N>    // Up to 262144=2^18 elements

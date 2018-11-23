@@ -1,7 +1,3 @@
-//
-// Created by morteza on 03-05-2018.
-//
-
 #ifndef PROJECT_FN_HPP
 #define PROJECT_FN_HPP
 

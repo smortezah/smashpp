@@ -1,7 +1,3 @@
-//
-// Created by morteza on 19-09-2018.
-//
-
 #include <cmath>
 #include "filter.hpp"
 #include "segment.hpp"

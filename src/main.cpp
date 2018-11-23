@@ -80,10 +80,6 @@
 // hhdmmmmmhhyyhhhhhdddhhyyyhNNNNNmmNNNNNNN
 // hddmmNNmmddhhhhhhddhhhhhmNNNNNMNNNNNNNNN
 
-//
-// Created by morteza on 02-02-2018.
-//
-
 #define __STDC_FORMAT_MACROS
 #if defined(_MSC_VER)
 #  include <io.h>

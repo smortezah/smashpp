@@ -1,7 +1,3 @@
-//
-// Created by morteza on 15-03-2018.
-//
-
 #include <algorithm>
 #include <fstream>
 #include "tbl64.hpp"

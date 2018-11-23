@@ -1,7 +1,3 @@
-//
-// Created by morteza on 2/4/18.
-//
-
 #include <fstream>
 #include <cmath>
 #include <thread>

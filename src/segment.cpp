@@ -1,7 +1,3 @@
-//
-// Created by morteza on 26-09-2018.
-//
-
 #include "segment.hpp"
 #include "fn.hpp"
 using namespace smashpp;

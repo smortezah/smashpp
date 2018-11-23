@@ -1,207 +1,7 @@
 #include "vizpaint.hpp"
 #include "fn.hpp"
 using namespace smashpp;
-// #define PREC  std::fixed << std::setprecision(2)
 
-// /*
-//  * class Text
-//  */
-// inline void Text::plot (ofstream& f) const {
-//   f << "<text sodipodi:role=\"line\" id=\"tspan3804\" "
-//     "x=\"" << PREC << origin.x  << "\" "
-//     "y=\"" << PREC << origin.y  << "\" "
-//     "dominant-baseline=\"" << dominantBaseline << "\" "
-//     "transform=\"" << transform << "\" "
-//     "style=\"font-size:" << to_string(fontSize) << "px;font-style:normal;"
-//     "font-variant:normal;font-weight:" << fontWeight << ";font-stretch:normal;"
-//     "fill:" << color << ";fill-opacity:1;text-align:start;line-height:125%%;"
-//     "writing-mode:lr-tb;text-anchor:" << textAnchor << ";font-family:Arial;"
-//     "-inkscape-font-specification:Arial\">" << label << "</text>\n";
-// }
-
-// inline void Text::plot_title (ofstream& f) {
-//   textAnchor = "middle";
-//   fontSize = 14;
-//   plot(f);
-// }
-
-// inline void Text::plot_pos_ref (ofstream& f, char c='\0') {
-//   textAnchor = "end";
-//   origin.x += -5;
-//   switch (c) {
-//     case 'b':  dominantBaseline = "hanging";   break;  // begin
-//     case 'm':  dominantBaseline = "middle";    break;  // middle
-//     case 'e':  dominantBaseline = "baseline";  break;  // end
-//     default:                                   break;
-//   }
-//   fontSize = 9;
-//   plot(f);
-// }
-
-// inline void Text::plot_pos_tar (ofstream& f, char c) {
-//   textAnchor = "start";
-//   origin.x += 5;
-//   switch (c) {
-//     case 'b':  dominantBaseline = "hanging";   break;  // begin
-//     case 'm':  dominantBaseline = "middle";    break;  // middle
-//     case 'e':  dominantBaseline = "baseline";  break;  // end
-//     default:                                   break;
-//   }
-//   fontSize = 9;
-//   plot(f);
-// }
-
-// /*
-//  * class Line
-//  */
-// inline void Line::plot (ofstream& f) const {
-//   f << "<line "
-//     "x1=\""           << PREC << beg.x << "\" y1=\"" << PREC << beg.y << "\" "
-//     "x2=\""           << PREC << end.x << "\" y2=\"" << PREC << end.y << "\" "
-//     "style=\"stroke:" <<         color << ";"
-//     "stroke-width:"   << PREC << width << "\" />";
-// }
-
-// /*
-//  * class Rectangle
-//  */
-// inline void Rectangle::plot (ofstream& f) const {
-//   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-//     ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
-//     "stroke-dasharray:none\" id=\"rect3777\" "
-//     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-//     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-//     "ry=\"3\" />\n";
-// }
-
-// inline void Rectangle::plot_ir (ofstream& f) const {
-//   plot(f);
-//   f << "<rect style=\"fill-opacity:" << opacity << ";stroke-width:2;"
-//     "stroke-miterlimit:4;stroke-dasharray:none;fill:url(#Wavy);"
-//     "fill-rule:nonzero;opacity:1\" id=\"rect6217\" "
-//     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-//     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-//     "ry=\"3\" />\n";
-// }
-
-// inline void Rectangle::plot_oval (ofstream& f) const {
-//   f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
-//     "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
-//     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-//     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-//     "ry=\"12.5\" />\n";
-// }
-
-// inline void Rectangle::plot_oval_ir (ofstream& f) const {
-//   plot_oval(f);
-//   f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
-//     "stroke-dasharray:nonestroke-dasharray:none;fill:url(#xtrace);"
-//     "fill-rule:nonzero;opacity:1\" id=\"recty\" "
-//     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-//     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-//     "ry=\"12.5\" />\n";
-// }
-
-// inline void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
-//   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-//     ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
-//     "stroke-dasharray:none\" id=\"rect3777\" "
-//     "width=\""  << PREC << width/HORIZ_RATIO << "\" "
-//     "height=\"" << PREC << height            <<"\" "
-//     "x=\"" << PREC << (refTar=='r' ? origin.x - HORIZ_TUNE - width/HORIZ_RATIO
-//                                    : origin.x + width + HORIZ_TUNE) << "\" "
-//     "y=\"" << PREC << origin.y <<"\" ry=\"2\" />\n";
-// }
-
-// inline void Rectangle::plot_nrc_ref (ofstream& f) const {
-//   plot_nrc(f, 'r');
-// }
-
-// inline void Rectangle::plot_nrc_tar (ofstream& f) const {
-//   plot_nrc(f, 't');
-// }
-
-// inline void Rectangle::plot_redun
-// (ofstream& f, u8 showNRC, char refTar = ' ') const {
-//   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-//     ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
-//     "stroke-dasharray:none\" id=\"rect3777\" "
-//     "width=\""  << PREC << width/HORIZ_RATIO << "\" "
-//     "height=\"" << PREC << height            <<"\" "
-//     "x=\"";
-//   if (refTar=='r')
-//     f << PREC << origin.x - (1+showNRC)*(HORIZ_TUNE+width/HORIZ_RATIO);
-//   else if (refTar=='t')
-//     f << PREC << origin.x + width + HORIZ_TUNE
-//                           + showNRC*(width/HORIZ_RATIO + HORIZ_TUNE);
-//   f << "\" y=\"" << PREC << origin.y <<"\" ry=\"2\" />\n";
-// }
-
-// inline void Rectangle::plot_redun_ref (ofstream& f, bool showNRC) const {
-//   showNRC ? plot_redun(f, 1, 'r') : plot_redun(f, 0, 'r');
-// }
-
-// inline void Rectangle::plot_redun_tar (ofstream& f, bool showNRC) const {
-//   showNRC ? plot_redun(f, 1, 't') : plot_redun(f, 0, 't');
-// }
-
-// inline void Rectangle::plot_chromosome (ofstream& f) const {
-//   const string borderColor {"#000000"};
-// //  double  wk = width / 2 + 0.5;
-// //
-// //  f << "<path d=\"m " << PREC << origin.x - 1 << ","
-// //    << PREC << origin.y - 1 << " 0," << PREC << wk << " c 0, -8.31 6.69, "
-// //    << PREC << -wk << " " << PREC << wk << ", " << PREC << -wk << " l "
-// //    << PREC << -wk << ",0 z m " << PREC << wk << ",0 c 8.31,0 "
-// //    << PREC << wk << ",6.69 " << PREC << wk << "," << PREC << wk << " l 0,"
-// //    << PREC << -wk << " " << PREC << -wk << ",0 z\" id=\"rect3787\" "
-// //    << "style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;stroke:none\" />";
-// //
-// //  f << "<path d=\"m " << PREC << origin.x + 1 + width << ","
-// //    << PREC << origin.y + 1 + height << " 0," << PREC << -wk
-// //    << " c 0,8.31 -6.69, " << PREC << wk << " " << PREC << -wk << ", "
-// //    << PREC << wk << " l " << PREC << wk << ",0 z m " << PREC << -wk
-// //    << ",0 c -8.31,0 " << PREC << -wk << ",-6.69 " << PREC << -wk << ","
-// //    << PREC << -wk << " l 0," << PREC << wk << " " << PREC << wk << ",0 z\" "
-// //    << "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;"
-// //    << "stroke:none\" />";
-
-
-//   f << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
-//     "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
-//     "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
-//     "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-//     "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
-//     "ry=\"3\" />\n";
-// }
-
-// /*
-//  * class Polygon
-//  */
-// inline void Polygon::plot (ofstream& f) const {
-//   f << "<polygon points=\""
-//     << PREC << one.x   << "," << PREC << one.y   << " "
-//     << PREC << two.x   << "," << PREC << two.y   << " "
-//     << PREC << three.x << "," << PREC << three.y << " "
-//     << PREC << four.x  << "," << PREC << four.y  << "\" "
-//     << "style=\"fill:" << fillColor   << ";stroke:" << fillColor << ";"
-// //    << "style=\"fill:" << fillColor   << ";stroke:" << lineColor << ";"
-//     << "stroke-width:1;stroke-opacity:0.4;fill-opacity:0.4\" />";
-// }
-
-// /*
-//  * class Circle
-//  */
-// inline void Circle::plot (ofstream& f) const {
-//   f << "<circle "
-//     "cx=\"" << PREC << origin.x << "\" cy=\"" << PREC << origin.y << "\" "
-//     "r=\""  << PREC << radius   << "\" "
-//     "fill=\"" << fillColor << "\"/>";
-// }
-
-/*
- * class VizPaint
- */
 void VizPaint::print_plot (VizParam& p) {
   check_file(p.posFile);
   ifstream fPos (p.posFile);
@@ -259,18 +59,13 @@ void VizPaint::print_plot (VizParam& p) {
   for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
     pos.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, start));
 
-  std::sort(pos.begin(), pos.end(),
-    [] (const Pos &l, const Pos &r) { return l.begRef < r.begRef; });
-  const auto last = unique(pos.begin(), pos.end(),
-    [] (const Pos &l, const Pos &r) { 
-      return l.begRef==r.begRef && l.endRef==r.endRef; 
-    });
-  pos.erase(last, pos.end());
-
-  // for(auto e:pos)cerr<<e.begRef<< ' ';
-  // cerr<<'\n';
-  // for(auto e:pos)cerr<<e.endRef<< ' ';
-
+  // std::sort(pos.begin(), pos.end(),
+  //   [] (const Pos &l, const Pos &r) { return l.begRef < r.begRef; });
+  // const auto last = unique(pos.begin(), pos.end(),
+  //   [] (const Pos &l, const Pos &r) { 
+  //     return l.begRef==r.begRef && l.endRef==r.endRef; 
+  //   });
+  // pos.erase(last, pos.end());
 
   if (p.showPos) {
     struct Node {
@@ -289,10 +84,6 @@ void VizPaint::print_plot (VizParam& p) {
     std::sort(nodes.begin(), nodes.end(),
       [] (const Node &l, const Node &r) { return l.position < r.position; });
 
-    // const auto last = unique(nodes.begin(), nodes.end(), 
-    //   [] (const Node &l, const Node &r) { return l.position==r.position; });
-    // v.erase(last, v.end()); 
-
     double X = 0;
     if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
     else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
@@ -302,7 +93,8 @@ void VizPaint::print_plot (VizParam& p) {
     char printType = 'b';
     u64 nOverlap = 0;
     for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
-      if (it->type=='b' && (it+1)->type=='b') {
+      if ((it->type=='b' && (it+1)->type=='b') ||
+          (it->type=='e' && (it+1)->type=='e')) {
         if ((it+1)->position - it->position 
             < PAINT_SHORT * max(n_refBases,n_tarBases)) {
           if (++nOverlap == 1) {
@@ -347,27 +139,6 @@ void VizPaint::print_plot (VizParam& p) {
       else if (it->type=='e' && (it+1)->type=='b') {
         if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
         nOverlap = 0;
-      }
-      else if (it->type=='e' && (it+1)->type=='e') {
-        if ((it+1)->position - it->position 
-            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-          if (++nOverlap == 1) {
-            if (it->start == (it+1)->start) {
-              printPos = (it->position + (it+1)->position) / 2;
-              printType = 'm';
-            }
-            else {
-              printPos = it->position;
-              printType = it->type;
-            }
-          }
-          line += tspan(it->start, it->position);
-          lastLine = tspan((it+1)->start, (it+1)->position);
-        }
-        else {
-          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
-          nOverlap = 0;
-        }
       }
 
       if (nOverlap == 0) {
@@ -415,198 +186,121 @@ void VizPaint::print_plot (VizParam& p) {
       }
     }
 
-    // // Target side
-    // nodes.clear();    nodes.reserve(2*pos.size());
-    // for (u64 i=0; i!=pos.size(); ++i) 
-    //   nodes.emplace_back(Node(pos[i].begTar, 
-    //     pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
-    // for (u64 i=0; i!=pos.size(); ++i) 
-    //   nodes.emplace_back(Node(pos[i].endTar, 
-    //     pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
-    // std::sort(nodes.begin(), nodes.end(),
-    //   [] (const Node &l, const Node &r) { return l.position < r.position; });
+    // Target side
+    nodes.clear();    nodes.reserve(2*pos.size());
+    for (u64 i=0; i!=pos.size(); ++i) 
+      nodes.emplace_back(Node(pos[i].begTar, 
+        pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
+    for (u64 i=0; i!=pos.size(); ++i) 
+      nodes.emplace_back(Node(pos[i].endTar, 
+        pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
+    std::sort(nodes.begin(), nodes.end(),
+      [] (const Node &l, const Node &r) { return l.position < r.position; });
 
-    // line.clear();    lastLine.clear();
-    // printPos = 0;
-    // printType = 'b';
-    // nOverlap = 0;
-    // for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
-    //   if (it->type=='e' && (it+1)->type=='e') {
-    //     if ((it+1)->position - it->position 
-    //         < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-    //       if (++nOverlap == 1) {
-    //         if (it->start == (it+1)->start) {
-    //           printPos = (it->position + (it+1)->position) / 2;
-    //           printType = 'm';
-    //         }
-    //         else {
-    //           printPos = it->position;
-    //           printType = it->type;
-    //         }
-    //       }
-    //       line += tspan(it->start, it->position);
-    //       lastLine = tspan((it+1)->start, (it+1)->position);
-    //     }
-    //     else {
-    //       if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
-    //       nOverlap = 0;
-    //     }
-    //   }
-    //   else if (it->type=='e' && (it+1)->type=='b') {
-    //     if ((it+1)->position - it->position 
-    //         < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-    //       if (++nOverlap == 1) {
-    //         if (it->start == (it+1)->start) {
-    //           printPos = (it->position + (it+1)->position) / 2;
-    //           printType = 'm';
-    //         }
-    //         else {
-    //           printPos = (it->position + (it+1)->position) / 2;
-    //           printType = 'm';
-    //         }
-    //       }
-    //       line += tspan(it->start, it->position);
-    //       lastLine = tspan((it+1)->start, (it+1)->position);
-    //     }
-    //     else {
-    //       if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
-    //       nOverlap = 0;
-    //     }
-    //   }
-    //   else if (it->type=='b' && (it+1)->type=='e') {
-    //     if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
-    //     nOverlap = 0;
-    //   }
-    //   else if (it->type=='b' && (it+1)->type=='b') {
-    //     if ((it+1)->position - it->position 
-    //         < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-    //       if (++nOverlap == 1) {
-    //         if (it->start == (it+1)->start) {
-    //           printPos = (it->position + (it+1)->position) / 2;
-    //           printType = 'm';
-    //         }
-    //         else {
-    //           printPos = it->position;
-    //           printType = it->type;
-    //         }
-    //       }
-    //       line += tspan(it->start, it->position);
-    //       lastLine = tspan((it+1)->start, (it+1)->position);
-    //     }
-    //     else {
-    //       if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
-    //       nOverlap = 0;
-    //     }
-    //   }
-
-    //   if (nOverlap == 0) {
-    //     lastLine = tspan(it->start, it->position);
-    //     string finalLine {line+lastLine};
-    //     sort_merge(finalLine);
-
-    //     // text->fontWeight = "bold";
-    //     if      (printType=='b')  text->dominantBaseline="text-before-edge";
-    //     if      (printType=='m')  text->dominantBaseline="middle";
-    //     else if (printType=='e')  text->dominantBaseline="text-after-edge";
-    //     text->origin = Point(cx + width + space + width + X,
-    //                          cy + get_point(printPos));
-    //     text->label = finalLine;
-    //     text->plot_pos_tar(fPlot);
-
-    //     line.clear();
-    //     lastLine.clear();
-
-    //     //last
-    //     if (it+2 == nodes.end()) {
-    //       finalLine = tspan((it+1)->start, (it+1)->position);
-    //       sort_merge(finalLine);
-    //       printPos = (it+1)->position;
-          
-    //       text->dominantBaseline="text-after-edge";
-    //       text->origin = Point(cx + width + space + width + X, 
-    //                            cy + get_point(printPos));
-    //       text->label = finalLine;
-    //       text->plot_pos_tar(fPlot);
-    //     }
-    //   }
+    line.clear();    lastLine.clear();
+    printPos = 0;
+    printType = 'b';
+    nOverlap = 0;
+    for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
+      if ((it->type=='b' && (it+1)->type=='b') ||
+          (it->type=='e' && (it+1)->type=='e')) {
+        if ((it+1)->position - it->position 
+            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+          if (++nOverlap == 1) {
+            if (it->start == (it+1)->start) {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+            else {
+              printPos = it->position;
+              printType = it->type;
+            }
+          }
+          line += tspan(it->start, it->position);
+          lastLine = tspan((it+1)->start, (it+1)->position);
+        }
+        else {
+          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+          nOverlap = 0;
+        }
+      }
+      else if (it->type=='b' && (it+1)->type=='e') {
+        if ((it+1)->position - it->position 
+            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+          if (++nOverlap == 1) {
+            if (it->start == (it+1)->start) {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+            else {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+          }
+          line += tspan(it->start, it->position);
+          lastLine = tspan((it+1)->start, (it+1)->position);
+        }
+        else {
+          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+          nOverlap = 0;
+        }
+      }
+      else if (it->type=='e' && (it+1)->type=='b') {
+        if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+        nOverlap = 0;
+      }
       
-    //   if (it+2 == nodes.end() && nOverlap!=0) {
-    //     lastLine = tspan((it+1)->start, (it+1)->position);
-    //     string finalLine {line+lastLine};
-    //     sort_merge(finalLine);
+      if (nOverlap == 0) {
+        lastLine = tspan(it->start, it->position);
+        string finalLine {line+lastLine};
+        sort_merge(finalLine);
 
-    //     // text->fontWeight = "bold";
-    //     if      (printType=='b')  text->dominantBaseline="text-before-edge";
-    //     if      (printType=='m')  text->dominantBaseline="middle";
-    //     else if (printType=='e')  text->dominantBaseline="text-after-edge";
-    //     text->origin = Point(cx + width + space + width + X,
-    //                          cy + get_point(printPos));
-    //     text->label = finalLine;
-    //     text->plot_pos_tar(fPlot);
-    //     break;
-    //   }
-    // }
-
-
-  } // End of if (p.showPos)
-
-  u64 n_regular=0, n_inverse=0, n_ignored=0;
-  for (auto e : pos) {
-    if (abs(e.endRef-e.begRef)<p.min || abs(e.begTar-e.endTar)<p.min) {
-      ++n_ignored;
-      continue;
-    }
-    
-    // if (p.showPos) {
-    //   double X = 0;
-    //   if (p.showNRC && p.showRedun)
-    //     X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-    //   else if (p.showNRC ^ p.showRedun)
-    //     X = HORIZ_TUNE + width/HORIZ_RATIO;
-
-      // if (e.endRef-e.begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
-      //   text->fontWeight = "bold";
-      //   text->origin = Point(cx - X,
-      //     cy+get_point(e.begRef) + (get_point(e.endRef)-get_point(e.begRef))/2);
-      //   text->label = to_string(e.begRef) + " - " + to_string(e.endRef);
-      //   text->color = customColor(p.start);
-        // text->plot_pos_ref(fPlot, 'm');//todo uncomment
-      // }
-      // else {
         // text->fontWeight = "bold";
-        // text->origin = Point(cx - X, cy + get_point(e.begRef));
-        // text->label  = to_string(e.begRef);
-        // text->color  = customColor(p.start);
-        // text->plot_pos_ref(fPlot, 'b');//todo uncomment
-        // text->origin = Point(cx - X, cy + get_point(e.endRef));
-        // text->label  = to_string(e.endRef);
-        // text->color  = customColor(p.start);
-        // text->plot_pos_ref(fPlot, 'e');//todo uncomment
-      // }
+        if      (printType=='b')  text->dominantBaseline="text-before-edge";
+        if      (printType=='m')  text->dominantBaseline="middle";
+        else if (printType=='e')  text->dominantBaseline="text-after-edge";
+        text->origin = Point(cx + width + space + width + X,
+                             cy + get_point(printPos));
+        text->label = finalLine;
+        text->plot_pos_tar(fPlot);
 
-      // if (abs(e.endTar-e.begTar) < PAINT_SHORT*max(n_refBases,n_tarBases)) {
-      //   text->origin = Point(cx + width + space + width + X,
-      //                        cy + get_point(min(e.begTar,e.endTar)) +
-      //                        abs(get_point(e.endTar)-get_point(e.begTar))/2);
-      //   text->label = to_string(min(e.begTar,e.endTar)) + " - " +
-      //                 to_string(max(e.begTar,e.endTar));
-      //   text->color = customColor(p.start);
-      //   text->plot_pos_tar(fPlot, 'm');
-      // }
-      // else {
-      //   text->origin = Point(cx + width + space + width + X,
-      //                        cy + get_point(e.begTar));
-      //   text->label  = to_string(e.begTar);
-      //   text->color  = customColor(p.start);
-      //   text->plot_pos_tar(fPlot, (e.endTar>e.begTar ? 'b' : 'e'));
-      //   text->origin = Point(cx + width + space + width + X,
-      //                        cy + get_point(e.endTar));
-      //   text->label  = to_string(e.endTar);
-      //   text->color  = customColor(p.start);
-      //   text->plot_pos_tar(fPlot, (e.endTar>e.begTar ? 'e' : 'b'));
-      // }
-    // }
+        line.clear();
+        lastLine.clear();
 
+        //last
+        if (it+2 == nodes.end()) {
+          finalLine = tspan((it+1)->start, (it+1)->position);
+          sort_merge(finalLine);
+          printPos = (it+1)->position;
+          
+          text->dominantBaseline="text-after-edge";
+          text->origin = Point(cx + width + space + width + X, 
+                               cy + get_point(printPos));
+          text->label = finalLine;
+          text->plot_pos_tar(fPlot);
+        }
+      }
+      
+      if (it+2 == nodes.end() && nOverlap!=0) {
+        lastLine = tspan((it+1)->start, (it+1)->position);
+        string finalLine {line+lastLine};
+        sort_merge(finalLine);
+
+        // text->fontWeight = "bold";
+        if      (printType=='b')  text->dominantBaseline="text-before-edge";
+        if      (printType=='m')  text->dominantBaseline="middle";
+        else if (printType=='e')  text->dominantBaseline="text-after-edge";
+        text->origin = Point(cx + width + space + width + X,
+                             cy + get_point(printPos));
+        text->label = finalLine;
+        text->plot_pos_tar(fPlot);
+        break;
+      }
+    }
+  }
+
+  u64 n_regular=0, n_inverse=0;
+  for (auto e : pos) {
     if (e.endTar > e.begTar) {
       if (p.regular) {
         rect->width  = width;
@@ -787,7 +481,6 @@ void VizPaint::print_plot (VizParam& p) {
   cerr << "Plotting finished.\n";
   if (p.regular)    cerr << "Found "   << n_regular << " regular regions.\n";
   if (p.inverse)    cerr << "Found "   << n_inverse << " inverted regions.\n";
-  // if (p.verbose)    cerr << "Ignored " << n_ignored << " regions.\n";
   cerr << '\n';
 
   fPos.close();
@@ -1352,7 +1045,7 @@ inline void VizPaint::sort_merge (string& s) const {
   u64 leftOver = vEnv.size();
   for (auto it=vEnv.begin(); it<vEnv.end()-1;) {
     if (it->id == (it+1)->id) {
-      s += tspan(it->id, to_string(it->pos)+"--"+to_string((it+1)->pos)) + "\n";
+      s += tspan(it->id, to_string(it->pos)+"-"+to_string((it+1)->pos)) + "\n";
       leftOver -= 2;
       it       += 2;
     }

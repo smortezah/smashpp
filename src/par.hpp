@@ -1,7 +1,3 @@
-//
-// Created by morteza on 02-02-2018.
-//
-
 #ifndef SMASHPP_PAR_HPP
 #define SMASHPP_PAR_HPP
 
@@ -37,13 +33,11 @@ class Param {   // Parameters
   // Define Param::Param(){} in *.hpp => compile error
   //todo clean
   Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
-             wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH),
-             manWSize(false), manThresh(false), manFilterScale(false), 
-             filterScale(DEF_FS),
-             saveSeq(false), 
-             saveProfile(false), saveFilter(false), saveSegment(false), 
-             saveAll(false), refType(FileType::SEQ), tarType(FileType::SEQ), 
-             showInfo(true), compress(false), filter(false), segment(false) {}
+    wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH), manWSize(false),
+    manThresh(false), manFilterScale(false), filterScale(DEF_FS),
+    saveSeq(false), saveProfile(false), saveFilter(false), saveSegment(false), 
+    saveAll(false), refType(FileType::SEQ), tarType(FileType::SEQ), 
+    showInfo(true), compress(false), filter(false), segment(false) {}
 
   void parse (int, char**&);
   WType win_type (const string&) const;
@@ -64,17 +58,16 @@ class VizParam {
   u32    width, space, mult, start, min;
   string posFile;
 
-  VizParam () : verbose(false), inverse(true), regular(true), showPos(false),                 showNRC(false), showRedun(false), image(DEF_IMAGE), 
-                link(DEF_LINK), color(DEF_COLOR), opacity(DEF_OPAC), 
-                width(DEF_WIDT), space(DEF_SPAC), mult(DEF_MULT), 
-                start(DEF_BEGI), min(DEF_MINP) {}
+  VizParam () : verbose(false), inverse(true), regular(true), showPos(false),
+    showNRC(false), showRedun(false), image(DEF_IMAGE), link(DEF_LINK), 
+    color(DEF_COLOR), opacity(DEF_OPAC), width(DEF_WIDT), space(DEF_SPAC), 
+    mult(DEF_MULT), start(DEF_BEGI), min(DEF_MINP) {}
 
   void parse (int, char**&);
 
  private:
   void help () const;
 };
-
 
 inline void Param::parse (int argc, char**& argv) {
   if (argc < 2) { help();  throw EXIT_SUCCESS; }
@@ -280,8 +273,8 @@ inline void Param::help () const {
   << "  " << b("-sa") << ", " << b("--save-all") << "            "
      "save profile, filetered and        " << fit("SAVE")                 <<'\n'
   << "                             segmented files"                       <<'\n'
-  << "  " << b("-R") << ",  " << b("--report") << "              "
-     "save results in file \"report\"    " << fit("REPORT")               <<'\n'
+  // << "  " << b("-R") << ",  " << b("--report") << "              "
+  //    "save results in file \"report\"    " << fit("REPORT")               <<'\n'
   << "  " << b("-h") << ",  " << b("--help") << "                usage guide \n"
   << "  " << b("-rm") << ", " << b("--ref-model") << " [\U0001D705,"
      "[\U0001D464,\U0001D451,]ir,\U0001D6FC,\U0001D6FE/\U0001D70F,ir,"
