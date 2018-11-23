@@ -406,7 +406,14 @@ void VizPaint::print_plot (VizParam& p) {
         string finalLine {line+lastLine};
         if (!finalLine.empty())  
           finalLine.erase(finalLine.find_last_of(','),1);
-          
+
+
+        //todo
+        sort_by_id(finalLine, "tspan");
+        // cerr<<finalLine;
+
+
+
         // text->fontWeight = "bold";
         if      (printType=='b')  text->dominantBaseline="text-before-edge";
         if      (printType=='m')  text->dominantBaseline="middle";
@@ -414,7 +421,7 @@ void VizPaint::print_plot (VizParam& p) {
         text->origin = Point(cx - X, cy + get_point(printPos));
         text->label = finalLine;
 
-        cerr<<text->label<<'\n';//todo
+        // cerr<<text->label<<'\n';//todo
 
         text->plot_pos_ref(fPlot);        
         break;
@@ -1141,7 +1148,6 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   for (u8 i=1; i!=4; ++i) {
     text->origin = 
       Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
-      // Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height);
     if (p.color==1)  text->color="white";
     text->label = string_format("%.1f", i*0.5);
     text->plot(f);
@@ -1156,10 +1162,6 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->fontWeight = "normal";
 
   // Redundancy
-  // rect->origin = Point(cx-2*(HORIZ_TUNE+width/HORIZ_RATIO), 
-  //                      vert+rect->height+12);
-  // text->origin = Point(rect->origin.x+rect->width/2, 
-  //                      rect->origin.y+rect->height);
   text->origin = Point(rect->origin.x+rect->width/2, 
                        rect->origin.y+rect->height);
   text->dominantBaseline = "text-before-edge";
@@ -1167,32 +1169,41 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->fontSize   = 9;
   text->fontWeight = "bold";
   text->plot(f);
+}
 
-  // switch (colorMode) {
-  // case 0:
-  //   grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-  //                        "#f9d057", "#f29e2e", "#e76818", "#d7191c"};     break;
-  // case 1:
-  //   grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-  //                        "#217681", "#285285", "#1F2D86", "#000086"};     break;
-  // case 2:
-  //   grad->offsetColor = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
-  //                        "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
-  //                        "#A53A66"};                                      break;
-  // default:
-  //   error("undefined color mode.");
-  // }
-  // id = to_string(rect->origin.x) + to_string(rect->origin.y);
-  // f << "<defs> <linearGradient id=\"grad"+id+"\" "
-  //   "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> ";
-  // for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
-  //   f << "<stop offset=\"" << offset(i) << "\" "
-  //        "style=\"stop-color:" << grad->offsetColor[i] << ";stop-opacity:1\"/>";
-  // }
-  // f << "</linearGradient> </defs>"
-  //   "<rect fill=\"url(#grad"+id+")\" "
-  //   "width=\""  << PREC << rect->width    << "\" "
-  //   "height=\"" << PREC << rect->height   << "\" "
-  //   "x=\""      << PREC << rect->origin.x << "\" "
-  //   "y=\""      << PREC << rect->origin.y << "\" ry=\"3\" />\n";
+void VizPaint::sort_by_id (string& s, string&& env) const {
+cerr<<"---\n"<<s<<"----\n";
+
+  istringstream stream(s);
+
+  vector<string> vLine;
+  for (string gl; getline(stream, gl);)
+    vLine.emplace_back(gl);
+
+  vector<u64> vID;
+  for (const auto& l : vLine) {
+    auto foundBeg = l.find("id=", 0) + 4;
+    auto foundEnd = l.find("\"", foundBeg+1);
+    vID.emplace_back(stoull(l.substr(foundBeg, foundEnd)));
+  }
+
+  struct Env {
+    u64    id;
+    string line;
+  };
+  
+  vector<Env> vEnv;    vEnv.reserve(vLine.size());
+  for (size_t i=0; i!=vLine.size(); ++i) {
+    vEnv[i].id   = vID[i];
+    vEnv[i].line = vLine[i];
+  }
+  std::sort(vEnv.begin(), vEnv.end(), 
+    [] (const auto& l, const auto& r) { return l.id < r.id; });
+
+  s.clear();
+  // s = vEnv[0].line;
+  for (const auto& e : vEnv)
+    s += e.line;
+
+cerr<<"+++\n"<<s<<"+++\n";
 }
