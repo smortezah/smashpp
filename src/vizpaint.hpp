@@ -136,6 +136,7 @@ class VizPaint {
   template <typename Value>
   double   get_point   (Value)                     const;
   void     plot_legend (ofstream&, const VizParam&) const;
+  void     sort_by_id  (string&, string&&)         const;
 };
 }
 
