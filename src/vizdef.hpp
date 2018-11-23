@@ -14,7 +14,7 @@ static constexpr u8     MAX_LINK        {5};
 static constexpr u8     DEF_COLOR       {0};
 static constexpr u8     MIN_COLOR       {0};
 static constexpr u8     MAX_COLOR       {2};
-static constexpr float  DEF_OPAC        {0.65};
+static constexpr float  DEF_OPAC        {0.75};
 static constexpr float  MIN_OPAC        {0};
 static constexpr float  MAX_OPAC        {1};
 static constexpr u32    DEF_WIDT        {23};

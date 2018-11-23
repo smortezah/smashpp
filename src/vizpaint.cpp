@@ -259,6 +259,19 @@ void VizPaint::print_plot (VizParam& p) {
   for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
     pos.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, start));
 
+  std::sort(pos.begin(), pos.end(),
+    [] (const Pos &l, const Pos &r) { return l.begRef < r.begRef; });
+  const auto last = unique(pos.begin(), pos.end(),
+    [] (const Pos &l, const Pos &r) { 
+      return l.begRef==r.begRef && l.endRef==r.endRef; 
+    });
+  pos.erase(last, pos.end());
+
+  // for(auto e:pos)cerr<<e.begRef<< ' ';
+  // cerr<<'\n';
+  // for(auto e:pos)cerr<<e.endRef<< ' ';
+
+
   if (p.showPos) {
     struct Node {
       i64  position;
@@ -275,6 +288,10 @@ void VizPaint::print_plot (VizParam& p) {
       nodes.emplace_back(Node(pos[i].endRef, 'e', pos[i].start));
     std::sort(nodes.begin(), nodes.end(),
       [] (const Node &l, const Node &r) { return l.position < r.position; });
+
+    // const auto last = unique(nodes.begin(), nodes.end(), 
+    //   [] (const Node &l, const Node &r) { return l.position==r.position; });
+    // v.erase(last, v.end()); 
 
     double X = 0;
     if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
@@ -398,137 +415,137 @@ void VizPaint::print_plot (VizParam& p) {
       }
     }
 
-    // Target side
-    nodes.clear();    nodes.reserve(2*pos.size());
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].begTar, 
-        pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].endTar, 
-        pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
-    std::sort(nodes.begin(), nodes.end(),
-      [] (const Node &l, const Node &r) { return l.position < r.position; });
+    // // Target side
+    // nodes.clear();    nodes.reserve(2*pos.size());
+    // for (u64 i=0; i!=pos.size(); ++i) 
+    //   nodes.emplace_back(Node(pos[i].begTar, 
+    //     pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
+    // for (u64 i=0; i!=pos.size(); ++i) 
+    //   nodes.emplace_back(Node(pos[i].endTar, 
+    //     pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
+    // std::sort(nodes.begin(), nodes.end(),
+    //   [] (const Node &l, const Node &r) { return l.position < r.position; });
 
-    line.clear();    lastLine.clear();
-    printPos = 0;
-    printType = 'b';
-    nOverlap = 0;
-    for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
-      if (it->type=='e' && (it+1)->type=='e') {
-        if ((it+1)->position - it->position 
-            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-          if (++nOverlap == 1) {
-            if (it->start == (it+1)->start) {
-              printPos = (it->position + (it+1)->position) / 2;
-              printType = 'm';
-            }
-            else {
-              printPos = it->position;
-              printType = it->type;
-            }
-          }
-          line += tspan(it->start, it->position);
-          lastLine = tspan((it+1)->start, (it+1)->position);
-        }
-        else {
-          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
-          nOverlap = 0;
-        }
-      }
-      else if (it->type=='e' && (it+1)->type=='b') {
-        if ((it+1)->position - it->position 
-            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-          if (++nOverlap == 1) {
-            if (it->start == (it+1)->start) {
-              printPos = (it->position + (it+1)->position) / 2;
-              printType = 'm';
-            }
-            else {
-              printPos = (it->position + (it+1)->position) / 2;
-              printType = 'm';
-            }
-          }
-          line += tspan(it->start, it->position);
-          lastLine = tspan((it+1)->start, (it+1)->position);
-        }
-        else {
-          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
-          nOverlap = 0;
-        }
-      }
-      else if (it->type=='b' && (it+1)->type=='e') {
-        if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
-        nOverlap = 0;
-      }
-      else if (it->type=='b' && (it+1)->type=='b') {
-        if ((it+1)->position - it->position 
-            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
-          if (++nOverlap == 1) {
-            if (it->start == (it+1)->start) {
-              printPos = (it->position + (it+1)->position) / 2;
-              printType = 'm';
-            }
-            else {
-              printPos = it->position;
-              printType = it->type;
-            }
-          }
-          line += tspan(it->start, it->position);
-          lastLine = tspan((it+1)->start, (it+1)->position);
-        }
-        else {
-          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
-          nOverlap = 0;
-        }
-      }
+    // line.clear();    lastLine.clear();
+    // printPos = 0;
+    // printType = 'b';
+    // nOverlap = 0;
+    // for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
+    //   if (it->type=='e' && (it+1)->type=='e') {
+    //     if ((it+1)->position - it->position 
+    //         < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+    //       if (++nOverlap == 1) {
+    //         if (it->start == (it+1)->start) {
+    //           printPos = (it->position + (it+1)->position) / 2;
+    //           printType = 'm';
+    //         }
+    //         else {
+    //           printPos = it->position;
+    //           printType = it->type;
+    //         }
+    //       }
+    //       line += tspan(it->start, it->position);
+    //       lastLine = tspan((it+1)->start, (it+1)->position);
+    //     }
+    //     else {
+    //       if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+    //       nOverlap = 0;
+    //     }
+    //   }
+    //   else if (it->type=='e' && (it+1)->type=='b') {
+    //     if ((it+1)->position - it->position 
+    //         < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+    //       if (++nOverlap == 1) {
+    //         if (it->start == (it+1)->start) {
+    //           printPos = (it->position + (it+1)->position) / 2;
+    //           printType = 'm';
+    //         }
+    //         else {
+    //           printPos = (it->position + (it+1)->position) / 2;
+    //           printType = 'm';
+    //         }
+    //       }
+    //       line += tspan(it->start, it->position);
+    //       lastLine = tspan((it+1)->start, (it+1)->position);
+    //     }
+    //     else {
+    //       if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+    //       nOverlap = 0;
+    //     }
+    //   }
+    //   else if (it->type=='b' && (it+1)->type=='e') {
+    //     if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+    //     nOverlap = 0;
+    //   }
+    //   else if (it->type=='b' && (it+1)->type=='b') {
+    //     if ((it+1)->position - it->position 
+    //         < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+    //       if (++nOverlap == 1) {
+    //         if (it->start == (it+1)->start) {
+    //           printPos = (it->position + (it+1)->position) / 2;
+    //           printType = 'm';
+    //         }
+    //         else {
+    //           printPos = it->position;
+    //           printType = it->type;
+    //         }
+    //       }
+    //       line += tspan(it->start, it->position);
+    //       lastLine = tspan((it+1)->start, (it+1)->position);
+    //     }
+    //     else {
+    //       if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+    //       nOverlap = 0;
+    //     }
+    //   }
 
-      if (nOverlap == 0) {
-        lastLine = tspan(it->start, it->position);
-        string finalLine {line+lastLine};
-        sort_merge(finalLine);
+    //   if (nOverlap == 0) {
+    //     lastLine = tspan(it->start, it->position);
+    //     string finalLine {line+lastLine};
+    //     sort_merge(finalLine);
 
-        // text->fontWeight = "bold";
-        if      (printType=='b')  text->dominantBaseline="text-before-edge";
-        if      (printType=='m')  text->dominantBaseline="middle";
-        else if (printType=='e')  text->dominantBaseline="text-after-edge";
-        text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(printPos));
-        text->label = finalLine;
-        text->plot_pos_tar(fPlot);
+    //     // text->fontWeight = "bold";
+    //     if      (printType=='b')  text->dominantBaseline="text-before-edge";
+    //     if      (printType=='m')  text->dominantBaseline="middle";
+    //     else if (printType=='e')  text->dominantBaseline="text-after-edge";
+    //     text->origin = Point(cx + width + space + width + X,
+    //                          cy + get_point(printPos));
+    //     text->label = finalLine;
+    //     text->plot_pos_tar(fPlot);
 
-        line.clear();
-        lastLine.clear();
+    //     line.clear();
+    //     lastLine.clear();
 
-        //last
-        if (it+2 == nodes.end()) {
-          finalLine = tspan((it+1)->start, (it+1)->position);
-          sort_merge(finalLine);
-          printPos = (it+1)->position;
+    //     //last
+    //     if (it+2 == nodes.end()) {
+    //       finalLine = tspan((it+1)->start, (it+1)->position);
+    //       sort_merge(finalLine);
+    //       printPos = (it+1)->position;
           
-          text->dominantBaseline="text-after-edge";
-          text->origin = Point(cx + width + space + width + X, 
-                               cy + get_point(printPos));
-          text->label = finalLine;
-          text->plot_pos_tar(fPlot);
-        }
-      }
+    //       text->dominantBaseline="text-after-edge";
+    //       text->origin = Point(cx + width + space + width + X, 
+    //                            cy + get_point(printPos));
+    //       text->label = finalLine;
+    //       text->plot_pos_tar(fPlot);
+    //     }
+    //   }
       
-      if (it+2 == nodes.end() && nOverlap!=0) {
-        lastLine = tspan((it+1)->start, (it+1)->position);
-        string finalLine {line+lastLine};
-        sort_merge(finalLine);
+    //   if (it+2 == nodes.end() && nOverlap!=0) {
+    //     lastLine = tspan((it+1)->start, (it+1)->position);
+    //     string finalLine {line+lastLine};
+    //     sort_merge(finalLine);
 
-        // text->fontWeight = "bold";
-        if      (printType=='b')  text->dominantBaseline="text-before-edge";
-        if      (printType=='m')  text->dominantBaseline="middle";
-        else if (printType=='e')  text->dominantBaseline="text-after-edge";
-        text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(printPos));
-        text->label = finalLine;
-        text->plot_pos_tar(fPlot);
-        break;
-      }
-    }
+    //     // text->fontWeight = "bold";
+    //     if      (printType=='b')  text->dominantBaseline="text-before-edge";
+    //     if      (printType=='m')  text->dominantBaseline="middle";
+    //     else if (printType=='e')  text->dominantBaseline="text-after-edge";
+    //     text->origin = Point(cx + width + space + width + X,
+    //                          cy + get_point(printPos));
+    //     text->label = finalLine;
+    //     text->plot_pos_tar(fPlot);
+    //     break;
+    //   }
+    // }
 
 
   } // End of if (p.showPos)
@@ -567,7 +584,6 @@ void VizPaint::print_plot (VizParam& p) {
         // text->plot_pos_ref(fPlot, 'e');//todo uncomment
       // }
 
-//todo
       // if (abs(e.endTar-e.begTar) < PAINT_SHORT*max(n_refBases,n_tarBases)) {
       //   text->origin = Point(cx + width + space + width + X,
       //                        cy + get_point(min(e.begTar,e.endTar)) +
