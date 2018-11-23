@@ -254,7 +254,6 @@ void VizPaint::print_plot (VizParam& p) {
   mult = p.mult;
 
   vector<Pos> pos;
-  {
   u64 start {p.start};
   i64 br, er, bt, et;
   for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
@@ -269,6 +268,7 @@ void VizPaint::print_plot (VizParam& p) {
     };
     
     vector<Node> nodes;    nodes.reserve(2*pos.size());
+    // Reference side
     for (u64 i=0; i!=pos.size(); ++i) 
       nodes.emplace_back(Node(pos[i].begRef, 'b', pos[i].start));
     for (u64 i=0; i!=pos.size(); ++i) 
@@ -397,7 +397,140 @@ void VizPaint::print_plot (VizParam& p) {
         break;
       }
     }
-  }
+
+    // Target side
+    nodes.clear();    nodes.reserve(2*pos.size());
+    for (u64 i=0; i!=pos.size(); ++i) 
+      nodes.emplace_back(Node(pos[i].begTar, 
+        pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
+    for (u64 i=0; i!=pos.size(); ++i) 
+      nodes.emplace_back(Node(pos[i].endTar, 
+        pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
+    std::sort(nodes.begin(), nodes.end(),
+      [] (const Node &l, const Node &r) { return l.position < r.position; });
+
+    line.clear();    lastLine.clear();
+    printPos = 0;
+    printType = 'b';
+    nOverlap = 0;
+    for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
+      if (it->type=='e' && (it+1)->type=='e') {
+        if ((it+1)->position - it->position 
+            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+          if (++nOverlap == 1) {
+            if (it->start == (it+1)->start) {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+            else {
+              printPos = it->position;
+              printType = it->type;
+            }
+          }
+          line += tspan(it->start, it->position);
+          lastLine = tspan((it+1)->start, (it+1)->position);
+        }
+        else {
+          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+          nOverlap = 0;
+        }
+      }
+      else if (it->type=='e' && (it+1)->type=='b') {
+        if ((it+1)->position - it->position 
+            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+          if (++nOverlap == 1) {
+            if (it->start == (it+1)->start) {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+            else {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+          }
+          line += tspan(it->start, it->position);
+          lastLine = tspan((it+1)->start, (it+1)->position);
+        }
+        else {
+          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+          nOverlap = 0;
+        }
+      }
+      else if (it->type=='b' && (it+1)->type=='e') {
+        if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+        nOverlap = 0;
+      }
+      else if (it->type=='b' && (it+1)->type=='b') {
+        if ((it+1)->position - it->position 
+            < PAINT_SHORT * max(n_refBases,n_tarBases)) {
+          if (++nOverlap == 1) {
+            if (it->start == (it+1)->start) {
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
+            }
+            else {
+              printPos = it->position;
+              printType = it->type;
+            }
+          }
+          line += tspan(it->start, it->position);
+          lastLine = tspan((it+1)->start, (it+1)->position);
+        }
+        else {
+          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+          nOverlap = 0;
+        }
+      }
+
+      if (nOverlap == 0) {
+        lastLine = tspan(it->start, it->position);
+        string finalLine {line+lastLine};
+        sort_merge(finalLine);
+
+        // text->fontWeight = "bold";
+        if      (printType=='b')  text->dominantBaseline="text-before-edge";
+        if      (printType=='m')  text->dominantBaseline="middle";
+        else if (printType=='e')  text->dominantBaseline="text-after-edge";
+        text->origin = Point(cx + width + space + width + X,
+                             cy + get_point(printPos));
+        text->label = finalLine;
+        text->plot_pos_tar(fPlot);
+
+        line.clear();
+        lastLine.clear();
+
+        //last
+        if (it+2 == nodes.end()) {
+          finalLine = tspan((it+1)->start, (it+1)->position);
+          sort_merge(finalLine);
+          printPos = (it+1)->position;
+          
+          text->dominantBaseline="text-after-edge";
+          text->origin = Point(cx + width + space + width + X, 
+                               cy + get_point(printPos));
+          text->label = finalLine;
+          text->plot_pos_tar(fPlot);
+        }
+      }
+      
+      if (it+2 == nodes.end() && nOverlap!=0) {
+        lastLine = tspan((it+1)->start, (it+1)->position);
+        string finalLine {line+lastLine};
+        sort_merge(finalLine);
+
+        // text->fontWeight = "bold";
+        if      (printType=='b')  text->dominantBaseline="text-before-edge";
+        if      (printType=='m')  text->dominantBaseline="middle";
+        else if (printType=='e')  text->dominantBaseline="text-after-edge";
+        text->origin = Point(cx + width + space + width + X,
+                             cy + get_point(printPos));
+        text->label = finalLine;
+        text->plot_pos_tar(fPlot);
+        break;
+      }
+    }
+
+
   } // End of if (p.showPos)
 
   u64 n_regular=0, n_inverse=0, n_ignored=0;
@@ -407,12 +540,12 @@ void VizPaint::print_plot (VizParam& p) {
       continue;
     }
     
-    if (p.showPos) {
-      double X = 0;
-      if (p.showNRC && p.showRedun)
-        X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-      else if (p.showNRC ^ p.showRedun)
-        X = HORIZ_TUNE + width/HORIZ_RATIO;
+    // if (p.showPos) {
+    //   double X = 0;
+    //   if (p.showNRC && p.showRedun)
+    //     X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
+    //   else if (p.showNRC ^ p.showRedun)
+    //     X = HORIZ_TUNE + width/HORIZ_RATIO;
 
       // if (e.endRef-e.begRef < PAINT_SHORT*max(n_refBases,n_tarBases)) {
       //   text->fontWeight = "bold";
@@ -434,28 +567,29 @@ void VizPaint::print_plot (VizParam& p) {
         // text->plot_pos_ref(fPlot, 'e');//todo uncomment
       // }
 
-      if (abs(e.endTar-e.begTar) < PAINT_SHORT*max(n_refBases,n_tarBases)) {
-        text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(min(e.begTar,e.endTar)) +
-                             abs(get_point(e.endTar)-get_point(e.begTar))/2);
-        text->label = to_string(min(e.begTar,e.endTar)) + " - " +
-                      to_string(max(e.begTar,e.endTar));
-        text->color = customColor(p.start);
-        text->plot_pos_tar(fPlot, 'm');
-      }
-      else {
-        text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(e.begTar));
-        text->label  = to_string(e.begTar);
-        text->color  = customColor(p.start);
-        text->plot_pos_tar(fPlot, (e.endTar>e.begTar ? 'b' : 'e'));
-        text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(e.endTar));
-        text->label  = to_string(e.endTar);
-        text->color  = customColor(p.start);
-        text->plot_pos_tar(fPlot, (e.endTar>e.begTar ? 'e' : 'b'));
-      }
-    }
+//todo
+      // if (abs(e.endTar-e.begTar) < PAINT_SHORT*max(n_refBases,n_tarBases)) {
+      //   text->origin = Point(cx + width + space + width + X,
+      //                        cy + get_point(min(e.begTar,e.endTar)) +
+      //                        abs(get_point(e.endTar)-get_point(e.begTar))/2);
+      //   text->label = to_string(min(e.begTar,e.endTar)) + " - " +
+      //                 to_string(max(e.begTar,e.endTar));
+      //   text->color = customColor(p.start);
+      //   text->plot_pos_tar(fPlot, 'm');
+      // }
+      // else {
+      //   text->origin = Point(cx + width + space + width + X,
+      //                        cy + get_point(e.begTar));
+      //   text->label  = to_string(e.begTar);
+      //   text->color  = customColor(p.start);
+      //   text->plot_pos_tar(fPlot, (e.endTar>e.begTar ? 'b' : 'e'));
+      //   text->origin = Point(cx + width + space + width + X,
+      //                        cy + get_point(e.endTar));
+      //   text->label  = to_string(e.endTar);
+      //   text->color  = customColor(p.start);
+      //   text->plot_pos_tar(fPlot, (e.endTar>e.begTar ? 'e' : 'b'));
+      // }
+    // }
 
     if (e.endTar > e.begTar) {
       if (p.regular) {
@@ -1163,7 +1297,7 @@ inline void VizPaint::sort_merge (string& s) const {
     vLine.emplace_back(gl);
 
   if (vLine.size() == 1) {
-    s.erase(s.find_last_of(", ")-1, 2);
+    s.erase(s.find(", "), 2);
     return;
   }
 
