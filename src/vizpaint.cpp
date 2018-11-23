@@ -283,8 +283,10 @@ void VizPaint::print_plot (VizParam& p) {
     if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
     else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
     
-    const auto tspan = [] (const string& fill, const string& pos) {
-      return "<tspan style=\"fill:" + fill + "\">" + pos + ", </tspan>\n";
+    const auto tspan = [&] (u32 start, i64 pos) {
+      return "<tspan id=\"" + to_string(start) + "\" "
+             "style=\"fill:" + customColor(start) + "\">" + 
+             to_string(pos) + ", </tspan>\n";
     };
 
     string line, lastLine;
@@ -305,9 +307,8 @@ void VizPaint::print_plot (VizParam& p) {
               printType = it->type;
             }
           }
-          line += tspan(customColor(it->start), to_string(it->position));
-          lastLine = 
-            tspan(customColor((it+1)->start), to_string((it+1)->position));
+          line += tspan(it->start, it->position);
+          lastLine = tspan((it+1)->start, (it+1)->position);
         }
         else {
           if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
@@ -323,13 +324,12 @@ void VizPaint::print_plot (VizParam& p) {
               printType = 'm';
             }
             else {
-              printPos = it->position;
-              printType = it->type;
+              printPos = (it->position + (it+1)->position) / 2;
+              printType = 'm';
             }
           }
-          line += tspan(customColor(it->start), to_string(it->position));
-          lastLine = 
-            tspan(customColor((it+1)->start), to_string((it+1)->position));
+          line += tspan(it->start, it->position);
+          lastLine = tspan((it+1)->start, (it+1)->position);
         }
         else {
           if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
@@ -353,9 +353,8 @@ void VizPaint::print_plot (VizParam& p) {
               printType = it->type;
             }
           }
-          line += tspan(customColor(it->start), to_string(it->position));
-          lastLine = 
-            tspan(customColor((it+1)->start), to_string((it+1)->position));
+          line += tspan(it->start, it->position);
+          lastLine = tspan((it+1)->start, (it+1)->position);
         }
         else {
           if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
@@ -364,13 +363,11 @@ void VizPaint::print_plot (VizParam& p) {
       }
 
       if (nOverlap == 0) {
-        lastLine = tspan(customColor(it->start), to_string(it->position));
+        lastLine = tspan(it->start, it->position);
 
         string finalLine {line+lastLine};
-        if (!finalLine.empty()) {
-          if (finalLine[finalLine.size()-11] == ',') 
-            finalLine.erase(finalLine.size()-11, 1);
-        }
+        if (!finalLine.empty()) 
+          finalLine.erase(finalLine.find_last_of(','),1);
 
         // text->fontWeight = "bold";
         if      (printType=='b')  text->dominantBaseline="text-before-edge";
@@ -388,11 +385,9 @@ void VizPaint::print_plot (VizParam& p) {
 
         //last
         if (it+2 == nodes.end()) {
-          finalLine = tspan(customColor((it+1)->start), to_string((it+1)  ->position));
-          if (!finalLine.empty()) {
-            if (finalLine[finalLine.size()-11] == ',') 
-              finalLine.erase(finalLine.size()-11, 1);
-          }
+          finalLine = tspan((it+1)->start, (it+1)->position);
+          if (!finalLine.empty())
+            finalLine.erase(finalLine.find_last_of(','),1);
           printPos = (it+1)->position;
           
           text->dominantBaseline="text-after-edge";
@@ -406,14 +401,12 @@ void VizPaint::print_plot (VizParam& p) {
       }
       
       if (it+2 == nodes.end() && nOverlap!=0) {
-        lastLine = tspan(customColor((it+1)->start), to_string((it+1)->position));
+        lastLine = tspan((it+1)->start, (it+1)->position);
 
         string finalLine {line+lastLine};
-        if (!finalLine.empty()) {
-          if (finalLine[finalLine.size()-11] == ',') 
-            finalLine.erase(finalLine.size()-11, 1);
-        }
-
+        if (!finalLine.empty())  
+          finalLine.erase(finalLine.find_last_of(','),1);
+          
         // text->fontWeight = "bold";
         if      (printType=='b')  text->dominantBaseline="text-before-edge";
         if      (printType=='m')  text->dominantBaseline="middle";
