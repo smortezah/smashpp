@@ -1,7 +1,3 @@
-//
-// Created by morteza on 03-05-2018.
-//
-
 #ifndef PROJECT_ASSERT_HPP
 #define PROJECT_ASSERT_HPP
 
@@ -9,23 +5,12 @@
 #include "fn.hpp"
 
 namespace smashpp {
-template <typename Container>
-static void assert_empty_elem (const Container& cont, string&& msg) { //Empty el
-  for (const auto& e : cont)
-    if (e.size() == 0)
-      error(std::move(msg));
-}
-
-
 template <typename Value>
 class ValRange {
  public:
   ValRange () = default;
   ValRange (Value min_, Value max_, Value d_, string&& l_, string&& c_,
-            string&& m_, Problem p_) 
-            : min(min_), max(max_), def(d_), label(move(l_)),
-              criterion(move(c_)), initMode(move(m_)), problem(p_),
-              inRange(true) {}
+    string&& m_, Problem p_) : min(min_), max(max_), def(d_), label(move(l_)), criterion(move(c_)), initMode(move(m_)), problem(p_), inRange(true) {}
   void assert (Value&);
 
  private:
@@ -54,7 +39,7 @@ inline void ValRange<Value>::assert (Value& val) {
   
   if (criterion=="[]" && (val>max || val<min)) {
     inRange = false;
-    string s = "["+
+    string s = "["+ 
       (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
                : (to_string(min)+";"+to_string(max))) +"]. ";
     append_msg(std::move(s));
@@ -94,9 +79,7 @@ class ValSet {
  public:
   ValSet () = default;
   ValSet (vector<Value> set_, Value d_, string&& l_, string&& m_, Problem p_,
-          Value c_, bool i)
-          : set(set_), cmd(c_), def(d_), label(move(l_)), initMode(move(m_)),
-            problem(p_), inRange(i) {}
+    Value c_, bool i) : set(set_), cmd(c_), def(d_), label(move(l_)), initMode(move(m_)), problem(p_), inRange(i) {}
   void assert (Value&);
 
  private:

@@ -1,7 +1,3 @@
-//
-// Created by morteza on 2/4/18.
-//
-
 #ifndef SMASHPP_FCM_HPP
 #define SMASHPP_FCM_HPP
 
@@ -23,19 +19,14 @@ class FCM {   // Finite-context models
   vector<MMPar>   tMs;    // Tar Markov models
   vector<STMMPar> tTMs;   // Tar Tolerant Markov models
 
-  
-  explicit FCM  (Param&);
-  void store    (const Param&);         // Build FCM (finite-context models)
+  explicit FCM (Param&);
+  void store (const Param&);  // Build FCM (finite-context models)
   void compress (const Param&);
   void self_compress (const Param&, u64);
   void aggregate_slf (const Param&) const;
 ////  void report     (const Param&) const;
 
  private:
-  // vector<MMPar>                 rMs;     // Ref Markov models
-  // vector<STMMPar>               rTMs;    // Ref Tolerant Markov models
-  // vector<MMPar>                 tMs;     // Tar Markov models
-  // vector<STMMPar>               tTMs;    // Tar Tolerant Markov models
   vector<unique_ptr<Table64>>   tbl64;
   vector<unique_ptr<Table32>>   tbl32;
   vector<unique_ptr<LogTable8>> lgtbl8;
@@ -46,7 +37,7 @@ class FCM {   // Finite-context models
   template <typename Iter>
   void set_Ms_TMs (Iter, Iter, vector<MMPar>&, vector<STMMPar>&);
   void set_cont (vector<MMPar>&);
-  void show_info (const Param&) const;  // Show inputs information on the screen
+  void show_info (const Param&) const;// Show inputs information on the screen
   void alloc_model ();                  // Allocate memory to models
 
   void store_1 (const Param&);          // Build models one thread
@@ -55,8 +46,8 @@ class FCM {   // Finite-context models
   void store_impl (const string&, Mask, ContIter);  // Fill data struct
 
   template <typename ContIter>
-  void compress_1 (const Param&, ContIter); // Compress with 1 Markov model
-  void compress_n (const Param&);           // Compress with n Markov Models
+  void compress_1 (const Param&, ContIter); // Compress with 1 model
+  void compress_n (const Param&);           // Compress with n Models
   template <typename ContIter>
   void compress_n_impl (unique_ptr<CompressPar>&, ContIter, u8&) const;
   template <typename ContIter>
@@ -71,8 +62,8 @@ class FCM {   // Finite-context models
   template <typename ContIter>
   void self_compress_n_impl (unique_ptr<CompressPar>&, ContIter, u8&) const;
   template <typename ContIter>
-  void self_compress_n_parent (unique_ptr<CompressPar>&, ContIter, u8,
-                               u64&) const;
+  void self_compress_n_parent (unique_ptr<CompressPar>&, ContIter, u8, u64&) 
+    const;
 
   template <typename OutT, typename ContIter>
   void freqs_ir0 (array<OutT,4>&, ContIter, u64) const;
@@ -103,10 +94,6 @@ class FCM {   // Finite-context models
   prec_t entropy (prec_t) const;
   template <typename WIter, typename PIter>
   prec_t entropy (WIter, PIter, PIter) const;
-//  template <typename OutIter, typename InIter>
-//  prec_t entropy (OutIter, InIter, InIter) const;
-//  template <typename OutIter, typename InIter>
-//  void update_weights (OutIter, InIter, InIter) const;
   template <typename ProbParIter>
   void update_ctx_ir0 (u64&, ProbParIter) const;
   template <typename ProbParIter>

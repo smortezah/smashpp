@@ -187,13 +187,3 @@ void Polygon::plot (ofstream& f) const {
 //    << "style=\"fill:" << fillColor   << ";stroke:" << lineColor << ";"
     << "stroke-width:1;stroke-opacity:0.4;fill-opacity:0.4\" />";
 }
-
-/*
- * class Circle
- */
-void Circle::plot (ofstream& f) const {
-  f << "<circle "
-    "cx=\"" << PREC << origin.x << "\" cy=\"" << PREC << origin.y << "\" "
-    "r=\""  << PREC << radius   << "\" "
-    "fill=\"" << fillColor << "\"/>";
-}

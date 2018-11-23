@@ -1,7 +1,3 @@
-//
-// Created by morteza on 27-02-2018.
-//
-
 #include <random>
 #include <fstream>
 #include "cmls4.hpp"
@@ -19,9 +15,7 @@ void CMLS4::config (u64 w_, u8 d_) {
   d   = d_;
   tot = 0;
   try { sk.resize((d*w+1)>>1u); }
-  catch (std::bad_alloc& b) {
-    error("failed memory allocation.");
-  }
+  catch (std::bad_alloc& b) { error("failed memory allocation."); }
   uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
   ab.resize(d<<1u);
   set_a_b();
