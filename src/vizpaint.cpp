@@ -251,10 +251,7 @@ void VizPaint::print_plot (VizParam& p) {
   // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
   if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
   p.mult = 256 / file_lines(p.posFile);
-
-  auto customColor = [=] (u32 start) {
-    return rgb_color(static_cast<u8>(start * p.mult));
-  };
+  mult = p.mult;
 
   vector<Pos> pos;
   {
@@ -282,12 +279,6 @@ void VizPaint::print_plot (VizParam& p) {
     double X = 0;
     if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
     else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
-    
-    const auto tspan = [&] (u32 start, i64 pos) {
-      return "<tspan id=\"" + to_string(start) + "\" "
-             "style=\"fill:" + customColor(start) + "\">" + 
-             to_string(pos) + ", </tspan>\n";
-    };
 
     string line, lastLine;
     i64 printPos = 0;
@@ -364,10 +355,8 @@ void VizPaint::print_plot (VizParam& p) {
 
       if (nOverlap == 0) {
         lastLine = tspan(it->start, it->position);
-
         string finalLine {line+lastLine};
-        if (!finalLine.empty()) 
-          finalLine.erase(finalLine.find_last_of(','),1);
+        sort_merge(finalLine);
 
         // text->fontWeight = "bold";
         if      (printType=='b')  text->dominantBaseline="text-before-edge";
@@ -375,9 +364,6 @@ void VizPaint::print_plot (VizParam& p) {
         else if (printType=='e')  text->dominantBaseline="text-after-edge";
         text->origin = Point(cx - X, cy + get_point(printPos));
         text->label = finalLine;
-
-        cerr<<text->label<<'\n';//todo
-
         text->plot_pos_ref(fPlot);
 
         line.clear();
@@ -386,33 +372,20 @@ void VizPaint::print_plot (VizParam& p) {
         //last
         if (it+2 == nodes.end()) {
           finalLine = tspan((it+1)->start, (it+1)->position);
-          if (!finalLine.empty())
-            finalLine.erase(finalLine.find_last_of(','),1);
+          sort_merge(finalLine);
           printPos = (it+1)->position;
           
           text->dominantBaseline="text-after-edge";
           text->origin = Point(cx - X, cy + get_point(printPos));
           text->label = finalLine;
-          
-          cerr<<text->label<<'\n';//todo
-
           text->plot_pos_ref(fPlot);
         }
       }
       
       if (it+2 == nodes.end() && nOverlap!=0) {
         lastLine = tspan((it+1)->start, (it+1)->position);
-
         string finalLine {line+lastLine};
-        if (!finalLine.empty())  
-          finalLine.erase(finalLine.find_last_of(','),1);
-
-
-        //todo
         sort_merge(finalLine);
-        // cerr<<finalLine;
-
-
 
         // text->fontWeight = "bold";
         if      (printType=='b')  text->dominantBaseline="text-before-edge";
@@ -420,9 +393,6 @@ void VizPaint::print_plot (VizParam& p) {
         else if (printType=='e')  text->dominantBaseline="text-after-edge";
         text->origin = Point(cx - X, cy + get_point(printPos));
         text->label = finalLine;
-
-        // cerr<<text->label<<'\n';//todo
-
         text->plot_pos_ref(fPlot);
         break;
       }
@@ -824,6 +794,10 @@ inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
                +to_string(static_cast<u8>(b))+")";
 }
 
+inline string VizPaint::customColor (u32 start) const {
+  return rgb_color(static_cast<u8>(start * mult));
+}
+
 inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
   keep_in_range(0.0, entropy, 2.0);
   // return heatmap_color(entropy/2 * (width+space+width));
@@ -1171,6 +1145,16 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->plot(f);
 }
 
+inline string VizPaint::tspan (u32 start, i64 pos) const {
+  return "<tspan id=\"" + to_string(start) + "\" "
+         "style=\"fill:" + customColor(start) + "\">" + 
+         to_string(pos) + ", </tspan>\n";
+}
+inline string VizPaint::tspan (u32 start, const string& pos) const {
+  return "<tspan id=\"" + to_string(start) + "\" "
+         "style=\"fill:" + customColor(start) + "\">" + pos + ", </tspan>\n";
+}
+
 inline void VizPaint::sort_merge (string& s) const {
   istringstream stream(s);
 
@@ -1178,8 +1162,10 @@ inline void VizPaint::sort_merge (string& s) const {
   for (string gl; getline(stream, gl);)
     vLine.emplace_back(gl);
 
-  if (vLine.size() == 1)
+  if (vLine.size() == 1) {
+    s.erase(s.find_last_of(", ")-1, 2);
     return;
+  }
 
   vector<u64> vID;
   for (const auto& l : vLine) {
@@ -1192,13 +1178,10 @@ inline void VizPaint::sort_merge (string& s) const {
   for (const auto& l : vLine) {
     auto foundBeg = l.find(">", 0) + 1;
     auto foundEnd = l.find("<", foundBeg+1);
-    auto strPos = l.substr(foundBeg, foundEnd);
-    strPos.erase(strPos.find_last_of(' ', 1));//todo
-    strPos.erase(strPos.find_last_of(',', 1));
+    auto strPos = l.substr(foundBeg, foundEnd-foundBeg);
+    strPos.erase(strPos.find_last_of(", ")-1, 2);
     vPos.emplace_back(stoull(strPos));
   }
-
-  for(auto e:vPos)cerr<<e<<' ';
 
   struct Env {
     u64    id;
@@ -1210,13 +1193,27 @@ inline void VizPaint::sort_merge (string& s) const {
   for (size_t i=0; i!=vLine.size(); ++i) {
     vEnv[i].id   = vID[i];
     vEnv[i].line = vLine[i];
+    vEnv[i].pos  = vPos[i];
   }
   std::sort(vEnv.begin(), vEnv.end(), 
     [] (const Env& l, const Env& r) { return l.id < r.id; });
 
+  s.clear();
+  u64 leftOver = vEnv.size();
+  for (auto it=vEnv.begin(); it<vEnv.end()-1;) {
+    if (it->id == (it+1)->id) {
+      s += tspan(it->id, to_string(it->pos)+"--"+to_string((it+1)->pos)) + "\n";
+      leftOver -= 2;
+      it       += 2;
+    }
+    else {
+      s += it->line + "\n";
+      leftOver -= 1;
+      it       += 1;
+    }
+  }
+  if (leftOver == 1)
+    s += vEnv.back().line + "\n";
 
-
-  // s.clear();
-  // for (const auto& e : vEnv)
-  //   s += e.line + "\n";
+  s.erase(s.find_last_of(", <")-2, 2);
 }
