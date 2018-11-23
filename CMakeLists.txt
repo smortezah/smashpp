@@ -19,6 +19,7 @@ add_executable(smashpp  src/main.cpp
                         src/assert.hpp
                         src/fn.hpp
                         src/mdlpar.hpp
+                        src/svg.cpp
                         src/vizpaint.cpp
                         src/vizdef.hpp
                         )

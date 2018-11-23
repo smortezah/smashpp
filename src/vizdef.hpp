@@ -4,6 +4,7 @@
 #include <stdint.h>
 #define __STDC_FORMAT_MACROS
 #include "def.hpp"
+#define PREC  std::fixed << std::setprecision(2)
 
 namespace smashpp {
 static const     string DEF_IMAGE       {"map.svg"};
