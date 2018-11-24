@@ -12,8 +12,8 @@
 namespace smashpp {
 class FCM {   // Finite-context models
  public:
-  prec_t          aveEnt;
-  vector<prec_t>  selfEnt;
+  prc_t           aveEnt;
+  vector<prc_t>   selfEnt;
   vector<MMPar>   rMs;    // Ref Markov models
   vector<STMMPar> rTMs;   // Ref Tolerant Markov models
   vector<MMPar>   tMs;    // Tar Markov models
@@ -49,8 +49,6 @@ class FCM {   // Finite-context models
   void compress_1 (const Param&, ContIter); // Compress with 1 model
   void compress_n (const Param&);           // Compress with n Models
   template <typename ContIter>
-  void compress_n_impl (unique_ptr<CompressPar>&, ContIter, u8&) const;
-  template <typename ContIter>
   void compress_n_parent (unique_ptr<CompressPar>&, ContIter, u8) const;
   template <typename ContIter>
   void compress_n_child (unique_ptr<CompressPar>&, ContIter, u8) const;
@@ -71,7 +69,7 @@ class FCM {   // Finite-context models
   void freqs_ir1 (array<OutT,4>&, ContIter, u64, u64) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   void freqs_ir2 (array<OutT,4>&, ContIter, ProbParIter) const;
-  prec_t weight_next (prec_t, prec_t, prec_t) const;
+  prc_t weight_next (prc_t, prc_t, prc_t) const;
   template <typename FreqIter>
   void correct_stmm (unique_ptr<CompressPar>&, FreqIter) const;
 #ifdef ARRAY_HISTORY
@@ -90,10 +88,10 @@ class FCM {   // Finite-context models
   void miss_stmm (Par) const;
 #endif
   template <typename FreqIter, typename ProbParIter>
-  prec_t prob (FreqIter, ProbParIter) const;
-  prec_t entropy (prec_t) const;
+  prc_t prob (FreqIter, ProbParIter) const;
+  prc_t entropy (prc_t) const;
   template <typename WIter, typename PIter>
-  prec_t entropy (WIter, PIter, PIter) const;
+  prc_t entropy (WIter, PIter, PIter) const;
   template <typename ProbParIter>
   void update_ctx_ir0 (u64&, ProbParIter) const;
   template <typename ProbParIter>

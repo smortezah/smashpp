@@ -7,37 +7,36 @@ namespace smashpp {
 struct STMMPar;
 
 struct MMPar {
-  u8  k;  // Context size
-  u64 w;  // Width of count-min-log sketch
-  u8  d;  // Depth of count-min-log sketch
-  u8  ir; // Inverted repeat
-  prec_t alpha, gamma;
-  Container cont;          // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  u8                  k;  // Context size
+  u64                 w;  // Width of count-min-log sketch
+  u8                  d;  // Depth of count-min-log sketch
+  u8                  ir; // Inverted repeat
+  prc_t              alpha, gamma;
+  Container           cont;          // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
   shared_ptr<STMMPar> child;
 
   MMPar () = default;  // Essential
-  MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, prec_t a_, prec_t g_) 
-    : k(k_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_),
-    cont(Container::TABLE_64), child(nullptr) {}
-  MMPar (u8 k_, u8 ir_, prec_t a_, prec_t g_) : MMPar(k_, 0, 0, ir_, a_, g_) {}
+  MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, prc_t a_, prc_t g_) : k(k_), w(w_),
+    d(d_), ir(ir_), alpha(a_), gamma(g_), cont(Container::TABLE_64), 
+    child(nullptr) {}
+  MMPar (u8 k_, u8 ir_, prc_t a_, prc_t g_) : MMPar(k_, 0, 0, ir_, a_, g_) {}
 };
 
 struct STMMPar {
-  u8   k;
-  u8   thresh;
-  u8   ir;
-  prec_t alpha, gamma;
-  bool enabled;
+  u8     k;
+  u8     thresh;
+  u8     ir;
+  prc_t alpha, gamma;
+  bool   enabled;
 #ifdef ARRAY_HISTORY
   vector<bool> history;
 #else
-  u32  history;    // k > 32 => change to u64
+  u32    history;    // k > 32 => change to u64
 #endif
-  u32  mask;       // For updating the history
+  u32    mask;       // For updating the history
 
-  STMMPar (u8 k_, u8 t_, u8 ir_, prec_t a_, prec_t g_)
-    : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), enabled(true),
-    mask((1u<<k)-1u) {
+  STMMPar (u8 k_, u8 t_, u8 ir_, prc_t a_, prc_t g_) : k(k_), thresh(t_), 
+    ir(ir_), alpha(a_), gamma(g_), enabled(true), mask((1u<<k)-1u) {
   #ifdef ARRAY_HISTORY
     history.resize(k);
   #else
@@ -47,16 +46,16 @@ struct STMMPar {
 };
 
 struct ProbPar {
-  prec_t alpha, sAlpha;
-  u64 mask;
-  u8  shl;
-  u64 l;
-  u8  numSym;
-  u64 r;
-  u8  revNumSym;
+  prc_t alpha, sAlpha;
+  u64    mask;
+  u8     shl;
+  u64    l;
+  u8     numSym;
+  u64    r;
+  u8     revNumSym;
 
   ProbPar () = default;
-  ProbPar (prec_t alpha_, u64 mask_, u8 shiftLeft_)
+  ProbPar (prc_t alpha_, u64 mask_, u8 shiftLeft_)
     : alpha(alpha_), sAlpha(CARDIN*alpha), mask(mask_), shl(shiftLeft_) {}
   void config_ir0 (u64);
   void config_ir0 (u8);
@@ -105,7 +104,7 @@ inline void ProbPar::config_ir2 (char c, u64 ctx, u64 ctxIr) {
 
 struct CompressPar {
   vector<u64>               ctx, ctxIr;
-  vector<prec_t>            w, wNext, probs;
+  vector<prc_t>            w, wNext, probs;
   vector<ProbPar>           pp;
   vector<ProbPar>::iterator ppIt;
   vector<u64>::iterator     ctxIt, ctxIrIt;

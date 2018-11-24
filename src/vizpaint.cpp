@@ -60,9 +60,9 @@ void VizPaint::print_plot (VizParam& p) {
     pos.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, start));
 
   // std::sort(pos.begin(), pos.end(),
-  //   [] (const Pos &l, const Pos &r) { return l.begRef < r.begRef; });
+  //   [](const Pos &l, const Pos &r) { return l.begRef < r.begRef; });
   // const auto last = unique(pos.begin(), pos.end(),
-  //   [] (const Pos &l, const Pos &r) { 
+  //   [](const Pos &l, const Pos &r) { 
   //     return l.begRef==r.begRef && l.endRef==r.endRef; 
   //   });
   // pos.erase(last, pos.end());
@@ -82,7 +82,7 @@ void VizPaint::print_plot (VizParam& p) {
     for (u64 i=0; i!=pos.size(); ++i) 
       nodes.emplace_back(Node(pos[i].endRef, 'e', pos[i].start));
     std::sort(nodes.begin(), nodes.end(),
-      [] (const Node &l, const Node &r) { return l.position < r.position; });
+      [](const Node &l, const Node &r) { return l.position < r.position; });
 
     double X = 0;
     if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
@@ -195,7 +195,7 @@ void VizPaint::print_plot (VizParam& p) {
       nodes.emplace_back(Node(pos[i].endTar, 
         pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
     std::sort(nodes.begin(), nodes.end(),
-      [] (const Node &l, const Node &r) { return l.position < r.position; });
+      [](const Node &l, const Node &r) { return l.position < r.position; });
 
     line.clear();    lastLine.clear();
     printPos = 0;
@@ -497,15 +497,15 @@ inline void VizPaint::show_info (VizParam& p, const string& ref,
   else
     tblWidth = static_cast<u8>(lblWidth+3*colWidth);
 
-  const auto rule = [] (u8 n, const string& s) {
+  const auto rule = [](u8 n, const string& s) {
     for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
   };
-  const auto toprule  = [&] () { rule(tblWidth, "~"); };
-  const auto midrule  = [&] () { rule(tblWidth, "~"); };
-  const auto botrule  = [&] () { rule(tblWidth, " "); };
-  const auto label    = [&] (const string& s) {cerr<<setw(lblWidth)<<left<<s;};
-  const auto header   = [&] (const string& s){cerr<<setw(2*colWidth)<<left<<s;};
-  const auto design_vals = [&] (char c) {
+  const auto toprule  = [&]() { rule(tblWidth, "~"); };
+  const auto midrule  = [&]() { rule(tblWidth, "~"); };
+  const auto botrule  = [&]() { rule(tblWidth, " "); };
+  const auto label    = [&](const string& s) {cerr<<setw(lblWidth)<<left<<s;};
+  const auto header   = [&](const string& s){cerr<<setw(2*colWidth)<<left<<s;};
+  const auto design_vals = [&](char c) {
     cerr << setw(colWidth) << left;
     switch (c) {
     case 'w':  cerr<<p.width;                     break;
@@ -520,7 +520,7 @@ inline void VizPaint::show_info (VizParam& p, const string& ref,
     }
     cerr << '\n';
   };
-  const auto file_vals = [&] (char c) {
+  const auto file_vals = [&](char c) {
     cerr << setw(2*colWidth) << left;
     switch (c) {
     case '1':  cerr.imbue(locale("en_US.UTF8"));  cerr<<n_refBases;  break;
@@ -935,7 +935,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
     error("undefined color mode.");
   }
 
-  const auto offset = [&] (u8 i) { 
+  const auto offset = [&](u8 i) { 
     return to_string(i * 100 / (grad->offsetColor.size() - 1)) + "%";
   };
   auto id = to_string(rect->origin.x) + to_string(rect->origin.y);
@@ -1039,7 +1039,7 @@ inline void VizPaint::sort_merge (string& s) const {
     vEnv[i].pos  = vPos[i];
   }
   std::sort(vEnv.begin(), vEnv.end(), 
-    [] (const Env& l, const Env& r) { return l.id < r.id; });
+    [](const Env& l, const Env& r) { return l.id < r.id; });
 
   s.clear();
   u64 leftOver = vEnv.size();

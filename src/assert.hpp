@@ -11,6 +11,7 @@ class ValRange {
   ValRange () = default;
   ValRange (Value min_, Value max_, Value d_, string&& l_, string&& c_,
     string&& m_, Problem p_) : min(min_), max(max_), def(d_), label(move(l_)), criterion(move(c_)), initMode(move(m_)), problem(p_), inRange(true) {}
+
   void assert (Value&);
 
  private:
@@ -27,7 +28,7 @@ inline void ValRange<Value>::assert (Value& val) {
   if (std::is_floating_point<Value>::value)
     isFloat=true;
 
-  const auto append_msg = [&] (string&& msg) {
+  const auto append_msg = [&](string&& msg) {
     message = "\""+label+"\" not in valid range " + msg;
     if (initMode == "default")
       message += "Default value "+
@@ -36,40 +37,24 @@ inline void ValRange<Value>::assert (Value& val) {
       message += "Will be automatically modified.";
     message += "\n";
   };
+  const auto create_message = [=](char open, char close) {
+    inRange = false;
+    string s = to_string(open) + 
+      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
+               : (to_string(min)+";"+to_string(max))) +
+      to_string(close) + ". ";
+    append_msg(std::move(s));
+  };
   
-  if (criterion=="[]" && (val>max || val<min)) {
-    inRange = false;
-    string s = "["+ 
-      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
-               : (to_string(min)+";"+to_string(max))) +"]. ";
-    append_msg(std::move(s));
-  }
-  else if (criterion=="[)" && (val>=max || val<min)) {
-    inRange = false;
-    string s = "["+
-      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
-               : (to_string(min)+";"+to_string(max))) +"). ";
-    append_msg(std::move(s));
-  }
-  else if (criterion=="(]" && (val>max || val<=min)) {
-    inRange = false;
-    string s = "("+
-      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
-               : (to_string(min)+";"+to_string(max))) +"]. ";
-    append_msg(std::move(s));
-  }
-  else if (criterion=="()" && (val>=max || val<=min)) {
-    inRange = false;
-    string s = "("+
-      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
-               : (to_string(min)+";"+to_string(max))) +"). ";
-    append_msg(std::move(s));
-  }
+  if      (criterion=="[]" && (val>max  || val<min))   create_message('[', ']');
+  else if (criterion=="[)" && (val>=max || val<min))   create_message('[', ')');
+  else if (criterion=="(]" && (val>max  || val<=min))  create_message('(', ']');
+  else if (criterion=="()" && (val>=max || val<=min))  create_message('(', ')');
   
   if (!inRange) {
     val = def;
-    if      (problem==Problem::WARNING)  warning(std::move(message));
-    else if (problem==Problem::ERROR)    error(std::move(message));
+    if      (problem==Problem::WARNING)    warning(std::move(message));
+    else if (problem==Problem::ERROR)      error(std::move(message));
   }
 }
 
@@ -80,6 +65,7 @@ class ValSet {
   ValSet () = default;
   ValSet (vector<Value> set_, Value d_, string&& l_, string&& m_, Problem p_,
     Value c_, bool i) : set(set_), cmd(c_), def(d_), label(move(l_)), initMode(move(m_)), problem(p_), inRange(i) {}
+
   void assert (Value&);
 
  private:
@@ -96,7 +82,7 @@ inline void ValSet<Value>::assert (Value& val) {
   if (inRange) { val=cmd;  return; }
 
   val = def;
-  const auto append_msg = [&] (string&& msg) {
+  const auto append_msg = [&](string&& msg) {
     message = "\""+label+"\" not in valid set " + msg;
     if (initMode == "default") 
       message += "Default value "+conv_to_string(def)+" been set.";
@@ -111,8 +97,8 @@ inline void ValSet<Value>::assert (Value& val) {
   msg += conv_to_string(set.back())+"}. ";
 
   append_msg(std::move(msg));
-  if      (problem==Problem::WARNING)  warning(std::move(message));
-  else if (problem==Problem::ERROR)    error(std::move(message));
+  if      (problem==Problem::WARNING)    warning(std::move(message));
+  else if (problem==Problem::ERROR)      error(std::move(message));
 }
 }
 
