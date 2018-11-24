@@ -16,8 +16,7 @@ void VizPaint::print_plot (VizParam& p) {
   cerr << "Plotting ...\r";
   config(p.width, p.space, n_refBases, n_tarBases);
 
-  print_head(fPlot, PAINT_CX + width + space + width + PAINT_CX,
-                    maxSize + PAINT_EXTRA);
+  print_head(fPlot, PAINT_CX+width+space+width+PAINT_CX, maxSize+PAINT_EXTRA);
 
   auto line   = make_unique<Line>();
   line->width = 2.0;
@@ -32,23 +31,15 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = maxSize + PAINT_EXTRA;
   rect->plot(fPlot);
 
-//  rect->origin = Point(cx, cy);
-//  rect->width  = width;
-//  rect->height = refSize;
-//  rect->plot_oval(fPlot);
-//
-//  rect->height = tarSize;
-//  rect->plot_oval(fPlot);
-
   text->origin = Point(cx + width/2, cy - 15);
-  text->label  = ref;    //  text->label  = "REF";
+  text->label  = ref;
   text->plot_title(fPlot);
 
   text->origin = Point(cx + width + space + width/2, cy - 15);
-  text->label  = tar;    //  text->label  = "TAR";
+  text->label  = tar;
   text->plot_title(fPlot);
 
-  // IF MINIMUM IS SET DEFAULT, RESET TO BASE MAX PROPORTION
+  // If min is set to default, reset to base max proportion
   if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
   p.mult = 256 / file_lines(p.posFile);
   mult = p.mult;
@@ -89,9 +80,9 @@ void VizPaint::print_plot (VizParam& p) {
     else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
 
     string line, lastLine;
-    i64 printPos = 0;
+    i64  printPos = 0;
     char printType = 'b';
-    u64 nOverlap = 0;
+    u64  nOverlap = 0;
     for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
       if ((it->type=='b' && (it+1)->type=='b') ||
           (it->type=='e' && (it+1)->type=='e')) {
@@ -111,7 +102,10 @@ void VizPaint::print_plot (VizParam& p) {
           lastLine = tspan((it+1)->start, (it+1)->position);
         }
         else {
-          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+          if (nOverlap == 0) {
+            printPos = it->position;
+            printType = it->type;
+          }
           nOverlap = 0;
         }
       }
@@ -132,12 +126,18 @@ void VizPaint::print_plot (VizParam& p) {
           lastLine = tspan((it+1)->start, (it+1)->position);
         }
         else {
-          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+          if (nOverlap == 0) {
+            printPos = it->position;
+            printType = it->type;
+          }
           nOverlap = 0;
         }
       }
       else if (it->type=='e' && (it+1)->type=='b') {
-        if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+        if (nOverlap == 0) {
+          printPos = it->position;
+          printType = it->type;
+        }
         nOverlap = 0;
       }
 
@@ -220,7 +220,10 @@ void VizPaint::print_plot (VizParam& p) {
           lastLine = tspan((it+1)->start, (it+1)->position);
         }
         else {
-          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+          if (nOverlap == 0) {
+            printPos = it->position;
+            printType = it->type;
+          }
           nOverlap = 0;
         }
       }
@@ -241,12 +244,18 @@ void VizPaint::print_plot (VizParam& p) {
           lastLine = tspan((it+1)->start, (it+1)->position);
         }
         else {
-          if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+          if (nOverlap == 0) {
+            printPos = it->position;
+            printType = it->type;
+          }
           nOverlap = 0;
         }
       }
       else if (it->type=='e' && (it+1)->type=='b') {
-        if (nOverlap==0)  { printPos=it->position;  printType=it->type; }
+        if (nOverlap == 0) {
+          printPos = it->position;
+          printType = it->type;
+        }
         nOverlap = 0;
       }
       
@@ -259,8 +268,7 @@ void VizPaint::print_plot (VizParam& p) {
         if      (printType=='b')  text->dominantBaseline="text-before-edge";
         if      (printType=='m')  text->dominantBaseline="middle";
         else if (printType=='e')  text->dominantBaseline="text-after-edge";
-        text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(printPos));
+        text->origin = Point(cx+width+space+width+X, cy+get_point(printPos));
         text->label = finalLine;
         text->plot_pos_tar(fPlot);
 
@@ -274,8 +282,7 @@ void VizPaint::print_plot (VizParam& p) {
           printPos = (it+1)->position;
           
           text->dominantBaseline="text-after-edge";
-          text->origin = Point(cx + width + space + width + X, 
-                               cy + get_point(printPos));
+          text->origin = Point(cx+width+space+width+X, cy+get_point(printPos));
           text->label = finalLine;
           text->plot_pos_tar(fPlot);
         }
@@ -290,8 +297,7 @@ void VizPaint::print_plot (VizParam& p) {
         if      (printType=='b')  text->dominantBaseline="text-before-edge";
         if      (printType=='m')  text->dominantBaseline="middle";
         else if (printType=='e')  text->dominantBaseline="text-after-edge";
-        text->origin = Point(cx + width + space + width + X,
-                             cy + get_point(printPos));
+        text->origin = Point(cx+width+space+width+X, cy+get_point(printPos));
         text->label = finalLine;
         text->plot_pos_tar(fPlot);
         break;
@@ -479,17 +485,16 @@ void VizPaint::print_plot (VizParam& p) {
   print_tail(fPlot);
 
   cerr << "Plotting finished.\n";
-  if (p.regular)    cerr << "Found "   << n_regular << " regular regions.\n";
-  if (p.inverse)    cerr << "Found "   << n_inverse << " inverted regions.\n";
+  if (p.regular)    cerr << "Found " << n_regular << " regular regions.\n";
+  if (p.inverse)    cerr << "Found " << n_inverse << " inverted regions.\n";
   cerr << '\n';
 
   fPos.close();
   fPlot.close();
 }
 
-inline void VizPaint::show_info (VizParam& p, const string& ref,
-                                 const string& tar, u64 n_refBases,
-                                 u64 n_tarBases) const {
+inline void VizPaint::show_info (VizParam& p, const string& ref, 
+const string& tar, u64 n_refBases, u64 n_tarBases) const {
   const u8 lblWidth=18, colWidth=8;
   u8 tblWidth=58;
   if (max(n_refBases,n_tarBases) > 999999)
@@ -500,11 +505,11 @@ inline void VizPaint::show_info (VizParam& p, const string& ref,
   const auto rule = [](u8 n, const string& s) {
     for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
   };
-  const auto toprule  = [&]() { rule(tblWidth, "~"); };
-  const auto midrule  = [&]() { rule(tblWidth, "~"); };
-  const auto botrule  = [&]() { rule(tblWidth, " "); };
-  const auto label    = [&](const string& s) {cerr<<setw(lblWidth)<<left<<s;};
-  const auto header   = [&](const string& s){cerr<<setw(2*colWidth)<<left<<s;};
+  const auto toprule = [&]() { rule(tblWidth, "~"); };
+  const auto midrule = [&]() { rule(tblWidth, "~"); };
+  const auto botrule = [&]() { rule(tblWidth, " "); };
+  const auto label   = [&](const string& s){ cerr<<setw(lblWidth)<<left<<s;   };
+  const auto header  = [&](const string& s){ cerr<<setw(2*colWidth)<<left<<s; };
   const auto design_vals = [&](char c) {
     cerr << setw(colWidth) << left;
     switch (c) {
@@ -554,8 +559,8 @@ inline void VizPaint::show_info (VizParam& p, const string& ref,
   botrule();
 }
 
-inline void VizPaint::config
-(double width_, double space_, u64 refSize_, u64 tarSize_) {
+inline void VizPaint::config (double width_, double space_, u64 refSize_, 
+u64 tarSize_) {
   ratio   = static_cast<u32>(max(refSize_,tarSize_) / PAINT_SCALE);
   width   = width_;
   space   = space_;
@@ -568,12 +573,11 @@ inline RgbColor VizPaint::hsv_to_rgb (const HsvColor& HSV) const {
   RgbColor RGB {};
   if (HSV.s==0) { RGB.r = RGB.g = RGB.b = HSV.v;    return RGB; }
 
-  const auto
-      region    = static_cast<u8>(HSV.h / 43),
-      remainder = static_cast<u8>((HSV.h - region*43) * 6),
-      p = static_cast<u8>((HSV.v * (255 - HSV.s)) >> 8),
-      q = static_cast<u8>((HSV.v * (255 - ((HSV.s*remainder)>>8))) >> 8),
-      t = static_cast<u8>((HSV.v * (255 - ((HSV.s*(255-remainder))>>8))) >> 8);
+  const auto region    = u8(HSV.h / 43),
+             remainder = u8((HSV.h - region*43) * 6),
+             p = u8((HSV.v * (255 - HSV.s)) >> 8),
+             q = u8((HSV.v * (255 - ((HSV.s*remainder)>>8))) >> 8),
+             t = u8((HSV.v * (255 - ((HSV.s*(255-remainder))>>8))) >> 8);
 
   switch (region) {
   case 0:   RGB.r=HSV.v;  RGB.g=t;      RGB.b=p;      break;
@@ -594,15 +598,12 @@ inline HsvColor VizPaint::rgb_to_hsv (const RgbColor& RGB) const {
   HSV.v = rgbMax;
   if (HSV.v==0) { HSV.h = HSV.s = 0;    return HSV; }
 
-  HSV.s = static_cast<u8>(255 * static_cast<u16>((rgbMax-rgbMin)/HSV.v));
+  HSV.s = u8(255 * u16((rgbMax-rgbMin)/HSV.v));
   if (HSV.s==0) { HSV.h = 0;            return HSV; }
 
-  if (rgbMax == RGB.r)
-    HSV.h = static_cast<u8>(43*(RGB.g-RGB.b)/(rgbMax-rgbMin));
-  else if (rgbMax == RGB.g)
-    HSV.h = static_cast<u8>(85 + 43*(RGB.b-RGB.r)/(rgbMax-rgbMin));
-  else
-    HSV.h = static_cast<u8>(171 + 43*(RGB.r-RGB.g)/(rgbMax-rgbMin));
+  if      (rgbMax==RGB.r)    HSV.h = u8(43*(RGB.g-RGB.b)/(rgbMax-rgbMin));
+  else if (rgbMax==RGB.g)    HSV.h = u8(85 + 43*(RGB.b-RGB.r)/(rgbMax-rgbMin));
+  else                       HSV.h = u8(171 + 43*(RGB.r-RGB.g)/(rgbMax-rgbMin));
   
   return HSV;
 }
@@ -613,9 +614,9 @@ inline string VizPaint::rgb_color (u8 hue) const {
   return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
 }
 
-inline string VizPaint::heatmap_color 
-(double lambda, const HeatmapColor& heatmap) const {
-  // CHANGE BEHAVIOUR [SENSITIVITY: NEAR LOW SIMILARITY // COMMENT 4 UNIFORM
+inline string VizPaint::heatmap_color (double lambda, 
+const HeatmapColor& heatmap) const {
+  // Change behaviour [sensitivity: near low similarity]
   lambda = (1 + pow(lambda, 3) + tanh(8*(lambda-1))) / 2; 
 
   double phi = 2 * PI * (heatmap.start/3 + heatmap.rotations*lambda),
@@ -648,18 +649,18 @@ inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
   switch (colorMode) {
   case 0:
     colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-                "#f9d057", "#f29e2e", "#e76818", "#d7191c"};              break;
+      "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
   case 1:
     colorSet = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-                "#217681", "#285285", "#1F2D86", "#000086"};              break;
+      "#217681", "#285285", "#1F2D86", "#000086"};                        break;
   case 2:
     colorSet = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
-                "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
-                "#A53A66"};                                               break;
+      "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"};  break;
   default:
     error("undefined color mode.");
   }
-  return colorSet[entropy / 2 * (colorSet.size() - 1)];
+
+  return colorSet[entropy/2 * (colorSet.size()-1)];
 }
 
 inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
@@ -669,18 +670,18 @@ inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
   switch (colorMode) {
   case 0:
     colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-                "#f9d057", "#f29e2e", "#e76818", "#d7191c"};              break;
+      "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
   case 1:
     colorSet = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-                "#217681", "#285285", "#1F2D86", "#000086"};              break;
+      "#217681", "#285285", "#1F2D86", "#000086"};                        break;
   case 2:
     colorSet = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
-                "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
-                "#A53A66"};                                               break;
+      "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"};  break;
   default:
     error("undefined color mode.");
   }
-  return colorSet[entropy / 2 * (colorSet.size() - 1)];
+
+  return colorSet[entropy/2 * (colorSet.size()-1)];
 }
 
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {
@@ -694,7 +695,7 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     "xmlns=\"http://www.w3.org/2000/svg\"\n"
     "xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
     "xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
-    "width=\""  << w << "\"\n"
+    "width=\"" << w << "\"\n"
     "height=\"" << h << "\"\n"
     "id=\"svg2\"\n"
     "version=\"1.1\"\n"
@@ -893,7 +894,7 @@ inline double VizPaint::get_point (Value p) const {
 inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   const auto vert = 24;
   // Relative redundancy
-  auto rect    = make_unique<Rectangle>();
+  auto rect = make_unique<Rectangle>();
   if (!p.showNRC && !p.showRedun) {
     rect->origin = Point(cx, vert);
     rect->width = width+space+width;
@@ -910,27 +911,26 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   }
   rect->height = 12;
 
-  auto text    = make_unique<Text>();
+  auto text = make_unique<Text>();
   text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
   text->textAnchor = "middle";
   text->fontWeight = "bold";
   text->dominantBaseline = "text-after-edge";
-  text->label  = "RELATIVE REDUNDANCY";
-  text->fontSize   = 9;
+  text->label = "RELATIVE REDUNDANCY";
+  text->fontSize = 9;
   text->plot(f);
 
   auto grad = make_unique<Gradient>();
   switch (p.color) {
   case 0:
     grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-                "#f9d057", "#f29e2e", "#e76818", "#d7191c"};              break;
+      "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
   case 1:
     grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-                "#217681", "#285285", "#1F2D86", "#000086"};              break;
+      "#217681", "#285285", "#1F2D86", "#000086"};                        break;
   case 2:
     grad->offsetColor = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
-                "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562",
-                "#A53A66"};                                               break;
+      "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"};  break;
   default:
     error("undefined color mode.");
   }
@@ -939,18 +939,18 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
     return to_string(i * 100 / (grad->offsetColor.size() - 1)) + "%";
   };
   auto id = to_string(rect->origin.x) + to_string(rect->origin.y);
-  f << "<defs><linearGradient id=\"grad"+id+"\"  "
-    "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"> ";
+  f << "<defs><linearGradient id=\"grad"+id+"\"  x1=\"0%\" y1=\"0%\" "
+    "x2=\"100%\" y2=\"0%\"> ";
   for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
-    f << "<stop offset=\"" << offset(i) << "\" "
-         "style=\"stop-color:" << grad->offsetColor[i] << ";stop-opacity:1\"/>";
+    f << "<stop offset=\"" << offset(i) << "\" style=\"stop-color:" 
+      << grad->offsetColor[i] << ";stop-opacity:1\"/>";
   }
   f << "</linearGradient> </defs>"
     "<rect fill=\"url(#grad"+id+")\" "
-    "width=\""  << PREC << rect->width    << "\" "
-    "height=\"" << PREC << rect->height   << "\" "
-    "x=\""      << PREC << rect->origin.x << "\" "
-    "y=\""      << PREC << rect->origin.y << "\" ry=\"3\" />\n";
+    "width=\""  << PREC << rect->width  << "\" "
+    "height=\"" << PREC << rect->height << "\" "
+    "x=\"" << PREC << rect->origin.x << "\" "
+    "y=\"" << PREC << rect->origin.y << "\" ry=\"3\" />\n";
 
   // text->dominantBaseline = "text-before-edge";
   text->dominantBaseline = "middle";
@@ -982,20 +982,19 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->origin = Point(rect->origin.x+rect->width/2, 
                        rect->origin.y+rect->height);
   text->dominantBaseline = "text-before-edge";
-  text->label  = "REDUNDANCY";
-  text->fontSize   = 9;
+  text->label = "REDUNDANCY";
+  text->fontSize = 9;
   text->fontWeight = "bold";
   text->plot(f);
 }
 
 inline string VizPaint::tspan (u32 start, i64 pos) const {
-  return "<tspan id=\"" + to_string(start) + "\" "
-         "style=\"fill:" + customColor(start) + "\">" + 
-         to_string(pos) + ", </tspan>\n";
+  return "<tspan id=\"" + to_string(start) + "\" style=\"fill:" + 
+    customColor(start) + "\">" + to_string(pos) + ", </tspan>\n";
 }
 inline string VizPaint::tspan (u32 start, const string& pos) const {
-  return "<tspan id=\"" + to_string(start) + "\" "
-         "style=\"fill:" + customColor(start) + "\">" + pos + ", </tspan>\n";
+  return "<tspan id=\"" + to_string(start) + "\" style=\"fill:" + 
+    customColor(start) + "\">" + pos + ", </tspan>\n";
 }
 
 inline void VizPaint::sort_merge (string& s) const {
