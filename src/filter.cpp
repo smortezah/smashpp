@@ -10,7 +10,8 @@ Filter::Filter (const Param& p) {
 inline void Filter::config (const Param& p) {
   wtype = p.wtype;
   config_wsize(p);
-  if ((p.filter || p.segment) && p.verbose)  show_info(p);
+  if ((p.filter || p.segment) && p.verbose)
+    show_info(p);
 }
 
 inline void Filter::config_wsize (const Param& p) {
@@ -25,24 +26,25 @@ inline void Filter::config_wsize (const Param& p) {
     }
   }
   else {
-    wsize = is_odd(p.wsize/p.sampleStep) ? p.wsize/p.sampleStep 
-                                         : p.wsize/p.sampleStep + 1;
+    const auto size = p.wsize/p.sampleStep;
+    wsize = is_odd(size) ? size : size+1;
   }
+
   window.resize(wsize);
 }
 
 inline void Filter::show_info (const Param& p) const {
   const u8 lblWidth=19, colWidth=8,
-    tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
+           tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
 
   const auto rule = [](u8 n, const string& s) {
     for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
   };
-  const auto toprule  = [&]() { rule(tblWidth, "~"); };
-  const auto midrule  = [&]() { rule(tblWidth, "~"); };
-  const auto botrule  = [&]() { rule(tblWidth, " "); };
-  const auto label    = [&](const string& s) {cerr<<setw(lblWidth) <<left<<s;};
-  const auto header   = [&](const string& s){cerr<<setw(2*colWidth)<<left<<s;};
+  const auto toprule = [&]() { rule(tblWidth, "~"); };
+  const auto midrule = [&]() { rule(tblWidth, "~"); };
+  const auto botrule = [&]() { rule(tblWidth, " "); };
+  const auto label   = [&](const string& s){ cerr<<setw(lblWidth) <<left<<s;  };
+  const auto header  = [&](const string& s){ cerr<<setw(2*colWidth)<<left<<s; };
   const auto filter_vals = [&](char c) {
     cerr << setw(colWidth) << left;
     switch (c) {
@@ -87,7 +89,6 @@ inline void Filter::show_info (const Param& p) const {
 }
 
 void Filter::smooth_seg (const Param& p) {
-  // cerr << OUT_SEP << "Filtering and segmenting \"" << p.tar << "\"...\n";
   message = "Filtering & segmenting " + italic(p.tar) + " ";
 
   if (wtype == WType::RECTANGULAR) {
@@ -105,9 +106,6 @@ void Filter::smooth_seg (const Param& p) {
 
   cerr << message << "finished. "
        << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") << ".\n";
-//   cerr << "Done!\n";
-// //  if (p.verbose)
-//     cerr << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") <<".\n";
 }
 
 inline void Filter::make_window () {
@@ -124,8 +122,7 @@ inline void Filter::make_window () {
 }
 
 inline void Filter::hamming () {
-  if (wsize == 1)
-    error("The size of Hamming window must be greater than 1.");
+  if (wsize==1)  error("The size of Hamming window must be greater than 1.");
   float num = 0.f;
   u32   den = 0;
   if (is_odd(wsize)) { num=PI;      den=(wsize-1)>>1u; }
@@ -133,15 +130,10 @@ inline void Filter::hamming () {
 
   for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
     window[n] = window[last-n] = static_cast<float>(0.54 - 0.46*cos(n*num/den));
-  // todoo. Remove. Just for test. Compatible with Diogo's version
-//    for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
-//    window[n] = window[last-n]
-//              = static_cast<float>(0.54 + 0.46*cos(2*PI*n/wsize));
 }
 
 inline void Filter::hann () {
-  if (wsize == 1)
-    error("The size of Hann window must be greater than 1.");
+  if (wsize==1)  error("The size of Hann window must be greater than 1.");
   float num = 0.f;
   u32   den = 0;
   if (is_odd(wsize)) { num=PI;      den=(wsize-1)>>1u; }
@@ -152,8 +144,7 @@ inline void Filter::hann () {
 }
 
 inline void Filter::blackman () {
-  if (wsize == 1)
-    error("The size of Blackman window must be greater than 1.");
+  if (wsize==1)  error("The size of Blackman window must be greater than 1.");
   float num1=0.f, num2=0.f;
   u32   den = 0;
   if (is_odd(wsize)) { num1=PI;      num2=2*PI;    den=(wsize-1)>>1u; }
@@ -162,17 +153,16 @@ inline void Filter::blackman () {
   for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
     window[n] = window[last-n] =
       static_cast<float>(0.42 - 0.5*cos(n*num1/den) + 0.08*cos(n*num2/den));
-  if (window.front() < 0)    window.front() = 0.0; // Because of low precision
-  if (window.back()  < 0)    window.back()  = 0.0; // Because of low precision
+  if (window.front()<0)    window.front()=0.0; // Because of low precision
+  if (window.back()<0)     window.back() =0.0; // Because of low precision
 }
 
 // Bartlett window:  w(n) = 1 - |(n - (N-1)/2) / (N-1)/2|
 inline void Filter::triangular () {
-  if (wsize == 1)
-    error("The size of triangular window must be greater than 1.");
+  if (wsize==1)  error("The size of triangular window must be greater than 1.");
 
   if (is_odd(wsize)) {
-    const u32 den = (wsize-1) >> 1u;
+    const u32 den = (wsize-1)>>1u;
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
       window[n] = window[last-n] = 1 - fabs(static_cast<float>(n)/den - 1);
   }
@@ -185,15 +175,13 @@ inline void Filter::triangular () {
 }
 
 inline void Filter::welch () { // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
-  if (wsize == 1)
-    error("The size of Welch window must be greater than 1.");
+  if (wsize==1)  error("The size of Welch window must be greater than 1.");
 
   if (is_odd(wsize)) {
     const u32 den = (wsize-1) >> 1u;
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
       window[n] = window[last-n]
                 = static_cast<float>(1 - Power(static_cast<float>(n)/den-1, 2));
-//              = static_cast<float>(1 - pow(static_cast<float>(n)/den - 1, 2));
   }
   else {
     const auto num = 2.0f;
@@ -201,7 +189,6 @@ inline void Filter::welch () { // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
       window[n] = window[last-n]
                 = static_cast<float>(1 - Power(n*num/den - 1, 2));
-//                = static_cast<float>(1 - pow(n*num/den - 1, 2));
   }
 }
 
