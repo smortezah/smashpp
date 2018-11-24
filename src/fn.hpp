@@ -56,11 +56,11 @@ inline static bool is_u8 (Input&& in) {
 #ifdef DEBUG
 // Print variadic inputs
 template <typename Integral>
-static void print (Integral&& in) /*noexcept*/ {
+static void print (Integral&& in) {
   cerr << (is_u8(in) ? static_cast<u32>(in) : in) << '\n';
 }
 template <typename Integral, typename... Args>
-static void print (Integral&& in, Args&&... args) /*noexcept*/ {
+static void print (Integral&& in, Args&&... args) {
   cerr << (is_u8(in) ? static_cast<u32>(in) : in) << '\t';
   print(args...);
 }
@@ -74,8 +74,7 @@ inline static chrono::time_point<chrono::high_resolution_clock> now () noexcept{
 template <typename Time>
 inline static string hms (Time elapsed) {
 //  std::chrono::duration<double, std::milli> ms = elapsed;
-  const auto durSec =
-    chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+  const auto durSec = chrono::duration_cast<chrono::seconds>(elapsed).count();
   const auto h = durSec / 3600;
   const auto m = (durSec % 3600) / 60;
   const auto s = durSec % 60;
@@ -96,7 +95,7 @@ inline static void ignore_this_line (ifstream& fs) {
 template <typename InIter, typename Vec>
 inline static void split (InIter first, InIter last, char delim, Vec& vOut) {
   while (true) {
-    InIter found = std::find(first, last, delim);
+    InIter found = find(first, last, delim);
     vOut.emplace_back(string(first,found));
     if (found == last)
       break;
@@ -128,6 +127,7 @@ inline static void wrap_text (string& text) {
       out += word;
       word.clear();
     }
+
     word += c;
     last  = c;
   }
@@ -140,8 +140,7 @@ inline static void wrap_text (string& text) {
 inline static void error (string&& msg) {
   string message = "Error: " + std::move(msg);
   wrap_text(message);
-  throw std::runtime_error (bold_red(message.substr(0,6)) + 
-                            message.substr(6) + "\n");
+  throw runtime_error (bold_red(message.substr(0,6)) + message.substr(6) +"\n");
 }
 
 inline static void err (string&& msg) {
@@ -158,7 +157,7 @@ inline static void warning (string&& msg) {
 
 template <typename Iter, typename Element>
 inline static bool has (Iter first, Iter last, Element elem) {
-  return std::find(first, last, elem) != last;
+  return find(first, last, elem) != last;
 }
 
 #ifdef ARRAY_HISTORY
@@ -183,8 +182,8 @@ inline static u8 pop_count (Digit d) {  // Number of ones in a digit
 
 template <typename Iter, typename Value>
 inline static bool are_all (Iter first, Value val) {
-  return std::all_of(first, first+CARDIN,
-                     [val](u64 i){ return i==static_cast<u64>(val); });
+  return all_of(first, first+CARDIN, 
+    [val](u64 i) { return i==static_cast<u64>(val); });
 }
 
 template <typename Iter>
@@ -224,8 +223,7 @@ inline static void normalize (OutIter oFirst, InIter iFirst, InIter iLast) {
 
 template <typename Value>
 inline static bool is_odd (Value val) {
-  if (val < 0)
-    error("\"" + to_string(val) + "\" is a negative number.");
+  if (val<0)  error("\"" + to_string(val) + "\" is a negative number.");
   return (val & 1ull);
 }
 
