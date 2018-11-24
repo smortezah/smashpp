@@ -55,10 +55,10 @@ void Text::plot_pos_tar (ofstream& f, char c) {
  */
 void Line::plot (ofstream& f) const {
   f << "<line "
-    "x1=\""           << PREC << beg.x << "\" y1=\"" << PREC << beg.y << "\" "
-    "x2=\""           << PREC << end.x << "\" y2=\"" << PREC << end.y << "\" "
-    "style=\"stroke:" <<         color << ";"
-    "stroke-width:"   << PREC << width << "\" />";
+    "x1=\"" << PREC << beg.x << "\" y1=\"" << PREC << beg.y << "\" "
+    "x2=\"" << PREC << end.x << "\" y2=\"" << PREC << end.y << "\" "
+    "style=\"stroke:" << color << ";"
+    "stroke-width:" << PREC << width << "\" />";
 }
 
 /*
@@ -68,8 +68,8 @@ void Rectangle::plot (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
     ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
+    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
+    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
     "ry=\"3\" />\n";
 }
 
@@ -78,16 +78,16 @@ void Rectangle::plot_ir (ofstream& f) const {
   f << "<rect style=\"fill-opacity:" << opacity << ";stroke-width:2;"
     "stroke-miterlimit:4;stroke-dasharray:none;fill:url(#Wavy);"
     "fill-rule:nonzero;opacity:1\" id=\"rect6217\" "
-    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
+    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
+    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
     "ry=\"3\" />\n";
 }
 
 void Rectangle::plot_oval (ofstream& f) const {
   f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
     "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
-    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
+    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
+    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
     "ry=\"12.5\" />\n";
 }
 
@@ -96,8 +96,8 @@ void Rectangle::plot_oval_ir (ofstream& f) const {
   f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
     "stroke-dasharray:nonestroke-dasharray:none;fill:url(#xtrace);"
     "fill-rule:nonzero;opacity:1\" id=\"recty\" "
-    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
+    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
+    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
     "ry=\"12.5\" />\n";
 }
 
@@ -105,8 +105,8 @@ void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
     ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\""  << PREC << width/HORIZ_RATIO << "\" "
-    "height=\"" << PREC << height            <<"\" "
+    "width=\"" << PREC << width/HORIZ_RATIO << "\" "
+    "height=\"" << PREC << height <<"\" "
     "x=\"" << PREC << (refTar=='r' ? origin.x - HORIZ_TUNE - width/HORIZ_RATIO
                                    : origin.x + width + HORIZ_TUNE) << "\" "
     "y=\"" << PREC << origin.y <<"\" ry=\"2\" />\n";
@@ -125,8 +125,8 @@ void Rectangle::plot_redun
   f << "<rect style=\"fill:" << color << ";stroke:" << color <<
     ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
     "stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\""  << PREC << width/HORIZ_RATIO << "\" "
-    "height=\"" << PREC << height            <<"\" "
+    "width=\"" << PREC << width/HORIZ_RATIO << "\" "
+    "height=\"" << PREC << height <<"\" "
     "x=\"";
   if (refTar=='r')
     f << PREC << origin.x - (1+showNRC)*(HORIZ_TUNE+width/HORIZ_RATIO);
@@ -165,12 +165,11 @@ void Rectangle::plot_chromosome (ofstream& f) const {
 //    << "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;"
 //    << "stroke:none\" />";
 
-
   f << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
     "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
     "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
-    "width=\"" << PREC << width    << "\" height=\"" << PREC << height   <<"\" "
-    "x=\""     << PREC << origin.x << "\" y=\""      << PREC << origin.y <<"\" "
+    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
+    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
     "ry=\"3\" />\n";
 }
 
@@ -183,7 +182,6 @@ void Polygon::plot (ofstream& f) const {
     << PREC << two.x   << "," << PREC << two.y   << " "
     << PREC << three.x << "," << PREC << three.y << " "
     << PREC << four.x  << "," << PREC << four.y  << "\" "
-    << "style=\"fill:" << fillColor   << ";stroke:" << fillColor << ";"
-//    << "style=\"fill:" << fillColor   << ";stroke:" << lineColor << ";"
+    << "style=\"fill:" << fillColor << ";stroke:" << fillColor << ";"
     << "stroke-width:1;stroke-opacity:0.4;fill-opacity:0.4\" />";
 }

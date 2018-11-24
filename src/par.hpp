@@ -31,13 +31,12 @@ class Param {   // Parameters
   u32         ID;
 
   // Define Param::Param(){} in *.hpp => compile error
-  //todo clean
-  Param () : level(DEF_LVL), verbose(false), nthr(DEF_THR), wsize(DEF_WS),
-    wtype(DEF_WT), sampleStep(1ull), thresh(DEF_THRESH), manWSize(false),
-    manThresh(false), manFilterScale(false), filterScale(DEF_FS),
-    saveSeq(false), saveProfile(false), saveFilter(false), saveSegment(false), 
-    saveAll(false), refType(FileType::SEQ), tarType(FileType::SEQ), 
-    showInfo(true), compress(false), filter(false), segment(false) {}
+  Param () : level(LVL), verbose(false), nthr(THRD), wsize(WS), wtype(WT),
+    sampleStep(1ull), thresh(THRSH), manWSize(false), manThresh(false),
+    manFilterScale(false), filterScale(FS), saveSeq(false), saveProfile(false),
+    saveFilter(false), saveSegment(false), saveAll(false), 
+    refType(FileType::SEQ), tarType(FileType::SEQ), showInfo(true), 
+    compress(false), filter(false), segment(false) {}
 
   auto parse (int, char**&) -> void;
   auto win_type (const string&) const -> WType;
@@ -59,9 +58,9 @@ class VizParam {
   string posFile;
 
   VizParam () : verbose(false), inverse(true), regular(true), showPos(false),
-    showNRC(false), showRedun(false), image(DEF_IMAGE), link(DEF_LINK), 
-    color(DEF_COLOR), opacity(DEF_OPAC), width(DEF_WIDT), space(DEF_SPAC), 
-    mult(DEF_MULT), start(DEF_BEGI), min(DEF_MINP) {}
+    showNRC(false), showRedun(false), image(IMAGE), link(LINK), color(COLOR),
+    opacity(OPAC), width(WDTH), space(SPC), mult(MULT), start(BEGN), min(MINP)
+    {}
 
   void parse (int, char**&);
 
@@ -98,13 +97,13 @@ inline void Param::parse (int argc, char**& argv) {
     }
     else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
       level = static_cast<u8>(stoi(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_LVL, MAX_LVL, DEF_LVL, 
+      auto range = make_unique<ValRange<u8>>(MIN_LVL, MAX_LVL, LVL, 
         "Level", "[]", "default", Problem::WARNING);
       range->assert(level);
     }
     else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
       nthr = static_cast<u8>(stoi(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_THR, MAX_THR, DEF_THR, 
+      auto range = make_unique<ValRange<u8>>(MIN_THRD, MAX_THRD, THRD, 
         "Number of threads", "[]", "default", Problem::WARNING);
       range->assert(nthr);
     }
@@ -123,7 +122,7 @@ inline void Param::parse (int argc, char**& argv) {
     else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
       manWSize = true;
       wsize = static_cast<u32>(stoi(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_WS, MAX_WS, DEF_WS, 
+      auto range = make_unique<ValRange<u32>>(MIN_WS, MAX_WS, WS, 
         "Window size", "[]", "default", Problem::WARNING);
       range->assert(wsize);
     }
@@ -137,7 +136,7 @@ inline void Param::parse (int argc, char**& argv) {
         return false;
       };
       const string cmd {*++i};
-      auto set = make_unique<ValSet<WType>>(SET_WTYPE, DEF_WT, "Window type",
+      auto set = make_unique<ValSet<WType>>(SET_WTYPE, WT, "Window type",
         "default", Problem::WARNING, win_type(cmd), is_win_type(cmd));
       set->assert(wtype);
     }
@@ -148,8 +147,8 @@ inline void Param::parse (int argc, char**& argv) {
     else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end()) {
       manThresh = true;
       thresh = stof(*++i);
-      auto range = make_unique<ValRange<float>>(MIN_THRESH, MAX_THRESH, 
-        DEF_THRESH, "Threshold", "(]", "default", Problem::WARNING);
+      auto range = make_unique<ValRange<float>>(MIN_THRSH, MAX_THRSH, THRSH,
+        "Threshold", "(]", "default", Problem::WARNING);
       range->assert(thresh);
     }
     else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=vArgs.end()) {
@@ -161,7 +160,7 @@ inline void Param::parse (int argc, char**& argv) {
         return false;
       };
       const string cmd {*++i};
-      auto set = make_unique<ValSet<FilterScale>>(SET_FSCALE, DEF_FS,
+      auto set = make_unique<ValSet<FilterScale>>(SET_FSCALE, FS,
         "Filter scale", "default", Problem::WARNING, filter_scale(cmd),
         is_filter_scale(cmd));
       set->assert(filterScale);
@@ -171,9 +170,9 @@ inline void Param::parse (int argc, char**& argv) {
   }
 
   // Mandatory args
-  const bool has_t   {has(vArgs.begin(), vArgs.end(), "-t")};
+  const bool has_t   {has(vArgs.begin(), vArgs.end(), "-t")   };
   const bool has_tar {has(vArgs.begin(), vArgs.end(), "--tar")};
-  const bool has_r   {has(vArgs.begin(), vArgs.end(), "-r")};
+  const bool has_r   {has(vArgs.begin(), vArgs.end(), "-r")   };
   const bool has_ref {has(vArgs.begin(), vArgs.end(), "--ref")};
   if (!has_t && !has_tar)
     error("target file not specified. Use \"-t <fileName>\".");
@@ -184,10 +183,12 @@ inline void Param::parse (int argc, char**& argv) {
     rmodelsPars = LEVEL[level];
     tmodelsPars = REFFREE_LEVEL[level];
   }
-  else if (!man_rm && man_tm)   
+  else if (!man_rm && man_tm) {
     rmodelsPars = tmodelsPars;
-  else if (man_rm  && !man_tm)  
+  }
+  else if (man_rm  && !man_tm) {
     tmodelsPars = rmodelsPars;
+  }
 
   manFilterScale = !manThresh;
   manFilterScale = !manWSize;
@@ -243,7 +244,7 @@ inline void Param::help () const {
      fit("COMPRESS")                                                      <<'\n'
   << "  " << b("-n") << ",  " << b("--nthr") << "  " << ul("INT") << 
      "           number of threads "
-     "[" << to_string(MIN_THR) << ";" << to_string(MAX_THR) << "]"        <<'\n'
+     "[" << to_string(MIN_THRD) << ";" << to_string(MAX_THRD) << "]"      <<'\n'
   << "  " << b("-fs") << ", " << b("--filter-scale") << " S|M|L  "
      "scale of the filter {S|small,    " << fit("FILTER")                 <<'\n'
   << "                             M|medium, L|large}"                    <<'\n'
@@ -260,7 +261,7 @@ inline void Param::help () const {
      "          sampling steps                   " << fit("FILTER")       <<'\n'
   << "  " << b("-th") << ", " << b("--thresh") << " " << ul("FLOAT") << 
      "        threshold [" << 
-     string_format("%.1f",MIN_THRESH) << ";" << string_format("%.1f",MAX_THRESH)
+     string_format("%.1f",MIN_THRSH) << ";" << string_format("%.1f",MAX_THRSH)
      << "]             " << fit("FILTER")                                 <<'\n'
   << "  " << b("-sp") << ", " << b("--save-profile") << "        "
      "save profile (*.prf)               " << fit("SAVE")                 <<'\n'
@@ -371,49 +372,49 @@ inline void VizParam::parse (int argc, char**& argv) {
       image = *++i;
     else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
       link = static_cast<u8>(stoul(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_LINK, MAX_LINK, DEF_LINK, 
+      auto range = make_unique<ValRange<u8>>(MIN_LINK, MAX_LINK, LINK, 
         "Link", "[]", "default", Problem::WARNING);
       range->assert(link);
     }
     else if ((*i=="-c" || *i=="--color")  && i+1!=vArgs.end()) {
       color = static_cast<u8>(stoi(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, DEF_COLOR, 
+      auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, COLOR, 
         "Color", "[]", "default", Problem::WARNING);
       range->assert(color);
     }
     else if ((*i=="-p" || *i=="--opacity")  && i+1!=vArgs.end()) {
       opacity = stof(*++i);
-      auto range = make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, DEF_OPAC, 
+      auto range = make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, 
         "Opacity", "[]", "default", Problem::WARNING);
       range->assert(opacity);
     }
     else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
       width = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_WIDT, MAX_WIDT, DEF_WIDT,
+      auto range = make_unique<ValRange<u32>>(MIN_WDTH, MAX_WDTH, WDTH,
         "Width", "[]", "default", Problem::WARNING);
       range->assert(width);
     }
     else if ((*i=="-s" || *i=="--space") && i+1!=vArgs.end()) {
       space = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_SPAC, MAX_SPAC, DEF_SPAC,
+      auto range = make_unique<ValRange<u32>>(MIN_SPC, MAX_SPC, SPC,
         "Space", "[]", "default", Problem::WARNING);
       range->assert(space);
     }
     else if ((*i=="-m" || *i=="--mult")  && i+1!=vArgs.end()) {
       mult = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_MULT, MAX_MULT, DEF_MULT,
+      auto range = make_unique<ValRange<u32>>(MIN_MULT, MAX_MULT, MULT,
         "Mult", "[]", "default", Problem::WARNING);
       range->assert(mult);
     }
     else if ((*i=="-b" || *i=="--begin") && i+1!=vArgs.end()) {
       start = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_BEGI, MAX_BEGI, DEF_BEGI,
+      auto range = make_unique<ValRange<u32>>(MIN_BEGN, MAX_BEGN, BEGN,
         "Begin", "[]", "default", Problem::WARNING);
       range->assert(start);
     }
     else if ((*i=="-k" || *i=="--min")   && i+1!=vArgs.end()) {
       min = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, DEF_MINP,
+      auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, MINP,
         "Min", "[]", "default", Problem::WARNING);
       range->assert(min);
     }
@@ -422,10 +423,10 @@ inline void VizParam::parse (int argc, char**& argv) {
 }
 
 inline void VizParam::help () const {
-  const auto b   = [] (string&& s) { return bold(std::move(s));          };
-  const auto it  = [] (string&& s) { return italic(std::move(s));        };
-  const auto fit = [] (string&& s) { return faint(italic(std::move(s))); };
-  const auto ul  = [] (string&& s) { return underline(std::move(s));     };
+  const auto b   = [](string&& s) { return bold(std::move(s));          };
+  const auto it  = [](string&& s) { return italic(std::move(s));        };
+  const auto fit = [](string&& s) { return faint(italic(std::move(s))); };
+  const auto ul  = [](string&& s) { return underline(std::move(s));     };
 
   cerr 
   << b("NAME")                                                            <<'\n'
@@ -472,17 +473,17 @@ inline void VizParam::help () const {
                         << string_format("%.1f",MAX_OPAC) << "]"          <<'\n'
   << "  " << b("-w") << ",  "  << b("--width") << "   " << ul("INT") <<
      "         width of the image sequence "
-     "[" << to_string(MIN_WIDT) << ";" << to_string(MAX_WIDT) << "]"      <<'\n'
+     "[" << to_string(MIN_WDTH) << ";" << to_string(MAX_WDTH) << "]"      <<'\n'
   << "  " << b("-s") << ",  "  << b("--space") << "   " << ul("INT") <<
      "         space between sequences "
-     "[" << to_string(MIN_SPAC) << ";" << to_string(MAX_SPAC) << "]"      <<'\n'
+     "[" << to_string(MIN_SPC) << ";" << to_string(MAX_SPC) << "]"        <<'\n'
   << "  " << b("-m") << ",  "  << b("--mult") << "    " << ul("INT") <<
      "         multiplication factor for"                                 <<'\n'
   << "                             color ID "
      "[" << to_string(MIN_MULT) << ";" << to_string(MAX_MULT) << "]"      <<'\n'
   << "  " << b("-b") << ",  "  << b("--begin") << "   " << ul("INT") <<
      "         beginning of color ID "
-     "[" << to_string(MIN_BEGI) << ";" << to_string(MAX_BEGI) << "]"      <<'\n'
+     "[" << to_string(MIN_BEGN) << ";" << to_string(MAX_BEGN) << "]"      <<'\n'
   << "  " << b("-k") << ",  "  << b("--min") << "     " << ul("INT") <<
      "         minimum block size to"                                     <<'\n'
   << "                             consider "

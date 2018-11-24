@@ -33,26 +33,23 @@ vector<STMMPar>& TMs) {
     if (m.size() == 4) {
       if (stoi(m[0]) > K_MAX_LGTBL8)
         Ms.emplace_back(
-          MMPar(static_cast<u8>(stoi(m[0])), DEF_W, DEF_D,
-                static_cast<u8>(stoi(m[1])), stof(m[2]), stof(m[3])));
+          MMPar(u8(stoi(m[0])), W, D, u8(stoi(m[1])), stof(m[2]), stof(m[3])));
       else
         Ms.emplace_back(
-          MMPar(static_cast<u8>(stoi(m[0])), static_cast<u8>(stoi(m[1])),
-                stof(m[2]), stof(m[3])));
+          MMPar(u8(stoi(m[0])), u8(stoi(m[1])), stof(m[2]), stof(m[3])));
     }
     else if (m.size() == 6) {
       Ms.emplace_back(
-        MMPar(static_cast<u8>(stoi(m[0])), pow2(stoull(m[1])),
-              static_cast<u8>(stoi(m[2])), static_cast<u8>(stoi(m[3])),
-              stof(m[4]), stof(m[5])));
+        MMPar(u8(stoi(m[0])), pow2(stoull(m[1])), u8(stoi(m[2])), 
+          u8(stoi(m[3])), stof(m[4]), stof(m[5])));
     }
     
     // Tolerant models
     if (m_tm.size() == 2) {
       vector<string> tm;    split(m_tm[1].begin(), m_tm[1].end(), ',', tm);
       TMs.emplace_back(
-        STMMPar(static_cast<u8>(stoi(m[0])), static_cast<u8>(stoi(tm[0])),
-                static_cast<u8>(stoi(tm[1])), stof(tm[2]), stof(tm[3]))
+        STMMPar(u8(stoi(m[0])), u8(stoi(tm[0])), u8(stoi(tm[1])), stof(tm[2]),
+          stof(tm[3]))
       );
       Ms.back().child = make_shared<STMMPar>(TMs.back());
     }
@@ -344,7 +341,7 @@ void FCM::compress (const Param& p) {
     compress_n(p);
 
   cerr << message << "finished. Average entropy="
-       << std::fixed << setprecision(DEF_PRF_PREC) << aveEnt << " bps.\n";
+       << std::fixed << setprecision(PRF_PREC) << aveEnt << " bps.\n";
 }
 
 template <typename ContIter>
@@ -360,7 +357,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
   const auto totalSize = file_size(par.tar);
   const auto print_accum_entropy = [&](auto freqBegin) {
     const auto entr = entropy(prob(freqBegin, &pp));
-    pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+    pf /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
     sumEnt += entr;
   };
 
@@ -458,7 +455,7 @@ inline void FCM::compress_n (const Param& par) {
         }
 
         const auto ent=entropy(cp->w.begin(),cp->probs.begin(),cp->probs.end());
-        pf /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << ent << '\n';
+        pf /*<< std::fixed*/ << setprecision(PRF_PREC) << ent << '\n';
         normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
 ////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
         sumEnt += ent;
@@ -554,7 +551,7 @@ void FCM::self_compress (const Param& p, u64 ID) {
     self_compress_n(p, ID);
 
   cerr << message << "finished. Average entropy="
-       << std::fixed << setprecision(DEF_PRF_PREC) << selfEnt[ID] << " bps.\n";
+       << std::fixed << setprecision(PRF_PREC) << selfEnt[ID] << " bps.\n";
 }
 
 inline void FCM::self_compress_alloc () {
@@ -590,7 +587,7 @@ u64 ID) {
   const auto totalSize = file_size(par.seq);
   const auto accum_entropy = [&](auto freqBegin) {
     const auto entr = entropy(prob(freqBegin, &pp));
-    // cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << entr << '\n';
+    // cout /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
     sumEnt += entr;
   };
 
@@ -696,7 +693,7 @@ inline void FCM::self_compress_n (const Param& par, u64 ID) {
         }
 
         const auto ent=entropy(cp->w.begin(),cp->probs.begin(),cp->probs.end());
-        // cout /*<< std::fixed*/ << setprecision(DEF_PRF_PREC) << ent << '\n';
+        // cout /*<< std::fixed*/ << setprecision(PRF_PREC) << ent << '\n';
         normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
 ////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
         sumEnt += ent;
@@ -751,8 +748,7 @@ void FCM::aggregate_slf (const Param& p) const {
   u64 i = 0;
 
   for (string line; getline(pfOld, line); ++i) {
-    pf << line << '\t'
-       << std::fixed << setprecision(DEF_FIL_PREC) << selfEnt[i] << '\n';
+    pf << line << '\t' << fixed << setprecision(FIL_PREC) << selfEnt[i] << '\n';
   }
 
   pfOld.close();  remove((posName+LBL_BAK).c_str());

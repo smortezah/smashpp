@@ -64,7 +64,7 @@ struct Rectangle {
   double width, height;
   string color;
   float  opacity;
-  Rectangle () : opacity(DEF_OPAC) {}
+  Rectangle () : opacity(OPAC) {}
   void plot (ofstream&) const;
   void plot_ir (ofstream&) const;
   void plot_oval (ofstream&) const;
