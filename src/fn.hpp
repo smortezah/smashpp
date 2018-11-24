@@ -223,7 +223,8 @@ inline static void normalize (OutIter oFirst, InIter iFirst, InIter iLast) {
 
 template <typename Value>
 inline static bool is_odd (Value val) {
-  if (val<0)  error("\"" + to_string(val) + "\" is a negative number.");
+  if (val < 0)
+    error("\"" + to_string(val) + "\" is a negative number.");
   return (val & 1ull);
 }
 
@@ -289,8 +290,7 @@ inline static u64 file_size (const string& name) {
 inline static u64 file_lines (const string& name) {
   ifstream f(name);
   f.unsetf(ios_base::skipws);  // New lines will be skipped unless we stop it
-  return static_cast<u64>(
-    std::count(istream_iterator<char>(f), istream_iterator<char>(), '\n'));
+  return u64(count(istream_iterator<char>(f), istream_iterator<char>(), '\n'));
 }
 
 // Must be inline
@@ -300,14 +300,14 @@ inline static void extract_subseq (const unique_ptr<SubSeq>& subseq) {
 
   fIn.seekg(subseq->begPos);
   vector<char> buffer(static_cast<u64>(subseq->size), 0);
-  fIn.read  (buffer.data(), subseq->size);
+  fIn.read(buffer.data(), subseq->size);
   fOut.write(buffer.data(), subseq->size);
 
   fIn.close();  fOut.close();
 }
 
-inline static string gen_name
-(u32 ID, const string& ref, const string& tar, const Format& frmt) {
+inline static string gen_name (u32 ID, const string& ref, const string& tar,
+const Format& frmt) {
   switch (frmt) {
   case Format::PROFILE:   return to_string(ID)+"-"+ref+"_"+tar+"."+FMT_PRF;
   case Format::FILTER:    return to_string(ID)+"-"+ref+"_"+tar+"."+FMT_FIL;
@@ -335,8 +335,8 @@ inline static FileType file_type (const string& name) {
   else               { f.close();  return FileType::SEQ;   }
 }
 
-inline static void to_seq
-(const string& inName, const string& outName, const FileType& type) {
+inline static void to_seq (const string& inName, const string& outName, 
+const FileType& type) {
   ifstream fIn(inName);
   ofstream fOut(outName);
 
@@ -386,7 +386,6 @@ template <typename ValuePos, typename Value>
 inline static void show_progress (ValuePos pos, Value total) {
   if (total>100 && pos%(total/100)==0) {
     cerr << "Progress: [" << static_cast<int>((pos*100) / total) << "%]\r";
-//    flush(cerr);
   }
 }
 template <typename ValuePos, typename Value>
@@ -397,8 +396,8 @@ inline static void show_progress (ValuePos pos, Value total, const string& msg){
 
 template <typename ...Args>
 inline static string string_format(const string& format, Args... args) {
-  auto size =    // Extra space for '\0'
-    static_cast<size_t>(snprintf(nullptr, 0, format.c_str(), args...) + 1);
+  // Extra space for '\0'
+  auto size = size_t(snprintf(nullptr, 0, format.c_str(), args...) + 1);
   unique_ptr<char[]> buf(new char[size]);
   snprintf(buf.get(), size, format.c_str(), args...);
   return string(buf.get(), buf.get()+size-1);  // We don't want the '\0' inside

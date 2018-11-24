@@ -218,7 +218,6 @@ int main (int argc, char* argv[]) {
 
     const auto t1{now()};
     cerr << "Total time: " << hms(t1-t0);
-    // cerr << OUT_SEP << "Total time: " << hms(t1-t0);
   }
   catch (std::exception& e) { cout << e.what(); }
   catch (...) { return EXIT_FAILURE; }

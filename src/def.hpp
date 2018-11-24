@@ -53,36 +53,31 @@ constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
 }
 
 // Constant
-static constexpr u8     DEF_THR      {4};  // Default # threads
-static constexpr u8     MIN_THR      {1};  // Min # threads
-static constexpr u8     MAX_THR      {8};  // Max # threads
-static constexpr u8     DEF_LVL      {0};  // Default level
+static constexpr u8     THRD         {4};  // Default # threads
+static constexpr u8     MIN_THRD     {1};  // Min # threads
+static constexpr u8     MAX_THRD     {8};  // Max # threads
+static constexpr u8     LVL          {0};  // Default level
 static constexpr u8     MIN_LVL      {0};  // Min level
 static constexpr u8     MAX_LVL      {4};  // Max level
-static constexpr u32    DEF_WS       {256};// Default window size -- filter
+static constexpr u32    WS           {256};// Default window size -- filter
 static constexpr u32    MIN_WS       {1};      // Min window size -- filter
 static constexpr u32    MAX_WS       {100000}; // Max window size -- filter
-static constexpr WType  DEF_WT       {WType::HANN};  //Def window type -- filter
-static constexpr FilterScale DEF_FS  {FilterScale::L};//Def filt. scale-- filter
-static constexpr float  DEF_THRESH   {1.5};// Default threshold   -- filter
-static constexpr float  MIN_THRESH   {0};  // Min threshold       -- filter
-static constexpr float  MAX_THRESH   {20}; // Max threshold       -- filter
+static constexpr WType  WT           {WType::HANN};  //Def window type -- filter
+static constexpr FilterScale FS      {FilterScale::L};//Def filt. scale-- filter
+static constexpr float  THRSH        {1.5};// Default threshold   -- filter
+static constexpr float  MIN_THRSH    {0};  // Min threshold       -- filter
+static constexpr float  MAX_THRSH    {20}; // Max threshold       -- filter
 static constexpr u8     CARDIN       {4};  // CARDINALITY = Alphabet size
-static constexpr u8     IRMAGIC      {3};  // Calc Mir syms based on syms
 static constexpr u8     K_MAX_TBL64  {11};// Max ctx dept. table 64 (128 MB mem)
 static constexpr u8     K_MAX_TBL32  {13};// Max ...       table 32 (1   GB mem)
 static constexpr u8     K_MAX_LGTBL8 {14};// Max ...   log table 8  (1   GB mem)
 static constexpr u32    BLK_SZ       {8192}; // 8K
-static constexpr u64    DEF_W        {pow2(29ull)};  // Default w of CML sketch
-static constexpr u8     DEF_D        {5};  // Default depth of CML sketch
+static constexpr u64    W            {pow2(29ull)};  // Default w of CML sketch
+static constexpr u8     D            {5};  // Default depth of CML sketch
 static constexpr u32    G            {64};// Machine word size - univers hash fn
 static constexpr u8     LOG_BASE     {2};  // Logarithmic counting
-static constexpr u8     DEF_IR       {0}; // Default inverted repeats for models
-static constexpr float  DEF_ALPHA    {0.001};// Default alpha for models
-static constexpr float  DEF_GAMMA    {0.9}; // Default gamma for multiple models
-static constexpr u8     DEF_PRF_PREC {3}; // Precisions for floats in Inf. prof
-static constexpr u8     DEF_FIL_PREC {3}; // Precisions for floats in filt. file
-static const     string FMT_SEQ      {"seq"};   // Format of bare seq file
+static constexpr u8     PRF_PREC     {3}; // Precisions for floats in Inf. prof
+static constexpr u8     FIL_PREC     {3}; // Precisions for floats in filt. file
 static const     string FMT_PRF      {"prf"};   // Format of inf. profile file
 static const     string FMT_POS      {"pos"};   // Format of positions file
 static const     string FMT_FIL      {"fil"};   // Format of filtered files
@@ -93,10 +88,8 @@ static const     string POS_HDR      {"#SCF"};  // Header of positions file
 static constexpr float  PI           {3.14159265f};
 static constexpr int    FILE_BUF     {8*1024};  // 8K
 static constexpr u8     TEXTWIDTH    {65};
-static const     string OUT_SEP      {"\n"};
 static const     string TERM_SEP     {". . . . . . . . . . . . . . . . . . . . "
                                      ". . . . . . . . .\n"};
-static constexpr float  INTRSCT_COEF {0.8};
 
 // Lookup table
 static constexpr u64 POW2[36] {

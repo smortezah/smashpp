@@ -13,9 +13,7 @@ void Table32::config (u8 k_) {
   nRenorm = 0;
   tot     = 0;
   try { tbl.resize(4ull<<(k<<1u)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
-  catch (std::bad_alloc& b) {
-    error("failed memory allocation.");
-  }
+  catch (std::bad_alloc& b) { error("failed memory allocation."); }
 }
 
 void Table32::update (u32 ctx) {
