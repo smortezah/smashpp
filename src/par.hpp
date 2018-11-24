@@ -39,11 +39,11 @@ class Param {   // Parameters
     saveAll(false), refType(FileType::SEQ), tarType(FileType::SEQ), 
     showInfo(true), compress(false), filter(false), segment(false) {}
 
-  void parse (int, char**&);
-  WType win_type (const string&) const;
-  string print_win_type () const;
-  FilterScale filter_scale (const string&) const;
-  string print_filter_scale () const;
+  auto parse (int, char**&) -> void;
+  auto win_type (const string&) const -> WType;
+  auto print_win_type () const -> string;
+  auto filter_scale (const string&) const -> FilterScale;
+  auto print_filter_scale () const -> string;
 
  private:
   void help () const;
@@ -195,7 +195,7 @@ inline void Param::parse (int argc, char**& argv) {
   keep_in_range(0ull, wsize, min(file_size(ref),file_size(tar)));
 
   // Fasta/Fastq to Seq
-  auto convert_to_seq = [&] (const string& f, const FileType& type) {
+  auto convert_to_seq = [&](const string& f, const FileType& type) {
     rename(f.c_str(), (f+LBL_BAK).c_str());
     to_seq(f+LBL_BAK, f, type);
   };

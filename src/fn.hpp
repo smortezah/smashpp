@@ -217,8 +217,7 @@ inline static u8 best_sym_abs (Iter first) {
 
 template <typename OutIter, typename InIter>
 inline static void normalize (OutIter oFirst, InIter iFirst, InIter iLast) {
-  const auto sumInv =
-    static_cast<prec_t>(1)/std::accumulate(iFirst,iLast,static_cast<prec_t>(0));
+  const auto sumInv = prc_t(1) / accumulate(iFirst, iLast, prc_t(0));
   for (; iFirst!=iLast; ++iFirst,++oFirst)
     *oFirst = *iFirst * sumInv;
 }
@@ -396,10 +395,6 @@ template <typename ValuePos, typename Value>
 inline static void show_progress (ValuePos pos, Value total, const string& msg){
   if (total>100 && pos%(total/100)==0)
     cerr << msg << "[" << static_cast<int>((pos*100) / total) << "%]\r";
-}
-
-inline static void remove_progress_trace () {
-  cerr << string(21, ' ') << '\r';  // Remove the trace of [...%] progress
 }
 
 template <typename ...Args>

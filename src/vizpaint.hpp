@@ -22,25 +22,27 @@ class VizPaint {
   u32 ratio;
   u32 mult;
 
-  void show_info (VizParam&, const string&, const string&, u64, u64) const;
-  void config (double, double, u64, u64);
-  RgbColor hsv_to_rgb (const HsvColor&) const;
-  HsvColor rgb_to_hsv (const RgbColor&) const;
-  string rgb_color (u8) const;
-  string heatmap_color (double, const HeatmapColor& h=HeatmapColor()) const;
+  auto show_info (VizParam&, const string&, const string&, u64, u64) const ->
+    void;
+  auto config (double, double, u64, u64) -> void;
+  auto hsv_to_rgb (const HsvColor&) const -> RgbColor;
+  auto rgb_to_hsv (const RgbColor&) const -> HsvColor;
+  auto rgb_color (u8) const -> string;
+  auto heatmap_color (double, const HeatmapColor& h=HeatmapColor()) const ->
+    string;
   template <typename ValueR, typename ValueG, typename ValueB>
-  string shade_color (ValueR, ValueG, ValueB) const;
-  string customColor (u32) const;
-  string nrc_color (double, u32) const;
-  string redun_color (double, u32) const;
-  void print_head (ofstream&, double, double) const;
-  void print_tail (ofstream&) const;
+  auto shade_color (ValueR, ValueG, ValueB) const -> string;
+  auto customColor (u32) const -> string;
+  auto nrc_color (double, u32) const -> string;
+  auto redun_color (double, u32) const -> string;
+  auto print_head (ofstream&, double, double) const -> void;
+  auto print_tail (ofstream&) const -> void;
   template <typename Value>
-  double get_point (Value) const;
-  void plot_legend (ofstream&, const VizParam&) const;
-  string tspan (u32, i64) const;
-  string tspan (u32, const string&) const;
-  void sort_merge (string&) const;
+  auto get_point (Value) const -> double;
+  auto plot_legend (ofstream&, const VizParam&) const -> void;
+  auto tspan (u32, i64) const -> string;
+  auto tspan (u32, const string&) const -> string;
+  auto sort_merge (string&) const -> void;
 };
 }
 

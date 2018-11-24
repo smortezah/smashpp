@@ -16,16 +16,16 @@ void CMLS4::config (u64 w_, u8 d_) {
   tot = 0;
   try { sk.resize((d*w+1)>>1u); }
   catch (std::bad_alloc& b) { error("failed memory allocation."); }
-  uhashShift = static_cast<u8>(G - std::ceil(std::log2(w)));
+  uhashShift = static_cast<u8>(G - ceil(log2(w)));
   ab.resize(d<<1u);
   set_a_b();
 }
 
 inline void CMLS4::set_a_b () {
   constexpr u64 seed {0};
-  std::default_random_engine e(seed);
-  std::uniform_int_distribution<u64> uDistA(0, (1ull<<63u)-1);    // k <= 2^63-1
-  std::uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
+  default_random_engine e(seed);
+  uniform_int_distribution<u64> uDistA(0, (1ull<<63u)-1);    // k <= 2^63-1
+  uniform_int_distribution<u64> uDistB(0, (1ull<<uhashShift)-1);
   for (u8 i=0; i!=d; ++i) {
     ab[i<<1u] = (uDistA(e)<<1u) + 1;// 1 <= a=2k+1 <= 2^64-1, rand odd posit.
     ab[(i<<1u)+1] = uDistB(e);      // 0 <= b <= 2^(G-M)-1,   rand posit.

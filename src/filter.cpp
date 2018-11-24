@@ -35,15 +35,15 @@ inline void Filter::show_info (const Param& p) const {
   const u8 lblWidth=19, colWidth=8,
     tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
 
-  const auto rule = [] (u8 n, const string& s) {
+  const auto rule = [](u8 n, const string& s) {
     for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
   };
-  const auto toprule  = [&] () { rule(tblWidth, "~"); };
-  const auto midrule  = [&] () { rule(tblWidth, "~"); };
-  const auto botrule  = [&] () { rule(tblWidth, " "); };
-  const auto label    = [&] (const string& s) {cerr<<setw(lblWidth) <<left<<s;};
-  const auto header   = [&] (const string& s){cerr<<setw(2*colWidth)<<left<<s;};
-  const auto filter_vals = [&] (char c) {
+  const auto toprule  = [&]() { rule(tblWidth, "~"); };
+  const auto midrule  = [&]() { rule(tblWidth, "~"); };
+  const auto botrule  = [&]() { rule(tblWidth, " "); };
+  const auto label    = [&](const string& s) {cerr<<setw(lblWidth) <<left<<s;};
+  const auto header   = [&](const string& s){cerr<<setw(2*colWidth)<<left<<s;};
+  const auto filter_vals = [&](char c) {
     cerr << setw(colWidth) << left;
     switch (c) {
     case 'f':  cerr<<p.print_win_type();      break;
@@ -54,7 +54,7 @@ inline void Filter::show_info (const Param& p) const {
     }
     cerr << '\n';
   };
-  const auto file_vals = [&] (char c) {
+  const auto file_vals = [&](char c) {
     cerr << setw(2*colWidth) << left;
     switch (c) {
     case '1':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);  break;
@@ -247,7 +247,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   auto filtered = 0.f;
   u64 symsNo = 0;
   const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
-  const auto jump_lines = [&] () {
+  const auto jump_lines = [&]() {
     for (u64 i=p.sampleStep-1; i--;)  ignore_this_line(prfF);
   };
 
@@ -309,7 +309,6 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   seg->partition_last(posF);
   show_progress(++symsNo, totalSize, message);
 
-  // remove_progress_trace();
   posF.close();  filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
   nSegs = seg->nSegs;
@@ -334,7 +333,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   auto filtered = 0.f;
   u64 symsNo = 0;
   const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
-  const auto jump_lines = [&] () {
+  const auto jump_lines = [&]() {
     for (u64 i=p.sampleStep-1; i--;)  ignore_this_line(prfF);
   };
 
@@ -401,7 +400,6 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   seg->partition_last(posF);
   show_progress(++symsNo, totalSize, message);
 
-  // remove_progress_trace();
   posF.close();  filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
   nSegs = seg->nSegs;
@@ -496,7 +494,7 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   // 
   // vector<vector<u8>> whichToPrint;
   // whichToPrint.reserve(begTar0.size()*begTar1.size());
-  // const auto printSelect = [=] (prec_t a, prec_t b) { return (a<=b) ? 0 : 1; };
+  // const auto printSelect = [=](prc_t a, prc_t b) { return (a<=b) ? 0 : 1; };
   // for (u64 i=0; i!=begTar0.size(); ++i) {
   //   for (u64 j=0; j!=begTar1.size(); ++j) {
   //     if (min0[i] < min1[j]) {
