@@ -59,187 +59,14 @@ void VizPaint::print_plot (VizParam& p) {
   // pos.erase(last, pos.end());
 
   if (p.showPos) {
-    struct Node {
-      i64  position;
-      char type;
-      u64  start;
-      Node (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
-    };
-    
-    vector<Node> nodes;    nodes.reserve(2*pos.size());
-    // Reference side
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].begRef, 'b', pos[i].start));
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].endRef, 'e', pos[i].start));
-    std::sort(nodes.begin(), nodes.end(),
-      [](const Node &l, const Node &r) { return l.position < r.position; });
-
     double X = 0;
-    if      (p.showNRC && p.showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-    else if (p.showNRC ^  p.showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
+    if (p.showNRC && p.showRedun) 
+      X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
+    else if (p.showNRC ^  p.showRedun) 
+      X = HORIZ_TUNE + width/HORIZ_RATIO;
 
-    string line, lastLine;
-    i64  printPos = 0;
-    char printType = 'b';
-    u64  nOverlap = 0;
-    const auto set_pos_type_overlap_BB_EE = [&](auto it) {
-      if ((it+1)->position - it->position < PAINT_SHORT * maxSize) {
-        if (++nOverlap == 1) {
-          if (it->start == (it+1)->start) {
-            printPos = (it->position + (it+1)->position) / 2;
-            printType = 'm';
-          }
-          else {
-            printPos = it->position;
-            printType = it->type;
-          }
-        }
-        line += tspan(it->start, it->position);
-        lastLine = tspan((it+1)->start, (it+1)->position);
-      }
-      else {
-        if (nOverlap == 0) {
-          printPos = it->position;
-          printType = it->type;
-        }
-        nOverlap = 0;
-      }
-    };
-
-    const auto set_pos_type_overlap_BE = [&](auto it) {
-      if ((it+1)->position - it->position < PAINT_SHORT * maxSize) {
-        if (++nOverlap == 1) {
-          if (it->start == (it+1)->start) {
-            printPos = (it->position + (it+1)->position) / 2;
-            printType = 'm';
-          }
-          else {
-            printPos = (it->position + (it+1)->position) / 2;
-            printType = 'm';
-          }
-        }
-        line += tspan(it->start, it->position);
-        lastLine = tspan((it+1)->start, (it+1)->position);
-      }
-      else {
-        if (nOverlap == 0) {
-          printPos = it->position;
-          printType = it->type;
-        }
-        nOverlap = 0;
-      }
-    };
-
-    const auto set_pos_type_overlap_EB = [&](auto it) {
-      if (nOverlap == 0) {
-        printPos = it->position;
-        printType = it->type;
-      }
-      nOverlap = 0;
-    };
-
-    const auto plot_overlap_zero = [&](auto it, auto originX, string&& type) {
-      lastLine = tspan(it->start, it->position);
-      string finalLine {line+lastLine};
-      sort_merge(finalLine);
-
-      // text->fontWeight = "bold";
-      if      (printType=='b')  text->dominantBaseline="text-before-edge";
-      else if (printType=='m')  text->dominantBaseline="middle";
-      else if (printType=='e')  text->dominantBaseline="text-after-edge";
-      text->label = finalLine;
-      text->origin = Point(originX, cy+get_point(printPos));
-      type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
-
-      line.clear();
-      lastLine.clear();
-
-      //last
-      if (it+2 == nodes.end()) {
-        finalLine = tspan((it+1)->start, (it+1)->position);
-        sort_merge(finalLine);
-        printPos = (it+1)->position;
-        
-        text->dominantBaseline="text-after-edge";
-        text->label = finalLine;
-        text->origin = Point(originX, cy+get_point(printPos));
-        type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
-      }
-    };
-
-    for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
-      if ((it->type=='b' && (it+1)->type=='b') ||
-          (it->type=='e' && (it+1)->type=='e'))
-        set_pos_type_overlap_BB_EE(it);
-      else if (it->type=='b' && (it+1)->type=='e')
-        set_pos_type_overlap_BE(it);
-      else if (it->type=='e' && (it+1)->type=='b')
-        set_pos_type_overlap_EB(it);
-
-      if (nOverlap == 0) {
-        plot_overlap_zero(it, cx-X, "ref");
-      }
-      
-      if (it+2 == nodes.end() && nOverlap!=0) {
-        lastLine = tspan((it+1)->start, (it+1)->position);
-        string finalLine {line+lastLine};
-        sort_merge(finalLine);
-
-        // text->fontWeight = "bold";
-        if      (printType=='b')  text->dominantBaseline="text-before-edge";
-        else if (printType=='m')  text->dominantBaseline="middle";
-        else if (printType=='e')  text->dominantBaseline="text-after-edge";
-        text->label = finalLine;
-        text->origin = Point(cx - X, cy + get_point(printPos));
-        text->plot_pos_ref(fPlot);
-        break;
-      }
-    }
-
-    // Target side
-    nodes.clear();    nodes.reserve(2*pos.size());
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].begTar, 
-        pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].endTar, 
-        pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
-    std::sort(nodes.begin(), nodes.end(),
-      [](const Node &l, const Node &r) { return l.position < r.position; });
-
-    line.clear();    lastLine.clear();
-    printPos = 0;
-    printType = 'b';
-    nOverlap = 0;
-    for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
-      if ((it->type=='b' && (it+1)->type=='b') ||
-          (it->type=='e' && (it+1)->type=='e'))
-        set_pos_type_overlap_BB_EE(it);
-      else if (it->type=='b' && (it+1)->type=='e')
-        set_pos_type_overlap_BE(it);
-      else if (it->type=='e' && (it+1)->type=='b')
-        set_pos_type_overlap_EB(it);
-      
-      if (nOverlap == 0) {
-        plot_overlap_zero(it, cx+width+space+width+X, "tar");
-      }
-      
-      if (it+2 == nodes.end() && nOverlap!=0) {
-        lastLine = tspan((it+1)->start, (it+1)->position);
-        string finalLine {line+lastLine};
-        sort_merge(finalLine);
-
-        // text->fontWeight = "bold";
-        if      (printType=='b')  text->dominantBaseline="text-before-edge";
-        else if (printType=='m')  text->dominantBaseline="middle";
-        else if (printType=='e')  text->dominantBaseline="text-after-edge";
-        text->label = finalLine;
-        text->origin = Point(cx+width+space+width+X, cy+get_point(printPos));
-        text->plot_pos_tar(fPlot);
-        break;
-      }
-    }
+    plot_pos(fPlot, pos, X, max(n_refBases,n_tarBases), "ref");
+    plot_pos(fPlot, pos, X, max(n_refBases,n_tarBases), "tar");
   }
 
   u64 n_regular=0, n_inverse=0;
@@ -997,116 +824,139 @@ inline void VizPaint::sort_merge (string& s) const {
   s.erase(s.find_last_of(", <")-2, 2);
 }
 
-// template <typename Position>
-// inline void VizPaint::plot_pos (const Position& pos, bool showNRC, bool showRedun, u64 maxSize) const {
-//   struct Node {
-//     i64  position;
-//     char type;
-//     u64  start;
-//     Node (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
-//   };
+template <typename Position>
+inline void VizPaint::plot_pos (ofstream& fPlot, const Position& pos, double X,
+u64 maxBases, string&& type) const {
+  struct Node {
+    i64  position;
+    char type;
+    u64  start;
+    Node (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
+  };
   
-//   vector<Node> nodes;    nodes.reserve(2*pos.size());
-//   // Reference side
-//   for (u64 i=0; i!=pos.size(); ++i) 
-//     nodes.emplace_back(Node(pos[i].begRef, 'b', pos[i].start));
-//   for (u64 i=0; i!=pos.size(); ++i) 
-//     nodes.emplace_back(Node(pos[i].endRef, 'e', pos[i].start));
-//   std::sort(nodes.begin(), nodes.end(),
-//     [](const Node &l, const Node &r) { return l.position < r.position; });
+  vector<Node> nodes;    nodes.reserve(2*pos.size());
+  if (type == "ref") {
+    for (u64 i=0; i!=pos.size(); ++i) 
+      nodes.emplace_back(Node(pos[i].begRef, 'b', pos[i].start));
+    for (u64 i=0; i!=pos.size(); ++i) 
+      nodes.emplace_back(Node(pos[i].endRef, 'e', pos[i].start));
+  }
+  else if (type == "tar") {
+    for (u64 i=0; i!=pos.size(); ++i) 
+      nodes.emplace_back(Node(pos[i].begTar, 
+        pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
+    for (u64 i=0; i!=pos.size(); ++i) 
+      nodes.emplace_back(Node(pos[i].endTar, 
+        pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
+  }
+  std::sort(nodes.begin(), nodes.end(),
+    [](const Node &l, const Node &r) { return l.position < r.position; });
 
-//   double X = 0;
-//   if      (showNRC && showRedun) X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-//   else if (showNRC ^  showRedun) X = HORIZ_TUNE + width/HORIZ_RATIO;
+  auto   text = make_unique<Text>();
+  string line, lastLine;
+  i64    printPos  = 0;
+  char   printType = 'b';
+  u64    nOverlap  = 0;
+  double CX=cx;    type=="ref" ? CX-=X : CX+=width+space+width+X;
 
-//   string line, lastLine;
-//   i64  printPos = 0;
-//   char printType = 'b';
-//   u64  nOverlap = 0;
+  for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
+    if ((it->type=='b' && (it+1)->type=='b') ||
+        (it->type=='e' && (it+1)->type=='e')) {
+      if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
+        if (++nOverlap == 1) {
+          if (it->start == (it+1)->start) {
+            printPos = (it->position + (it+1)->position) / 2;
+            printType = 'm';
+          }
+          else {
+            printPos = it->position;
+            printType = it->type;
+          }
+        }
+        line += tspan(it->start, it->position);
+        lastLine = tspan((it+1)->start, (it+1)->position);
+      }
+      else {
+        if (nOverlap == 0) {
+          printPos = it->position;
+          printType = it->type;
+        }
+        nOverlap = 0;
+      }
+    }
+    else if (it->type=='b' && (it+1)->type=='e') {
+      if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
+        if (++nOverlap == 1) {
+          if (it->start == (it+1)->start) {
+            printPos = (it->position + (it+1)->position) / 2;
+            printType = 'm';
+          }
+          else {
+            printPos = (it->position + (it+1)->position) / 2;
+            printType = 'm';
+          }
+        }
+        line += tspan(it->start, it->position);
+        lastLine = tspan((it+1)->start, (it+1)->position);
+      }
+      else {
+        if (nOverlap == 0) {
+          printPos = it->position;
+          printType = it->type;
+        }
+        nOverlap = 0;
+      }
+    }
+    else if (it->type=='e' && (it+1)->type=='b') {
+      if (nOverlap == 0) {
+        printPos = it->position;
+        printType = it->type;
+      }
+      nOverlap = 0;
+    }
 
-//   const auto set_pos_type_overlap_BB_EE = [&](auto it) {
-//     if ((it+1)->position - it->position < PAINT_SHORT * maxSize) {
-//       if (++nOverlap == 1) {
-//         if (it->start == (it+1)->start) {
-//           printPos = (it->position + (it+1)->position) / 2;
-//           printType = 'm';
-//         }
-//         else {
-//           printPos = it->position;
-//           printType = it->type;
-//         }
-//       }
-//       line += tspan(it->start, it->position);
-//       lastLine = tspan((it+1)->start, (it+1)->position);
-//     }
-//     else {
-//       if (nOverlap == 0) {
-//         printPos = it->position;
-//         printType = it->type;
-//       }
-//       nOverlap = 0;
-//     }
-//   };
+    if (nOverlap == 0) {
+      lastLine = tspan(it->start, it->position);
+      string finalLine {line+lastLine};
+      sort_merge(finalLine);
 
-//   const auto set_pos_type_overlap_BE = [&](auto it) {
-//     if ((it+1)->position - it->position < PAINT_SHORT * maxSize) {
-//       if (++nOverlap == 1) {
-//         if (it->start == (it+1)->start) {
-//           printPos = (it->position + (it+1)->position) / 2;
-//           printType = 'm';
-//         }
-//         else {
-//           printPos = (it->position + (it+1)->position) / 2;
-//           printType = 'm';
-//         }
-//       }
-//       line += tspan(it->start, it->position);
-//       lastLine = tspan((it+1)->start, (it+1)->position);
-//     }
-//     else {
-//       if (nOverlap == 0) {
-//         printPos = it->position;
-//         printType = it->type;
-//       }
-//       nOverlap = 0;
-//     }
-//   };
+      // text->fontWeight = "bold";
+      if      (printType=='b')  text->dominantBaseline="text-before-edge";
+      else if (printType=='m')  text->dominantBaseline="middle";
+      else if (printType=='e')  text->dominantBaseline="text-after-edge";
+      text->label = finalLine;
+      text->origin = Point(CX, cy+get_point(printPos));
+      type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
 
-//   const auto set_pos_type_overlap_EB = [&](auto it) {
-//     if (nOverlap == 0) {
-//       printPos = it->position;
-//       printType = it->type;
-//     }
-//     nOverlap = 0;
-//   };
+      line.clear();
+      lastLine.clear();
 
-//   const auto plot_overlap_zero = [&](auto it, auto originX, string&& type) {
-//     lastLine = tspan(it->start, it->position);
-//     string finalLine {line+lastLine};
-//     sort_merge(finalLine);
+      //last
+      if (it+2 == nodes.end()) {
+        finalLine = tspan((it+1)->start, (it+1)->position);
+        sort_merge(finalLine);
+        printPos = (it+1)->position;
 
-//     // text->fontWeight = "bold";
-//     if      (printType=='b')  text->dominantBaseline="text-before-edge";
-//     else if (printType=='m')  text->dominantBaseline="middle";
-//     else if (printType=='e')  text->dominantBaseline="text-after-edge";
-//     text->label = finalLine;
-//     text->origin = Point(originX, cy+get_point(printPos));
-//     type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
+        text->dominantBaseline="text-after-edge";
+        text->label = finalLine;
+        text->origin = Point(CX, cy+get_point(printPos));
+        type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
+      }
+    }
+    
+    if (it+2 == nodes.end() && nOverlap!=0) {
+      lastLine = tspan((it+1)->start, (it+1)->position);
+      string finalLine {line+lastLine};
+      sort_merge(finalLine);
 
-//     line.clear();
-//     lastLine.clear();
-
-//     //last
-//     if (it+2 == nodes.end()) {
-//       finalLine = tspan((it+1)->start, (it+1)->position);
-//       sort_merge(finalLine);
-//       printPos = (it+1)->position;
-        
-//       text->dominantBaseline="text-after-edge";
-//       text->label = finalLine;
-//       text->origin = Point(originX, cy+get_point(printPos));
-//       type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
-//     }
-//   };
-
-// }
+      // text->fontWeight = "bold";
+      if      (printType=='b')  text->dominantBaseline="text-before-edge";
+      else if (printType=='m')  text->dominantBaseline="middle";
+      else if (printType=='e')  text->dominantBaseline="text-after-edge";
+      text->label = finalLine;
+      text->origin = Point(CX, cy+get_point(printPos));
+      type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
+      break;
+    }
+  }
+}
