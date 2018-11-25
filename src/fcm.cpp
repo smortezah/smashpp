@@ -9,6 +9,7 @@ using namespace smashpp;
 
 FCM::FCM (Param& p) {
   aveEnt = static_cast<prc_t>(0);
+  tarSegID = 0;
   config(std::move(p.rmodelsPars), std::move(p.tmodelsPars));
   if (p.verbose && p.showInfo) { show_info(p);    p.showInfo=false; }
   alloc_model();
@@ -243,8 +244,11 @@ inline void FCM::alloc_model () {
 
 void FCM::store (const Param& p) {
   const auto nMdl = rMs.size();
-  message = "Building the model";    if (nMdl!=1) message+="s";
-  message += " of " + italic(p.ref) + " ";
+  message = "Building the model";  if (nMdl!=1) message+="s";
+  message += " of ";
+  message += tarSegMsg.empty() ? italic(p.ref) 
+                               : italic(tarSegMsg+to_string(tarSegID));
+  message += " ";
   cerr << message << "...";
 
   (p.nthr==1 || nMdl==1) ? store_1(p) : store_n(p)/*Mult thr*/;
@@ -536,7 +540,8 @@ u8 n) const {
 }
 
 void FCM::self_compress (const Param& p, u64 ID) {
-  message = "Compressing " + italic(p.seq) + " ";
+  // message = "Compressing " + italic(p.seq) + " ";
+  message = "Compressing segment " + to_string(ID+1) + " ";
 
   self_compress_alloc();
 

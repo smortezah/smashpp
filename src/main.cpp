@@ -131,9 +131,11 @@ int main (int argc, char* argv[]) {
         const auto origRef=par.ref, origTar=par.tar;
         for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
           if (timesRunning == 0) 
-            cerr << bold("========[ REGULAR MODE ]========\n");
+            cerr << 
+              bold("====[ REGULAR MODE ]==================================\n");
           else if (timesRunning == 1)
-            cerr << bold("========[ INVERTED MODE ]========\n");
+            cerr << 
+              bold("====[ INVERTED MODE ]=================================\n");
           par.ID = timesRunning;    par.ref=origRef;    par.tar=origTar;
           auto models = make_unique<FCM>(par);  // == auto* models=new FCM(par);
           for (auto& e : models->rMs)   e.ir=timesRunning;
@@ -147,6 +149,8 @@ int main (int argc, char* argv[]) {
           filter->smooth_seg(par);              // Filter and segment
           filter->extract_seg(par.ID, par.ref, par.tar);  // Extract from tar
           cerr << TERM_SEP;
+            cerr << ">>> " << italic("Reference-free compression of the "
+              "segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
           // Ref-free compress
           models->selfEnt.reserve(filter->nSegs);
           const auto segName = 
@@ -158,15 +162,16 @@ int main (int argc, char* argv[]) {
           models->aggregate_slf(par);
           
           // Consider the ref as new tar and segments of the tar as new refs
-          cerr << "\n" 
-               << underline("Building reference map for each target pattern")
-               << "\n";
+          cerr << bold(underline("\nBuilding reference map for each target"
+            " pattern\n"));
           const auto newTar = par.ref;
           par.tar = newTar;
           const auto tarSegs = filter->nSegs;
           for (u64 i=0; i!=tarSegs; ++i) {
             par.ref = segName+to_string(i);
             models = make_unique<FCM>(par);
+            models->tarSegMsg = origTar + "-segment-";
+            models->tarSegID = i + 1;
             models->store(par);
             models->compress(par);
             if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
@@ -174,6 +179,8 @@ int main (int argc, char* argv[]) {
             filter->smooth_seg(par);
             filter->extract_seg(par.ID, par.ref, par.tar);
             cerr << TERM_SEP;
+            cerr << ">>> " << italic("Reference-free compression of the "
+              "segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
             // Ref-free compress
             models->selfEnt.reserve(filter->nSegs);
             const auto selfSegName = 
@@ -187,6 +194,7 @@ int main (int argc, char* argv[]) {
             models->aggregate_slf(par);
             cerr << '\n';
           }
+          models->tarSegMsg.clear();
           filter->aggregate_mid_pos(par.ID, origRef, origTar);
 
           for (u64 i=0; i!=tarSegs; ++i)
