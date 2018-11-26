@@ -60,6 +60,8 @@ static constexpr u8     MAX_THRD     {8};  // Max # threads
 static constexpr u8     LVL          {0};  // Default level
 static constexpr u8     MIN_LVL      {0};  // Min level
 static constexpr u8     MAX_LVL      {4};  // Max level
+static constexpr prc_t  ENTROPY_N    {12.0};//todo change to 2.0  // Entropy of Ns
+static constexpr char   TAR_ALT_N    {'T'};  // Alternative to Ns in target file
 static constexpr u32    WS           {256};// Default window size -- filter
 static constexpr u32    MIN_WS       {1};      // Min window size -- filter
 static constexpr u32    MAX_WS       {100000}; // Max window size -- filter
