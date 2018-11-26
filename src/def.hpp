@@ -82,6 +82,7 @@ static constexpr u8     FIL_PREC     {3}; // Precisions for floats in filt. file
 static const     string FMT_PRF      {"prf"};   // Format of inf. profile file
 static const     string FMT_POS      {"pos"};   // Format of positions file
 static const     string FMT_FIL      {"fil"};   // Format of filtered files
+static const     string FMT_N        {"n"};     // Format of position of N files
 static const     string LBL_SEG      {"s"};     // Label of segment files
 static const     string LBL_BAK      {"_bk"};   // Label of backup files
 static const     string LBL_MID      {"mid"};   // Label of mid position files
@@ -90,7 +91,7 @@ static constexpr float  PI           {3.14159265f};
 static constexpr int    FILE_BUF     {8*1024};  // 8K
 static constexpr u8     TEXTWIDTH    {65};
 static const     string TERM_SEP     {". . . . . . . . . . . . . . . . . . . . "
-                                     ". . . . . . . . .\n"};
+                                      ". . . . . . . . .\n"};
 
 // Lookup table
 static constexpr u64 POW2[36] {
@@ -145,7 +146,7 @@ static constexpr u64 POW5[23] {
     152587890625,    762939453125,    3814697265625, 19073486328125,
   95367431640625, 476837158203125, 2384185791015625
 };
-static constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3
+static constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3  n,N=0
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,             // #20
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
