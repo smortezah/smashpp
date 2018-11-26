@@ -113,9 +113,6 @@ int main (int argc, char* argv[]) {
       Param par;
       par.parse(argc, argv);                    // Parse the command
 
-      // save_n_pos(par.ref);
-      // save_n_pos(par.tar);
-
       if (par.compress) {//todo handle N
         auto models = make_unique<FCM>(par);
         models->store(par);

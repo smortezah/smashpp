@@ -173,6 +173,9 @@ void Rectangle::plot_chromosome (ofstream& f) const {
     "ry=\"3\" />\n";
 }
 
+// void Rectangle::plot_N (ofstream& f) const {
+// }
+
 /*
  * class Polygon
  */
