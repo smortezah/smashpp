@@ -394,6 +394,9 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
         }
         show_progress(symsNo, totalSize, message);
       }
+      // else {
+      //   pf << '\n';
+      // }
     }
   }
   tf.close();  pf.close();

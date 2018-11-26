@@ -36,7 +36,7 @@ class Param {   // Parameters
     manFilterScale(false), filterScale(FS), saveSeq(false), saveProfile(false),
     saveFilter(false), saveSegment(false), saveAll(false), 
     refType(FileType::SEQ), tarType(FileType::SEQ), showInfo(true), 
-    compress(false), filter(false), segment(false) {}
+    compress(false), filter(false), segment(false), ID(0) {}
 
   auto parse (int, char**&) -> void;
   auto win_type (const string&) const -> WType;
