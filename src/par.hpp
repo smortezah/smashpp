@@ -15,6 +15,7 @@ class Param {   // Parameters
   string      ref, tar, seq;
   u8          level;
   bool        verbose;
+  prc_t       entropyN;
   u8          nthr;
   string      rmodelsPars, tmodelsPars;
   u32         wsize;
@@ -31,10 +32,10 @@ class Param {   // Parameters
   u32         ID;
 
   // Define Param::Param(){} in *.hpp => compile error
-  Param () : level(LVL), verbose(false), nthr(THRD), wsize(WS), wtype(WT),
-    sampleStep(1ull), thresh(THRSH), manWSize(false), manThresh(false),
-    manFilterScale(false), filterScale(FS), saveSeq(false), saveProfile(false),
-    saveFilter(false), saveSegment(false), saveAll(false), 
+  Param () : level(LVL), verbose(false), entropyN(ENTR_N), nthr(THRD), 
+    wsize(WS), wtype(WT), sampleStep(1ull), thresh(THRSH), manWSize(false),
+    manThresh(false), manFilterScale(false), filterScale(FS), saveSeq(false),
+    saveProfile(false), saveFilter(false), saveSegment(false), saveAll(false),
     refType(FileType::SEQ), tarType(FileType::SEQ), showInfo(true), 
     compress(false), filter(false), segment(false), ID(0) {}
 
@@ -68,6 +69,7 @@ class VizParam {
   void help () const;
 };
 
+
 inline void Param::parse (int argc, char**& argv) {
   if (argc < 2) { help();  throw EXIT_SUCCESS; }
 
@@ -100,6 +102,12 @@ inline void Param::parse (int argc, char**& argv) {
       auto range = make_unique<ValRange<u8>>(MIN_LVL, MAX_LVL, LVL, 
         "Level", "[]", "default", Problem::WARNING);
       range->assert(level);
+    }
+    else if ((*i=="-e" || *i=="--ent-n") && i+1!=vArgs.end()) {
+      entropyN = static_cast<prc_t>(stod(*++i));
+      auto range = make_unique<ValRange<prc_t>>(MIN_ENTR_N, MAX_ENTR_N, ENTR_N, 
+        "Entropy of N bases", "[]", "default", Problem::WARNING);
+      range->assert(entropyN);
     }
     else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
       nthr = static_cast<u8>(stoi(*++i));
@@ -242,6 +250,10 @@ inline void Param::help () const {
      "           level of compression "
      "[" << to_string(MIN_LVL) << ";" << to_string(MAX_LVL) << "]     " << 
      fit("COMPRESS")                                                      <<'\n'
+  << "  " << b("-e") << ",  " << b("--ent-n") << " " << ul("FLOAT") << 
+     "         Entropy of 'N's [" << 
+     string_format("%.1f",MIN_ENTR_N) << ";" << string_format("%.1f",MAX_ENTR_N)
+     << "]    " << fit("COMPRESS")                                        <<'\n'
   << "  " << b("-n") << ",  " << b("--nthr") << "  " << ul("INT") << 
      "           number of threads "
      "[" << to_string(MIN_THRD) << ";" << to_string(MAX_THRD) << "]"      <<'\n'

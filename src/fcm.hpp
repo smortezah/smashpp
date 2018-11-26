@@ -34,6 +34,7 @@ class FCM {   // Finite-context models
   vector<unique_ptr<LogTable8>> lgtbl8;
   vector<unique_ptr<CMLS4>>     cmls4;
   string                        message;
+  prc_t                         entropyN;
   
   void config (string&&, string&&);      // Set models parameters
   template <typename Iter>

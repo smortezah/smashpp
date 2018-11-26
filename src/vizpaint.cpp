@@ -47,7 +47,6 @@ void VizPaint::print_plot (VizParam& p) {
   vector<Pos> pos;
   u64 start {p.start};
   i64 br, er, bt, et;
-  //todo age N baes shode segment ha joda she, bayad start hashun yeki bashe
   for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
     pos.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, start));
 
@@ -235,6 +234,29 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = tarSize;
   rect->plot_chromosome(fPlot);
 
+  // Plot Ns
+  save_n_pos(ref);
+  ifstream refFile(ref+"."+FMT_N);
+  for (i64 beg,end; refFile>>beg>>end;) {
+    rect->color  = "grey";
+    rect->origin = Point(cx, cy+get_point(beg));
+    rect->height = get_point(end-beg+1);
+    rect->plot(fPlot);
+  }
+  refFile.close();
+  remove((ref+"."+FMT_N).c_str());
+
+  save_n_pos(tar);
+  ifstream tarFile(tar+"."+FMT_N);
+  for (i64 beg,end; tarFile>>beg>>end;) {
+    rect->color  = "black";
+    rect->origin = Point(cx+width+space, cy+get_point(beg));
+    rect->height = get_point(end-beg+1);
+    rect->plot(fPlot);
+  }
+  tarFile.close();
+  remove((tar+"."+FMT_N).c_str());
+  
   plot_legend(fPlot, p);
   print_tail(fPlot);
 

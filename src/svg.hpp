@@ -76,6 +76,7 @@ struct Rectangle {
   void plot_redun_ref (ofstream&, bool) const;
   void plot_redun_tar (ofstream&, bool) const;
   void plot_chromosome (ofstream&) const;
+  // void plot_N (ofstream&) const;
 };
 
 struct Polygon {
