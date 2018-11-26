@@ -432,32 +432,31 @@ inline static string conv_to_string (FilterScale val) {
   }
 }
 
-inline static void save_n_pos (const string& fileName) {
-  ifstream inFile(fileName);
-  ofstream NFile(fileName+".n");
-  u64 pos=0, beg=0, num=0;
-  bool begun = false;
+// inline static void save_n_pos (const string& fileName) {
+//   ifstream inFile(fileName);
+//   ofstream NFile(fileName+".n");
+//   u64 pos=0, beg=0, num=0;
+//   bool begun = false;
 
-  for (char c; inFile.get(c); ++pos) {
-    if (c=='N' || c=='n') {
-      if (!begun) {
-        begun = true;
-        beg = pos;
-      }
-      ++num;
-    }
-    else {
-      begun = false;
-      if (num != 0)
-        NFile << beg << '\t' << beg+num-1 << '\n';
-      num = 0;
-      beg = 0;
-    }
-  }
+//   for (char c; inFile.get(c); ++pos) {
+//     if (c=='N' || c=='n') {
+//       if (!begun) {
+//         begun = true;
+//         beg = pos;
+//       }
+//       ++num;
+//     }
+//     else {
+//       begun = false;
+//       if (num != 0)
+//         NFile << beg << '\t' << beg+num-1 << '\n';
+//       num = 0;
+//       beg = 0;
+//     }
+//   }
 
-  inFile.close();  NFile.close();
-}
-
+//   inFile.close();  NFile.close();
+// }
 }
 
 #endif //PROJECT_FN_HPP
