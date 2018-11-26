@@ -434,33 +434,7 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   const auto midf0Name = LBL_MID+"-"+gen_name(0, ref, tar, Format::POSITION),
              midf1Name = LBL_MID+"-"+gen_name(1, ref, tar, Format::POSITION);
   ifstream midf0(midf0Name), midf1(midf1Name);
-  // ifstream refNFile(ref+"."+FMT_N), tarNFile(tar+"."+FMT_N);
   ofstream finf(ref+"-"+tar+"."+FMT_POS);
-
-  // struct PosN {
-  //   i64 begN, endN;
-  //   PosN(i64 b, i64 e) : begN(b), endN(e) {}
-  // };
-
-  // vector<PosN> positionsN;
-  // for (i64 beg,end; refNFile >> beg >> end;)
-  //   positionsN.emplace_back(PosN(beg,end));
-
-  //   for(auto e:positionsN)cerr<<e.begN<<' '<<e.endN<<'\n';
-
-  // vector<Pos> positions;
-  // i64 br, er, bt, et;
-  // for (double nr,nt,sr,st; midf0 >> br>>er>>nr>>sr >> bt>>et>>nt>>st;)
-  //   positions.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, 0));
-  // for (double nr,nt,sr,st; midf1 >> br>>er>>nr>>sr >> bt>>et>>nt>>st;)
-  //   positions.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, 0));
-
-  // std::sort(positions.begin(), positions.end(),
-  //   [](const Pos &l, const Pos &r) { return l.begRef < r.begRef; });
-
-
-  //todo. be khoruji tage start bezan (tu har line). line hayee ke ba N joda shodan, starteshun yeki bayad bashe
-
 
   finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
                   <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';
@@ -477,9 +451,8 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   finf.write(buffer.data(), size);
   }
 
-  midf0.close();  //todo remove(midf0Name.c_str());
-  midf1.close();  //todo remove(midf1Name.c_str());
-  // refNFile.close();  tarNFile.close();
+  midf0.close();  remove(midf0Name.c_str());
+  midf1.close();  remove(midf1Name.c_str());
   finf.close();
 }
 

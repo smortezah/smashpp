@@ -212,7 +212,9 @@ int main (int argc, char* argv[]) {
             }
           }
         }
-
+        
+        par.ref = origRef;
+        par.tar = origTar;
         auto filter = make_unique<Filter>(par);
         filter->aggregate_final_pos(origRef, origTar);
         

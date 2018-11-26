@@ -225,15 +225,6 @@ void VizPaint::print_plot (VizParam& p) {
   }
   fPos.seekg(ios::beg);
 
-  rect->width  = width;
-  rect->origin = Point(cx, cy);
-  rect->height = refSize;
-  rect->plot_chromosome(fPlot);
-
-  rect->origin = Point(cx + width + space, cy);
-  rect->height = tarSize;
-  rect->plot_chromosome(fPlot);
-
   // Plot Ns
   save_n_pos(ref);
   ifstream refFile(ref+"."+FMT_N);
@@ -249,7 +240,7 @@ void VizPaint::print_plot (VizParam& p) {
   save_n_pos(tar);
   ifstream tarFile(tar+"."+FMT_N);
   for (i64 beg,end; tarFile>>beg>>end;) {
-    rect->color  = "black";
+    rect->color  = "grey";
     rect->origin = Point(cx+width+space, cy+get_point(beg));
     rect->height = get_point(end-beg+1);
     rect->plot(fPlot);
@@ -257,6 +248,15 @@ void VizPaint::print_plot (VizParam& p) {
   tarFile.close();
   remove((tar+"."+FMT_N).c_str());
   
+  rect->width  = width;
+  rect->origin = Point(cx, cy);
+  rect->height = refSize;
+  rect->plot_chromosome(fPlot);
+
+  rect->origin = Point(cx + width + space, cy);
+  rect->height = tarSize;
+  rect->plot_chromosome(fPlot);
+
   plot_legend(fPlot, p);
   print_tail(fPlot);
 
