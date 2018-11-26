@@ -552,35 +552,63 @@ u8 n) const {
 template <typename ContIter>
 inline void FCM::compress_n_child (unique_ptr<CompressPar>& cp, ContIter cont,
 u8 n) const {
-  const auto update_prob_stmm_wNext = [&](auto freqBegin, auto ppIter) {
-    const auto P = prob(freqBegin, ppIter);
-    cp->probs.emplace_back(P);
-    correct_stmm(cp, freqBegin);
-//    if (correct_stmm(cp,freqBegin))
-//      fill(cp->wNext.begin(),cp->wNext.end(),static_cast<prc_t>(1)/cp->nMdl);
-//    else
-      cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
-  };
+  prc_t P;
 
   if (cp->mm.child->ir == 0) {
-    cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
-    array<decltype((*cont)->query(0)),4> f {};
-    freqs_ir0(f, cont, cp->ppIt->l);
-    update_prob_stmm_wNext(f.begin(), cp->ppIt);
+    if (cp->c != 'N') {
+      cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
+      array<decltype((*cont)->query(0)),4> f {};
+      freqs_ir0(f, cont, cp->ppIt->l);
+      P = prob(f.begin(), ppIter);
+    }
+    else {
+      cp->c = TAR_ALT_N;
+      cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
+      array<decltype((*cont)->query(0)),4> f {};
+      freqs_ir0(f, cont, cp->ppIt->l);
+      P = ENTROPY_N;
+    }
+    cp->probs.emplace_back(P);
+    correct_stmm(cp, f.begin());
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
     update_ctx_ir0(*cp->ctxIt, cp->ppIt);
   }
   else if (cp->mm.child->ir == 1) {
-    cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
-    array<decltype(2*(*cont)->query(0)),4> f {};
-    freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
-    update_prob_stmm_wNext(f.begin(), cp->ppIt);
+    if (cp->c != 'N') {
+      cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
+      array<decltype(2*(*cont)->query(0)),4> f {};
+      freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
+      P = prob(f.begin(), ppIter);
+    }
+    else {
+      cp->c = TAR_ALT_N;
+      cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
+      array<decltype(2*(*cont)->query(0)),4> f {};
+      freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
+      P = ENTROPY_N;
+    }
+    cp->probs.emplace_back(P);
+    correct_stmm(cp, f.begin());
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
     update_ctx_ir1(*cp->ctxIrIt, cp->ppIt);
   }
   else if (cp->mm.child->ir == 2) {
-    cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
-    array<decltype(2*(*cont)->query(0)),4> f {};
-    freqs_ir2(f, cont, cp->ppIt);
-    update_prob_stmm_wNext(f.begin(), cp->ppIt);
+    if (cp->c != 'N') {
+      cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
+      array<decltype(2*(*cont)->query(0)),4> f {};
+      freqs_ir2(f, cont, cp->ppIt);
+      P = prob(f.begin(), ppIter);
+    }
+    else {
+      cp->c = TAR_ALT_N;
+      cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
+      array<decltype(2*(*cont)->query(0)),4> f {};
+      freqs_ir2(f, cont, cp->ppIt);
+      P = ENTROPY_N;
+    }
+    cp->probs.emplace_back(P);
+    correct_stmm(cp, f.begin());
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
     update_ctx_ir2(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
