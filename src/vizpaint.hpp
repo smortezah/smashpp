@@ -44,7 +44,7 @@ class VizPaint {
   auto tspan (u32, const string&) const -> string;
   void sort_merge (string&) const;
   template <typename Position>
-  void plot_pos (ofstream&, const Position&, double, u64, string&&) const;
+  void print_pos (ofstream&, const Position&, double, u64, string&&) const;
 };
 }
 

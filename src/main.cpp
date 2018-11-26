@@ -112,9 +112,9 @@ int main (int argc, char* argv[]) {
     else {
       Param par;
       par.parse(argc, argv);                    // Parse the command
-      
+
       save_n_pos(par.ref);
-      // save_n_pos(par.tar);
+      save_n_pos(par.tar);
 
       if (par.compress) {//todo handle N
         auto models = make_unique<FCM>(par);
@@ -131,7 +131,7 @@ int main (int argc, char* argv[]) {
         filter->extract_seg(par.ID, par.ref, par.tar);
       }
       else {
-        // const auto origRef=par.ref, origTar=par.tar;
+        const auto origRef=par.ref, origTar=par.tar;
         // for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
         //   if (timesRunning == 0) 
         //     cerr << 
@@ -216,8 +216,8 @@ int main (int argc, char* argv[]) {
         //   }
         // }
 
-        // auto filter = make_unique<Filter>(par);
-        // filter->aggregate_final_pos(origRef, origTar);
+        auto filter = make_unique<Filter>(par);
+        filter->aggregate_final_pos(origRef, origTar);
         
 
 // //        // Report

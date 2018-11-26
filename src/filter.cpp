@@ -436,23 +436,40 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   ifstream midf0(midf0Name), midf1(midf1Name);
   ofstream finf(ref+"-"+tar+"."+FMT_POS);
 
-  finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
-                  <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';
-  {
-  const u64 size = file_size(midf0Name);
-  vector<char> buffer(size, 0);
-  midf0.read (buffer.data(), size);
-  finf.write(buffer.data(), size);
-  }
-  {
-  const u64 size = file_size(midf1Name);
-  vector<char> buffer(size, 0);
-  midf1.read (buffer.data(), size);
-  finf.write(buffer.data(), size);
-  }
+  vector<Pos> positions;
+  i64 br, er, bt, et;
+  for (double nr,nt,sr,st; midf0 >> br>>er>>nr>>sr >> bt>>et>>nt>>st;)
+    positions.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, 0));
+  for (double nr,nt,sr,st; midf1 >> br>>er>>nr>>sr >> bt>>et>>nt>>st;)
+    positions.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, 0));
 
-  midf0.close();  remove(midf0Name.c_str());
-  midf1.close();  remove(midf1Name.c_str());
+  std::sort(positions.begin(), positions.end(),
+    [](const Pos &l, const Pos &r) { return l.begRef < r.begRef; });
+
+  for(auto e:positions)cerr<<e.begRef<<'\t'<<e.endRef<<'\n';
+
+
+
+  //todo. be khoruji tage start bezan (tu har line). line hayee ke ba N joda shodan, starteshun yeki bayad bashe
+
+
+  // finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
+  //                 <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';
+  // {
+  // const u64 size = file_size(midf0Name);
+  // vector<char> buffer(size, 0);
+  // midf0.read (buffer.data(), size);
+  // finf.write(buffer.data(), size);
+  // }
+  // {
+  // const u64 size = file_size(midf1Name);
+  // vector<char> buffer(size, 0);
+  // midf1.read (buffer.data(), size);
+  // finf.write(buffer.data(), size);
+  // }
+
+  midf0.close();  //todo remove(midf0Name.c_str());
+  midf1.close();  //todo remove(midf1Name.c_str());
   finf.close();
 }
 

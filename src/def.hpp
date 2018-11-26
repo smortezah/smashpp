@@ -12,6 +12,7 @@ using namespace std;
 
 namespace smashpp {
 // Version
+static const string SMASHPP   {"SMASHPP"};
 static const string VERSION   {"18.11"};
 static const string DEV_YEARS {"2018"};
 
@@ -84,7 +85,7 @@ static const     string FMT_FIL      {"fil"};   // Format of filtered files
 static const     string LBL_SEG      {"s"};     // Label of segment files
 static const     string LBL_BAK      {"_bk"};   // Label of backup files
 static const     string LBL_MID      {"mid"};   // Label of mid position files
-static const     string POS_HDR      {"#SCF"};  // Header of positions file
+static const     string POS_HDR      {"#"+SMASHPP+VERSION};  // Hdr of pos file
 static constexpr float  PI           {3.14159265f};
 static constexpr int    FILE_BUF     {8*1024};  // 8K
 static constexpr u8     TEXTWIDTH    {65};
