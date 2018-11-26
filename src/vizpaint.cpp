@@ -47,6 +47,7 @@ void VizPaint::print_plot (VizParam& p) {
   vector<Pos> pos;
   u64 start {p.start};
   i64 br, er, bt, et;
+  //todo age N baes shode segment ha joda she, bayad start hashun yeki bashe
   for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
     pos.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, start));
 
@@ -65,10 +66,9 @@ void VizPaint::print_plot (VizParam& p) {
     else if (p.showNRC ^  p.showRedun) 
       X = HORIZ_TUNE + width/HORIZ_RATIO;
 
-    plot_pos(fPlot, pos, X, max(n_refBases,n_tarBases), "ref");
-    plot_pos(fPlot, pos, X, max(n_refBases,n_tarBases), "tar");
+    print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), "ref");
+    print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), "tar");
   }
-
 
   u64 n_regular=0, n_inverse=0;
   for (auto e : pos) {
@@ -814,7 +814,7 @@ inline void VizPaint::sort_merge (string& s) const {
 }
 
 template <typename Position>
-inline void VizPaint::plot_pos (ofstream& fPlot, const Position& pos, double X,
+inline void VizPaint::print_pos (ofstream& fPlot, const Position& pos, double X,
 u64 maxBases, string&& type) const {
   struct Node {
     i64  position;
