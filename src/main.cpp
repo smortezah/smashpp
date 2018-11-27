@@ -96,8 +96,8 @@
 #include "fn.hpp"
 #include "segment.hpp"
 #include "vizpaint.hpp"
+#include <thread>//todo
 using namespace smashpp;
-
 
 int main (int argc, char* argv[]) {
   try {
@@ -114,7 +114,8 @@ int main (int argc, char* argv[]) {
       par.parse(argc, argv);                    // Parse the command
 
       if (par.compress) {//todo handle N
-        auto models = make_unique<FCM>(par);
+        // auto models = make_unique<FCM>(par);
+        auto models = make_shared<FCM>(par);
         models->store(par);
         models->compress(par);
       }
