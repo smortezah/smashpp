@@ -115,7 +115,7 @@ int main (int argc, char* argv[]) {
 
       if (par.compress) {//todo handle N
         // auto models = make_unique<FCM>(par);
-        auto models = make_shared<FCM>(par);
+        auto models = make_unique<FCM>(par);
         models->store(par);
         models->compress(par);
       }
