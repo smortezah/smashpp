@@ -63,7 +63,7 @@ struct Path {
   Point  origin;
   double width;
   string color, trace, strokeLineJoin, strokeDashArray;
-  Path () : width(1), strokeLineJoin("round"), strokeDashArray("6 1") {}
+  Path () : width(1), strokeLineJoin("round"), strokeDashArray("8 3") {}
   void plot (ofstream&) const;
 };
 
