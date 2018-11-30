@@ -117,15 +117,6 @@ cd example/
 % GET_DATASET=1               # 54 GB free disk space
 %     DL_HUMAN_FA=1           # Download Human             (FASTA) -- 3.1  GB
 %     DL_VIRUSES_FA=1         # Download Viruses           (FASTA) -- 0.3  GB
-%     GEN_SYNTH_FA=1          # Generate synthetic dataset (FASTA) -- 2.8  GB
-%     DL_HUMAN_FQ=0           # Download Human             (FASTQ) -- 27.0 GB
-%     DL_DENISOVA_FQ=0        # Download Denisova          (FASTQ) -- 2.9  GB
-%     GEN_SYNTH_FQ=0          # Generate synthetic dataset (FASTQ) -- 6.1  GB
-%     DL_DENISOVA_VCF=0       # Download Denisova          (VCF)   -- 6.3  GB
-%     DL_NEANDERTHAL_VCF=0    # Download Neanderthal       (VCF)   -- 0.8  GB
-%     DL_HUMAN_SAM=0          # Download Human             (SAM)   -- 0.5  GB
-%     DL_NEANDERTHAL_SAM=0    # Download Neanderthal       (SAM)   -- 1.5  GB
-%     DL_HUMAN_BAM=0          # Download Human             (BAM)   -- 0.6  GB
 %     DL_NEANDERTHAL_BAM=0    # Download Neanderthal       (BAM)   -- 1.3  GB
 % \end{code}
 
@@ -150,14 +141,6 @@ cd example/
 %     INS_CRYFA=1         # Cryfa
 %     # FASTA
 %     INS_MFCOMPRESS=0    # MFCompress
-%     INS_DELIMINATE=0    # DELIMINATE
-%     # FASTQ
-%     INS_FQZCOMP=0       # fqzcomp
-%     INS_QUIP=0          # Quip
-%     INS_DSRC=0          # DSRC
-%     INS_FQC=0           # FQC
-%     # Encryption -- FASTA/FASTQ/VCF/SAM/BAM
-%     INS_AESCRYPT=0      # AES Crypt
 % \end{code}
 
 % \subsubsection*{Run \smashpp}
@@ -167,13 +150,6 @@ cd example/
 %     # FASTA
 %     RUN_CRYFA_FA=1      # Cryfa
 %     # FASTQ
-%     RUN_CRYFA_FQ=1      # Cryfa
-%     # VCF
-%     RUN_CRYFA_VCF=0     # Cryfa
-%     # SAM
-%     RUN_CRYFA_SAM=0     # Cryfa
-%     # BAM
-%     RUN_CRYFA_BAM=0     # Cryfa
 %     # Results
 %     RESULTS_COMP=1
 % \end{code}
@@ -184,15 +160,8 @@ cd example/
 % RUN_METHODS_COMP_ENC=1
 %     # Fasta -- 10 GB free disk space
 %     RUN_GZIP_FA_AESCRYPT=1       # gzip       + AES Crypt
-%     RUN_BZIP2_FA_AESCRYPT=1      # bzip2      + AES Crypt
-%     RUN_MFCOMPRESS_AESCRYPT=1    # MFCompress + AES Crypt
-%     RUN_DELIMINATE_AESCRYPT=1    # DELIMINATE + AES Crypt
 %     # Fastq -- 50 GB free disk space
 %     RUN_GZIP_FQ_AESCRYPT=1       # gzip       + AES Crypt
-%     RUN_BZIP2_FQ_AESCRYPT=1      # bzip2      + AES Crypt
-%     RUN_FQZCOMP_AESCRYPT=1       # fqzcomp    + AES Crypt
-%     RUN_QUIP_AESCRYPT=1          # Quip       + AES Crypt
-%     RUN_DSRC_AESCRYPT=1          # DSRC       + AES Crypt
 %     # Results
 %     RESULTS_COMP_ENC=1
 % \end{code}
