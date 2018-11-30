@@ -20,8 +20,9 @@ class VizPaint {
   void print_plot (VizParam&);
 
  private:
-  u32 ratio;
-  u32 mult;
+  u32         ratio;
+  u32         mult;
+  vector<i64> lastPos;
 
   void show_info (VizParam&, const string&, const string&, u64, u64) const;
   void config (double, double, u64, u64);
@@ -44,7 +45,7 @@ class VizPaint {
   auto tspan (u32, const string&) const -> string;
   void sort_merge (string&) const;
   template <typename Position>
-  void print_pos (ofstream&, const Position&, double, u64, string&&) const;
+  void print_pos (ofstream&, const Position&, double, u64, string&&);
 };
 }
 
