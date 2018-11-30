@@ -257,37 +257,8 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = tarSize;
   rect->plot_chromosome(fPlot);
 
-
-
-const auto relRedunX1 = cx - HORIZ_TUNE - width/(2*HORIZ_RATIO);
-const auto relRedunX2 = cx + width+space+width+HORIZ_TUNE+width/(2*HORIZ_RATIO);
-const auto relRedunY  = cy + get_point(max(n_refBases,n_tarBases)) + 12;
-
-auto vertSize  = relRedunY - cy - get_point(lastPos[0]);
-auto horizSize = 13;
-auto path = make_unique<Path>();
-path->color="black";
-path->origin = Point(relRedunX1, cy+get_point(lastPos[0]));
-path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
-path->plot(fPlot);
-
-vertSize  = relRedunY - cy - get_point(lastPos[1]);
-path->origin = Point(relRedunX2, cy+get_point(lastPos[1]));
-path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
-path->plot(fPlot);
-
-text->fontSize=9;
-text->color="black";
-text->origin=Point((relRedunX1+relRedunX2)/2, relRedunY);
-text->label="Relative Redundancy";
-text->plot(fPlot);
-
-
-// const auto redunX1 = cx - 2*HORIZ_TUNE - (3*width)/(2*HORIZ_RATIO);
-
-
-
   plot_legend(fPlot, p);
+  plot_guide(fPlot, max(n_refBases,n_tarBases));
   print_tail(fPlot);
 
   cerr << "Plotting finished.\n";
@@ -790,6 +761,54 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->label = "REDUNDANCY";
   text->fontSize = 9;
   text->fontWeight = "bold";
+  text->plot(f);
+}
+
+inline void VizPaint::plot_guide (ofstream& f, i64 maxHeight) const {
+  const auto relRedunX1 = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
+  const auto relRedunX2 = 
+    cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
+  const auto relRedunY  = cy + get_point(maxHeight) + 20;
+
+  auto horizSize = 12;
+  auto vertSize  = relRedunY - cy - get_point(lastPos[0]);
+  auto path = make_unique<Path>();
+  path->color="black";
+  path->origin = Point(relRedunX1, cy+get_point(lastPos[0]));
+  path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
+  path->plot(f);
+
+  vertSize  = relRedunY - cy - get_point(lastPos[1]);
+  path->origin = Point(relRedunX2, cy+get_point(lastPos[1]));
+  path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+  path->plot(f);
+
+  auto text = make_unique<Text>();
+  text->fontSize=9;
+  text->color="black";
+  text->origin=Point((relRedunX1+relRedunX2)/2, relRedunY);
+  text->label="Relative Redundancy";
+  text->plot(f);
+
+  const auto redunX1 = cx - 2*HORIZ_TUNE - 1.5*width/HORIZ_RATIO;
+  const auto redunX2 = 
+    cx + 2*width + space + 2*HORIZ_TUNE + 1.5*width/HORIZ_RATIO;
+  const auto redunY = relRedunY + 15;
+
+  vertSize  = redunY - cy - get_point(lastPos[0]);
+  horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
+  path->origin = Point(redunX1, cy+get_point(lastPos[0]));
+  path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
+  path->plot(f);
+
+  vertSize  = redunY - cy - get_point(lastPos[1]);
+  path->origin = Point(redunX2, cy+get_point(lastPos[1]));
+  path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+  path->plot(f);
+
+  text->fontSize=9;
+  text->origin=Point((redunX1+redunX2)/2, redunY);
+  text->label="Redundancy";
   text->plot(f);
 }
 
