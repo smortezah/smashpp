@@ -71,67 +71,29 @@ DESCRIPTION
                        (INT) 𝜏:  threshold (no. substitutions)
 \end{code}
 
-% In the second~line of the \smashpp usage guide, ``\mono{-d}'' option can only be used for \ddion. ``\mono{OUT_FILE}'' is an arbitrary name that specifies the output file and is selected by the user.
+% In the second~line of the \smashpp usage guide, ``\mono{-d}'' option can only be used for \ddion.
 
-% In the fifth and sixth~lines, two samples are shown for \ceion as well as \ddion. In line~5, ``\mono{pass.txt}'' is the file including the password; ``\mono{in.fq}'' is the input file to be compressed and encrypted, in \fastq format; and ``\mono{comp}'' is the output file. In line~6, ``\mono{comp}'' is a file which has previously been \ceed by \smashpp; and ``\mono{orig.fq}'' is the file that keeps the \ddion result. Since \smashpp is a lossless \ceor, \mono{orig.fq} will be exactly the same as \mono{in.fq}.
+% In the fifth and sixth~lines, two samples are shown for \ceion as well as \ddion.
 
-% Eighth and ninth lines describe the cases in which input files are not of \fasta or \fastq formats. These files can have any other text-based genomic data format, e.g., \vcf, \sam or \bam. In these cases, \smashpp shuffles and encrypts the inputs, but does not compact them. In line 8, ``\mono{in}'' is the input file and ``\mono{enc}'' is shuffled and encrypted file. In line 9, ``\mono{enc}'' is the file that has been previously encrypted by \smashpp and ``\mono{orig}'' is unshuffled and decrypted file.
-
-% There are two methods to make a ``\mono{KEY_FILE}'' and then pass to the ``\mono{-k}'' or ``\mono{--key}'' flags, at line~18: either saving a raw password in a file, or employing the ``keygen'' program, which is provided to generate a strong password. The second method is highly recommended.
-
-% For the first method, the following commands can be used to save a raw password in a file and then pass it to \smashpp. In this case, ``\mono{Such a strong password!}'' is our raw password and ``\mono{pass.txt}'' is the file we save our password in it. To save a password in a file, a text editor can also be used:
-% \begin{code}[style=bash]
-% echo "Such a strong password!" > pass.txt
-% ./cryfa -k pass.txt IN_FILE > OUT_FILE
-% \end{code}
-% Note, the password must include at least 8 characters. Although, employing this method is not recommended, but if you tend to use it, it would be a better practice to choose a ``strong password''.
-
-% A strong password:
-% \begin{itemize}
-% \item has at least 12 characters
-% \item includes lowercase letters (\mono{a}--\mono{z}), uppercase letters (\mono{A}--\mono{Z}), digits (\mono{0}--\mono{9}) and symbols (e.g., \mono{\#}, \mono{\%}, \mono{\$})
-% \item is not a character repetition (e.g., \mono{zzzzzz}), keyboard pattern (e.g., \mono{qwerty}) or digit sequences (e.g., \mono{123456})
-% \end{itemize}
-
-% The second method to make a key file is using the ``keygen'' program, which 
-% automatically provides with a strong password. Running
-% \begin{code}[style=bash]
-% ./keygen
-% \end{code}
-% the following message appears:
-% \begin{code}[style=bash]
-% Enter a password, then press `Enter':
-% \end{code}
-% After typing a raw password, e.g., ``\mono{A keygen raw pass!}'', and pressing ``Enter'', the following message appears:
-% \begin{code}[style=bash]
-% Enter a file name to save the generated key, then press `Enter':
-% \end{code}
-% The automatically generated strong password will be saved in the file that you specify its name, e.g,.~``\mono{key.txt}'', in this step. Note, the ``keygen'' program needs an initial raw password, which is not required to be strong itself, to generate a strong password. Afterward, you can use the following command to pass the key file, in this case ``\mono{key.txt}'', to \smashpp:
-% \begin{code}[style=bash]
-% ./cryfa -k key.txt IN_FILE > OUT_FILE
-% \end{code}
-
-% With ``\mono{-f}'' or ``\mono{--force}'' flag, at line~30 of the usage guide, the input file is forced to be considered as a non-\fasta/\fastq file; this way, \smashpp does not compact that file and exclusively shuffles and encrypts it. Note, even if the input is of \fasta/\fastq format, it is again considered as a non-\fasta/\fastq file, therefore, compaction will be ignored, but shuffling and encryption will be performed.
-
-% To avoid low data complexity attacks, \smashpp shuffles the input, by default. However, it is possible to disable shuffling, using ``\mono{-s}'' option, as shown in line~40 of the usage guide. Note, this option should only be used in the encryption side, since \smashpp automatically detects in the decryption side whether or not the file had been shuffled.
+% Eighth and ninth lines describe the cases in which input files are not of \fasta or \fastq formats.
 
 
-% \subsection{Example}
-% This section guides, in a step-by-step manner, employing \smashpp to \ce as well as \dd a sample file.
+\subsection{Example}
+This section guides, step-by-step, employing \smashpp to find rearrangements.
 
-% \subsubsection*{Install \smashpp and provide the required files}
-% First, we install \smashpp:
-% \begin{code}[style=bash]
-% git clone https://github.com/pratas/cryfa.git
-% cd cryfa
-% cmake .
-% make
-% \end{code}
-% Then, we copy \smashpp's binary file into \mono{example/} directory and go to that directory:
-% \begin{code}[style=bash]
-% cp cryfa example/
-% cd example/
-% \end{code}
+\subsubsection*{Install \smashpp and provide the required files}
+First, we install \smashpp:
+\begin{code}[style=bash]
+git clone https://github.com/smortezah/smashpp.git
+cd smashpp
+cmake .
+make
+\end{code}
+Then, we copy \smashpp's binary file into \mono{example/} directory and go to that directory:
+\begin{code}[style=bash]
+cp smashpp example/
+cd example/
+\end{code}
 
 % In order to run \smashpp, we need a file to be \ceed/encrypted as well as a file containing the password. In the \mono{example/} directory, the file ``\mono{in.fq}'' is provided, which would be \ceed. The contents of \mono{in.fq} is
 % \begin{code}[style=bash]
@@ -143,58 +105,6 @@ DESCRIPTION
 % GATAAAGATCAAATAAGAGCCTCAGGGGACTGAATCCAACGGGAATATTAGAGTCCTACAGGGAGCCCCCAACCC
 % +
 % CCCFFFFFHGHHHIJJJJJJJJIJJJJJJJJJJJIJJJJJJJJIJIJJJIJJJFHIJJJJJIGFHFFFFDDDDDD
-% \end{code}
-% To provide a password file for running \smashpp, we run keygen program:
-% \begin{code}[style=bash]
-% ./keygen
-% \end{code}
-% The following message appears:
-% \begin{code}[style=bash]
-% Enter a password, then press `Enter':
-% \end{code}
-% We enter ``\mono{A raw password!}'' or any other arbitrary raw password and press ``Enter''. Then, the following message appears:
-% \begin{code}[style=bash]
-% Enter a file name to save the generated key, then press `Enter':
-% \end{code}
-% We choose ``\mono{pass.txt}'' for the key file name and press ``Enter''.
-
-
-% \subsubsection*{\Ce}
-% In order to \ce the file \mono{in.fq} and save the output in the file ``\mono{comp}'', we type
-% \begin{code}[style=bash]
-% ./cryfa -k pass.txt in.fq > comp
-% \end{code}
-% ``\mono{-k}'' option is used to specify the key file, i.e. \mono{pass.txt}.
-
-% \subsubsection*{\Dd}
-% To \dd the file \mono{comp} and save the output in the file ``\mono{orig.fq}'', we write
-% \begin{code}[style=bash]
-% ./cryfa -k pass.txt -d comp > orig.fq
-% \end{code}
-% ``\mono{-d}'' option specifies the \ddion operation.
-
-% Note that, to \dd a file using \smashpp, it needs to be already \ceed by \smashpp. Additionally, since \smashpp is a lossless \ceor, \mono{orig.fq} will be exactly the same as \mono{in.fq}. This can be checked by
-% \begin{code}[style=bash]
-% cmp in.fq orig.fq
-% \end{code}
-
-% \smashpp has this capability to ignore compaction and/or shuffling phases. In the following, it is described how to perform that.
-
-% \subsubsection*{Shuffle, encrypt, decrypt and unshuffle}
-% In the case we do not tend to compact a \fasta/\fastq file and only want to shuffle and encrypt it, \mono{-f}~flag can be used:
-% \begin{code}[style=bash]
-% ./cryfa -k pass.txt -f in.fq > enc
-% \end{code}
-% For decryption and unshuffling, the following command is used, which is the same as if the original file was compacted:
-% \begin{code}[style=bash]
-% ./cryfa -k pass.txt -d enc > orig.fq
-% \end{code}
-
-% \subsubsection*{Encrypt and decrypt}
-% In the case we exclusively need to encrypt and then decrypt a file, we can type the following:
-% \begin{code}[style=bash]
-% ./cryfa -k pass.txt -f -s in.fq > enc
-% ./cryfa -k pass.txt -d enc > orig.fq
 % \end{code}
 
 
@@ -309,15 +219,4 @@ DESCRIPTION
 %     RUN_CRYFA_THR=1
 %     # Results
 %     RESULTS_CRYFA_THR=1
-% \end{code}
-
-
-% \subsection{Explore redundancy} \label{ssRedundancy}
-% This part is provided to evaluate how different methods explore redundancy in genomic sequences. For this purpose, \mono{RUN_REDUNDANCY} should be set to 1. The NC (see Note~\ref{ssRedundancy}) results of running \smashpp as well as \deliminate and \mfcompress, as two Fasta file compressors, on a collection of archaea, bacteria, fungi, plants and viruses datasets will be saved at \mono{result/} directory. Note, the datasets need 12~GB free disk space.
-% \begin{code}[style=bash]
-% RUN_REDUNDANCY=1        # Cryfa, DELIMINATE, MFCompress
-%     # Dataset (Fasta) -- archaea, bacteria, fungi, plants, viruses
-%     GET_DATASET_REDUN=1 # 12 GB free disk space
-%     # Run & Results
-%     RUN_RES_REDUN=1
 % \end{code}
