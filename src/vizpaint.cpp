@@ -257,6 +257,36 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = tarSize;
   rect->plot_chromosome(fPlot);
 
+
+
+const auto relRedunX1 = cx - HORIZ_TUNE - width/(2*HORIZ_RATIO);
+const auto relRedunX2 = cx + width+space+width+HORIZ_TUNE+width/(2*HORIZ_RATIO);
+const auto relRedunY  = cy + get_point(max(n_refBases,n_tarBases)) + 12;
+
+auto vertSize  = relRedunY - cy - get_point(lastPos[0]);
+auto horizSize = 13;
+auto path = make_unique<Path>();
+path->color="black";
+path->origin = Point(relRedunX1, cy+get_point(lastPos[0]));
+path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
+path->plot(fPlot);
+
+vertSize  = relRedunY - cy - get_point(lastPos[1]);
+path->origin = Point(relRedunX2, cy+get_point(lastPos[1]));
+path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+path->plot(fPlot);
+
+text->fontSize=9;
+text->color="black";
+text->origin=Point((relRedunX1+relRedunX2)/2, relRedunY);
+text->label="Relative Redundancy";
+text->plot(fPlot);
+
+
+// const auto redunX1 = cx - 2*HORIZ_TUNE - (3*width)/(2*HORIZ_RATIO);
+
+
+
   plot_legend(fPlot, p);
   print_tail(fPlot);
 
@@ -837,7 +867,7 @@ inline void VizPaint::sort_merge (string& s) const {
 
 template <typename Position>
 inline void VizPaint::print_pos (ofstream& fPlot, const Position& pos, double X,
-u64 maxBases, string&& type) const {
+u64 maxBases, string&& type) {
   struct Node {
     i64  position;
     char type;
@@ -862,6 +892,8 @@ u64 maxBases, string&& type) const {
   }
   std::sort(nodes.begin(), nodes.end(),
     [](const Node &l, const Node &r) { return l.position < r.position; });
+
+  lastPos.emplace_back(nodes.back().position);
 
   auto   text = make_unique<Text>();
   string line, lastLine;

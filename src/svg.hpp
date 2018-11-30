@@ -59,6 +59,14 @@ struct Line {
   void plot (ofstream&) const;
 };
 
+struct Path {
+  Point  origin;
+  double width;
+  string color, trace, strokeLineJoin, strokeDashArray;
+  Path () : width(1), strokeLineJoin("round"), strokeDashArray("6 1") {}
+  void plot (ofstream&) const;
+};
+
 struct Rectangle {
   Point  origin;
   double width, height;

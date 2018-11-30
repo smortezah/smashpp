@@ -6,7 +6,7 @@ using namespace smashpp;
  * class Text
  */
 void Text::plot (ofstream& f) const {
-  f << "<text sodipodi:role=\"line\" id=\"tspan3804\" "
+  f << "<text id=\""<< to_string(origin.x) << to_string(origin.y) << "\" "
     "x=\"" << PREC << origin.x  << "\" "
     "y=\"" << PREC << origin.y  << "\" "
     "dominant-baseline=\"" << dominantBaseline << "\" "
@@ -54,11 +54,21 @@ void Text::plot_pos_tar (ofstream& f, char c) {
  * class Line
  */
 void Line::plot (ofstream& f) const {
-  f << "<line "
+  f << "<line id=\"" << beg.x << beg.y << end.x << end.y << "\" "
     "x1=\"" << PREC << beg.x << "\" y1=\"" << PREC << beg.y << "\" "
     "x2=\"" << PREC << end.x << "\" y2=\"" << PREC << end.y << "\" "
     "style=\"stroke:" << color << ";"
     "stroke-width:" << PREC << width << "\" />";
+}
+
+/*
+ * class Path
+ */
+void Path::plot (ofstream& f) const {
+  f << "<path d=\"M " << origin.x << "," << origin.y << " " << trace << "\" "
+  "style=\"fill:none;stroke:" << color << ";stroke-linejoin:" << 
+  strokeLineJoin << ";stroke-dasharray:" << strokeDashArray << 
+  ";stroke-width:" << PREC << width << "\" />";
 }
 
 /*
