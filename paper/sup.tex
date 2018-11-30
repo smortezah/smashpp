@@ -1,0 +1,40 @@
+%\documentclass[a4paper,
+%%twocolumn
+%]{article}
+\documentclass[a4paper,9pt]{extarticle}
+
+
+%%%%  Page margins
+\usepackage{geometry}
+%\geometry{left=25mm, right=20mm, top=30mm, bottom=20mm}
+%\geometry{left=32mm, right=29mm, top=35mm, bottom=23mm}
+\geometry{left=36mm, right=32mm, top=35mm, bottom=30mm}
+%\geometry{left=15mm, right=15mm, top=25mm, bottom=20mm}
+%\setlength{\columnsep}{4.5mm}
+
+%%%% Configuration file for plotting
+\input{cfg.tex}
+
+%%%%  Headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markright{Note~\thesection. #1}}
+\renewcommand{\subsectionmark}[1]{\markright{\thesubsection. #1}}
+\fancyhead{}    % clear all header fields
+\fancyfoot{}    % clear all footer fields
+\fancyhead[L]{\textsf{\nouppercase\rightmark}}
+\fancyhead[R]{\thepage}
+\setlength{\headsep}{20pt}
+
+
+\begin{document}
+
+% \input{title.tex}	%%% Title page
+
+\defaultLineSpace    		%%% Line spacing
+
+%%%\balance
+\input{tool.tex}
+\input{references.tex}
+
+\end{document}

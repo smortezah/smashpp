@@ -1,0 +1,185 @@
+%%%%%%  Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+%%%%%%  Tables
+\usepackage{booktabs}
+\usepackage{pgfplotstable}
+\DeclareMathVersion{sansserif}
+\SetSymbolFont{operators}{sansserif}{OT1}{cmss}{m}{n}
+\usepackage{siunitx} 
+\sisetup{group-separator={,}, group-minimum-digits={3}, parse-numbers=false}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{P}{>{\raggedleft\arraybackslash}p{.2in}}
+\newcommand*{\dsSizeInTable}{\footnotesize}
+\newcommand*{\unitSizeInTable}{\scriptsize}
+\newcommand*{\tableSize}{\small}
+
+%%%%%%  Figures
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup[subfigure]{position=bottom, labelfont=bf, textfont=normalfont, singlelinecheck=off, justification=raggedright}
+
+%%%%%%  Figures in same page as they're called in twocolumn
+\usepackage{stfloats}
+
+%%%%%%  Balance columns of the last page in twocolumn environment
+\usepackage{balance}
+
+%%%%%%  Equations numbering format
+\makeatletter
+\renewcommand{\theequation}{S\arabic{equation}}
+\def\tagform@#1{\maketag@@@{\bfseries(Eq.~\ignorespaces#1\unskip\@@italiccorr)}}
+\makeatother
+
+%%%%%%  Marks
+\usepackage{pifont}
+\newcommand{\xmark}{\ding{53}\xspace}%
+\newcommand{\fmark}{\ding{110}\xspace}%
+
+%%%%%  Color
+\usepackage{xcolor}
+%\newcommand*{\highlight}[1]{\textcolor{red}{\textbf{#1}}}
+\newcommand*{\highlight}[1]{\textcolor{red!90!black}{#1}}
+%\usepackage{easyReview}
+%\usepackage{soul}  % Highlight command \hl
+%\newcommand{\highlight}[1]{\hl{#1}}
+
+
+%%%%%  Figures path
+\usepackage{graphicx}
+\graphicspath{{./fig/}}
+
+%%%%%  Code styles
+\usepackage{listings}
+\lstset{
+%	language=bash,
+	basicstyle=\ttfamily,
+	backgroundcolor=\color{black!5},
+	commentstyle=\color{green!50!black},
+	showstringspaces=false,
+	numbers=left,
+	numberstyle=\footnotesize\sffamily\color{gray},
+	mathescape=true
+}
+\lstdefinestyle{bash}{
+	language=bash,
+	basicstyle=\small\ttfamily,
+}
+\lstdefinestyle{cpp}{
+	language=C++,
+	basicstyle=\small\ttfamily,
+}
+
+%%%%%  Captions
+\usepackage[figurename=Fig., tablename=Table, labelfont=bf, labelsep=period, font=small]{caption}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+
+%%%%%  Links
+\usepackage{hyperref}
+
+%%%%%  Cites
+\usepackage{cite}
+
+%%%%%  Section, ... style
+\usepackage{titlesec,titletoc}
+\renewcommand*{\thesection}{S\arabic{section}}
+\makeatletter
+\renewcommand{\@seccntformat}[1]{%
+	\ifcsname prefix@#1\endcsname
+	\csname prefix@#1\endcsname
+	\else
+	\csname the#1\endcsname\quad
+	\fi%
+}
+\newcommand\prefix@section{Note~\thesection\quad}
+\makeatother
+\titleformat*{\section}{\sffamily\Large\bfseries}
+\titleformat*{\subsection}{\sffamily\large\bfseries}
+\titleformat*{\subsubsection}{\sffamily\bfseries}
+\titlecontents{section}[2.1em]{\addvspace{3mm}}{\bfseries\contentslabel{1.8em}}{\hspace*{-2.3em}}{\titlerule*[1pc]{}\bfseries\contentspage}
+\dottedcontents{subsection}[4.9em]{}{2.8em}{1pc}
+
+%%%%%  Line spacing
+\usepackage{setspace}
+\newcommand*{\defaultLineSpace}{\setstretch{1.15}}
+\newcommand*{\codeLineSpace}{\setstretch{1.1}}
+\newcommand*{\refLineSpace}{\setstretch{1}}
+
+%%%%%  Handle spaces
+\usepackage{xspace}
+
+%%%%%  Trademark, registerd mark
+\usepackage{textcomp}
+
+%%%%%  User-defined commands
+\newcommand*{\method}[1]{\text{#1}\xspace}
+\newcommand*{\smashpp}   {\method{Smash++}}
+\newcommand*{\gzip}      {\method{gzip}}
+\newcommand*{\Gzip}      {\method{gzip}}
+\newcommand*{\bzip}      {\method{bzip2}}
+\newcommand*{\Bzip}      {\method{bzip2}}
+\newcommand*{\mfcompress}{\method{MFCompress}}
+\newcommand*{\Mfcompress}{\method{MFCompress}}
+\newcommand*{\deliminate}{\method{DELIMINATE}}
+\newcommand*{\Deliminate}{\method{DELIMINATE}}
+\newcommand*{\fqzcomp}   {\method{fqzcomp}}
+\newcommand*{\Fqzcomp}   {\method{Fqzcomp}}
+\newcommand*{\quip}      {\method{Quip}}
+\newcommand*{\Quip}      {\method{Quip}}
+\newcommand*{\dsrc}      {\method{DSRC~2}}
+\newcommand*{\Dsrc}      {\method{DSRC~2}}
+\newcommand*{\fqc}       {\method{FQC}}
+\newcommand*{\Fqc}       {\method{FQC}}
+\newcommand*{\aes}		   {\method{AES}}
+\newcommand*{\Aes}		   {\method{AES}}
+\newcommand*{\aescrypt}  {\method{AES~Crypt}}
+\newcommand*{\Aescrypt}  {\method{AES~Crypt}}
+\newcommand*{\szip}      {\method{7zip}}
+\newcommand*{\cmake}     {\method{cmake}}
+\newcommand*{\Cmake}     {\method{Cmake}}
+\newcommand*{\xs}		     {\method{XS}}
+\newcommand*{\Xs}		     {\method{XS}}
+\newcommand*{\goose}	   {\method{GOOSE}}
+\newcommand*{\Goose}	   {\method{GOOSE}}
+\newcommand*{\fasta}     {Fasta\xspace}
+\newcommand*{\Fasta}     {Fasta\xspace}
+\newcommand*{\fastq}     {Fastq\xspace}
+\newcommand*{\Fastq}     {Fastq\xspace}
+\newcommand*{\sam}       {SAM\xspace}
+\newcommand*{\Sam}       {SAM\xspace}
+\newcommand*{\bam}       {BAM\xspace}
+\newcommand*{\Bam}       {BAM\xspace}
+\newcommand*{\sambam}    {SAM/BAM\xspace}
+\newcommand*{\Sambam}    {SAM/BAM\xspace}
+\newcommand*{\vcf}       {VCF\xspace}
+\newcommand*{\Vcf}       {VCF\xspace}
+\newcommand*{\linux}     {Linux\xspace}
+\newcommand*{\Linux}     {Linux\xspace}
+\newcommand*{\windows}   {Windows\xspace}
+\newcommand*{\Windows}   {Windows\xspace}
+\newcommand*{\macos}     {macOS\xspace}
+\newcommand*{\Macos}     {macOS\xspace}
+\newcommand*{\xor}       {XOR\xspace}
+
+\newcommand*{\sym}[1]{\text{#1}\xspace}
+\newcommand*{\symA}      {\sym{A}}
+\newcommand*{\symC}      {\sym{C}}
+\newcommand*{\symG}      {\sym{G}}
+\newcommand*{\symT}      {\sym{T}}
+\newcommand*{\symN}      {\sym{N}}
+\newcommand*{\symX}      {\sym{X}}
+
+\newcommand*{\ascii}     {\mbox{ASCII}\xspace}
+
+\newcommand*{\mono}[1]{\lstinline|#1|}
+\newcommand*{\lang}[1]{\mono{#1}\xspace}
+\newcommand*{\cpp}       {\lang{C++}}
+\newcommand*{\bash}      {\lang{bash}}
+
+%%%%%  User-defined environments
+\lstnewenvironment{code}[1][]
+	{\codeLineSpace\lstset{#1}\bgroup}
+	{\egroup\defaultLineSpace}
