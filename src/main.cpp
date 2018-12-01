@@ -93,7 +93,8 @@
 #include "par.hpp"
 #include "fcm.hpp"
 #include "filter.hpp"
-#include "fn.hpp"
+#include "fn.hpp"//todo remove
+#include "string.hpp"
 #include "segment.hpp"
 #include "vizpaint.hpp"
 #include <thread>//todo

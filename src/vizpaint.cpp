@@ -1,5 +1,6 @@
 #include "vizpaint.hpp"
-#include "fn.hpp"
+#include "fn.hpp"//todo remove
+#include "string.hpp"
 using namespace smashpp;
 
 void VizPaint::print_plot (VizParam& p) {
@@ -887,6 +888,32 @@ inline void VizPaint::sort_merge (string& s) const {
     s += vEnv.back().line + "\n";
 
   s.erase(s.find_last_of(", <")-2, 2);
+}
+
+inline void VizPaint::save_n_pos (const string& fileName) const {
+  ifstream inFile(fileName);
+  ofstream NFile(fileName+"."+FMT_N);
+  u64 pos=0, beg=0, num=0;
+  bool begun = false;
+
+  for (char c; inFile.get(c); ++pos) {
+    if (c=='N' || c=='n') {
+      if (!begun) {
+        begun = true;
+        beg = pos;
+      }
+      ++num;
+    }
+    else {
+      begun = false;
+      if (num != 0)
+        NFile << beg << '\t' << beg+num-1 << '\n';
+      num = 0;
+      beg = 0;
+    }
+  }
+
+  inFile.close();  NFile.close();
 }
 
 template <typename Position>

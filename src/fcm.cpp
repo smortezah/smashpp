@@ -4,7 +4,8 @@
 #include <numeric>  // std::accumulate
 #include "fcm.hpp"
 #include "assert.hpp"
-#include "fn.hpp"
+#include "fn.hpp"//todo remove
+#include "string.hpp"
 using namespace smashpp;
 
 FCM::FCM (Param& p) {

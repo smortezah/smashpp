@@ -2,7 +2,8 @@
 #define PROJECT_ASSERT_HPP
 
 #include <stdexcept>
-#include "fn.hpp"
+#include "fn.hpp"//todo remove
+#include "string.hpp"
 
 namespace smashpp {
 template <typename Value>

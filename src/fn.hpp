@@ -9,62 +9,63 @@
 #include <memory>
 #include <iterator>
 #include "def.hpp"
+#include "string.hpp"
 
 namespace smashpp {
-inline static string bold (string&& text) {
-  return "\033[1m"+text+"\033[0m";
-}
-inline static string bold (const string& text) {
-  return "\033[1m"+text+"\033[0m";
-}
-inline static string faint (string&& text) {
-  return "\033[2m"+text+"\033[0m";
-}
-inline static string faint (const string& text) {
-  return "\033[2m"+text+"\033[0m";
-}
-inline static string italic (string&& text) {
-  return "\033[3m"+text+"\033[0m";
-}
-inline static string italic (const string& text) {
-  return "\033[3m"+text+"\033[0m";
-}
-inline static string underline (string&& text) {
-  return "\033[4m"+text+"\033[0m";
-}
-inline static string underline (const string& text) {
-  return "\033[4m"+text+"\033[0m";
-}
-inline static string highlight (string&& text) {
-  return "\033[7m"+text+"\033[0m";
-}
-inline static string highlight (const string& text) {
-  return "\033[7m"+text+"\033[0m";
-}
-inline static string bold_red (string&& text) {
-  return "\033[1m\033[38;5;1m"+text+"\033[0m";
-}
-inline static string bold_red (const string& text) {
-  return "\033[1m\033[38;5;1m"+text+"\033[0m";
-}
+// inline static string bold (string&& text) {
+//   return "\033[1m"+text+"\033[0m";
+// }
+// inline static string bold (const string& text) {
+//   return "\033[1m"+text+"\033[0m";
+// }
+// inline static string faint (string&& text) {
+//   return "\033[2m"+text+"\033[0m";
+// }
+// inline static string faint (const string& text) {
+//   return "\033[2m"+text+"\033[0m";
+// }
+// inline static string italic (string&& text) {
+//   return "\033[3m"+text+"\033[0m";
+// }
+// inline static string italic (const string& text) {
+//   return "\033[3m"+text+"\033[0m";
+// }
+// inline static string underline (string&& text) {
+//   return "\033[4m"+text+"\033[0m";
+// }
+// inline static string underline (const string& text) {
+//   return "\033[4m"+text+"\033[0m";
+// }
+// inline static string highlight (string&& text) {
+//   return "\033[7m"+text+"\033[0m";
+// }
+// inline static string highlight (const string& text) {
+//   return "\033[7m"+text+"\033[0m";
+// }
+// inline static string bold_red (string&& text) {
+//   return "\033[1m\033[38;5;1m"+text+"\033[0m";
+// }
+// inline static string bold_red (const string& text) {
+//   return "\033[1m\033[38;5;1m"+text+"\033[0m";
+// }
 
 template <typename Input>
-inline static bool is_u8 (Input&& in) {
+inline static bool is_u8 (const Input& in) {
   return typeid(in)==typeid(u8);
 }
 
-#ifdef DEBUG
-// Print variadic inputs
-template <typename Integral>
-static void print (Integral&& in) {
-  cerr << (is_u8(in) ? static_cast<u32>(in) : in) << '\n';
-}
-template <typename Integral, typename... Args>
-static void print (Integral&& in, Args&&... args) {
-  cerr << (is_u8(in) ? static_cast<u32>(in) : in) << '\t';
-  print(args...);
-}
-#endif
+// #ifdef DEBUG
+// // Print variadic inputs
+// template <typename Integral>
+// static void print (Integral&& in) {
+//   cerr << (is_u8(in) ? static_cast<u32>(in) : in) << '\n';
+// }
+// template <typename Integral, typename... Args>
+// static void print (Integral&& in, Args&&... args) {
+//   cerr << (is_u8(in) ? static_cast<u32>(in) : in) << '\t';
+//   print(args...);
+// }
+// #endif
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
 inline static chrono::time_point<chrono::high_resolution_clock> now () noexcept{
@@ -103,38 +104,38 @@ inline static void split (InIter first, InIter last, char delim, Vec& vOut) {
   }
 }
 
-inline static void wrap_text (string& text) {
-  constexpr auto width = TEXTWIDTH;
-  string out, word;
-  char last = '\0';
-  u64 pos = 0;
+// inline static void wrap_text (string& text) {
+//   constexpr auto width = TEXTWIDTH;
+//   string out, word;
+//   char last = '\0';
+//   u64 pos = 0;
 
-  for (auto c : text) {
-    if (++pos == width) {
-      if (word.empty())  
-        return;
+//   for (auto c : text) {
+//     if (++pos == width) {
+//       if (word.empty())  
+//         return;
 
-      auto p = word.end();
-      while (p!=word.begin() && *--p!=' ');
-      if (*p == ' ') 
-        word = string(++p, word.end());
+//       auto p = word.end();
+//       while (p!=word.begin() && *--p!=' ');
+//       if (*p == ' ') 
+//         word = string(++p, word.end());
 
-      out += "\n" + word;
-      pos  = word.length();
-      word.clear();
-    }
-    else if (c==' ' && last!=' ') {
-      out += word;
-      word.clear();
-    }
+//       out += "\n" + word;
+//       pos  = word.length();
+//       word.clear();
+//     }
+//     else if (c==' ' && last!=' ') {
+//       out += word;
+//       word.clear();
+//     }
 
-    word += c;
-    last  = c;
-  }
-  out += word;
+//     word += c;
+//     last  = c;
+//   }
+//   out += word;
   
-  text = move(out);
-}
+//   text = move(out);
+// }
 
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
 inline static void error (string&& msg) {
@@ -240,7 +241,7 @@ inline static double Power (double base, double exponent) {
     double d;
     int x[2];
   } u = { base };
-  u.x[1] = int(exponent * (u.x[1] - 1072632447) + 1072632447);
+  u.x[1] = int(exponent * (u.x[1]-1072632447) + 1072632447);
   u.x[0] = 0;
   return u.d;
 }
@@ -382,26 +383,26 @@ const FileType& type) {
   fIn.close();  fOut.close();
 }
 
-template <typename ValuePos, typename Value>
-inline static void show_progress (ValuePos pos, Value total) {
-  if (total>100 && pos%(total/100)==0) {
-    cerr << "Progress: [" << static_cast<int>((pos*100) / total) << "%]\r";
-  }
-}
-template <typename ValuePos, typename Value>
-inline static void show_progress (ValuePos pos, Value total, const string& msg){
-  if (total>100 && pos%(total/100)==0)
-    cerr << msg << "[" << static_cast<int>((pos*100) / total) << "%]\r";
-}
+// template <typename ValuePos, typename Value>
+// inline static void show_progress (ValuePos pos, Value total) {
+//   if (total>100 && pos%(total/100)==0) {
+//     cerr << "Progress: [" << static_cast<int>((pos*100) / total) << "%]\r";
+//   }
+// }
+// template <typename ValuePos, typename Value>
+// inline static void show_progress (ValuePos pos, Value total, const string& msg){
+//   if (total>100 && pos%(total/100)==0)
+//     cerr << msg << "[" << static_cast<int>((pos*100) / total) << "%]\r";
+// }
 
-template <typename ...Args>
-inline static string string_format(const string& format, Args... args) {
-  // Extra space for '\0'
-  auto size = size_t(snprintf(nullptr, 0, format.c_str(), args...) + 1);
-  unique_ptr<char[]> buf(new char[size]);
-  snprintf(buf.get(), size, format.c_str(), args...);
-  return string(buf.get(), buf.get()+size-1);  // We don't want the '\0' inside
-}
+// template <typename ...Args>
+// inline static string string_format(const string& format, Args... args) {
+//   // Extra space for '\0'
+//   auto size = size_t(snprintf(nullptr, 0, format.c_str(), args...) + 1);
+//   unique_ptr<char[]> buf(new char[size]);
+//   snprintf(buf.get(), size, format.c_str(), args...);
+//   return string(buf.get(), buf.get()+size-1);  // We don't want the '\0' inside
+// }
 
 template <typename Val, typename MinVal, typename MaxVal>
 inline static void keep_in_range (MinVal min, Val& val, MaxVal max) {
@@ -430,32 +431,6 @@ inline static string conv_to_string (FilterScale val) {
   case FilterScale::L:      return "L|large";        break;
   default:                  return "L|large";
   }
-}
-
-inline static void save_n_pos (const string& fileName) {
-  ifstream inFile(fileName);
-  ofstream NFile(fileName+"."+FMT_N);
-  u64 pos=0, beg=0, num=0;
-  bool begun = false;
-
-  for (char c; inFile.get(c); ++pos) {
-    if (c=='N' || c=='n') {
-      if (!begun) {
-        begun = true;
-        beg = pos;
-      }
-      ++num;
-    }
-    else {
-      begun = false;
-      if (num != 0)
-        NFile << beg << '\t' << beg+num-1 << '\n';
-      num = 0;
-      beg = 0;
-    }
-  }
-
-  inFile.close();  NFile.close();
 }
 }
 
