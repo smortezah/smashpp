@@ -51,7 +51,7 @@ class Param {   // Parameters
 
 class VizParam {
  public:
-  bool   verbose, inverse, regular, showPos, showNRC, showRedun;
+  bool   verbose, inverse, regular, showPos, showNRC, showRedun, showAnnot;
   string image;
   u8     link, color;
   float  opacity;
@@ -59,9 +59,9 @@ class VizParam {
   string posFile;
 
   VizParam () : verbose(false), inverse(true), regular(true), showPos(false),
-    showNRC(false), showRedun(false), image(IMAGE), link(LINK), color(COLOR),
-    opacity(OPAC), width(WDTH), space(SPC), mult(MULT), start(BEGN), min(MINP)
-    {}
+    showNRC(false), showRedun(false), showAnnot(false), image(IMAGE), 
+    link(LINK), color(COLOR), opacity(OPAC), width(WDTH), space(SPC), 
+    mult(MULT), start(BEGN), min(MINP) {}
 
   void parse (int, char**&);
 
@@ -378,6 +378,7 @@ inline void VizParam::parse (int argc, char**& argv) {
     else if (*i=="-sp" || *i=="--show-pos")         showPos=true;
     else if (*i=="-sn" || *i=="--show-nrc")         showNRC=true;
     else if (*i=="-sr" || *i=="--show-redun")       showRedun=true;
+    else if (*i=="-sa" || *i=="--show-annot")       showAnnot=true;
     else if (*i=="-ni" || *i=="--dont-show-inv")    inverse=false;
     else if (*i=="-nr" || *i=="--dont-show-reg")    regular=false;
     else if ((*i=="-o" || *i=="--out")   && i+1!=vArgs.end())
@@ -470,6 +471,8 @@ inline void VizParam::help () const {
   << "                             compression (NRC)"                     <<'\n'
   << "  " << b("-sr") << ", "  << b("--show-redun") << "          "
      "show self complexity              " << fit("SHOW")                  <<'\n'
+  << "  " << b("-sa") << ", "  << b("--show-annot") << "          "
+     "show annotation                   " << fit("SHOW")                  <<'\n'
   << "  " << b("-ni") << ", "  << b("--dont-show-inv") << "       "
      "do NOT show inverse maps       " << fit("NO SHOW")                  <<'\n'
   << "  " << b("-nr") << ", "  << b("--dont-show-reg") << "       "
