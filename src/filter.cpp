@@ -1,6 +1,7 @@
 #include <cmath>
 #include "filter.hpp"
 #include "segment.hpp"
+#include "string.hpp"
 using namespace smashpp;
 
 Filter::Filter (const Param& p) {
