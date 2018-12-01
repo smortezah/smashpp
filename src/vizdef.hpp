@@ -36,7 +36,7 @@ static constexpr double PAINT_CX        {180.0};
 static constexpr double PAINT_CY        {100.0};
 static const     string PAINT_BGCOLOR   {"white"};
 static constexpr u32    PAINT_SCALE     {100};
-static constexpr u32    PAINT_EXTRA     {150};
+static constexpr u32    PAINT_EXTRA     {120};
 static constexpr double PAINT_SHORT     {0.035};
 static constexpr u8     PAINT_LVL_SATUR {160};
 static constexpr u8     PAINT_LVL_VAL   {160};

@@ -16,7 +16,10 @@ void VizPaint::print_plot (VizParam& p) {
   cerr << "Plotting ...\r";
   config(p.width, p.space, n_refBases, n_tarBases);
 
-  print_head(fPlot, PAINT_CX+width+space+width+PAINT_CX, maxSize+PAINT_EXTRA);
+  auto Paint_Extra = PAINT_EXTRA;
+  if (p.showAnnot)  Paint_Extra+=30;
+
+  print_head(fPlot, PAINT_CX+width+space+width+PAINT_CX, maxSize+Paint_Extra);
 
   auto line   = make_unique<Line>();
   line->width = 2.0;
@@ -28,7 +31,7 @@ void VizPaint::print_plot (VizParam& p) {
   rect->color  = backColor;
   rect->origin = Point(0, 0);
   rect->width  = PAINT_CX + width + space + width + PAINT_CX;
-  rect->height = maxSize + PAINT_EXTRA;
+  rect->height = maxSize + Paint_Extra;
   rect->plot(fPlot);
 
   text->origin = Point(cx + width/2, cy - 15);
@@ -258,7 +261,9 @@ void VizPaint::print_plot (VizParam& p) {
   rect->plot_chromosome(fPlot);
 
   plot_legend(fPlot, p);
-  plot_guide(fPlot, max(n_refBases,n_tarBases));
+
+  if (p.showAnnot)  plot_annot(fPlot, max(n_refBases,n_tarBases));
+
   print_tail(fPlot);
 
   cerr << "Plotting finished.\n";
@@ -764,7 +769,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->plot(f);
 }
 
-inline void VizPaint::plot_guide (ofstream& f, i64 maxHeight) const {
+inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight) const {
   const auto relRedunX1 = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
   const auto relRedunX2 = 
     cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
