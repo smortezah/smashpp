@@ -2,6 +2,9 @@
 #include "filter.hpp"
 #include "segment.hpp"
 #include "string.hpp"
+#include "number.hpp"
+#include "file.hpp"
+#include "naming.hpp"
 using namespace smashpp;
 
 Filter::Filter (const Param& p) {

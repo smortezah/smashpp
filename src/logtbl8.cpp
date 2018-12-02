@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <fstream>
 #include "logtbl8.hpp"
-#include "fn.hpp"
+#include "exception.hpp"
 using namespace smashpp;
 
 LogTable8::LogTable8 (u8 k_) {

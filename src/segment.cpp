@@ -1,5 +1,4 @@
 #include "segment.hpp"
-#include "fn.hpp"
 using namespace smashpp;
 
 void Segment::partition (ofstream& posF, float filtered) {

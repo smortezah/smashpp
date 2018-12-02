@@ -11,7 +11,7 @@
 #include <numeric>
 #include <limits>
 #include <tgmath.h>
-#include "fn.hpp"
+#include "exception.hpp"
 using namespace std;
 using u8  = unsigned char;
 using u16 = unsigned short;

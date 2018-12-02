@@ -1,7 +1,7 @@
 #include <random>
 #include <fstream>
 #include "cmls4.hpp"
-#include "fn.hpp"
+#include "exception.hpp"
 using namespace smashpp;
 
 // W=[e/eps].      0 < eps:   error factor      < 1

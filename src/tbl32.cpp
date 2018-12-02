@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <fstream>
 #include "tbl32.hpp"
-#include "fn.hpp"
+#include "exception.hpp"
 using namespace smashpp;
 
 Table32::Table32 (u8 k_) {

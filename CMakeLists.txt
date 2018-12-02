@@ -17,8 +17,13 @@ add_executable(smashpp  src/main.cpp
                         src/def.hpp
                         src/par.hpp
                         src/assert.hpp
-                        src/fn.hpp
                         src/string.hpp
+                        src/time.hpp
+                        src/file.hpp
+                        src/exception.hpp
+                        src/container.hpp
+                        src/number.hpp
+                        src/naming.hpp
                         src/mdlpar.hpp
                         src/svg.cpp
                         src/vizpaint.cpp
