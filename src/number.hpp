@@ -1,9 +1,9 @@
 #ifndef PROJECT_NUMBER_HPP
 #define PROJECT_NUMBER_HPP
 
+#include <cmath>
 #include "def.hpp"
 #include "exception.hpp"
-// using namespace std;
 
 namespace smashpp {
 template <typename Input>

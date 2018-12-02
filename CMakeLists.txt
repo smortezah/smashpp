@@ -7,6 +7,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 
 add_executable(smashpp  src/main.cpp
+                        src/def.hpp
+                        src/par.hpp
+                        src/assert.hpp
+                        src/exception.hpp
+                        src/string.hpp
+                        src/time.hpp
+                        src/file.hpp
+                        src/container.hpp
+                        src/number.hpp
+                        src/naming.hpp
+                        src/mdlpar.hpp
                         src/fcm.cpp
                         src/tbl64.cpp
                         src/tbl32.cpp
@@ -14,17 +25,6 @@ add_executable(smashpp  src/main.cpp
                         src/logtbl8.cpp
                         src/filter.cpp
                         src/segment.cpp
-                        src/def.hpp
-                        src/par.hpp
-                        src/assert.hpp
-                        src/string.hpp
-                        src/time.hpp
-                        src/file.hpp
-                        src/exception.hpp
-                        src/container.hpp
-                        src/number.hpp
-                        src/naming.hpp
-                        src/mdlpar.hpp
                         src/svg.cpp
                         src/vizpaint.cpp
                         src/vizdef.hpp
