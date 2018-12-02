@@ -6,8 +6,9 @@
 #include <algorithm>
 #include "assert.hpp"
 #include "def.hpp"
-#include "fn.hpp"//todo remove
 #include "string.hpp"
+#include "container.hpp"
+#include "file.hpp"
 #include "vizdef.hpp"
 
 namespace smashpp {

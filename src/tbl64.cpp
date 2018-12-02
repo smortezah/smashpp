@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <fstream>
 #include "tbl64.hpp"
-#include "fn.hpp"
+#include "exception.hpp"
 using namespace smashpp;
 
 Table64::Table64 (u8 k_) {

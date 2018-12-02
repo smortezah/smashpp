@@ -1,6 +1,8 @@
 #include "vizpaint.hpp"
-#include "fn.hpp"//todo remove
+#include "exception.hpp"
 #include "string.hpp"
+#include "file.hpp"
+#include "number.hpp"
 using namespace smashpp;
 
 void VizPaint::print_plot (VizParam& p) {

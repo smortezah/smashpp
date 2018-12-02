@@ -1,8 +1,8 @@
 #ifndef PROJECT_STRING_HPP
 #define PROJECT_STRING_HPP
 
-// #include "def.hpp"
-// #include "fn.hpp"//todo remove
+#include "def.hpp"
+#include "number.hpp"
 // #include<string>
 
 namespace smashpp {
@@ -114,6 +114,29 @@ inline static string string_format (const string& format, Args... args) {
   unique_ptr<char[]> buf(new char[size]);
   snprintf(buf.get(), size, format.c_str(), args...);
   return string(buf.get(), buf.get()+size-1);  // We don't want the '\0' inside
+}
+
+inline static string conv_to_string (WType val) {
+  switch (val) {
+  case WType::RECTANGULAR:  return "0|rectangular";  break;
+  case WType::HAMMING:      return "1|hamming";      break;
+  case WType::HANN:         return "2|hann";         break;
+  case WType::BLACKMAN:     return "3|blackman";     break;
+  case WType::TRIANGULAR:   return "4|triangular";   break;
+  case WType::WELCH:        return "5|welch";        break;
+  case WType::SINE:         return "6|sine";         break;
+  case WType::NUTTALL:      return "7|nuttall";      break;
+  default:                  return "2|hann";
+  }
+}
+
+inline static string conv_to_string (FilterScale val) {
+  switch (val) {
+  case FilterScale::S:      return "S|small";        break;
+  case FilterScale::M:      return "M|medium";       break;
+  case FilterScale::L:      return "L|large";        break;
+  default:                  return "L|large";
+  }
 }
 
 }
