@@ -1,6 +1,7 @@
 #ifndef PROJECT_FILE_HPP
 #define PROJECT_FILE_HPP
 
+#include <iterator>
 #include "def.hpp"
 #include "file.hpp"
 #include "exception.hpp"

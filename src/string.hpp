@@ -3,10 +3,8 @@
 
 #include "def.hpp"
 #include "number.hpp"
-// #include<string>
 
 namespace smashpp {
-
 inline static string bold (string&& text) {
   return "\033[1m"+text+"\033[0m";
 }
@@ -138,7 +136,6 @@ inline static string conv_to_string (FilterScale val) {
   default:                  return "L|large";
   }
 }
-
 }
 
 #endif //PROJECT_STRING_HPP

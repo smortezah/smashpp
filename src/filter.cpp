@@ -1,4 +1,5 @@
 #include <cmath>
+#include <numeric>
 #include "filter.hpp"
 #include "segment.hpp"
 #include "string.hpp"
