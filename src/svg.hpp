@@ -2,6 +2,7 @@
 #define SVG_H_INCLUDED
 
 #include "par.hpp"
+#include "exception.hpp"
 
 namespace smashpp {
 struct RgbColor {

@@ -4,11 +4,11 @@
 #include <numeric>  // std::accumulate
 #include "fcm.hpp"
 #include "assert.hpp"
-#include "string.hpp"
 #include "container.hpp"
 #include "number.hpp"
 #include "file.hpp"
 #include "naming.hpp"
+#include "exception.hpp"
 using namespace smashpp;
 
 FCM::FCM (Param& p) {

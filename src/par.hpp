@@ -6,7 +6,7 @@
 #include <algorithm>
 #include "assert.hpp"
 #include "def.hpp"
-#include "string.hpp"
+#include "exception.hpp"
 #include "container.hpp"
 #include "file.hpp"
 #include "vizdef.hpp"
