@@ -1,6 +1,5 @@
 #include "vizpaint.hpp"
 #include "exception.hpp"
-#include "string.hpp"
 #include "file.hpp"
 #include "number.hpp"
 using namespace smashpp;

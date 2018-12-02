@@ -1,9 +1,9 @@
 #include <cmath>
 #include <numeric>
+#include "number.hpp"
 #include "filter.hpp"
 #include "segment.hpp"
 #include "string.hpp"
-#include "number.hpp"
 #include "file.hpp"
 #include "naming.hpp"
 using namespace smashpp;

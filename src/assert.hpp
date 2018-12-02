@@ -2,7 +2,6 @@
 #define PROJECT_ASSERT_HPP
 
 #include <stdexcept>
-#include "string.hpp"
 #include "exception.hpp"
 
 namespace smashpp {

@@ -3,6 +3,7 @@
 
 #include "def.hpp"
 #include "number.hpp"
+#include "exception.hpp"
 
 namespace smashpp {
 inline static string bold (string&& text) {
