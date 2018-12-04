@@ -1,6 +1,6 @@
 # Smash++
 
-[![Build Status](https://travis-ci.com/smortezah/smashpp?branch=master)](https://travis-ci.com/smortezah/smashpp)
+[![Build Status](https://travis-ci.com/smortezah/smashpp.svg?token=EWxsPpL9t9UvE93uKjH5&branch=master)](https://travis-ci.com/smortezah/smashpp)
 
 A tool to find and visualize rearrangements in DNA sequences.
 
