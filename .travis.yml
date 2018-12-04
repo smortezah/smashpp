@@ -1,3 +1,69 @@
 language: cpp
 
-script: cmake . && make -j4
+    ##########################################################################
+    # GCC on Linux
+    ##########################################################################
+
+    # GCC 5
+    - env: COMPILER=g++-5 BUILD_TYPE=Debug GSL_CXX_STANDARD=14
+      addons: &gcc5
+        apt:
+          packages: g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-5 BUILD_TYPE=Release GSL_CXX_STANDARD=14
+      addons: *gcc5
+
+    # GCC 6
+    - env: COMPILER=g++-6 BUILD_TYPE=Debug GSL_CXX_STANDARD=14
+      addons: &gcc6
+        apt:
+          packages: g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-6 BUILD_TYPE=Release GSL_CXX_STANDARD=14
+      addons: *gcc6
+
+    # GCC 7
+    - env: COMPILER=g++-7 BUILD_TYPE=Debug GSL_CXX_STANDARD=14
+      addons: &gcc7
+        apt:
+          packages: g++-7
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-7 BUILD_TYPE=Release GSL_CXX_STANDARD=14
+      addons: *gcc7
+
+    # GCC 7 c++17 
+    - env: COMPILER=g++-7 BUILD_TYPE=Debug GSL_CXX_STANDARD=17
+      addons: *gcc7
+
+    - env: COMPILER=g++-7 BUILD_TYPE=Release GSL_CXX_STANDARD=17
+      addons: *gcc7
+
+install:
+  # Set the ${CXX} variable properly
+  - export CXX=${COMPILER}
+  - ${CXX} --version
+
+  # Dependencies required by the CI are installed in ${TRAVIS_BUILD_DIR}/deps/
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir -p "${DEPS_DIR}"
+  - cd "${DEPS_DIR}"
+
+  # Travis machines have 2 cores
+  - JOBS=2
+
+# script: cmake . && make -j4
+
+before_script:
+  # have CMake to generate build files
+  - cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DGSL_CXX_STANDARD=$GSL_CXX_STANDARD
+  
+script:
+  # build and run tests
+  - cmake .
+  - make -j4
