@@ -1,4 +1,5 @@
 language: cpp
+license: GPL-3.0
 
 matrix:
   include:
