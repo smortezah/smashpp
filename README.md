@@ -1,6 +1,7 @@
 # Smash++
 
 [![Build Status](https://travis-ci.com/smortezah/smashpp.svg?token=EWxsPpL9t9UvE93uKjH5&branch=master)](https://travis-ci.com/smortezah/smashpp)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9f9f395ded7146c8a30b1e36c3ab98de)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=smortezah/smashpp&amp;utm_campaign=Badge_Grade)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 A tool to find and visualize rearrangements in DNA sequences.
