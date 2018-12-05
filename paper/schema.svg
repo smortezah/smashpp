@@ -15,7 +15,8 @@
    version="1.1"
    id="svg5768"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="schema.svg">
+   sodipodi:docname="schema.svg"
+   enable-background="new">
   <defs
      id="defs5762">
     <marker
@@ -316,7 +317,7 @@
       <path
          inkscape:connector-curvature="0"
          transform="scale(0.4)"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          d="M 5.77,0 -2.88,5 V -5 Z"
          id="path31626" />
     </marker>
@@ -380,7 +381,7 @@
          inkscape:connector-curvature="0"
          id="path40002"
          d="M 5.77,0 -2.88,5 V -5 Z"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          transform="scale(0.4)" />
     </marker>
     <marker
@@ -411,7 +412,7 @@
          inkscape:connector-curvature="0"
          id="path39982-7"
          d="M 5.77,0 -2.88,5 V -5 Z"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          transform="scale(0.4)" />
     </marker>
     <marker
@@ -427,7 +428,7 @@
          inkscape:connector-curvature="0"
          id="path41520"
          d="M 5.77,0 -2.88,5 V -5 Z"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          transform="scale(0.4)" />
     </marker>
     <marker
@@ -442,7 +443,7 @@
          inkscape:connector-curvature="0"
          id="path39992-3"
          d="M 5.77,0 -2.88,5 V -5 Z"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          transform="scale(0.4)" />
     </marker>
     <marker
@@ -517,7 +518,7 @@
       <path
          inkscape:connector-curvature="0"
          transform="scale(0.4)"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          d="M 5.77,0 -2.88,5 V -5 Z"
          id="path39706-9" />
     </marker>
@@ -532,7 +533,7 @@
       <path
          inkscape:connector-curvature="0"
          transform="scale(0.4)"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          d="M 5.77,0 -2.88,5 V -5 Z"
          id="path39696-4" />
     </marker>
@@ -548,7 +549,7 @@
       <path
          inkscape:connector-curvature="0"
          transform="scale(0.4)"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          d="M 5.77,0 -2.88,5 V -5 Z"
          id="path39726" />
     </marker>
@@ -563,7 +564,7 @@
       <path
          inkscape:connector-curvature="0"
          transform="scale(0.4)"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          d="M 5.77,0 -2.88,5 V -5 Z"
          id="path39676-1" />
     </marker>
@@ -578,7 +579,7 @@
       <path
          inkscape:connector-curvature="0"
          transform="scale(0.4)"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          d="M 5.77,0 -2.88,5 V -5 Z"
          id="path39686-7" />
     </marker>
@@ -732,7 +733,7 @@
          inkscape:connector-curvature="0"
          id="path33262"
          d="M 5.77,0 -2.88,5 V -5 Z"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          transform="scale(0.4)" />
     </marker>
     <marker
@@ -746,10 +747,20 @@
       <path
          inkscape:connector-curvature="0"
          transform="scale(0.4)"
-         style="fill:#000000;fill-opacity:0.88235294;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.88235294"
+         style="fill:#000000;fill-opacity:0.90196078;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:0.90196078"
          d="M 5.77,0 -2.88,5 V -5 Z"
          id="path4520-1" />
     </marker>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter1021">
+      <feBlend
+         inkscape:collect="always"
+         mode="darken"
+         in2="BackgroundImage"
+         id="feBlend1023" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -758,15 +769,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="342.20324"
-     inkscape:cy="801.30055"
+     inkscape:zoom="1"
+     inkscape:cx="401.80886"
+     inkscape:cy="893.19242"
      inkscape:document-units="mm"
      inkscape:current-layer="layer5"
      showgrid="false"
-     inkscape:window-width="1366"
-     inkscape:window-height="656"
-     inkscape:window-x="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="968"
+     inkscape:window-x="1280"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      showguides="true">
@@ -797,7 +808,7 @@
        id="rect8781-9-2-2-4"
        width="9.5797691"
        height="36.928623"
-       x="65.666061"
+       x="69.899399"
        y="37.287548"
        rx="1.5"
        ry="1.5" />
@@ -806,7 +817,7 @@
        id="rect8781-9-2-5-2-7-3-2-8"
        width="10.583333"
        height="13.442685"
-       x="174.18079"
+       x="184.23482"
        y="75.190544"
        rx="1.5"
        ry="1.5" />
@@ -815,7 +826,7 @@
        id="rect8781-9-2-5-2-7-3-5"
        width="10.583333"
        height="13.442685"
-       x="131.77646"
+       x="141.83049"
        y="75.190544"
        rx="1.5"
        ry="1.5" />
@@ -824,7 +835,7 @@
        id="rect8781-9-2-0-2"
        width="12.964583"
        height="48.652321"
-       x="91.779785"
+       x="101.83395"
        y="89.780029"
        rx="1.5"
        ry="1.5" />
@@ -833,7 +844,7 @@
        id="rect8781-9-2-06"
        width="12.964583"
        height="36.891655"
-       x="91.779785"
+       x="101.83395"
        y="37.302639"
        rx="1.5"
        ry="1.5" />
@@ -843,7 +854,7 @@
        width="10.583334"
        height="10.583333"
        x="15.107474"
-       y="37.305984"
+       y="39.95182"
        rx="1.5"
        ry="1.5" />
     <rect
@@ -869,7 +880,7 @@
        id="rect8781-2-5"
        width="9.5797052"
        height="48.820786"
-       x="65.666092"
+       x="69.899429"
        y="89.636803"
        rx="1.5"
        ry="1.5" />
@@ -878,7 +889,7 @@
        id="rect8781-9-2-5-8-2"
        width="10.847917"
        height="48.834953"
-       x="115.30615"
+       x="125.3603"
        y="89.629723"
        rx="1.5"
        ry="1.5" />
@@ -887,7 +898,7 @@
        id="rect8781-9-2-5-2-0-4"
        width="15.525567"
        height="13.442559"
-       x="150.80606"
+       x="160.86009"
        y="75.190613"
        rx="1.5"
        ry="1.5" />
@@ -896,13 +907,13 @@
        id="rect8781-9-2-5-82"
        width="10.847917"
        height="36.940903"
-       x="115.28436"
+       x="125.3385"
        y="37.281406"
        rx="1.5"
        ry="1.5" />
     <rect
        y="51.643124"
-       x="117.52335"
+       x="127.57754"
        height="8.2174673"
        width="7.6562009"
        id="rect5586-1"
@@ -915,7 +926,7 @@
        width="10.583333"
        height="10.583333"
        x="15.107478"
-       y="50.989357"
+       y="51.518524"
        rx="1.5"
        ry="1.5" />
     <rect
@@ -945,6 +956,99 @@
        y="126.4136"
        rx="1.5"
        ry="1.5" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="15.153909"
+       y="39.496029"
+       id="text877"><tspan
+         sodipodi:role="line"
+         id="tspan875"
+         x="15.153909"
+         y="39.496029"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332">Reference</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="17.075758"
+       y="64.416382"
+       id="text877-9"><tspan
+         sodipodi:role="line"
+         id="tspan875-9"
+         x="17.075758"
+         y="64.416382"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332">Target</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="15.153913"
+       y="91.199318"
+       id="text877-7"><tspan
+         sodipodi:role="line"
+         id="tspan875-7"
+         x="15.153913"
+         y="91.199318"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332">Reference</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="15.153913"
+       y="106.33918"
+       id="text877-4"><tspan
+         sodipodi:role="line"
+         id="tspan875-1"
+         x="15.153913"
+         y="106.33918"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332">Reference</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="15.153913"
+       y="125.94973"
+       id="text877-1"><tspan
+         sodipodi:role="line"
+         id="tspan875-91"
+         x="15.153913"
+         y="125.94973"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332">Reference</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="130.73421"
+       y="104.81746"
+       id="text877-3"><tspan
+         sodipodi:role="line"
+         id="tspan982"
+         x="130.73421"
+         y="104.81746">Reference</tspan><tspan
+         sodipodi:role="line"
+         id="tspan984"
+         x="130.73421"
+         y="108.34524">Pos</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="130.68173"
+       y="46.593922"
+       id="text877-3-7"><tspan
+         sodipodi:role="line"
+         id="tspan978"
+         x="130.68173"
+         y="46.593922">Target</tspan><tspan
+         sodipodi:role="line"
+         id="tspan980"
+         x="130.68173"
+         y="50.1217">Pos</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="147.04144"
+       y="74.62603"
+       id="text877-3-7-3"><tspan
+         sodipodi:role="line"
+         id="tspan1011"
+         x="147.04144"
+         y="74.62603">Final Pos</tspan></text>
   </g>
   <g
      inkscape:label="component"
@@ -955,7 +1059,7 @@
     <g
        style="fill:#5c0095;fill-opacity:0.93333333"
        id="g5988-7-8-6-9"
-       transform="matrix(0.26458333,0,0,0.26458333,14.369833,111.84874)">
+       transform="matrix(0.26458333,0,0,0.26458333,24.424006,111.84874)">
       <circle
          r="1.3039221"
          cy="30.072659"
@@ -1001,7 +1105,7 @@
     <g
        style="fill:#5c0095;fill-opacity:0.93333333"
        id="g5988-7-8-6"
-       transform="matrix(0.26458333,0,0,0.26458333,14.36984,52.601068)">
+       transform="matrix(0.26458333,0,0,0.26458333,24.424013,52.601068)">
       <circle
          r="1.3039221"
          cy="30.072659"
@@ -1114,7 +1218,7 @@
     <g
        style="fill:#5c0095;fill-opacity:0.93333333"
        id="g5988-7-8"
-       transform="matrix(0.26458333,0,0,0.26458333,-13.478639,52.601068)">
+       transform="matrix(0.26458333,0,0,0.26458333,-9.2453036,52.601068)">
       <circle
          r="1.3039221"
          cy="30.072659"
@@ -1136,13 +1240,13 @@
     </g>
     <rect
        y="51.643383"
-       x="117.52338"
+       x="127.57754"
        height="8.2174673"
        width="7.6562009"
        id="rect5586"
        style="opacity:0;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.19829677;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <g
-       transform="translate(11.962374,27.855901)"
+       transform="translate(11.962374,28.385068)"
        id="g27945">
       <rect
          ry="0.18678406"
@@ -1431,7 +1535,7 @@
     </g>
     <g
        id="g27945-33"
-       transform="translate(69.298915,39.507672)">
+       transform="translate(79.353088,39.507672)">
       <rect
          ry="0.18678406"
          rx="0.40780213"
@@ -1503,7 +1607,7 @@
     </g>
     <g
        id="g27945-5"
-       transform="translate(69.298915,24.757151)">
+       transform="translate(79.353088,24.757151)">
       <rect
          ry="0.18678406"
          rx="0.40780213"
@@ -1575,7 +1679,7 @@
     </g>
     <g
        id="g27945-8"
-       transform="translate(69.298915,15.1458)">
+       transform="translate(79.353088,15.1458)">
       <rect
          ry="0.18678406"
          rx="0.40780213"
@@ -1647,7 +1751,7 @@
     </g>
     <g
        id="g27945-33-8"
-       transform="translate(69.298915,68.554381)">
+       transform="translate(79.353088,68.554381)">
       <rect
          ry="0.18678406"
          rx="0.40780213"
@@ -1719,7 +1823,7 @@
     </g>
     <g
        id="g27945-33-9"
-       transform="translate(69.298915,83.624074)">
+       transform="translate(79.353088,83.624074)">
       <rect
          ry="0.18678406"
          rx="0.40780213"
@@ -1791,7 +1895,7 @@
     </g>
     <g
        id="g27945-33-89"
-       transform="translate(69.298915,103.28014)">
+       transform="translate(79.353088,103.28014)">
       <rect
          ry="0.18678406"
          rx="0.40780213"
@@ -1862,8 +1966,9 @@
       </g>
     </g>
     <g
-       transform="translate(12.256322,98.690122)"
-       id="g29582-6">
+       transform="translate(22.310495,98.690122)"
+       id="g29582-6"
+       style="stroke:none">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02645833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 105.77776,11.894503 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -1872,73 +1977,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-105.19124,18.218091)"
          id="g375-7-8-2-79-2-0"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-4"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-4"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-8"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-1"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -1949,23 +2054,23 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-9"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03406363;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03406363;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-3"
          y="17.749584"
          x="104.24193"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.03819442;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.03819442;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="17.749584"
            x="104.24193"
            id="tspan8074-5-7-1"
            sodipodi:role="line"
-           style="stroke-width:0.03819442">POS</tspan></text>
+           style="stroke:none;stroke-width:0.03819442">POS</tspan></text>
     </g>
     <g
-       style="stroke-width:0.96655542"
-       transform="matrix(1.0346484,0,0,1.0345552,24.8359,66.05766)"
+       style="stroke:none;stroke-width:0.96655542"
+       transform="matrix(1.0346484,0,0,1.0345552,34.890073,66.05766)"
        id="g29582-4">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02557344;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -1975,73 +2080,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-105.19124,18.218091)"
          id="g375-7-8-2-79-2-9"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-6"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-7"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-3"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-7"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-90"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-01"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2052,23 +2157,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-0"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03292439;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03292439;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-32"
          y="17.749584"
          x="104.24193"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.03691703;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.03691703;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="17.749584"
            x="104.24193"
            id="tspan8074-5-7-17"
            sodipodi:role="line"
-           style="stroke-width:0.03691703">POS</tspan></text>
+           style="stroke:none;stroke-width:0.03691703">POS</tspan></text>
     </g>
     <g
-       transform="translate(9.1129549,14.806233)"
-       id="g29904">
+       transform="translate(19.167127,14.806233)"
+       id="g29904"
+       style="stroke:none;stroke-opacity:1">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02645833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 167.57007,63.556946 3.40477,-0.01711 2.344,2.514859 -0.0171,4.550695 -5.83431,0.01711 z"
@@ -2077,73 +2183,73 @@
       <g
          transform="matrix(0.30644602,0,0,0.30644768,-50.708668,70.099047)"
          id="g375-7-8-2-79-2-9-5"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-6-4"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-7-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-7-2"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-3-1"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-7-7"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-1-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-2-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-2-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-1-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-5-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-0-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-90-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-4-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-01-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-3-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-7-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-4-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-1-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-1-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-3-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.00203168;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.00203168;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2154,23 +2260,24 @@
          height="2.9366846"
          width="7.3403382"
          id="rect478-80-2-2-8-9-0-9"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03406363;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03406363;stroke-opacity:1" />
       <text
          transform="scale(1.0124125,0.98773968)"
          id="text1289-0-4-8-4-2-32-7"
          y="70.251335"
          x="165.43965"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:3.06159258px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.03819443;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:3.06159258px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.03819443;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="70.251335"
            x="165.43965"
            id="tspan8074-5-7-17-2"
            sodipodi:role="line"
-           style="stroke-width:0.03819443">SVG</tspan></text>
+           style="stroke:none;stroke-width:0.03819443;stroke-opacity:1">SVG</tspan></text>
     </g>
     <g
        id="g30325-2"
-       transform="translate(-41.259212,41.667605)">
+       transform="translate(-41.259212,44.31344)"
+       style="stroke:none">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02645833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -2179,73 +2286,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2256,23 +2363,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03406363;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03406363;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.03819442;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.03819442;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8"
            sodipodi:role="line"
-           style="stroke-width:0.03819442">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.03819442">SEQ</tspan></text>
     </g>
     <g
        id="g30325-2-0"
-       transform="translate(-41.259212,55.35098)">
+       transform="translate(-41.259212,55.880147)"
+       style="stroke:none">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02645833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -2281,73 +2389,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-7"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-0"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-9"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-2"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-1"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2358,23 +2466,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-6"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03406363;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03406363;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-8"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.03819442;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.03819442;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-4"
            sodipodi:role="line"
-           style="stroke-width:0.03819442">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.03819442">SEQ</tspan></text>
     </g>
     <g
        id="g30325-2-3"
-       transform="translate(-41.259212,96.049461)">
+       transform="translate(-41.259212,96.049461)"
+       style="stroke:none">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02645833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -2383,73 +2492,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-75"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-2"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-5"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-0"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-5"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-73"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2460,23 +2569,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-2"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03406363;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03406363;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-2"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.03819442;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.03819442;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-1"
            sodipodi:role="line"
-           style="stroke-width:0.03819442">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.03819442">SEQ</tspan></text>
     </g>
     <g
        id="g30325-2-2"
-       transform="translate(-41.259212,111.11915)">
+       transform="translate(-41.259212,111.11915)"
+       style="stroke:none">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02645833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -2485,73 +2595,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-2"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-29"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-4"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-3"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-56"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-12"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-79"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2562,23 +2672,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-25"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03406363;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03406363;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-1"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.03819442;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.03819442;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-9"
            sodipodi:role="line"
-           style="stroke-width:0.03819442">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.03819442">SEQ</tspan></text>
     </g>
     <g
        id="g30325-2-1"
-       transform="translate(-41.285101,130.77522)">
+       transform="translate(-41.285101,130.77522)"
+       style="stroke:none">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02645833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -2587,73 +2698,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-20"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-6"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-7"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-4"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-9"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-44"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-128"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2664,24 +2775,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-66"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03406363;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03406363;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-3"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.03819442;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.03819442;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-99"
            sodipodi:role="line"
-           style="stroke-width:0.03819442">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.03819442">SEQ</tspan></text>
     </g>
     <g
-       style="stroke-width:1.12308741"
+       style="stroke:none;stroke-width:1.12308741"
        id="g30325-2-5"
-       transform="matrix(0.89025508,0,0,0.89055023,15.644433,42.7427)">
+       transform="matrix(0.89025508,0,0,0.89055023,19.877769,42.7427)">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02971502;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -2690,73 +2801,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-1"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-3"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-99"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-1"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-3"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-33"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-95"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-53"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-86"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-03"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-18"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2767,24 +2878,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-0"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03825643;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03825643;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-5"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.04289567;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.04289567;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-11"
            sodipodi:role="line"
-           style="stroke-width:0.04289567">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.04289567">SEQ</tspan></text>
     </g>
     <g
-       style="stroke-width:1.12308741"
+       style="stroke:none;stroke-width:1.12308741"
        id="g30325-2-5-0"
-       transform="matrix(0.89025508,0,0,0.89055022,15.644433,52.354051)">
+       transform="matrix(0.89025508,0,0,0.89055022,19.877769,52.354051)">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02971502;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -2793,73 +2904,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-1-0"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-3-0"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-0-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-99-5"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-1-4"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-3-2"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-4-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-5-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-8-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-5-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-7-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-33-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-8-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-95-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-53-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-86-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-03-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-3-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-6-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-18-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-7-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2870,24 +2981,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-0-1"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03825643;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03825643;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-5-5"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.04289567;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.04289567;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-11-6"
            sodipodi:role="line"
-           style="stroke-width:0.04289567">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.04289567">SEQ</tspan></text>
     </g>
     <g
-       style="stroke-width:1.12308741"
+       style="stroke:none;stroke-width:1.12308741"
        id="g30325-2-5-1"
-       transform="matrix(0.89025508,0,0,0.89055022,15.644433,67.104572)">
+       transform="matrix(0.89025508,0,0,0.89055022,19.877769,67.104572)">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02971502;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -2896,73 +3007,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-1-2"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-3-2"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-0-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-99-2"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-1-8"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-3-1"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-4-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-5-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-8-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-5-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-7-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-33-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-8-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-95-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-53-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-86-37"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-03-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-3-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-6-37"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-18-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-7-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -2973,24 +3084,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-0-13"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03825643;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03825643;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-5-6"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.04289567;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.04289567;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-11-4"
            sodipodi:role="line"
-           style="stroke-width:0.04289567">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.04289567">SEQ</tspan></text>
     </g>
     <g
-       style="stroke-width:1.12308741"
+       style="stroke:none;stroke-width:1.12308741"
        id="g30325-2-5-1-0"
-       transform="matrix(0.89025508,0,0,0.89055022,15.644433,96.151281)">
+       transform="matrix(0.89025508,0,0,0.89055022,19.877769,96.151281)">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02971502;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -2999,73 +3110,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-1-2-5"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-3-2-8"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-0-9-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-99-2-0"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-1-8-9"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-3-1-9"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-4-2-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-5-4-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-8-7-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-5-8-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-7-6-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-33-3-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-8-7-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-95-7-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-53-2-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-86-37-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-03-2-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-3-5-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-6-37-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-18-6-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-7-8-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -3076,24 +3187,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-0-13-3"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03825643;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03825643;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-5-6-8"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.04289567;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.04289567;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-11-4-7"
            sodipodi:role="line"
-           style="stroke-width:0.04289567">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.04289567">SEQ</tspan></text>
     </g>
     <g
-       style="stroke-width:1.12308741"
+       style="stroke:none;stroke-width:1.12308741"
        id="g30325-2-5-1-3"
-       transform="matrix(0.89025508,0,0,0.89055022,15.644433,111.22097)">
+       transform="matrix(0.89025508,0,0,0.89055022,19.877769,111.22097)">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02971502;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -3102,73 +3213,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-1-2-0"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-3-2-0"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-0-9-50"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-99-2-3"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-1-8-1"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-3-1-8"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-4-2-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-5-4-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-8-7-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-5-8-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-7-6-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-33-3-03"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-8-7-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-95-7-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-53-2-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-86-37-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-03-2-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-3-5-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-6-37-92"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-18-6-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-7-8-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -3179,24 +3290,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-0-13-30"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03825643;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03825643;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-5-6-3"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.04289567;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.04289567;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-11-4-3"
            sodipodi:role="line"
-           style="stroke-width:0.04289567">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.04289567">SEQ</tspan></text>
     </g>
     <g
-       style="stroke-width:1.12308741"
+       style="stroke:none;stroke-width:1.12308741"
        id="g30325-2-5-1-7"
-       transform="matrix(0.89025508,0,0,0.89055022,15.644433,130.87704)">
+       transform="matrix(0.89025508,0,0,0.89055022,19.877769,130.87704)">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02971502;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 58.962335,-2.498475 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -3205,73 +3316,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-152.00666,3.825113)"
          id="g375-7-8-2-79-2-3-0-1-2-4"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2-0-5-3-2-9"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6-2-8-0-9-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9-1-5-99-2-1"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1-5-5-1-8-94"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0-6-0-3-1-2"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4-5-7-4-2-06"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2-0-3-5-4-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7-0-8-8-7-9"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4-3-2-5-8-5"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0-4-3-7-6-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3-6-0-33-3-1"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2-6-7-8-7-14"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8-0-7-95-7-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0-2-7-53-2-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3-5-6-86-37-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7-8-9-03-2-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0-95-1-3-5-33"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0-0-1-6-37-924"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3-6-9-18-6-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4-0-0-7-8-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.16430902;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.16430902;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -3282,24 +3393,24 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9-8-8-0-13-9"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03825643;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03825643;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2-37-9-5-6-9"
          y="2.9442368"
          x="58.161739"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.04289567;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.04289567;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="2.9442368"
            x="58.161739"
            id="tspan8074-5-7-8-8-11-4-38"
            sodipodi:role="line"
-           style="stroke-width:0.04289567">SEQ</tspan></text>
+           style="stroke:none;stroke-width:0.04289567">SEQ</tspan></text>
     </g>
     <g
        style="fill:#5c0095;fill-opacity:0.93333333"
        id="g11944-3"
-       transform="matrix(0.01916464,0,0,0.01916464,152.79614,76.139388)">
+       transform="matrix(0.01916464,0,0,0.01916464,162.85037,76.139388)">
       <g
          style="fill:#5c0095;fill-opacity:0.93333333"
          id="g11884-2">
@@ -3311,7 +3422,7 @@
         <polygon
            style="fill:#5c0095;fill-opacity:0.93333333"
            id="polygon11876-5"
-           points="411.188,506.812 210.375,506.812 153,545.062 153,573.75 468.562,573.75 468.562,545.062 " />
+           points="210.375,506.812 153,545.062 153,573.75 468.562,573.75 468.562,545.062 411.188,506.812 " />
         <rect
            style="fill:#5c0095;fill-opacity:0.93333333"
            id="rect11878-4"
@@ -3322,11 +3433,11 @@
         <polygon
            style="fill:#5c0095;fill-opacity:0.93333333"
            id="polygon11880-3"
-           points="66.938,200.268 216.667,95.625 169.39,95.625 66.938,167.229 " />
+           points="216.667,95.625 169.39,95.625 66.938,167.229 66.938,200.268 " />
         <polygon
            style="fill:#5c0095;fill-opacity:0.93333333"
            id="polygon11882-9"
-           points="535.5,95.625 259.201,95.625 66.938,229.997 66.938,353.812 535.5,353.812 " />
+           points="66.938,229.997 66.938,353.812 535.5,353.812 535.5,95.625 259.201,95.625 " />
       </g>
       <g
          style="fill:#5c0095;fill-opacity:0.93333333"
@@ -3400,7 +3511,7 @@
     <g
        style="display:inline;fill:#5c0095;fill-opacity:0.93333333"
        id="g6215-4"
-       transform="matrix(0.26458333,0,0,0.26458333,22.464416,60.142107)">
+       transform="matrix(0.26458333,0,0,0.26458333,26.697752,60.142107)">
       <circle
          r="1.3039221"
          cy="225.49931"
@@ -3421,8 +3532,9 @@
          style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.06519613;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.0651961, 0.19558829;stroke-dashoffset:0;stroke-opacity:1" />
     </g>
     <g
-       transform="translate(12.234525,40.428837)"
-       id="g29582">
+       transform="translate(22.288698,40.428837)"
+       id="g29582"
+       style="stroke:none">
       <path
          style="fill:#ffffff;fill-opacity:0.93333333;stroke:none;stroke-width:0.02645833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 105.77776,11.894503 3.29075,-0.01654 2.2655,2.43086 -0.0165,4.398697 -5.63893,0.01654 z"
@@ -3431,73 +3543,73 @@
       <g
          transform="matrix(0.29618373,0,0,0.29621201,-105.19124,18.218091)"
          id="g375-7-8-2-79-2"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
         <g
            id="g810-1-0-6-8-7-2-2"
            transform="matrix(-0.04618913,0,0,0.05233755,732.87942,-22.697369)"
-           style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+           style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
           <g
              id="g748-2-6-1-6-2-0-6"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
             <g
                id="Icons_20_-0-6-8-8-0-2-9"
-               style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+               style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
               <g
                  id="g745-7-4-51-2-1-3-1"
-                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1">
+                 style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1">
                 <path
                    id="path735-3-6-1-0-6-75-0"
                    d="M 418.152,0 H 203.408 C 190.981,0 179.083,4.953 170.307,13.755 L 42.654,142.01 c -8.715,8.754 -13.602,20.597 -13.602,32.944 v 272.243 c 0,25.789 20.916,46.697 46.705,46.697 h 342.395 c 25.788,0 46.69,-20.908 46.69,-46.697 V 46.697 C 464.842,20.91 443.94,0 418.152,0 Z m 13.762,447.197 c 0,7.597 -6.175,13.769 -13.763,13.769 H 75.757 c -7.605,0 -13.781,-6.172 -13.781,-13.769 V 184.238 h 131.322 c 12.088,0 21.928,-9.839 21.928,-21.939 V 32.927 h 202.926 c 7.587,0 13.763,6.172 13.763,13.77 v 400.5 z"
                    inkscape:connector-curvature="0"
-                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+                   style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
               </g>
             </g>
           </g>
           <g
              id="g750-5-2-3-2-1-9-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g752-6-8-0-4-9-2-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g754-7-9-6-9-4-28-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g756-7-6-4-8-9-9-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g758-4-0-4-1-9-7-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g760-0-7-7-5-6-3-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g762-6-0-5-6-9-6-2"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g764-4-1-3-4-4-1-8"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g766-7-0-8-6-2-2-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g768-4-1-2-8-0-9-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g770-8-3-7-6-2-3-7"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g772-5-7-3-3-3-1-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g774-8-7-5-5-6-9-0"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g776-2-2-3-7-8-4-3"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
           <g
              id="g778-6-6-7-4-9-7-4"
-             style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:1.03670382;stroke-opacity:1" />
+             style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:1.03670382;stroke-opacity:1" />
         </g>
       </g>
       <rect
@@ -3508,38 +3620,32 @@
          height="2.8385963"
          width="7.0945244"
          id="rect478-80-2-2-8-9"
-         style="fill:#5c0095;fill-opacity:0.93333333;stroke:#000000;stroke-width:0.03406363;stroke-opacity:1" />
+         style="fill:#5c0095;fill-opacity:0.93333333;stroke:none;stroke-width:0.03406363;stroke-opacity:1" />
       <text
          transform="scale(1.0123669,0.98778417)"
          id="text1289-0-4-8-4-2"
          y="17.749584"
          x="104.24193"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.03819442;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.95919895px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.03819442;stroke-opacity:1"
          xml:space="preserve"><tspan
            y="17.749584"
            x="104.24193"
            id="tspan8074-5-7"
            sodipodi:role="line"
-           style="stroke-width:0.03819442">POS</tspan></text>
+           style="stroke:none;stroke-width:0.03819442">POS</tspan></text>
     </g>
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="arrow"
-     style="display:inline"
+     style="display:inline;filter:url(#filter1021)"
      sodipodi:insensitive="true">
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker41512)"
-       d="M 41.469008,79.239222 V 91.341147"
-       id="path5917-2"
-       inkscape:connector-type="orthogonal"
-       inkscape:connector-curvature="0" />
     <path
        inkscape:connector-curvature="0"
        inkscape:connector-type="orthogonal"
        id="path2728-7"
-       d="m 40.781357,41.650754 v 8.823341"
+       d="m 40.781356,45.242561 v 5.744426"
        style="fill:none;fill-opacity:0;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker31628)" />
     <g
        id="g816-6"
@@ -3666,21 +3772,21 @@
        rx="0.23313038"
        style="opacity:1;fill:#000000;fill-opacity:0.90196078;stroke:#000000;stroke-width:0.92604166;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078"
        id="path8737-4-0-9"
-       cx="85.125191"
+       cx="93.062698"
        cy="67.9328" />
     <ellipse
        ry="0.26458332"
        rx="0.23313038"
        style="opacity:1;fill:#000000;fill-opacity:0.90196078;fill-rule:nonzero;stroke:#000000;stroke-width:0.92604166;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;paint-order:normal"
        id="path8737-7"
-       cx="80.969505"
+       cx="87.319511"
        cy="43.448025" />
     <ellipse
        ry="0.26458332"
        rx="0.23313038"
        style="opacity:1;fill:#000000;fill-opacity:0.90196078;stroke:#000000;stroke-width:0.92604166;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078"
        id="path8737-7-5"
-       cx="82.997231"
+       cx="90.191101"
        cy="53.182278" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker32472)"
@@ -3702,7 +3808,7 @@
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker40004)"
-       d="M 46.867845,96.979507 H 64.535456"
+       d="M 46.878863,96.979507 H 68.778918"
        id="path6054"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
@@ -3714,73 +3820,73 @@
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39984-6)"
-       d="M 46.821854,112.0492 H 64.582086"
+       d="M 46.821854,112.0492 H 68.836718"
        id="path6221"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker41522)"
-       d="m 40.922888,123.28251 v 2.60529"
+       d="m 40.922888,123.09557 v 2.79223"
        id="path5917-2-0-6"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39994-7)"
-       d="M 46.946857,131.70528 H 64.625623"
+       d="M 46.976803,131.70528 H 68.890685"
        id="path6223"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker40262)"
-       d="m 61.987776,67.932797 h 2.667575"
+       d="m 66.221112,67.932797 h 2.667575"
        id="path6305"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker40242-7)"
-       d="M 61.867317,53.182277 H 64.63909"
+       d="m 66.100653,53.182277 h 2.771773"
        id="path6326"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker40252-2)"
-       d="m 61.87422,43.57092 h 2.76487"
+       d="m 66.107556,43.57092 h 2.76487"
        id="path6832"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39718-1)"
-       d="M 75.169269,43.570885 H 90.661641"
+       d="M 77.817023,43.570885 H 100.7425"
        id="path6836"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39708-0)"
-       d="M 75.165267,53.181469 H 90.687098"
+       d="M 77.811101,53.181469 H 100.78017"
        id="path6838"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39698-0)"
-       d="m 75.207177,67.932757 h 15.50686"
+       d="m 77.87312,67.932757 h 22.94691"
        id="path6840"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39728)"
-       d="M 75.209426,131.70481 H 90.552804"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687502;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39728)"
+       d="M 77.864304,131.70481 H 100.68565"
        id="path7095"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39678-0)"
-       d="M 75.193936,112.04922 H 90.631791"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687502;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39678-0)"
+       d="M 77.841265,112.04922 H 100.80314"
        id="path7097"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39688-3)"
-       d="m 75.194384,96.979526 15.438119,10e-7"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687502;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker39688-3)"
+       d="m 77.84193,96.979526 22.96227,10e-7"
        id="path7099"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0" />
@@ -3788,133 +3894,125 @@
        inkscape:connector-curvature="0"
        inkscape:connector-type="orthogonal"
        id="path6770"
-       d="m 126.02119,55.233839 h 2.09859 v 23.076445"
+       d="m 136.07542,55.233839 h 2.09859 v 23.076445"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
     <path
        inkscape:connector-curvature="0"
        inkscape:connector-type="orthogonal"
        id="path6774"
-       d="m 128.2357,78.332344 h 2.53786"
+       d="m 138.28993,78.332344 h 2.53786"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker34082-4)" />
     <path
        inkscape:connector-curvature="0"
        inkscape:connector-type="orthogonal"
        id="path3312"
-       d="M 46.773426,56.254305 H 61.930604"
+       d="M 46.773424,56.783471 H 65.965498"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
     <path
        inkscape:connector-curvature="0"
        id="path6617"
-       d="m 104.68564,43.580617 c 9.53774,0 9.53774,0 9.53774,0"
+       d="m 114.73987,43.580617 c 9.53774,0 9.53774,0 9.53774,0"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker35618-1)" />
     <path
        inkscape:connector-curvature="0"
        id="path6617-5"
-       d="m 104.68564,53.713954 c 9.5172,0 9.5172,0 9.5172,0"
+       d="m 114.73987,53.713954 c 9.5172,0 9.5172,0 9.5172,0"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker35272-0)" />
     <path
        inkscape:connector-curvature="0"
        id="path6617-9"
-       d="m 104.68564,68.001453 c 9.53774,0 9.53774,0 9.53774,0"
+       d="m 114.73987,68.001453 c 9.53774,0 9.53774,0 9.53774,0"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker34932-2)" />
     <path
        inkscape:connector-curvature="0"
        id="path6617-0"
-       d="m 104.69459,97.324345 c 9.43708,0 9.43708,0 9.43708,0"
+       d="m 114.74882,97.324345 c 9.43708,0 9.43708,0 9.43708,0"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker34598-7)" />
     <path
        inkscape:connector-curvature="0"
        id="path6617-06"
-       d="m 104.69459,111.44954 c 9.43709,0 9.43709,0 9.43709,0"
+       d="m 114.74882,111.44954 c 9.43709,0 9.43709,0 9.43709,0"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker34102)" />
     <path
        inkscape:connector-curvature="0"
        id="path6617-1"
-       d="m 104.69459,131.74867 c 9.43708,0 9.43708,0 9.43708,0"
+       d="m 114.74882,131.74867 c 9.43708,0 9.43708,0 9.43708,0"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker35970)" />
     <path
        inkscape:connector-curvature="0"
        id="path2892"
-       d="m 165.93333,81.766214 h 7.26806"
+       d="m 175.98756,81.766214 h 7.26806"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker33254-6)" />
     <path
        inkscape:connector-curvature="0"
        inkscape:connector-type="orthogonal"
        id="path6766"
-       d="m 126.1056,114.35518 h 2.14692 V 85.428849"
+       d="m 136.15983,114.35518 h 2.14692 V 85.428849"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
     <path
        inkscape:connector-curvature="0"
        id="path4653"
-       d="m 128.24928,85.428848 h 2.52135"
+       d="m 138.30351,85.428848 h 2.52135"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker33760-4)" />
     <path
        inkscape:connector-curvature="0"
        inkscape:connector-type="orthogonal"
        id="path5161"
-       d="M 25.631191,41.5457 H 40.781356"
-       style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
+       d="M 25.631191,45.242561 H 40.781356"
+       style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke:#000000;stroke-width:0.39700001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
     <path
        inkscape:connector-curvature="0"
        id="path6210"
-       d="M 61.87422,43.57092 V 67.932796"
+       d="M 66.107556,43.57092 V 67.932796"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
     <path
        inkscape:connector-curvature="0"
        inkscape:connector-type="orthogonal"
        id="path6218"
-       d="m 142.29197,81.912726 h 7.48507"
+       d="m 152.3462,81.912726 h 7.48507"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker33264)" />
     <path
-       inkscape:connector-curvature="0"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker41512)"
+       d="M 41.469008,79.239222 V 91.341147"
+       id="path5917-2"
        inkscape:connector-type="orthogonal"
-       id="path13834"
-       d="m 81.221168,77.06093 v 2.178293 h -39.75216"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.40224218;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
-    <path
-       inkscape:connector-curvature="0"
-       id="path13851"
-       d="m 80.990357,43.571136 0.235481,33.508483"
-       style="fill:none;stroke:#000000;stroke-width:0.39101434;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
-    <path
-       inkscape:connector-curvature="0"
-       id="path13851-9"
-       d="m 83.034866,53.482687 0.235291,29.02602"
-       style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
-    <path
-       inkscape:connector-curvature="0"
-       inkscape:connector-type="orthogonal"
-       id="path16325"
-       d="m 52.846826,103.11091 v 0.0402 H 40.785981"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
-    <path
-       inkscape:connector-curvature="0"
-       id="path18502"
-       d="m 53.07282,82.38612 -0.0068,20.72479"
-       style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
+       inkscape:connector-curvature="0" />
     <path
        inkscape:connector-curvature="0"
        inkscape:connector-type="orthogonal"
        id="path18510"
-       d="M 56.302436,85.754573 V 123.07761 H 40.920225"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
-    <path
-       inkscape:connector-curvature="0"
-       inkscape:connector-type="orthogonal"
-       id="path26349"
-       d="M 83.270157,82.508707 V 82.38612 H 53.072821"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.40401965;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
-    <path
-       inkscape:connector-curvature="0"
-       inkscape:connector-type="orthogonal"
-       id="path26351"
-       d="M 84.995663,68.314647 V 85.74895 H 56.302436"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.40345871;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
+       d="M 58.206199,85.760185 V 123.08323 H 40.964503"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078" />
     <path
        inkscape:connector-curvature="0"
        id="path4512"
-       d="m 25.59346,56.278184 h 8.369509"
+       d="m 25.59346,56.807351 h 8.369509"
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.90196078;marker-end:url(#marker4522-2)" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687496;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 93.059894,68.197384 V 85.754571 H 58.197339"
+       id="path3649"
+       inkscape:connector-type="orthogonal"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 55.033332,82.693112 V 103.22961 H 40.78598"
+       id="path3655"
+       inkscape:connector-type="orthogonal"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 90.156423,53.182278 V 82.693112 H 55.033332"
+       id="path3657"
+       inkscape:connector-type="orthogonal"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.39687499;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 87.319511,43.712608 V 79.23922 H 41.469008"
+       id="path3659"
+       inkscape:connector-type="orthogonal"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#path8737-7" />
   </g>
   <g
      style="display:inline"
@@ -3934,63 +4032,146 @@
     <rect
        style="display:inline;fill:#000000;fill-opacity:0.01960784;fill-rule:nonzero;stroke:#000000;stroke-width:0.26458332;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686"
        id="rect3636"
-       width="17.537365"
+       width="19.037872"
        height="105.23788"
-       x="31.492687"
+       x="31.492685"
        y="35.18811"
-       rx="0.21120209"
+       rx="0.22927266"
        ry="0.48799688" />
     <rect
        style="display:inline;fill:#000000;fill-opacity:0.01960784;fill-rule:nonzero;stroke:#000000;stroke-width:0.26458332;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686"
        id="rect3590"
-       width="17.383657"
+       width="19.44733"
        height="105.24586"
-       x="59.909988"
+       x="63.39497"
        y="35.184116"
-       rx="0.20935105"
+       rx="0.23420382"
        ry="0.48803392" />
     <rect
        style="display:inline;fill:#000000;fill-opacity:0.01960784;fill-rule:nonzero;stroke:#000000;stroke-width:0.26458332;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686"
        id="rect3592"
-       width="20.44676"
+       width="19.318529"
        height="105.22488"
-       x="88.054413"
+       x="97.611519"
        y="35.194614"
-       rx="0.24623995"
+       rx="0.23265269"
        ry="0.48793659" />
     <rect
        style="display:inline;fill:#000000;fill-opacity:0.01960784;fill-rule:nonzero;stroke:#000000;stroke-width:0.26458332;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686"
        id="rect3594"
-       width="15.615926"
+       width="15.428837"
        height="105.53644"
-       x="170.77913"
+       x="180.83316"
        y="35.23727"
-       rx="0.18806224"
+       rx="0.18580914"
        ry="0.48938131" />
     <rect
        style="display:inline;fill:#000000;fill-opacity:0.01960784;fill-rule:nonzero;stroke:#000000;stroke-width:0.26458332;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686"
        id="rect3596"
        width="20.134405"
        height="105.13996"
-       x="147.84685"
+       x="157.90088"
        y="35.237068"
        rx="0.24247821"
        ry="0.48754278" />
     <rect
-       style="display:inline;fill:#000000;fill-opacity:0.01960784;fill-rule:nonzero;stroke:#000000;stroke-width:0.26458332;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686"
+       style="display:inline;fill:#000000;fill-opacity:0.01960784;fill-rule:nonzero;stroke:#000000;stroke-width:0.26458323;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686"
        id="rect3598"
-       width="33.083553"
+       width="33.770416"
        height="105.13996"
-       x="111.79666"
+       x="120.79247"
        y="35.237068"
-       rx="0.3984246"
+       rx="0.40669644"
        ry="0.48754278" />
     <rect
        style="display:inline;opacity:0;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.19829677;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3624"
        width="7.6562009"
        height="8.2174673"
-       x="117.52335"
+       x="126.51919"
        y="51.643124" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="20.303288"
+       y="32.794643"
+       id="text2784"><tspan
+         sodipodi:role="line"
+         id="tspan2782"
+         x="20.303288"
+         y="32.794643"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.82222223px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;stroke-width:0.26458332">Inputs</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="40.99955"
+       y="29.266865"
+       id="text2784-1"><tspan
+         sodipodi:role="line"
+         id="tspan2804"
+         x="40.99955"
+         y="29.266865">Reference-based</tspan><tspan
+         sodipodi:role="line"
+         id="tspan2806"
+         x="40.99955"
+         y="32.794643">Compression</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="73.198097"
+       y="29.266865"
+       id="text2784-1-3"><tspan
+         sodipodi:role="line"
+         id="tspan2829"
+         x="73.198097"
+         y="29.266865">Filtering &amp;</tspan><tspan
+         sodipodi:role="line"
+         id="tspan2831"
+         x="73.198097"
+         y="32.794643">Segmentation</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="107.21137"
+       y="29.266865"
+       id="text2784-1-3-1"><tspan
+         sodipodi:role="line"
+         id="tspan2854"
+         x="107.21137"
+         y="29.266865">Reference-free</tspan><tspan
+         sodipodi:role="line"
+         id="tspan2856"
+         x="107.21137"
+         y="32.794643">Compression</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="137.58182"
+       y="32.794643"
+       id="text2784-1-3-6"><tspan
+         sodipodi:role="line"
+         id="tspan2868"
+         x="137.58182"
+         y="32.794643">Positions</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="168.05592"
+       y="32.794643"
+       id="text2784-1-3-9"><tspan
+         sodipodi:role="line"
+         id="tspan2880"
+         x="168.05592"
+         y="32.794643">Visualization</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="188.47772"
+       y="32.794643"
+       id="text2784-1-3-99"><tspan
+         sodipodi:role="line"
+         id="tspan2892"
+         x="188.47772"
+         y="32.794643">Output</tspan></text>
   </g>
 </svg>
