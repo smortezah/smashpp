@@ -63,8 +63,9 @@ template <typename Value>
 class ValSet {
  public:
   ValSet () = default;
-  ValSet (vector<Value> set_, Value d_, string&& l_, string&& m_, Problem p_,
-    Value c_, bool i) : set(set_), cmd(c_), def(d_), label(move(l_)), initMode(move(m_)), problem(p_), inRange(i) {}
+  ValSet (const vector<Value>& set_, Value d_, string&& l_, string&& m_,
+    Problem p_, Value c_, bool i) : set(set_), cmd(c_), def(d_), 
+    label(move(l_)), initMode(move(m_)), problem(p_), inRange(i) {}
 
   void assert (Value&);
 

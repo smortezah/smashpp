@@ -17,7 +17,6 @@ make -j4
 Note, an already compiled version is available for 64 bit Linux OS in
 the `bin/` directory.
 
-
 ## RUN
 ```bash
 ./smashpp [OPTION]...  -r [REF_FILE] -t [TAR_FILE]
@@ -29,14 +28,13 @@ For example,
 It is highly recommended to choose short names for reference and target 
 sequences.
 
-
 ### Options
 To see the possible options for Smash++, type:
 ```bash
 ./smashpp
 ```
 which provides the following:
-```
+```text
 NAME
   Smash++ v18.11 - rearrangements finder
 
@@ -92,7 +90,7 @@ To see the options for Smash++ Visualizer, type:
 ./smashpp -viz
 ```
 which provides the following:
-```
+```text
 NAME
   Smash++ Visualizer v18.11 - Visualization of Samsh++ output
 
@@ -128,7 +126,6 @@ DESCRIPTION
 
 ### Example
 
-
 ### Compare Smash++ with other methods
 In order for comparison, you might set the parameters in 
 "run.sh" bash script, then run it:
@@ -138,20 +135,16 @@ In order for comparison, you might set the parameters in
 With this script, you can download the datasets, install the dependencies, 
 install the other tools, run all the tools, and finally, visualize the results.
 
-
 ## CITE
 Please cite the following, if you use Smash++:
 * In process ...
 
-
 ## RELEASES
 * [Release](https://github.com/smortezah/smashpp/releases) 1: .
-
 
 ## ISSUES
 Please let us know if there is any 
 [issues](https://github.com/smortezah/smashpp/issues).
-
 
 ## LICENSE
 Smash++ is under GPL v3 license. For more information, click 

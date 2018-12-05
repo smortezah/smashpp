@@ -11,10 +11,8 @@
 #include "exception.hpp"
 using namespace smashpp;
 
-FCM::FCM (Param& p) {
-  aveEnt = static_cast<prc_t>(0);
-  tarSegID = 0;
-  entropyN = p.entropyN;
+FCM::FCM (Param& p) 
+  : aveEnt(static_cast<prc_t>(0)), tarSegID(0), entropyN(p.entropyN) {
   config(std::move(p.rmodelsPars), std::move(p.tmodelsPars));
   if (p.verbose && p.showInfo) { show_info(p);    p.showInfo=false; }
   alloc_model();

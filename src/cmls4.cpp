@@ -99,9 +99,9 @@ u8 CMLS4::max_sk_val () const {
 
 void CMLS4::print () const {
   constexpr u8 cell_width {3};
-  for (u8 i=0; i!=d; i++) {
+  for (u8 i=0; i!=d; ++i) {
     cerr << "d_" << static_cast<u16>(i) << ":  ";
-    for (u64 j=0; j!=w; j++) {
+    for (u64 j=0; j!=w; ++j) {
       cerr.width(cell_width);
       cerr << std::left << static_cast<u16>(readCell(i*w+j));
     }
