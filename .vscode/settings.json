@@ -51,5 +51,6 @@
         "optional": "cpp",
         "string_view": "cpp",
         "algorithm": "cpp"
-    }
+    },
+    "python.pythonPath": "/usr/bin/python3"
 }
