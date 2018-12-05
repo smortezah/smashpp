@@ -761,6 +761,23 @@
          in2="BackgroundImage"
          id="feBlend1023" />
     </filter>
+    <style
+       id="style3953">@font-face{font-family:&quot;Roboto&quot;;src:url(data:application/font-woff;charset=utf-8;base64,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) format(&quot;woff&quot;); font-weight:bold;font-style:normal;}</style>
+    <linearGradient
+       y2="100%"
+       x2="100%"
+       y1="0%"
+       x1="0%"
+       id="A">
+      <stop
+         id="stop3955"
+         stop-color="#acacac"
+         offset="0%" />
+      <stop
+         id="stop3957"
+         stop-color="#404040"
+         offset="100%" />
+    </linearGradient>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -770,8 +787,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="496.31603"
-     inkscape:cy="816.42958"
+     inkscape:cx="482.22158"
+     inkscape:cy="601.13507"
      inkscape:document-units="mm"
      inkscape:current-layer="g3638"
      showgrid="false"
@@ -4018,7 +4035,8 @@
      style="display:inline"
      inkscape:label="frame light"
      id="g3638"
-     inkscape:groupmode="layer">
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true">
     <rect
        style="display:inline;fill:#000000;fill-opacity:0.01960784;fill-rule:nonzero;stroke:#000000;stroke-width:0.26458332;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686"
        id="rect3634"
@@ -4173,4 +4191,6 @@
          x="188.47772"
          y="32.265476">Output</tspan></text>
   </g>
+  <style
+     id="style3951"><![CDATA[svg text{stroke:none}]]></style>
 </svg>
