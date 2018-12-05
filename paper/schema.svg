@@ -3931,7 +3931,7 @@
         <polygon
            style="fill:#5c0095;fill-opacity:0.93333333"
            id="polygon11876-5"
-           points="153,573.75 468.562,573.75 468.562,545.062 411.188,506.812 210.375,506.812 153,545.062 " />
+           points="210.375,506.812 153,545.062 153,573.75 468.562,573.75 468.562,545.062 411.188,506.812 " />
         <rect
            style="fill:#5c0095;fill-opacity:0.93333333"
            id="rect11878-4"
@@ -3946,7 +3946,7 @@
         <polygon
            style="fill:#5c0095;fill-opacity:0.93333333"
            id="polygon11882-9"
-           points="535.5,353.812 535.5,95.625 259.201,95.625 66.938,229.997 66.938,353.812 " />
+           points="66.938,353.812 535.5,353.812 535.5,95.625 259.201,95.625 66.938,229.997 " />
       </g>
       <g
          style="fill:#5c0095;fill-opacity:0.93333333"
@@ -4154,7 +4154,8 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="arrow"
-     style="display:inline;filter:url(#filter1021)">
+     style="display:inline;filter:url(#filter1021)"
+     sodipodi:insensitive="true">
     <g
        id="g816-6"
        transform="matrix(0.05010817,0,0,0.05010817,152.85924,40.986708)"
@@ -4480,13 +4481,13 @@
        inkscape:export-ydpi="96" />
     <path
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker32174)"
-       d="M 93.00104,67.615888 V 86.039882 H 58.869791 l 0,36.960208 -17.859375,0 0,2.89312"
+       d="M 93.00104,67.615888 V 86.039882 H 58.869791 V 123.00009 H 41.010416 v 2.89312"
        id="path8647"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccc" />
     <path
        style="fill:none;stroke:#000000;stroke-width:0.39687499;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker10161)"
-       d="m 90.222916,53.059827 0,29.753447 -35.321875,0 0,20.685866 H 41.010416 v 2.87399"
+       d="M 90.222916,53.059827 V 82.813274 H 54.901041 V 103.49914 H 41.010416 v 2.87399"
        id="path9627"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccc" />
