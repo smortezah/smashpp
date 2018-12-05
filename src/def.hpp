@@ -46,7 +46,7 @@ const vector<FilterScale> SET_FSCALE {FilterScale::S, FilterScale::M,
 // Power a^n
 constexpr u64 sqr (u64 a) { return a * a; }
 constexpr u64 power (u64 a, u64 n) {
-  return n==0 ? 1 : sqr(power(a, n>>1u)) * (n&1ull ? a : 1);
+  return n==0 ? 1 : sqr(power(a, n>>1u)) * ((n&1ull) ? a : 1);
 }
 
 constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler

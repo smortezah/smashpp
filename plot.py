@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-import scipy as scipy
+# import scipy as scipy
 from matplotlib.pyplot import figure
 import numpy as np
-import subprocess as sp
+# import subprocess as sp
 
 # f = open("result", "w")
 # args = "./smashpp -v -m 17,0,1,0 -r ref -t 5".split()
