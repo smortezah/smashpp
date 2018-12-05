@@ -777,7 +777,7 @@ inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight) const {
     cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
   const auto relRedunY  = cy + get_point(maxHeight) + 20;
 
-  auto horizSize = 12;
+  auto horizSize = space/5.0;
   auto vertSize  = relRedunY - cy - get_point(lastPos[0]);
   auto path = make_unique<Path>();
   path->color="black";

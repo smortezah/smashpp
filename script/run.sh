@@ -16,19 +16,19 @@ fi
 ### Simulate synthetic dataset
 if [[ $SYNTHETIC -eq 1 ]]; then
   ### Small sizes: ref:1000, tar:1000
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 2 -ri 5 -ra 20 -rm 0 -s 101 \
+  ./goose-fastqsimulation -eh -eo -es -edb -rn 2 -ri 5 -ra 15 -rm 0 -s 101 \
                           -ls 50 -n 5 -f 0.2,0.3,0.3,0.2,0.0                 r_a
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 5 -ra 25 -rm 0 -s 68 \
+  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 5 -ra 20 -rm 0 -s 68 \
                           -ls 50 -n 5 -f 0.25,0.25,0.25,0.25,0.0             r_b
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 3 -ri 5 -ra 15 -rm 0 -s 3 \
+  ./goose-fastqsimulation -eh -eo -es -edb -rn 3 -ri 5 -ra 10 -rm 0 -s 3 \
                           -ls 50 -n 5 -f 0.25,0.25,0.25,0.25,0.0             r_c
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 5 -ra 25 -rm 0 -s 1785 \
+  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 5 -ra 20 -rm 0 -s 1785 \
                           -ls 50 -n 5 -f 0.3,0.2,0.2,0.3,0.0                 r_d
   cat r_a r_b r_c r_d > refs
 
   ./goose-mutatedna -mr 0.03 < r_d > t_a
-  ./goose-mutatedna -mr 0.05 < r_b > t_b
-  ./goose-mutatedna -mr 0.10 < r_a > t_c
+  ./goose-mutatedna -mr 0.05 < r_b > t_c
+  ./goose-mutatedna -mr 0.10 < r_a > t_b
   ./goose-mutatedna -mr 0.15 < r_c > t_d
   cat t_a t_b t_c t_d > tars
 
