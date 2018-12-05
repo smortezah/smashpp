@@ -34,12 +34,12 @@ b
 ac
 gprof2dot.py
 perf.data*
-# refl
-# refm
-# refs
-# tarl
-# tarm
-# tars
+refl
+refm
+refs
+tarl
+tarm
+tars
 test
 
 CMakeCache.txt
