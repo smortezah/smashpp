@@ -67,11 +67,11 @@ void VizPaint::print_plot (VizParam& p) {
     double X = 0;
     if (p.showNRC && p.showRedun) 
       X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-    else if (p.showNRC ^  p.showRedun) 
+    else if (p.showNRC ^ p.showRedun) 
       X = HORIZ_TUNE + width/HORIZ_RATIO;
 
-    print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), "ref");
-    print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), "tar");
+    print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), p.min, "ref");
+    print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), p.min, "tar");
   }
 
   u64 n_regular=0, n_inverse=0, n_ignore=0;
@@ -926,8 +926,8 @@ inline void VizPaint::save_n_pos (const string& filePath) const {
 }
 
 template <typename Position>
-inline void VizPaint::print_pos (ofstream& fPlot, const Position& pos, double X,
-u64 maxBases, string&& type) {
+inline void VizPaint::print_pos (ofstream& fPlot, Position& pos, double X,
+u64 maxBases, u32 min, string&& type) {
   struct Node {
     i64  position;
     char type;
@@ -935,23 +935,38 @@ u64 maxBases, string&& type) {
     Node (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
   };
   
+  // Ignore tiny regions
+  for (auto posItr=pos.begin(); posItr!=pos.end(); ++posItr) {
+    if (abs(posItr->endRef - posItr->begRef) < min ||
+        abs(posItr->endTar - posItr->begTar) < min) {
+      posItr->begRef = -1;
+      posItr->endRef = -1;
+      posItr->begTar = -1;
+      posItr->endTar = -1;
+    }
+  }
+
   vector<Node> nodes;    nodes.reserve(2*pos.size());
   if (type == "ref") {
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].begRef, 'b', pos[i].start));
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].endRef, 'e', pos[i].start));
+    for (u64 i=0; i!=pos.size(); ++i)
+      if (pos[i].begRef != -1)
+        nodes.emplace_back(Node(pos[i].begRef, 'b', pos[i].start));
+    for (u64 i=0; i!=pos.size(); ++i)
+      if (pos[i].endRef != -1)
+        nodes.emplace_back(Node(pos[i].endRef, 'e', pos[i].start));
   }
   else if (type == "tar") {
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].begTar, 
-        pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
-    for (u64 i=0; i!=pos.size(); ++i) 
-      nodes.emplace_back(Node(pos[i].endTar, 
-        pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
+    for (u64 i=0; i!=pos.size(); ++i)
+      if (pos[i].begTar != -1)
+        nodes.emplace_back(Node(pos[i].begTar, 
+          pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
+    for (u64 i=0; i!=pos.size(); ++i)
+      if (pos[i].endTar != -1)
+        nodes.emplace_back(Node(pos[i].endTar, 
+          pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
   }
   std::sort(nodes.begin(), nodes.end(),
-    [](const Node &l, const Node &r) { return l.position < r.position; });
+    [](const Node& l, const Node& r) { return l.position < r.position; });
 
   lastPos.emplace_back(nodes.back().position);
 
@@ -962,7 +977,7 @@ u64 maxBases, string&& type) {
   u64    nOverlap  = 0;
   double CX=cx;    type=="ref" ? CX-=X : CX+=width+space+width+X;
 
-  for (auto it=nodes.begin(); it!=nodes.end()-1; ++it) {
+  for (auto it=nodes.begin(); it<nodes.end()-1; ++it) {
     if ((it->type=='b' && (it+1)->type=='b') ||
         (it->type=='e' && (it+1)->type=='e')) {
       if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
@@ -1047,7 +1062,7 @@ u64 maxBases, string&& type) {
       }
     }
     
-    if (it+2 == nodes.end() && nOverlap!=0) {
+    if (it+2==nodes.end() && nOverlap!=0) {
       lastLine = tspan((it+1)->start, (it+1)->position);
       string finalLine {line+lastLine};
       sort_merge(finalLine);

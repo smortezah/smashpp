@@ -47,7 +47,7 @@ class VizPaint {
   void sort_merge (string&) const;
   void save_n_pos (const string&) const;
   template <typename Position>
-  void print_pos (ofstream&, const Position&, double, u64, string&&);
+  void print_pos (ofstream&, Position&, double, u64, u32, string&&);
 };
 }
 
