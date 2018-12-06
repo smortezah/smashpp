@@ -61,3 +61,6 @@ paper/sup.fls
 paper/sup.log
 paper/sup.out
 paper/sup.synctex.gz
+refs
+script/goose-fastqsimulation
+script/goose-mutatedna
