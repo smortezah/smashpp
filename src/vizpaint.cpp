@@ -74,7 +74,7 @@ void VizPaint::print_plot (VizParam& p) {
     print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), "tar");
   }
 
-  u64 n_regular=0, n_inverse=0;
+  u64 n_regular=0, n_inverse=0, n_ignore=0;
   for (auto e : pos) {
     const auto plot_main_ref = [&]() {
       rect->width  = width;
@@ -113,6 +113,11 @@ void VizPaint::print_plot (VizParam& p) {
         rect->plot_redun_tar(fPlot, p.showNRC);
       }
     };
+    
+    if (abs(e.endRef-e.begRef)<p.min || abs(e.endTar-e.begTar)<p.min) {
+      ++n_ignore;
+      continue;
+    }
 
     if (e.endTar > e.begTar) {
       if (p.regular) {
@@ -269,8 +274,9 @@ void VizPaint::print_plot (VizParam& p) {
   print_tail(fPlot);
 
   cerr << "Plotting finished.\n";
-  if (p.regular)    cerr << "Found " << n_regular << " regular regions.\n";
-  if (p.inverse)    cerr << "Found " << n_inverse << " inverted regions.\n";
+  if (p.regular)    cerr << "Found "   << n_regular << " regular regions.\n";
+  if (p.inverse)    cerr << "Found "   << n_inverse << " inverted regions.\n";
+  if (n_ignore!=0)  cerr << "Ignored " << n_ignore  << " regions.\n";
   cerr << '\n';
 
   fPos.close();  fPlot.close();
