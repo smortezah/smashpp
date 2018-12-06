@@ -237,7 +237,7 @@ void VizPaint::print_plot (VizParam& p) {
 
   // Plot Ns
   save_n_pos(ref);
-  ifstream refFile(ref+"."+FMT_N);
+  ifstream refFile(file_name(ref)+"."+FMT_N);
   for (i64 beg,end; refFile>>beg>>end;) {
     rect->color  = "grey";
     rect->origin = Point(cx, cy+get_point(beg));
@@ -245,10 +245,10 @@ void VizPaint::print_plot (VizParam& p) {
     rect->plot(fPlot);
   }
   refFile.close();
-  remove((ref+"."+FMT_N).c_str());
+  remove((file_name(ref)+"."+FMT_N).c_str());
 
   save_n_pos(tar);
-  ifstream tarFile(tar+"."+FMT_N);
+  ifstream tarFile(file_name(tar)+"."+FMT_N);
   for (i64 beg,end; tarFile>>beg>>end;) {
     rect->color  = "grey";
     rect->origin = Point(cx+width+space, cy+get_point(beg));
@@ -256,7 +256,7 @@ void VizPaint::print_plot (VizParam& p) {
     rect->plot(fPlot);
   }
   tarFile.close();
-  remove((tar+"."+FMT_N).c_str());
+  remove((file_name(tar)+"."+FMT_N).c_str());
   
   rect->width  = width;
   rect->origin = Point(cx, cy);
@@ -318,9 +318,11 @@ const string& tar, u64 n_refBases, u64 n_tarBases) const {
     cerr << setw(2*colWidth) << left;
     switch (c) {
     case '1':  cerr.imbue(locale("en_US.UTF8"));  cerr<<n_refBases;  break;
-    case 'r':  cerr<<ref;                                            break;
+    // case 'r':  cerr<<ref;                                            break;
+    case 'r':  cerr<<file_name(ref);                                 break;
     case '2':  cerr.imbue(locale("en_US.UTF8"));  cerr<<n_tarBases;  break;
-    case 't':  cerr<<tar;                                            break;
+    // case 't':  cerr<<tar;                                            break;
+    case 't':  cerr<<file_name(tar);                                 break;
     case 'i':  cerr<<p.image;                                        break;
     default:   cerr<<'-';                                            break;
     }
@@ -897,9 +899,9 @@ inline void VizPaint::sort_merge (string& s) const {
   s.erase(s.find_last_of(", <")-2, 2);
 }
 
-inline void VizPaint::save_n_pos (const string& fileName) const {
-  ifstream inFile(fileName);
-  ofstream NFile(fileName+"."+FMT_N);
+inline void VizPaint::save_n_pos (const string& filePath) const {
+  ifstream inFile(filePath);
+  ofstream NFile(file_name(filePath)+"."+FMT_N);
   u64 pos=0, beg=0, num=0;
   bool begun = false;
 

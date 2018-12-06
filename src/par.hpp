@@ -93,11 +93,16 @@ inline void Param::parse (int argc, char**& argv) {
     else if (*i=="-ss" || *i=="--save-segment")    saveSegment=true;
     else if (*i=="-sa" || *i=="--save-all")        saveAll    =true;
     else if (*i=="-t"  || *i=="--tar") {
-      if (i+1 != vArgs.end()) { tar=*++i;  check_file(tar); }
-      else error("target file not specified. Use \"-t <fileName>\".");
+      if (i+1 != vArgs.end()) {
+        tar = *++i;
+        check_file(tar);
+        tarName = file_name(tar);
+      }
+      else
+        error("target file not specified. Use \"-t <fileName>\".");
     }
     else if (*i=="-r"  || *i=="--ref") {
-      if (i + 1 != vArgs.end()) {
+      if (i+1 != vArgs.end()) {
         ref = *++i;
         check_file(ref);
         refName = file_name(ref);
@@ -216,14 +221,22 @@ inline void Param::parse (int argc, char**& argv) {
     to_seq(f+LBL_BAK, f, type);
   };
   refType = file_type(ref);
-  if      (refType==FileType::FASTA)  convert_to_seq(ref, FileType::FASTA);
-  else if (refType==FileType::FASTQ)  convert_to_seq(ref, FileType::FASTQ);
-  else if (refType!=FileType::SEQ)    error("\""+ref+"\" has unknown format.");
+  if      (refType==FileType::FASTA)  
+    convert_to_seq(ref, FileType::FASTA);
+  else if (refType==FileType::FASTQ)  
+    convert_to_seq(ref, FileType::FASTQ);
+  else if (refType!=FileType::SEQ) 
+    error("\""+refName+"\" has unknown format.");
+  // else if (refType!=FileType::SEQ)    error("\""+ref+"\" has unknown format.");
 
   tarType = file_type(tar);
-  if      (tarType==FileType::FASTA)  convert_to_seq(tar, FileType::FASTA);
-  else if (tarType==FileType::FASTQ)  convert_to_seq(tar, FileType::FASTQ);
-  else if (tarType!=FileType::SEQ)    error("\""+tar+"\" has unknown format.");
+  if      (tarType==FileType::FASTA)  
+    convert_to_seq(tar, FileType::FASTA);
+  else if (tarType==FileType::FASTQ) 
+    convert_to_seq(tar, FileType::FASTQ);
+  else if (tarType!=FileType::SEQ)    
+    error("\""+tarName+"\" has unknown format.");
+    // error("\""+tar+"\" has unknown format.");
 }
 
 inline void Param::help () const {
