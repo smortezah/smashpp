@@ -65,9 +65,11 @@ inline void Filter::show_info (const Param& p) const {
     cerr << setw(2*colWidth) << left;
     switch (c) {
     case '1':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);  break;
-    case 'r':  cerr<<p.ref;                                               break;
+    // case 'r':  cerr<<p.ref;                                            break;
+    case 'r':  cerr<<p.refName;                                           break;
     case '2':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.tar);  break;
-    case 't':  cerr<<p.tar;                                               break;
+    // case 't':  cerr<<p.tar;                                            break;
+    case 't':  cerr<<p.tarName;                                           break;
     default:                                                              break;
     }
   };
@@ -94,7 +96,8 @@ inline void Filter::show_info (const Param& p) const {
 }
 
 void Filter::smooth_seg (const Param& p) {
-  message = "Filtering & segmenting " + italic(p.tar) + " ";
+  message = "Filtering & segmenting " + italic(p.tarName) + " ";
+  // message = "Filtering & segmenting " + italic(p.tar) + " ";
 
   if (wtype == WType::RECTANGULAR) {
     p.saveFilter ? smooth_seg_rect<true>(p) : smooth_seg_rect<false>(p);
@@ -105,9 +108,11 @@ void Filter::smooth_seg (const Param& p) {
   }
 
   if (!p.saveAll && !p.saveProfile)
-    remove((gen_name(p.ID, p.ref,p.tar,Format::PROFILE)).c_str());
+    remove((gen_name(p.ID, p.refName,p.tarName,Format::PROFILE)).c_str());
+    // remove((gen_name(p.ID, p.ref,p.tar,Format::PROFILE)).c_str());
   if (!p.saveAll && !p.saveFilter)
-    remove((gen_name(p.ID, p.ref,p.tar,Format::FILTER)).c_str());
+    remove((gen_name(p.ID, p.refName,p.tarName,Format::FILTER)).c_str());
+    // remove((gen_name(p.ID, p.ref,p.tar,Format::FILTER)).c_str());
 
   cerr << message << "finished. "
        << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") << ".\n";
@@ -396,7 +401,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
 void Filter::extract_seg (u32 ID, const string& ref, const string& tar) const {
   check_file(gen_name(ID, ref, tar, Format::POSITION));
   ifstream ff(gen_name(ID, ref, tar, Format::POSITION));
-  const auto segName = gen_name(ID, ref,tar,Format::SEGMENT);
+  const auto segName = gen_name(ID, ref, tar, Format::SEGMENT);
   auto subseq = make_unique<SubSeq>();
   subseq->inName = tar;
   u64 i = 0;
@@ -439,10 +444,14 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   const auto midf0Name = LBL_MID+"-"+gen_name(0, ref, tar, Format::POSITION),
              midf1Name = LBL_MID+"-"+gen_name(1, ref, tar, Format::POSITION);
   ifstream midf0(midf0Name), midf1(midf1Name);
-  ofstream finf(ref+"-"+tar+"."+FMT_POS);
+  ofstream finf(gen_name(ref, tar, Format::POSITION));
+  // ofstream finf(ref+"-"+tar+"."+FMT_POS);
 
-  finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
-                  <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';
+  // finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
+  //                 <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';
+  finf << POS_HDR <<'\t'<< file_name(ref) <<'\t'<< to_string(file_size(ref))
+                  <<'\t'<< file_name(tar) <<'\t'<< to_string(file_size(tar));
+  finf << '\n';
   {
   const u64 size = file_size(midf0Name);
   vector<char> buffer(size, 0);

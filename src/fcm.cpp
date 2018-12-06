@@ -127,9 +127,11 @@ inline void FCM::show_info (const Param& p) const {
     cerr << setw(2*colWidth) << left;
     switch (c) {
     case '1':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.ref);  break;
-    case 'r':  cerr<<p.ref;                                               break;
+    // case 'r':  cerr<<p.ref;                                            break;
+    case 'r':  cerr<<p.refName;                                           break;
     case '2':  cerr.imbue(locale("en_US.UTF8")); cerr<<file_size(p.tar);  break;
-    case 't':  cerr<<p.tar;                                               break;
+    // case 't':  cerr<<p.tar;                                            break;
+    case 't':  cerr<<p.tarName;                                           break;
     default:                                                              break;
     }
   };
@@ -249,8 +251,10 @@ void FCM::store (const Param& p) {
   const auto nMdl = rMs.size();
   message = "Building the model";  if (nMdl!=1) message+="s";
   message += " of ";
-  message += tarSegMsg.empty() ? italic(p.ref) 
+  message += tarSegMsg.empty() ? italic(p.refName) 
                                : italic(tarSegMsg+to_string(tarSegID));
+  // message += tarSegMsg.empty() ? italic(p.ref) 
+  //                              : italic(tarSegMsg+to_string(tarSegID));
   message += " ";
   cerr << message << "...";
 
@@ -335,7 +339,8 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 }
 
 void FCM::compress (const Param& p) {
-  message = "Compressing " + italic(p.tar) + " ";
+  // message = "Compressing " + italic(p.tar) + " ";
+  message = "Compressing " + italic(p.tarName) + " ";
 
   if (rMs.size()==1 && rTMs.empty())  // 1 MM
     switch (rMs[0].cont) {
