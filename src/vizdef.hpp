@@ -29,7 +29,7 @@ static constexpr u32    MAX_MULT        {255};
 static constexpr u32    BEGN            {0};
 static constexpr u32    MIN_BEGN        {0};
 static constexpr u32    MAX_BEGN        {255};
-static constexpr u32    MINP            {1000};
+static constexpr u32    MINP            {1};
 static constexpr u32    MIN_MINP        {1};
 static constexpr u32    MAX_MINP        {99999999};
 static constexpr double PAINT_CX        {180.0};
