@@ -28,6 +28,11 @@ inline static void check_file (const string& name) {  // Must be inline
   }
 }
 
+inline static string file_name (const string& str) {
+  const auto found = str.find_last_of("/\\");
+  return str.substr(found+1);
+}
+
 inline static u64 file_size (const string& name) {
   check_file(name);
   ifstream f(name, ifstream::ate | ifstream::binary);

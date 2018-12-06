@@ -50,7 +50,8 @@
         "utility": "cpp",
         "optional": "cpp",
         "string_view": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "valarray": "cpp"
     },
     "python.pythonPath": "/usr/bin/python3"
 }

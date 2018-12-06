@@ -15,6 +15,7 @@ namespace smashpp {
 class Param {   // Parameters
  public:
   string      ref, tar, seq;
+  string      refName, tarName;
   u8          level;
   bool        verbose;
   prc_t       entropyN;
@@ -82,21 +83,25 @@ inline void Param::parse (int argc, char**& argv) {
   bool man_rm=false, man_tm=false;
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
     if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
-    else if (*i=="-v"  || *i=="--verbose")         verbose=true;
-    else if (*i=="-compress")                      compress=true;
-    else if (*i=="-filter")                        filter=true;
-    else if (*i=="-segment")                       segment=true;
-    else if (*i=="-sb" || *i=="--save-seq")        saveSeq=true;
+    else if (*i=="-v"  || *i=="--verbose")         verbose    =true;
+    else if (*i=="-compress")                      compress   =true;
+    else if (*i=="-filter")                        filter     =true;
+    else if (*i=="-segment")                       segment    =true;
+    else if (*i=="-sb" || *i=="--save-seq")        saveSeq    =true;
     else if (*i=="-sp" || *i=="--save-profile")    saveProfile=true;
-    else if (*i=="-sf" || *i=="--save-fitler")     saveFilter=true;
+    else if (*i=="-sf" || *i=="--save-fitler")     saveFilter =true;
     else if (*i=="-ss" || *i=="--save-segment")    saveSegment=true;
-    else if (*i=="-sa" || *i=="--save-all")        saveAll=true;
+    else if (*i=="-sa" || *i=="--save-all")        saveAll    =true;
     else if (*i=="-t"  || *i=="--tar") {
       if (i+1 != vArgs.end()) { tar=*++i;  check_file(tar); }
       else error("target file not specified. Use \"-t <fileName>\".");
     }
     else if (*i=="-r"  || *i=="--ref") {
-      if (i+1 != vArgs.end()) { ref=*++i;  check_file(ref); }
+      if (i + 1 != vArgs.end()) {
+        ref = *++i;
+        check_file(ref);
+        refName = file_name(ref);
+      }
       else error("reference file not specified. Use \"-r <fileName>\".");
     }
     else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
