@@ -132,7 +132,8 @@ int main (int argc, char* argv[]) {
       }
       else {
         const auto origRef=par.ref, origTar=par.tar;
-        for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
+        for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {//todo
+        // for (u8 timesRunning=0; timesRunning!=1; ++timesRunning) {
           if (timesRunning == 0) 
             cerr << 
               bold("====[ REGULAR MODE ]==================================\n");
@@ -152,10 +153,13 @@ int main (int argc, char* argv[]) {
           if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
           auto filter = make_unique<Filter>(par);
           filter->smooth_seg(par);              // Filter and segment
+
+          if (filter->nSegs==0) { cerr<<'\n';  continue; }
+
           filter->extract_seg(par.ID, par.ref, par.tar);  // Extract from tar
           cerr << TERM_SEP;
-            cerr << ">>> " << italic("Reference-free compression of the "
-              "segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
+          cerr << ">>> " << italic("Reference-free compression of the segment")
+            << italic(filter->nSegs==1 ? "" : "s") << '\n';
           // Ref-free compress
           models->selfEnt.reserve(filter->nSegs);
           const auto segName=gen_name(par.ID, par.ref, par.tar,Format::SEGMENT);
@@ -183,6 +187,9 @@ int main (int argc, char* argv[]) {
             if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
             filter = make_unique<Filter>(par);
             filter->smooth_seg(par);
+
+            if (filter->nSegs==0) { cerr<<'\n';  continue; }
+
             filter->extract_seg(par.ID, par.ref, par.tar);
             cerr << TERM_SEP;
             cerr << ">>> " << italic("Reference-free compression of the "
@@ -217,7 +224,7 @@ int main (int argc, char* argv[]) {
               rename((origTar+LBL_BAK).c_str(), origTar.c_str());
             }
           }
-        }
+        } // for
         
         par.ref = origRef;
         par.refName = file_name(par.ref);
@@ -230,7 +237,7 @@ int main (int argc, char* argv[]) {
 // //        // Report
 // //        models->report(par); // Without "-R" does nothing
       }
-    } // try
+    }
 
 
 
