@@ -13,7 +13,7 @@ using namespace std;
 namespace smashpp {
 // Version
 static const string SMASHPP   {"SMASHPP"};
-static const string VERSION   {"18.11"};
+static const string VERSION   {"18.12"};
 static const string DEV_YEARS {"2018"};
 
 // Typedef
