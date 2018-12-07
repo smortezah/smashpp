@@ -42,14 +42,12 @@ class VizPaint {
   auto get_point (Value) const -> double;
   void plot_legend (ofstream&, const VizParam&) const;
   void plot_annot (ofstream&, i64) const;
-  // auto tspan (const string&, i64) const -> string;
-  // auto tspan (const string&, const string&) const -> string;
   auto tspan (u32, i64) const -> string;
   auto tspan (u32, const string&) const -> string;
   void sort_merge (string&) const;
   void save_n_pos (const string&) const;
   template <typename Position>
-  void print_pos (ofstream&, Position&, double, u64, u32, string&&);
+  void print_pos (ofstream&, VizParam&, Position&, u64, string&&);
 };
 }
 
