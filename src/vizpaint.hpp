@@ -42,6 +42,8 @@ class VizPaint {
   auto get_point (Value) const -> double;
   void plot_legend (ofstream&, const VizParam&) const;
   void plot_annot (ofstream&, i64) const;
+  // auto tspan (const string&, i64) const -> string;
+  // auto tspan (const string&, const string&) const -> string;
   auto tspan (u32, i64) const -> string;
   auto tspan (u32, const string&) const -> string;
   void sort_merge (string&) const;

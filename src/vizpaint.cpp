@@ -45,8 +45,8 @@ void VizPaint::print_plot (VizParam& p) {
   text->plot_title(fPlot);
 
   // If min is set to default, reset to base max proportion
-  if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
-  p.mult = 256 / file_lines(p.posFile);
+  if (p.min==0)    p.min=static_cast<u32>(maxSize / 100);
+  // if (!p.manMult)  p.mult = 256 / file_lines(p.posFile);
   mult = p.mult;
 
   vector<Pos> pos;
@@ -71,7 +71,7 @@ void VizPaint::print_plot (VizParam& p) {
       X = HORIZ_TUNE + width/HORIZ_RATIO;
 
     print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), p.min, "ref");
-    print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), p.min, "tar");
+    // print_pos(fPlot, pos, X, max(n_refBases,n_tarBases), p.min, "tar");//todo
   }
 
   u64 n_regular=0, n_inverse=0, n_ignore=0;
@@ -835,6 +835,14 @@ inline string VizPaint::tspan (u32 start, const string& pos) const {
   return "<tspan id=\"" + to_string(start) + "\" style=\"fill:" + 
     customColor(start) + "\">" + pos + ", </tspan>\n";
 }
+// inline string VizPaint::tspan (const string& color, i64 pos) const {
+//   return "<tspan id=\"" + color.substr(1) + "\" style=\"fill:" + color + 
+//     "\">" + to_string(pos) + ", </tspan>\n";
+// }
+// inline string VizPaint::tspan (const string& color, const string& pos) const {
+//   return "<tspan id=\"" + color.substr(1) + "\" style=\"fill:" + color + 
+//     "\">" + pos + ", </tspan>\n";
+// }
 
 inline void VizPaint::sort_merge (string& s) const {
   istringstream stream(s);
@@ -884,6 +892,7 @@ inline void VizPaint::sort_merge (string& s) const {
   for (auto it=vEnv.begin(); it<vEnv.end()-1;) {
     if (it->id == (it+1)->id) {
       s += tspan(it->id, to_string(it->pos)+"-"+to_string((it+1)->pos)) + "\n";
+      // s += tspan(customColor(it->id), to_string(it->pos)+"-"+to_string((it+1)->pos)) + "\n";
       leftOver -= 2;
       it       += 2;
     }
@@ -932,7 +941,9 @@ u64 maxBases, u32 min, string&& type) {
     i64  position;
     char type;
     u64  start;
+    // string color;
     Node (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
+    // Node (i64 p, char t, const string& c) : position(p), type(t), color(c) {}
   };
   
   // Ignore tiny regions
@@ -951,17 +962,23 @@ u64 maxBases, u32 min, string&& type) {
     for (u64 i=0; i!=pos.size(); ++i)
       if (pos[i].begRef != -1)
         nodes.emplace_back(Node(pos[i].begRef, 'b', pos[i].start));
+        // nodes.emplace_back(Node(pos[i].begRef, 'b', customColor(pos[i].start)));
     for (u64 i=0; i!=pos.size(); ++i)
       if (pos[i].endRef != -1)
+        // nodes.emplace_back(Node(pos[i].endRef, 'e', customColor(pos[i].start)));
         nodes.emplace_back(Node(pos[i].endRef, 'e', pos[i].start));
   }
   else if (type == "tar") {
     for (u64 i=0; i!=pos.size(); ++i)
       if (pos[i].begTar != -1)
+        // nodes.emplace_back(Node(pos[i].begTar, 
+        //   pos[i].endTar>pos[i].begTar ? 'b' : 'e', customColor(pos[i].start)));
         nodes.emplace_back(Node(pos[i].begTar, 
           pos[i].endTar>pos[i].begTar ? 'b' : 'e', pos[i].start));
     for (u64 i=0; i!=pos.size(); ++i)
       if (pos[i].endTar != -1)
+        // nodes.emplace_back(Node(pos[i].endTar, 
+        //   pos[i].endTar>pos[i].begTar ? 'e' : 'b', customColor(pos[i].start)));
         nodes.emplace_back(Node(pos[i].endTar, 
           pos[i].endTar>pos[i].begTar ? 'e' : 'b', pos[i].start));
   }
@@ -983,6 +1000,7 @@ u64 maxBases, u32 min, string&& type) {
       if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
         if (++nOverlap == 1) {
           if (it->start == (it+1)->start) {
+          // if (it->color == (it+1)->color) {
             printPos = (it->position + (it+1)->position) / 2;
             printType = 'm';
           }
@@ -993,6 +1011,8 @@ u64 maxBases, u32 min, string&& type) {
         }
         line += tspan(it->start, it->position);
         lastLine = tspan((it+1)->start, (it+1)->position);
+        // line += tspan(it->color, it->position);
+        // lastLine = tspan((it+1)->color, (it+1)->position);
       }
       else {
         if (nOverlap == 0) {
@@ -1006,6 +1026,7 @@ u64 maxBases, u32 min, string&& type) {
       if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
         if (++nOverlap == 1) {
           if (it->start == (it+1)->start) {
+          // if (it->color == (it+1)->color) {
             printPos = (it->position + (it+1)->position) / 2;
             printType = 'm';
           }
@@ -1014,6 +1035,8 @@ u64 maxBases, u32 min, string&& type) {
             printType = 'm';
           }
         }
+        // line += tspan(it->color, it->position);
+        // lastLine = tspan((it+1)->color, (it+1)->position);
         line += tspan(it->start, it->position);
         lastLine = tspan((it+1)->start, (it+1)->position);
       }
@@ -1034,6 +1057,7 @@ u64 maxBases, u32 min, string&& type) {
     }
 
     if (nOverlap == 0) {
+      // lastLine = tspan(it->color, it->position);
       lastLine = tspan(it->start, it->position);
       string finalLine {line+lastLine};
       sort_merge(finalLine);
@@ -1051,6 +1075,7 @@ u64 maxBases, u32 min, string&& type) {
 
       //last
       if (it+2 == nodes.end()) {
+        // finalLine = tspan((it+1)->color, (it+1)->position);
         finalLine = tspan((it+1)->start, (it+1)->position);
         sort_merge(finalLine);
         printPos = (it+1)->position;
@@ -1063,6 +1088,7 @@ u64 maxBases, u32 min, string&& type) {
     }
     
     if (it+2==nodes.end() && nOverlap!=0) {
+      // lastLine = tspan((it+1)->color, (it+1)->position);
       lastLine = tspan((it+1)->start, (it+1)->position);
       string finalLine {line+lastLine};
       sort_merge(finalLine);
@@ -1076,5 +1102,5 @@ u64 maxBases, u32 min, string&& type) {
       type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
       break;
     }
-  }
+  } // for
 }

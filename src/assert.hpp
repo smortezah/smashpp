@@ -39,13 +39,12 @@ inline void ValRange<Value>::assert (Value& val) {
   };
   const auto create_message = [=](char open, char close) {
     inRange = false;
-    string s = to_string(open) + 
+    string s = string(1, open) + 
       (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
                : (to_string(min)+";"+to_string(max))) +
-      to_string(close) + ". ";
+      string(1, close) + ". ";
     append_msg(std::move(s));
   };
-  
   if      (criterion=="[]" && (val>max  || val<min))   create_message('[', ']');
   else if (criterion=="[)" && (val>=max || val<min))   create_message('[', ')');
   else if (criterion=="(]" && (val>max  || val<=min))  create_message('(', ']');
