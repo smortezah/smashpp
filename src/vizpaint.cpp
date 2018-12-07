@@ -431,11 +431,17 @@ inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
   vector<string> colorSet {};
   switch (colorMode) {
   case 0:
-    colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-      "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
+    colorSet = {"#0000ff", "#0055ff", "#00aaff", "#00ffff", "#00ffaa",
+      "#00ff55", "#00ff00", "#55ff00", "#aaff00", "#ffff00", "#ffaa00",
+      "#ff5500", "#ff0000"};                                              break;
+    // colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
+    //   "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
   case 1:
-    colorSet = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-      "#217681", "#285285", "#1F2D86", "#000086"};                        break;
+    colorSet = {"#90ee90", "#7fe690", "#70de94", "#61d59b", "#53cda4", 
+      "#45c5b0", "#39bdbd", "#2d9eb4", "#237eac", "#195ea4", "#103e9b",
+      "#071f93", "#00008b"};                                              break;
+    // colorSet = {"#AAF191", "#80D385", "#61B385", "#3E9583",
+    //   "#217681", "#285285", "#1F2D86", "#000086"};                        break;
   case 2:
     colorSet = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
       "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"};  break;
@@ -452,11 +458,17 @@ inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
   vector<string> colorSet {};
   switch (colorMode) {
   case 0:
-    colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-      "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
+    colorSet = {"#0000ff", "#0055ff", "#00aaff", "#00ffff", "#00ffaa",
+      "#00ff55", "#00ff00", "#55ff00", "#aaff00", "#ffff00", "#ffaa00",
+      "#ff5500", "#ff0000"};                                              break;
+    // colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
+    //   "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
   case 1:
-    colorSet = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-      "#217681", "#285285", "#1F2D86", "#000086"};                        break;
+    colorSet = {"#90ee90", "#7fe690", "#70de94", "#61d59b", "#53cda4", 
+      "#45c5b0", "#39bdbd", "#2d9eb4", "#237eac", "#195ea4", "#103e9b",
+      "#071f93", "#00008b"};                                              break;
+    // colorSet = {"#AAF191", "#80D385", "#61B385", "#3E9583",
+    //   "#217681", "#285285", "#1F2D86", "#000086"};                        break;
   case 2:
     colorSet = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
       "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"};  break;
@@ -706,11 +718,17 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   auto grad = make_unique<Gradient>();
   switch (p.color) {
   case 0:
-    grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-      "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
+    grad->offsetColor = {"#0000ff", "#0055ff", "#00aaff", "#00ffff", "#00ffaa",
+      "#00ff55", "#00ff00", "#55ff00", "#aaff00", "#ffff00", "#ffaa00",
+      "#ff5500", "#ff0000"};                                              break;
+    // grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
+    //   "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
   case 1:
-    grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-      "#217681", "#285285", "#1F2D86", "#000086"};                        break;
+    grad->offsetColor = {"#90ee90", "#7fe690", "#70de94", "#61d59b", "#53cda4",
+      "#45c5b0", "#39bdbd", "#2d9eb4", "#237eac", "#195ea4", "#103e9b",
+      "#071f93", "#00008b"};                                              break;
+    // grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
+    //   "#217681", "#285285", "#1F2D86", "#000086"};                        break;
   case 2:
     grad->offsetColor = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
       "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"};  break;
