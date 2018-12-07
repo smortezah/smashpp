@@ -139,7 +139,6 @@ int main (int argc, char* argv[]) {
           else if (timesRunning == 1)
             cerr << 
               bold("====[ INVERTED MODE ]=================================\n");
-          // par.ID = timesRunning;    par.ref=origRef;    par.tar=origTar;
           par.ID = timesRunning;    
           par.ref=origRef;  par.refName=file_name(par.ref);
           par.tar=origTar;  par.tarName=file_name(par.tar);
