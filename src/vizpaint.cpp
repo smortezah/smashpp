@@ -709,7 +709,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   auto text = make_unique<Text>();
   text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
   text->textAnchor = "middle";
-  text->fontWeight = "bold";
+  // text->fontWeight = "bold";
   text->dominantBaseline = "text-after-edge";
   text->label = "RELATIVE REDUNDANCY";
   text->fontSize = 9;
@@ -760,13 +760,13 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->textAnchor = "end";
   text->origin = Point(rect->origin.x-2, rect->origin.y+rect->height/2);
   text->label  = "0.0";
-  text->fontWeight = "bold";
+  // text->fontWeight = "bold";
   text->plot(f);
   text->textAnchor = "middle";
   for (u8 i=1; i!=4; ++i) {
     text->origin = 
       Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
-    if (p.color==1)  text->color="white";
+    if (p.color==1 && i==3)  text->color="white";
     text->label = string_format("%.1f", i*0.5);
     text->plot(f);
   }
@@ -785,7 +785,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->dominantBaseline = "text-before-edge";
   text->label = "REDUNDANCY";
   text->fontSize = 9;
-  text->fontWeight = "bold";
+  // text->fontWeight = "bold";
   text->plot(f);
 }
 

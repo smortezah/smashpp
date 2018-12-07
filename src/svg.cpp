@@ -20,7 +20,7 @@ void Text::plot (ofstream& f) const {
 
 void Text::plot_title (ofstream& f) {
   textAnchor = "middle";
-  fontSize = 14;
+  fontSize = 12;
   plot(f);
 }
 
