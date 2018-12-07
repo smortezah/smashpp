@@ -59,12 +59,13 @@ class VizParam {
   u8     link, color;
   float  opacity;
   u32    width, space, mult, start, min;
+  bool   manMult;
   string posFile;
 
   VizParam () : verbose(false), inverse(true), regular(true), showPos(false),
     showNRC(false), showRedun(false), showAnnot(false), image(IMAGE), 
     link(LINK), color(COLOR), opacity(OPAC), width(WDTH), space(SPC), 
-    mult(MULT), start(BEGN), min(MINP) {}
+    mult(MULT), start(BEGN), min(MINP), manMult(false) {}
 
   void parse (int, char**&);
 
@@ -434,6 +435,7 @@ inline void VizParam::parse (int argc, char**& argv) {
       range->assert(space);
     }
     else if ((*i=="-m" || *i=="--mult")  && i+1!=vArgs.end()) {
+      manMult = true;
       mult = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_MULT, MAX_MULT, MULT,
         "Mult", "[]", "default", Problem::WARNING);
