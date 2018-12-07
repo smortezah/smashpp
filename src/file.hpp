@@ -28,6 +28,21 @@ inline static void check_file (const string& name) {  // Must be inline
   }
 }
 
+inline static bool file_is_empty (const string& name) {
+  ifstream f(name);
+  bool foundChar {false};
+
+  for (char c; f.get(c) && !foundChar;)
+    if (c!=' ' && c!='\n' && c!='\t')
+      foundChar = true;
+  f.close();
+
+  if (!foundChar)
+    return true;
+
+  return false;
+}
+
 inline static string file_name (const string& str) {
   const auto found = str.find_last_of("/\\");
   return str.substr(found+1);

@@ -302,7 +302,9 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   seg->partition_last(posF);
   show_progress(++symsNo, totalSize, message);
 
-  posF.close();  filF.close();
+  posF.close();
+  if (file_is_empty(positionName))  remove(positionName.c_str());
+  filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
   nSegs = seg->nSegs;
 }
@@ -393,7 +395,9 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   seg->partition_last(posF);
   show_progress(++symsNo, totalSize, message);
 
-  posF.close();  filF.close();
+  posF.close();
+  if (file_is_empty(positionName))  remove(positionName.c_str());
+  filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
   nSegs = seg->nSegs;
 }
@@ -416,58 +420,91 @@ void Filter::extract_seg (u32 ID, const string& ref, const string& tar) const {
 
 void Filter::aggregate_mid_pos (u32 ID, const string& origin, 
 const string& dest) const {
-  ifstream fDirect(gen_name(ID, origin, dest, Format::POSITION));
-  ifstream fReverse;
+  const string dirFileName = gen_name(ID, origin, dest, Format::POSITION);
+  ifstream fDirect(dirFileName);
   ofstream fmid(LBL_MID+"-"+gen_name(ID, origin, dest, Format::POSITION));
   int i = 0;
+
   for (string begDir, endDir, entDir, selfEntDir; 
        fDirect>>begDir>>endDir>>entDir>>selfEntDir; ++i) {
     const string refRev = 
       gen_name(ID, origin, dest, Format::SEGMENT)+to_string(i);
-    fReverse.open(gen_name(ID, refRev, origin, Format::POSITION));
-    for (string begRev, endRev, entRev, selfEntRev;
-         fReverse>>begRev>>endRev>>entRev>>selfEntRev;) {
-      fmid << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< selfEntRev <<'\t';
+    const string revFileName = gen_name(ID, refRev, origin, Format::POSITION);
+
+    if (!file_is_empty(revFileName)) {
+      ifstream fReverse(revFileName);
+      for (string begRev, endRev, entRev, selfEntRev;
+           fReverse>>begRev>>endRev>>entRev>>selfEntRev;) {
+        fmid << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< selfEntRev <<'\t';
+        if      (ID==0)  fmid << begDir <<'\t'<< endDir;
+        else if (ID==1)  fmid << endDir <<'\t'<< begDir;
+        fmid <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';
+      }
+      fReverse.close();
+    }
+    else {
+      fmid << -2 <<'\t'<< -2 <<'\t'<< 0 <<'\t'<< 0 <<'\t';
       if      (ID==0)  fmid << begDir <<'\t'<< endDir;
       else if (ID==1)  fmid << endDir <<'\t'<< begDir;
       fmid <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';
     }
-    fReverse.close();
-    remove((gen_name(ID, refRev, origin, Format::POSITION)).c_str());
+
+    remove(revFileName.c_str());
   }
-  fDirect.close();
-  remove((gen_name(ID, origin, dest, Format::POSITION)).c_str());
+
+  fDirect.close();  remove(dirFileName.c_str());
   fmid.close();
 }
 
 void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   const auto midf0Name = LBL_MID+"-"+gen_name(0, ref, tar, Format::POSITION),
              midf1Name = LBL_MID+"-"+gen_name(1, ref, tar, Format::POSITION);
-  ifstream midf0(midf0Name), midf1(midf1Name);
-  ofstream finf(gen_name(ref, tar, Format::POSITION));
-  // ofstream finf(ref+"-"+tar+"."+FMT_POS);
+  const bool midf0IsEmpty = file_is_empty(midf0Name),
+             midf1IsEmpty = file_is_empty(midf1Name);
 
-  // finf << POS_HDR <<'\t'<< ref <<'\t'<< to_string(file_size(ref))
-  //                 <<'\t'<< tar <<'\t'<< to_string(file_size(tar)) << '\n';
-  finf << POS_HDR <<'\t'<< file_name(ref) <<'\t'<< to_string(file_size(ref))
-                  <<'\t'<< file_name(tar) <<'\t'<< to_string(file_size(tar));
-  finf << '\n';
-  {
-  const u64 size = file_size(midf0Name);
-  vector<char> buffer(size, 0);
-  midf0.read (buffer.data(), size);
-  finf.write(buffer.data(), size);
+  if (midf0IsEmpty && midf1IsEmpty) {
+    cerr << bold("The reference and the target are not similar.\n");
   }
-  {
-  const u64 size = file_size(midf1Name);
-  vector<char> buffer(size, 0);
-  midf1.read (buffer.data(), size);
-  finf.write(buffer.data(), size);
-  }
+  else if (!midf0IsEmpty && midf1IsEmpty) {
+    ifstream midf0(midf0Name);
+    ofstream finf(gen_name(ref, tar, Format::POSITION));
 
-  midf0.close();  remove(midf0Name.c_str());
-  midf1.close();  remove(midf1Name.c_str());
-  finf.close();
+    finf << POS_HDR <<'\t'<< file_name(ref) <<'\t'<< to_string(file_size(ref))
+                    <<'\t'<< file_name(tar) <<'\t'<< to_string(file_size(tar));
+    finf << '\n';
+
+    const u64 size = file_size(midf0Name);
+    vector<char> buffer(size, 0);
+    midf0.read (buffer.data(), size);
+    finf.write(buffer.data(), size);
+
+    midf0.close();  remove(midf0Name.c_str());
+    finf.close();
+  }
+  else {
+    ifstream midf0(midf0Name), midf1(midf1Name);
+    ofstream finf(gen_name(ref, tar, Format::POSITION));
+
+    finf << POS_HDR <<'\t'<< file_name(ref) <<'\t'<< to_string(file_size(ref))
+                    <<'\t'<< file_name(tar) <<'\t'<< to_string(file_size(tar));
+    finf << '\n';
+    {
+    const u64 size = file_size(midf0Name);
+    vector<char> buffer(size, 0);
+    midf0.read (buffer.data(), size);
+    finf.write(buffer.data(), size);
+    }
+    {
+    const u64 size = file_size(midf1Name);
+    vector<char> buffer(size, 0);
+    midf1.read (buffer.data(), size);
+    finf.write(buffer.data(), size);
+    }
+
+    midf0.close();  remove(midf0Name.c_str());
+    midf1.close();  remove(midf1Name.c_str());
+    finf.close();
+  }
 }
 
 #ifdef BENCH
