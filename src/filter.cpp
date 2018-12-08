@@ -443,7 +443,7 @@ const string& dest) const {
       fReverse.close();
     }
     else {
-      fmid << -2 <<'\t'<< -2 <<'\t'<< 0 <<'\t'<< 0 <<'\t';
+      fmid << -2 <<'\t'<< -2 <<'\t'<< -2 <<'\t'<< -2 <<'\t';
       if      (ID==0)  fmid << begDir <<'\t'<< endDir;
       else if (ID==1)  fmid << endDir <<'\t'<< begDir;
       fmid <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';

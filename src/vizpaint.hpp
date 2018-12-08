@@ -15,7 +15,8 @@ class VizPaint {
   double refSize, tarSize, maxSize;
 
   VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),
-    space(0.0), refSize(0.0), tarSize(0.0), maxSize(0.0), ratio(1) {}
+    space(0.0), refSize(0.0), tarSize(0.0), maxSize(0.0), ratio(1), 
+    plottable(true) {}
     
   void print_plot (VizParam&);
 
@@ -23,6 +24,7 @@ class VizPaint {
   u32         ratio;
   u32         mult;
   vector<i64> lastPos;
+  bool        plottable;
 
   void show_info (VizParam&, const string&, const string&, u64, u64) const;
   void config (double, double, u64, u64);
