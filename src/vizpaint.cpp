@@ -66,212 +66,235 @@ void VizPaint::print_plot (VizParam& p) {
     print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
     print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
 
-    if (!plottable)
-      error("not plottable positions.");
+    if (!plottable)  error("not plottable positions.");
   }
 
-  u64 n_regular=0, n_inverse=0, n_ignore=0;
-  // for (auto e : pos) {
-  //   if (abs(e.endRef-e.begRef)<p.min || abs(e.endTar-e.begTar)<p.min) {
-  //     ++n_ignore;
-  //     continue;
-  //   }
+  u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignore=0;
+  for (auto e : pos) {
+    if (abs(e.endTar-e.begTar) <= p.min) {
+      ++n_ignore;
+      continue;
+    }
+    else if (e.begRef!=-2 && e.endRef-e.begRef<=p.min) {
+      ++n_ignore;
+      continue;
+    }
 
-  //   const auto plot_main_ref = [&]() {
-  //     rect->width  = width;
-  //     rect->color  = customColor(e.start);
-  //     rect->origin = Point(cx, cy + get_point(e.begRef));
-  //     rect->height = get_point(e.endRef-e.begRef);
-  //     rect->plot(fPlot);
-  //     if (p.showNRC) {
-  //       rect->color = nrc_color(e.entRef, p.color);
-  //       rect->plot_nrc_ref(fPlot);
-  //     }
-  //     if (p.showRedun) {
-  //       rect->color = redun_color(e.selfRef, p.color);
-  //       rect->plot_redun_ref(fPlot, p.showNRC);
-  //     }
-  //   };
+    if (e.begRef == -2) {
+      if (e.endTar>e.begTar)  ++n_regularSolo;
+      else                    ++n_inverseSolo;
+    }
 
-  //   const auto plot_main_tar = [&](bool inverted) {
-  //     rect->color  = customColor(e.start);
-  //     rect->height = get_point(abs(e.begTar-e.endTar));
-  //     if (!inverted) {
-  //       rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
-  //       rect->plot(fPlot);
-  //     }
-  //     else {
-  //       rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
-  //       rect->plot_ir(fPlot);
-  //     }
+    const auto plot_main_ref = [&]() {
+      if (e.begRef != -2) {
+        rect->width  = width;
+        rect->color  = customColor(e.start);
+        rect->origin = Point(cx, cy + get_point(e.begRef));
+        rect->height = get_point(e.endRef-e.begRef);
+        rect->plot(fPlot);
+        if (p.showNRC) {
+          rect->color = nrc_color(e.entRef, p.color);
+          rect->plot_nrc_ref(fPlot);
+        }
+        if (p.showRedun) {
+          rect->color = redun_color(e.selfRef, p.color);
+          rect->plot_redun_ref(fPlot, p.showNRC);
+        }
+      }
+    };
 
-  //     if (p.showNRC) {
-  //       rect->color = nrc_color(e.entTar, p.color);
-  //       rect->plot_nrc_tar(fPlot);
-  //     }
-  //     if (p.showRedun) {
-  //       rect->color = redun_color(e.selfTar, p.color);
-  //       rect->plot_redun_tar(fPlot, p.showNRC);
-  //     }
-  //   };
+    const auto plot_main_tar = [&](bool inverted) {
+      rect->color  = customColor(e.start);
+      rect->height = get_point(abs(e.begTar-e.endTar));
+      if (!inverted) {
+        rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
+        rect->plot(fPlot);
+      }
+      else {
+        rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
+        rect->plot_ir(fPlot);
+      }
 
-  //   if (e.endTar > e.begTar) {
-  //     if (p.regular) {
-  //       plot_main_ref();
-  //       plot_main_tar(false);
+      if (p.showNRC) {
+        rect->color = nrc_color(e.entTar, p.color);
+        rect->plot_nrc_tar(fPlot);
+      }
+      if (p.showRedun) {
+        rect->color = redun_color(e.selfTar, p.color);
+        rect->plot_redun_tar(fPlot, p.showNRC);
+      }
+    };
 
-  //       switch (p.link) {
-  //       case 5:
-  //         poly->lineColor = "grey";
-  //         poly->fillColor = customColor(e.start);
-  //         poly->one   = Point(cx+width,       cy+get_point(e.begRef));
-  //         poly->two   = Point(cx+width,       cy+get_point(e.endRef));
-  //         poly->three = Point(cx+width+space, cy+get_point(e.endTar));
-  //         poly->four  = Point(cx+width+space, cy+get_point(e.begTar));
-  //         poly->plot(fPlot);
-  //         break;
-  //       case 2:
-  //         line->color = customColor(e.start);
-  //         line->beg = Point(
-  //           cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
-  //         line->end = Point(
-  //           cx+width+space, cy+get_point(e.begTar+(e.endTar-e.begTar)/2.0));
-  //         line->plot(fPlot);
-  //         break;
-  //       case 1:
-  //         line->color = "black";
-  //         line->beg = Point(
-  //           cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
-  //         line->end = Point(
-  //           cx+width+space, cy+get_point(e.begTar+(e.endTar-e.begTar)/2.0));
-  //         line->plot(fPlot);
-  //         break;
-  //       case 3:
-  //         line->color = "black";
-  //         line->beg = Point(cx+width,       cy+get_point(e.begRef));
-  //         line->end = Point(cx+width+space, cy+get_point(e.begTar));
-  //         line->plot(fPlot);
-
-  //         line->beg = Point(cx+width,       cy+get_point(e.endRef));
-  //         line->end = Point(cx+width+space, cy+get_point(e.endTar));
-  //         line->plot(fPlot);
-  //         break;
-  //       case 4:
-  //         line->color = customColor(e.start);
-  //         line->beg = Point(cx+width,       cy+get_point(e.begRef));
-  //         line->end = Point(cx+width+space, cy+get_point(e.begTar));
-  //         line->plot(fPlot);
-
-  //         line->beg = Point(cx+width,       cy+get_point(e.endRef));
-  //         line->end = Point(cx+width+space, cy+get_point(e.endTar));
-  //         line->plot(fPlot);
-  //         break;
-  //       default:break;
-  //       }
-  //       ++n_regular;
-  //     }
-  //   }
-  //   else {
-  //     if (p.inverse) {
-  //       plot_main_ref();
-  //       plot_main_tar(true);
-
-  //       switch (p.link) {
-  //       case 5:
-  //         poly->lineColor = "grey";
-  //         poly->fillColor = customColor(e.start);
-  //         poly->one   = Point(cx+width,       cy+get_point(e.begRef));
-  //         poly->two   = Point(cx+width,       cy+get_point(e.endRef));
-  //         poly->three = Point(cx+width+space, cy+get_point(e.endTar));
-  //         poly->four  = Point(cx+width+space, cy+get_point(e.begTar));
-  //         poly->plot(fPlot);
-  //         break;
-  //       case 2:
-  //         line->color = customColor(e.start);
-  //         line->beg = Point(
-  //           cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
-  //         line->end = Point(
-  //           cx+width+space, cy+get_point(e.endTar+(e.begTar-e.endTar)/2.0));
-  //         line->plot(fPlot);
-  //         break;
-  //       case 1:
-  //         line->color = "green";
-  //         line->beg = Point(
-  //           cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
-  //         line->end = Point(
-  //           cx+width+space, cy+get_point(e.endTar+(e.begTar-e.endTar)/2.0));
-  //         line->plot(fPlot);
-  //         break;
-  //       case 3:
-  //         line->color = "green";
-  //         line->beg = Point(cx+width,       cy+get_point(e.begRef));
-  //         line->end = Point(cx+width+space, cy+get_point(e.begTar));
-  //         line->plot(fPlot);
-
-  //         line->beg = Point(cx+width,       cy+get_point(e.endRef));
-  //         line->end = Point(cx+width+space, cy+get_point(e.endTar));
-  //         line->plot(fPlot);
-  //         break;
-  //       case 4:
-  //         line->color = customColor(e.start);
-  //         line->beg = Point(cx+width,       cy+get_point(e.begRef));
-  //         line->end = Point(cx+width+space, cy+get_point(e.begTar));
-  //         line->plot(fPlot);
-
-  //         line->beg = Point(cx+width,       cy+get_point(e.endRef));
-  //         line->end = Point(cx+width+space, cy+get_point(e.endTar));
-  //         line->plot(fPlot);
-  //         break;
-  //       default:  break;
-  //       }
-  //       ++n_inverse;
-  //     }
-  //   }
-  // }
-  // fPos.seekg(ios::beg);
-
-  // // Plot Ns
-  // save_n_pos(ref);
-  // ifstream refFile(file_name(ref)+"."+FMT_N);
-  // for (i64 beg,end; refFile>>beg>>end;) {
-  //   rect->color  = "grey";
-  //   rect->origin = Point(cx, cy+get_point(beg));
-  //   rect->height = get_point(end-beg+1);
-  //   rect->plot(fPlot);
-  // }
-  // refFile.close();
-  // remove((file_name(ref)+"."+FMT_N).c_str());
-
-  // save_n_pos(tar);
-  // ifstream tarFile(file_name(tar)+"."+FMT_N);
-  // for (i64 beg,end; tarFile>>beg>>end;) {
-  //   rect->color  = "grey";
-  //   rect->origin = Point(cx+width+space, cy+get_point(beg));
-  //   rect->height = get_point(end-beg+1);
-  //   rect->plot(fPlot);
-  // }
-  // tarFile.close();
-  // remove((file_name(tar)+"."+FMT_N).c_str());
+    if (e.begRef != -2) {
+      if (e.endTar > e.begTar) {
+        if (p.regular) {
+          plot_main_ref();
+          plot_main_tar(false);
   
-  // rect->width  = width;
-  // rect->origin = Point(cx, cy);
-  // rect->height = refSize;
-  // rect->plot_chromosome(fPlot);
+          switch (p.link) {
+          case 5:
+            poly->lineColor = "grey";
+            poly->fillColor = customColor(e.start);
+            poly->one   = Point(cx+width,       cy+get_point(e.begRef));
+            poly->two   = Point(cx+width,       cy+get_point(e.endRef));
+            poly->three = Point(cx+width+space, cy+get_point(e.endTar));
+            poly->four  = Point(cx+width+space, cy+get_point(e.begTar));
+            poly->plot(fPlot);
+            break;
+          case 2:
+            line->color = customColor(e.start);
+            line->beg = Point(
+              cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
+            line->end = Point(
+              cx+width+space, cy+get_point(e.begTar+(e.endTar-e.begTar)/2.0));
+            line->plot(fPlot);
+            break;
+          case 1:
+            line->color = "black";
+            line->beg = Point(
+              cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
+            line->end = Point(
+              cx+width+space, cy+get_point(e.begTar+(e.endTar-e.begTar)/2.0));
+            line->plot(fPlot);
+            break;
+          case 3:
+            line->color = "black";
+            line->beg = Point(cx+width,       cy+get_point(e.begRef));
+            line->end = Point(cx+width+space, cy+get_point(e.begTar));
+            line->plot(fPlot);
+  
+            line->beg = Point(cx+width,       cy+get_point(e.endRef));
+            line->end = Point(cx+width+space, cy+get_point(e.endTar));
+            line->plot(fPlot);
+            break;
+          case 4:
+            line->color = customColor(e.start);
+            line->beg = Point(cx+width,       cy+get_point(e.begRef));
+            line->end = Point(cx+width+space, cy+get_point(e.begTar));
+            line->plot(fPlot);
+  
+            line->beg = Point(cx+width,       cy+get_point(e.endRef));
+            line->end = Point(cx+width+space, cy+get_point(e.endTar));
+            line->plot(fPlot);
+            break;
+          default: break;
+          }
+          ++n_regular;
+        }
+      }
+      else {
+        if (p.inverse) {
+          plot_main_ref();
+          plot_main_tar(true);
+  
+          switch (p.link) {
+          case 5:
+            poly->lineColor = "grey";
+            poly->fillColor = customColor(e.start);
+            poly->one   = Point(cx+width,       cy+get_point(e.begRef));
+            poly->two   = Point(cx+width,       cy+get_point(e.endRef));
+            poly->three = Point(cx+width+space, cy+get_point(e.endTar));
+            poly->four  = Point(cx+width+space, cy+get_point(e.begTar));
+            poly->plot(fPlot);
+            break;
+          case 2:
+            line->color = customColor(e.start);
+            line->beg = Point(
+              cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
+            line->end = Point(
+              cx+width+space, cy+get_point(e.endTar+(e.begTar-e.endTar)/2.0));
+            line->plot(fPlot);
+            break;
+          case 1:
+            line->color = "green";
+            line->beg = Point(
+              cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
+            line->end = Point(
+              cx+width+space, cy+get_point(e.endTar+(e.begTar-e.endTar)/2.0));
+            line->plot(fPlot);
+            break;
+          case 3:
+            line->color = "green";
+            line->beg = Point(cx+width,       cy+get_point(e.begRef));
+            line->end = Point(cx+width+space, cy+get_point(e.begTar));
+            line->plot(fPlot);
+  
+            line->beg = Point(cx+width,       cy+get_point(e.endRef));
+            line->end = Point(cx+width+space, cy+get_point(e.endTar));
+            line->plot(fPlot);
+            break;
+          case 4:
+            line->color = customColor(e.start);
+            line->beg = Point(cx+width,       cy+get_point(e.begRef));
+            line->end = Point(cx+width+space, cy+get_point(e.begTar));
+            line->plot(fPlot);
+  
+            line->beg = Point(cx+width,       cy+get_point(e.endRef));
+            line->end = Point(cx+width+space, cy+get_point(e.endTar));
+            line->plot(fPlot);
+            break;
+          default: break;
+          }
+          ++n_inverse;
+        }
+      }
+    }
+  }
+  fPos.seekg(ios::beg);
 
-  // rect->origin = Point(cx + width + space, cy);
-  // rect->height = tarSize;
-  // rect->plot_chromosome(fPlot);
+  // Plot Ns
+  save_n_pos(ref);
+  ifstream refFile(file_name(ref)+"."+FMT_N);
+  for (i64 beg,end; refFile>>beg>>end;) {
+    rect->color  = "grey";
+    rect->origin = Point(cx, cy+get_point(beg));
+    rect->height = get_point(end-beg+1);
+    rect->plot(fPlot);
+  }
+  refFile.close();
+  remove((file_name(ref)+"."+FMT_N).c_str());
 
-  // plot_legend(fPlot, p);
+  save_n_pos(tar);
+  ifstream tarFile(file_name(tar)+"."+FMT_N);
+  for (i64 beg,end; tarFile>>beg>>end;) {
+    rect->color  = "grey";
+    rect->origin = Point(cx+width+space, cy+get_point(beg));
+    rect->height = get_point(end-beg+1);
+    rect->plot(fPlot);
+  }
+  tarFile.close();
+  remove((file_name(tar)+"."+FMT_N).c_str());
+  
+  rect->width  = width;
+  rect->origin = Point(cx, cy);
+  rect->height = refSize;
+  rect->plot_chromosome(fPlot);
 
-  // if (p.showAnnot)  plot_annot(fPlot, max(n_refBases,n_tarBases));
+  rect->origin = Point(cx + width + space, cy);
+  rect->height = tarSize;
+  rect->plot_chromosome(fPlot);
+
+  plot_legend(fPlot, p);
+
+  if (p.showAnnot)  plot_annot(fPlot, max(n_refBases,n_tarBases));
 
   print_tail(fPlot);
 
   cerr << "Plotting finished.\n";
-  if (p.regular)    cerr << "Found "   << n_regular << " regular regions.\n";
-  if (p.inverse)    cerr << "Found "   << n_inverse << " inverted regions.\n";
-  if (n_ignore!=0)  cerr << "Ignored " << n_ignore  << " regions.\n";
+  cerr << "Found ";
+  if (p.regular)
+    cerr << n_regular << " regular";
+  if (n_regularSolo != 0)
+    cerr << ", " << n_regularSolo << " solo regular";
+  if (p.inverse)
+    cerr << ", " << n_inverse << " inverted";
+  if (n_inverseSolo != 0)
+    cerr << ", " << n_inverseSolo << " solo inverted";
+  cerr << " region" << 
+    (n_regular+n_regularSolo+n_inverse+n_inverseSolo > 1 ? "s" : "") << ".\n";
+  if (n_ignore != 0)
+    cerr << "Ignored " << n_ignore << " region" << 
+      (n_ignore>1 ? "s" : "") << ".\n";
   cerr << '\n';
 
   fPos.close();  fPlot.close();
@@ -897,7 +920,6 @@ inline void VizPaint::sort_merge (string& s) const {
   for (auto it=vEnv.begin(); it<vEnv.end()-1;) {
     if (it->id == (it+1)->id) {
       s += tspan(it->id, to_string(it->pos)+"-"+to_string((it+1)->pos)) + "\n";
-      // s += tspan(customColor(it->id), to_string(it->pos)+"-"+to_string((it+1)->pos)) + "\n";
       leftOver -= 2;
       it       += 2;
     }
@@ -949,62 +971,26 @@ u64 maxBases, string&& type) {
     Node (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
   };
   
-  auto posDupl {pos};
-  // Ignore tiny regions
-  // for (auto e : posDupl) {
-  //   if (abs(e.endRef-e.begRef)<par.min && e.begRef!=-2) {
-  //     e.begRef=-1;  e.endRef=-1;
-  //     e.begTar=-1;  e.endTar=-1;
-  //   }
-  // }
-
-  vector<Node> nodes;    nodes.reserve(2*posDupl.size());
+  vector<Node> nodes;    nodes.reserve(2*pos.size());
   if (type == "ref") {
-    for (auto e : posDupl) {
-      if (e.endRef - e.begRef < par.min)
-        continue;
-      else
+    for (auto e : pos)
+      if (e.endRef-e.begRef>par.min && abs(e.endTar-e.begTar)>par.min)
         nodes.emplace_back(Node(e.begRef, 'b', e.start));
-    }
-    for (auto e : posDupl) {
-      if (e.endRef - e.begRef < par.min)
-        continue;
-      else
+    for (auto e : pos)
+      if (e.endRef-e.begRef>par.min && abs(e.endTar-e.begTar)>par.min)
         nodes.emplace_back(Node(e.endRef, 'e', e.start));
-    }
-
-    // for (u64 i=0; i!=posDupl.size(); ++i)
-    //   if (posDupl[i].begRef != -1)
-    //     nodes.emplace_back(Node(posDupl[i].begRef, 'b', posDupl[i].start));
-    // for (u64 i=0; i!=posDupl.size(); ++i)
-    //   if (posDupl[i].endRef != -1)
-    //     nodes.emplace_back(Node(posDupl[i].endRef, 'e', posDupl[i].start));
   }
   else if (type == "tar") {
-    for (auto e : posDupl) {
-      if (e.begRef==-2 && abs(e.endTar-e.begTar)>=par.min)
+    for (auto e : pos)
+      if ((abs(e.endTar-e.begTar)>par.min && e.begRef==-2) ||
+          (abs(e.endTar-e.begTar)>par.min && e.endRef-e.begRef>par.min))
         nodes.emplace_back(Node(e.begTar, 
           e.endTar>e.begTar ? 'b' : 'e', e.start));
-    }
-
-
-    // for (auto e : posDupl)
-    //   if (e.begTar != -1)
-    //     nodes.emplace_back(
-    //       Node(e.begTar, e.endTar>e.begTar ? 'b' : 'e', e.start));
-    // for (auto e : posDupl)
-    //   if (posDupl[i].endTar != -1)
-    //     nodes.emplace_back(
-    //       Node(e.endTar, e.endTar>e.begTar ? 'e' : 'b', e.start));
-
-    // for (u64 i=0; i!=posDupl.size(); ++i)
-    //   if (posDupl[i].begTar != -1)
-    //     nodes.emplace_back(Node(posDupl[i].begTar, 
-    //       posDupl[i].endTar>posDupl[i].begTar ? 'b' : 'e', posDupl[i].start));
-    // for (u64 i=0; i!=posDupl.size(); ++i)
-    //   if (posDupl[i].endTar != -1)
-    //     nodes.emplace_back(Node(posDupl[i].endTar, 
-    //       posDupl[i].endTar>posDupl[i].begTar ? 'e' : 'b', posDupl[i].start));
+    for (auto e : pos)
+      if ((abs(e.endTar-e.begTar)>par.min && e.begRef==-2) ||
+          (abs(e.endTar-e.begTar)>par.min && e.endRef-e.begRef>par.min))
+        nodes.emplace_back(Node(e.endTar, 
+          e.endTar>e.begTar ? 'e' : 'b', e.start));
   }
   // std::sort(nodes.begin(), nodes.end(),
   //   [](const Node& l, const Node& r) { return l.position < r.position; });
@@ -1015,118 +1001,118 @@ u64 maxBases, string&& type) {
   if (!par.manMult)  par.mult = 512 / nodes.size();  // 256/(size/2)
   mult = par.mult;
 
-  // lastPos.emplace_back(nodes.back().position);
+  lastPos.emplace_back(nodes.back().position);
 
-  // auto   text = make_unique<Text>();
-  // string line, lastLine;
-  // i64    printPos  = 0;
-  // char   printType = 'b';
-  // u64    nOverlap  = 0;
-  // double X         = 0;
-  // if (par.showNRC && par.showRedun)
-  //   X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
-  // else if (par.showNRC ^ par.showRedun)
-  //   X = HORIZ_TUNE + width/HORIZ_RATIO;
-  // double CX=cx;    type=="ref" ? CX-=X : CX+=width+space+width+X;
+  auto   text = make_unique<Text>();
+  string line, lastLine;
+  i64    printPos  = 0;
+  char   printType = 'b';
+  u64    nOverlap  = 0;
+  double X         = 0;
+  if (par.showNRC && par.showRedun)
+    X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
+  else if (par.showNRC ^ par.showRedun)
+    X = HORIZ_TUNE + width/HORIZ_RATIO;
+  double CX=cx;    type=="ref" ? CX-=X : CX+=width+space+width+X;
 
-  // for (auto it=nodes.begin(); it<nodes.end()-1; ++it) {
-  //   if ((it->type=='b' && (it+1)->type=='b') ||
-  //       (it->type=='e' && (it+1)->type=='e')) {
-  //     if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
-  //       if (++nOverlap == 1) {
-  //         if (it->start == (it+1)->start) {
-  //           printPos = (it->position + (it+1)->position) / 2;
-  //           printType = 'm';
-  //         }
-  //         else {
-  //           printPos = it->position;
-  //           printType = it->type;
-  //         }
-  //       }
-  //       line += tspan(it->start, it->position);
-  //       lastLine = tspan((it+1)->start, (it+1)->position);
-  //     }
-  //     else {
-  //       if (nOverlap == 0) {
-  //         printPos = it->position;
-  //         printType = it->type;
-  //       }
-  //       nOverlap = 0;
-  //     }
-  //   }
-  //   else if (it->type=='b' && (it+1)->type=='e') {
-  //     if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
-  //       if (++nOverlap == 1) {
-  //         if (it->start == (it+1)->start) {
-  //           printPos = (it->position + (it+1)->position) / 2;
-  //           printType = 'm';
-  //         }
-  //         else {
-  //           printPos = (it->position + (it+1)->position) / 2;
-  //           printType = 'm';
-  //         }
-  //       }
-  //       line += tspan(it->start, it->position);
-  //       lastLine = tspan((it+1)->start, (it+1)->position);
-  //     }
-  //     else {
-  //       if (nOverlap == 0) {
-  //         printPos = it->position;
-  //         printType = it->type;
-  //       }
-  //       nOverlap = 0;
-  //     }
-  //   }
-  //   else if (it->type=='e' && (it+1)->type=='b') {
-  //     if (nOverlap == 0) {
-  //       printPos = it->position;
-  //       printType = it->type;
-  //     }
-  //     nOverlap = 0;
-  //   }
+  for (auto it=nodes.begin(); it<nodes.end()-1; ++it) {
+    if ((it->type=='b' && (it+1)->type=='b') ||
+        (it->type=='e' && (it+1)->type=='e')) {
+      if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
+        if (++nOverlap == 1) {
+          if (it->start == (it+1)->start) {
+            printPos = (it->position + (it+1)->position) / 2;
+            printType = 'm';
+          }
+          else {
+            printPos = it->position;
+            printType = it->type;
+          }
+        }
+        line += tspan(it->start, it->position);
+        lastLine = tspan((it+1)->start, (it+1)->position);
+      }
+      else {
+        if (nOverlap == 0) {
+          printPos = it->position;
+          printType = it->type;
+        }
+        nOverlap = 0;
+      }
+    }
+    else if (it->type=='b' && (it+1)->type=='e') {
+      if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
+        if (++nOverlap == 1) {
+          if (it->start == (it+1)->start) {
+            printPos = (it->position + (it+1)->position) / 2;
+            printType = 'm';
+          }
+          else {
+            printPos = (it->position + (it+1)->position) / 2;
+            printType = 'm';
+          }
+        }
+        line += tspan(it->start, it->position);
+        lastLine = tspan((it+1)->start, (it+1)->position);
+      }
+      else {
+        if (nOverlap == 0) {
+          printPos = it->position;
+          printType = it->type;
+        }
+        nOverlap = 0;
+      }
+    }
+    else if (it->type=='e' && (it+1)->type=='b') {
+      if (nOverlap == 0) {
+        printPos = it->position;
+        printType = it->type;
+      }
+      nOverlap = 0;
+    }
 
-  //   if (nOverlap == 0) {
-  //     lastLine = tspan(it->start, it->position);
-  //     string finalLine {line+lastLine};
-  //     sort_merge(finalLine);
+    if (nOverlap == 0) {
+      lastLine = tspan(it->start, it->position);
+      string finalLine {line+lastLine};
+      sort_merge(finalLine);
 
-  //     // text->fontWeight = "bold";
-  //     if      (printType=='b')  text->dominantBaseline="text-before-edge";
-  //     else if (printType=='m')  text->dominantBaseline="middle";
-  //     else if (printType=='e')  text->dominantBaseline="text-after-edge";
-  //     text->label = finalLine;
-  //     text->origin = Point(CX, cy+get_point(printPos));
-  //     type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
+      // text->fontWeight = "bold";
+      if      (printType=='b')  text->dominantBaseline="text-before-edge";
+      else if (printType=='m')  text->dominantBaseline="middle";
+      else if (printType=='e')  text->dominantBaseline="text-after-edge";
+      text->label = finalLine;
+      text->origin = Point(CX, cy+get_point(printPos));
+      type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
 
-  //     line.clear();
-  //     lastLine.clear();
+      line.clear();
+      lastLine.clear();
 
-  //     //last
-  //     if (it+2 == nodes.end()) {
-  //       finalLine = tspan((it+1)->start, (it+1)->position);
-  //       sort_merge(finalLine);
-  //       printPos = (it+1)->position;
+      //last
+      if (it+2 == nodes.end()) {
+        finalLine = tspan((it+1)->start, (it+1)->position);
+        sort_merge(finalLine);
+        printPos = (it+1)->position;
 
-  //       text->dominantBaseline="text-after-edge";
-  //       text->label = finalLine;
-  //       text->origin = Point(CX, cy+get_point(printPos));
-  //       type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
-  //     }
-  //   }
+        text->dominantBaseline="text-after-edge";
+        text->label = finalLine;
+        text->origin = Point(CX, cy+get_point(printPos));
+        type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
+      }
+    }
     
-  //   if (it+2==nodes.end() && nOverlap!=0) {
-  //     lastLine = tspan((it+1)->start, (it+1)->position);
-  //     string finalLine {line+lastLine};
-  //     sort_merge(finalLine);
+    if (it+2==nodes.end() && nOverlap!=0) {
+      lastLine = tspan((it+1)->start, (it+1)->position);
+      string finalLine {line+lastLine};
+      sort_merge(finalLine);
 
-  //     // text->fontWeight = "bold";
-  //     if      (printType=='b')  text->dominantBaseline="text-before-edge";
-  //     else if (printType=='m')  text->dominantBaseline="middle";
-  //     else if (printType=='e')  text->dominantBaseline="text-after-edge";
-  //     text->label = finalLine;
-  //     text->origin = Point(CX, cy+get_point(printPos));
-  //     type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
-  //     break;
-  //   }
-  // } // for
+      // text->fontWeight = "bold";
+      if      (printType=='b')  text->dominantBaseline="text-before-edge";
+      else if (printType=='m')  text->dominantBaseline="middle";
+      else if (printType=='e')  text->dominantBaseline="text-after-edge";
+      text->label = finalLine;
+      text->origin = Point(CX, cy+get_point(printPos));
+      type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
+      break;
+    }
+  } // for
 }
