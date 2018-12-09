@@ -104,7 +104,9 @@ void VizPaint::print_plot (VizParam& p) {
     };
 
     const auto plot_main_tar = [&](bool inverted) {
-      rect->color  = customColor(e.start);
+      if (e.begRef==-2)  rect->color="black";
+      else               rect->color=customColor(e.start);
+      rect->width=width;
       rect->height = get_point(abs(e.begTar-e.endTar));
       if (!inverted) {
         rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
@@ -112,7 +114,8 @@ void VizPaint::print_plot (VizParam& p) {
       }
       else {
         rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
-        rect->plot_ir(fPlot);
+        if (e.begRef==-2)  rect->plot_ir(fPlot, "#WavyWhite");
+        else               rect->plot_ir(fPlot);
       }
 
       if (p.showNRC) {
@@ -125,12 +128,12 @@ void VizPaint::print_plot (VizParam& p) {
       }
     };
 
-    if (e.begRef != -2) {
-      if (e.endTar > e.begTar) {
-        if (p.regular) {
-          plot_main_ref();
-          plot_main_tar(false);
-  
+    if (e.endTar > e.begTar) {
+      if (p.regular) {
+        plot_main_ref();
+        plot_main_tar(false);
+
+        if (e.begRef != -2) {
           switch (p.link) {
           case 5:
             poly->lineColor = "grey";
@@ -162,7 +165,6 @@ void VizPaint::print_plot (VizParam& p) {
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
-  
             line->beg = Point(cx+width,       cy+get_point(e.endRef));
             line->end = Point(cx+width+space, cy+get_point(e.endTar));
             line->plot(fPlot);
@@ -172,7 +174,6 @@ void VizPaint::print_plot (VizParam& p) {
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
-  
             line->beg = Point(cx+width,       cy+get_point(e.endRef));
             line->end = Point(cx+width+space, cy+get_point(e.endTar));
             line->plot(fPlot);
@@ -182,11 +183,13 @@ void VizPaint::print_plot (VizParam& p) {
           ++n_regular;
         }
       }
-      else {
-        if (p.inverse) {
-          plot_main_ref();
-          plot_main_tar(true);
-  
+    }
+    else {
+      if (p.inverse) {
+        plot_main_ref();
+        plot_main_tar(true);
+
+        if (e.begRef != -2) {
           switch (p.link) {
           case 5:
             poly->lineColor = "grey";
@@ -638,7 +641,7 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     "style=\"fill:black;stroke:none\" />"
     "</pattern></defs>";
 
-  f << "<defs id=\"ffff\"><pattern inkscape:stockid=\"Wavy\" id=\"Wavy\" "
+  f << "<defs id=\"ffff\"><pattern id=\"Wavy\" "
     "height=\"5.1805778\" width=\"30.0\" patternUnits=\"userSpaceOnUse\" "
     "inkscape:collect=\"always\"><path id=\"path5114\" d=\"M 7.597,0.061 "
     "C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 "
@@ -646,6 +649,15 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     "C 18.820,4.931 23.804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 "
     "19.246,3.770 14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z \" "
     "style=\"fill:black;stroke:none;\" /></pattern></defs>";
+
+  f << "<defs id=\"ffff\"><pattern id=\"WavyWhite\" "
+    "height=\"5.1805778\" width=\"30.0\" patternUnits=\"userSpaceOnUse\" "
+    "inkscape:collect=\"always\"><path id=\"path5114\" d=\"M 7.597,0.061 "
+    "C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 "
+    "5.173,1.052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 "
+    "C 18.820,4.931 23.804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 "
+    "19.246,3.770 14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z \" "
+    "style=\"fill:white;stroke:none;\" /></pattern></defs>";
 
   f << "<defs id=\"defs6219\"><pattern inkscape:stockid=\"xtrace\" id="
     "\"xtrace\" height=\"20.0\" width=\"20.0\" patternUnits=\"userSpaceOnUse\" "
@@ -821,18 +833,30 @@ inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight) const {
     cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
   const auto relRedunY  = cy + get_point(maxHeight) + 20;
 
-  auto horizSize = space/5.0;
-  auto vertSize  = relRedunY - cy - get_point(lastPos[0]);
   auto path = make_unique<Path>();
-  path->color="black";
-  path->origin = Point(relRedunX1, cy+get_point(lastPos[0]));
-  path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
-  path->plot(f);
+  double horizSize=0.0, vertSize=0.0;
 
-  vertSize  = relRedunY - cy - get_point(lastPos[1]);
-  path->origin = Point(relRedunX2, cy+get_point(lastPos[1]));
-  path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
-  path->plot(f);
+  if (lastPos.size() == 1) {
+    horizSize = space/5.0;
+    vertSize  = relRedunY - cy - get_point(lastPos[0]);
+    path->color="black";
+    path->origin = Point(relRedunX2, cy+get_point(lastPos[0]));
+    path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+    path->plot(f);
+  }
+  else if (lastPos.size() == 2) {
+    horizSize = space/5.0;
+    vertSize  = relRedunY - cy - get_point(lastPos[0]);
+    path->color="black";
+    path->origin = Point(relRedunX1, cy+get_point(lastPos[0]));
+    path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
+    path->plot(f);
+
+    vertSize = relRedunY - cy - get_point(lastPos[1]);
+    path->origin = Point(relRedunX2, cy+get_point(lastPos[1]));
+    path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+    path->plot(f);
+  }
 
   auto text = make_unique<Text>();
   text->fontSize=9;
@@ -846,16 +870,25 @@ inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight) const {
     cx + 2*width + space + 2*HORIZ_TUNE + 1.5*width/HORIZ_RATIO;
   const auto redunY = relRedunY + 15;
 
-  vertSize  = redunY - cy - get_point(lastPos[0]);
-  horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
-  path->origin = Point(redunX1, cy+get_point(lastPos[0]));
-  path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
-  path->plot(f);
+  if (lastPos.size() == 1) {
+    vertSize  = redunY - cy - get_point(lastPos[0]);
+    horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
+    path->origin = Point(redunX2, cy+get_point(lastPos[0]));
+    path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+    path->plot(f);
+  }
+  else if (lastPos.size() == 2) {
+    vertSize  = redunY - cy - get_point(lastPos[0]);
+    horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
+    path->origin = Point(redunX1, cy+get_point(lastPos[0]));
+    path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
+    path->plot(f);
 
-  vertSize  = redunY - cy - get_point(lastPos[1]);
-  path->origin = Point(redunX2, cy+get_point(lastPos[1]));
-  path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
-  path->plot(f);
+    vertSize  = redunY - cy - get_point(lastPos[1]);
+    path->origin = Point(redunX2, cy+get_point(lastPos[1]));
+    path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+    path->plot(f);
+  }
 
   text->fontSize=9;
   text->origin=Point((redunX1+redunX2)/2, redunY);
@@ -992,8 +1025,8 @@ u64 maxBases, string&& type) {
         nodes.emplace_back(Node(e.endTar, 
           e.endTar>e.begTar ? 'e' : 'b', e.start));
   }
-  // std::sort(nodes.begin(), nodes.end(),
-  //   [](const Node& l, const Node& r) { return l.position < r.position; });
+  std::sort(nodes.begin(), nodes.end(),
+    [](const Node& l, const Node& r) { return l.position < r.position; });
 
   plottable = static_cast<bool>(nodes.size());
   if (!plottable)  return;
