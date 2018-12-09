@@ -83,11 +83,11 @@ void Rectangle::plot (ofstream& f) const {
     "ry=\"3\" />\n";
 }
 
-void Rectangle::plot_ir (ofstream& f) const {
+void Rectangle::plot_ir (ofstream& f, string&& wave) const {
   plot(f);
   f << "<rect style=\"fill-opacity:" << opacity << ";stroke-width:2;"
-    "stroke-miterlimit:4;stroke-dasharray:none;fill:url(#Wavy);"
-    "fill-rule:nonzero;opacity:1\" id=\"rect6217\" "
+    "stroke-miterlimit:4;stroke-dasharray:none;fill:url(" << wave << ");"
+    "fill-rule:nonzero;opacity:1;\" id=\"rect6217\" "
     "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
     "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
     "ry=\"3\" />\n";

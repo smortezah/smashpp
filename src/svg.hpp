@@ -75,7 +75,7 @@ struct Rectangle {
   float  opacity;
   Rectangle () : opacity(OPAC) {}
   void plot (ofstream&) const;
-  void plot_ir (ofstream&) const;
+  void plot_ir (ofstream&, string&& wave=std::move("#Wavy")) const;
   void plot_oval (ofstream&) const;
   void plot_oval_ir (ofstream&) const;
   void plot_nrc (ofstream&, char) const;
