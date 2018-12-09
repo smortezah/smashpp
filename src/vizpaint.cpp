@@ -951,36 +951,60 @@ u64 maxBases, string&& type) {
   
   auto posDupl {pos};
   // Ignore tiny regions
-  for (auto posItr=posDupl.begin(); posItr!=posDupl.end(); ++posItr) {
-    if (abs(posItr->endRef - posItr->begRef) < par.min ||
-        abs(posItr->endTar - posItr->begTar) < par.min) {
-      if (posItr->begRef != -2) {
-        posItr->begTar = -1;
-        posItr->endTar = -1;
-      }
-      posItr->begRef = -1;
-      posItr->endRef = -1;
-    }
-  }
+  // for (auto e : posDupl) {
+  //   if (abs(e.endRef-e.begRef)<par.min && e.begRef!=-2) {
+  //     e.begRef=-1;  e.endRef=-1;
+  //     e.begTar=-1;  e.endTar=-1;
+  //   }
+  // }
 
   vector<Node> nodes;    nodes.reserve(2*posDupl.size());
   if (type == "ref") {
-    for (u64 i=0; i!=posDupl.size(); ++i)
-      if (posDupl[i].begRef != -1)
-        nodes.emplace_back(Node(posDupl[i].begRef, 'b', posDupl[i].start));
-    for (u64 i=0; i!=posDupl.size(); ++i)
-      if (posDupl[i].endRef != -1)
-        nodes.emplace_back(Node(posDupl[i].endRef, 'e', posDupl[i].start));
+    for (auto e : posDupl) {
+      if (e.endRef - e.begRef < par.min)
+        continue;
+      else
+        nodes.emplace_back(Node(e.begRef, 'b', e.start));
+    }
+    for (auto e : posDupl) {
+      if (e.endRef - e.begRef < par.min)
+        continue;
+      else
+        nodes.emplace_back(Node(e.endRef, 'e', e.start));
+    }
+
+    // for (u64 i=0; i!=posDupl.size(); ++i)
+    //   if (posDupl[i].begRef != -1)
+    //     nodes.emplace_back(Node(posDupl[i].begRef, 'b', posDupl[i].start));
+    // for (u64 i=0; i!=posDupl.size(); ++i)
+    //   if (posDupl[i].endRef != -1)
+    //     nodes.emplace_back(Node(posDupl[i].endRef, 'e', posDupl[i].start));
   }
   else if (type == "tar") {
-    for (u64 i=0; i!=posDupl.size(); ++i)
-      if (posDupl[i].begTar != -1)
-        nodes.emplace_back(Node(posDupl[i].begTar, 
-          posDupl[i].endTar>posDupl[i].begTar ? 'b' : 'e', posDupl[i].start));
-    for (u64 i=0; i!=posDupl.size(); ++i)
-      if (posDupl[i].endTar != -1)
-        nodes.emplace_back(Node(posDupl[i].endTar, 
-          posDupl[i].endTar>posDupl[i].begTar ? 'e' : 'b', posDupl[i].start));
+    for (auto e : posDupl) {
+      if (e.begRef==-2 && abs(e.endTar-e.begTar)>=par.min)
+        nodes.emplace_back(Node(e.begTar, 
+          e.endTar>e.begTar ? 'b' : 'e', e.start));
+    }
+
+
+    // for (auto e : posDupl)
+    //   if (e.begTar != -1)
+    //     nodes.emplace_back(
+    //       Node(e.begTar, e.endTar>e.begTar ? 'b' : 'e', e.start));
+    // for (auto e : posDupl)
+    //   if (posDupl[i].endTar != -1)
+    //     nodes.emplace_back(
+    //       Node(e.endTar, e.endTar>e.begTar ? 'e' : 'b', e.start));
+
+    // for (u64 i=0; i!=posDupl.size(); ++i)
+    //   if (posDupl[i].begTar != -1)
+    //     nodes.emplace_back(Node(posDupl[i].begTar, 
+    //       posDupl[i].endTar>posDupl[i].begTar ? 'b' : 'e', posDupl[i].start));
+    // for (u64 i=0; i!=posDupl.size(); ++i)
+    //   if (posDupl[i].endTar != -1)
+    //     nodes.emplace_back(Node(posDupl[i].endTar, 
+    //       posDupl[i].endTar>posDupl[i].begTar ? 'e' : 'b', posDupl[i].start));
   }
   // std::sort(nodes.begin(), nodes.end(),
   //   [](const Node& l, const Node& r) { return l.position < r.position; });
