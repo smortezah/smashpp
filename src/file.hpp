@@ -103,11 +103,10 @@ const FileType& type) {
       string out;
       for (auto it=buffer.begin(); it!=buffer.begin()+fIn.gcount(); ++it) {
         const auto c = *it;
-        if      (c=='>')  {               isHeader=true;   continue; }
-        else if (c=='\n') { if (isHeader) isHeader=false;  continue; }
-        else if (isHeader)                                 continue;
-        else if (c>64 && c<123)
-          out += c;
+        if      (c=='>')        {               isHeader=true;   continue; }
+        else if (c=='\n')       { if (isHeader) isHeader=false;  continue; }
+        else if (isHeader)      {                                continue; }
+        else if (c>64 && c<123) { out += c;                                }
       }
       fOut.write(out.data(), out.size());
     }
@@ -128,8 +127,7 @@ const FileType& type) {
         default:                                         break;
         }
         if (!isDNA || c=='\n')  continue;
-        if (c>64 && c<123)
-          out += c;
+        if (c>64 && c<123)      out += c;
       }
       fOut.write(out.data(), out.size());
     }

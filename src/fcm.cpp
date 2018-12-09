@@ -212,15 +212,12 @@ inline void FCM::show_info (const Param& p) const {
     filter_row("Filter & Segment",           'h');
     midrule();
     filter_row("Window function",            'f');
-    if (p.manFilterScale) {
+    if (p.manFilterScale)
     filter_row("Filter scale",               's');
-    }
-    if (!p.manFilterScale) {
+    if (!p.manFilterScale)
     filter_row("Window size",                'w');
-    }
-    if (p.manThresh) {
-      filter_row("Threshold",                't');
-    }
+    if (p.manThresh)
+    filter_row("Threshold",                  't');
     botrule();  //cerr << '\n';
   }
 
