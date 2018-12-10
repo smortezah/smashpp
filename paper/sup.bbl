@@ -27,4 +27,9 @@ M.~Hosseini, D.~Pratas, and A.~J. Pinho. Smash++. [Online]. Available:
   \url{https://github.com/smortezah/smashpp}
 \BIBentrySTDinterwordspacing
 
+\bibitem{web-goose}
+\BIBentryALTinterwordspacing
+D.~Pratas. Goose. [Online]. Available: \url{https://github.com/pratas/goose}
+\BIBentrySTDinterwordspacing
+
 \end{thebibliography}
