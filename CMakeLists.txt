@@ -31,6 +31,8 @@ add_executable(smashpp  src/main.cpp
                         )
 
 
+add_executable(smashpp-inv-rep src/invRep.cpp)
+
 #add_executable(excule_N src/excludeN.cpp)
 
 #add_executable(bench    src/bench.cpp)
