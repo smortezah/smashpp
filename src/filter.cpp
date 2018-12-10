@@ -481,6 +481,22 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
     midf0.close();  remove(midf0Name.c_str());
     finf.close();
   }
+  else if (midf0IsEmpty && !midf1IsEmpty) {
+    ifstream midf1(midf1Name);
+    ofstream finf(gen_name(ref, tar, Format::POSITION));
+
+    finf << POS_HDR <<'\t'<< file_name(ref) <<'\t'<< to_string(file_size(ref))
+                    <<'\t'<< file_name(tar) <<'\t'<< to_string(file_size(tar));
+    finf << '\n';
+
+    const u64 size = file_size(midf1Name);
+    vector<char> buffer(size, 0);
+    midf1.read (buffer.data(), size);
+    finf.write(buffer.data(), size);
+
+    midf1.close();  remove(midf1Name.c_str());
+    finf.close();
+  }
   else {
     ifstream midf0(midf0Name), midf1(midf1Name);
     ofstream finf(gen_name(ref, tar, Format::POSITION));
