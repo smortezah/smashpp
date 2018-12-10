@@ -62,8 +62,8 @@ class VizParam {
   bool   manMult;
   string posFile;
 
-  VizParam () : verbose(false), inverse(true), regular(true), showPos(false),
-    showNRC(false), showRedun(false), showAnnot(false), image(IMAGE), 
+  VizParam () : verbose(false), inverse(true), regular(true), showPos(true),
+    showNRC(true), showRedun(true), showAnnot(true), image(IMAGE), 
     link(LINK), color(COLOR), opacity(OPAC), width(WDTH), space(SPC), 
     mult(MULT), start(BEGN), min(MINP), manMult(false) {}
 
@@ -395,13 +395,13 @@ inline void VizParam::parse (int argc, char**& argv) {
 
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
     if      (*i=="-h"  || *i=="--help") { help();   throw EXIT_SUCCESS; }
-    else if (*i=="-v"  || *i=="--verbose")          verbose=true;
-    else if (*i=="-sp" || *i=="--show-pos")         showPos=true;
-    else if (*i=="-sn" || *i=="--show-nrc")         showNRC=true;
-    else if (*i=="-sr" || *i=="--show-redun")       showRedun=true;
-    else if (*i=="-sa" || *i=="--show-annot")       showAnnot=true;
-    else if (*i=="-ni" || *i=="--dont-show-inv")    inverse=false;
-    else if (*i=="-nr" || *i=="--dont-show-reg")    regular=false;
+    else if (*i=="-v"  || *i=="--verbose")     verbose=true;
+    else if (*i=="-np" || *i=="--no-pos")      showPos=false;
+    else if (*i=="-nn" || *i=="--no-nrc")      showNRC=false;
+    else if (*i=="-nr" || *i=="--no-redun")    showRedun=false;
+    else if (*i=="-na" || *i=="--no-annot")    showAnnot=false;
+    else if (*i=="-ni" || *i=="--no-inv")      inverse=false;
+    else if (*i=="-ng" || *i=="--no-reg")      regular=false;
     else if ((*i=="-o" || *i=="--out")   && i+1!=vArgs.end())
       image = *++i;
     else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
@@ -473,7 +473,7 @@ inline void VizParam::help () const {
      "-o [" << ul("SVG-FILE") << "] " << ul("POS-FILE") << "]"            <<'\n'
   <<                                                                        '\n'
   << b("SAMPLE")                                                          <<'\n'
-//    "  ./smashpp -viz -sp -sn -o out.svg ab.pos                            \n"
+//    "  ./smashpp -viz -o out.svg ab.pos                            \n"
   <<                                                                        '\n'
   << b("DESCRIPTION")                                                     <<'\n'
   << "  " << it("Mandatory arguments") << ":"                             <<'\n'
@@ -486,18 +486,18 @@ inline void VizParam::help () const {
      "more information"                                                   <<'\n'
   << "  " << b("-o")  << ",  " << b("--out") << " " << ul("SVG-FILE") <<
      "        output image name (*.svg)       " << fit("OUTPUT")          <<'\n'
-  << "  " << b("-sp") << ", "  << b("--show-pos") << "            "
-     "show positions                    " << fit("SHOW")                  <<'\n'
-  << "  " << b("-sn") << ", "  << b("--show-nrc") << "            "
-     "show normalized relative          " << fit("SHOW")                  <<'\n'
-  << "                             compression (NRC)"                     <<'\n'
-  << "  " << b("-sr") << ", "  << b("--show-redun") << "          "
-     "show self complexity              " << fit("SHOW")                  <<'\n'
-  << "  " << b("-sa") << ", "  << b("--show-annot") << "          "
-     "show annotation                   " << fit("SHOW")                  <<'\n'
-  << "  " << b("-ni") << ", "  << b("--dont-show-inv") << "       "
+  << "  " << b("-np") << ", "  << b("--no-pos") << "              "
+     "do NOT show positions          " << fit("NO SHOW")                  <<'\n'
+  << "  " << b("-nn") << ", "  << b("--no-nrc") << "              "
+     "do NOT show normalized         " << fit("NO SHOW")                  <<'\n'
+  << "                             relative compression (NRC)"            <<'\n'
+  << "  " << b("-nr") << ", "  << b("--no-redun") << "            "
+     "do NOT show self complexity    " << fit("NO SHOW")                  <<'\n'
+  << "  " << b("-na") << ", "  << b("--no-annot") << "            "
+     "do NOT show annotation         " << fit("NO SHOW")                  <<'\n'
+  << "  " << b("-ni") << ", "  << b("--no-inv") << "              "
      "do NOT show inverse maps       " << fit("NO SHOW")                  <<'\n'
-  << "  " << b("-nr") << ", "  << b("--dont-show-reg") << "       "
+  << "  " << b("-ng") << ", "  << b("--no-reg") << "              "
      "do NOT show regular maps       " << fit("NO SHOW")                  <<'\n'
   << "  " << b("-l") << ",  "  << b("--link") << "    " << ul("INT") <<
      "         type of the link between maps "
