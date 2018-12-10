@@ -7,10 +7,18 @@
 *.cbp
 # *.svg
 *.png
+**/*.blg
+**/*.bbl
+**/*.aux
+**/*.fdb_latexmk
+**/*.fls
+**/*.log
+**/*.out
+**/*.synctex.gz
 goose-*
 *_bk
 refs-tars*
-# refm-tarm*
+refm-tarm*
 refl-tarl*
 final-*
 0-tar*
@@ -55,12 +63,5 @@ mid-1-refm_tarm.pos
 mid-1-refm_tarm.pos
 out.jpg
 test.pos
-paper/sup.aux
-paper/sup.fdb_latexmk
-paper/sup.fls
-paper/sup.log
-paper/sup.out
-paper/sup.synctex.gz
-refs
 script/goose-fastqsimulation
 script/goose-mutatedna
