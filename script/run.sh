@@ -56,8 +56,8 @@ if [[ $SYNTHETIC -eq 1 ]]; then
   cat r_a r_b r_c r_d > refm
 
   ./goose-mutatedna -mr 0.00 < r_a > t_d
-  ./smashpp-inv-rep          < r_b > t_c
-  ./goose-mutatedna -mr 0.01 < r_c > t_b
+  ./smashpp-inv-rep            r_b   t_c
+  ./goose-mutatedna -mr 0.00 < r_c > t_b
   ./goose-mutatedna -mr 0.00 < r_d > t_a
   cat t_a t_b t_c t_d > tarm
 
