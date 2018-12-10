@@ -107,12 +107,12 @@ DESCRIPTION
   Options:
   -v,  --verbose             more information
   -o,  --out SVG-FILE        output image name               OUTPUT
-  -sp, --show-pos            show positions                    SHOW
-  -sn, --show-nrc            show normalized relative          SHOW
-                             compression (NRC)
-  -sr, --show-redun          show self complexity              SHOW
-  -ni, --dont-show-inv       do NOT show inverse maps       NO SHOW
-  -nr, --dont-show-reg       do NOT show regular maps       NO SHOW
+  -np, --no-pos              do NOT show positions          NO SHOW
+  -nn, --no-nrc              do NOT show normalized         NO SHOW
+                             relative compression (NRC)
+  -nr, --no-redun            do NOT show self complexity    NO SHOW
+  -ni, --no-inv              do NOT show inverse maps       NO SHOW
+  -ng, --no-reg              do NOT show regular maps       NO SHOW
   -l,  --link  INT           type of the link between maps [1;5]
   -w,  --width INT           width of the image sequence [10;200]
   -s,  --space INT           space between sequences [0;200]
