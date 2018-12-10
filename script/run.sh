@@ -50,13 +50,13 @@ if [[ $SYNTHETIC -eq 1 ]]; then
   cat t_a t_b t_c t_d > tarm
 
   ### Large sizes: ref:5000000, tar:5000000
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 2 -ri 500 -ra 1500 -rm 0 \
+  ./goose-fastqsimulation -eh -eo -es -edb -rn 2 -ri 500 -ra 1000 -rm 0 \
                           -ls 100 -n 12500 -f 0.3,0.2,0.3,0.2,0.0 -s 10101   r_a
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 500 -ra 1500 -rm 0 \
+  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 500 -ra 1000 -rm 0 \
                           -ls 100 -n 12500 -f 0.3,0.2,0.2,0.3,0.0 -s 6018    r_b
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 3 -ri 500 -ra 1500 -rm 0 \
+  ./goose-fastqsimulation -eh -eo -es -edb -rn 3 -ri 500 -ra 1000 -rm 0 \
                           -ls 100 -n 12500 -f 0.25,0.25,0.25,0.25,0.0 -s 10  r_c
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 500 -ra 1500 -rm 0 \
+  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 500 -ra 1000 -rm 0 \
                           -ls 100 -n 12500 -f 0.25,0.25,0.25,0.25,0.0 -s 7   r_d
   cat r_a r_b r_c r_d > refl
   
