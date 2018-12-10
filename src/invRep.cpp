@@ -30,13 +30,10 @@ int main (int argc, char* argv[]) {
   inFile.read(buffer.data(), size);
   inFile.close();
 
-  reverse(buffer.begin(), buffer.end());
+  reverse(buffer.begin(), buffer.end()-1);
 
   for (auto& c : buffer)
     c = REV[static_cast<unsigned char>(c)];
-
-  //   for (auto it=buffer.data();it<buffer.data()+size;++it)
-  //     *it = REV[static_cast<unsigned char>(*it)];
 
   ofstream outFile(outFileName);
   outFile.write(buffer.data(), size);
