@@ -15,15 +15,15 @@ static constexpr char REV[123] {
  0, 0, 0
 };
 
+size_t file_size (const string& fileName) {
+  ifstream ifs(fileName, ifstream::ate | ifstream::binary);
+  return ifs.tellg();
+}
+
 int main (int argc, char* argv[]) {
   const string inFileName = argv[1];
   const string outFileName = argv[2];
-  size_t size;
-  {
-  ifstream inFile(inFileName, ifstream::ate | ifstream::binary);
-  size = inFile.tellg();
-  inFile.close();
-  }
+  size_t size = file_size(inFileName);
 
   ifstream inFile(inFileName);
   vector<char> buffer(size, 0);
