@@ -179,6 +179,10 @@ int main (int argc, char* argv[]) {
             par.ref = segName+to_string(i);
             par.refName = file_name(par.ref);
             models = make_unique<FCM>(par);
+            for (auto& e : models->rMs)   e.ir=timesRunning;
+            for (auto& e : models->rTMs)  e.ir=timesRunning;
+            for (auto& e : models->tMs)   e.ir=timesRunning;
+            for (auto& e : models->tTMs)  e.ir=timesRunning;
             models->tarSegMsg = origTar + "-segment-";
             models->tarSegID = i + 1;
             models->store(par);
