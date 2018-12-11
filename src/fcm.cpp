@@ -250,12 +250,10 @@ void FCM::store (const Param& p) {
   message += " of ";
   message += tarSegMsg.empty() ? italic(p.refName) 
                                : italic(tarSegMsg+to_string(tarSegID));
-  // message += tarSegMsg.empty() ? italic(p.ref) 
-  //                              : italic(tarSegMsg+to_string(tarSegID));
   message += " ";
   cerr << message << "...";
 
-  (p.nthr==1 || nMdl==1) ? store_1(p) : store_n(p)/*Mult thr*/;
+  (p.nthr==1 || nMdl==1) ? store_1(p) : store_n(p) /*Multiple threads*/;
 
   cerr << "\r" << message << "finished.\n";
 }
@@ -267,14 +265,14 @@ inline void FCM::store_1 (const Param& p) {
   for (const auto& m : rMs) {    // Mask: 1<<2k - 1 = 4^k - 1
     switch (m.cont) {
     case Container::SKETCH_8:
-      store_impl(p.ref, (1ull<<(2*m.k))-1ull/*Mask 64*/, cmls4_iter++); break;
+      store_impl(p.ref, (1ull<<(2*m.k))-1ull/*Mask 64*/, cmls4_iter++);  break;
     case Container::LOG_TABLE_8:
-      store_impl(p.ref, (1ul<<(2*m.k))-1ul /*Mask 32*/, lgtbl8_iter++); break;
+      store_impl(p.ref, (1ul<<(2*m.k))-1ul  /*Mask 32*/, lgtbl8_iter++); break;
     case Container::TABLE_32:
-      store_impl(p.ref, (1ul<<(2*m.k))-1ul /*Mask 32*/, tbl32_iter++);  break;
+      store_impl(p.ref, (1ul<<(2*m.k))-1ul  /*Mask 32*/, tbl32_iter++);  break;
     case Container::TABLE_64:
-      store_impl(p.ref, (1ul<<(2*m.k))-1ul /*Mask 32*/, tbl64_iter++);  break;
-    default:                                                            break;
+      store_impl(p.ref, (1ul<<(2*m.k))-1ul  /*Mask 32*/, tbl64_iter++);  break;
+    default:                                                             break;
     }
   }
 }
@@ -336,7 +334,6 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 }
 
 void FCM::compress (const Param& p) {
-  // message = "Compressing " + italic(p.tar) + " ";
   message = "Compressing " + italic(p.tarName) + " ";
 
   if (rMs.size()==1 && rTMs.empty())  // 1 MM

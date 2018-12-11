@@ -132,8 +132,7 @@ int main (int argc, char* argv[]) {
       }
       else {
         const auto origRef=par.ref, origTar=par.tar;
-        for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {//todo
-        // for (u8 timesRunning=0; timesRunning!=1; ++timesRunning) {
+        for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
           if (timesRunning == 0) 
             cerr << 
               bold("====[ REGULAR MODE ]==================================\n");
@@ -170,8 +169,8 @@ int main (int argc, char* argv[]) {
           models->aggregate_slf(par);
           
           // Consider the ref as new tar and segments of the tar as new refs
-          cerr << bold(underline("\nBuilding reference map for each target"
-            " pattern\n"));
+          cerr << bold(underline("\nBuilding reference map for each target "
+            "pattern\n"));
           const auto newTar = par.ref;
           par.tar = newTar;
           par.tarName = file_name(par.tar);
@@ -234,17 +233,15 @@ int main (int argc, char* argv[]) {
         filter->aggregate_final_pos(origRef, origTar);
         
 
-// //        // Report
-// //        models->report(par); // Without "-R" does nothing
+//        // Report
+//        models->report(par); // Without "-R" does nothing
       }
     }
-
-
 
     const auto t1{now()};
     cerr << "Total time: " << hms(t1-t0);
   }
-  catch (std::exception& e) { cout << e.what(); }
+  catch (std::exception& e) { cerr << e.what(); }
   catch (...) { return EXIT_FAILURE; }
   
   return 0;

@@ -435,7 +435,8 @@ const string& dest) const {
       ifstream fReverse(revFileName);
       for (string begRev, endRev, entRev, selfEntRev;
            fReverse>>begRev>>endRev>>entRev>>selfEntRev;) {
-        fmid << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< selfEntRev <<'\t';
+        fmid << begRev <<'\t'<< endRev <<'\t'<< entRev <<'\t'<< selfEntRev
+          <<'\t';
         if      (ID==0)  fmid << begDir <<'\t'<< endDir;
         else if (ID==1)  fmid << endDir <<'\t'<< begDir;
         fmid <<'\t'<< entDir <<'\t'<< selfEntDir <<'\n';
