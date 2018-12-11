@@ -15,15 +15,17 @@ fi
 
 ### Simulate synthetic dataset
 if [[ $SYNTHETIC -eq 1 ]]; then
-  ### Small sizes: ref:1000, tar:1000
-  ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -s 201 -ls 50 -n 5 \
-                          -f 0.2,0.3,0.3,0.2,0.0      r_a
-  ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -s 58 -ls 50 -n 5 \
-                          -f 0.25,0.25,0.25,0.25,0.0  r_b
-  ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -s 3 -ls 50 -n 5 \
-                          -f 0.25,0.25,0.25,0.25,0.0  r_c
-  ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -s 1785 -ls 50 -n 5 \
-                          -f 0.3,0.2,0.2,0.3,0.0      r_d
+  chmod 777 smashpp-inv-rep
+
+  ### Small sizes: ref:1.000, tar:1.000
+  ./goose-fastqsimulation \
+    -eh -eo -es -edb -rm 0 -f 0.20,0.30,0.30,0.20,0.0 -ls 50 -n 5 -s 201   r_a
+  ./goose-fastqsimulation \
+    -eh -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 50 -n 5 -s 58    r_b
+  ./goose-fastqsimulation \
+    -eh -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 50 -n 5 -s 3     r_c
+  ./goose-fastqsimulation \
+    -eh -eo -es -edb -rm 0 -f 0.30,0.20,0.20,0.30,0.0 -ls 50 -n 5 -s 1785  r_d
   cat r_a r_b r_c r_d > refs
 
   cp                           r_d   t_a
@@ -32,15 +34,15 @@ if [[ $SYNTHETIC -eq 1 ]]; then
   ./smashpp-inv-rep            r_c   t_d
   cat t_a t_b t_c t_d > tars
 
-  ### Medium sizes: ref:100000, tar:100000
-  ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -s 1001 -ls 100 -n 250 \
-                          -f 0.25,0.25,0.25,0.25,0.0  r_a
-  ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -s 608 -ls 100 -n 250 \
-                          -f 0.3,0.2,0.2,0.3,0.0      r_b
-  ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -s 30 -ls 100 -n 250 \
-                          -f 0.2,0.3,0.3,0.2,0.0      r_c
-  ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -s 17805 -ls 100 -n 250 \
-                          -f 0.25,0.25,0.25,0.25,0.0  r_d
+  ### Medium sizes: ref:100.000, tar:100.000
+  ./goose-fastqsimulation \
+    -eh -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 191  r_a
+  ./goose-fastqsimulation \
+    -eh -eo -es -edb -rm 0 -f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 250 -s 608  r_b
+  ./goose-fastqsimulation \
+    -eh -eo -es -edb -rm 0 -f 0.20,0.30,0.30,0.20,0.0 -ls 100 -n 250 -s 30   r_c
+  ./goose-fastqsimulation \
+    -eh -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 138  r_d
   cat r_a r_b r_c r_d > refm
 
   ./smashpp-inv-rep            r_b   t_a
@@ -49,15 +51,15 @@ if [[ $SYNTHETIC -eq 1 ]]; then
   cp                           r_a   t_d
   cat t_a t_b t_c t_d > tarm
 
-  ### Large sizes: ref:5000000, tar:5000000
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 2 -ri 500 -ra 1000 -rm 0 \
-                          -ls 100 -n 12500 -f 0.3,0.2,0.3,0.2,0.0 -s 10101   r_a
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 500 -ra 1000 -rm 0 \
-                          -ls 100 -n 12500 -f 0.3,0.2,0.2,0.3,0.0 -s 6018    r_b
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 3 -ri 500 -ra 1000 -rm 0 \
-                          -ls 100 -n 12500 -f 0.25,0.25,0.25,0.25,0.0 -s 10  r_c
-  ./goose-fastqsimulation -eh -eo -es -edb -rn 1 -ri 500 -ra 1000 -rm 0 \
-                          -ls 100 -n 12500 -f 0.25,0.25,0.25,0.25,0.0 -s 7   r_d
+  ### Large sizes: ref:5.000.000, tar:5.000.000
+  ./goose-fastqsimulation -eh \
+    -eo -es -edb -rm 0 -f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 12500 -s 10101  r_a
+  ./goose-fastqsimulation -eh \
+    -eo -es -edb -rm 0 -f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 12500 -s 6018   r_b
+  ./goose-fastqsimulation -eh \
+    -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 12500 -s 10     r_c
+  ./goose-fastqsimulation -eh \
+    -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 12500 -s 7      r_d
   cat r_a r_b r_c r_d > refl
   
   cp                           r_c   t_a
@@ -65,6 +67,23 @@ if [[ $SYNTHETIC -eq 1 ]]; then
   cp                           r_a   t_c
   ./smashpp-inv-rep            r_d   t_d
   cat t_a t_b t_c t_d > tarl
+
+  ### Extra Large sizes: ref:100.000.000, tar:100.000.000
+  ./goose-fastqsimulation -eh \
+    -eo -es -edb -rm 0 -f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 250000 -s 1311  r_a
+  ./goose-fastqsimulation -eh \
+    -eo -es -edb -rm 0 -f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 250000 -s 7129  r_b
+  ./goose-fastqsimulation -eh \
+    -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250000 -s 16    r_c
+  ./goose-fastqsimulation -eh \
+    -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250000 -s 537   r_d
+  cat r_a r_b r_c r_d > refxl
+  
+  ./goose-mutatedna -mr 0.01 < r_a > t_a
+  cp                           r_c   t_b
+  cp                           r_d   t_c
+  ./smashpp-inv-rep            r_b   t_d
+  cat t_a t_b t_c t_d > tarxl
 
   rm r_* t_*
 fi
