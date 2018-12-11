@@ -80,6 +80,9 @@ if [[ $SYNTHETIC -eq 1 ]]; then
   cp r_b t_a
   ./smashpp-inv-rep r_a t_b
   cat t_a t_b > tarl
+
+  # cp r_a refl
+  # ./smashpp-inv-rep r_a tarl
   
   # ./goose-mutatedna -mr 0.00 < r_c > t_a
   # ./goose-mutatedna -mr 0.01 < r_b > t_b
