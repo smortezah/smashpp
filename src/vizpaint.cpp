@@ -725,33 +725,16 @@ inline double VizPaint::get_point (Value p) const {
 }
 
 inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
+  if (!p.showNRC && !p.showRedun)  return;
+  
   const auto vert = 24;
-  // Relative redundancy
   auto rect = make_unique<Rectangle>();
-  if (!p.showNRC && !p.showRedun) {
-    rect->origin = Point(cx, vert);
-    rect->width = width+space+width;
-  }
-  else if (p.showNRC ^ p.showRedun) {
-    rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
-    rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
-                   width/HORIZ_RATIO+HORIZ_TUNE;
-  }
-  else if (p.showNRC && p.showRedun) {
-    rect->origin = Point(cx-2*(HORIZ_TUNE+width/HORIZ_RATIO), vert);
-    rect->width  = 2*(width/HORIZ_RATIO+HORIZ_TUNE)+width+space+width+
-                   2*(width/HORIZ_RATIO+HORIZ_TUNE);
-  }
   rect->height = 12;
 
   auto text = make_unique<Text>();
-  text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
   text->textAnchor = "middle";
   // text->fontWeight = "bold";
-  text->dominantBaseline = "text-after-edge";
-  text->label = "RELATIVE REDUNDANCY";
   text->fontSize = 9;
-  text->plot(f);
 
   auto grad = make_unique<Gradient>();
   switch (p.color) {
@@ -774,6 +757,44 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
     error("undefined color mode.");
   }
 
+  if (p.showNRC && !p.showRedun) {
+    rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
+    rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
+                   width/HORIZ_RATIO+HORIZ_TUNE;
+
+    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->dominantBaseline = "text-after-edge";
+    text->label = "RELATIVE REDUNDANCY";
+    text->plot(f);
+  }
+  else if (!p.showNRC && p.showRedun) {
+    rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
+    rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
+                   width/HORIZ_RATIO+HORIZ_TUNE;
+
+    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->dominantBaseline = "text-after-edge";
+    text->label = "REDUNDANCY";
+    text->plot(f);
+  }
+  else if (p.showNRC && p.showRedun) {
+    rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
+    rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
+                   width/HORIZ_RATIO+HORIZ_TUNE;
+
+    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->dominantBaseline = "text-after-edge";
+    text->label = "RELATIVE REDUNDANCY";
+    text->plot(f);
+
+    // Redundancy
+    text->origin = Point(rect->origin.x+rect->width/2, 
+                         rect->origin.y+rect->height);
+    text->dominantBaseline = "text-before-edge";
+    text->label = "REDUNDANCY";
+    text->plot(f);
+  }
+
   const auto offset = [&](u8 i) { 
     return to_string(i * 100 / (grad->offsetColor.size() - 1)) + "%";
   };
@@ -791,7 +812,6 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
     "x=\"" << PREC << rect->origin.x << "\" "
     "y=\"" << PREC << rect->origin.y << "\" ry=\"3\" />\n";
 
-  // text->dominantBaseline = "text-before-edge";
   text->dominantBaseline = "middle";
   text->fontWeight = "normal";
   text->fontSize   = 9;
@@ -816,15 +836,6 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->plot(f);
   text->textAnchor = "middle";
   text->fontWeight = "normal";
-
-  // Redundancy
-  text->origin = Point(rect->origin.x+rect->width/2, 
-                       rect->origin.y+rect->height);
-  text->dominantBaseline = "text-before-edge";
-  text->label = "REDUNDANCY";
-  text->fontSize = 9;
-  // text->fontWeight = "bold";
-  text->plot(f);
 }
 
 inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight) const {
