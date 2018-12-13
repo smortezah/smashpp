@@ -33,7 +33,7 @@ To see the possible options for Smash++, type:
 ```bash
 ./smashpp
 ```
-which provides the following:
+which provides the following: **UPDATE**
 ```text
 NAME
   Smash++ v18.11 - rearrangements finder
@@ -55,7 +55,7 @@ DESCRIPTION
   -fs, --filter-scale S|M|L  scale of the filter {S|small,    FILTER
                              M|medium, L|large}
   -w,  --wsize INT           window size [1;100000]           FILTER
-  -wt, --wtype [0;7]         type of windowing function       FILTER
+  -wt, --wtype 0-7           type of windowing function       FILTER
                              {0|rectangular, 1|hamming, 2|hann,
                              3|blackman, 4|triangular, 5|welch,
                              6|sine, 7|nuttall}
@@ -76,7 +76,7 @@ DESCRIPTION
                        (INT) 𝑤:  width of sketch in log2 form, 
                                  e.g., set 10 for w=2^10=1024
                        (INT) 𝑑:  depth of sketch
-                             ir: inverted repeat {0, 1, 2}
+                       (0-2) ir: inverted repeat {0, 1, 2}
                                  0: regular (not inverted)
                                  1: inverted, solely
                                  2: both regular and inverted
@@ -89,7 +89,7 @@ To see the options for Smash++ Visualizer, type:
 ```bash
 ./smashpp -viz
 ```
-which provides the following:
+which provides the following: **UPDATE**
 ```text
 NAME
   Smash++ Visualizer v18.11 - Visualization of Samsh++ output
@@ -116,10 +116,10 @@ DESCRIPTION
   -l,  --link  INT           type of the link between maps [1;5]
   -w,  --width INT           width of the image sequence [10;200]
   -s,  --space INT           space between sequences [0;200]
-  -m,  --mult  INT           multiplication factor for
+  -t,  --mult  INT           multiplication factor for
                              color ID [1;255]
   -b,  --begin INT           beginning of color ID [0;255]
-  -c,  --min   INT           minimum block size to
+  -m,  --min   INT           minimum block size to
                              consider [1;99999999]
   -h,  --help                usage guide
 ```
