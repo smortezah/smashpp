@@ -16,8 +16,9 @@ class Param {   // Parameters
  public:
   string      ref, tar, seq;
   string      refName, tarName;
-  u8          level;
   bool        verbose;
+  u8          level;
+  u32         segSize;
   prc_t       entropyN;
   u8          nthr;
   string      rmodelsPars, tmodelsPars;
@@ -25,7 +26,7 @@ class Param {   // Parameters
   WType       wtype;
   u64         sampleStep;
   float       thresh;
-  bool        manWSize, manThresh, manFilterScale;
+  bool        manSegSize, manWSize, manThresh, manFilterScale;
   FilterScale filterScale;
   bool        saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
   FileType    refType, tarType;
@@ -35,12 +36,13 @@ class Param {   // Parameters
   u32         ID;
 
   // Define Param::Param(){} in *.hpp => compile error
-  Param () : level(LVL), verbose(false), entropyN(ENTR_N), nthr(THRD), 
-    wsize(WS), wtype(WT), sampleStep(1ull), thresh(THRSH), manWSize(false),
-    manThresh(false), manFilterScale(false), filterScale(FS), saveSeq(false),
-    saveProfile(false), saveFilter(false), saveSegment(false), saveAll(false),
-    refType(FileType::SEQ), tarType(FileType::SEQ), showInfo(true), 
-    compress(false), filter(false), segment(false), ID(0) {}
+  Param () : verbose(false), level(LVL), segSize(SSIZE), entropyN(ENTR_N), 
+    nthr(THRD), wsize(WS), wtype(WT), sampleStep(1ull), thresh(THRSH), 
+    manSegSize(false), manWSize(false), manThresh(false), manFilterScale(false),
+    filterScale(FS), saveSeq(false), saveProfile(false), saveFilter(false),
+    saveSegment(false), saveAll(false), refType(FileType::SEQ), 
+    tarType(FileType::SEQ), showInfo(true), compress(false), filter(false),
+    segment(false), ID(0) {}
 
   auto parse (int, char**&) -> void;
   auto win_type (const string&) const -> WType;
@@ -115,6 +117,13 @@ inline void Param::parse (int argc, char**& argv) {
       auto range = make_unique<ValRange<u8>>(MIN_LVL, MAX_LVL, LVL, 
         "Level", "[]", "default", Problem::WARNING);
       range->assert(level);
+    }
+    else if ((*i=="-m" || *i=="--min") && i+1!=vArgs.end()) {
+      manSegSize = true;
+      segSize = stoul(*++i);
+      auto range = make_unique<ValRange<u32>>(MIN_SSIZE, MAX_SSIZE, SSIZE, 
+        "Minimum segment size", "[]", "default", Problem::WARNING);
+      range->assert(segSize);
     }
     else if ((*i=="-e" || *i=="--ent-n") && i+1!=vArgs.end()) {
       entropyN = static_cast<prc_t>(stod(*++i));
@@ -269,57 +278,57 @@ inline void Param::help () const {
      "more information"                                                   <<'\n'
   << "  " << b("-l") << ",  " << b("--level") << " " << ul("INT") << 
      "           level of compression "
-     "[" << to_string(MIN_LVL) << ";" << to_string(MAX_LVL) << "]     " << 
+     "[" << to_string(MIN_LVL) << "," << to_string(MAX_LVL) << "]      " << 
      fit("COMPRESS")                                                      <<'\n'
-  // << "  " << b("-m") << ",  " << b("--min") << " " << ul("INT") << 
-  //    "           min size to consider "
-  //    "[" << to_string(MIN_LVL) << ";" << to_string(MAX_LVL) << "]     " << 
-  //    fit("COMPRESS")                                                      <<'\n'
+  << "  " << b("-m") << ",  " << b("--min") << "   " << ul("INT") << 
+     "           min segment size "
+     "[" << to_string(MIN_SSIZE) << "," << to_string(MAX_SSIZE) << "] " << 
+     fit("COMPRESS")                                                      <<'\n'
   << "  " << b("-e") << ",  " << b("--ent-n") << " " << ul("FLOAT") << 
      "         Entropy of 'N's [" << 
-     string_format("%.1f",MIN_ENTR_N) << ";" << string_format("%.1f",MAX_ENTR_N)
-     << "]    " << fit("COMPRESS")                                        <<'\n'
+     string_format("%.1f",MIN_ENTR_N) << "," << string_format("%.1f",MAX_ENTR_N)
+     << "]     " << fit("COMPRESS")                                       <<'\n'
   << "  " << b("-n") << ",  " << b("--nthr") << "  " << ul("INT") << 
      "           number of threads "
-     "[" << to_string(MIN_THRD) << ";" << to_string(MAX_THRD) << "]"      <<'\n'
+     "[" << to_string(MIN_THRD) << "," << to_string(MAX_THRD) << "]"      <<'\n'
   << "  " << b("-fs") << ", " << b("--filter-scale") << " S|M|L  "
-     "scale of the filter {S|small,    " << fit("FILTER")                 <<'\n'
+     "scale of the filter {S|small,     " << fit("FILTER")                <<'\n'
   << "                             M|medium, L|large}"                    <<'\n'
   << "  " << b("-w") << ",  " << b("--wsize") << " " << ul("INT") <<
      "           window size "
-     "[" << to_string(MIN_WS) << ";" << to_string(MAX_WS) << "]           " << 
+     "[" << to_string(MIN_WS) << "," << to_string(MAX_WS) << "]            " << 
      fit("FILTER")                                                        <<'\n'
-  << "  " << b("-wt") << ", " << b("--wtype") << " 0-7           "
-     "type of windowing function       " << fit("FILTER")                 <<'\n'
+  << "  " << b("-wt") << ", " << b("--wtype") << " [0,7]         "
+     "type of windowing function        " << fit("FILTER")                <<'\n'
   << "                             {0|rectangular, 1|hamming, 2|hann,"    <<'\n'
   << "                             3|blackman, 4|triangular, 5|welch,"    <<'\n'
   << "                             6|sine, 7|nuttall}"                    <<'\n'
   << "  " << b("-d") << ",  " << b("--step") << "   " << ul("INT") << 
-     "          sampling steps                   " << fit("FILTER")       <<'\n'
+     "          sampling steps                    " << fit("FILTER")      <<'\n'
   << "  " << b("-th") << ", " << b("--thresh") << " " << ul("FLOAT") << 
      "        threshold [" << 
-     string_format("%.1f",MIN_THRSH) << ";" << string_format("%.1f",MAX_THRSH)
-     << "]             " << fit("FILTER")                                 <<'\n'
+     string_format("%.1f",MIN_THRSH) << "," << string_format("%.1f",MAX_THRSH)
+     << "]              " << fit("FILTER")                                <<'\n'
   << "  " << b("-sp") << ", " << b("--save-profile") << "        "
-     "save profile (*.prf)               " << fit("SAVE")                 <<'\n'
+     "save profile (*.prf)                " << fit("SAVE")                <<'\n'
   << "  " << b("-sf") << ", " << b("--save-filter") << "         "
-     "save filtered file (*.fil)         " << fit("SAVE")                 <<'\n'
+     "save filtered file (*.fil)          " << fit("SAVE")                <<'\n'
   << "  " << b("-sb") << ", " << b("--save-seq") << "            "
-     "save sequence (input: Fasta/Fastq) " << fit("SAVE")                 <<'\n'
+     "save sequence (input: Fasta/Fastq)  " << fit("SAVE")                <<'\n'
   << "  " << b("-ss") << ", " << b("--save-segment") << "        "
-     "save segmented files (*-s\U00002099)        " << fit("SAVE")        <<'\n'
+     "save segmented files (*-s\U00002099)         " << fit("SAVE")       <<'\n'
   << "  " << b("-sa") << ", " << b("--save-all") << "            "
-     "save profile, filetered and        " << fit("SAVE")                 <<'\n'
+     "save profile, filetered and         " << fit("SAVE")                <<'\n'
   << "                             segmented files"                       <<'\n'
   // << "  " << b("-R") << ",  " << b("--report") << "              "
   //    "save results in file \"report\"    " << fit("REPORT")               <<'\n'
   << "  " << b("-h") << ",  " << b("--help") << "                usage guide \n"
   << "  " << b("-rm") << ", " << b("--ref-model") << " [\U0001D705,"
      "[\U0001D464,\U0001D451,]ir,\U0001D6FC,\U0001D6FE/\U0001D70F,ir,"
-     "\U0001D6FC,\U0001D6FE:...]               " << fit("MODEL")          <<'\n'
+     "\U0001D6FC,\U0001D6FE:...]                " << fit("MODEL")         <<'\n'
   << "  " << b("-tm") << ", " << b("--tar-model") << " [\U0001D705,"
      "[\U0001D464,\U0001D451,]ir,\U0001D6FC,\U0001D6FE/\U0001D70F,ir,"
-     "\U0001D6FC,\U0001D6FE:...]               " << fit("MODEL")          <<'\n'
+     "\U0001D6FC,\U0001D6FE:...]                " << fit("MODEL")         <<'\n'
   << "                             parameters of models"                  <<'\n'
   << "                       (" << ul("INT") << ") \U0001D705:  context size \n"
   << "                       (" << ul("INT") << ") \U0001D464:  width of "
@@ -327,13 +336,13 @@ inline void Param::help () const {
   << "                                 e.g., set 10 for w=2^10=1024"      <<'\n'
   << "                       (" << ul("INT") << ") \U0001D451:  depth "
      "of sketch"                                                          <<'\n'
-  << "                       (0-2) ir: inverted repeat {0, 1, 2}"         <<'\n'
+  << "                     ([0,2]) ir: inverted repeat {0, 1, 2}"         <<'\n'
   << "                                 0: regular (not inverted)"         <<'\n'
   << "                                 1: inverted, solely"               <<'\n'
   << "                                 2: both regular and inverted"      <<'\n'
   << "                     (" << ul("FLOAT") << ") \U0001D6FC:  estimator"<<'\n'
   << "                     (" << ul("FLOAT") << ") \U0001D6FE:  "
-     "forgetting factor [0.0;1.0)"                                        <<'\n'
+     "forgetting factor [0.0,1.0)"                                        <<'\n'
   << "                       (" << ul("INT") << ") \U0001D70F:  "
      "threshold (no. substitutions)"                                      <<'\n'
   <<                                                                        '\n'

@@ -55,14 +55,17 @@ constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
 
 // Constant
 static constexpr u8     THRD         {4};  // Default # threads
-static constexpr u8     MIN_THRD     {1};  // Min # threads
-static constexpr u8     MAX_THRD     {8};  // Max # threads
 static constexpr u8     LVL          {0};  // Default level
 static constexpr u8     MIN_LVL      {0};  // Min level
 static constexpr u8     MAX_LVL      {4};  // Max level
+static constexpr u32    SSIZE        {1};  // Min segment size
+static constexpr u32    MIN_SSIZE    {1};
+static constexpr u32    MAX_SSIZE    {0xffffffff};  // 2^32 - 1
 static constexpr prc_t  ENTR_N       {2.0};// Entropy of Ns
 static constexpr prc_t  MIN_ENTR_N   {0.0};   // Min entropy of Ns
 static constexpr prc_t  MAX_ENTR_N   {100.0}; // Max entropy of Ns
+static constexpr u8     MIN_THRD     {1};  // Min # threads
+static constexpr u8     MAX_THRD     {8};  // Max # threads
 static constexpr char   TAR_ALT_N    {'T'};  // Alternative to Ns in target file
 static constexpr u32    WS           {256};// Default window size -- filter
 static constexpr u32    MIN_WS       {1};      // Min window size -- filter

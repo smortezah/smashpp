@@ -13,9 +13,10 @@ class Segment {
   float thresh;
   prc_t sumEnt;
   u64   numEnt;
+  u32   minSize;
 
   Segment () : begun(false), pos(0), begPos(0), endPos(0), nSegs(0), thresh(0),
-    sumEnt(0), numEnt(0) {}
+    sumEnt(0), numEnt(0), minSize(MIN_SSIZE) {}
     
   void partition (ofstream&, float);
   void partition_last (ofstream&);

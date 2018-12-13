@@ -97,7 +97,6 @@ inline void Filter::show_info (const Param& p) const {
 
 void Filter::smooth_seg (const Param& p) {
   message = "Filtering & segmenting " + italic(p.tarName) + " ";
-  // message = "Filtering & segmenting " + italic(p.tar) + " ";
 
   if (wtype == WType::RECTANGULAR) {
     p.saveFilter ? smooth_seg_rect<true>(p) : smooth_seg_rect<false>(p);
@@ -109,10 +108,8 @@ void Filter::smooth_seg (const Param& p) {
 
   if (!p.saveAll && !p.saveProfile)
     remove((gen_name(p.ID, p.refName,p.tarName,Format::PROFILE)).c_str());
-    // remove((gen_name(p.ID, p.ref,p.tar,Format::PROFILE)).c_str());
   if (!p.saveAll && !p.saveFilter)
     remove((gen_name(p.ID, p.refName,p.tarName,Format::FILTER)).c_str());
-    // remove((gen_name(p.ID, p.ref,p.tar,Format::FILTER)).c_str());
 
   cerr << message << "finished. "
        << "Detected " << nSegs << " segment" << (nSegs==1 ? "" : "s") << ".\n";
@@ -235,6 +232,8 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
   seg->thresh = p.thresh;
+  if (p.manSegSize)
+    seg->minSize=p.segSize;
   string num;
   auto sum = 0.f;
   auto filtered = 0.f;
@@ -321,6 +320,8 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   vector<float> seq;    seq.reserve(wsize);
   auto seg = make_shared<Segment>();
   seg->thresh = p.thresh;
+  if (p.manSegSize)
+    seg->minSize=p.segSize;
   const auto winBeg=window.begin(), winEnd=window.end();
   auto sWeight = accumulate(winBeg+(wsize>>1u), winEnd, 0.f);
   string num;
