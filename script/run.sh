@@ -136,9 +136,9 @@ if [[ $RUN -eq 1 ]]; then
   ./smashpp -viz -l 5 -m 200 -p 1 -o S.svg RefS-TarS.pos
   ### M
   ./smashpp -r RefM -t TarM -l 4 -w 100
-  ./smashpp -viz -l 5 -p 1 -m 1000 -b 2 -t 80 -o M.svg RefM-TarM.pos
+  ./smashpp -viz -l 5 -p 1 -b 2 -t 80 -o M.svg RefM-TarM.pos
   ### L
   ./smashpp -r RefL -t TarL -l 4 -w 130
-  ./smashpp -viz -l 5 -p 1 -t 100 -m 10000 -o L.svg RefL-TarL.pos
+  ./smashpp -viz -l 5 -p 1 -t 100 -o L.svg RefL-TarL.pos
   ### XL
 fi
