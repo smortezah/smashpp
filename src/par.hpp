@@ -251,8 +251,8 @@ inline void Param::help () const {
   << "  Smash++ v" << VERSION << " - rearrangements finder"               <<'\n'
   <<                                                                        '\n'
   << b("SYNOPSIS")                                                        <<'\n'
-  << "  ./smashpp [" << ul("OPTIONS") << "]...  "
-     "-r [" << ul("REF-FILE") << "] -t [" << ul("TAR-FILE") << "]"        <<'\n'
+  << "  ./smashpp  " << ul("OPTIONS") << "...  -r " << ul("REF-FILE") << "  "
+     "-t " << ul("TAR-FILE")                                              <<'\n'
   <<                                                                        '\n'
   << b("SAMPLE")                                                          <<'\n'
 //    "  ./smashpp -t TAR -r REF                                             \n"
@@ -271,6 +271,10 @@ inline void Param::help () const {
      "           level of compression "
      "[" << to_string(MIN_LVL) << ";" << to_string(MAX_LVL) << "]     " << 
      fit("COMPRESS")                                                      <<'\n'
+  // << "  " << b("-m") << ",  " << b("--min") << " " << ul("INT") << 
+  //    "           min size to consider "
+  //    "[" << to_string(MIN_LVL) << ";" << to_string(MAX_LVL) << "]     " << 
+  //    fit("COMPRESS")                                                      <<'\n'
   << "  " << b("-e") << ",  " << b("--ent-n") << " " << ul("FLOAT") << 
      "         Entropy of 'N's [" << 
      string_format("%.1f",MIN_ENTR_N) << ";" << string_format("%.1f",MAX_ENTR_N)
@@ -285,7 +289,7 @@ inline void Param::help () const {
      "           window size "
      "[" << to_string(MIN_WS) << ";" << to_string(MAX_WS) << "]           " << 
      fit("FILTER")                                                        <<'\n'
-  << "  " << b("-wt") << ", " << b("--wtype") << " [0;7]         "
+  << "  " << b("-wt") << ", " << b("--wtype") << " 0-7           "
      "type of windowing function       " << fit("FILTER")                 <<'\n'
   << "                             {0|rectangular, 1|hamming, 2|hann,"    <<'\n'
   << "                             3|blackman, 4|triangular, 5|welch,"    <<'\n'
@@ -323,7 +327,7 @@ inline void Param::help () const {
   << "                                 e.g., set 10 for w=2^10=1024"      <<'\n'
   << "                       (" << ul("INT") << ") \U0001D451:  depth "
      "of sketch"                                                          <<'\n'
-  << "                             ir: inverted repeat {0, 1, 2}"         <<'\n'
+  << "                       (0-2) ir: inverted repeat {0, 1, 2}"         <<'\n'
   << "                                 0: regular (not inverted)"         <<'\n'
   << "                                 1: inverted, solely"               <<'\n'
   << "                                 2: both regular and inverted"      <<'\n'
@@ -337,11 +341,10 @@ inline void Param::help () const {
   << "  Morteza Hosseini           seyedmorteza@ua.pt"                    <<'\n'
   <<                                                                        '\n'
   << b("COPYRIGHT")                                                       <<'\n'
-  << "  Copyright (C) " << DEV_YEARS << ", IEETA, University of Aveiro. "
-     "You may redistri-"                                                    "\n"
-  << "  bute copies of this Free software under the terms of the GNU (Gen-   \n"
-  << "  eral Public License) v3 <http://www.gnu.org/licenses/gpl.html>.      \n"
-  << "  There is NOT ANY WARRANTY, to the extent permitted by law."      <<endl;
+  << "  Copyright (C) "<<DEV_YEARS<<", IEETA, University of Aveiro. You may  \n"
+  << "  redistribute copies of this Free software under the terms of the" <<'\n'
+  << "  GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>." <<'\n'
+  << "  There is NO WARRANTY, to the extent permitted by law."           <<endl;
 }
 
 inline WType Param::win_type (const string& t) const {
@@ -434,7 +437,7 @@ inline void VizParam::parse (int argc, char**& argv) {
         "Space", "[]", "default", Problem::WARNING);
       range->assert(space);
     }
-    else if ((*i=="-m" || *i=="--mult")  && i+1!=vArgs.end()) {
+    else if ((*i=="-t" || *i=="--mult")  && i+1!=vArgs.end()) {
       manMult = true;
       mult = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_MULT, MAX_MULT, MULT,
@@ -447,7 +450,7 @@ inline void VizParam::parse (int argc, char**& argv) {
         "Begin", "[]", "default", Problem::WARNING);
       range->assert(start);
     }
-    else if ((*i=="-k" || *i=="--min")   && i+1!=vArgs.end()) {
+    else if ((*i=="-m" || *i=="--min")   && i+1!=vArgs.end()) {
       min = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, MINP,
         "Min", "[]", "default", Problem::WARNING);
@@ -469,8 +472,8 @@ inline void VizParam::help () const {
      "Visualization of Samsh++ output"                                    <<'\n'
   <<                                                                        '\n'
   << b("SYNOPSIS")                                                        <<'\n'
-  << "  ./smashpp -viz [" << ul("OPTION")   << "]...  "
-     "-o [" << ul("SVG-FILE") << "] " << ul("POS-FILE") << "]"            <<'\n'
+  << "  ./smashpp -viz  " << ul("OPTIONS") << "...  "
+     "-o " << ul("SVG-FILE") << "  " << ul("POS-FILE") << ""              <<'\n'
   <<                                                                        '\n'
   << b("SAMPLE")                                                          <<'\n'
 //    "  ./smashpp -viz -o out.svg ab.pos                            \n"
@@ -478,7 +481,7 @@ inline void VizParam::help () const {
   << b("DESCRIPTION")                                                     <<'\n'
   << "  " << it("Mandatory arguments") << ":"                             <<'\n'
   << "  " << ul("POS-FILE") << "                   "
-     "positions file, enerated by      " << fit("INPUT")                  <<'\n'
+     "positions file, generated by     " << fit("INPUT")                  <<'\n'
   << "                             Smash++ tool (*.pos)"                  <<'\n'
   <<                                                                        '\n'
   << "  " << it("Options") << ":"                                         <<'\n'
@@ -501,30 +504,29 @@ inline void VizParam::help () const {
      "do NOT show regular maps       " << fit("NO SHOW")                  <<'\n'
   << "  " << b("-l") << ",  "  << b("--link") << "    " << ul("INT") <<
      "         type of the link between maps "
-     "[" << to_string(MIN_LINK) << ";" << to_string(MAX_LINK) << "]"      <<'\n'
+     "[" << to_string(MIN_LINK) << "," << to_string(MAX_LINK) << "]"      <<'\n'
   << "  " << b("-c") << ",  "  << b("--color") << "   " << ul("INT") <<
      "         color mode "
-     "[" << to_string(MIN_COLOR) << ";" << to_string(MAX_COLOR) << "]"    <<'\n'
+     "[" << to_string(MIN_COLOR) << "," << to_string(MAX_COLOR) << "]"    <<'\n'
   << "  " << b("-p") << ",  "  << b("--opacity") << " " << ul("FLOAT") <<
-     "       opacity [" << string_format("%.1f",MIN_OPAC) << ";" 
+     "       opacity [" << string_format("%.1f",MIN_OPAC) << "," 
                         << string_format("%.1f",MAX_OPAC) << "]"          <<'\n'
   << "  " << b("-w") << ",  "  << b("--width") << "   " << ul("INT") <<
      "         width of the image sequence "
-     "[" << to_string(MIN_WDTH) << ";" << to_string(MAX_WDTH) << "]"      <<'\n'
+     "[" << to_string(MIN_WDTH) << "," << to_string(MAX_WDTH) << "]"      <<'\n'
   << "  " << b("-s") << ",  "  << b("--space") << "   " << ul("INT") <<
      "         space between sequences "
-     "[" << to_string(MIN_SPC) << ";" << to_string(MAX_SPC) << "]"        <<'\n'
-  << "  " << b("-m") << ",  "  << b("--mult") << "    " << ul("INT") <<
+     "[" << to_string(MIN_SPC) << "," << to_string(MAX_SPC) << "]"        <<'\n'
+  << "  " << b("-t") << ",  "  << b("--mult") << "    " << ul("INT") <<
      "         multiplication factor for"                                 <<'\n'
   << "                             color ID "
-     "[" << to_string(MIN_MULT) << ";" << to_string(MAX_MULT) << "]"      <<'\n'
+     "[" << to_string(MIN_MULT) << "," << to_string(MAX_MULT) << "]"      <<'\n'
   << "  " << b("-b") << ",  "  << b("--begin") << "   " << ul("INT") <<
      "         beginning of color ID "
-     "[" << to_string(MIN_BEGN) << ";" << to_string(MAX_BEGN) << "]"      <<'\n'
-  << "  " << b("-k") << ",  "  << b("--min") << "     " << ul("INT") <<
-     "         minimum block size to"                                     <<'\n'
-  << "                             consider "
-     "[" << to_string(MIN_MINP) << ";" << to_string(MAX_MINP) << "]"      <<'\n'
+     "[" << to_string(MIN_BEGN) << "," << to_string(MAX_BEGN) << "]"      <<'\n'
+  << "  " << b("-m") << ",  "  << b("--min") << "     " << ul("INT") <<
+     "         minimum block size "
+     "[" << to_string(MIN_MINP) << "," << to_string(MAX_MINP) << "]"      <<'\n'
   << "  " << b("-h") << ",  " << b("--help") << "                usage guide \n"
   <<                                                                        '\n'
   << b("AUTHORS")                                                         <<'\n'
@@ -532,11 +534,10 @@ inline void VizParam::help () const {
   << "  Diogo   Pratas             pratas@ua.pt"                          <<'\n'
   <<                                                                        '\n'
   << b("COPYRIGHT")                                                       <<'\n'
-  << "  Copyright (C) " << DEV_YEARS << ", IEETA, University of Aveiro. "
-     "You may redistri-"                                                    "\n"
-  << "  bute copies of this Free software under the terms of the GNU (Gen-   \n"
-  << "  eral Public License) v3 <http://www.gnu.org/licenses/gpl.html>.      \n"
-  << "  There is NOT ANY WARRANTY, to the extent permitted by law."      <<endl;
+  << "  Copyright (C) "<<DEV_YEARS<<", IEETA, University of Aveiro. You may  \n"
+  << "  redistribute copies of this Free software under the terms of the" <<'\n'
+  << "  GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>." <<'\n'
+  << "  There is NO WARRANTY, to the extent permitted by law."           <<endl;
 }
 }
 

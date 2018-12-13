@@ -14,7 +14,7 @@ namespace smashpp {
 // Version
 static const string SMASHPP   {"SMASHPP"};
 static const string VERSION   {"18.12"};
-static const string DEV_YEARS {"2018"};
+static const string DEV_YEARS {"2018-2019"};
 
 // Typedef
 using i8    = signed char;   // === typedef signed char  i8;

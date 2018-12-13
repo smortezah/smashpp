@@ -40,8 +40,8 @@ inline void ValRange<Value>::assert (Value& val) {
   const auto create_message = [=](char open, char close) {
     inRange = false;
     string s = string(1, open) + 
-      (isFloat ? (string_format("%.1f",min)+";"+string_format("%.1f",max))
-               : (to_string(min)+";"+to_string(max))) +
+      (isFloat ? (string_format("%.1f",min)+","+string_format("%.1f",max))
+               : (to_string(min)+","+to_string(max))) +
       string(1, close) + ". ";
     append_msg(std::move(s));
   };
