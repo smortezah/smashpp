@@ -37,7 +37,7 @@ class FCM {   // Finite-context models
   string                        message;
   prc_t                         entropyN;
   
-  void config (string&&, string&&);      // Set models parameters
+  void config (const string&, const string&);      // Set models parameters
   template <typename Iter>
   void set_Ms_TMs (Iter, Iter, vector<MMPar>&, vector<STMMPar>&);
   void set_cont (vector<MMPar>&);
