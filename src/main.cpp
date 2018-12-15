@@ -155,7 +155,7 @@ int main (int argc, char* argv[]) {
 
           auto models = make_unique<FCM>(par);  // == auto* models=new FCM(par);
           models->store(par);                   // Build models
-          models->compress(par);                // Compress
+          // models->compress(par);                // Compress
           // if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
           // auto filter = make_unique<Filter>(par);
           // filter->smooth_seg(par);              // Filter and segment
