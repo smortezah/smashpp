@@ -143,18 +143,17 @@ int main (int argc, char* argv[]) {
           par.ID = timesRunning;    
           par.ref=origRef;  par.refName=file_name(par.ref);
           par.tar=origTar;  par.tarName=file_name(par.tar);
+          for (auto& e : par.refMs)   e.ir=timesRunning;
+          for (auto& e : par.refTMs)  e.ir=timesRunning;
+          for (auto& e : par.tarMs)   e.ir=timesRunning;
+          for (auto& e : par.tarTMs)  e.ir=timesRunning;
+
+
+
+// for (auto e : par.refMs) cerr<<(int)e.ir;
+
+
           auto models = make_unique<FCM>(par);  // == auto* models=new FCM(par);
-          for (auto& e : models->rMs)   e.ir=timesRunning;
-          for (auto& e : models->rTMs)  e.ir=timesRunning;
-          for (auto& e : models->tMs)   e.ir=timesRunning;
-          for (auto& e : models->tTMs)  e.ir=timesRunning;
-
-
-          // for (auto e : models->rMs)   cerr<<(int)e.k<<(int)e.ir<<e.alpha<<e.gamma;
-          // cerr<<'\n';
-          // for (auto e : models->rTMs)   cerr<<(int)e.k<<(int)e.ir<<e.alpha<<e.gamma;
-
-
           models->store(par);                   // Build models
           models->compress(par);                // Compress
           // if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
