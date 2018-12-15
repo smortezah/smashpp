@@ -13,12 +13,12 @@ using namespace smashpp;
 
 FCM::FCM (Param& p) 
   : aveEnt(static_cast<prc_t>(0)), tarSegID(0), entropyN(p.entropyN) {
-  config(std::move(p.rmodelsPars), std::move(p.tmodelsPars));
+  config(p.rmodelsPars, p.tmodelsPars);
   if (p.verbose && p.showInfo) { show_info(p);    p.showInfo=false; }
   alloc_model();
 }
 
-inline void FCM::config (string&& rmodelsPars, string&& tmodelsPars) {
+inline void FCM::config (const string& rmodelsPars, const string& tmodelsPars) {
   set_Ms_TMs(rmodelsPars.begin(), rmodelsPars.end(), rMs, rTMs);
   set_cont(rMs);
 
@@ -353,9 +353,9 @@ void FCM::compress (const Param& p) {
 template <typename ContIter>
 inline void FCM::compress_1 (const Param& par, ContIter cont) {
   // Ctx, Mir (int) sliding through the dataset
-  u64   ctx{0}, 
-        ctxIr{(1ull<<(2*rMs[0].k))-1};
-  u64   symsNo{0};            // No. syms in target file, except \n
+  u64 ctx{0}, 
+      ctxIr{(1ull<<(2*rMs[0].k))-1};
+  u64 symsNo{0};            // No. syms in target file, except \n
   prc_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(par.tar);
   ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
@@ -437,8 +437,9 @@ inline void FCM::compress_n (const Param& par) {
   cp->ctx.resize(nMdl);        // Fill with zeros (resize)
   cp->ctxIr.reserve(nMdl);
   for (const auto& mm : rMs) {  // Mask: 1<<2k - 1 = 4^k - 1
-    cp->ctxIr.emplace_back((1ull<<(2*mm.k))-1);
-    if (mm.child)  cp->ctxIr.emplace_back((1ull<<(2*mm.k))-1);
+    cp->ctxIr.emplace_back((1ull<<(2*mm.k)) - 1);
+    if (mm.child)
+      cp->ctxIr.emplace_back((1ull<<(2*mm.k)) - 1);
   }
   cp->w.resize(nMdl, static_cast<prc_t>(1)/nMdl);
   cp->wNext.resize(nMdl, static_cast<prc_t>(0));
@@ -446,7 +447,8 @@ inline void FCM::compress_n (const Param& par) {
   auto maskIter = cp->ctxIr.begin();
   for (const auto& mm : rMs) {
     cp->pp.emplace_back(mm.alpha, *maskIter++, u8(2*mm.k));
-    if (mm.child) cp->pp.emplace_back(mm.child->alpha, *maskIter++, u8(2*mm.k));
+    if (mm.child)
+      cp->pp.emplace_back(mm.child->alpha, *maskIter++, u8(2*mm.k));
   }
   const auto totalSize = file_size(par.tar);
   const auto compress_n_impl = [&](auto& cp, auto cont, u8& n) {
@@ -456,6 +458,18 @@ inline void FCM::compress_n (const Param& par) {
       compress_n_child(cp, cont, ++n);
     }
   };
+
+
+
+
+
+      // for (auto e : rMs)   cerr<<(int)e.k<<(int)e.ir<<e.alpha<<e.gamma;
+      // cerr<<'\n';
+      // for (auto e : rTMs)   cerr<<(int)e.k<<(int)e.ir<<e.alpha<<e.gamma;
+      // cerr<<'\n';
+
+
+
 
   for (vector<char> buffer(FILE_BUF,0); tf.peek()!=EOF;) {
     tf.read(buffer.data(), FILE_BUF);
