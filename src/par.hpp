@@ -4,36 +4,41 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <memory>
 #include "assert.hpp"
 #include "def.hpp"
 #include "exception.hpp"
 #include "container.hpp"
 #include "file.hpp"
+#include "mdlpar.hpp"
 #include "vizdef.hpp"
 
 namespace smashpp {
 class Param {   // Parameters
  public:
-  string      ref, tar, seq;
-  string      refName, tarName;
-  bool        verbose;
-  u8          level;
-  u32         segSize;
-  prc_t       entropyN;
-  u8          nthr;
-  string      rmodelsPars, tmodelsPars;
-  u32         wsize;
-  WType       wtype;
-  u64         sampleStep;
-  float       thresh;
-  bool        manSegSize, manWSize, manThresh, manFilterScale;
-  FilterScale filterScale;
-  bool        saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
-  FileType    refType, tarType;
-  bool        showInfo;
-  string      report;
-  bool        compress, filter, segment;
-  u32         ID;
+  string          ref, tar, seq;
+  string          refName, tarName;
+  bool            verbose;
+  u8              level;
+  u32             segSize;
+  prc_t           entropyN;
+  u8              nthr;
+  u32             wsize;
+  WType           wtype;
+  u64             sampleStep;
+  float           thresh;
+  bool            manSegSize, manWSize, manThresh, manFilterScale;
+  FilterScale     filterScale;
+  bool            saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
+  FileType        refType, tarType;
+  bool            showInfo;
+  string          report;
+  bool            compress, filter, segment;
+  u32             ID;
+  vector<MMPar>   refMs;
+  vector<STMMPar> refTMs;
+  vector<MMPar>   tarMs;
+  vector<STMMPar> tarTMs;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : verbose(false), level(LVL), segSize(SSIZE), entropyN(ENTR_N), 
@@ -44,13 +49,15 @@ class Param {   // Parameters
     tarType(FileType::SEQ), showInfo(true), compress(false), filter(false),
     segment(false), ID(0) {}
 
-  auto parse (int, char**&) -> void;
+  void parse (int, char**&);
   auto win_type (const string&) const -> WType;
   auto print_win_type () const -> string;
   auto filter_scale (const string&) const -> FilterScale;
   auto print_filter_scale () const -> string;
 
  private:
+  template <typename Iter>
+  void parseModelsPars (Iter, Iter, vector<MMPar>&, vector<STMMPar>&);
   void help () const;
 };
 
@@ -84,6 +91,8 @@ inline void Param::parse (int argc, char**& argv) {
     vArgs.emplace_back(static_cast<string>(argv[i]));
 
   bool man_rm=false, man_tm=false;
+  string rModelsPars, tModelsPars;
+
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
     if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
     else if (*i=="-v"  || *i=="--verbose")         verbose    =true;
@@ -139,15 +148,19 @@ inline void Param::parse (int argc, char**& argv) {
     }
     else if ((*i=="-rm" || *i=="--ref-model") && i+1!=vArgs.end()) {
       man_rm = true;
-      rmodelsPars = *++i;
-      if (rmodelsPars[0]=='-' || rmodelsPars.empty())
+      rModelsPars = *++i;
+      if (rModelsPars.front()=='-' || rModelsPars.empty())
         error("incorrect reference model parameters.");
+      else
+        parseModelsPars(rModelsPars.begin(), rModelsPars.end(), refMs, refTMs);
     }
     else if ((*i=="-tm" || *i=="--tar-model") && i+1!=vArgs.end()) {
       man_tm = true;
-      tmodelsPars = *++i;
-      if (tmodelsPars[0]=='-' || tmodelsPars.empty())
+      tModelsPars = *++i;
+      if (tModelsPars.front()=='-' || tModelsPars.empty())
         error("incorrect target model parameters.");
+      else
+        parseModelsPars(tModelsPars.begin(), tModelsPars.end(), tarMs, tarTMs);
     }
     else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
       manWSize = true;
@@ -208,16 +221,19 @@ inline void Param::parse (int argc, char**& argv) {
     error("target file not specified. Use \"-t <fileName>\".");
   else if (!has_r && !has_ref)
     error("reference file not specified. Use \"-r <fileName>\".");
-
+  
   if (!man_rm && !man_tm) {
-    rmodelsPars = LEVEL[level];
-    tmodelsPars = REFFREE_LEVEL[level];
+    parseModelsPars(begin(LEVEL[level]), end(LEVEL[level]), refMs, refTMs);
+    parseModelsPars(
+      begin(REFFREE_LEVEL[level]), end(REFFREE_LEVEL[level]), tarMs, tarTMs);
   }
   else if (!man_rm && man_tm) {
-    rmodelsPars = tmodelsPars;
+    refMs  = tarMs;
+    refTMs = tarTMs;
   }
   else if (man_rm  && !man_tm) {
-    tmodelsPars = rmodelsPars;
+    tarMs  = refMs;
+    tarTMs = refTMs;
   }
 
   manFilterScale = !manThresh;
@@ -237,7 +253,6 @@ inline void Param::parse (int argc, char**& argv) {
     convert_to_seq(ref, FileType::FASTQ);
   else if (refType!=FileType::SEQ) 
     error("\""+refName+"\" has unknown format.");
-  // else if (refType!=FileType::SEQ)    error("\""+ref+"\" has unknown format.");
 
   tarType = file_type(tar);
   if      (tarType==FileType::FASTA)  
@@ -246,7 +261,40 @@ inline void Param::parse (int argc, char**& argv) {
     convert_to_seq(tar, FileType::FASTQ);
   else if (tarType!=FileType::SEQ)    
     error("\""+tarName+"\" has unknown format.");
-    // error("\""+tar+"\" has unknown format.");
+}
+
+template <typename Iter>
+inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms, 
+vector<STMMPar>& TMs) {
+  vector<string> mdls;      split(begin, end, ':', mdls);
+  for (const auto& e : mdls) {
+    // Markov and tolerant models
+    vector<string> m_tm;    split(e.begin(),       e.end(),       '/', m_tm);
+    vector<string> m;       split(m_tm[0].begin(), m_tm[0].end(), ',', m);
+    if (m.size() == 4) {
+      if (stoi(m[0]) > K_MAX_LGTBL8)
+        Ms.emplace_back(
+          MMPar(u8(stoi(m[0])), W, D, u8(stoi(m[1])), stof(m[2]), stof(m[3])));
+      else
+        Ms.emplace_back(
+          MMPar(u8(stoi(m[0])), u8(stoi(m[1])), stof(m[2]), stof(m[3])));
+    }
+    else if (m.size() == 6) {
+      Ms.emplace_back(
+        MMPar(u8(stoi(m[0])), pow2(stoull(m[1])), u8(stoi(m[2])), 
+          u8(stoi(m[3])), stof(m[4]), stof(m[5])));
+    }
+    
+    // Tolerant models
+    if (m_tm.size() == 2) {
+      vector<string> tm;    split(m_tm[1].begin(), m_tm[1].end(), ',', tm);
+      TMs.emplace_back(
+        STMMPar(u8(stoi(m[0])), u8(stoi(tm[0])), u8(stoi(tm[1])), stof(tm[2]),
+          stof(tm[3]))
+      );
+      Ms.back().child = make_shared<STMMPar>(TMs.back());
+    }
+  }
 }
 
 inline void Param::help () const {

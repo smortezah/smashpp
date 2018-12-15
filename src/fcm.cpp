@@ -11,53 +11,14 @@
 #include "exception.hpp"
 using namespace smashpp;
 
-FCM::FCM (Param& p) 
+FCM::FCM (Param& p)
   : aveEnt(static_cast<prc_t>(0)), tarSegID(0), entropyN(p.entropyN) {
-  config(p.rmodelsPars, p.tmodelsPars);
+  rMs=p.refMs;    rTMs=p.refTMs;
+  set_cont(rMs);
+  tMs=p.tarMs;    tTMs=p.tarTMs;
+  set_cont(tMs);
   if (p.verbose && p.showInfo) { show_info(p);    p.showInfo=false; }
   alloc_model();
-}
-
-inline void FCM::config (const string& rmodelsPars, const string& tmodelsPars) {
-  set_Ms_TMs(rmodelsPars.begin(), rmodelsPars.end(), rMs, rTMs);
-  set_cont(rMs);
-
-  set_Ms_TMs(tmodelsPars.begin(), tmodelsPars.end(), tMs, tTMs);
-  set_cont(tMs);
-}
-
-template <typename Iter>
-inline void FCM::set_Ms_TMs (Iter begin, Iter end, vector<MMPar>& Ms,
-vector<STMMPar>& TMs) {
-  vector<string> mdls;      split(begin, end, ':', mdls);
-  for (const auto& e : mdls) {
-    // Markov and tolerant models
-    vector<string> m_tm;    split(e.begin(),       e.end(),       '/', m_tm);
-    vector<string> m;       split(m_tm[0].begin(), m_tm[0].end(), ',', m);
-    if (m.size() == 4) {
-      if (stoi(m[0]) > K_MAX_LGTBL8)
-        Ms.emplace_back(
-          MMPar(u8(stoi(m[0])), W, D, u8(stoi(m[1])), stof(m[2]), stof(m[3])));
-      else
-        Ms.emplace_back(
-          MMPar(u8(stoi(m[0])), u8(stoi(m[1])), stof(m[2]), stof(m[3])));
-    }
-    else if (m.size() == 6) {
-      Ms.emplace_back(
-        MMPar(u8(stoi(m[0])), pow2(stoull(m[1])), u8(stoi(m[2])), 
-          u8(stoi(m[3])), stof(m[4]), stof(m[5])));
-    }
-    
-    // Tolerant models
-    if (m_tm.size() == 2) {
-      vector<string> tm;    split(m_tm[1].begin(), m_tm[1].end(), ',', tm);
-      TMs.emplace_back(
-        STMMPar(u8(stoi(m[0])), u8(stoi(tm[0])), u8(stoi(tm[1])), stof(tm[2]),
-          stof(tm[3]))
-      );
-      Ms.back().child = make_shared<STMMPar>(TMs.back());
-    }
-  }
 }
 
 inline void FCM::set_cont (vector<MMPar>& Ms) {
@@ -458,18 +419,6 @@ inline void FCM::compress_n (const Param& par) {
       compress_n_child(cp, cont, ++n);
     }
   };
-
-
-
-
-
-      // for (auto e : rMs)   cerr<<(int)e.k<<(int)e.ir<<e.alpha<<e.gamma;
-      // cerr<<'\n';
-      // for (auto e : rTMs)   cerr<<(int)e.k<<(int)e.ir<<e.alpha<<e.gamma;
-      // cerr<<'\n';
-
-
-
 
   for (vector<char> buffer(FILE_BUF,0); tf.peek()!=EOF;) {
     tf.read(buffer.data(), FILE_BUF);
