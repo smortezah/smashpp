@@ -86,7 +86,8 @@ class VizParam {
 inline void Param::parse (int argc, char**& argv) {
   if (argc < 2) { help();  throw EXIT_SUCCESS; }
 
-  vector<string> vArgs(static_cast<u64>(argc));
+  // vector<string> vArgs(static_cast<u64>(argc));
+  vector<string> vArgs;    vArgs.reserve(static_cast<u64>(argc));
   for (int i=0; i!=argc; ++i)
     vArgs.emplace_back(static_cast<string>(argv[i]));
 
@@ -94,6 +95,7 @@ inline void Param::parse (int argc, char**& argv) {
   string rModelsPars, tModelsPars;
 
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
+    //todo. if ha ro olaviat bandi kon
     if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
     else if (*i=="-v"  || *i=="--verbose")         verbose    =true;
     else if (*i=="-compress")                      compress   =true;

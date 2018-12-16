@@ -229,10 +229,10 @@ inline void FCM::store_1 (const Param& p) {
       store_impl(p.ref, (1ull<<(2*m.k))-1ull/*Mask 64*/, cmls4_iter++);  break;
     case Container::LOG_TABLE_8:
       store_impl(p.ref, (1ul<<(2*m.k))-1ul  /*Mask 32*/, lgtbl8_iter++); break;
-    case Container::TABLE_32:
-      store_impl(p.ref, (1ul<<(2*m.k))-1ul  /*Mask 32*/, tbl32_iter++);  break;
     case Container::TABLE_64:
       store_impl(p.ref, (1ul<<(2*m.k))-1ul  /*Mask 32*/, tbl64_iter++);  break;
+    case Container::TABLE_32:
+      store_impl(p.ref, (1ul<<(2*m.k))-1ul  /*Mask 32*/, tbl32_iter++);  break;
     default:                                                             break;
     }
   }
@@ -256,15 +256,15 @@ inline void FCM::store_n (const Param& p) {
         &FCM::store_impl<u32,decltype(lgtbl8_iter)>, this, std::cref(p.ref),
         (1ul << (2*rMs[i].k)) - 1ul, lgtbl8_iter++);
       break;
-    case Container::TABLE_32:
-      thrd[i % vThrSz] = thread(
-        &FCM::store_impl<u32,decltype(tbl32_iter)>, this, std::cref(p.ref),
-        (1ul << (2*rMs[i].k)) - 1ul, tbl32_iter++);
-      break;
     case Container::TABLE_64:
       thrd[i % vThrSz] = thread(
         &FCM::store_impl<u32,decltype(tbl64_iter)>, this, std::cref(p.ref),
         (1ul << (2*rMs[i].k)) - 1ul, tbl64_iter++);
+      break;
+    case Container::TABLE_32:
+      thrd[i % vThrSz] = thread(
+        &FCM::store_impl<u32,decltype(tbl32_iter)>, this, std::cref(p.ref),
+        (1ul << (2*rMs[i].k)) - 1ul, tbl32_iter++);
       break;
     default:  break;
     }
