@@ -7,19 +7,18 @@ using namespace smashpp;
  */
 void Text::plot (ofstream& f) const {
   f << begin_elem("text")
-    << attrib("id",                to_string(origin.x)+to_string(origin.y))
-    << attrib("x",                 origin.x, true)
-    << attrib("y",                 origin.y, true)
+    << attrib("id", to_string(origin.x)+to_string(origin.y))
+    << attrib("x", origin.x, true)
+    << attrib("y", origin.y, true)
     << attrib("dominant-baseline", dominantBaseline)
-    << attrib("transform",         transform)
-    << attrib("font-size",         to_string(fontSize), false, "px")
-    << attrib("font-weight",       fontWeight)
-    << attrib("font-family",       "Arial")
-    // << attrib("font-family",       "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\"")
-    << attrib("fill",              color)
-    << attrib("text-align",        "start")
-    << attrib("line-height",       "125%%")
-    << attrib("text-anchor",       textAnchor) 
+    << attrib("transform", transform)
+    << attrib("font-size", to_string(fontSize), false, "px")
+    << attrib("font-weight", fontWeight)
+    << attrib("font-family", "Arial")
+    << attrib("fill", color)
+    << attrib("text-align", "start")
+    << attrib("line-height", "125%%")
+    << attrib("text-anchor", textAnchor) 
     << mid_elem()
     << label
     << end_elem("text");
@@ -62,13 +61,13 @@ void Text::plot_pos_tar (ofstream& f, char c) {
  */
 void Line::plot (ofstream& f) const {
   f << begin_elem("line")
-    << attrib("id",           to_string(beg.x)+to_string(beg.y)+
-                              to_string(end.x)+to_string(end.y))
-    << attrib("x1",           beg.x, true)
-    << attrib("y1",           beg.y, true)
-    << attrib("x2",           end.x, true) 
-    << attrib("y2",           end.y, true)
-    << attrib("stroke",       color) 
+    << attrib("id", to_string(beg.x)+to_string(beg.y)+to_string(end.x)+
+                    to_string(end.y))
+    << attrib("x1", beg.x, true)
+    << attrib("y1", beg.y, true)
+    << attrib("x2", end.x, true) 
+    << attrib("y2", end.y, true)
+    << attrib("stroke", color) 
     << attrib("stroke-width", width, true)
     << end_empty_elem();
 }
@@ -79,16 +78,12 @@ void Line::plot (ofstream& f) const {
 void Path::plot (ofstream& f) const {
   f << begin_elem("path")
     << attrib("d", "M "+to_string(origin.x)+","+to_string(origin.y)+" "+trace)
-    << attrib("fill",             "none")
-    << attrib("stroke",           color)
-    << attrib("stroke-linejoin",  strokeLineJoin)
+    << attrib("fill", "none")
+    << attrib("stroke", color)
+    << attrib("stroke-linejoin", strokeLineJoin)
     << attrib("stroke-dasharray", strokeDashArray)
-    << attrib("stroke-width",     width, true)
+    << attrib("stroke-width", width, true)
     << end_empty_elem();
-  // f << "<path d=\"M " << origin.x << "," << origin.y << " " << trace << "\" "
-  // "style=\"fill:none;stroke:" << color << ";stroke-linejoin:" << 
-  // strokeLineJoin << ";stroke-dasharray:" << strokeDashArray << 
-  // ";stroke-width:" << PREC << width << "\" />";
 }
 
 /*
@@ -96,21 +91,15 @@ void Path::plot (ofstream& f) const {
  */
 void Rectangle::plot (ofstream& f) const {
   f << begin_elem("rect")
-    << attrib("fill",         color)
-    << attrib("stroke",       color)
+    << attrib("fill", color)
+    << attrib("stroke", color)
     << attrib("fill-opacity", opacity)
-    << attrib("width",        width,    true)
-    << attrib("height",       height,   true)
-    << attrib("x",            origin.x, true)
-    << attrib("y",            origin.y, true)
-    << attrib("ry",           3)
+    << attrib("width", width, true)
+    << attrib("height", height, true)
+    << attrib("x", origin.x, true)
+    << attrib("y", origin.y, true)
+    << attrib("ry", 3)
     << end_empty_elem();
-  // f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-  //   ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
-  //   "stroke-dasharray:none\" id=\"rect3777\" "
-  //   "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
-  //   "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
-  //   "ry=\"3\" />\n";
 }
 
 void Rectangle::plot_ir (ofstream& f, string&& wave) const {
@@ -118,48 +107,59 @@ void Rectangle::plot_ir (ofstream& f, string&& wave) const {
   f << begin_elem("rect")
     << attrib("fill-opacity", opacity)
     << attrib("stroke-width", 2)
-    << attrib("fill",         "url("+wave+")")
-    << attrib("width",        width, true)
-    << attrib("height",       height, true)
-    << attrib("x",            origin.x, true)
-    << attrib("y",            origin.y, true)
-    << attrib("ry",           3)
+    << attrib("fill", "url("+wave+")")
+    << attrib("width", width, true)
+    << attrib("height", height, true)
+    << attrib("x", origin.x, true)
+    << attrib("y", origin.y, true)
+    << attrib("ry", 3)
     << end_empty_elem();
-  // f << "<rect style=\"fill-opacity:" << opacity << ";stroke-width:2;"
-  //   "stroke-miterlimit:4;stroke-dasharray:none;fill:url(" << wave << ");"
-  //   "fill-rule:nonzero;opacity:1;\" id=\"rect6217\" "
-  //   "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
-  //   "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
-  //   "ry=\"3\" />\n";
 }
 
 void Rectangle::plot_oval (ofstream& f) const {
-  f << "<rect style=\"fill:" << color << ";fill-opacity:1;stroke-width:2;"
-    "stroke-miterlimit:4;stroke-dasharray:none\" id=\"rectx\" "
-    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
-    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
-    "ry=\"12.5\" />\n";
+  f << begin_elem("rect")
+    << attrib("id", "rectx")
+    << attrib("fill", color)
+    << attrib("stroke-width", 2)
+    << attrib("width", width, true)
+    << attrib("height", height, true)
+    << attrib("x", origin.x, true)
+    << attrib("y", origin.y, true)
+    << attrib("ry", 12.5)
+    << end_empty_elem();
 }
 
 void Rectangle::plot_oval_ir (ofstream& f) const {
   plot_oval(f);
-  f << "<rect style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
-    "stroke-dasharray:nonestroke-dasharray:none;fill:url(#xtrace);"
-    "fill-rule:nonzero;opacity:1\" id=\"recty\" "
-    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
-    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
-    "ry=\"12.5\" />\n";
+  f << begin_elem("rect")
+    << attrib("id", "recty")
+    << attrib("stroke-width", 2)
+    << attrib("fill", "url(#xtrace)")
+    << attrib("width", width, true)
+    << attrib("height", height, true)
+    << attrib("x", origin.x, true)
+    << attrib("y", origin.y, true)
+    << attrib("ry", 12.5)
+    << end_empty_elem();
 }
 
 void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
-  f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-    ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
-    "stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\"" << PREC << width/HORIZ_RATIO << "\" "
-    "height=\"" << PREC << height <<"\" "
-    "x=\"" << PREC << (refTar=='r' ? origin.x - HORIZ_TUNE - width/HORIZ_RATIO
-                                   : origin.x + width + HORIZ_TUNE) << "\" "
-    "y=\"" << PREC << origin.y <<"\" ry=\"2\" />\n";
+  f << begin_elem("rect")
+    << attrib("id", "rect3777")
+    << attrib("fill", color)
+    << attrib("stroke", color)
+    << attrib("fill-opacity", opacity)
+    << attrib("width", width/HORIZ_RATIO, true)
+    << attrib("height", height, true);
+
+  if (refTar=='r')
+    f << attrib("x", origin.x - HORIZ_TUNE - width/HORIZ_RATIO, true);
+  else
+    f << attrib("x", origin.x + width + HORIZ_TUNE, true);
+
+  f << attrib("y", origin.y, true)
+    << attrib("ry", 2)
+    << end_empty_elem();
 }
 
 void Rectangle::plot_nrc_ref (ofstream& f) const {
@@ -170,20 +170,23 @@ void Rectangle::plot_nrc_tar (ofstream& f) const {
   plot_nrc(f, 't');
 }
 
-void Rectangle::plot_redun
-(ofstream& f, u8 showNRC, char refTar = ' ') const {
-  f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-    ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
-    "stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\"" << PREC << width/HORIZ_RATIO << "\" "
-    "height=\"" << PREC << height <<"\" "
-    "x=\"";
+void Rectangle::plot_redun (ofstream& f, u8 showNRC, char refTar=' ') const {
+  f << begin_elem("rect")
+    << attrib("fill", color)
+    << attrib("stroke", color)
+    << attrib("fill-opacity", opacity)
+    << attrib("width", width/HORIZ_RATIO, true)
+    << attrib("height", height, true);
+
   if (refTar=='r')
-    f << PREC << origin.x - (1+showNRC)*(HORIZ_TUNE+width/HORIZ_RATIO);
-  else if (refTar=='t')
-    f << PREC << origin.x + width + HORIZ_TUNE
-                          + showNRC*(width/HORIZ_RATIO + HORIZ_TUNE);
-  f << "\" y=\"" << PREC << origin.y <<"\" ry=\"2\" />\n";
+    f << attrib("x", origin.x-(1+showNRC)*(HORIZ_TUNE+width/HORIZ_RATIO), true);
+  else
+    f << attrib("x", origin.x + width + HORIZ_TUNE + 
+                     showNRC*(width/HORIZ_RATIO+HORIZ_TUNE), true);
+                     
+  f << attrib("y", origin.y, true)
+    << attrib("ry", 2)
+    << end_empty_elem();
 }
 
 void Rectangle::plot_redun_ref (ofstream& f, bool showNRC) const {
@@ -215,23 +218,35 @@ void Rectangle::plot_chromosome (ofstream& f) const {
 //    << "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;"
 //    << "stroke:none\" />";
 
-  f << "<rect style=\"fill:none;stroke:" << borderColor << ";stroke-width:2;"
-    "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"
-    "stroke-opacity:1;stroke-dasharray:none\" id=\"rect2985\" "
-    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
-    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
-    "ry=\"3\" />\n";
+  f << begin_elem("rect")
+    << attrib("fill", "none")
+    << attrib("stroke", borderColor)
+    << attrib("stroke-width", 2)
+    << attrib("stroke-linecap", "butt")
+    << attrib("stroke-linejoin", "miter")
+    << attrib("stroke-miterlimit", 4)
+    << attrib("width", width, true)
+    << attrib("height", height, true)
+    << attrib("x", origin.x, true)
+    << attrib("y", origin.y, true)
+    << attrib("ry", 3)
+    << end_empty_elem();
 }
 
 /*
  * class Polygon
  */
 void Polygon::plot (ofstream& f) const {
-  f << "<polygon points=\""
+  f << begin_elem("polygon")
+    << "points=\""
     << PREC << one.x   << "," << PREC << one.y   << " "
     << PREC << two.x   << "," << PREC << two.y   << " "
     << PREC << three.x << "," << PREC << three.y << " "
     << PREC << four.x  << "," << PREC << four.y  << "\" "
-    << "style=\"fill:" << fillColor << ";stroke:" << fillColor << ";"
-    << "stroke-width:1;stroke-opacity:0.4;fill-opacity:0.4\" />";
+    << attrib("fill", fillColor)
+    << attrib("stroke", fillColor)
+    << attrib("stroke-width", 1)
+    << attrib("stroke-opacity", 0.4)
+    << attrib("fill-opacity", 0.4)
+    << end_empty_elem();
 }
