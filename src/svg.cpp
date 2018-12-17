@@ -6,16 +6,23 @@ using namespace smashpp;
  * class Text
  */
 void Text::plot (ofstream& f) const {
-  f << "<text id=\""<< to_string(origin.x) << to_string(origin.y) << "\" "
-    "x=\"" << PREC << origin.x  << "\" "
-    "y=\"" << PREC << origin.y  << "\" "
-    "dominant-baseline=\"" << dominantBaseline << "\" "
-    "transform=\"" << transform << "\" "
-    "style=\"font-size:" << to_string(fontSize) << "px;font-style:normal;"
-    "font-variant:normal;font-weight:" << fontWeight << ";font-stretch:normal;"
-    "fill:" << color << ";fill-opacity:1;text-align:start;line-height:125%%;"
-    "writing-mode:lr-tb;text-anchor:" << textAnchor << ";font-family:Arial;"
-    "-inkscape-font-specification:Arial\">" << label << "</text>\n";
+  f << begin_elem("text")
+    << attrib("id",                to_string(origin.x)+to_string(origin.y))
+    << attrib("x",                 origin.x, true)
+    << attrib("y",                 origin.y, true)
+    << attrib("dominant-baseline", dominantBaseline)
+    << attrib("transform",         transform)
+    << attrib("font-size",         to_string(fontSize), false, "px")
+    << attrib("font-weight",       fontWeight)
+    << attrib("font-family",       "Arial")
+    // << attrib("font-family",       "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\"")
+    << attrib("fill",              color)
+    << attrib("text-align",        "start")
+    << attrib("line-height",       "125%%")
+    << attrib("text-anchor",       textAnchor) 
+    << mid_elem()
+    << label
+    << end_elem("text");
 }
 
 void Text::plot_title (ofstream& f) {
@@ -54,43 +61,76 @@ void Text::plot_pos_tar (ofstream& f, char c) {
  * class Line
  */
 void Line::plot (ofstream& f) const {
-  f << "<line id=\"" << beg.x << beg.y << end.x << end.y << "\" "
-    "x1=\"" << PREC << beg.x << "\" y1=\"" << PREC << beg.y << "\" "
-    "x2=\"" << PREC << end.x << "\" y2=\"" << PREC << end.y << "\" "
-    "style=\"stroke:" << color << ";"
-    "stroke-width:" << PREC << width << "\" />";
+  f << begin_elem("line")
+    << attrib("id",           to_string(beg.x)+to_string(beg.y)+
+                              to_string(end.x)+to_string(end.y))
+    << attrib("x1",           beg.x, true)
+    << attrib("y1",           beg.y, true)
+    << attrib("x2",           end.x, true) 
+    << attrib("y2",           end.y, true)
+    << attrib("stroke",       color) 
+    << attrib("stroke-width", width, true)
+    << end_empty_elem();
 }
 
 /*
  * class Path
  */
 void Path::plot (ofstream& f) const {
-  f << "<path d=\"M " << origin.x << "," << origin.y << " " << trace << "\" "
-  "style=\"fill:none;stroke:" << color << ";stroke-linejoin:" << 
-  strokeLineJoin << ";stroke-dasharray:" << strokeDashArray << 
-  ";stroke-width:" << PREC << width << "\" />";
+  f << begin_elem("path")
+    << attrib("d", "M "+to_string(origin.x)+","+to_string(origin.y)+" "+trace)
+    << attrib("fill",             "none")
+    << attrib("stroke",           color)
+    << attrib("stroke-linejoin",  strokeLineJoin)
+    << attrib("stroke-dasharray", strokeDashArray)
+    << attrib("stroke-width",     width, true)
+    << end_empty_elem();
+  // f << "<path d=\"M " << origin.x << "," << origin.y << " " << trace << "\" "
+  // "style=\"fill:none;stroke:" << color << ";stroke-linejoin:" << 
+  // strokeLineJoin << ";stroke-dasharray:" << strokeDashArray << 
+  // ";stroke-width:" << PREC << width << "\" />";
 }
 
 /*
  * class Rectangle
  */
 void Rectangle::plot (ofstream& f) const {
-  f << "<rect style=\"fill:" << color << ";stroke:" << color <<
-    ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
-    "stroke-dasharray:none\" id=\"rect3777\" "
-    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
-    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
-    "ry=\"3\" />\n";
+  f << begin_elem("rect")
+    << attrib("fill",         color)
+    << attrib("stroke",       color)
+    << attrib("fill-opacity", opacity)
+    << attrib("width",        width,    true)
+    << attrib("height",       height,   true)
+    << attrib("x",            origin.x, true)
+    << attrib("y",            origin.y, true)
+    << attrib("ry",           3)
+    << end_empty_elem();
+  // f << "<rect style=\"fill:" << color << ";stroke:" << color <<
+  //   ";fill-opacity:" << opacity << ";stroke-width:1;stroke-miterlimit:4;"
+  //   "stroke-dasharray:none\" id=\"rect3777\" "
+  //   "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
+  //   "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
+  //   "ry=\"3\" />\n";
 }
 
 void Rectangle::plot_ir (ofstream& f, string&& wave) const {
   plot(f);
-  f << "<rect style=\"fill-opacity:" << opacity << ";stroke-width:2;"
-    "stroke-miterlimit:4;stroke-dasharray:none;fill:url(" << wave << ");"
-    "fill-rule:nonzero;opacity:1;\" id=\"rect6217\" "
-    "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
-    "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
-    "ry=\"3\" />\n";
+  f << begin_elem("rect")
+    << attrib("fill-opacity", opacity)
+    << attrib("stroke-width", 2)
+    << attrib("fill",         "url("+wave+")")
+    << attrib("width",        width, true)
+    << attrib("height",       height, true)
+    << attrib("x",            origin.x, true)
+    << attrib("y",            origin.y, true)
+    << attrib("ry",           3)
+    << end_empty_elem();
+  // f << "<rect style=\"fill-opacity:" << opacity << ";stroke-width:2;"
+  //   "stroke-miterlimit:4;stroke-dasharray:none;fill:url(" << wave << ");"
+  //   "fill-rule:nonzero;opacity:1;\" id=\"rect6217\" "
+  //   "width=\"" << PREC << width << "\" height=\"" << PREC << height <<"\" "
+  //   "x=\"" << PREC << origin.x << "\" y=\"" << PREC << origin.y <<"\" "
+  //   "ry=\"3\" />\n";
 }
 
 void Rectangle::plot_oval (ofstream& f) const {

@@ -13,10 +13,14 @@ using namespace smashpp;
 
 FCM::FCM (Param& p)
   : aveEnt(static_cast<prc_t>(0)), tarSegID(0), entropyN(p.entropyN) {
-  rMs=p.refMs;    rTMs=p.refTMs;
+  rMs=p.refMs;
   set_cont(rMs);
-  tMs=p.tarMs;    tTMs=p.tarTMs;
+  rTMsSize=0;    for (const auto& e : rMs)  if (e.child) ++rTMsSize;
+
+  tMs = p.tarMs;
   set_cont(tMs);
+  tTMsSize=0;    for (const auto& e : tMs)  if (e.child) ++tTMsSize;
+
   if (p.verbose && p.showInfo) { show_info(p);    p.showInfo=false; }
   alloc_model();
 }
@@ -297,7 +301,7 @@ inline void FCM::store_impl (const string& ref, Mask mask, ContIter cont) {
 void FCM::compress (const Param& p) {
   message = "Compressing " + italic(p.tarName) + " ";
 
-  if (rMs.size()==1 && rTMs.empty())  // 1 MM
+  if (rMs.size()==1 && rTMsSize==0)  // 1 MM
     switch (rMs[0].cont) {
     case Container::SKETCH_8:     compress_1(p, cmls4.begin());   break;
     case Container::LOG_TABLE_8:  compress_1(p, lgtbl8.begin());  break;
@@ -393,7 +397,7 @@ inline void FCM::compress_n (const Param& par) {
   ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
   auto cp = make_unique<CompressPar>();
   // Ctx, Mir (int) sliding through the dataset
-  const auto nMdl = static_cast<u8>(rMs.size() + rTMs.size());
+  const auto nMdl = static_cast<u8>(rMs.size()) + rTMsSize;
   cp->nMdl = nMdl;
   cp->ctx.resize(nMdl);        // Fill with zeros (resize)
   cp->ctxIr.reserve(nMdl);
@@ -590,7 +594,7 @@ void FCM::self_compress (const Param& p, u64 ID) {
 
   self_compress_alloc();
 
-  if (tMs.size()==1 && tTMs.empty())  // 1 MM
+  if (tMs.size()==1 && tTMsSize==0)  // 1 MM
     switch (tMs[0].cont) {
     case Container::SKETCH_8:    self_compress_1(p, cmls4.begin(),  ID);  break;
     case Container::LOG_TABLE_8: self_compress_1(p, lgtbl8.begin(), ID);  break;
@@ -701,7 +705,7 @@ inline void FCM::self_compress_n (const Param& par, u64 ID) {
   prc_t sumEnt{0};
   ifstream seqF(par.seq);
   auto cp = make_unique<CompressPar>();
-  const auto nMdl = static_cast<u8>(tMs.size() + tTMs.size());
+  const auto nMdl = static_cast<u8>(tMs.size() + tTMsSize);
   cp->nMdl = nMdl;
   cp->ctx.resize(nMdl);        // Fill with zeros (resize)
   cp->ctxIr.reserve(nMdl);

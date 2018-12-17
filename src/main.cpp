@@ -148,14 +148,10 @@ int main (int argc, char* argv[]) {
             e.ir = timesRunning;
             if (e.child)  e.child->ir=timesRunning;
           }
-          for (auto& e : models->rTMs)
-            e.ir = timesRunning;
           for (auto& e : models->tMs) {
             e.ir = timesRunning;
             if (e.child)  e.child->ir=timesRunning;
           }
-          for (auto& e : models->tTMs)
-            e.ir = timesRunning;
 
           models->store(par);                   // Build models
           models->compress(par);                // Compress
@@ -194,14 +190,10 @@ int main (int argc, char* argv[]) {
               e.ir = timesRunning;
               if (e.child)  e.child->ir=timesRunning;
             }
-            for (auto& e : models->rTMs)
-              e.ir = timesRunning;
             for (auto& e : models->tMs) {
               e.ir = timesRunning;
               if (e.child)  e.child->ir=timesRunning;
             }
-            for (auto& e : models->tTMs)
-              e.ir = timesRunning;
 
             models->tarSegMsg = origTar + "-segment-";
             models->tarSegID = i + 1;
