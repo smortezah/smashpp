@@ -88,16 +88,17 @@ void VizPaint::print_plot (VizParam& p) {
     const auto plot_main_ref = [&]() {
       if (e.begRef != -2) {
         rect->width  = width;
-        rect->color  = customColor(e.start);
+        rect->color  = rgb_color(e.start);
         rect->origin = Point(cx, cy + get_point(e.begRef));
         rect->height = get_point(e.endRef-e.begRef);
         rect->plot(fPlot);
+        
         if (p.showNRC) {
-          rect->color = nrc_color(e.entRef, p.color);
+          rect->color = nrc_color(e.entRef, p.colorMode);
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(e.selfRef, p.color);
+          rect->color = redun_color(e.selfRef, p.colorMode);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
       }
@@ -105,7 +106,7 @@ void VizPaint::print_plot (VizParam& p) {
 
     const auto plot_main_tar = [&](bool inverted) {
       if (e.begRef==-2)  rect->color="black";
-      else               rect->color=customColor(e.start);
+      else               rect->color=rgb_color(e.start);
       rect->width=width;
       rect->height = get_point(abs(e.begTar-e.endTar));
       if (!inverted) {
@@ -119,11 +120,11 @@ void VizPaint::print_plot (VizParam& p) {
       }
 
       if (p.showNRC) {
-        rect->color = nrc_color(e.entTar, p.color);
+        rect->color = nrc_color(e.entTar, p.colorMode);
         rect->plot_nrc_tar(fPlot);
       }
       if (p.showRedun) {
-        rect->color = redun_color(e.selfTar, p.color);
+        rect->color = redun_color(e.selfTar, p.colorMode);
         rect->plot_redun_tar(fPlot, p.showNRC);
       }
     };
@@ -137,7 +138,7 @@ void VizPaint::print_plot (VizParam& p) {
           switch (p.link) {
           case 5:
             poly->lineColor = "grey";
-            poly->fillColor = customColor(e.start);
+            poly->fillColor = rgb_color(e.start);
             poly->one   = Point(cx+width,       cy+get_point(e.begRef));
             poly->two   = Point(cx+width,       cy+get_point(e.endRef));
             poly->three = Point(cx+width+space, cy+get_point(e.endTar));
@@ -145,7 +146,7 @@ void VizPaint::print_plot (VizParam& p) {
             poly->plot(fPlot);
             break;
           case 2:
-            line->color = customColor(e.start);
+            line->color = rgb_color(e.start);
             line->beg = Point(
               cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
             line->end = Point(
@@ -170,7 +171,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->plot(fPlot);
             break;
           case 4:
-            line->color = customColor(e.start);
+            line->color = rgb_color(e.start);
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -193,7 +194,7 @@ void VizPaint::print_plot (VizParam& p) {
           switch (p.link) {
           case 5:
             poly->lineColor = "grey";
-            poly->fillColor = customColor(e.start);
+            poly->fillColor = rgb_color(e.start);
             poly->one   = Point(cx+width,       cy+get_point(e.begRef));
             poly->two   = Point(cx+width,       cy+get_point(e.endRef));
             poly->three = Point(cx+width+space, cy+get_point(e.endTar));
@@ -201,7 +202,7 @@ void VizPaint::print_plot (VizParam& p) {
             poly->plot(fPlot);
             break;
           case 2:
-            line->color = customColor(e.start);
+            line->color = rgb_color(e.start);
             line->beg = Point(
               cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
             line->end = Point(
@@ -227,7 +228,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->plot(fPlot);
             break;
           case 4:
-            line->color = customColor(e.start);
+            line->color = rgb_color(e.start);
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -403,6 +404,7 @@ inline RgbColor VizPaint::hsv_to_rgb (const HsvColor& HSV) const {
   return RGB;
 }
 
+#ifdef EXTEND
 inline HsvColor VizPaint::rgb_to_hsv (const RgbColor& RGB) const {
   const u8 rgbMin { min({RGB.r, RGB.g, RGB.b}) };
   const u8 rgbMax { max({RGB.r, RGB.g, RGB.b}) };
@@ -420,12 +422,7 @@ inline HsvColor VizPaint::rgb_to_hsv (const RgbColor& RGB) const {
   
   return HSV;
 }
-
-inline string VizPaint::rgb_color (u8 hue) const {
-  HsvColor HSV (hue);
-  RgbColor RGB {hsv_to_rgb(HSV)};
-  return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
-}
+#endif
 
 #ifdef EXTEND
 inline string VizPaint::heatmap_color (double lambda, 
@@ -446,15 +443,11 @@ const HeatmapColor& heatmap) const {
 }
 #endif
 
-template <typename ValueR, typename ValueG, typename ValueB>
-inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
-  return "rgb("+to_string(static_cast<u8>(r))+","
-               +to_string(static_cast<u8>(g))+","
-               +to_string(static_cast<u8>(b))+")";
-}
-
-inline string VizPaint::customColor (u32 start) const {
-  return rgb_color(static_cast<u8>(start * mult));
+inline string VizPaint::rgb_color (u32 start) const {
+  const auto hue = static_cast<u8>(start * mult);
+  HsvColor HSV (hue);
+  RgbColor RGB {hsv_to_rgb(HSV)};
+  return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
 }
 
 inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
@@ -547,76 +540,104 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   if (!p.showNRC && !p.showRedun)  return;
   
   const auto vert = 24;
-  auto rect = make_unique<Rectangle>();
+  auto rect = make_shared<Rectangle>();
   rect->height = 12;
 
-  auto text = make_unique<Text>();
-  text->textAnchor = "middle";
-  // text->fontWeight = "bold";
-  text->fontSize = 9;
-
-  auto grad = make_unique<Gradient>();
-  switch (p.color) {
-  case 0:
-    grad->offsetColor = {"#0000ff", "#0055ff", "#00aaff", "#00ffff", "#00ffaa",
-      "#00ff55", "#00ff00", "#55ff00", "#aaff00", "#ffff00", "#ffaa00",
-      "#ff5500", "#ff0000"};                                              break;
-    // grad->offsetColor = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-    //   "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
-  case 1:
-    grad->offsetColor = {"#90ee90", "#7fe690", "#70de94", "#61d59b", "#53cda4",
-      "#45c5b0", "#39bdbd", "#2d9eb4", "#237eac", "#195ea4", "#103e9b",
-      "#071f93", "#00008b"};                                              break;
-    // grad->offsetColor = {"#FFFFDD", "#AAF191", "#80D385", "#61B385", "#3E9583",
-    //   "#217681", "#285285", "#1F2D86", "#000086"};                        break;
-  case 2:
-    grad->offsetColor = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
-      "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"};  break;
-  default:
-    error("undefined color mode.");
-  }
+  auto text = make_shared<Text>();
+  // text->textAnchor = "middle";
+  // // text->fontWeight = "bold";
+  // text->fontSize = 9;
 
   if (p.showNRC && !p.showRedun) {
     rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
                    width/HORIZ_RATIO+HORIZ_TUNE;
 
-    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
-    text->dominantBaseline = "text-after-edge";
-    text->label = "RELATIVE REDUNDANCY";
-    text->plot(f);
+    plot_legend_label(f, "RELATIVE REDUNDANCY", 
+      Point(rect->origin.x+rect->width/2, rect->origin.y), "text-after-edge");
+
+    // text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    // text->dominantBaseline = "text-after-edge";
+    // text->label = "RELATIVE REDUNDANCY";
+    // text->plot(f);
   }
   else if (!p.showNRC && p.showRedun) {
     rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
                    width/HORIZ_RATIO+HORIZ_TUNE;
 
-    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
-    text->dominantBaseline = "text-after-edge";
-    text->label = "REDUNDANCY";
-    text->plot(f);
+    plot_legend_label(f, "REDUNDANCY", 
+      Point(rect->origin.x+rect->width/2, rect->origin.y), "text-after-edge");
+
+    // text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    // text->dominantBaseline = "text-after-edge";
+    // text->label = "REDUNDANCY";
+    // text->plot(f);
   }
   else if (p.showNRC && p.showRedun) {
     rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
                    width/HORIZ_RATIO+HORIZ_TUNE;
 
-    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
-    text->dominantBaseline = "text-after-edge";
-    text->label = "RELATIVE REDUNDANCY";
-    text->plot(f);
+    plot_legend_label(f, "RELATIVE REDUNDANCY", 
+      Point(rect->origin.x+rect->width/2, rect->origin.y), "text-after-edge");
+
+    // text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    // text->dominantBaseline = "text-after-edge";
+    // text->label = "RELATIVE REDUNDANCY";
+    // text->plot(f);
 
     // Redundancy
-    text->origin = Point(rect->origin.x+rect->width/2, 
-                         rect->origin.y+rect->height);
-    text->dominantBaseline = "text-before-edge";
-    text->label = "REDUNDANCY";
-    text->plot(f);
+    plot_legend_label(f, "REDUNDANCY", 
+      Point(rect->origin.x+rect->width/2, rect->origin.y+rect->height),
+      "text-before-edge");
+
+    // text->origin = Point(rect->origin.x+rect->width/2, 
+    //                      rect->origin.y+rect->height);
+    // text->dominantBaseline = "text-before-edge";
+    // text->label = "REDUNDANCY";
+    // text->plot(f);
   }
 
-  const auto offset = [&](u8 i) { 
-    return to_string(i * 100 / (grad->offsetColor.size() - 1)) + "%";
-  };
+  plot_legend_gradient(f, rect, p.colorMode);
+
+  // text->dominantBaseline = "middle";
+  // text->fontWeight = "normal";
+  // text->fontSize   = 9;
+  // text->textAnchor = "end";
+  // text->origin = Point(rect->origin.x-2, rect->origin.y+rect->height/2);
+  // text->label  = "0.0";
+  // // text->fontWeight = "bold";
+  // text->plot(f);
+  // text->textAnchor = "middle";
+  // for (u8 i=1; i!=4; ++i) {
+  //   text->origin = 
+  //     Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
+  //   if (p.colorMode==1 && i==3)  text->color="white";
+  //   text->label = string_format("%.1f", i*0.5);
+  //   text->plot(f);
+  // }
+  // text->textAnchor = "start";
+  // text->origin = Point(rect->origin.x+rect->width+2, 
+  //                      rect->origin.y+rect->height/2);
+  // text->color = "black";
+  // text->label = "2.0";
+  // text->plot(f);
+  // text->textAnchor = "middle";
+  // text->fontWeight = "normal";
+}
+
+template <typename Rect>
+inline void VizPaint::plot_legend_gradient (ofstream& f, const Rect& rect, 
+u8 colorMode) const {
+  auto grad = make_unique<Gradient>();
+  switch (colorMode) {
+  case 0:   grad->offsetColor=COLORSET[0];   break;
+  case 1:   grad->offsetColor=COLORSET[1];   break;
+  case 2:   grad->offsetColor=COLORSET[2];   break;
+  default:  error("undefined color mode.");
+  }
+
   auto id = to_string(rect->origin.x) + to_string(rect->origin.y);
   f << begin_elem("defs")
     << mid_elem()
@@ -629,7 +650,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
     << mid_elem();
   for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
     f << begin_elem("stop") 
-      << attrib("offset", offset(i))
+      << attrib("offset", to_string(i*100/(grad->offsetColor.size()-1))+"%")
       << attrib("stop-color", grad->offsetColor[i]) 
       << attrib("stop-opacity", 1)
       << end_empty_elem();
@@ -644,6 +665,19 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
     << attrib("y", rect->origin.y, true)
     << attrib("ry", 3)
     << end_empty_elem();
+}
+
+inline void VizPaint::plot_legend_label (ofstream& f, const string& label, 
+const Point& origin, const string& dominantBaseline) const {
+  auto text = make_unique<Text>();
+  text->textAnchor = "middle";
+  // text->fontWeight = "bold";
+  text->fontSize = 9;
+
+  text->origin = origin;
+  text->dominantBaseline = dominantBaseline;
+  text->label = label;
+  text->plot(f);
 
   text->dominantBaseline = "middle";
   text->fontWeight = "normal";
@@ -657,7 +691,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   for (u8 i=1; i!=4; ++i) {
     text->origin = 
       Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
-    if (p.color==1 && i==3)  text->color="white";
+    if (p.colorMode==1 && i==3)  text->color="white";
     text->label = string_format("%.1f", i*0.5);
     text->plot(f);
   }
@@ -754,11 +788,11 @@ bool showRedun) const {
 
 inline string VizPaint::tspan (u32 start, i64 pos) const {
   return "<tspan id=\"" + to_string(start) + "\" style=\"fill:" + 
-    customColor(start) + "\">" + to_string(pos) + ", </tspan>\n";
+    rgb_color(start) + "\">" + to_string(pos) + ", </tspan>\n";
 }
 inline string VizPaint::tspan (u32 start, const string& pos) const {
   return "<tspan id=\"" + to_string(start) + "\" style=\"fill:" + 
-    customColor(start) + "\">" + pos + ", </tspan>\n";
+    rgb_color(start) + "\">" + pos + ", </tspan>\n";
 }
 
 inline void VizPaint::sort_merge (string& s) const {

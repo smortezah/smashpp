@@ -66,7 +66,7 @@ class VizParam {
  public:
   bool   verbose, inverse, regular, showPos, showNRC, showRedun, showAnnot;
   string image;
-  u8     link, color;
+  u8     link, colorMode;
   float  opacity;
   u32    width, space, mult, start, min;
   bool   manMult;
@@ -74,7 +74,7 @@ class VizParam {
 
   VizParam () : verbose(false), inverse(true), regular(true), showPos(true),
     showNRC(true), showRedun(true), showAnnot(true), image(IMAGE), 
-    link(LINK), color(COLOR), opacity(OPAC), width(WDTH), space(SPC), 
+    link(LINK), colorMode(COLOR), opacity(OPAC), width(WDTH), space(SPC), 
     mult(MULT), start(BEGN), min(MINP), manMult(false) {}
 
   void parse (int, char**&);
@@ -483,10 +483,10 @@ inline void VizParam::parse (int argc, char**& argv) {
       range->assert(link);
     }
     else if ((*i=="-c" || *i=="--color")  && i+1!=vArgs.end()) {
-      color = static_cast<u8>(stoi(*++i));
+      colorMode = static_cast<u8>(stoi(*++i));
       auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, COLOR, 
         "Color", "[]", "default", Problem::WARNING);
-      range->assert(color);
+      range->assert(colorMode);
     }
     else if ((*i=="-p" || *i=="--opacity")  && i+1!=vArgs.end()) {
       opacity = stof(*++i);
