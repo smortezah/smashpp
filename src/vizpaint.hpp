@@ -31,8 +31,10 @@ class VizPaint {
   auto hsv_to_rgb (const HsvColor&) const -> RgbColor;
   auto rgb_to_hsv (const RgbColor&) const -> HsvColor;
   auto rgb_color (u8) const -> string;
+#ifdef EXTEND
   auto heatmap_color (double, const HeatmapColor& h=HeatmapColor()) const ->
     string;
+#endif
   template <typename ValueR, typename ValueG, typename ValueB>
   auto shade_color (ValueR, ValueG, ValueB) const -> string;
   auto customColor (u32) const -> string;

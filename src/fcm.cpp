@@ -324,7 +324,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
   prc_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(par.tar);
   ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
-  ProbPar  pp{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, u8(rMs[0].k<<1u)};
+  ProbPar pp{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, u8(rMs[0].k<<1u)};
   const auto totalSize = file_size(par.tar);
 
   for (vector<char> buffer(FILE_BUF,0); tf.peek()!=EOF;) {
@@ -487,7 +487,7 @@ u8 n) const {
   else if (cp->mm.ir == 1) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
-      array<decltype(2 * (*cont)->query(0)), 4> f{};
+      array<decltype(2*(*cont)->query(0)),4> f{};
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
       P = prob(f.begin(), cp->ppIt);
     }
