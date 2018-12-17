@@ -427,6 +427,7 @@ inline string VizPaint::rgb_color (u8 hue) const {
   return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
 }
 
+#ifdef EXTEND
 inline string VizPaint::heatmap_color (double lambda, 
 const HeatmapColor& heatmap) const {
   // Change behaviour [sensitivity: near low similarity]
@@ -443,6 +444,7 @@ const HeatmapColor& heatmap) const {
 
   return string_format("#%02X%02X%02X", int(R*255), int(G*255), int(B*255));
 }
+#endif
 
 template <typename ValueR, typename ValueG, typename ValueB>
 inline string VizPaint::shade_color (ValueR r, ValueG g, ValueB b) const {
@@ -457,56 +459,26 @@ inline string VizPaint::customColor (u32 start) const {
 
 inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
   keep_in_range(0.0, entropy, 2.0);
+#ifdef EXTEND
   // return heatmap_color(entropy/2 * (width+space+width));
-  vector<string> colorSet {};
-  switch (colorMode) {
-  case 0:
-    colorSet = {"#0000ff", "#0055ff", "#00aaff", "#00ffff", "#00ffaa",
-      "#00ff55", "#00ff00", "#55ff00", "#aaff00", "#ffff00", "#ffaa00",
-      "#ff5500", "#ff0000"};                                              break;
-    // colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-    //   "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
-  case 1:
-    colorSet = {"#90ee90", "#7fe690", "#70de94", "#61d59b", "#53cda4", 
-      "#45c5b0", "#39bdbd", "#2d9eb4", "#237eac", "#195ea4", "#103e9b",
-      "#071f93", "#00008b"};                                              break;
-    // colorSet = {"#AAF191", "#80D385", "#61B385", "#3E9583",
-    //   "#217681", "#285285", "#1F2D86", "#000086"};                        break;
-  case 2:
-    colorSet = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
-      "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"};  break;
-  default:
-    error("undefined color mode.");
-  }
+#endif
 
-  return colorSet[entropy/2 * (colorSet.size()-1)];
+  switch (colorMode) {
+  case 0:   return COLORSET[0][entropy/2 * (COLORSET[0].size()-1)];
+  case 1:   return COLORSET[1][entropy/2 * (COLORSET[1].size()-1)];
+  case 2:   return COLORSET[2][entropy/2 * (COLORSET[2].size()-1)];
+  default:  error("undefined color mode.");
+  }
+  
+  return "";
 }
 
 inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
   keep_in_range(0.0, entropy, 2.0);
+#ifdef EXTEND
   // return heatmap_color(entropy/2 * (width+space+width));
-  vector<string> colorSet {};
-  switch (colorMode) {
-  case 0:
-    colorSet = {"#0000ff", "#0055ff", "#00aaff", "#00ffff", "#00ffaa",
-      "#00ff55", "#00ff00", "#55ff00", "#aaff00", "#ffff00", "#ffaa00",
-      "#ff5500", "#ff0000"};                                              break;
-    // colorSet = {"#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c",
-    //   "#f9d057", "#f29e2e", "#e76818", "#d7191c"};                        break;
-  case 1:
-    colorSet = {"#90ee90", "#7fe690", "#70de94", "#61d59b", "#53cda4", 
-      "#45c5b0", "#39bdbd", "#2d9eb4", "#237eac", "#195ea4", "#103e9b",
-      "#071f93", "#00008b"};                                              break;
-    // colorSet = {"#AAF191", "#80D385", "#61B385", "#3E9583",
-    //   "#217681", "#285285", "#1F2D86", "#000086"};                        break;
-  case 2:
-    colorSet = {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD",
-      "#E6E6BA", "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"};  break;
-  default:
-    error("undefined color mode.");
-  }
-
-  return colorSet[entropy/2 * (colorSet.size()-1)];
+#endif
+  return nrc_color(entropy, colorMode);
 }
 
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {
@@ -517,7 +489,7 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     << attrib("width", w)
     << attrib("height", h)
     << mid_elem();
-
+    
   f << begin_elem("defs")
     << attrib("id", "ffff")
     << mid_elem()
