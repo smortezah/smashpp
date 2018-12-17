@@ -543,88 +543,75 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   auto rect = make_shared<Rectangle>();
   rect->height = 12;
 
-  auto text = make_shared<Text>();
-  // text->textAnchor = "middle";
-  // // text->fontWeight = "bold";
-  // text->fontSize = 9;
+  auto text = make_unique<Text>();
+  text->textAnchor = "middle";
+  // text->fontWeight = "bold";
+  text->fontSize = 9;
 
   if (p.showNRC && !p.showRedun) {
     rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
                    width/HORIZ_RATIO+HORIZ_TUNE;
 
-    plot_legend_label(f, "RELATIVE REDUNDANCY", 
-      Point(rect->origin.x+rect->width/2, rect->origin.y), "text-after-edge");
-
-    // text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
-    // text->dominantBaseline = "text-after-edge";
-    // text->label = "RELATIVE REDUNDANCY";
-    // text->plot(f);
+    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->dominantBaseline = "text-after-edge";
+    text->label = "RELATIVE REDUNDANCY";
+    text->plot(f);
   }
   else if (!p.showNRC && p.showRedun) {
     rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
                    width/HORIZ_RATIO+HORIZ_TUNE;
 
-    plot_legend_label(f, "REDUNDANCY", 
-      Point(rect->origin.x+rect->width/2, rect->origin.y), "text-after-edge");
-
-    // text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
-    // text->dominantBaseline = "text-after-edge";
-    // text->label = "REDUNDANCY";
-    // text->plot(f);
+    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->dominantBaseline = "text-after-edge";
+    text->label = "REDUNDANCY";
+    text->plot(f);
   }
   else if (p.showNRC && p.showRedun) {
     rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
                    width/HORIZ_RATIO+HORIZ_TUNE;
 
-    plot_legend_label(f, "RELATIVE REDUNDANCY", 
-      Point(rect->origin.x+rect->width/2, rect->origin.y), "text-after-edge");
-
-    // text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
-    // text->dominantBaseline = "text-after-edge";
-    // text->label = "RELATIVE REDUNDANCY";
-    // text->plot(f);
+    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->dominantBaseline = "text-after-edge";
+    text->label = "RELATIVE REDUNDANCY";
+    text->plot(f);
 
     // Redundancy
-    plot_legend_label(f, "REDUNDANCY", 
-      Point(rect->origin.x+rect->width/2, rect->origin.y+rect->height),
-      "text-before-edge");
-
-    // text->origin = Point(rect->origin.x+rect->width/2, 
-    //                      rect->origin.y+rect->height);
-    // text->dominantBaseline = "text-before-edge";
-    // text->label = "REDUNDANCY";
-    // text->plot(f);
+    text->origin = Point(rect->origin.x+rect->width/2, 
+                         rect->origin.y+rect->height);
+    text->dominantBaseline = "text-before-edge";
+    text->label = "REDUNDANCY";
+    text->plot(f);
   }
 
   plot_legend_gradient(f, rect, p.colorMode);
 
-  // text->dominantBaseline = "middle";
-  // text->fontWeight = "normal";
-  // text->fontSize   = 9;
-  // text->textAnchor = "end";
-  // text->origin = Point(rect->origin.x-2, rect->origin.y+rect->height/2);
-  // text->label  = "0.0";
-  // // text->fontWeight = "bold";
-  // text->plot(f);
-  // text->textAnchor = "middle";
-  // for (u8 i=1; i!=4; ++i) {
-  //   text->origin = 
-  //     Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
-  //   if (p.colorMode==1 && i==3)  text->color="white";
-  //   text->label = string_format("%.1f", i*0.5);
-  //   text->plot(f);
-  // }
-  // text->textAnchor = "start";
-  // text->origin = Point(rect->origin.x+rect->width+2, 
-  //                      rect->origin.y+rect->height/2);
-  // text->color = "black";
-  // text->label = "2.0";
-  // text->plot(f);
-  // text->textAnchor = "middle";
-  // text->fontWeight = "normal";
+  text->dominantBaseline = "middle";
+  text->fontWeight = "normal";
+  text->fontSize   = 9;
+  text->textAnchor = "end";
+  text->origin = Point(rect->origin.x-2, rect->origin.y+rect->height/2);
+  text->label  = "0.0";
+  // text->fontWeight = "bold";
+  text->plot(f);
+  text->textAnchor = "middle";
+  for (u8 i=1; i!=4; ++i) {
+    text->origin = 
+      Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
+    if (p.colorMode==1 && i==3)  text->color="white";
+    text->label = string_format("%.1f", i*0.5);
+    text->plot(f);
+  }
+  text->textAnchor = "start";
+  text->origin = Point(rect->origin.x+rect->width+2, 
+                       rect->origin.y+rect->height/2);
+  text->color = "black";
+  text->label = "2.0";
+  text->plot(f);
+  text->textAnchor = "middle";
+  text->fontWeight = "normal";
 }
 
 template <typename Rect>
@@ -665,44 +652,6 @@ u8 colorMode) const {
     << attrib("y", rect->origin.y, true)
     << attrib("ry", 3)
     << end_empty_elem();
-}
-
-inline void VizPaint::plot_legend_label (ofstream& f, const string& label, 
-const Point& origin, const string& dominantBaseline) const {
-  auto text = make_unique<Text>();
-  text->textAnchor = "middle";
-  // text->fontWeight = "bold";
-  text->fontSize = 9;
-
-  text->origin = origin;
-  text->dominantBaseline = dominantBaseline;
-  text->label = label;
-  text->plot(f);
-
-  text->dominantBaseline = "middle";
-  text->fontWeight = "normal";
-  text->fontSize   = 9;
-  text->textAnchor = "end";
-  text->origin = Point(rect->origin.x-2, rect->origin.y+rect->height/2);
-  text->label  = "0.0";
-  // text->fontWeight = "bold";
-  text->plot(f);
-  text->textAnchor = "middle";
-  for (u8 i=1; i!=4; ++i) {
-    text->origin = 
-      Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
-    if (p.colorMode==1 && i==3)  text->color="white";
-    text->label = string_format("%.1f", i*0.5);
-    text->plot(f);
-  }
-  text->textAnchor = "start";
-  text->origin = Point(rect->origin.x+rect->width+2, 
-                       rect->origin.y+rect->height/2);
-  text->color = "black";
-  text->label = "2.0";
-  text->plot(f);
-  text->textAnchor = "middle";
-  text->fontWeight = "normal";
 }
 
 inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight, bool showNRC,

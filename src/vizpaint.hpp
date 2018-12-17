@@ -46,8 +46,6 @@ class VizPaint {
   void plot_legend (ofstream&, const VizParam&) const;
   template <typename Rect>
   void plot_legend_gradient (ofstream&, const Rect&, u8) const;
-  void plot_legend_label (ofstream&, const string&, const Point&, const string&)
-    const;
   void plot_annot (ofstream&, i64, bool, bool) const;
   auto tspan (u32, i64) const -> string;
   auto tspan (u32, const string&) const -> string;
