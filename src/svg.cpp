@@ -116,33 +116,6 @@ void Rectangle::plot_ir (ofstream& f, string&& wave) const {
     << end_empty_elem();
 }
 
-void Rectangle::plot_oval (ofstream& f) const {
-  f << begin_elem("rect")
-    << attrib("id", "rectx")
-    << attrib("fill", color)
-    << attrib("stroke-width", 2)
-    << attrib("width", width, true)
-    << attrib("height", height, true)
-    << attrib("x", origin.x, true)
-    << attrib("y", origin.y, true)
-    << attrib("ry", 12.5)
-    << end_empty_elem();
-}
-
-void Rectangle::plot_oval_ir (ofstream& f) const {
-  plot_oval(f);
-  f << begin_elem("rect")
-    << attrib("id", "recty")
-    << attrib("stroke-width", 2)
-    << attrib("fill", "url(#xtrace)")
-    << attrib("width", width, true)
-    << attrib("height", height, true)
-    << attrib("x", origin.x, true)
-    << attrib("y", origin.y, true)
-    << attrib("ry", 12.5)
-    << end_empty_elem();
-}
-
 void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
   f << begin_elem("rect")
     << attrib("id", "rect3777")

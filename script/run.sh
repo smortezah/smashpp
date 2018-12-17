@@ -132,7 +132,7 @@ fi
 if [[ $RUN -eq 1 ]]; then
   ### S
   ./smashpp -r RefS -t TarS -l 3 -w 45
-  ./smashpp -viz -l 5 -p 1 -o S.svg RefS-TarS.pos
+  ./smashpp -viz -l 5 -p 1 -b 3 -o S.svg RefS-TarS.pos
   ### M
   ./smashpp -r RefM -t TarM -l 3 -w 100
   ./smashpp -viz -l 5 -p 1 -b 2 -t 80 -o M.svg RefM-TarM.pos
