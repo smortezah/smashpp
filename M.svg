@@ -58,14 +58,22 @@
 	<rect fill="none" stroke="#000000" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" width="23.00" height="500.00" x="288.00" y="100.00" ry="3" />
 	<text id="255.50000024.000000" x="255.50" y="24.00" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >RELATIVE REDUNDANCY</text>
 	<text id="255.50000036.000000" x="255.50" y="36.00" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >REDUNDANCY</text>
-	<defs >	<linearGradient id="grad187.33333324.000000" x1="0%" y1="0%" x2="100%" y2="0%" ><stop offset="0%" style="stop-color:#0000ff;stop-opacity:1"/><stop offset="8%" style="stop-color:#0055ff;stop-opacity:1"/><stop offset="16%" style="stop-color:#00aaff;stop-opacity:1"/><stop offset="25%" style="stop-color:#00ffff;stop-opacity:1"/><stop offset="33%" style="stop-color:#00ffaa;stop-opacity:1"/><stop offset="41%" style="stop-color:#00ff55;stop-opacity:1"/><stop offset="50%" style="stop-color:#00ff00;stop-opacity:1"/><stop offset="58%" style="stop-color:#55ff00;stop-opacity:1"/><stop offset="66%" style="stop-color:#aaff00;stop-opacity:1"/><stop offset="75%" style="stop-color:#ffff00;stop-opacity:1"/><stop offset="83%" style="stop-color:#ffaa00;stop-opacity:1"/><stop offset="91%" style="stop-color:#ff5500;stop-opacity:1"/><stop offset="100%" style="stop-color:#ff0000;stop-opacity:1"/></linearGradient>
+	<defs >	<linearGradient id="grad187.33333324.000000" x1="0%" y1="0%" x2="100%" y2="0%" >	<stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
+	<stop offset="8%" stop-color="#0055ff" stop-opacity="1" />
+	<stop offset="16%" stop-color="#00aaff" stop-opacity="1" />
+	<stop offset="25%" stop-color="#00ffff" stop-opacity="1" />
+	<stop offset="33%" stop-color="#00ffaa" stop-opacity="1" />
+	<stop offset="41%" stop-color="#00ff55" stop-opacity="1" />
+	<stop offset="50%" stop-color="#00ff00" stop-opacity="1" />
+	<stop offset="58%" stop-color="#55ff00" stop-opacity="1" />
+	<stop offset="66%" stop-color="#aaff00" stop-opacity="1" />
+	<stop offset="75%" stop-color="#ffff00" stop-opacity="1" />
+	<stop offset="83%" stop-color="#ffaa00" stop-opacity="1" />
+	<stop offset="91%" stop-color="#ff5500" stop-opacity="1" />
+	<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
 </defs>
-<rect fill="url(#grad187.33333324.000000)" width="136.33" height="12.00" x="187.33" y="24.00" ry="3" />
-	<text id="185.33333330.000000" x="185.33" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" >0.0</text>
-	<text id="221.41666730.000000" x="221.42" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >0.5</text>
-	<text id="255.50000030.000000" x="255.50" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.0</text>
-	<text id="289.58333330.000000" x="289.58" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.5</text>
-	<text id="325.66666730.000000" x="325.67" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" >2.0</text>
+	<rect fill="url(#grad187.33333324.000000)" width="136.33" height="12.00" x="187.33" y="24.00" ry="3" />
 	<path d="M 191.166667,599.995000 v 20.005000 h 13.000000" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
 	<path d="M 319.833333,599.995000 v 20.005000 h -13.000000" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
 	<text id="255.500000620.000000" x="255.50" y="620.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >Relative Redundancy</text>
