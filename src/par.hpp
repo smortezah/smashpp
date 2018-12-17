@@ -36,9 +36,9 @@ class Param {   // Parameters
   bool            compress, filter, segment;
   u32             ID;
   vector<MMPar>   refMs;
-  vector<STMMPar> refTMs;
+  // vector<STMMPar> refTMs;
   vector<MMPar>   tarMs;
-  vector<STMMPar> tarTMs;
+  // vector<STMMPar> tarTMs;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : verbose(false), level(LVL), segSize(SSIZE), entropyN(ENTR_N), 
@@ -57,7 +57,8 @@ class Param {   // Parameters
 
  private:
   template <typename Iter>
-  void parseModelsPars (Iter, Iter, vector<MMPar>&, vector<STMMPar>&);
+  void parseModelsPars (Iter, Iter, vector<MMPar>&);
+  // void parseModelsPars (Iter, Iter, vector<MMPar>&, vector<STMMPar>&);
   void help () const;
 };
 
@@ -154,7 +155,8 @@ inline void Param::parse (int argc, char**& argv) {
       if (rModelsPars.front()=='-' || rModelsPars.empty())
         error("incorrect reference model parameters.");
       else
-        parseModelsPars(rModelsPars.begin(), rModelsPars.end(), refMs, refTMs);
+        parseModelsPars(rModelsPars.begin(), rModelsPars.end(), refMs);
+        // parseModelsPars(rModelsPars.begin(), rModelsPars.end(), refMs, refTMs);
     }
     else if ((*i=="-tm" || *i=="--tar-model") && i+1!=vArgs.end()) {
       man_tm = true;
@@ -162,7 +164,8 @@ inline void Param::parse (int argc, char**& argv) {
       if (tModelsPars.front()=='-' || tModelsPars.empty())
         error("incorrect target model parameters.");
       else
-        parseModelsPars(tModelsPars.begin(), tModelsPars.end(), tarMs, tarTMs);
+        parseModelsPars(tModelsPars.begin(), tModelsPars.end(), tarMs);
+        // parseModelsPars(tModelsPars.begin(), tModelsPars.end(), tarMs, tarTMs);
     }
     else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
       manWSize = true;
@@ -225,17 +228,20 @@ inline void Param::parse (int argc, char**& argv) {
     error("reference file not specified. Use \"-r <fileName>\".");
   
   if (!man_rm && !man_tm) {
-    parseModelsPars(begin(LEVEL[level]), end(LEVEL[level]), refMs, refTMs);
-    parseModelsPars(
-      begin(REFFREE_LEVEL[level]), end(REFFREE_LEVEL[level]), tarMs, tarTMs);
+    parseModelsPars(begin(LEVEL[level]), end(LEVEL[level]), refMs);
+    // parseModelsPars(begin(LEVEL[level]), end(LEVEL[level]), refMs, refTMs);
+    parseModelsPars(begin(REFFREE_LEVEL[level]), end(REFFREE_LEVEL[level]),
+      tarMs);
+    // parseModelsPars(
+    //   begin(REFFREE_LEVEL[level]), end(REFFREE_LEVEL[level]), tarMs, tarTMs);
   }
   else if (!man_rm && man_tm) {
     refMs  = tarMs;
-    refTMs = tarTMs;
+    // refTMs = tarTMs;
   }
   else if (man_rm  && !man_tm) {
     tarMs  = refMs;
-    tarTMs = refTMs;
+    // tarTMs = refTMs;
   }
 
   manFilterScale = !manThresh;
@@ -266,8 +272,9 @@ inline void Param::parse (int argc, char**& argv) {
 }
 
 template <typename Iter>
-inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms, 
-vector<STMMPar>& TMs) {
+// inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms, 
+// vector<STMMPar>& TMs) {
+inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms) {
   vector<string> mdls;      split(begin, end, ':', mdls);
   for (const auto& e : mdls) {
     // Markov and tolerant models
@@ -290,11 +297,14 @@ vector<STMMPar>& TMs) {
     // Tolerant models
     if (m_tm.size() == 2) {
       vector<string> tm;    split(m_tm[1].begin(), m_tm[1].end(), ',', tm);
-      TMs.emplace_back(
+      // TMs.emplace_back(
+      //   STMMPar(u8(stoi(m[0])), u8(stoi(tm[0])), u8(stoi(tm[1])), stof(tm[2]),
+      //     stof(tm[3]))
+      // );
+      Ms.back().child = make_shared<STMMPar>(
         STMMPar(u8(stoi(m[0])), u8(stoi(tm[0])), u8(stoi(tm[1])), stof(tm[2]),
-          stof(tm[3]))
-      );
-      Ms.back().child = make_shared<STMMPar>(TMs.back());
+          stof(tm[3])));
+      // Ms.back().child = make_shared<STMMPar>(TMs.back());
     }
   }
 }

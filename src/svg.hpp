@@ -5,6 +5,30 @@
 #include "exception.hpp"
 
 namespace smashpp {
+template <typename Value>
+inline static string attrib (const string& name, const Value& value, 
+bool precise=false, const string& unit="") {
+  stringstream ss;
+  if (precise)
+    ss << name << "=\"" << PREC << value << unit << "\" ";
+  else
+    ss << name << "=\"" << value << unit << "\" ";
+  return ss.str();
+}
+
+inline static string begin_elem (const string& name) {
+  return "\t<" + name + " ";
+}
+inline static string mid_elem () {
+  return ">";
+}
+inline static string end_elem (const string& name) {
+  return "</" + name + ">\n";
+}
+inline static string end_empty_elem () {
+  return "/>\n";
+}
+
 struct RgbColor {
   u8 r, g, b;
   RgbColor () = default;
