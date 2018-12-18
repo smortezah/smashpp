@@ -35,8 +35,7 @@ class Param {   // Parameters
   string      report;
   bool        compress, filter, segment;
   u32         ID;
-  vector<MMPar> refMs;
-  vector<MMPar> tarMs;
+  vector<MMPar> refMs, tarMs;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : verbose(false), level(LVL), segSize(SSIZE), entropyN(ENTR_N), 
