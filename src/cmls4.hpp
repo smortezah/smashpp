@@ -8,7 +8,6 @@ class CMLS4 {   // Count-min-log sketch, 4 bits per counter
  public:
   CMLS4 () : w(W), d(D), uhashShift(0), tot(0) {}
   CMLS4 (u64, u8);
-  void config (u64, u8);
 	void update (u64);                // Update sketch
 	auto query (u64) const -> u16;    // Query count of ctx
 	void dump (ofstream&) const;

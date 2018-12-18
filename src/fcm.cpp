@@ -35,8 +35,8 @@ inline void FCM::set_cont (vector<MMPar>& Ms) {
 }
 
 inline void FCM::show_info (const Param& p) const {
-  const u8 lblWidth=20, colWidth=8,
-           tblWidth=52;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
+  constexpr u8 lblWidth=20, colWidth=8,
+            tblWidth=52;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
 
   const auto rule = [](u8 n, string&& s) {
     for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
@@ -211,6 +211,7 @@ inline void FCM::alloc_model () {
 
 void FCM::store (const Param& p) {
   const auto nMdl = rMs.size();
+
   message = "Building the model";  if (nMdl!=1) message+="s";
   message += " of ";
   message += tarSegMsg.empty() ? italic(p.refName) 
@@ -317,10 +318,9 @@ void FCM::compress (const Param& p) {
 
 template <typename ContIter>
 inline void FCM::compress_1 (const Param& par, ContIter cont) {
-  // Ctx, Mir (int) sliding through the dataset
-  u64 ctx{0}, 
+  u64 ctx{0},                 // Ctx, Mir (int) sliding through the dataset
       ctxIr{(1ull<<(2*rMs[0].k))-1};
-  u64 symsNo{0};            // No. syms in target file, except \n
+  u64 symsNo{0};              // No. syms in target file, except \n
   prc_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   ifstream tf(par.tar);
   ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
@@ -340,8 +340,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
             array<decltype((*cont)->query(0)), 4> f {};
             freqs_ir0(f, cont, pp.l);
             entr = entropy(prob(f.begin(), &pp));
-          }
-          else {
+          } else {
             c = TAR_ALT_N;
             pp.config_ir0(c, ctx);
             entr = entropyN;
@@ -356,8 +355,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
             array<decltype(2*(*cont)->query(0)),4> f {};
             freqs_ir1(f, cont, pp.shl, pp.r);
             entr = entropy(prob(f.begin(), &pp));
-          }
-          else {
+          } else {
             c = TAR_ALT_N;
             pp.config_ir1(c, ctxIr);
             entr = entropyN;
@@ -372,8 +370,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
             array<decltype(2*(*cont)->query(0)),4> f {};
             freqs_ir2(f, cont, &pp);
             entr = entropy(prob(f.begin(), &pp));
-          }
-          else {
+          } else {
             c = TAR_ALT_N;
             pp.config_ir2(c, ctx, ctxIr);
             entr = entropyN;
@@ -403,8 +400,7 @@ inline void FCM::compress_n (const Param& par) {
   cp->ctxIr.reserve(nMdl);
   for (const auto& mm : rMs) {  // Mask: 1<<2k - 1 = 4^k - 1
     cp->ctxIr.emplace_back((1ull<<(2*mm.k)) - 1);
-    if (mm.child)
-      cp->ctxIr.emplace_back((1ull<<(2*mm.k)) - 1);
+    if (mm.child)  cp->ctxIr.emplace_back((1ull<<(2*mm.k)) - 1);
   }
   cp->w.resize(nMdl, static_cast<prc_t>(1)/nMdl);
   cp->wNext.resize(nMdl, static_cast<prc_t>(0));
@@ -412,8 +408,7 @@ inline void FCM::compress_n (const Param& par) {
   auto maskIter = cp->ctxIr.begin();
   for (const auto& mm : rMs) {
     cp->pp.emplace_back(mm.alpha, *maskIter++, u8(2*mm.k));
-    if (mm.child)
-      cp->pp.emplace_back(mm.child->alpha, *maskIter++, u8(2*mm.k));
+    if (mm.child) cp->pp.emplace_back(mm.child->alpha, *maskIter++, u8(2*mm.k));
   }
   const auto totalSize = file_size(par.tar);
   const auto compress_n_impl = [&](auto& cp, auto cont, u8& n) {
@@ -474,8 +469,7 @@ u8 n) const {
       array<decltype((*cont)->query(0)),4> f {};
       freqs_ir0(f, cont, cp->ppIt->l);
       P = prob(f.begin(), cp->ppIt);
-    }
-    else {
+    } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
       P = entropyN;
@@ -490,8 +484,7 @@ u8 n) const {
       array<decltype(2*(*cont)->query(0)),4> f{};
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
       P = prob(f.begin(), cp->ppIt);
-    }
-    else {
+    } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
       P = entropyN;
@@ -506,8 +499,7 @@ u8 n) const {
       array<decltype(2*(*cont)->query(0)),4> f {};
       freqs_ir2(f, cont, cp->ppIt);
       P = prob(f.begin(), cp->ppIt);
-    }
-    else {
+    } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);
       P = entropyN;
@@ -531,8 +523,7 @@ u8 n) const {
       P = prob(f.begin(), cp->ppIt);
       cp->probs.emplace_back(P);
       correct_stmm(cp, f.begin());
-    }
-    else {
+    } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
       array<decltype((*cont)->query(0)),4> f {};
@@ -552,8 +543,7 @@ u8 n) const {
       P = prob(f.begin(), cp->ppIt);
       cp->probs.emplace_back(P);
       correct_stmm(cp, f.begin());
-    }
-    else {
+    } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
       array<decltype(2*(*cont)->query(0)),4> f {};
@@ -573,8 +563,7 @@ u8 n) const {
       P = prob(f.begin(), cp->ppIt);
       cp->probs.emplace_back(P);
       correct_stmm(cp, f.begin());
-    }
-    else {
+    } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
       array<decltype(2*(*cont)->query(0)),4> f {};
@@ -589,7 +578,6 @@ u8 n) const {
 }
 
 void FCM::self_compress (const Param& p, u64 ID) {
-  // message = "Compressing " + italic(p.seq) + " ";
   message = "Compressing segment " + to_string(ID+1) + " ";
 
   self_compress_alloc();
@@ -632,13 +620,13 @@ inline void FCM::self_compress_alloc () {
 template <typename ContIter>
 inline void FCM::self_compress_1 (const smashpp::Param& par, ContIter cont, 
 u64 ID) {
-  u64   ctx{0},
-        ctxIr{(1ull<<(2*tMs[0].k))-1};
-  u64   symsNo{0};
+  u64 ctx{0},
+      ctxIr{(1ull<<(2*tMs[0].k))-1};
+  u64 symsNo{0};
   prc_t sumEnt{0};
   ifstream seqF(par.seq);
-  ProbPar  pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, u8(tMs[0].k<<1u)};
-  const auto totalSize = file_size(par.seq);
+  ProbPar pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, u8(tMs[0].k<<1u)};
+  constexpr auto totalSize = file_size(par.seq);
   prc_t entr;
 
   for (vector<char> buffer(FILE_BUF,0); seqF.peek()!=EOF;) {
@@ -653,8 +641,7 @@ u64 ID) {
             array<decltype((*cont)->query(0)), 4> f {};
             freqs_ir0(f, cont, pp.l);
             entr = entropy(prob(f.begin(), &pp));
-          }
-          else {
+          } else {
             entr = entropyN;
           }
           // cout /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
@@ -668,8 +655,7 @@ u64 ID) {
             array<decltype(2*(*cont)->query(0)),4> f {};
             freqs_ir1(f, cont, pp.shl, pp.r);
             entr = entropy(prob(f.begin(), &pp));
-          }
-          else {
+          } else {
             entr = entropyN;
           }
           // cout /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
@@ -683,8 +669,7 @@ u64 ID) {
             array<decltype(2*(*cont)->query(0)),4> f {};
             freqs_ir2(f, cont, &pp);
             entr = entropy(prob(f.begin(), &pp));
-          }
-          else {
+          } else {
             entr = entropyN;
           }
           // cout /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
@@ -701,7 +686,7 @@ u64 ID) {
 }
 
 inline void FCM::self_compress_n (const Param& par, u64 ID) {
-  u64   symsNo{0};
+  u64 symsNo{0};
   prc_t sumEnt{0};
   ifstream seqF(par.seq);
   auto cp = make_unique<CompressPar>();
@@ -787,8 +772,7 @@ ContIter cont, u8 n, u64& valUpd) const {
       array<decltype((*cont)->query(0)),4> f {};
       freqs_ir0(f, cont, cp->ppIt->l);
       P = prob(f.begin(), cp->ppIt);
-    }
-    else {
+    } else {
       P = entropyN;
     }
     cp->probs.emplace_back(P);
@@ -802,8 +786,7 @@ ContIter cont, u8 n, u64& valUpd) const {
       array<decltype(2*(*cont)->query(0)),4> f {};
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
       P = prob(f.begin(), cp->ppIt);
-    }
-    else {
+    } else {
       P = entropyN;
     }
     cp->probs.emplace_back(P);
@@ -817,8 +800,7 @@ ContIter cont, u8 n, u64& valUpd) const {
       array<decltype(2*(*cont)->query(0)),4> f {};
       freqs_ir2(f, cont, cp->ppIt);
       P = prob(f.begin(), cp->ppIt);
-    }
-    else {
+    } else {
       P = entropyN;
     }
     cp->probs.emplace_back(P);

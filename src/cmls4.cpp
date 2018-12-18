@@ -6,14 +6,7 @@ using namespace smashpp;
 
 // W=[e/eps].      0 < eps:   error factor      < 1
 // D=[ln 1/delta]. 0 < delta: error probability < 1
-CMLS4::CMLS4 (u64 w_, u8 d_) {
-  config(w_, d_);
-}
-
-void CMLS4::config (u64 w_, u8 d_) {
-  w   = w_;
-  d   = d_;
-  tot = 0;
+CMLS4::CMLS4 (u64 w_, u8 d_) : w(w_), d(d_), tot(0) {
   try { sk.resize((d*w+1)>>1u); }
   catch (std::bad_alloc& b) { error("failed memory allocation."); }
   uhashShift = static_cast<u8>(G - ceil(log2(w)));

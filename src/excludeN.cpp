@@ -13,8 +13,6 @@ int main (int argc, char* argv[])
     string out;
     for (auto it=buffer.begin(); it!=buffer.begin()+cin.gcount(); ++it) {
       if (*it!='N')  out+=*it;
-//      const auto c = *it;
-//      if (c!='N')  out+=c;
     }
     cout.write(out.data(), out.size());
   }
