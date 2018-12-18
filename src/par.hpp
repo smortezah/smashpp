@@ -14,7 +14,7 @@
 #include "vizdef.hpp"
 
 namespace smashpp {
-class Param {   // Parameters
+class Param {  // Parameters
  public:
   string      ref, tar, seq;
   string      refName, tarName;
@@ -96,17 +96,14 @@ inline void Param::parse (int argc, char**& argv) {
         ref = *++i;
         check_file(ref);
         refName = file_name(ref);
-      }
-      else error("reference file not specified. Use \"-r <fileName>\".");
+      } else error("reference file not specified. Use \"-r <fileName>\".");
     }
     else if (*i=="-t"  || *i=="--tar") {
       if (i+1 != vArgs.end()) {
         tar = *++i;
         check_file(tar);
         tarName = file_name(tar);
-      }
-      else
-        error("target file not specified. Use \"-t <fileName>\".");
+      } else error("target file not specified. Use \"-t <fileName>\".");
     }
     else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
       level = static_cast<u8>(stoi(*++i));
@@ -128,7 +125,6 @@ inline void Param::parse (int argc, char**& argv) {
         error("incorrect reference model parameters.");
       else
         parseModelsPars(rModelsPars.begin(), rModelsPars.end(), refMs);
-        // parseModelsPars(rModelsPars.begin(), rModelsPars.end(), refMs, refTMs);
     }
     else if ((*i=="-tm" || *i=="--tar-model") && i+1!=vArgs.end()) {
       man_tm = true;
@@ -137,7 +133,6 @@ inline void Param::parse (int argc, char**& argv) {
         error("incorrect target model parameters.");
       else
         parseModelsPars(tModelsPars.begin(), tModelsPars.end(), tarMs);
-        // parseModelsPars(tModelsPars.begin(), tModelsPars.end(), tarMs, tarTMs);
     }
     else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
       manWSize = true;
@@ -433,50 +428,30 @@ inline string Param::print_filter_scale () const {
 inline void VizParam::parse (int argc, char**& argv) {
   if (argc < 3) { help();  throw EXIT_SUCCESS; }
 
-  vector<string> vArgs(static_cast<u64>(argc));
+  vector<string> vArgs;    vArgs.reserve(static_cast<u64>(argc));
   for (int i=0; i!=argc; ++i)
     vArgs.emplace_back(static_cast<string>(argv[i]));
 
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-    if      (*i=="-h"  || *i=="--help") { help();   throw EXIT_SUCCESS; }
-    else if (*i=="-v"  || *i=="--verbose")     verbose  =true;
-    else if (*i=="-np" || *i=="--no-pos")      showPos  =false;
-    else if (*i=="-nn" || *i=="--no-nrc")      showNRC  =false;
-    else if (*i=="-nr" || *i=="--no-redun")    showRedun=false;
-    else if (*i=="-na" || *i=="--no-annot")    showAnnot=false;
-    else if (*i=="-ni" || *i=="--no-inv")      inverse  =false;
-    else if (*i=="-ng" || *i=="--no-reg")      regular  =false;
-    else if ((*i=="-o" || *i=="--out")   && i+1!=vArgs.end())
+    if ((*i=="-o" || *i=="--out") && i+1!=vArgs.end())
       image = *++i;
-    else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
-      link = static_cast<u8>(stoul(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_LINK, MAX_LINK, LINK, 
-        "Link", "[]", "default", Problem::WARNING);
-      range->assert(link);
-    }
-    else if ((*i=="-c" || *i=="--color")  && i+1!=vArgs.end()) {
-      colorMode = static_cast<u8>(stoi(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, COLOR, 
-        "Color", "[]", "default", Problem::WARNING);
-      range->assert(colorMode);
-    }
     else if ((*i=="-p" || *i=="--opacity")  && i+1!=vArgs.end()) {
       opacity = stof(*++i);
       auto range = make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, 
         "Opacity", "[]", "default", Problem::WARNING);
       range->assert(opacity);
     }
-    else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
-      width = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_WDTH, MAX_WDTH, WDTH,
-        "Width", "[]", "default", Problem::WARNING);
-      range->assert(width);
+    else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
+      link = static_cast<u8>(stoul(*++i));
+      auto range = make_unique<ValRange<u8>>(MIN_LINK, MAX_LINK, LINK, 
+        "Link", "[]", "default", Problem::WARNING);
+      range->assert(link);
     }
-    else if ((*i=="-s" || *i=="--space") && i+1!=vArgs.end()) {
-      space = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_SPC, MAX_SPC, SPC,
-        "Space", "[]", "default", Problem::WARNING);
-      range->assert(space);
+    else if ((*i=="-m" || *i=="--min")   && i+1!=vArgs.end()) {
+      min = static_cast<u32>(stoul(*++i));
+      auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, MINP,
+        "Min", "[]", "default", Problem::WARNING);
+      range->assert(min);
     }
     else if ((*i=="-t" || *i=="--mult")  && i+1!=vArgs.end()) {
       manMult = true;
@@ -491,12 +466,32 @@ inline void VizParam::parse (int argc, char**& argv) {
         "Begin", "[]", "default", Problem::WARNING);
       range->assert(start);
     }
-    else if ((*i=="-m" || *i=="--min")   && i+1!=vArgs.end()) {
-      min = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, MINP,
-        "Min", "[]", "default", Problem::WARNING);
-      range->assert(min);
+    else if ((*i=="-c" || *i=="--color") && i+1!=vArgs.end()) {
+      colorMode = static_cast<u8>(stoi(*++i));
+      auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, COLOR, 
+        "Color", "[]", "default", Problem::WARNING);
+      range->assert(colorMode);
     }
+    else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
+      width = static_cast<u32>(stoul(*++i));
+      auto range = make_unique<ValRange<u32>>(MIN_WDTH, MAX_WDTH, WDTH,
+        "Width", "[]", "default", Problem::WARNING);
+      range->assert(width);
+    }
+    else if ((*i=="-s" || *i=="--space") && i+1!=vArgs.end()) {
+      space = static_cast<u32>(stoul(*++i));
+      auto range = make_unique<ValRange<u32>>(MIN_SPC, MAX_SPC, SPC,
+        "Space", "[]", "default", Problem::WARNING);
+      range->assert(space);
+    }
+    else if (*i=="-np" || *i=="--no-pos")      showPos  =false;
+    else if (*i=="-nn" || *i=="--no-nrc")      showNRC  =false;
+    else if (*i=="-nr" || *i=="--no-redun")    showRedun=false;
+    else if (*i=="-na" || *i=="--no-annot")    showAnnot=false;
+    else if (*i=="-ni" || *i=="--no-inv")      inverse  =false;
+    else if (*i=="-ng" || *i=="--no-reg")      regular  =false;
+    else if (*i=="-v"  || *i=="--verbose")     verbose  =true;
+    else if (*i=="-h"  || *i=="--help") { help();   throw EXIT_SUCCESS; }
   }
   posFile = vArgs.back();
 }

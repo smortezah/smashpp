@@ -32,10 +32,6 @@ class VizPaint {
 #ifdef EXTEND
   auto rgb_to_hsv (const RgbColor&) const -> HsvColor;
 #endif
-#ifdef EXTEND
-  auto heatmap_color (double, const HeatmapColor& h=HeatmapColor()) const ->
-    string;
-#endif
   auto rgb_color (u32) const -> string;
   auto nrc_color (double, u32) const -> string;
   auto redun_color (double, u32) const -> string;

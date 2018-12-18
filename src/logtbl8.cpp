@@ -4,13 +4,7 @@
 #include "exception.hpp"
 using namespace smashpp;
 
-LogTable8::LogTable8 (u8 k_) {
-  config(k_);
-}
-
-void LogTable8::config (u8 k_) {
-  k   = k_;
-  tot = 0;
+LogTable8::LogTable8 (u8 k_) : k(k_), tot(0) {
   try { tbl.resize(4ull<<(k<<1u)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
   catch (std::bad_alloc& b) { error("failed memory allocation."); }
 }

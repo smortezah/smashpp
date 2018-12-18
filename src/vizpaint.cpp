@@ -424,25 +424,6 @@ inline HsvColor VizPaint::rgb_to_hsv (const RgbColor& RGB) const {
 }
 #endif
 
-#ifdef EXTEND
-inline string VizPaint::heatmap_color (double lambda, 
-const HeatmapColor& heatmap) const {
-  // Change behaviour [sensitivity: near low similarity]
-  lambda = (1 + pow(lambda, 3) + tanh(8*(lambda-1))) / 2; 
-
-  double phi = 2 * PI * (heatmap.start/3 + heatmap.rotations*lambda),
-         lambdaGamma = pow(lambda, heatmap.gamma),
-         a = heatmap.hue * lambdaGamma * (1-lambdaGamma)/2,
-         R = lambdaGamma - a*0.14861*cos(phi) + a*1.78277*sin(phi),
-         G = lambdaGamma - a*0.29227*cos(phi) - a*0.90649*sin(phi),
-         B = lambdaGamma + a*1.97294*cos(phi);
-
-  keep_in_range(0.0,R,1.0); keep_in_range(0.0,G,1.0); keep_in_range(0.0,B,1.0);
-
-  return string_format("#%02X%02X%02X", int(R*255), int(G*255), int(B*255));
-}
-#endif
-
 inline string VizPaint::rgb_color (u32 start) const {
   const auto hue = static_cast<u8>(start * mult);
   HsvColor HSV (hue);

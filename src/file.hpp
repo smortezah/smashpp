@@ -18,9 +18,9 @@ inline static void check_file (const string& name) {  // Must be inline
     error("the file \"" + name + "\" cannot be opened or is empty.");
   }
   else {
-    bool foundChar {false};
+    bool foundChar{false};
     for (char c; f.get(c) && !foundChar;)
-      if (c!=' ' && c!='\n' && c!='\t')
+      if (c != ' ' && c != '\n' && c != '\t')
         foundChar = true;
     if (!foundChar)
       error("the file \"" + name + "\" is empty.");
@@ -112,7 +112,7 @@ const FileType& type) {
     }
   }
   else if (type == FileType::FASTQ) {
-    u8   line  = 0;      // MUST be positioned before the following loop
+    u8 line  = 0;        // MUST be positioned before the following loop
     bool isDNA = false;  // MUST be positioned before the following loop
     for (vector<char> buffer(FILE_BUF,0); fIn.peek()!=EOF;) {
       fIn.read(buffer.data(), FILE_BUF);
