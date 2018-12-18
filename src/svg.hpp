@@ -61,9 +61,9 @@ struct Text {
     fontWeight("normal"), fontSize(13) {}
   Text (const string& lbl_, const string& clr_) : label(lbl_), color(clr_) {}
   void plot (ofstream&) const;
-  void plot_title (ofstream&);
-  void plot_pos_ref (ofstream&, char c='\0');
-  void plot_pos_tar (ofstream&, char c='\0');
+  void print_title (ofstream&);
+  void print_pos_ref (ofstream&, char c='\0');
+  void print_pos_tar (ofstream&, char c='\0');
 };
 
 struct Line {

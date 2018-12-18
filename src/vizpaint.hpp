@@ -10,8 +10,7 @@ class VizPaint {
  public:
   double cx, cy;
   string backColor;
-  double width;
-  double space;
+  double width, space;
   double refSize, tarSize, maxSize;
 
   VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),

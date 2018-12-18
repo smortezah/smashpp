@@ -4,20 +4,13 @@
 #include "exception.hpp"
 using namespace smashpp;
 
-Table64::Table64 (u8 k_) {
-  config(k_);
-}
-
-void Table64::config (u8 k_) {
-  k   = k_;
-//  tot = 0;
+Table64::Table64 (u8 k_) : k(k_) {
   try { tbl.resize(4ull<<(k<<1u)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
   catch (std::bad_alloc& b) { error("failed memory allocation."); }
 }
 
 void Table64::update (u32 ctx) {
   ++tbl[ctx];
-//  ++tot;
 }
 
 u64 Table64::query (u32 ctx) const {
@@ -34,10 +27,6 @@ void Table64::load (ifstream& ifs) const {
 }
 
 #ifdef DEBUG
-u64 Table64::get_total () const {
-//  return tot;
-}
-
 u64 Table64::count_empty () const {
   return static_cast<u64>(std::count(tbl.begin(), tbl.end(), 0));
 }

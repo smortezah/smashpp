@@ -24,13 +24,13 @@ void Text::plot (ofstream& f) const {
     << end_elem("text");
 }
 
-void Text::plot_title (ofstream& f) {
+void Text::print_title (ofstream& f) {
   textAnchor = "middle";
   fontSize = 12;
   plot(f);
 }
 
-void Text::plot_pos_ref (ofstream& f, char c) {
+void Text::print_pos_ref (ofstream& f, char c) {
   textAnchor = "end";
   origin.x += -5;
   switch (c) {
@@ -43,7 +43,7 @@ void Text::plot_pos_ref (ofstream& f, char c) {
   plot(f);
 }
 
-void Text::plot_pos_tar (ofstream& f, char c) {
+void Text::print_pos_tar (ofstream& f, char c) {
   textAnchor = "start";
   origin.x += 5;
   switch (c) {

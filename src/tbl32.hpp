@@ -9,7 +9,6 @@ class Table32 {
  public:
   Table32 () : k(0), nRenorm(0), tot(0) {}
   explicit Table32 (u8);
-  void config (u8);
   void update (u32);                 // Update table
   auto query (u32) const -> u32;     // Query count of ctx
   void dump (ofstream&) const;

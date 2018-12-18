@@ -9,6 +9,7 @@ void VizPaint::print_plot (VizParam& p) {
   ifstream fPos (p.posFile);
   ofstream fPlot(p.image);
 
+  // Read watermark, ref & tar names and sizes from file
   u64 n_refBases=0, n_tarBases=0;
   string watermark, ref, tar;
   fPos >> watermark >> ref >> n_refBases >> tar >> n_tarBases;
@@ -23,30 +24,32 @@ void VizPaint::print_plot (VizParam& p) {
 
   print_head(fPlot, PAINT_CX+width+space+width+PAINT_CX, maxSize+Paint_Extra);
 
-  auto line   = make_unique<Line>();
+  auto poly = make_unique<Polygon>();
+  auto text = make_unique<Text>();
+  auto line = make_unique<Line>();
   line->width = 2.0;
-  auto rect   = make_unique<Rectangle>();
+  auto rect = make_unique<Rectangle>();
   rect->opacity = p.opacity;
-  auto poly   = make_unique<Polygon>();
-  auto text   = make_unique<Text>();
 
+  // Plot background page
   rect->color  = backColor;
   rect->origin = Point(0, 0);
   rect->width  = PAINT_CX + width + space + width + PAINT_CX;
   rect->height = maxSize + Paint_Extra;
   rect->plot(fPlot);
 
+  // Print titles
   text->origin = Point(cx + width/2, cy - 15);
   text->label  = ref;
-  text->plot_title(fPlot);
-
+  text->print_title(fPlot);
   text->origin = Point(cx + width + space + width/2, cy - 15);
   text->label  = tar;
-  text->plot_title(fPlot);
+  text->print_title(fPlot);
 
   // If min is set to default, reset to base max proportion
   if (p.min==0)    p.min=static_cast<u32>(maxSize / 100);
 
+  // Read positions from file
   vector<Pos> pos;
   u64 start {p.start};
   i64 br, er, bt, et;
@@ -62,28 +65,20 @@ void VizPaint::print_plot (VizParam& p) {
   //   });
   // pos.erase(last, pos.end());
 
+  // Print positions
   if (p.showPos) {
     print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
     print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
-
     if (!plottable)  error("not plottable positions.");
   }
 
+  // Plot
   u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignore=0;
   for (auto e : pos) {
-    if (abs(e.endTar-e.begTar) <= p.min) {
-      ++n_ignore;
-      continue;
-    }
-    else if (e.begRef!=-2 && e.endRef-e.begRef<=p.min) {
-      ++n_ignore;
-      continue;
-    }
+    if      (abs(e.endTar-e.begTar) <= p.min)          { ++n_ignore; continue; }
+    else if (e.begRef!=-2 && e.endRef-e.begRef<=p.min) { ++n_ignore; continue; }
 
-    if (e.begRef == -2) {
-      if (e.endTar>e.begTar)  ++n_regularSolo;
-      else                    ++n_inverseSolo;
-    }
+    if (e.begRef==-2) { e.endTar>e.begTar ? ++n_regularSolo : ++n_inverseSolo; }
 
     const auto plot_main_ref = [&]() {
       if (e.begRef != -2) {
@@ -105,15 +100,14 @@ void VizPaint::print_plot (VizParam& p) {
     };
 
     const auto plot_main_tar = [&](bool inverted) {
-      if (e.begRef==-2)  rect->color="black";
-      else               rect->color=rgb_color(e.start);
-      rect->width=width;
+      rect->color  = (e.begRef==-2 ? "black" : rgb_color(e.start));
+      rect->width  = width;
       rect->height = get_point(abs(e.begTar-e.endTar));
+
       if (!inverted) {
         rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
         rect->plot(fPlot);
-      }
-      else {
+      } else {
         rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
         if (e.begRef==-2)  rect->plot_ir(fPlot, "#WavyWhite");
         else               rect->plot_ir(fPlot);
@@ -269,6 +263,7 @@ void VizPaint::print_plot (VizParam& p) {
   tarFile.close();
   remove((file_name(tar)+"."+FMT_N).c_str());
   
+  // Plot chromosomes
   rect->width  = width;
   rect->origin = Point(cx, cy);
   rect->height = refSize;
@@ -278,28 +273,26 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = tarSize;
   rect->plot_chromosome(fPlot);
 
+  // Plot legend and annotation
   plot_legend(fPlot, p);
-
   if (p.showAnnot)
     plot_annot(fPlot, max(n_refBases,n_tarBases), p.showNRC, p.showRedun);
 
   print_tail(fPlot);
 
+  // Log
   cerr << "Plotting finished.\n";
   cerr << "Found ";
-  if (p.regular)
-    cerr << n_regular << " regular";
-  if (n_regularSolo != 0)
-    cerr << ", " << n_regularSolo << " solo regular";
-  if (p.inverse)
-    cerr << ", " << n_inverse << " inverted";
-  if (n_inverseSolo != 0)
-    cerr << ", " << n_inverseSolo << " solo inverted";
-  cerr << " region" << 
-    (n_regular+n_regularSolo+n_inverse+n_inverseSolo > 1 ? "s" : "") << ".\n";
-  if (n_ignore != 0)
-    cerr << "Ignored " << n_ignore << " region" << 
-      (n_ignore>1 ? "s" : "") << ".\n";
+  if (p.regular)         cerr <<         n_regular     << " regular";
+  if (n_regularSolo!=0)  cerr << ", " << n_regularSolo << " solo regular";
+  if (p.inverse)         cerr << ", " << n_inverse     << " inverted";
+  if (n_inverseSolo!=0)  cerr << ", " << n_inverseSolo << " solo inverted";
+  cerr << " region" <<
+    (n_regular+n_regularSolo+n_inverse+n_inverseSolo>1 ? "s" : "") << ".\n";
+
+  if (n_ignore!=0)
+    cerr << "Ignored " << n_ignore << " region" << (n_ignore>1 ? "s" : "") 
+         << ".\n";
   cerr << '\n';
 
   fPos.close();  fPlot.close();
@@ -456,14 +449,16 @@ inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
 }
 
 inline void VizPaint::print_head (ofstream& f, double w, double h) const {
+  // Header
   f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-    "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
+    << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
     << begin_elem("svg")
     << attrib("xmlns", "http://www.w3.org/2000/svg")
     << attrib("width", w)
     << attrib("height", h)
     << mid_elem();
-    
+  
+  // Patterns
   f << begin_elem("defs")
     << attrib("id", "ffff")
     << mid_elem()
@@ -569,6 +564,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
 
   plot_legend_gradient(f, rect, p.colorMode);
 
+  // Print numbers (measures)
   text->dominantBaseline = "middle";
   text->fontWeight = "normal";
   text->fontSize   = 9;
@@ -652,17 +648,17 @@ bool showRedun) const {
   
   if (lastPos.size() == 1) {
     path->origin = Point(X2, cy+get_point(lastPos[0]));
-    path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+    path->trace  = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
     path->plot(f);
   }
   else if (lastPos.size() == 2) {
     path->origin = Point(X1, cy+get_point(lastPos[0]));
-    path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
+    path->trace  = "v "+to_string(vertSize)+" h "+to_string(horizSize);
     path->plot(f);
 
     vertSize = Y - cy - get_point(lastPos[1]);
     path->origin = Point(X2, cy+get_point(lastPos[1]));
-    path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+    path->trace  = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
     path->plot(f);
   }
 
@@ -671,42 +667,42 @@ bool showRedun) const {
   text->color="black";
 
   if (showNRC && !showRedun) {
-    text->origin=Point((X1+X2)/2, Y);
-    text->label="Relative Redundancy";
+    text->origin = Point((X1+X2)/2, Y);
+    text->label  = "Relative Redundancy";
     text->plot(f);
   }
   else if (!showNRC && showRedun) {
-    text->origin=Point((X1+X2)/2, Y);
-    text->label="Redundancy";
+    text->origin = Point((X1+X2)/2, Y);
+    text->label  = "Redundancy";
     text->plot(f);
   }
   else if (showNRC && showRedun) {
-    text->origin=Point((X1+X2)/2, Y);
-    text->label="Relative Redundancy";
+    text->origin = Point((X1+X2)/2, Y);
+    text->label  = "Relative Redundancy";
     text->plot(f);
 
     const auto redunX1 = cx - 2*HORIZ_TUNE - 1.5*width/HORIZ_RATIO;
-    const auto redunX2 = 
-      cx + 2*width + space + 2*HORIZ_TUNE + 1.5*width/HORIZ_RATIO;
+    const auto redunX2 = cx + 2*width + space + 2*HORIZ_TUNE + 
+                         1.5*width/HORIZ_RATIO;
     const auto redunY = Y + 15;
 
     if (lastPos.size() == 1) {
-      vertSize  = redunY - cy - get_point(lastPos[0]);
-      horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
+      vertSize     = redunY - cy - get_point(lastPos[0]);
+      horizSize   += HORIZ_TUNE + width/HORIZ_RATIO + 15;
       path->origin = Point(redunX2, cy+get_point(lastPos[0]));
-      path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+      path->trace  = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
       path->plot(f);
     }
     else if (lastPos.size() == 2) {
-      vertSize  = redunY - cy - get_point(lastPos[0]);
-      horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
+      vertSize     = redunY - cy - get_point(lastPos[0]);
+      horizSize   += HORIZ_TUNE + width/HORIZ_RATIO + 15;
       path->origin = Point(redunX1, cy+get_point(lastPos[0]));
-      path->trace = "v "+to_string(vertSize)+" h "+to_string(horizSize);
+      path->trace  = "v "+to_string(vertSize)+" h "+to_string(horizSize);
       path->plot(f);
 
       vertSize = redunY - cy - get_point(lastPos[1]);
       path->origin = Point(redunX2, cy+get_point(lastPos[1]));
-      path->trace = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+      path->trace  = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
       path->plot(f);
     }
 
@@ -727,15 +723,10 @@ inline string VizPaint::tspan (u32 start, const string& pos) const {
 
 inline void VizPaint::sort_merge (string& s) const {
   istringstream stream(s);
-
   vector<string> vLine;
-  for (string gl; getline(stream, gl);)
-    vLine.emplace_back(gl);
+  for (string gl; getline(stream, gl);)  vLine.emplace_back(gl);
 
-  if (vLine.size() == 1) {
-    s.erase(s.find(", "), 2);
-    return;
-  }
+  if (vLine.size()==1) { s.erase(s.find(", "), 2);    return; }
 
   vector<u64> vID;
   for (const auto& l : vLine) {
@@ -775,8 +766,7 @@ inline void VizPaint::sort_merge (string& s) const {
       s += tspan(it->id, to_string(it->pos)+"-"+to_string((it+1)->pos)) + "\n";
       leftOver -= 2;
       it       += 2;
-    }
-    else {
+    } else {
       s += it->line + "\n";
       leftOver -= 1;
       it       += 1;
@@ -801,7 +791,7 @@ inline void VizPaint::save_n_pos (const string& filePath) const {
         beg = pos;
       }
       ++num;
-    }
+    } 
     else {
       begun = false;
       if (num != 0)
@@ -868,26 +858,34 @@ u64 maxBases, string&& type) {
     X = HORIZ_TUNE + width/HORIZ_RATIO;
   double CX=cx;    type=="ref" ? CX-=X : CX+=width+space+width+X;
 
+  const auto set_dominantBaseline = [&](char type) {
+    switch (type) {
+    case 'b':  text->dominantBaseline="text-before-edge";  break;
+    case 'm':  text->dominantBaseline="middle";            break;
+    case 'e':  text->dominantBaseline="text-after-edge";   break;
+    default:   text->dominantBaseline="middle";            break;
+    }
+  };
+
   for (auto it=nodes.begin(); it<nodes.end()-1; ++it) {
     if ((it->type=='b' && (it+1)->type=='b') ||
         (it->type=='e' && (it+1)->type=='e')) {
       if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
         if (++nOverlap == 1) {
           if (it->start == (it+1)->start) {
-            printPos = (it->position + (it+1)->position) / 2;
+            printPos  = (it->position + (it+1)->position) / 2;
             printType = 'm';
-          }
-          else {
-            printPos = it->position;
+          } else {
+            printPos  = it->position;
             printType = it->type;
           }
         }
-        line += tspan(it->start, it->position);
+        line    += tspan(it->start, it->position);
         lastLine = tspan((it+1)->start, (it+1)->position);
       }
       else {
         if (nOverlap == 0) {
-          printPos = it->position;
+          printPos  = it->position;
           printType = it->type;
         }
         nOverlap = 0;
@@ -897,20 +895,19 @@ u64 maxBases, string&& type) {
       if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
         if (++nOverlap == 1) {
           if (it->start == (it+1)->start) {
-            printPos = (it->position + (it+1)->position) / 2;
+            printPos  = (it->position + (it+1)->position) / 2;
             printType = 'm';
-          }
-          else {
-            printPos = (it->position + (it+1)->position) / 2;
+          } else {
+            printPos  = (it->position + (it+1)->position) / 2;
             printType = 'm';
           }
         }
-        line += tspan(it->start, it->position);
+        line    += tspan(it->start, it->position);
         lastLine = tspan((it+1)->start, (it+1)->position);
       }
       else {
         if (nOverlap == 0) {
-          printPos = it->position;
+          printPos  = it->position;
           printType = it->type;
         }
         nOverlap = 0;
@@ -918,7 +915,7 @@ u64 maxBases, string&& type) {
     }
     else if (it->type=='e' && (it+1)->type=='b') {
       if (nOverlap == 0) {
-        printPos = it->position;
+        printPos  = it->position;
         printType = it->type;
       }
       nOverlap = 0;
@@ -930,12 +927,10 @@ u64 maxBases, string&& type) {
       sort_merge(finalLine);
 
       // text->fontWeight = "bold";
-      if      (printType=='b')  text->dominantBaseline="text-before-edge";
-      else if (printType=='m')  text->dominantBaseline="middle";
-      else if (printType=='e')  text->dominantBaseline="text-after-edge";
-      text->label = finalLine;
+      set_dominantBaseline(printType);
+      text->label  = finalLine;
       text->origin = Point(CX, cy+get_point(printPos));
-      type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
+      type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
 
       line.clear();
       lastLine.clear();
@@ -947,9 +942,9 @@ u64 maxBases, string&& type) {
         printPos = (it+1)->position;
 
         text->dominantBaseline="text-after-edge";
-        text->label = finalLine;
+        text->label  = finalLine;
         text->origin = Point(CX, cy+get_point(printPos));
-        type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
+        type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       }
     }
     
@@ -959,12 +954,10 @@ u64 maxBases, string&& type) {
       sort_merge(finalLine);
 
       // text->fontWeight = "bold";
-      if      (printType=='b')  text->dominantBaseline="text-before-edge";
-      else if (printType=='m')  text->dominantBaseline="middle";
-      else if (printType=='e')  text->dominantBaseline="text-after-edge";
-      text->label = finalLine;
+      set_dominantBaseline(printType);
+      text->label  = finalLine;
       text->origin = Point(CX, cy+get_point(printPos));
-      type=="ref" ? text->plot_pos_ref(fPlot) : text->plot_pos_tar(fPlot);
+      type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       break;
     }
   } // for
