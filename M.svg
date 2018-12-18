@@ -74,6 +74,11 @@
 </linearGradient>
 </defs>
 	<rect fill="url(#grad187.33333324.000000)" width="136.33" height="12.00" x="187.33" y="24.00" ry="3" />
+	<text id="185.33333330.000000" x="185.33" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" >0.0</text>
+	<text id="221.41666730.000000" x="221.42" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >0.5</text>
+	<text id="255.50000030.000000" x="255.50" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.0</text>
+	<text id="289.58333330.000000" x="289.58" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.5</text>
+	<text id="325.66666730.000000" x="325.67" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" >2.0</text>
 	<path d="M 191.166667,599.995000 v 20.005000 h 13.000000" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
 	<path d="M 319.833333,599.995000 v 20.005000 h -13.000000" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
 	<text id="255.500000620.000000" x="255.50" y="620.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >Relative Redundancy</text>

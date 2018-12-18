@@ -23,7 +23,7 @@ static constexpr u32    MAX_WDTH        {200};
 static constexpr u32    SPC             {65};
 static constexpr u32    MIN_SPC         {0};
 static constexpr u32    MAX_SPC         {200};
-static constexpr u32    MULT            {46};  // 5 colors without overlapping
+static constexpr u32    MULT            {43};  // 5 colors without overlapping
 static constexpr u32    MIN_MULT        {1};
 static constexpr u32    MAX_MULT        {255};
 static constexpr u32    BEGN            {0};

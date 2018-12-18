@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 GET_GOOSE=0;
-DATASET_SYNTH=1;
+DATASET_SYNTH=0;
 DATASET_REAL=0;
 RUN=0;
 
@@ -18,7 +18,7 @@ fi
 if [[ $DATASET_SYNTH -eq 1 ]]; then
   chmod 777 smashpp-inv-rep
 
-  ### Small sizes: ref:1.000, tar:1.000
+  ### Small (S) sizes: ref:1.000, tar:1.000
   ./goose-fastqsimulation \
     -eh -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 50 -n 5 -s 201   r_a
   ./goose-fastqsimulation \
@@ -35,7 +35,7 @@ if [[ $DATASET_SYNTH -eq 1 ]]; then
   cp                           r_c   t_d
   cat t_a t_b t_c t_d > TarS
 
-  ### Medium sizes: ref:100.000, tar:100.000
+  ### Medium (M) sizes: ref:100.000, tar:100.000
   ./goose-fastqsimulation \
     -eh -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 191  r_a
   ./goose-fastqsimulation \
@@ -52,7 +52,7 @@ if [[ $DATASET_SYNTH -eq 1 ]]; then
   cp                           r_a   t_d
   cat t_a t_b t_c t_d > TarM
 
-  ### Large sizes: ref:5.000.000, tar:5.000.000
+  ### Large (L) sizes: ref:5.000.000, tar:5.000.000
   ./goose-fastqsimulation -eh \
     -eo -es -edb -rm 0 -f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 12500 -s 10101  r_a
   ./goose-fastqsimulation -eh \
@@ -69,7 +69,7 @@ if [[ $DATASET_SYNTH -eq 1 ]]; then
   ./smashpp-inv-rep            r_d   t_d
   cat t_a t_b t_c t_d > TarL
 
-  ### Extra Large sizes: ref:100.000.000, tar:100.000.000
+  ### Extra Large (XL) sizes: ref:100.000.000, tar:100.000.000
   ./goose-fastqsimulation -eh \
     -eo -es -edb -rm 0 -f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 250000 -s 1311  r_a
   ./goose-fastqsimulation -eh \
@@ -86,7 +86,7 @@ if [[ $DATASET_SYNTH -eq 1 ]]; then
   ./smashpp-inv-rep            r_b   t_d
   cat t_a t_b t_c t_d > TarXL
 
-  ### Mutated sizes: ref:10.000.000, tar:10.000.000
+  ### Mutated (Mut) sizes: ref:10.000.000, tar:10.000.000
   ./goose-fastqsimulation -eh \
     -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 685    r_a
   ./goose-fastqsimulation -eh \
