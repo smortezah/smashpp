@@ -94,6 +94,8 @@ static const     string LBL_SEG      {"s"};     // Label  - segment files
 static const     string LBL_BAK      {"_bk"};   // Label  - backup files
 static const     string LBL_MID      {"mid"};   // Label  - mid position files
 static const     string POS_HDR      {"#"+SMASHPP+VERSION};   // Hdr of pos file
+static const     string POS_NRC      {"N"};     // Hdr of pos file
+static const     string POS_REDUN    {"R"};     // Hdr of pos file
 static constexpr auto   PI           {3.14159265f};
 static constexpr int    FILE_BUF     {8*1024};  // 8K
 static constexpr u8     TEXTWIDTH    {65};
