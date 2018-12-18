@@ -9,10 +9,8 @@ template <typename Value>
 inline static string attrib (const string& name, const Value& value, 
 bool precise=false, const string& unit="") {
   stringstream ss;
-  if (precise)
-    ss << name << "=\"" << PREC << value << unit << "\" ";
-  else
-    ss << name << "=\"" << value << unit << "\" ";
+  if (precise)  ss << name << "=\"" << PREC << value << unit << "\" ";
+  else          ss << name << "=\"" << value << unit << "\" ";
   return ss.str();
 }
 
@@ -32,20 +30,13 @@ inline static string end_empty_elem () {
 struct RgbColor {
   u8 r, g, b;
   RgbColor () = default;
-  RgbColor (u8 r_, u8 g_, u8 b_) { config(r_,g_,b_); }
-  void config (u8 r_, u8 g_, u8 b_) { r=r_;  g=g_;  b=b_; }
+  RgbColor (u8 r_, u8 g_, u8 b_) : r(r_), g(g_), b(b_) {}
 };
 
 struct HsvColor {
   u8 h, s, v;
   HsvColor () = default;
   explicit HsvColor (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
-};
-
-struct HeatmapColor {
-  double start, rotations, hue, gamma;
-  HeatmapColor () : start(HEAT_START), rotations(HEAT_ROT), hue(HEAT_HUE),
-    gamma(HEAT_GAMMA) {}
 };
 
 struct Gradient {
@@ -59,8 +50,7 @@ struct Gradient {
 struct Point {
   double x, y;
   Point () = default;
-  Point (double x_, double y_) { config(x_,y_); }
-  void config (double x_, double y_) { x=x_;  y=y_; }
+  Point (double x_, double y_) : x(x_), y(y_) {}
 };
 
 struct Text {

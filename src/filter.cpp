@@ -8,18 +8,12 @@
 #include "naming.hpp"
 using namespace smashpp;
 
-Filter::Filter (const Param& p) {
-  config(p);
+Filter::Filter (const Param& p) : wtype(p.wtype) {
+  set_wsize(p);
+  if ((p.filter || p.segment) && p.verbose)  show_info(p);
 }
 
-inline void Filter::config (const Param& p) {
-  wtype = p.wtype;
-  config_wsize(p);
-  if ((p.filter || p.segment) && p.verbose)
-    show_info(p);
-}
-
-inline void Filter::config_wsize (const Param& p) {
+inline void Filter::set_wsize (const Param& p) {
   if (p.manFilterScale) {
     const auto biggest = min(file_size(p.tar), file_size(p.ref));
     const auto lg      = log10(biggest/p.sampleStep);
@@ -29,7 +23,7 @@ inline void Filter::config_wsize (const Param& p) {
     case FilterScale::M:  wsize=pow(2, 2*lg+1) + 1;  break;
     case FilterScale::L:  wsize=pow(2, 2*lg+2) + 1;  break;
     }
-  }
+  } 
   else {
     const auto size = p.wsize/p.sampleStep;
     wsize = is_odd(size) ? size : size+1;
@@ -39,8 +33,8 @@ inline void Filter::config_wsize (const Param& p) {
 }
 
 inline void Filter::show_info (const Param& p) const {
-  const u8 lblWidth=19, colWidth=8,
-           tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
+  constexpr u8 lblWidth=19, colWidth=8,
+            tblWidth=60;//static_cast<u8>(lblWidth+Ms.size()*colWidth);
 
   const auto rule = [](u8 n, const string& s) {
     for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
@@ -100,8 +94,7 @@ void Filter::smooth_seg (const Param& p) {
 
   if (wtype == WType::RECTANGULAR) {
     p.saveFilter ? smooth_seg_rect<true>(p) : smooth_seg_rect<false>(p);
-  }
-  else {
+  } else {
     make_window();
     p.saveFilter ? smooth_seg_non_rect<true>(p) : smooth_seg_non_rect<false>(p);
   }
@@ -174,8 +167,8 @@ inline void Filter::triangular () {
       window[n] = window[last-n] = 1 - fabs(static_cast<float>(n)/den - 1);
   }
   else {
-    const auto num = 2.0f;
-    const u32  den = wsize - 1;
+    constexpr auto num = 2.0f;
+    const u32 den = wsize - 1;
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
       window[n] = window[last-n] = 1 - fabs(n*num/den - 1);
   }
@@ -190,8 +183,8 @@ inline void Filter::welch () { // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
       window[n] = window[last-n] = float(1 - Power(float(n)/den-1, 2));
   }
   else {
-    const auto num = 2.0f;
-    const u32  den = wsize - 1;
+    constexpr auto num = 2.0f;
+    const u32 den = wsize - 1;
     for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
       window[n] = window[last-n] = float(1 - Power(n*num/den - 1, 2));
   }
@@ -199,8 +192,8 @@ inline void Filter::welch () { // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
 
 inline void Filter::sine () {
   if (wsize==1)  error("The size of sine window must be greater than 1.");
-  const float num = PI;
-  const u32   den = wsize - 1;
+  constexpr float num = PI;
+  const u32 den = wsize - 1;
 
   for (auto n=(wsize+1)>>1u, last=wsize-1; n--;)
     window[n] = window[last-n] = sin(n*num/den);
@@ -470,7 +463,7 @@ void Filter::aggregate_final_pos (const string& ref, const string& tar) const {
   else if (!midf0IsEmpty && midf1IsEmpty) {
     ifstream midf0(midf0Name);
     ofstream finf(gen_name(ref, tar, Format::POSITION));
-
+    
     finf << POS_HDR <<'\t'<< file_name(ref) <<'\t'<< to_string(file_size(ref))
                     <<'\t'<< file_name(tar) <<'\t'<< to_string(file_size(tar));
     finf << '\n';

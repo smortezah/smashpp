@@ -322,10 +322,10 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
       ctxIr{(1ull<<(2*rMs[0].k))-1};
   u64 symsNo{0};              // No. syms in target file, except \n
   prc_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(par.tar);
-  ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
   ProbPar pp{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, u8(rMs[0].k<<1u)};
   const auto totalSize = file_size(par.tar);
+  ifstream tf(par.tar);
+  ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
 
   for (vector<char> buffer(FILE_BUF,0); tf.peek()!=EOF;) {
     tf.read(buffer.data(), FILE_BUF);
@@ -390,12 +390,10 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
 inline void FCM::compress_n (const Param& par) {
   u64 symsNo{0};               // No. syms in target file, except \n
   prc_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
-  ifstream tf(par.tar);
-  ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
   auto cp = make_unique<CompressPar>();
-  // Ctx, Mir (int) sliding through the dataset
   const auto nMdl = static_cast<u8>(rMs.size()) + rTMsSize;
   cp->nMdl = nMdl;
+  // Ctx, Mir (int) sliding through the dataset
   cp->ctx.resize(nMdl);        // Fill with zeros (resize)
   cp->ctxIr.reserve(nMdl);
   for (const auto& mm : rMs) {  // Mask: 1<<2k - 1 = 4^k - 1
@@ -411,6 +409,8 @@ inline void FCM::compress_n (const Param& par) {
     if (mm.child) cp->pp.emplace_back(mm.child->alpha, *maskIter++, u8(2*mm.k));
   }
   const auto totalSize = file_size(par.tar);
+  ifstream tf(par.tar);
+  ofstream pf(gen_name(par.ID, par.ref, par.tar, Format::PROFILE));
   const auto compress_n_impl = [&](auto& cp, auto cont, u8& n) {
     compress_n_parent(cp, cont, n);
     if (cp->mm.child) {
@@ -626,7 +626,7 @@ u64 ID) {
   prc_t sumEnt{0};
   ifstream seqF(par.seq);
   ProbPar pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, u8(tMs[0].k<<1u)};
-  constexpr auto totalSize = file_size(par.seq);
+  const auto totalSize = file_size(par.seq);
   prc_t entr;
 
   for (vector<char> buffer(FILE_BUF,0); seqF.peek()!=EOF;) {
@@ -817,9 +817,8 @@ void FCM::aggregate_slf (const Param& p) const {
   ofstream pf(posName);
   u64 i = 0;
 
-  for (string line; getline(pfOld, line); ++i) {
+  for (string line; getline(pfOld, line); ++i)
     pf << line << '\t' << fixed << setprecision(FIL_PREC) << selfEnt[i] << '\n';
-  }
 
   pfOld.close();  remove((posName+LBL_BAK).c_str());
   pf.close();

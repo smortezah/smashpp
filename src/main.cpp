@@ -114,7 +114,7 @@ int main (int argc, char* argv[]) {
     }
     else {
       Param par;
-      par.parse(argc, argv);                    // Parse the command
+      par.parse(argc, argv);  // Parse the command
 
       if (par.compress) {
         auto models = make_unique<FCM>(par);
@@ -133,17 +133,17 @@ int main (int argc, char* argv[]) {
       else {
         const auto origRef=par.ref, origTar=par.tar;
         for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
-          if (timesRunning == 0) 
-            cerr << 
-              bold("====[ REGULAR MODE ]==================================\n");
-          else if (timesRunning == 1)
-            cerr << 
-              bold("====[ INVERTED MODE ]=================================\n");
+          if (timesRunning==0)       cerr << 
+            bold("====[ REGULAR MODE ]==================================\n");
+          else if (timesRunning==1)  cerr << 
+            bold("====[ INVERTED MODE ]=================================\n");
+
           par.ID = timesRunning;    
           par.ref=origRef;  par.refName=file_name(par.ref);
           par.tar=origTar;  par.tarName=file_name(par.tar);
 
           auto models = make_unique<FCM>(par);  // == auto* models=new FCM(par);
+          // Make all IRs consistent
           for (auto& e : models->rMs) {
             e.ir = timesRunning;
             if (e.child)  e.child->ir=timesRunning;
@@ -153,19 +153,21 @@ int main (int argc, char* argv[]) {
             if (e.child)  e.child->ir=timesRunning;
           }
 
-          models->store(par);                   // Build models
-          models->compress(par);                // Compress
+          // Build models and Compress
+          models->store(par);
+          models->compress(par);
+
+          // Filter and segment
           if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
           auto filter = make_unique<Filter>(par);
-          filter->smooth_seg(par);              // Filter and segment
-
+          filter->smooth_seg(par);              
           if (filter->nSegs==0) { cerr<<'\n';  continue; }
+          filter->extract_seg(par.ID, par.ref, par.tar);
 
-          filter->extract_seg(par.ID, par.ref, par.tar);  // Extract from tar
+          // Ref-free compress
           cerr << TERM_SEP;
           cerr << ">>> " << italic("Reference-free compression of the segment")
-            << italic(filter->nSegs==1 ? "" : "s") << '\n';
-          // Ref-free compress
+               << italic(filter->nSegs==1 ? "" : "s") << '\n';
           models->selfEnt.reserve(filter->nSegs);
           const auto segName=gen_name(par.ID, par.ref, par.tar,Format::SEGMENT);
           for (u64 i=0; i!=filter->nSegs; ++i) {
@@ -184,7 +186,7 @@ int main (int argc, char* argv[]) {
           for (u64 i=0; i!=tarSegs; ++i) {
             par.ref = segName+to_string(i);
             par.refName = file_name(par.ref);
-
+            // Make all IRs consistent
             models = make_unique<FCM>(par);
             for (auto& e : models->rMs) {
               e.ir = timesRunning;
@@ -195,21 +197,23 @@ int main (int argc, char* argv[]) {
               if (e.child)  e.child->ir=timesRunning;
             }
 
+            // Build models and Compress
             models->tarSegMsg = origTar + "-segment-";
             models->tarSegID = i + 1;
             models->store(par);
             models->compress(par);
+
+            // Filter and segment
             if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
             filter = make_unique<Filter>(par);
             filter->smooth_seg(par);
-
             if (filter->nSegs==0) { cerr<<'\n';  continue; }
-
             filter->extract_seg(par.ID, par.ref, par.tar);
+
+            // Ref-free compress
             cerr << TERM_SEP;
             cerr << ">>> " << italic("Reference-free compression of the "
               "segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
-            // Ref-free compress
             models->selfEnt.reserve(filter->nSegs);
             const auto selfSegName =
               gen_name(par.ID, par.ref, par.tar, Format::SEGMENT);
@@ -225,10 +229,10 @@ int main (int argc, char* argv[]) {
           models->tarSegMsg.clear();
           filter->aggregate_mid_pos(par.ID, origRef, origTar);
 
+          // Remove temporary files
           for (u64 i=0; i!=tarSegs; ++i)
             if (!par.saveAll && !par.saveSegment)
               remove((segName+to_string(i)).c_str());
-          // Remove temporary sequences generated from Fasta/Fastq input files
           if (!par.saveSeq) {
             if (par.refType==FileType::FASTA || par.refType==FileType::FASTQ) {
               remove(origRef.c_str());
@@ -241,10 +245,9 @@ int main (int argc, char* argv[]) {
           }
         } // for
         
-        par.ref = origRef;
-        par.refName = file_name(par.ref);
-        par.tar = origTar;
-        par.tarName = file_name(par.tar);
+        // Aggregate final positions
+        par.ref=origRef;  par.refName=file_name(par.ref);
+        par.tar=origTar;  par.tarName=file_name(par.tar);
         auto filter = make_unique<Filter>(par);
         filter->aggregate_final_pos(origRef, origTar);
         

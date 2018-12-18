@@ -9,7 +9,7 @@ struct STMMPar;
 struct MMPar {
   u8    k;                    // Context size
   u64   w;                    // Width of count-min-log sketch
-  u8    d;                    // Depth of count-min-log sketch
+  u8    d;                    // Depth ...
   u8    ir;                   // Inverted repeat
   prc_t alpha, gamma;
   Container           cont;   // Tbl 64, Tbl 32, LogTbl 8, Sketch 4

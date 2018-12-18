@@ -7,7 +7,7 @@
 namespace smashpp {
 class Filter {
  public:
-  u64   nSegs;
+  u64 nSegs;
 
   explicit Filter (const Param&);
   void smooth_seg (const Param&);
@@ -21,8 +21,7 @@ class Filter {
   string message;
   vector<float> window;
 
-  void config (const Param&);
-  void config_wsize (const Param&);
+  void set_wsize (const Param&);
   void show_info (const Param&) const;
   void make_window ();
   void hamming ();
