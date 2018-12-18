@@ -70,11 +70,11 @@ class ValSet {
 
  private:
   vector<Value> set;
-  Value         cmd, def;
-  string        label, initMode;
-  Problem       problem;
-  bool          inRange;
-  string        message;
+  Value   cmd, def;
+  string  label, initMode;
+  Problem problem;
+  bool    inRange;
+  string  message;
 };
 
 template <typename Value>

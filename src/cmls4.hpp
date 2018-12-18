@@ -10,28 +10,28 @@ class CMLS4 {   // Count-min-log sketch, 4 bits per counter
   CMLS4 (u64, u8);
   void config (u64, u8);
 	void update (u64);                // Update sketch
-	u16  query (u64) const;    // Query count of ctx
+	auto query (u64) const -> u16;    // Query count of ctx
 	void dump (ofstream&) const;
 	void load (ifstream&) const;
 
 #ifdef DEBUG
-  u64  get_total () const; // Total count of all items in the sketch
-  u64  count_empty () const; // Number of empty cells in the sketch
-  u8   max_sk_val () const;
+  auto get_total () const -> u64;   // Total count of all items in the sketch
+  auto count_empty () const -> u64; // Number of empty cells in the sketch
+  auto max_sk_val () const -> u8;
   void print () const;
 #endif
 
  private:
-	u64         w;                    // Width of sketch
-	u8          d;         // Depth of sketch
-	vector<u64> ab;                   // Coefficients of hash functions
-	u8          uhashShift;           // Universal hash shift(G-M). (a*x+b)>>(G-M)
-	vector<u8>  sk;                   // Sketch
-	u64         tot;                  // Total # elements, so far
+	u64 w;                        // Width of sketch
+	u8  d;                        // Depth of sketch
+	u8  uhashShift;               // Universal hash shift(G-M). (a*x+b)>>(G-M)
+	vector<u64> ab;               // Coefficients of hash functions
+	vector<u8>  sk;               // Sketch
+	u64 tot;                      // Total # elements, so far
 
-	u8   read_cell (u64) const; // Read each cell of the sketch
+	u8   read_cell (u64) const;   // Read each cell of the sketch
   void set_a_b ();              // Set coeffs a, b of hash fns (a*x+b) %P %w
-	u64  hash (u8, u64) const; // MUST provide pairwise independence
+	u64  hash (u8, u64) const;    // MUST provide pairwise independence
 	u8   min_log_ctr (u64) const; // Find min log value in the sketch
 #ifdef DEBUG
   void printAB () const;

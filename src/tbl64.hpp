@@ -10,20 +10,20 @@ class Table64 {
   Table64 () : k(0)/*, tot(0)*/ {}
   explicit Table64 (u8);
   void config (u8);
-  void update (u32);               // Update table
-  u64  query (u32) const;   // Query count of ctx
+  void update (u32);                 // Update table
+  auto query (u32) const -> u64;     // Query count of ctx
   void dump (ofstream&) const;
   void load (ifstream&) const;
 #ifdef DEBUG
-  u64  get_total () const;   // Total count of all items in the table
-  u64  count_empty () const;   // Number of empty cells in the table
-  u64  max_tbl_val () const;
+  auto get_total () const -> u64;    // Total count of all items in the table
+  auto count_empty () const -> u64;  // Number of empty cells in the table
+  auto max_tbl_val () const -> u64;
   void print() const;
 #endif
   
  private:
-  vector<u64> tbl;                      // Table of 64 bit counters
-  u8          k;             // Ctx size
+  vector<u64> tbl;                   // Table of 64 bit counters
+  u8 k;                              // Ctx size
 };
 }
 

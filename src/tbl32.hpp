@@ -10,22 +10,22 @@ class Table32 {
   Table32 () : k(0), nRenorm(0), tot(0) {}
   explicit Table32 (u8);
   void config (u8);
-  void update (u32);               // Update table
-  u32  query (u32) const;   // Query count of ctx
+  void update (u32);                 // Update table
+  auto query (u32) const -> u32;     // Query count of ctx
   void dump (ofstream&) const;
   void load (ifstream&) const;
 #ifdef DEBUG
-  u64  get_total () const;   // Total count of all items in the table
-  u64  count_empty () const;   // Number of empty cells in the table
-  u32  max_tbl_val () const;
+  auto get_total () const -> u64;    // Total count of all items in the table
+  auto count_empty () const -> u64;  // Number of empty cells in the table
+  auto max_tbl_val () const -> u32;
   void print () const;
 #endif
 
  private:
-  vector<u32> tbl;                      // Table of 32 bit counters
-  u8          k;             // Ctx size
-  u32         nRenorm;                  // Renormalization times
-  u64         tot;                      // Total # elements so far
+  vector<u32> tbl;                   // Table of 32 bit counters
+  u8  k;                             // Ctx size
+  u32 nRenorm;                       // Renormalization times
+  u64 tot;                           // Total # elements so far
   
   void renormalize ();
 };
