@@ -11,17 +11,16 @@
 #include "mdlpar.hpp"
 
 namespace smashpp {
-class FCM {   // Finite-context models
+class FCM {                   // Finite-context models
  public:
   prc_t  aveEnt;
   vector<prc_t> selfEnt;
-  vector<MMPar> rMs;    // Ref Markov models
-  vector<MMPar> tMs;    // Tar Markov models
+  vector<MMPar> rMs, tMs;     // Ref & Tar Markov models
   u64    tarSegID;
   string tarSegMsg;
 
   explicit FCM (Param&);
-  void store (const Param&);  // Build FCM (finite-context models)
+  void store (const Param&);  // Build FCM
   void compress (const Param&);
   void self_compress (const Param&, u64);
   void aggregate_slf (const Param&) const;
@@ -34,15 +33,14 @@ class FCM {   // Finite-context models
   vector<unique_ptr<CMLS4>>     cmls4;
   string message;
   prc_t  entropyN;
-  u8     rTMsSize;
-  u8     tTMsSize;
+  u8     rTMsSize, tTMsSize;
   
   void set_cont (vector<MMPar>&);
-  void show_info (const Param&) const;// Show inputs information on the screen
-  void alloc_model ();                  // Allocate memory to models
+  void show_info (const Param&) const;      // Show inputs info on the screen
+  void alloc_model ();                      // Allocate memory to models
 
-  void store_1 (const Param&);          // Build models one thread
-  void store_n (const Param&);          // Build models multiple threads
+  void store_1 (const Param&);              // Build models one thread
+  void store_n (const Param&);              // Build models multiple threads
   template <typename Mask, typename ContIter>
   void store_impl (const string&, Mask, ContIter);  // Fill data struct
 
