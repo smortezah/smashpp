@@ -16,10 +16,10 @@ class Filter {
   void aggregate_final_pos (const string&, const string&) const;
 
  private:
-  WType         wtype;
-  u32           wsize;
+  WType  wtype;
+  u32    wsize;
+  string message;
   vector<float> window;
-  string        message;
 
   void config (const Param&);
   void config_wsize (const Param&);

@@ -49,7 +49,7 @@ struct HeatmapColor {
 };
 
 struct Gradient {
-  string         startColor, stopColor;
+  string startColor, stopColor;
   vector<string> offsetColor;
   Gradient () = default;
   Gradient (string&& start, string&& stop) : startColor(std::move(start)), 

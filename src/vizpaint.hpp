@@ -21,10 +21,10 @@ class VizPaint {
   void print_plot (VizParam&);
 
  private:
-  u32         ratio;
-  u32         mult;
+  u32  ratio;
+  u32  mult;
+  bool plottable;
   vector<i64> lastPos;
-  bool        plottable;
 
   void show_info (VizParam&, const string&, const string&, u64, u64) const;
   void config (double, double, u64, u64);

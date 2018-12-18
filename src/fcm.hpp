@@ -13,12 +13,12 @@
 namespace smashpp {
 class FCM {   // Finite-context models
  public:
-  prc_t         aveEnt;
+  prc_t  aveEnt;
   vector<prc_t> selfEnt;
   vector<MMPar> rMs;    // Ref Markov models
   vector<MMPar> tMs;    // Tar Markov models
-  u64           tarSegID;
-  string        tarSegMsg;
+  u64    tarSegID;
+  string tarSegMsg;
 
   explicit FCM (Param&);
   void store (const Param&);  // Build FCM (finite-context models)
@@ -32,10 +32,10 @@ class FCM {   // Finite-context models
   vector<unique_ptr<Table32>>   tbl32;
   vector<unique_ptr<LogTable8>> lgtbl8;
   vector<unique_ptr<CMLS4>>     cmls4;
-  string                        message;
-  prc_t                         entropyN;
-  u8                            rTMsSize;
-  u8                            tTMsSize;
+  string message;
+  prc_t  entropyN;
+  u8     rTMsSize;
+  u8     tTMsSize;
   
   void set_cont (vector<MMPar>&);
   void show_info (const Param&) const;// Show inputs information on the screen
@@ -68,7 +68,7 @@ class FCM {   // Finite-context models
   void freqs_ir1 (array<OutT,4>&, ContIter, u64, u64) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
   void freqs_ir2 (array<OutT,4>&, ContIter, ProbParIter) const;
-  prc_t weight_next (prc_t, prc_t, prc_t) const;
+  auto weight_next (prc_t, prc_t, prc_t) const -> prc_t;
   template <typename FreqIter>
   void correct_stmm (unique_ptr<CompressPar>&, FreqIter) const;
 #ifdef ARRAY_HISTORY
@@ -87,10 +87,10 @@ class FCM {   // Finite-context models
   void miss_stmm (Par) const;
 #endif
   template <typename FreqIter, typename ProbParIter>
-  prc_t prob (FreqIter, ProbParIter) const;
-  prc_t entropy (prc_t) const;
+  auto prob (FreqIter, ProbParIter) const -> prc_t;
+  auto entropy (prc_t) const -> prc_t;
   template <typename WIter, typename PIter>
-  prc_t entropy (WIter, PIter, PIter) const;
+  auto entropy (WIter, PIter, PIter) const -> prc_t;
   template <typename ProbParIter>
   void update_ctx_ir0 (u64&, ProbParIter) const;
   template <typename ProbParIter>

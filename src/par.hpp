@@ -16,29 +16,27 @@
 namespace smashpp {
 class Param {   // Parameters
  public:
-  string          ref, tar, seq;
-  string          refName, tarName;
-  bool            verbose;
-  u8              level;
-  u32             segSize;
-  prc_t           entropyN;
-  u8              nthr;
-  u32             wsize;
-  WType           wtype;
-  u64             sampleStep;
-  float           thresh;
-  bool            manSegSize, manWSize, manThresh, manFilterScale;
-  FilterScale     filterScale;
-  bool            saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
-  FileType        refType, tarType;
-  bool            showInfo;
-  string          report;
-  bool            compress, filter, segment;
-  u32             ID;
-  vector<MMPar>   refMs;
-  // vector<STMMPar> refTMs;
-  vector<MMPar>   tarMs;
-  // vector<STMMPar> tarTMs;
+  string      ref, tar, seq;
+  string      refName, tarName;
+  bool        verbose;
+  u8          level;
+  u32         segSize;
+  prc_t       entropyN;
+  u8          nthr;
+  u32         wsize;
+  WType       wtype;
+  u64         sampleStep;
+  float       thresh;
+  bool        manSegSize, manWSize, manThresh, manFilterScale;
+  FilterScale filterScale;
+  bool        saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
+  FileType    refType, tarType;
+  bool        showInfo;
+  string      report;
+  bool        compress, filter, segment;
+  u32         ID;
+  vector<MMPar> refMs;
+  vector<MMPar> tarMs;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : verbose(false), level(LVL), segSize(SSIZE), entropyN(ENTR_N), 
@@ -58,7 +56,6 @@ class Param {   // Parameters
  private:
   template <typename Iter>
   void parseModelsPars (Iter, Iter, vector<MMPar>&);
-  // void parseModelsPars (Iter, Iter, vector<MMPar>&, vector<STMMPar>&);
   void help () const;
 };
 
@@ -87,7 +84,6 @@ class VizParam {
 inline void Param::parse (int argc, char**& argv) {
   if (argc < 2) { help();  throw EXIT_SUCCESS; }
 
-  // vector<string> vArgs(static_cast<u64>(argc));
   vector<string> vArgs;    vArgs.reserve(static_cast<u64>(argc));
   for (int i=0; i!=argc; ++i)
     vArgs.emplace_back(static_cast<string>(argv[i]));
@@ -96,17 +92,14 @@ inline void Param::parse (int argc, char**& argv) {
   string rModelsPars, tModelsPars;
 
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-    //todo. if ha ro olaviat bandi kon
-    if      (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
-    else if (*i=="-v"  || *i=="--verbose")         verbose    =true;
-    else if (*i=="-compress")                      compress   =true;
-    else if (*i=="-filter")                        filter     =true;
-    else if (*i=="-segment")                       segment    =true;
-    else if (*i=="-sb" || *i=="--save-seq")        saveSeq    =true;
-    else if (*i=="-sp" || *i=="--save-profile")    saveProfile=true;
-    else if (*i=="-sf" || *i=="--save-fitler")     saveFilter =true;
-    else if (*i=="-ss" || *i=="--save-segment")    saveSegment=true;
-    else if (*i=="-sa" || *i=="--save-all")        saveAll    =true;
+    if (*i=="-r"  || *i=="--ref") {
+      if (i+1 != vArgs.end()) {
+        ref = *++i;
+        check_file(ref);
+        refName = file_name(ref);
+      }
+      else error("reference file not specified. Use \"-r <fileName>\".");
+    }
     else if (*i=="-t"  || *i=="--tar") {
       if (i+1 != vArgs.end()) {
         tar = *++i;
@@ -115,14 +108,6 @@ inline void Param::parse (int argc, char**& argv) {
       }
       else
         error("target file not specified. Use \"-t <fileName>\".");
-    }
-    else if (*i=="-r"  || *i=="--ref") {
-      if (i+1 != vArgs.end()) {
-        ref = *++i;
-        check_file(ref);
-        refName = file_name(ref);
-      }
-      else error("reference file not specified. Use \"-r <fileName>\".");
     }
     else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
       level = static_cast<u8>(stoi(*++i));
@@ -136,18 +121,6 @@ inline void Param::parse (int argc, char**& argv) {
       auto range = make_unique<ValRange<u32>>(MIN_SSIZE, MAX_SSIZE, SSIZE, 
         "Minimum segment size", "[]", "default", Problem::WARNING);
       range->assert(segSize);
-    }
-    else if ((*i=="-e" || *i=="--ent-n") && i+1!=vArgs.end()) {
-      entropyN = static_cast<prc_t>(stod(*++i));
-      auto range = make_unique<ValRange<prc_t>>(MIN_ENTR_N, MAX_ENTR_N, ENTR_N, 
-        "Entropy of N bases", "[]", "default", Problem::WARNING);
-      range->assert(entropyN);
-    }
-    else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
-      nthr = static_cast<u8>(stoi(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_THRD, MAX_THRD, THRD, 
-        "Number of threads", "[]", "default", Problem::WARNING);
-      range->assert(nthr);
     }
     else if ((*i=="-rm" || *i=="--ref-model") && i+1!=vArgs.end()) {
       man_rm = true;
@@ -174,6 +147,13 @@ inline void Param::parse (int argc, char**& argv) {
         "Window size", "[]", "default", Problem::WARNING);
       range->assert(wsize);
     }
+    else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end()) {
+      manThresh = true;
+      thresh = stof(*++i);
+      auto range = make_unique<ValRange<float>>(MIN_THRSH, MAX_THRSH, THRSH,
+        "Threshold", "(]", "default", Problem::WARNING);
+      range->assert(thresh);
+    }
     else if ((*i=="-wt"|| *i=="--wtype") && i+1!=vArgs.end()) {
       const auto is_win_type = [] (const string& t) {
         if (t=="0" || t=="rectangular" || t=="1" || t=="hamming"  ||
@@ -188,16 +168,21 @@ inline void Param::parse (int argc, char**& argv) {
         "default", Problem::WARNING, win_type(cmd), is_win_type(cmd));
       set->assert(wtype);
     }
+    else if ((*i=="-e" || *i=="--ent-n") && i+1!=vArgs.end()) {
+      entropyN = static_cast<prc_t>(stod(*++i));
+      auto range = make_unique<ValRange<prc_t>>(MIN_ENTR_N, MAX_ENTR_N, ENTR_N, 
+        "Entropy of N bases", "[]", "default", Problem::WARNING);
+      range->assert(entropyN);
+    }
+    else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
+      nthr = static_cast<u8>(stoi(*++i));
+      auto range = make_unique<ValRange<u8>>(MIN_THRD, MAX_THRD, THRD, 
+        "Number of threads", "[]", "default", Problem::WARNING);
+      range->assert(nthr);
+    }
     else if ((*i=="-d" || *i=="--step") && i+1!=vArgs.end()) {
       sampleStep = stoull(*++i);
       if (sampleStep==0)  sampleStep=1ull;
-    }
-    else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end()) {
-      manThresh = true;
-      thresh = stof(*++i);
-      auto range = make_unique<ValRange<float>>(MIN_THRSH, MAX_THRSH, THRSH,
-        "Threshold", "(]", "default", Problem::WARNING);
-      range->assert(thresh);
     }
     else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=vArgs.end()) {
       manFilterScale = true;
@@ -213,8 +198,18 @@ inline void Param::parse (int argc, char**& argv) {
         is_filter_scale(cmd));
       set->assert(filterScale);
     }
+    else if (*i=="-sb" || *i=="--save-seq")        saveSeq    =true;
+    else if (*i=="-sp" || *i=="--save-profile")    saveProfile=true;
+    else if (*i=="-sf" || *i=="--save-fitler")     saveFilter =true;
+    else if (*i=="-ss" || *i=="--save-segment")    saveSegment=true;
+    else if (*i=="-sa" || *i=="--save-all")        saveAll    =true;
+    else if (*i=="-compress")                      compress   =true;
+    else if (*i=="-filter")                        filter     =true;
+    else if (*i=="-segment")                       segment    =true;
     else if (*i=="-R"  || *i=="--report")
       report = (i+1!=vArgs.end()) ? *++i : "report.txt";
+    else if (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
+    else if (*i=="-v"  || *i=="--verbose")         verbose    =true;
   }
 
   // Mandatory args
@@ -229,20 +224,11 @@ inline void Param::parse (int argc, char**& argv) {
   
   if (!man_rm && !man_tm) {
     parseModelsPars(begin(LEVEL[level]), end(LEVEL[level]), refMs);
-    // parseModelsPars(begin(LEVEL[level]), end(LEVEL[level]), refMs, refTMs);
     parseModelsPars(begin(REFFREE_LEVEL[level]), end(REFFREE_LEVEL[level]),
       tarMs);
-    // parseModelsPars(
-    //   begin(REFFREE_LEVEL[level]), end(REFFREE_LEVEL[level]), tarMs, tarTMs);
   }
-  else if (!man_rm && man_tm) {
-    refMs  = tarMs;
-    // refTMs = tarTMs;
-  }
-  else if (man_rm  && !man_tm) {
-    tarMs  = refMs;
-    // tarTMs = refTMs;
-  }
+  else if (!man_rm && man_tm)  { refMs = tarMs; }
+  else if (man_rm  && !man_tm) { tarMs = refMs; }
 
   manFilterScale = !manThresh;
   manFilterScale = !manWSize;
@@ -255,25 +241,17 @@ inline void Param::parse (int argc, char**& argv) {
     to_seq(f+LBL_BAK, f, type);
   };
   refType = file_type(ref);
-  if      (refType==FileType::FASTA)  
-    convert_to_seq(ref, FileType::FASTA);
-  else if (refType==FileType::FASTQ)  
-    convert_to_seq(ref, FileType::FASTQ);
-  else if (refType!=FileType::SEQ) 
-    error("\""+refName+"\" has unknown format.");
+  if      (refType==FileType::FASTA)  convert_to_seq(ref, FileType::FASTA);
+  else if (refType==FileType::FASTQ)  convert_to_seq(ref, FileType::FASTQ);
+  else if (refType!=FileType::SEQ) error("\""+refName+"\" has unknown format.");
 
   tarType = file_type(tar);
-  if      (tarType==FileType::FASTA)  
-    convert_to_seq(tar, FileType::FASTA);
-  else if (tarType==FileType::FASTQ) 
-    convert_to_seq(tar, FileType::FASTQ);
-  else if (tarType!=FileType::SEQ)    
-    error("\""+tarName+"\" has unknown format.");
+  if      (tarType==FileType::FASTA)  convert_to_seq(tar, FileType::FASTA);
+  else if (tarType==FileType::FASTQ)  convert_to_seq(tar, FileType::FASTQ);
+  else if (tarType!=FileType::SEQ) error("\""+tarName+"\" has unknown format.");
 }
 
 template <typename Iter>
-// inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms, 
-// vector<STMMPar>& TMs) {
 inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms) {
   vector<string> mdls;      split(begin, end, ':', mdls);
   for (const auto& e : mdls) {
@@ -297,14 +275,9 @@ inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms) {
     // Tolerant models
     if (m_tm.size() == 2) {
       vector<string> tm;    split(m_tm[1].begin(), m_tm[1].end(), ',', tm);
-      // TMs.emplace_back(
-      //   STMMPar(u8(stoi(m[0])), u8(stoi(tm[0])), u8(stoi(tm[1])), stof(tm[2]),
-      //     stof(tm[3]))
-      // );
       Ms.back().child = make_shared<STMMPar>(
         STMMPar(u8(stoi(m[0])), u8(stoi(tm[0])), u8(stoi(tm[1])), stof(tm[2]),
           stof(tm[3])));
-      // Ms.back().child = make_shared<STMMPar>(TMs.back());
     }
   }
 }
@@ -467,13 +440,13 @@ inline void VizParam::parse (int argc, char**& argv) {
 
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
     if      (*i=="-h"  || *i=="--help") { help();   throw EXIT_SUCCESS; }
-    else if (*i=="-v"  || *i=="--verbose")     verbose=true;
-    else if (*i=="-np" || *i=="--no-pos")      showPos=false;
-    else if (*i=="-nn" || *i=="--no-nrc")      showNRC=false;
+    else if (*i=="-v"  || *i=="--verbose")     verbose  =true;
+    else if (*i=="-np" || *i=="--no-pos")      showPos  =false;
+    else if (*i=="-nn" || *i=="--no-nrc")      showNRC  =false;
     else if (*i=="-nr" || *i=="--no-redun")    showRedun=false;
     else if (*i=="-na" || *i=="--no-annot")    showAnnot=false;
-    else if (*i=="-ni" || *i=="--no-inv")      inverse=false;
-    else if (*i=="-ng" || *i=="--no-reg")      regular=false;
+    else if (*i=="-ni" || *i=="--no-inv")      inverse  =false;
+    else if (*i=="-ng" || *i=="--no-reg")      regular  =false;
     else if ((*i=="-o" || *i=="--out")   && i+1!=vArgs.end())
       image = *++i;
     else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {

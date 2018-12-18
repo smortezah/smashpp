@@ -7,15 +7,15 @@ namespace smashpp {
 struct STMMPar;
 
 struct MMPar {
-  u8                  k;  // Context size
-  u64                 w;  // Width of count-min-log sketch
-  u8                  d;  // Depth of count-min-log sketch
-  u8                  ir; // Inverted repeat
-  prc_t               alpha, gamma;
-  Container           cont;          // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  u8    k;                    // Context size
+  u64   w;                    // Width of count-min-log sketch
+  u8    d;                    // Depth of count-min-log sketch
+  u8    ir;                   // Inverted repeat
+  prc_t alpha, gamma;
+  Container           cont;   // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
   shared_ptr<STMMPar> child;
 
-  MMPar () = default;  // Essential
+  MMPar () = default;         // Essential
   MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, prc_t a_, prc_t g_) : k(k_), w(w_),
     d(d_), ir(ir_), alpha(a_), gamma(g_), cont(Container::TABLE_64), 
     child(nullptr) {}
@@ -31,9 +31,9 @@ struct STMMPar {
 #ifdef ARRAY_HISTORY
   vector<bool> history;
 #else
-  u32   history;    // k > 32 => change to u64
+  u32   history;              // k > 32 => change to u64
 #endif
-  u32   mask;       // For updating the history
+  u32   mask;                 // For updating the history
 
   STMMPar (u8 k_, u8 t_, u8 ir_, prc_t a_, prc_t g_) : k(k_), thresh(t_), 
     ir(ir_), alpha(a_), gamma(g_), enabled(true), mask((1u<<k)-1u) {
@@ -103,15 +103,15 @@ inline void ProbPar::config_ir2 (char c, u64 ctx, u64 ctxIr) {
 }
 
 struct CompressPar {
-  vector<u64>               ctx, ctxIr;
-  vector<prc_t>             w, wNext, probs;
-  vector<ProbPar>           pp;
+  vector<u64>     ctx, ctxIr;
+  vector<prc_t>   w, wNext, probs;
+  vector<ProbPar> pp;
   vector<ProbPar>::iterator ppIt;
   vector<u64>::iterator     ctxIt, ctxIrIt;
-  u8                        nMdl;
-  u8                        nSym;
-  char                      c;
-  MMPar                     mm;
+  u8    nMdl;
+  u8    nSym;
+  char  c;
+  MMPar mm;
 
   CompressPar () = default;
 };

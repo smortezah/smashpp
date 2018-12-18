@@ -49,52 +49,52 @@ constexpr u64 power (u64 a, u64 n) {
   return n==0 ? 1 : sqr(power(a, n>>1u)) * ((n&1ull) ? a : 1);
 }
 
-constexpr u64 pow2 (u64 n) noexcept { // Not sure faster than above, but simpler
+constexpr u64 pow2 (u64 n) noexcept {
   return 1ull<<n;  // ull is MANDATORY
 }
 
 // Constant
-static constexpr u8     THRD         {4};  // Default # threads
-static constexpr u8     LVL          {0};  // Default level
-static constexpr u8     MIN_LVL      {0};  // Min level
-static constexpr u8     MAX_LVL      {4};  // Max level
-static constexpr u32    SSIZE        {1};  // Min segment size
+static constexpr u8     THRD         {4};         // No. threads
+static constexpr u8     MIN_THRD     {1};
+static constexpr u8     MAX_THRD     {8};
+static constexpr u8     LVL          {0};         // Level
+static constexpr u8     MIN_LVL      {0};  
+static constexpr u8     MAX_LVL      {4};  
+static constexpr u32    SSIZE        {1};         // Min segment size
 static constexpr u32    MIN_SSIZE    {1};
-static constexpr u32    MAX_SSIZE    {0xffffffff};  // 2^32 - 1
-static constexpr prc_t  ENTR_N       {2.0};// Entropy of Ns
-static constexpr prc_t  MIN_ENTR_N   {0.0};   // Min entropy of Ns
-static constexpr prc_t  MAX_ENTR_N   {100.0}; // Max entropy of Ns
-static constexpr u8     MIN_THRD     {1};  // Min # threads
-static constexpr u8     MAX_THRD     {8};  // Max # threads
-static constexpr char   TAR_ALT_N    {'T'};  // Alternative to Ns in target file
-static constexpr u32    WS           {256};// Default window size -- filter
-static constexpr u32    MIN_WS       {1};      // Min window size -- filter
-static constexpr u32    MAX_WS       {100000}; // Max window size -- filter
-static constexpr WType  WT           {WType::HANN};  //Def window type -- filter
-static constexpr FilterScale FS      {FilterScale::L};//Def filt. scale-- filter
-static constexpr float  THRSH        {1.5};// Default threshold   -- filter
-static constexpr float  MIN_THRSH    {0};  // Min threshold       -- filter
-static constexpr float  MAX_THRSH    {20}; // Max threshold       -- filter
-static constexpr u8     CARDIN       {4};  // CARDINALITY = Alphabet size
-static constexpr u8     K_MAX_TBL64  {11};// Max ctx dept. table 64 (128 MB mem)
-static constexpr u8     K_MAX_TBL32  {13};// Max ...       table 32 (1   GB mem)
-static constexpr u8     K_MAX_LGTBL8 {14};// Max ...   log table 8  (1   GB mem)
-static constexpr u32    BLK_SZ       {8192}; // 8K
-static constexpr u64    W            {pow2(29ull)};  // Default w of CML sketch
-static constexpr u8     D            {5};  // Default depth of CML sketch
-static constexpr u32    G            {64};// Machine word size - univers hash fn
-static constexpr u8     LOG_BASE     {2};  // Logarithmic counting
-static constexpr u8     PRF_PREC     {3}; // Precisions for floats in Inf. prof
-static constexpr u8     FIL_PREC     {3}; // Precisions for floats in filt. file
-static const     string FMT_PRF      {"prf"};   // Format of inf. profile file
-static const     string FMT_POS      {"pos"};   // Format of positions file
-static const     string FMT_FIL      {"fil"};   // Format of filtered files
-static const     string FMT_N        {"n"};     // Format of position of N files
-static const     string LBL_SEG      {"s"};     // Label of segment files
-static const     string LBL_BAK      {"_bk"};   // Label of backup files
-static const     string LBL_MID      {"mid"};   // Label of mid position files
-static const     string POS_HDR      {"#"+SMASHPP+VERSION};  // Hdr of pos file
-static constexpr float  PI           {3.14159265f};
+static constexpr u32    MAX_SSIZE    {0xffffffff};// 2^32 - 1
+static constexpr prc_t  ENTR_N       {2.0};       // Entropy of Ns
+static constexpr prc_t  MIN_ENTR_N   {0.0};
+static constexpr prc_t  MAX_ENTR_N   {100.0};
+static constexpr char   TAR_ALT_N    {'T'};       // Alter. to Ns in target file
+static constexpr u32    WS           {256};             // Window size -- filter
+static constexpr u32    MIN_WS       {1};
+static constexpr u32    MAX_WS       {100000};
+static constexpr auto   WT           {WType::HANN};     // Window type -- filter
+static constexpr auto   FS           {FilterScale::L};  // Filt. scale -- filter
+static constexpr float  THRSH        {1.5};             // Threshold   -- filter
+static constexpr float  MIN_THRSH    {0};
+static constexpr float  MAX_THRSH    {20};
+static constexpr u8     CARDIN       {4};   // CARDINALITY = Alphabet size
+static constexpr u8     K_MAX_TBL64  {11};  // Max ctx table 64     (128 MB mem)
+static constexpr u8     K_MAX_TBL32  {13};  // Max ctx table 32     (1   GB mem)
+static constexpr u8     K_MAX_LGTBL8 {14};  // Max ctx log table 8  (1   GB mem)
+static constexpr u32    BLK_SZ       {8192};// 8K
+static constexpr u64    W            {pow2(29ull)};       // Width of CML sketch
+static constexpr u8     D            {5};                 // Depth of CML sketch
+static constexpr u32    G            {64};  // Machine word size-univers hash fn
+static constexpr u8     LOG_BASE     {2};   // Logarithmic counting
+static constexpr u8     PRF_PREC     {3};   // Precisions - floats in Inf. prof
+static constexpr u8     FIL_PREC     {3};   // Precisions - floats in filt. file
+static const     string FMT_PRF      {"prf"};   // Format - inf. profile
+static const     string FMT_POS      {"pos"};   // Format - positions file
+static const     string FMT_FIL      {"fil"};   // Format - filtered files
+static const     string FMT_N        {"n"};     // Format - position of N files
+static const     string LBL_SEG      {"s"};     // Label  - segment files
+static const     string LBL_BAK      {"_bk"};   // Label  - backup files
+static const     string LBL_MID      {"mid"};   // Label  - mid position files
+static const     string POS_HDR      {"#"+SMASHPP+VERSION};   // Hdr of pos file
+static constexpr auto   PI           {3.14159265f};
 static constexpr int    FILE_BUF     {8*1024};  // 8K
 static constexpr u8     TEXTWIDTH    {65};
 static const     string TERM_SEP     {". . . . . . . . . . . . . . . . . . . . "
@@ -199,9 +199,9 @@ static const vector<string> REFFREE_LEVEL {
 
 // Struct
 struct SubSeq {
-  string     inName;
-  string     outName;
-  u64        begPos;
+  string inName;
+  string outName;
+  u64    begPos;
   streamsize size;
 };
 
