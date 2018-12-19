@@ -52,10 +52,12 @@ void VizPaint::print_plot (VizParam& p) {
   // Read positions from file
   vector<Position> pos;
   u64 start {p.start};
-  i64 br, er, bt, et;
-  for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
+  // i64 br, er, bt, et;
+  double nr,nt,sr,st;
+  for (i64 br, er, bt, et; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
     pos.emplace_back(Position(br, er, nr, sr, bt, et, nt, st, start));
   p.start = start;
+  if (sr==-2.0 && st==-2.0)  p.showRedun=false;
 
   // std::sort(pos.begin(), pos.end(),
   //   [](const Position& l, const Position& r) { return l.begRef < r.begRef; });
