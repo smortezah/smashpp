@@ -27,7 +27,7 @@ void VizPaint::print_plot (VizParam& p) {
   auto poly = make_unique<Polygon>();
   auto text = make_unique<Text>();
   auto line = make_unique<Line>();
-  line->width = 2.0;
+  line->strokeWidth = 2.0;
   auto rect = make_unique<Rectangle>();
   rect->opacity = p.opacity;
 
@@ -146,7 +146,7 @@ void VizPaint::print_plot (VizParam& p) {
             poly->plot(fPlot);
             break;
           case 2:
-            line->color = rgb_color(e.start);
+            line->stroke = rgb_color(e.start);
             line->beg = Point(
               cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
             line->end = Point(
@@ -154,7 +154,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->plot(fPlot);
             break;
           case 3:
-            line->color = "black";
+            line->stroke = "black";
             line->beg = Point(
               cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
             line->end = Point(
@@ -162,7 +162,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->plot(fPlot);
             break;
           case 4:
-            line->color = rgb_color(e.start);
+            line->stroke = rgb_color(e.start);
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -171,7 +171,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->plot(fPlot);
             break;
           case 5:
-            line->color = "black";
+            line->stroke = "black";
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -202,7 +202,7 @@ void VizPaint::print_plot (VizParam& p) {
             poly->plot(fPlot);
             break;
           case 2:
-            line->color = rgb_color(e.start);
+            line->stroke = rgb_color(e.start);
             line->beg = Point(
               cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
             line->end = Point(
@@ -210,7 +210,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->plot(fPlot);
             break;
           case 3:
-            line->color = "green";
+            line->stroke = "green";
             line->beg = Point(
               cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
             line->end = Point(
@@ -218,7 +218,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->plot(fPlot);
             break;
           case 4:
-            line->color = rgb_color(e.start);
+            line->stroke = rgb_color(e.start);
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -228,7 +228,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->plot(fPlot);
             break;
           case 5:
-            line->color = "green";
+            line->stroke = "green";
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -650,7 +650,7 @@ bool showRedun) const {
   vertSize  = Y - cy - get_point(lastPos[0]);
 
   auto path = make_unique<Path>();
-  path->color="black";
+  path->stroke="black";
   
   if (lastPos.size() == 1) {
     path->origin = Point(X2, cy+get_point(lastPos[0]));

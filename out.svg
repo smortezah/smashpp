@@ -91,14 +91,12 @@
 	<rect fill-opacity="0.8" stroke-width="2" fill="url(#Wavy)" width="21.00" height="239.00" x="283.00" y="221.50" ry="3" />
 	<rect id="rect3777" fill="#ff5500" stroke="#ff5500" fill-opacity="0.8" width="7.00" height="239.00" x="309.00" y="221.50" ry="2" />
 	<polygon points="221.00,487.50 221.00,599.50 283.00,221.50 283.00,460.50" fill="#A03B9D" stroke="#A03B9D" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
-	<line x1="200.00" y1="100.00" x2="200.00" y2="600.00" stroke="black" stroke-width="2" />
-	<line x1="221.00" y1="100.00" x2="221.00" y2="600.00" stroke="black" stroke-width="2" />
-	<ellipse cx="210.5" cy="100" rx="10.5" ry="2" fill="none" stroke="black" stroke-width="2" />
-	<path d="M200.000000 600.000000 a 10.500000 2, 0, 0 0, 21.000000 0" fill="transparent" stroke="black" stroke-width="2" />
-	<line x1="283.00" y1="100.00" x2="283.00" y2="600.00" stroke="black" stroke-width="2" />
-	<line x1="304.00" y1="100.00" x2="304.00" y2="600.00" stroke="black" stroke-width="2" />
-	<ellipse cx="293.5" cy="100" rx="10.5" ry="2" fill="none" stroke="black" stroke-width="2" />
-	<path d="M283.000000 600.000000 a 10.500000 2, 0, 0 0, 21.000000 0" fill="transparent" stroke="black" stroke-width="2" />
+	<line id="200.000000100.000000200.000000600.000000" x1="200.00" y1="100.00" x2="200.00" y2="600.00" stroke="black" stroke-width="2.00" />
+	<line id="221.000000100.000000221.000000600.000000" x1="221.00" y1="100.00" x2="221.00" y2="600.00" stroke="black" stroke-width="2.00" />
+	<ellipse cx="210.5" cy="100" rx="10.5" ry="1.3735e-321" fill="transparent" stroke="black" stroke-width="1" />
+	<line id="283.000000100.000000283.000000600.000000" x1="283.00" y1="100.00" x2="283.00" y2="600.00" stroke="black" stroke-width="2.00" />
+	<line id="304.000000100.000000304.000000600.000000" x1="304.00" y1="100.00" x2="304.00" y2="600.00" stroke="black" stroke-width="2.00" />
+	<ellipse cx="293.5" cy="100" rx="10.5" ry="1.3735e-321" fill="transparent" stroke="black" stroke-width="1" />
 	<text id="252.00000024.000000" x="252.00" y="24.00" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >RELATIVE REDUNDANCY</text>
 	<defs >	<linearGradient id="grad188.00000024.000000" x1="0%" y1="0%" x2="100%" y2="0%" >	<stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
 	<stop offset="8%" stop-color="#0055ff" stop-opacity="1" />
@@ -121,7 +119,7 @@
 	<text id="252.00000030.000000" x="252.00" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.0</text>
 	<text id="284.00000030.000000" x="284.00" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.5</text>
 	<text id="318.00000030.000000" x="318.00" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" >2.0</text>
-	<path d="M 191.500000,599.500000 v 20.500000 h 12.400000" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
-	<path d="M 312.500000,599.500000 v 20.500000 h -12.400000" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+	<path d="M 191.500000,599.500000 v 20.500000 h 12.400000" fill="transparent" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+	<path d="M 312.500000,599.500000 v 20.500000 h -12.400000" fill="transparent" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
 	<text id="252.000000620.000000" x="252.00" y="620.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >Relative Redundancy</text>
 </svg>

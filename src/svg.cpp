@@ -67,8 +67,23 @@ void Line::plot (ofstream& f) const {
     << attrib("y1", beg.y, true)
     << attrib("x2", end.x, true) 
     << attrib("y2", end.y, true)
-    << attrib("stroke", color) 
-    << attrib("stroke-width", width, true)
+    << attrib("stroke", stroke) 
+    << attrib("stroke-width", strokeWidth, true)
+    << end_empty_elem();
+}
+
+/*
+* class Ellipse
+*/
+void Ellipse::plot (ofstream& f) const {
+  f << begin_elem("ellipse")
+    << attrib("cx", cx)
+    << attrib("cy", cy)
+    << attrib("rx", rx)
+    << attrib("ry", ry)
+    << attrib("fill", fill)
+    << attrib("stroke", stroke)
+    << attrib("stroke-width", strokeWidth)
     << end_empty_elem();
 }
 
@@ -78,12 +93,45 @@ void Line::plot (ofstream& f) const {
 void Path::plot (ofstream& f) const {
   f << begin_elem("path")
     << attrib("d", "M "+to_string(origin.x)+","+to_string(origin.y)+" "+trace)
-    << attrib("fill", "none")
-    << attrib("stroke", color)
+    << attrib("fill", fill)
+    << attrib("stroke", stroke)
     << attrib("stroke-linejoin", strokeLineJoin)
     << attrib("stroke-dasharray", strokeDashArray)
-    << attrib("stroke-width", width, true)
+    << attrib("stroke-width", strokeWidth, true)
     << end_empty_elem();
+}
+
+/*
+* class Cyllinder
+*/
+void Cyllinder::plot (ofstream& f) const {
+  auto line = make_unique<Line>();
+  line->stroke = stroke;
+  line->strokeWidth = strokeWidth;
+  line->beg = Point(origin.x, origin.y);
+  line->end = Point(origin.x, origin.y+height);
+  line->plot(f);
+
+  line->beg = Point(origin.x+width, origin.y);
+  line->end = Point(origin.x+width, origin.y+height);
+  line->plot(f);
+
+  auto ellipse = make_unique<Ellipse>();
+  ellipse->cx = origin.x + width/2;
+  ellipse->cy = origin.y;
+  ellipse->rx = width/2;
+  ellipse->ry = ry;
+  ellipse->fill = fill;
+  ellipse->stroke = stroke;
+  ellipse->strokeWidth = strokeWidth;
+  ellipse->plot(f);
+
+  // auto path = make_unique<Path>();
+  // path->trace = this->path;
+  // path->stroke = stroke;
+  // path->fill = fill;
+  // path->strokeWidth = strokeWidth;
+  // path->plot(f);
 }
 
 /*
@@ -185,60 +233,49 @@ void Rectangle::plot_chromosome (ofstream& f) const {
   //    << attrib("ry", 3)
   //    << end_empty_elem();
 
-  f << begin_elem("line")
-    << attrib("x1", origin.x, true)
-    << attrib("y1", origin.y, true)
-    << attrib("x2", origin.x, true) 
-    << attrib("y2", origin.y+height, true)
-    << attrib("stroke", "black") 
-    << attrib("stroke-width", 2)
-    << end_empty_elem();
+  auto cyllinder = make_unique<Cyllinder>();
+  cyllinder->width = width;
+  cyllinder->height = height;
+  cyllinder->stroke = "black";
+  cyllinder->fill = "transparent";
+  cyllinder->strokeWidth = 2;
+  cyllinder->origin = origin;
+  cyllinder->plot(f);
 
-  f << begin_elem("line")
-    << attrib("x1", origin.x+width, true)
-    << attrib("y1", origin.y, true)
-    << attrib("x2", origin.x+width, true) 
-    << attrib("y2", origin.y+height, true)
-    << attrib("stroke", "black")
-    << attrib("stroke-width", 2)
-    << end_empty_elem();
+//   f << begin_elem("line")
+//     << attrib("x1", origin.x, true)
+//     << attrib("y1", origin.y, true)
+//     << attrib("x2", origin.x, true) 
+//     << attrib("y2", origin.y+height, true)
+//     << attrib("stroke", "black") 
+//     << attrib("stroke-width", 2)
+//     << end_empty_elem()
+//     << begin_elem("line")
+//     << attrib("x1", origin.x+width, true)
+//     << attrib("y1", origin.y, true)
+//     << attrib("x2", origin.x+width, true) 
+//     << attrib("y2", origin.y+height, true)
+//     << attrib("stroke", "black")
+//     << attrib("stroke-width", 2)
+//     << end_empty_elem();
 
-  f << begin_elem("ellipse")
-    << attrib("cx", origin.x + width/2)
-    << attrib("cy", origin.y)
-    << attrib("rx", width/2)
-    << attrib("ry", 2)
-    << attrib("fill", "none")
-    << attrib("stroke", "black")
-    << attrib("stroke-width", 2)
-    << end_empty_elem();
-
-  f << begin_elem("path")
-    << attrib("d", "M"+to_string(origin.x)+" "+to_string(origin.y+height)+" a "+to_string(width/2)+" 2, 0, 0 0, "+to_string(width)+" 0")
-    << attrib("fill", "transparent")
-    << attrib("stroke", "black")
-    << attrib("stroke-width", 2)
-    << end_empty_elem();
-
-// f<<  "<path d=\"M"<<origin.x<<" "<<origin.y+height<<" a "<<width/2<<" 2, 0, 0 0, "<<width<<" 0\" stroke=\"black\" stroke-width=\"2\" fill=\"transparent\"/>";
-
-  // double  wk = width / 2 + 0.5;
-
-  // f << "<path d=\"m " << PREC << origin.x - 1 << ","
-  //   << PREC << origin.y - 1 << " 0," << PREC << wk << " c 0, -8.31 6.69, "
-  //   << PREC << -wk << " " << PREC << wk << ", " << PREC << -wk << " l "
-  //   << PREC << -wk << ",0 z m " << PREC << wk << ",0 c 8.31,0 "
-  //   << PREC << wk << ",6.69 " << PREC << wk << "," << PREC << wk << " l 0,"
-  //   << PREC << -wk << " " << PREC << -wk << ",0 z\" "
-  //   << "style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;stroke:none\" />";
-
-  // f << "<path d=\"m " << PREC << origin.x + 1 + width << ","
-  //   << PREC << origin.y + 1 + height << " 0," << PREC << -wk
-  //   << " c 0,8.31 -6.69, " << PREC << wk << " " << PREC << -wk << ", "
-  //   << PREC << wk << " l " << PREC << wk << ",0 z m " << PREC << -wk
-  //   << ",0 c -8.31,0 " << PREC << -wk << ",-6.69 " << PREC << -wk << ","
-  //   << PREC << -wk << " l 0," << PREC << wk << " " << PREC << wk << ",0 z\" "
-  //   << "style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;stroke:none\" />";
+// auto ellipseHeight=1.5;
+//   f << begin_elem("ellipse")
+//     << attrib("cx", origin.x + width/2)
+//     << attrib("cy", origin.y)
+//     << attrib("rx", width/2)
+//     << attrib("ry", 2)
+//     << attrib("fill", "none")
+//     << attrib("stroke", "black")
+//     << attrib("stroke-width", ellipseHeight)
+//     << end_empty_elem()
+//     << begin_elem("path")
+//     << attrib("d", "M"+to_string(origin.x)+" "+to_string(origin.y+height)+
+//          " a "+to_string(width/2)+" 2, 0, 0 0, "+to_string(width)+" 0")
+//     << attrib("fill", "transparent")
+//     << attrib("stroke", "black")
+//     << attrib("stroke-width", ellipseHeight)
+//     << end_empty_elem();
 }
 
 /*

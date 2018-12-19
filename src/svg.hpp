@@ -68,17 +68,35 @@ struct Text {
 
 struct Line {
   Point  beg, end;
-  double width;
-  string color;
-  Line () = default;
+  double strokeWidth;
+  string stroke;
+  Line () : strokeWidth(1.0), stroke("black") {}
+  void plot (ofstream&) const;
+};
+
+struct Ellipse {
+  double cx, cy, rx, ry;
+  double strokeWidth;
+  string stroke, fill;
+  Ellipse () : strokeWidth(1.0), stroke("black"), fill("transparent") {}
   void plot (ofstream&) const;
 };
 
 struct Path {
   Point  origin;
-  double width;
-  string color, trace, strokeLineJoin, strokeDashArray;
-  Path () : width(1), strokeLineJoin("round"), strokeDashArray("8 3") {}
+  double strokeWidth;
+  string stroke, trace, strokeLineJoin, strokeDashArray, fill;
+  Path () : strokeWidth(1), strokeLineJoin("round"), strokeDashArray("8 3"),
+    fill("transparent") {}
+  void plot (ofstream&) const;
+};
+
+struct Cyllinder {
+  Point  origin;
+  double width, height, ry, strokeWidth;
+  string stroke, fill, path, strokeLineJoin, strokeDashArray;
+  Cyllinder () : strokeWidth(1.0), stroke("black"), fill("none"),
+    strokeLineJoin("round"), strokeDashArray("8 3") {}
   void plot (ofstream&) const;
 };
 
