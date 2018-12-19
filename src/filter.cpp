@@ -393,6 +393,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   if (file_is_empty(positionName))  remove(positionName.c_str());
   filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
+  
   nSegs = seg->nSegs;
 }
 
