@@ -199,25 +199,6 @@ static const vector<string> REFFREE_LEVEL {
   "8,0,1,0.95:4,0,1,0.95"                                             // Level 4
 };
 
-// Struct
-struct SubSeq {
-  string inName;
-  string outName;
-  u64    begPos;
-  streamsize size;
-};
-
-struct Pos {
-  i64   begRef, endRef;
-  prc_t entRef, selfRef;
-  i64   begTar, endTar;
-  prc_t entTar, selfTar;
-  u64   start;
-  Pos (i64 br, i64 er, prc_t nr, prc_t sr, i64 bt, i64 et, prc_t nt, prc_t st,
-    u64 s) : begRef(br), endRef(er), entRef(nr), selfRef(sr), begTar(bt), 
-    endTar(et), entTar(nt), selfTar(st), start(s) {}
-};
-
 ////template<u32 N>    // Up to 262144=2^18 elements
 ////struct LogInt      // 0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,...
 ////{

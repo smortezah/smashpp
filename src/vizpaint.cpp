@@ -50,17 +50,17 @@ void VizPaint::print_plot (VizParam& p) {
   if (p.min==0)    p.min=static_cast<u32>(maxSize / 100);
 
   // Read positions from file
-  vector<Pos> pos;
+  vector<Position> pos;
   u64 start {p.start};
   i64 br, er, bt, et;
   for (double nr,nt,sr,st; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
-    pos.emplace_back(Pos(br, er, nr, sr, bt, et, nt, st, start));
+    pos.emplace_back(Position(br, er, nr, sr, bt, et, nt, st, start));
   p.start = start;
 
   // std::sort(pos.begin(), pos.end(),
-  //   [](const Pos &l, const Pos &r) { return l.begRef < r.begRef; });
+  //   [](const Position& l, const Position& r) { return l.begRef < r.begRef; });
   // const auto last = unique(pos.begin(), pos.end(),
-  //   [](const Pos &l, const Pos &r) { 
+  //   [](const Position &l, const Position &r) { 
   //     return l.begRef==r.begRef && l.endRef==r.endRef; 
   //   });
   // pos.erase(last, pos.end());
