@@ -132,8 +132,8 @@ int main (int argc, char* argv[]) {
       }
       else {
         const auto origRef=par.ref, origTar=par.tar;
-        // for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
-        for (u8 timesRunning=0; timesRunning!=1; ++timesRunning) {//todo
+        for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
+        // for (u8 timesRunning=0; timesRunning!=1; ++timesRunning) {//todo
           if (timesRunning==0)       cerr << 
             bold("====[ REGULAR MODE ]==================================\n");
           else if (timesRunning==1)  cerr << 
@@ -161,14 +161,13 @@ int main (int argc, char* argv[]) {
           // Filter and segment
           if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
           auto filter = make_unique<Filter>(par);
-          filter->smooth_seg(par);              
+          filter->smooth_seg(par);             
           if (filter->nSegs==0) { cerr<<'\n';  continue; }
           filter->extract_seg(par.ID, par.ref, par.tar);
-
-
           const auto segName=gen_name(par.ID, par.ref, par.tar,Format::SEGMENT);
-          if (!par.noRedun) {//todo
-            // Ref-free compress
+
+          // Ref-free compress
+          if (!par.noRedun) {
             cerr << TERM_SEP;
             cerr << ">>> " << italic("Reference-free compression of the "
               "segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
@@ -177,8 +176,8 @@ int main (int argc, char* argv[]) {
               par.seq = segName+to_string(i);
               models->self_compress(par, i);
             }
-            models->aggregate_slf(par);
           }
+          models->aggregate_slf(par);
           
           // Consider the ref as new tar and segments of the tar as new refs
           cerr << bold(underline("\nBuilding reference map for each target "
@@ -214,10 +213,8 @@ int main (int argc, char* argv[]) {
             if (filter->nSegs==0) { cerr<<'\n';  continue; }
             filter->extract_seg(par.ID, par.ref, par.tar);
 
-
-
-            if (!par.noRedun) {//todo
-              // Ref-free compress
+            // Ref-free compress
+            if (!par.noRedun) {
               cerr << TERM_SEP;
               cerr << ">>> " << italic("Reference-free compression of the "
                 "segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
@@ -230,8 +227,8 @@ int main (int argc, char* argv[]) {
                 if (!par.saveAll && !par.saveSegment)
                   remove(par.seq.c_str());
               }
-              models->aggregate_slf(par);
             }
+            models->aggregate_slf(par);
             cerr << '\n';
           }
           models->tarSegMsg.clear();

@@ -817,8 +817,12 @@ void FCM::aggregate_slf (const Param& p) const {
   ofstream pf(posName);
   u64 i = 0;
 
-  for (string line; getline(pfOld, line); ++i)
-    pf << line << '\t' << fixed << setprecision(FIL_PREC) << selfEnt[i] << '\n';
+  for (string line; getline(pfOld, line); ++i) {
+    pf << line << '\t';
+    if (!p.noRedun)    pf << fixed << setprecision(FIL_PREC) << selfEnt[i];
+    else               pf << FBLANK;
+    pf << '\n';
+  }
 
   pfOld.close();  remove((posName+LBL_BAK).c_str());
   pf.close();

@@ -403,12 +403,14 @@ void Filter::extract_seg (u32 ID, const string& ref, const string& tar) const {
   auto subseq = make_unique<SubSeq>();
   subseq->inName = tar;
   u64 i = 0;
+
   for (string beg,end,ent; ff>>beg>>end>>ent; ++i) {
     subseq->outName = segName+to_string(i);
     subseq->begPos  = stoull(beg);
     subseq->size    = static_cast<streamsize>(stoull(end)-subseq->begPos+1);
     extract_subseq(subseq);
   }
+
   ff.close();
 }
 

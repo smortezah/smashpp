@@ -80,8 +80,8 @@ static constexpr u8     K_MAX_TBL64  {11};  // Max ctx table 64     (128 MB mem)
 static constexpr u8     K_MAX_TBL32  {13};  // Max ctx table 32     (1   GB mem)
 static constexpr u8     K_MAX_LGTBL8 {14};  // Max ctx log table 8  (1   GB mem)
 static constexpr u32    BLK_SZ       {8192};// 8K
-static constexpr u64    W            {pow2(29ull)};       // Width of CML sketch
-static constexpr u8     D            {5};                 // Depth of CML sketch
+static constexpr u64    W            {pow2(29ull)};     // Width of CML sketch
+static constexpr u8     D            {5};               // Depth of CML sketch
 static constexpr u32    G            {64};  // Machine word size-univers hash fn
 static constexpr u8     LOG_BASE     {2};   // Logarithmic counting
 static constexpr u8     PRF_PREC     {3};   // Precisions - floats in Inf. prof
@@ -99,6 +99,7 @@ static const     string POS_REDUN    {"R"};     // Hdr of pos file
 static constexpr auto   PI           {3.14159265f};
 static constexpr int    FILE_BUF     {8*1024};  // 8K
 static constexpr u8     TEXTWIDTH    {65};
+static constexpr float  FBLANK       {-2.0f};
 static const     string TERM_SEP     {". . . . . . . . . . . . . . . . . . . . "
                                       ". . . . . . . . .\n"};
 
