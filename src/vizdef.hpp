@@ -8,20 +8,20 @@
 
 namespace smashpp {
 static const     auto IMAGE           {"map.svg"};
-static constexpr u8   LINK            {2};
+static constexpr u8   LINK            {1};
 static constexpr u8   MIN_LINK        {1};
 static constexpr u8   MAX_LINK        {5};
 static constexpr u8   COLOR           {0};
 static constexpr u8   MIN_COLOR       {0};
 static constexpr u8   MAX_COLOR       {2};
-static constexpr auto OPAC            {0.75f};
+static constexpr auto OPAC            {0.8f};
 static constexpr auto MIN_OPAC        {0.0f};
 static constexpr auto MAX_OPAC        {1.0f};
-static constexpr u32  WDTH            {23};
-static constexpr u32  MIN_WDTH        {10};
-static constexpr u32  MAX_WDTH        {200};
-static constexpr u32  SPC             {65};
-static constexpr u32  MIN_SPC         {0};
+static constexpr u32  WDTH            {21};
+static constexpr u32  MIN_WDTH        {15};
+static constexpr u32  MAX_WDTH        {100};
+static constexpr u32  SPC             {62};
+static constexpr u32  MIN_SPC         {15};
 static constexpr u32  MAX_SPC         {200};
 static constexpr u32  MULT            {43};  // 5 colors without overlapping
 static constexpr u32  MIN_MULT        {1};

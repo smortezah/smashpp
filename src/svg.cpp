@@ -171,39 +171,74 @@ void Rectangle::plot_redun_tar (ofstream& f, bool showNRC) const {
 }
 
 void Rectangle::plot_chromosome (ofstream& f) const {
-  const string borderColor {"#000000"};
-//  double  wk = width / 2 + 0.5;
-//
-//  f << "<path d=\"m " << PREC << origin.x - 1 << ","
-//    << PREC << origin.y - 1 << " 0," << PREC << wk << " c 0, -8.31 6.69, "
-//    << PREC << -wk << " " << PREC << wk << ", " << PREC << -wk << " l "
-//    << PREC << -wk << ",0 z m " << PREC << wk << ",0 c 8.31,0 "
-//    << PREC << wk << ",6.69 " << PREC << wk << "," << PREC << wk << " l 0,"
-//    << PREC << -wk << " " << PREC << -wk << ",0 z\" id=\"rect3787\" "
-//    << "style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;stroke:none\" />";
-//
-//  f << "<path d=\"m " << PREC << origin.x + 1 + width << ","
-//    << PREC << origin.y + 1 + height << " 0," << PREC << -wk
-//    << " c 0,8.31 -6.69, " << PREC << wk << " " << PREC << -wk << ", "
-//    << PREC << wk << " l " << PREC << wk << ",0 z m " << PREC << -wk
-//    << ",0 c -8.31,0 " << PREC << -wk << ",-6.69 " << PREC << -wk << ","
-//    << PREC << -wk << " l 0," << PREC << wk << " " << PREC << wk << ",0 z\" "
-//    << "id=\"rect3787\" style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;"
-//    << "stroke:none\" />";
+  //  f << begin_elem("rect")
+  //    << attrib("fill", "none")
+  //    << attrib("stroke", "black")
+  //    << attrib("stroke-width", 2)
+  //    << attrib("stroke-linecap", "butt")
+  //    << attrib("stroke-linejoin", "miter")
+  //    << attrib("stroke-miterlimit", 4)
+  //    << attrib("width", width, true)
+  //    << attrib("height", height, true)
+  //    << attrib("x", origin.x, true)
+  //    << attrib("y", origin.y, true)
+  //    << attrib("ry", 3)
+  //    << end_empty_elem();
 
-  f << begin_elem("rect")
-    << attrib("fill", "none")
-    << attrib("stroke", borderColor)
+  f << begin_elem("line")
+    << attrib("x1", origin.x, true)
+    << attrib("y1", origin.y, true)
+    << attrib("x2", origin.x, true) 
+    << attrib("y2", origin.y+height, true)
+    << attrib("stroke", "black") 
     << attrib("stroke-width", 2)
-    << attrib("stroke-linecap", "butt")
-    << attrib("stroke-linejoin", "miter")
-    << attrib("stroke-miterlimit", 4)
-    << attrib("width", width, true)
-    << attrib("height", height, true)
-    << attrib("x", origin.x, true)
-    << attrib("y", origin.y, true)
-    << attrib("ry", 3)
     << end_empty_elem();
+
+  f << begin_elem("line")
+    << attrib("x1", origin.x+width, true)
+    << attrib("y1", origin.y, true)
+    << attrib("x2", origin.x+width, true) 
+    << attrib("y2", origin.y+height, true)
+    << attrib("stroke", "black")
+    << attrib("stroke-width", 2)
+    << end_empty_elem();
+
+  f << begin_elem("ellipse")
+    << attrib("cx", origin.x + width/2)
+    << attrib("cy", origin.y)
+    << attrib("rx", width/2)
+    << attrib("ry", 2)
+    << attrib("fill", "none")
+    << attrib("stroke", "black")
+    << attrib("stroke-width", 2)
+    << end_empty_elem();
+
+  f << begin_elem("path")
+    << attrib("d", "M"+to_string(origin.x)+" "+to_string(origin.y+height)+" a "+to_string(width/2)+" 2, 0, 0 0, "+to_string(width)+" 0")
+    << attrib("fill", "transparent")
+    << attrib("stroke", "black")
+    << attrib("stroke-width", 2)
+    << end_empty_elem();
+
+// f<<  "<path d=\"M"<<origin.x<<" "<<origin.y+height<<" a "<<width/2<<" 2, 0, 0 0, "<<width<<" 0\" stroke=\"black\" stroke-width=\"2\" fill=\"transparent\"/>";
+
+  // double  wk = width / 2 + 0.5;
+
+  // f << "<path d=\"m " << PREC << origin.x - 1 << ","
+  //   << PREC << origin.y - 1 << " 0," << PREC << wk << " c 0, -8.31 6.69, "
+  //   << PREC << -wk << " " << PREC << wk << ", " << PREC << -wk << " l "
+  //   << PREC << -wk << ",0 z m " << PREC << wk << ",0 c 8.31,0 "
+  //   << PREC << wk << ",6.69 " << PREC << wk << "," << PREC << wk << " l 0,"
+  //   << PREC << -wk << " " << PREC << -wk << ",0 z\" "
+  //   << "style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;stroke:none\" />";
+
+  // f << "<path d=\"m " << PREC << origin.x + 1 + width << ","
+  //   << PREC << origin.y + 1 + height << " 0," << PREC << -wk
+  //   << " c 0,8.31 -6.69, " << PREC << wk << " " << PREC << -wk << ", "
+  //   << PREC << wk << " l " << PREC << wk << ",0 z m " << PREC << -wk
+  //   << ",0 c -8.31,0 " << PREC << -wk << ",-6.69 " << PREC << -wk << ","
+  //   << PREC << -wk << " l 0," << PREC << wk << " " << PREC << wk << ",0 z\" "
+  //   << "style=\"fill:#fff;fill-opacity:1;fill-rule:nonzero;stroke:none\" />";
 }
 
 /*

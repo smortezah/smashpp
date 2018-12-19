@@ -57,7 +57,7 @@ void VizPaint::print_plot (VizParam& p) {
   for (i64 br, er, bt, et; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
     pos.emplace_back(Position(br, er, nr, sr, bt, et, nt, st, start));
   p.start = start;
-  if (sr==-2.0 && st==-2.0)  p.showRedun=false;
+  if (sr==DBLANK && st==DBLANK)  p.showRedun=false;
 
   // std::sort(pos.begin(), pos.end(),
   //   [](const Position& l, const Position& r) { return l.begRef < r.begRef; });
@@ -77,13 +77,17 @@ void VizPaint::print_plot (VizParam& p) {
   // Plot
   u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignore=0;
   for (auto e : pos) {
-    if      (abs(e.endTar-e.begTar) <= p.min)          { ++n_ignore; continue; }
-    else if (e.begRef!=-2 && e.endRef-e.begRef<=p.min) { ++n_ignore; continue; }
+    if (abs(e.endTar-e.begTar) <= p.min) {
+      ++n_ignore;    continue;
+    }
+    else if (e.begRef!=DBLANK && e.endRef-e.begRef<=p.min) {
+      ++n_ignore;    continue;
+    }
 
-    if (e.begRef==-2) { e.endTar>e.begTar ? ++n_regularSolo : ++n_inverseSolo; }
+    if (e.begRef==DBLANK) {e.endTar>e.begTar? ++n_regularSolo: ++n_inverseSolo;}
 
     const auto plot_main_ref = [&]() {
-      if (e.begRef != -2) {
+      if (e.begRef != DBLANK) {
         rect->width  = width;
         rect->color  = rgb_color(e.start);
         rect->origin = Point(cx, cy + get_point(e.begRef));
@@ -102,7 +106,7 @@ void VizPaint::print_plot (VizParam& p) {
     };
 
     const auto plot_main_tar = [&](bool inverted) {
-      rect->color  = (e.begRef==-2 ? "black" : rgb_color(e.start));
+      rect->color  = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
       rect->width  = width;
       rect->height = get_point(abs(e.begTar-e.endTar));
 
@@ -111,8 +115,8 @@ void VizPaint::print_plot (VizParam& p) {
         rect->plot(fPlot);
       } else {
         rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
-        if (e.begRef==-2)  rect->plot_ir(fPlot, "#WavyWhite");
-        else               rect->plot_ir(fPlot);
+        if (e.begRef==DBLANK)  rect->plot_ir(fPlot, "#WavyWhite");
+        else                   rect->plot_ir(fPlot);
       }
 
       if (p.showNRC) {
@@ -130,9 +134,9 @@ void VizPaint::print_plot (VizParam& p) {
         plot_main_ref();
         plot_main_tar(false);
 
-        if (e.begRef != -2) {
+        if (e.begRef != DBLANK) {
           switch (p.link) {
-          case 5:
+          case 1:
             poly->lineColor = "grey";
             poly->fillColor = rgb_color(e.start);
             poly->one   = Point(cx+width,       cy+get_point(e.begRef));
@@ -149,7 +153,7 @@ void VizPaint::print_plot (VizParam& p) {
               cx+width+space, cy+get_point(e.begTar+(e.endTar-e.begTar)/2.0));
             line->plot(fPlot);
             break;
-          case 1:
+          case 3:
             line->color = "black";
             line->beg = Point(
               cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
@@ -157,8 +161,8 @@ void VizPaint::print_plot (VizParam& p) {
               cx+width+space, cy+get_point(e.begTar+(e.endTar-e.begTar)/2.0));
             line->plot(fPlot);
             break;
-          case 3:
-            line->color = "black";
+          case 4:
+            line->color = rgb_color(e.start);
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -166,8 +170,8 @@ void VizPaint::print_plot (VizParam& p) {
             line->end = Point(cx+width+space, cy+get_point(e.endTar));
             line->plot(fPlot);
             break;
-          case 4:
-            line->color = rgb_color(e.start);
+          case 5:
+            line->color = "black";
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -186,9 +190,9 @@ void VizPaint::print_plot (VizParam& p) {
         plot_main_ref();
         plot_main_tar(true);
 
-        if (e.begRef != -2) {
+        if (e.begRef != DBLANK) {
           switch (p.link) {
-          case 5:
+          case 1:
             poly->lineColor = "grey";
             poly->fillColor = rgb_color(e.start);
             poly->one   = Point(cx+width,       cy+get_point(e.begRef));
@@ -205,7 +209,7 @@ void VizPaint::print_plot (VizParam& p) {
               cx+width+space, cy+get_point(e.endTar+(e.begTar-e.endTar)/2.0));
             line->plot(fPlot);
             break;
-          case 1:
+          case 3:
             line->color = "green";
             line->beg = Point(
               cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
@@ -213,8 +217,8 @@ void VizPaint::print_plot (VizParam& p) {
               cx+width+space, cy+get_point(e.endTar+(e.begTar-e.endTar)/2.0));
             line->plot(fPlot);
             break;
-          case 3:
-            line->color = "green";
+          case 4:
+            line->color = rgb_color(e.start);
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -223,8 +227,8 @@ void VizPaint::print_plot (VizParam& p) {
             line->end = Point(cx+width+space, cy+get_point(e.endTar));
             line->plot(fPlot);
             break;
-          case 4:
-            line->color = rgb_color(e.start);
+          case 5:
+            line->color = "green";
             line->beg = Point(cx+width,       cy+get_point(e.begRef));
             line->end = Point(cx+width+space, cy+get_point(e.begTar));
             line->plot(fPlot);
@@ -827,12 +831,12 @@ u64 maxBases, string&& type) {
   }
   else if (type == "tar") {
     for (auto e : pos)
-      if ((abs(e.endTar-e.begTar)>par.min && e.begRef==-2) ||
+      if ((abs(e.endTar-e.begTar)>par.min && e.begRef==DBLANK) ||
           (abs(e.endTar-e.begTar)>par.min && e.endRef-e.begRef>par.min))
         nodes.emplace_back(Node(e.begTar, 
           e.endTar>e.begTar ? 'b' : 'e', e.start));
     for (auto e : pos)
-      if ((abs(e.endTar-e.begTar)>par.min && e.begRef==-2) ||
+      if ((abs(e.endTar-e.begTar)>par.min && e.begRef==DBLANK) ||
           (abs(e.endTar-e.begTar)>par.min && e.endRef-e.begRef>par.min))
         nodes.emplace_back(Node(e.endTar, 
           e.endTar>e.begTar ? 'e' : 'b', e.start));
