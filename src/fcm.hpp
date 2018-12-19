@@ -2,7 +2,6 @@
 #define SMASHPP_FCM_HPP
 
 #include <memory>
-#include <numeric>//todo remove
 #include "par.hpp"
 #include "tbl64.hpp"
 #include "tbl32.hpp"

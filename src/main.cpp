@@ -99,7 +99,6 @@
 #include "exception.hpp"
 #include "segment.hpp"
 #include "vizpaint.hpp"
-#include <thread>//todo
 using namespace smashpp;
 
 int main (int argc, char* argv[]) {
@@ -133,13 +132,12 @@ int main (int argc, char* argv[]) {
       else {
         const auto origRef=par.ref, origTar=par.tar;
         for (u8 timesRunning=0; timesRunning!=2; ++timesRunning) {
-        // for (u8 timesRunning=0; timesRunning!=1; ++timesRunning) {//todo
           if (timesRunning==0)       cerr << 
             bold("====[ REGULAR MODE ]==================================\n");
           else if (timesRunning==1)  cerr << 
             bold("====[ INVERTED MODE ]=================================\n");
 
-          par.ID = timesRunning;    
+          par.ID = timesRunning;
           par.ref=origRef;  par.refName=file_name(par.ref);
           par.tar=origTar;  par.tarName=file_name(par.tar);
 
@@ -168,9 +166,8 @@ int main (int argc, char* argv[]) {
 
           // Ref-free compress
           if (!par.noRedun) {
-            cerr << TERM_SEP;
-            cerr << ">>> " << italic("Reference-free compression of the "
-              "segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
+            cerr << TERM_SEP << ">>> " << italic("Reference-free compression "
+              "of the segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
             models->selfEnt.reserve(filter->nSegs);
             for (u64 i=0; i!=filter->nSegs; ++i) {
               par.seq = segName+to_string(i);
@@ -211,10 +208,10 @@ int main (int argc, char* argv[]) {
             filter = make_unique<Filter>(par);
             filter->smooth_seg(par);
             if (filter->nSegs==0) { cerr<<'\n';  continue; }
-            filter->extract_seg(par.ID, par.ref, par.tar);
 
             // Ref-free compress
             if (!par.noRedun) {
+              filter->extract_seg(par.ID, par.ref, par.tar);
               cerr << TERM_SEP;
               cerr << ">>> " << italic("Reference-free compression of the "
                 "segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
