@@ -99,7 +99,7 @@ static const     string POS_REDUN    {"R"};     // Hdr of pos file
 static constexpr auto   PI           {3.14159265f};
 static constexpr int    FILE_BUF     {8*1024};  // 8K
 static constexpr u8     TEXTWIDTH    {65};
-static constexpr float  FBLANK       {-2.0f};
+static constexpr double DBLANK       {-2.0};
 static const     string TERM_SEP     {". . . . . . . . . . . . . . . . . . . . "
                                       ". . . . . . . . .\n"};
 

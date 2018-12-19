@@ -820,7 +820,7 @@ void FCM::aggregate_slf (const Param& p) const {
   for (string line; getline(pfOld, line); ++i) {
     pf << line << '\t';
     if (!p.noRedun)    pf << fixed << setprecision(FIL_PREC) << selfEnt[i];
-    else               pf << FBLANK;
+    else               pf << DBLANK;
     pf << '\n';
   }
 
