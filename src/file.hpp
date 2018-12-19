@@ -7,6 +7,12 @@
 #include "exception.hpp"
 
 namespace smashpp {
+struct SubSeq {
+  string inName, outName;
+  u64    begPos;
+  streamsize size;
+};
+
 inline static void ignore_this_line (ifstream& fs) {
   fs.ignore(numeric_limits<std::streamsize>::max(), '\n');
 }

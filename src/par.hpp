@@ -35,7 +35,7 @@ class Param {  // Parameters
   string      report;
   bool        compress, filter, segment;
   u32         ID;
-  bool        noNRC, noRedun;
+  bool        noRedun;
   vector<MMPar> refMs, tarMs;
 
   // Define Param::Param(){} in *.hpp => compile error
@@ -45,7 +45,7 @@ class Param {  // Parameters
     filterScale(FS), saveSeq(false), saveProfile(false), saveFilter(false),
     saveSegment(false), saveAll(false), refType(FileType::SEQ), 
     tarType(FileType::SEQ), showInfo(true), compress(false), filter(false),
-    segment(false), ID(0), noNRC(false), noRedun(false) {}
+    segment(false), ID(0), noRedun(false) {}
 
   void parse (int, char**&);
   auto win_type (const string&) const -> WType;
@@ -193,7 +193,6 @@ inline void Param::parse (int argc, char**& argv) {
         is_filter_scale(cmd));
       set->assert(filterScale);
     }
-    else if (*i=="-nn" || *i=="--no-nrc")          noNRC      =true;
     else if (*i=="-nr" || *i=="--no-redun")        noRedun    =true;
     else if (*i=="-sb" || *i=="--save-seq")        saveSeq    =true;
     else if (*i=="-sp" || *i=="--save-profile")    saveProfile=true;
@@ -314,9 +313,6 @@ inline void Param::help () const {
      "           min segment size "
      "[" << to_string(MIN_SSIZE) << "," << to_string(MAX_SSIZE) << "] " << 
      fit("COMPRESS")                                                      <<'\n'
-  << "  " << b("-nn") << ", "  << b("--no-nrc") << "              "
-     "NOT compute normalized       " << fit("NO COMPRESS")                <<'\n'
-  << "                             relative compression (NRC)"            <<'\n'
   << "  " << b("-nr") << ", "  << b("--no-redun") << "            "
      "NOT compute self complexity  " << fit("NO COMPRESS")                <<'\n'
   << "  " << b("-e") << ",  " << b("--ent-n") << " " << ul("FLOAT") << 

@@ -6,6 +6,17 @@
 #include "svg.hpp"
 
 namespace smashpp {
+struct Position {
+  i64   begRef, endRef;
+  prc_t entRef, selfRef;
+  i64   begTar, endTar;
+  prc_t entTar, selfTar;
+  u64   start;
+  Position (i64 br, i64 er, prc_t nr, prc_t sr, i64 bt, i64 et, prc_t nt, 
+    prc_t st, u64 s) : begRef(br), endRef(er), entRef(nr), selfRef(sr), 
+    begTar(bt), endTar(et), entTar(nt), selfTar(st), start(s) {}
+};
+
 class VizPaint {
  public:
   double cx, cy;
