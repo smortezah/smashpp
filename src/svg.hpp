@@ -78,7 +78,8 @@ struct Ellipse {
   double cx, cy, rx, ry;
   double strokeWidth;
   string stroke, fill;
-  Ellipse () : strokeWidth(1.0), stroke("black"), fill("transparent") {}
+  Ellipse () : rx(2.0), ry(2.0), strokeWidth(1.0), stroke("black"), 
+    fill("transparent") {}
   void plot (ofstream&) const;
 };
 
@@ -86,17 +87,16 @@ struct Path {
   Point  origin;
   double strokeWidth;
   string stroke, trace, strokeLineJoin, strokeDashArray, fill;
-  Path () : strokeWidth(1), strokeLineJoin("round"), strokeDashArray("8 3"),
-    fill("transparent") {}
+  Path () : strokeWidth(1), strokeLineJoin("round"), fill("transparent") {}
   void plot (ofstream&) const;
 };
 
 struct Cyllinder {
   Point  origin;
   double width, height, ry, strokeWidth;
-  string stroke, fill, path, strokeLineJoin, strokeDashArray;
-  Cyllinder () : strokeWidth(1.0), stroke("black"), fill("none"),
-    strokeLineJoin("round"), strokeDashArray("8 3") {}
+  string stroke, fill, strokeLineJoin, strokeDashArray;
+  Cyllinder () : ry(2.0), strokeWidth(1.0), stroke("black"), fill("none"),
+    strokeLineJoin("round") {}
   void plot (ofstream&) const;
 };
 
@@ -114,13 +114,21 @@ struct Rectangle {
   void plot_redun (ofstream&, u8, char) const;
   void plot_redun_ref (ofstream&, bool) const;
   void plot_redun_tar (ofstream&, bool) const;
-  void plot_chromosome (ofstream&) const;
 };
 
 struct Polygon {
   Point  one, two, three, four;
   string lineColor, fillColor;
   Polygon () = default;
+  void plot (ofstream&) const;
+};
+
+struct Chromosome {
+  Point  origin;
+  double width, height, ry, strokeWidth;
+  string stroke, fill, strokeLineJoin, strokeDashArray;
+  Chromosome () : ry(2.0), strokeWidth(1.0), stroke("black"), 
+    fill("transparent"), strokeLineJoin("round") {}
   void plot (ofstream&) const;
 };
 }

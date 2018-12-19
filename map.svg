@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Morteza Hosseini, IEETA 2018-2019 -->
+	<svg xmlns="http://www.w3.org/2000/svg" width="504" height="650" >	<defs id="ffff" >	<pattern id="Wavy" height="5.18058" width="30" patternUnits="userSpaceOnUse" >	<path d="M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z" fill="black" stroke="none" />
+</pattern>
+</defs>
+	<defs id="ffff" >	<pattern id="WavyWhite" height="5.18058" width="30" patternUnits="userSpaceOnUse" >	<path d="M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z" fill="white" stroke="none" />
+</pattern>
+</defs>
+	<rect fill="white" stroke="white" fill-opacity="0.8" width="504.00" height="650.00" x="0.00" y="0.00" ry="3" />
+	<text id="210.50000085.000000" x="210.50" y="85.00" dominant-baseline="middle" transform="" font-size="12px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >refs</text>
+	<text id="293.50000085.000000" x="293.50" y="85.00" dominant-baseline="middle" transform="" font-size="12px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >tars</text>
+	<text id="171.000000100.000000" x="171.00" y="100.00" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="2" style="fill:#A03C3B">0</tspan>
+</text>
+	<text id="171.000000220.000000" x="171.00" y="220.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="0" style="fill:#A03C3B">240, </tspan>
+<tspan id="2" style="fill:#A03C3B">241</tspan>
+</text>
+	<text id="171.000000339.500000" x="171.00" y="339.50" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="0" style="fill:#A03C3B">479</tspan>
+</text>
+	<text id="171.000000344.500000" x="171.00" y="344.50" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="1" style="fill:#A03C3B">489</tspan>
+</text>
+	<text id="171.000000477.500000" x="171.00" y="477.50" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="1" style="fill:#A03C3B">755</tspan>
+</text>
+	<text id="171.000000487.500000" x="171.00" y="487.50" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="3" style="fill:#A03C3B">775</tspan>
+</text>
+	<text id="171.000000599.500000" x="171.00" y="599.50" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="3" style="fill:#A03C3B">999</tspan>
+</text>
+	<text id="333.000000100.000000" x="333.00" y="100.00" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="0" style="fill:#A03C3B">0</tspan>
+</text>
+	<text id="333.000000212.000000" x="333.00" y="212.00" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="0" style="fill:#A03C3B">224</tspan>
+</text>
+	<text id="333.000000221.500000" x="333.00" y="221.50" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="2" style="fill:#A03C3B">243, </tspan>
+<tspan id="3" style="fill:#A03C3B">243</tspan>
+</text>
+	<text id="333.000000460.500000" x="333.00" y="460.50" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="2" style="fill:#A03C3B">721, </tspan>
+<tspan id="3" style="fill:#A03C3B">721</tspan>
+</text>
+	<text id="333.000000478.000000" x="333.00" y="478.00" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="1" style="fill:#A03C3B">756</tspan>
+</text>
+	<text id="333.000000599.500000" x="333.00" y="599.50" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="1" style="fill:#A03C3B">999</tspan>
+</text>
+	<rect fill="#A03C3B" stroke="#A03C3B" fill-opacity="0.8" width="21.00" height="119.50" x="200.00" y="220.00" ry="3" />
+	<rect id="rect3777" fill="#ffff00" stroke="#ffff00" fill-opacity="0.8" width="7.00" height="119.50" x="188.00" y="220.00" ry="2" />
+	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="0.8" width="7.00" height="119.50" x="176.00" y="220.00" ry="2" />
+	<rect fill="#A03C3B" stroke="#A03C3B" fill-opacity="0.8" width="21.00" height="112.00" x="283.00" y="100.00" ry="3" />
+	<rect id="rect3777" fill="#ff5500" stroke="#ff5500" fill-opacity="0.8" width="7.00" height="112.00" x="309.00" y="100.00" ry="2" />
+	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="0.8" width="7.00" height="112.00" x="321.00" y="100.00" ry="2" />
+	<polygon points="221.00,220.00 221.00,339.50 283.00,212.00 283.00,100.00" fill="#A03C3B" stroke="#A03C3B" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
+	<rect fill="#A03C3B" stroke="#A03C3B" fill-opacity="0.8" width="21.00" height="133.00" x="200.00" y="344.50" ry="3" />
+	<rect id="rect3777" fill="#ffaa00" stroke="#ffaa00" fill-opacity="0.8" width="7.00" height="133.00" x="188.00" y="344.50" ry="2" />
+	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="0.8" width="7.00" height="133.00" x="176.00" y="344.50" ry="2" />
+	<rect fill="#A03C3B" stroke="#A03C3B" fill-opacity="0.8" width="21.00" height="121.50" x="283.00" y="478.00" ry="3" />
+	<rect id="rect3777" fill="#ff5500" stroke="#ff5500" fill-opacity="0.8" width="7.00" height="121.50" x="309.00" y="478.00" ry="2" />
+	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="0.8" width="7.00" height="121.50" x="321.00" y="478.00" ry="2" />
+	<polygon points="221.00,344.50 221.00,477.50 283.00,599.50 283.00,478.00" fill="#A03C3B" stroke="#A03C3B" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
+	<rect fill="#A03C3B" stroke="#A03C3B" fill-opacity="0.8" width="21.00" height="120.50" x="200.00" y="100.00" ry="3" />
+	<rect id="rect3777" fill="#ffaa00" stroke="#ffaa00" fill-opacity="0.8" width="7.00" height="120.50" x="188.00" y="100.00" ry="2" />
+	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="0.8" width="7.00" height="120.50" x="176.00" y="100.00" ry="2" />
+	<rect fill="#A03C3B" stroke="#A03C3B" fill-opacity="0.8" width="21.00" height="239.00" x="283.00" y="221.50" ry="3" />
+	<rect fill-opacity="0.8" stroke-width="2" fill="url(#Wavy)" width="21.00" height="239.00" x="283.00" y="221.50" ry="3" />
+	<rect id="rect3777" fill="#ff5500" stroke="#ff5500" fill-opacity="0.8" width="7.00" height="239.00" x="309.00" y="221.50" ry="2" />
+	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="0.8" width="7.00" height="239.00" x="321.00" y="221.50" ry="2" />
+	<polygon points="221.00,100.00 221.00,220.50 283.00,221.50 283.00,460.50" fill="#A03C3B" stroke="#A03C3B" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
+	<rect fill="#A03C3B" stroke="#A03C3B" fill-opacity="0.8" width="21.00" height="112.00" x="200.00" y="487.50" ry="3" />
+	<rect id="rect3777" fill="#ffaa00" stroke="#ffaa00" fill-opacity="0.8" width="7.00" height="112.00" x="188.00" y="487.50" ry="2" />
+	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="0.8" width="7.00" height="112.00" x="176.00" y="487.50" ry="2" />
+	<rect fill="#A03C3B" stroke="#A03C3B" fill-opacity="0.8" width="21.00" height="239.00" x="283.00" y="221.50" ry="3" />
+	<rect fill-opacity="0.8" stroke-width="2" fill="url(#Wavy)" width="21.00" height="239.00" x="283.00" y="221.50" ry="3" />
+	<rect id="rect3777" fill="#ff5500" stroke="#ff5500" fill-opacity="0.8" width="7.00" height="239.00" x="309.00" y="221.50" ry="2" />
+	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="0.8" width="7.00" height="239.00" x="321.00" y="221.50" ry="2" />
+	<polygon points="221.00,487.50 221.00,599.50 283.00,221.50 283.00,460.50" fill="#A03C3B" stroke="#A03C3B" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
+	<line id="200.000000100.000000200.000000600.000000" x1="200.00" y1="100.00" x2="200.00" y2="600.00" stroke="black" stroke-width="2.00" />
+	<line id="221.000000100.000000221.000000600.000000" x1="221.00" y1="100.00" x2="221.00" y2="600.00" stroke="black" stroke-width="2.00" />
+	<ellipse cx="210.5" cy="100" rx="10.5" ry="2" fill="transparent" stroke="black" stroke-width="2" />
+	<path d="M 200.000000,600.000000 M200.000000 600.000000 a 10.500000 2.000000, 0, 0 0, 21.000000 0" fill="transparent" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="2.00" />
+	<line id="283.000000100.000000283.000000600.000000" x1="283.00" y1="100.00" x2="283.00" y2="600.00" stroke="black" stroke-width="2.00" />
+	<line id="304.000000100.000000304.000000600.000000" x1="304.00" y1="100.00" x2="304.00" y2="600.00" stroke="black" stroke-width="2.00" />
+	<ellipse cx="293.5" cy="100" rx="10.5" ry="2" fill="transparent" stroke="black" stroke-width="2" />
+	<path d="M 283.000000,600.000000 M283.000000 600.000000 a 10.500000 2.000000, 0, 0 0, 21.000000 0" fill="transparent" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="2.00" />
+	<text id="252.00000024.000000" x="252.00" y="24.00" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >RELATIVE REDUNDANCY</text>
+	<text id="252.00000036.000000" x="252.00" y="36.00" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >REDUNDANCY</text>
+	<defs >	<linearGradient id="grad176.00000024.000000" x1="0%" y1="0%" x2="100%" y2="0%" >	<stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
+	<stop offset="8%" stop-color="#0055ff" stop-opacity="1" />
+	<stop offset="16%" stop-color="#00aaff" stop-opacity="1" />
+	<stop offset="25%" stop-color="#00ffff" stop-opacity="1" />
+	<stop offset="33%" stop-color="#00ffaa" stop-opacity="1" />
+	<stop offset="41%" stop-color="#00ff55" stop-opacity="1" />
+	<stop offset="50%" stop-color="#00ff00" stop-opacity="1" />
+	<stop offset="58%" stop-color="#55ff00" stop-opacity="1" />
+	<stop offset="66%" stop-color="#aaff00" stop-opacity="1" />
+	<stop offset="75%" stop-color="#ffff00" stop-opacity="1" />
+	<stop offset="83%" stop-color="#ffaa00" stop-opacity="1" />
+	<stop offset="91%" stop-color="#ff5500" stop-opacity="1" />
+	<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+	<rect fill="url(#grad176.00000024.000000)" width="152.00" height="12.00" x="176.00" y="24.00" ry="3" />
+	<text id="174.00000030.000000" x="174.00" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" >0.0</text>
+	<text id="214.00000030.000000" x="214.00" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >0.5</text>
+	<text id="252.00000030.000000" x="252.00" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.0</text>
+	<text id="290.00000030.000000" x="290.00" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.5</text>
+	<text id="330.00000030.000000" x="330.00" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" >2.0</text>
+</svg>
