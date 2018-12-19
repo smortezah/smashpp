@@ -17,6 +17,13 @@ struct Position {
     begTar(bt), endTar(et), entTar(nt), selfTar(st), start(s) {}
 };
 
+struct PosNode {
+  i64  position;
+  char type;
+  u64  start;
+  PosNode (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
+};
+
 class VizPaint {
  public:
   double cx, cy;
@@ -34,10 +41,11 @@ class VizPaint {
   u32  ratio;
   u32  mult;
   bool plottable;
-  vector<i64> lastPos;
+  vector<i64>     lastPos;
+  vector<PosNode> nodes;
 
   void show_info (VizParam&, const string&, const string&, u64, u64) const;
-  void config (double, double, u64, u64);
+  void config (double, double, u32, u64, u64);
   auto hsv_to_rgb (const HsvColor&) const -> RgbColor;
 #ifdef EXTEND
   auto rgb_to_hsv (const RgbColor&) const -> HsvColor;
@@ -57,8 +65,9 @@ class VizPaint {
   auto tspan (u32, const string&) const -> string;
   void sort_merge (string&) const;
   void save_n_pos (const string&) const;
-  template <typename Position>
-  void print_pos (ofstream&, VizParam&, Position&, u64, string&&);
+  void read_pos (ifstream&, vector<Position>&, VizParam&);
+  void make_posNode (const vector<Position>&, const VizParam&, string&&);
+  void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
 };
 }
 

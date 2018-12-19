@@ -126,12 +126,15 @@ void Cyllinder::plot (ofstream& f) const {
   ellipse->strokeWidth = strokeWidth;
   ellipse->plot(f);
 
-  // auto path = make_unique<Path>();
-  // path->trace = this->path;
-  // path->stroke = stroke;
-  // path->fill = fill;
-  // path->strokeWidth = strokeWidth;
-  // path->plot(f);
+  auto path = make_unique<Path>();
+  path->origin = Point(origin.x, origin.y+height);
+  path->trace = "M"+to_string(origin.x)+" "+to_string(origin.y+height)+
+    " a "+to_string(width/2)+" "+to_string(ry)+", 0, 0 0, "+to_string(width)+
+    " 0";
+  path->stroke = stroke;
+  path->fill = fill;
+  path->strokeWidth = strokeWidth;
+  path->plot(f);
 }
 
 /*
@@ -148,6 +151,17 @@ void Rectangle::plot (ofstream& f) const {
     << attrib("y", origin.y, true)
     << attrib("ry", 3)
     << end_empty_elem();
+
+
+  // auto path = make_unique<Path>();
+  // path->origin = Point(origin.x, origin.y+height);
+  // path->trace = "M"+to_string(origin.x)+" "+to_string(origin.y+height)+
+  //   " a "+to_string(width/2)+" "+to_string(ry)+", 0, 0 0, "+to_string(width)+
+  //   " 0";
+  // path->stroke = stroke;
+  // path->fill = fill;
+  // path->strokeWidth = strokeWidth;
+  // path->plot(f);
 }
 
 void Rectangle::plot_ir (ofstream& f, string&& wave) const {
@@ -218,66 +232,6 @@ void Rectangle::plot_redun_tar (ofstream& f, bool showNRC) const {
   showNRC ? plot_redun(f, 1, 't') : plot_redun(f, 0, 't');
 }
 
-void Rectangle::plot_chromosome (ofstream& f) const {
-  //  f << begin_elem("rect")
-  //    << attrib("fill", "none")
-  //    << attrib("stroke", "black")
-  //    << attrib("stroke-width", 2)
-  //    << attrib("stroke-linecap", "butt")
-  //    << attrib("stroke-linejoin", "miter")
-  //    << attrib("stroke-miterlimit", 4)
-  //    << attrib("width", width, true)
-  //    << attrib("height", height, true)
-  //    << attrib("x", origin.x, true)
-  //    << attrib("y", origin.y, true)
-  //    << attrib("ry", 3)
-  //    << end_empty_elem();
-
-  auto cyllinder = make_unique<Cyllinder>();
-  cyllinder->width = width;
-  cyllinder->height = height;
-  cyllinder->stroke = "black";
-  cyllinder->fill = "transparent";
-  cyllinder->strokeWidth = 2;
-  cyllinder->origin = origin;
-  cyllinder->plot(f);
-
-//   f << begin_elem("line")
-//     << attrib("x1", origin.x, true)
-//     << attrib("y1", origin.y, true)
-//     << attrib("x2", origin.x, true) 
-//     << attrib("y2", origin.y+height, true)
-//     << attrib("stroke", "black") 
-//     << attrib("stroke-width", 2)
-//     << end_empty_elem()
-//     << begin_elem("line")
-//     << attrib("x1", origin.x+width, true)
-//     << attrib("y1", origin.y, true)
-//     << attrib("x2", origin.x+width, true) 
-//     << attrib("y2", origin.y+height, true)
-//     << attrib("stroke", "black")
-//     << attrib("stroke-width", 2)
-//     << end_empty_elem();
-
-// auto ellipseHeight=1.5;
-//   f << begin_elem("ellipse")
-//     << attrib("cx", origin.x + width/2)
-//     << attrib("cy", origin.y)
-//     << attrib("rx", width/2)
-//     << attrib("ry", 2)
-//     << attrib("fill", "none")
-//     << attrib("stroke", "black")
-//     << attrib("stroke-width", ellipseHeight)
-//     << end_empty_elem()
-//     << begin_elem("path")
-//     << attrib("d", "M"+to_string(origin.x)+" "+to_string(origin.y+height)+
-//          " a "+to_string(width/2)+" 2, 0, 0 0, "+to_string(width)+" 0")
-//     << attrib("fill", "transparent")
-//     << attrib("stroke", "black")
-//     << attrib("stroke-width", ellipseHeight)
-//     << end_empty_elem();
-}
-
 /*
  * class Polygon
  */
@@ -294,4 +248,18 @@ void Polygon::plot (ofstream& f) const {
     << attrib("stroke-opacity", 0.4)
     << attrib("fill-opacity", 0.4)
     << end_empty_elem();
+}
+
+/*
+* class Chromosome
+*/
+void Chromosome::plot (ofstream& f) const {
+  auto cyllinder = make_unique<Cyllinder>();
+  cyllinder->width = width;
+  cyllinder->height = height;
+  cyllinder->stroke = stroke;
+  cyllinder->fill = fill;
+  cyllinder->strokeWidth = strokeWidth;;
+  cyllinder->origin = origin;
+  cyllinder->plot(f);
 }

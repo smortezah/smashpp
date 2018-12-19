@@ -17,7 +17,7 @@ void VizPaint::print_plot (VizParam& p) {
   if (p.verbose)           show_info(p, ref, tar, n_refBases, n_tarBases);
 
   cerr << "Plotting ...\r";
-  config(p.width, p.space, n_refBases, n_tarBases);
+  config(p.width, p.space, p.mult, n_refBases, n_tarBases);
 
   auto Paint_Extra = PAINT_EXTRA;
   if (p.showAnnot)  Paint_Extra+=30;
@@ -49,30 +49,19 @@ void VizPaint::print_plot (VizParam& p) {
   // If min is set to default, reset to base max proportion
   if (p.min==0)    p.min=static_cast<u32>(maxSize / 100);
 
-  // Read positions from file
+  // Read positions from file and Print them
   vector<Position> pos;
-  u64 start {p.start};
-  // i64 br, er, bt, et;
-  double nr,nt,sr,st;
-  for (i64 br, er, bt, et; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; ++start)
-    pos.emplace_back(Position(br, er, nr, sr, bt, et, nt, st, start));
-  p.start = start;
-  if (sr==DBLANK && st==DBLANK)  p.showRedun=false;
-
-  // std::sort(pos.begin(), pos.end(),
-  //   [](const Position& l, const Position& r) { return l.begRef < r.begRef; });
-  // const auto last = unique(pos.begin(), pos.end(),
-  //   [](const Position &l, const Position &r) { 
-  //     return l.begRef==r.begRef && l.endRef==r.endRef; 
-  //   });
-  // pos.erase(last, pos.end());
-
-  // Print positions
-  if (p.showPos) {
+  read_pos(fPos, pos, p);
+  make_posNode(pos, p, "ref");
+  if (p.showPos)
     print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
+
+  make_posNode(pos, p, "tar");
+  if (p.showPos)
     print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
+
+  if (p.showPos)
     if (!plottable)  error("not plottable positions.");
-  }
 
   // Plot
   u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignore=0;
@@ -270,14 +259,16 @@ void VizPaint::print_plot (VizParam& p) {
   remove((file_name(tar)+"."+FMT_N).c_str());
   
   // Plot chromosomes
-  rect->width  = width;
-  rect->origin = Point(cx, cy);
-  rect->height = refSize;
-  rect->plot_chromosome(fPlot);
+  auto chromosome = make_unique<Chromosome>();
+  chromosome->width = width;
+  chromosome->height = refSize;
+  chromosome->strokeWidth = 2;
+  chromosome->origin = Point(cx, cy);
+  chromosome->plot(fPlot);
 
-  rect->origin = Point(cx + width + space, cy);
-  rect->height = tarSize;
-  rect->plot_chromosome(fPlot);
+  chromosome->height = tarSize;
+  chromosome->origin = Point(cx+width+space, cy);
+  chromosome->plot(fPlot);
 
   // Plot legend and annotation
   plot_legend(fPlot, p);
@@ -372,11 +363,12 @@ const string& tar, u64 n_refBases, u64 n_tarBases) const {
   botrule();
 }
 
-inline void VizPaint::config (double width_, double space_, u64 refSize_, 
-u64 tarSize_) {
+inline void VizPaint::config (double width_, double space_, u32 mult_,
+u64 refSize_, u64 tarSize_) {
   ratio   = static_cast<u32>(max(refSize_,tarSize_) / PAINT_SCALE);
   width   = width_;
   space   = space_;
+  mult    = mult_;
   refSize = get_point(refSize_);
   tarSize = get_point(tarSize_);
   maxSize = max(refSize, tarSize);
@@ -533,7 +525,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   if (p.showNRC && !p.showRedun) {
     rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
-                   width/HORIZ_RATIO+HORIZ_TUNE;
+                   HORIZ_TUNE+width/HORIZ_RATIO;
 
     text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
     text->dominantBaseline = "text-after-edge";
@@ -543,7 +535,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   else if (!p.showNRC && p.showRedun) {
     rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
-                   width/HORIZ_RATIO+HORIZ_TUNE;
+                   HORIZ_TUNE+width/HORIZ_RATIO;
 
     text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
     text->dominantBaseline = "text-after-edge";
@@ -551,9 +543,9 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
     text->plot(f);
   }
   else if (p.showNRC && p.showRedun) {
-    rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
-    rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
-                   width/HORIZ_RATIO+HORIZ_TUNE;
+    rect->origin = Point(cx-2*(HORIZ_TUNE+width/HORIZ_RATIO), vert);
+    rect->width  = 2*width/HORIZ_RATIO+2*HORIZ_TUNE+width+space+width+
+                   2*width/HORIZ_RATIO+2*HORIZ_TUNE;
 
     text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
     text->dominantBaseline = "text-after-edge";
@@ -651,6 +643,7 @@ bool showRedun) const {
 
   auto path = make_unique<Path>();
   path->stroke="black";
+  path->strokeDashArray = "8 3";
   
   if (lastPos.size() == 1) {
     path->origin = Point(X2, cy+get_point(lastPos[0]));
@@ -810,48 +803,65 @@ inline void VizPaint::save_n_pos (const string& filePath) const {
   inFile.close();  NFile.close();
 }
 
-template <typename Position>
-inline void VizPaint::print_pos (ofstream& fPlot, VizParam& par, Position& pos,
-u64 maxBases, string&& type) {
-  struct Node {
-    i64  position;
-    char type;
-    u64  start;
-    Node (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
-  };
-  
-  vector<Node> nodes;    nodes.reserve(2*pos.size());
+inline void VizPaint::read_pos (ifstream& fPos, vector<Position>& pos, 
+VizParam& par) {
+  double nr,nt,sr,st;
+  for (i64 br, er, bt, et; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; 
+       ++par.start)
+    pos.emplace_back(Position(br, er, nr, sr, bt, et, nt, st, par.start));
+
+  if (sr==DBLANK && st==DBLANK)
+    par.showRedun=false;
+
+  // std::sort(pos.begin(), pos.end(),
+  //   [](const Position& l, const Position& r) { return l.begRef < r.begRef; });
+  // const auto last = unique(pos.begin(), pos.end(),
+  //   [](const Position &l, const Position &r) { 
+  //     return l.begRef==r.begRef && l.endRef==r.endRef; 
+  //   });
+  // pos.erase(last, pos.end());
+}
+
+inline void VizPaint::make_posNode (const vector<Position>& pos, 
+const VizParam& par, string&& type) {
+  nodes.clear();
+  nodes.reserve(2*pos.size());
+
   if (type == "ref") {
     for (auto e : pos)
       if (e.endRef-e.begRef>par.min && abs(e.endTar-e.begTar)>par.min)
-        nodes.emplace_back(Node(e.begRef, 'b', e.start));
+        nodes.emplace_back(PosNode(e.begRef, 'b', e.start));
     for (auto e : pos)
       if (e.endRef-e.begRef>par.min && abs(e.endTar-e.begTar)>par.min)
-        nodes.emplace_back(Node(e.endRef, 'e', e.start));
+        nodes.emplace_back(PosNode(e.endRef, 'e', e.start));
   }
   else if (type == "tar") {
     for (auto e : pos)
       if ((abs(e.endTar-e.begTar)>par.min && e.begRef==DBLANK) ||
           (abs(e.endTar-e.begTar)>par.min && e.endRef-e.begRef>par.min))
-        nodes.emplace_back(Node(e.begTar, 
+        nodes.emplace_back(PosNode(e.begTar, 
           e.endTar>e.begTar ? 'b' : 'e', e.start));
     for (auto e : pos)
       if ((abs(e.endTar-e.begTar)>par.min && e.begRef==DBLANK) ||
           (abs(e.endTar-e.begTar)>par.min && e.endRef-e.begRef>par.min))
-        nodes.emplace_back(Node(e.endTar, 
+        nodes.emplace_back(PosNode(e.endTar, 
           e.endTar>e.begTar ? 'e' : 'b', e.start));
   }
+
   std::sort(nodes.begin(), nodes.end(),
-    [](const Node& l, const Node& r) { return l.position < r.position; });
+    [](const PosNode& l, const PosNode& r) { return l.position < r.position; });
 
   plottable = static_cast<bool>(nodes.size());
   if (!plottable)  return;
 
-  if (!par.manMult)  par.mult = 512 / nodes.size();  // 256/(size/2)
-  mult = par.mult;
+  // if (!par.manMult)  par.mult = 512 / nodes.size();  // 256/(size/2)
+  // mult = par.mult;
 
   lastPos.emplace_back(nodes.back().position);
+}
 
+inline void VizPaint::print_pos (ofstream& fPlot, VizParam& par, 
+const vector<Position>& pos, u64 maxBases, string&& type) {
   auto   text = make_unique<Text>();
   string line, lastLine;
   i64    printPos  = 0;
