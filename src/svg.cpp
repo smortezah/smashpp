@@ -1,10 +1,23 @@
+#include <algorithm>
 #include "svg.hpp"
 #include "vizdef.hpp"
 using namespace smashpp;
 
-/*
- * class Text
- */
+RgbColor RgbColor::alpha_blend (const RgbColor& color1, const RgbColor& color2)
+const {
+  return RgbColor(static_cast<u8>(color1.r + (color2.r - color1.r) * alpha),
+                  static_cast<u8>(color1.g + (color2.g - color1.g) * alpha),
+                  static_cast<u8>(color1.b + (color2.b - color1.b) * alpha));
+}
+
+RgbColor RgbColor::shade (const RgbColor& color) const {
+  return alpha_blend(color, RgbColor(0, 0, 0));
+}
+
+RgbColor RgbColor::tint (const RgbColor& color) const {
+  return alpha_blend(color, RgbColor(255, 255, 255));
+}
+
 void Text::plot (ofstream& f) const {
   f << begin_elem("text")
     << attrib("id", to_string(origin.x)+to_string(origin.y))
@@ -58,9 +71,6 @@ void Text::print_pos_tar (ofstream& f, char c) {
   plot(f);
 }
 
-/*
- * class Line
- */
 void Line::plot (ofstream& f) const {
   f << begin_elem("line")
     << attrib("id", to_string(beg.x)+to_string(beg.y)+to_string(end.x)+
@@ -74,9 +84,6 @@ void Line::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-/*
-* class Ellipse
-*/
 void Ellipse::plot (ofstream& f) const {
   f << begin_elem("ellipse")
     << attrib("cx", cx)
@@ -90,9 +97,6 @@ void Ellipse::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-/*
- * class Path
- */
 void Path::plot (ofstream& f) const {
   f << begin_elem("path")
     << attrib("d", "M "+to_string(origin.x)+","+to_string(origin.y)+" "+trace)
@@ -105,9 +109,6 @@ void Path::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-/*
-* class Cyllinder
-*/
 void Cyllinder::plot (ofstream& f) const {
   auto path = make_unique<Path>();
   path->origin = Point(origin.x, origin.y);
@@ -136,9 +137,6 @@ void Cyllinder::plot (ofstream& f) const {
   path->plot(f);
 }
 
-/*
- * class Rectangle
- */
 void Rectangle::plot (ofstream& f) const {
   f << begin_elem("rect")
     << attrib("fill", fill)
@@ -220,9 +218,6 @@ void Rectangle::plot_redun_tar (ofstream& f, bool showNRC) const {
   showNRC ? plot_redun(f, 1, 't') : plot_redun(f, 0, 't');
 }
 
-/*
- * class Polygon
- */
 void Polygon::plot (ofstream& f) const {
   f << begin_elem("polygon")
     << "points=\""
@@ -238,9 +233,6 @@ void Polygon::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-/*
-* class Chromosome
-*/
 void Chromosome::plot (ofstream& f) const {
   auto cyllinder = make_unique<Cyllinder>();
   cyllinder->width = width;
@@ -277,4 +269,25 @@ void Chromosome::plot_ir (ofstream& f, string&& wave) const {
   //   << attrib("y", origin.y, true)
   //   << attrib("ry", 3)
   //   << end_empty_elem();
+}
+
+DEFCOLORS to_defColors (const string& color) {
+  
+}
+
+RgbColor to_rgb (const string& rgbColor) {
+  const bool isHex = (rgbColor[0]=='#');
+  if (isHex) {
+  // return RgbColor(static_cast<u8>(stoi(rgbColor.substr(1,2))),
+  //                 static_cast<u8>(stoi(rgbColor.substr(3,2))),
+  //                 static_cast<u8>(stoi(rgbColor.substr(5,2))));
+  }
+  else {
+    if      (*pos=="black")  return RgbColor(0,   0,   0);
+    else if (*pos=="white")  return RgbColor(255, 255, 255);
+    else if (*pos=="red")    return RgbColor(255, 0,   0);
+    else if (*pos=="green")  return RgbColor(0,   255, 0);
+    else if (*pos=="blue")   return RgbColor(0,   0,   255);
+    else                     error("color undefined");
+  }
 }
