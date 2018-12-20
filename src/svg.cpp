@@ -3,21 +3,6 @@
 #include "vizdef.hpp"
 using namespace smashpp;
 
-RgbColor RgbColor::alpha_blend (const RgbColor& color1, const RgbColor& color2)
-const {
-  return RgbColor(static_cast<u8>(color1.r + (color2.r - color1.r) * alpha),
-                  static_cast<u8>(color1.g + (color2.g - color1.g) * alpha),
-                  static_cast<u8>(color1.b + (color2.b - color1.b) * alpha));
-}
-
-RgbColor RgbColor::shade (const RgbColor& color) const {
-  return alpha_blend(color, RgbColor(0, 0, 0));
-}
-
-RgbColor RgbColor::tint (const RgbColor& color) const {
-  return alpha_blend(color, RgbColor(255, 255, 255));
-}
-
 void Text::plot (ofstream& f) const {
   f << begin_elem("text")
     << attrib("id", to_string(origin.x)+to_string(origin.y))
@@ -269,25 +254,4 @@ void Chromosome::plot_ir (ofstream& f, string&& wave) const {
   //   << attrib("y", origin.y, true)
   //   << attrib("ry", 3)
   //   << end_empty_elem();
-}
-
-DEFCOLORS to_defColors (const string& color) {
-  
-}
-
-RgbColor to_rgb (const string& rgbColor) {
-  const bool isHex = (rgbColor[0]=='#');
-  if (isHex) {
-  // return RgbColor(static_cast<u8>(stoi(rgbColor.substr(1,2))),
-  //                 static_cast<u8>(stoi(rgbColor.substr(3,2))),
-  //                 static_cast<u8>(stoi(rgbColor.substr(5,2))));
-  }
-  else {
-    if      (*pos=="black")  return RgbColor(0,   0,   0);
-    else if (*pos=="white")  return RgbColor(255, 255, 255);
-    else if (*pos=="red")    return RgbColor(255, 0,   0);
-    else if (*pos=="green")  return RgbColor(0,   255, 0);
-    else if (*pos=="blue")   return RgbColor(0,   0,   255);
-    else                     error("color undefined");
-  }
 }

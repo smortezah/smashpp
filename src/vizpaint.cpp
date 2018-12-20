@@ -81,8 +81,9 @@ void VizPaint::print_plot (VizParam& p) {
         auto chromosome = make_unique<Chromosome>();
         chromosome->width = width;
         chromosome->height = get_point(e.endRef-e.begRef);
-        chromosome->strokeWidth = 1;
-        chromosome->fill = chromosome->stroke = rgb_color(e.start);
+        chromosome->strokeWidth = 0.5;
+        chromosome->stroke = shade(rgb_color(e.start), 0.5);
+        chromosome->fill = rgb_color(e.start);
         chromosome->opacity = p.opacity;
         chromosome->origin = Point(cx, cy + get_point(e.begRef));
         chromosome->plot(fPlot);
@@ -108,9 +109,15 @@ void VizPaint::print_plot (VizParam& p) {
       chromosome->strokeWidth = 0.5;
       chromosome->fill = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
       //todo handle > age 'fill', black bud
-      chromosome->stroke = "darkgrey";
-      chromosome->opacity = p.opacity;
+      // chromosome->stroke = "darkgrey";
+      chromosome->stroke = shade(rgb_color(e.start), 0.5);
 
+// cerr<<'\n';
+//       cerr<<rgb_color(e.start)<<' ';
+//       cerr<<shade(rgb_color(e.start));
+
+
+      chromosome->opacity = p.opacity;
 
       // rect->fill = rect->stroke 
       //            = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
@@ -443,7 +450,7 @@ string VizPaint::rgb_color (u32 start) const {
   const auto hue = static_cast<u8>(start * mult);
   HsvColor HSV (hue);
   RgbColor RGB {hsv_to_rgb(HSV)};
-  return string_format("#%X%X%X", RGB.r, RGB.g, RGB.b);
+  return to_hex_color(RGB);
 }
 
 inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
@@ -491,8 +498,8 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     << attrib("patternUnits", "userSpaceOnUse")
     << mid_elem()
     << begin_elem("path")
-    << attrib("d", "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 L "
-         "-0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
+    << attrib("d", "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 "
+         "L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
          "11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 L "
          "30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 C 12.413,1.207 "
          "10.115,0.311 7.597,0.061 z")
@@ -512,8 +519,8 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     << attrib("patternUnits", "userSpaceOnUse")
     << mid_elem()
     << begin_elem("path")
-    << attrib("d", "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 L "
-         "-0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
+    << attrib("d", "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 "
+         "L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
          "11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 "
          "L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 "
          "C 12.413,1.207 10.115,0.311 7.597,0.061 z")
@@ -645,7 +652,8 @@ u8 colorMode) const {
     << mid_elem();
   for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
     f << begin_elem("stop") 
-      << attrib("offset", to_string(i*100/(grad->offsetColor.size()-1))+"%")
+      << attrib("offset", 
+                     to_string(i*100/(grad->offsetColor.size()-1))+"%")
       << attrib("stop-color", grad->offsetColor[i]) 
       << attrib("stop-opacity", 1)
       << end_empty_elem();
