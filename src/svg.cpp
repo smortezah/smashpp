@@ -10,6 +10,8 @@ void Text::plot (ofstream& f) const {
     << attrib("id", to_string(origin.x)+to_string(origin.y))
     << attrib("x", origin.x, true)
     << attrib("y", origin.y, true)
+    << attrib("dx", dx, true)
+    << attrib("dy", dy, true)
     << attrib("dominant-baseline", dominantBaseline)
     << attrib("transform", transform)
     << attrib("font-size", to_string(fontSize), false, "px")
@@ -82,6 +84,7 @@ void Ellipse::plot (ofstream& f) const {
     << attrib("rx", rx)
     << attrib("ry", ry)
     << attrib("fill", fill)
+    << attrib("fill-opacity", opacity)
     << attrib("stroke", stroke)
     << attrib("stroke-width", strokeWidth)
     << end_empty_elem();
@@ -94,6 +97,7 @@ void Path::plot (ofstream& f) const {
   f << begin_elem("path")
     << attrib("d", "M "+to_string(origin.x)+","+to_string(origin.y)+" "+trace)
     << attrib("fill", fill)
+    << attrib("fill-opacity", opacity)
     << attrib("stroke", stroke)
     << attrib("stroke-linejoin", strokeLineJoin)
     << attrib("stroke-dasharray", strokeDashArray)
@@ -105,35 +109,30 @@ void Path::plot (ofstream& f) const {
 * class Cyllinder
 */
 void Cyllinder::plot (ofstream& f) const {
-  auto line = make_unique<Line>();
-  line->stroke = stroke;
-  line->strokeWidth = strokeWidth;
-  line->beg = Point(origin.x, origin.y);
-  line->end = Point(origin.x, origin.y+height);
-  line->plot(f);
-
-  line->beg = Point(origin.x+width, origin.y);
-  line->end = Point(origin.x+width, origin.y+height);
-  line->plot(f);
-
-  auto ellipse = make_unique<Ellipse>();
-  ellipse->cx = origin.x + width/2;
-  ellipse->cy = origin.y;
-  ellipse->rx = width/2;
-  ellipse->ry = ry;
-  ellipse->fill = fill;
-  ellipse->stroke = stroke;
-  ellipse->strokeWidth = strokeWidth;
-  ellipse->plot(f);
-
   auto path = make_unique<Path>();
-  path->origin = Point(origin.x, origin.y+height);
-  path->trace = "M"+to_string(origin.x)+" "+to_string(origin.y+height)+
-    " a "+to_string(width/2)+" "+to_string(ry)+", 0, 0 0, "+to_string(width)+
-    " 0";
-  path->stroke = stroke;
+  path->origin = Point(origin.x, origin.y);
+  path->trace = " v "+to_string(height)+
+    " a "+to_string(width/2)+","+to_string(ry)+" 0 0,0 "+to_string(width)+
+    ",0 "+
+    " v "+to_string(-height)+
+    " a "+to_string(width/2)+","+to_string(ry)+" 0 0,0 "+to_string(-width)+
+    ",0 "+
+    " a "+to_string(width/2)+","+to_string(ry)+" 0 0,0 "+to_string(width)+
+    ",0 ";
   path->fill = fill;
+  path->opacity = opacity;
+  path->stroke = stroke;
   path->strokeWidth = strokeWidth;
+  path->plot(f);
+
+  path->origin = Point(origin.x, origin.y+height);
+  path->trace = " a "+to_string(width/2)+","+to_string(ry)+" 0 0,1 "+
+    to_string(width)+",0 ";
+  path->fill = "transparent";
+  path->opacity = opacity;
+  path->stroke = stroke;
+  path->strokeWidth = strokeWidth/2;
+  path->strokeDashArray = "4 1";
   path->plot(f);
 }
 
@@ -142,8 +141,8 @@ void Cyllinder::plot (ofstream& f) const {
  */
 void Rectangle::plot (ofstream& f) const {
   f << begin_elem("rect")
-    << attrib("fill", color)
-    << attrib("stroke", color)
+    << attrib("fill", fill)
+    << attrib("stroke", stroke)
     << attrib("fill-opacity", opacity)
     << attrib("width", width, true)
     << attrib("height", height, true)
@@ -151,17 +150,6 @@ void Rectangle::plot (ofstream& f) const {
     << attrib("y", origin.y, true)
     << attrib("ry", 3)
     << end_empty_elem();
-
-
-  // auto path = make_unique<Path>();
-  // path->origin = Point(origin.x, origin.y+height);
-  // path->trace = "M"+to_string(origin.x)+" "+to_string(origin.y+height)+
-  //   " a "+to_string(width/2)+" "+to_string(ry)+", 0, 0 0, "+to_string(width)+
-  //   " 0";
-  // path->stroke = stroke;
-  // path->fill = fill;
-  // path->strokeWidth = strokeWidth;
-  // path->plot(f);
 }
 
 void Rectangle::plot_ir (ofstream& f, string&& wave) const {
@@ -181,8 +169,8 @@ void Rectangle::plot_ir (ofstream& f, string&& wave) const {
 void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
   f << begin_elem("rect")
     << attrib("id", "rect3777")
-    << attrib("fill", color)
-    << attrib("stroke", color)
+    << attrib("fill", fill)
+    << attrib("stroke", stroke)
     << attrib("fill-opacity", opacity)
     << attrib("width", width/HORIZ_RATIO, true)
     << attrib("height", height, true);
@@ -207,8 +195,8 @@ void Rectangle::plot_nrc_tar (ofstream& f) const {
 
 void Rectangle::plot_redun (ofstream& f, u8 showNRC, char refTar=' ') const {
   f << begin_elem("rect")
-    << attrib("fill", color)
-    << attrib("stroke", color)
+    << attrib("fill", fill)
+    << attrib("stroke", stroke)
     << attrib("fill-opacity", opacity)
     << attrib("width", width/HORIZ_RATIO, true)
     << attrib("height", height, true);
@@ -259,7 +247,34 @@ void Chromosome::plot (ofstream& f) const {
   cyllinder->height = height;
   cyllinder->stroke = stroke;
   cyllinder->fill = fill;
+  cyllinder->opacity = opacity;
   cyllinder->strokeWidth = strokeWidth;;
   cyllinder->origin = origin;
   cyllinder->plot(f);
+}
+
+void Chromosome::plot_ir (ofstream& f, string&& wave) const {
+
+  plot(f);
+
+  // auto cyllinder = make_unique<Cyllinder>();
+  // cyllinder->width = width;
+  // cyllinder->height = height;
+  // cyllinder->stroke = stroke;
+  // cyllinder->fill = "url("+wave+")";
+  // cyllinder->opacity = opacity;
+  // cyllinder->strokeWidth = strokeWidth;;
+  // cyllinder->origin = origin;
+  // cyllinder->plot(f);
+
+  // f << begin_elem("rect")
+  //   << attrib("fill-opacity", opacity)
+  //   << attrib("stroke-width", 2)
+  //   << attrib("fill", "url("+wave+")")
+  //   << attrib("width", width, true)
+  //   << attrib("height", height, true)
+  //   << attrib("x", origin.x, true)
+  //   << attrib("y", origin.y, true)
+  //   << attrib("ry", 3)
+  //   << end_empty_elem();
 }

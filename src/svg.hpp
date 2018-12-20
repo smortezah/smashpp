@@ -27,13 +27,18 @@ inline static string end_empty_elem () {
   return "/>\n";
 }
 
-struct RgbColor {
+class Color {
+ protected:
+  Color () = default;
+};
+
+struct RgbColor : protected Color {
   u8 r, g, b;
   RgbColor () = default;
   RgbColor (u8 r_, u8 g_, u8 b_) : r(r_), g(g_), b(b_) {}
 };
 
-struct HsvColor {
+struct HsvColor : protected Color {
   u8 h, s, v;
   HsvColor () = default;
   explicit HsvColor (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
@@ -55,10 +60,11 @@ struct Point {
 
 struct Text {
   Point  origin;
+  string dx, dy;
   string label, textAnchor, dominantBaseline, transform, color, fontWeight;
   u8     fontSize;
-  Text () : textAnchor("middle"), dominantBaseline("middle"), color("black"),
-    fontWeight("normal"), fontSize(13) {}
+  Text () : dx("0"), dy("0"), textAnchor("middle"), dominantBaseline("middle"),
+    color("black"), fontWeight("normal"), fontSize(13) {}
   Text (const string& lbl_, const string& clr_) : label(lbl_), color(clr_) {}
   void plot (ofstream&) const;
   void print_title (ofstream&);
@@ -78,8 +84,9 @@ struct Ellipse {
   double cx, cy, rx, ry;
   double strokeWidth;
   string stroke, fill;
+  float  opacity;
   Ellipse () : rx(2.0), ry(2.0), strokeWidth(1.0), stroke("black"), 
-    fill("transparent") {}
+    fill("transparent"), opacity(OPAC) {}
   void plot (ofstream&) const;
 };
 
@@ -87,7 +94,9 @@ struct Path {
   Point  origin;
   double strokeWidth;
   string stroke, trace, strokeLineJoin, strokeDashArray, fill;
-  Path () : strokeWidth(1), strokeLineJoin("round"), fill("transparent") {}
+  float  opacity;
+  Path () : strokeWidth(1), strokeLineJoin("round"), fill("transparent"),
+    opacity(OPAC)  {}
   void plot (ofstream&) const;
 };
 
@@ -95,15 +104,16 @@ struct Cyllinder {
   Point  origin;
   double width, height, ry, strokeWidth;
   string stroke, fill, strokeLineJoin, strokeDashArray;
-  Cyllinder () : ry(2.0), strokeWidth(1.0), stroke("black"), fill("none"),
-    strokeLineJoin("round") {}
+  float  opacity;
+  Cyllinder () : ry(2.0), strokeWidth(1.0), stroke("black"), 
+    fill("transparent"), strokeLineJoin("round"), opacity(OPAC) {}
   void plot (ofstream&) const;
 };
 
 struct Rectangle {
   Point  origin;
   double width, height;
-  string color;
+  string fill, stroke;
   float  opacity;
   Rectangle () : opacity(OPAC) {}
   void plot (ofstream&) const;
@@ -127,9 +137,11 @@ struct Chromosome {
   Point  origin;
   double width, height, ry, strokeWidth;
   string stroke, fill, strokeLineJoin, strokeDashArray;
+  float  opacity;
   Chromosome () : ry(2.0), strokeWidth(1.0), stroke("black"), 
-    fill("transparent"), strokeLineJoin("round") {}
+    fill("transparent"), strokeLineJoin("round"), opacity(OPAC) {}
   void plot (ofstream&) const;
+  void plot_ir (ofstream&, string&& wave=std::move("#Wavy")) const;
 };
 }
 

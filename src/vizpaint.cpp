@@ -32,7 +32,7 @@ void VizPaint::print_plot (VizParam& p) {
   rect->opacity = p.opacity;
 
   // Plot background page
-  rect->color  = backColor;
+  rect->fill = rect->stroke = backColor;
   rect->origin = Point(0, 0);
   rect->width  = PAINT_CX + width + space + width + PAINT_CX;
   rect->height = maxSize + Paint_Extra;
@@ -52,6 +52,7 @@ void VizPaint::print_plot (VizParam& p) {
   // Read positions from file and Print them
   vector<Position> pos;
   read_pos(fPos, pos, p);
+
   make_posNode(pos, p, "ref");
   if (p.showPos)
     print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
@@ -77,44 +78,68 @@ void VizPaint::print_plot (VizParam& p) {
 
     const auto plot_main_ref = [&]() {
       if (e.begRef != DBLANK) {
+        auto chromosome = make_unique<Chromosome>();
+        chromosome->width = width;
+        chromosome->height = get_point(e.endRef-e.begRef);
+        chromosome->strokeWidth = 1;
+        chromosome->fill = chromosome->stroke = rgb_color(e.start);
+        chromosome->opacity = p.opacity;
+        chromosome->origin = Point(cx, cy + get_point(e.begRef));
+        chromosome->plot(fPlot);
+
         rect->width  = width;
-        rect->color  = rgb_color(e.start);
-        rect->origin = Point(cx, cy + get_point(e.begRef));
         rect->height = get_point(e.endRef-e.begRef);
-        rect->plot(fPlot);
-        
+        rect->origin = Point(cx, cy + get_point(e.begRef));        
         if (p.showNRC) {
-          rect->color = nrc_color(e.entRef, p.colorMode);
+          rect->fill = rect->stroke = nrc_color(e.entRef, p.colorMode);
           rect->plot_nrc_ref(fPlot);
         }
         if (p.showRedun) {
-          rect->color = redun_color(e.selfRef, p.colorMode);
+          rect->fill = rect->stroke = redun_color(e.selfRef, p.colorMode);
           rect->plot_redun_ref(fPlot, p.showNRC);
         }
       }
     };
 
     const auto plot_main_tar = [&](bool inverted) {
-      rect->color  = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
-      rect->width  = width;
-      rect->height = get_point(abs(e.begTar-e.endTar));
+      auto chromosome = make_unique<Chromosome>();
+      chromosome->width = width;
+      chromosome->height = get_point(abs(e.begTar-e.endTar));
+      chromosome->strokeWidth = 0.5;
+      chromosome->fill = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
+      //todo handle > age 'fill', black bud
+      chromosome->stroke = "darkgrey";
+      chromosome->opacity = p.opacity;
+
+
+      // rect->fill = rect->stroke 
+      //            = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
+      // rect->width  = width;
+      // rect->height = get_point(abs(e.begTar-e.endTar));
 
       if (!inverted) {
-        rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
-        rect->plot(fPlot);
+        chromosome->origin = Point(cx+width+space, cy+get_point(e.begTar));
+        chromosome->plot(fPlot);
+        // rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
+        // rect->plot(fPlot);
       } else {
-        rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
-        if (e.begRef==DBLANK)  rect->plot_ir(fPlot, "#WavyWhite");
-        else                   rect->plot_ir(fPlot);
+        chromosome->origin = Point(cx+width+space, cy+get_point(e.endTar));
+        if (e.begRef==DBLANK)  chromosome->plot_ir(fPlot, "#WavyWhite");
+        else                   chromosome->plot_ir(fPlot);
+        // rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
+        // if (e.begRef==DBLANK)  rect->plot_ir(fPlot, "#WavyWhite");
+        // else                   rect->plot_ir(fPlot);
       }
 
       if (p.showNRC) {
-        rect->color = nrc_color(e.entTar, p.colorMode);
-        rect->plot_nrc_tar(fPlot);
+        chromosome->fill = chromosome->stroke 
+                         = nrc_color(e.entTar, p.colorMode);
+        //// rect->fill = rect->stroke = nrc_color(e.entTar, p.colorMode);
+        // rect->plot_nrc_tar(fPlot);
       }
       if (p.showRedun) {
-        rect->color = redun_color(e.selfTar, p.colorMode);
-        rect->plot_redun_tar(fPlot, p.showNRC);
+        // rect->fill = rect->stroke = redun_color(e.selfTar, p.colorMode);
+        // rect->plot_redun_tar(fPlot, p.showNRC);
       }
     };
 
@@ -239,7 +264,7 @@ void VizPaint::print_plot (VizParam& p) {
   save_n_pos(ref);
   ifstream refFile(file_name(ref)+"."+FMT_N);
   for (i64 beg,end; refFile>>beg>>end;) {
-    rect->color  = "grey";
+    rect->fill = rect->stroke  = "grey";
     rect->origin = Point(cx, cy+get_point(beg));
     rect->height = get_point(end-beg+1);
     rect->plot(fPlot);
@@ -250,7 +275,7 @@ void VizPaint::print_plot (VizParam& p) {
   save_n_pos(tar);
   ifstream tarFile(file_name(tar)+"."+FMT_N);
   for (i64 beg,end; tarFile>>beg>>end;) {
-    rect->color  = "grey";
+    rect->fill = rect->stroke  = "grey";
     rect->origin = Point(cx+width+space, cy+get_point(beg));
     rect->height = get_point(end-beg+1);
     rect->plot(fPlot);
@@ -514,6 +539,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   if (!p.showNRC && !p.showRedun)  return;
   
   const auto vert = 24;
+  const string shiftX="2", shiftY="2";
   auto rect = make_shared<Rectangle>();
   rect->height = 12;
 
@@ -528,6 +554,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
                    HORIZ_TUNE+width/HORIZ_RATIO;
 
     text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->dy = "-"+shiftY;
     text->dominantBaseline = "text-after-edge";
     text->label = "RELATIVE REDUNDANCY";
     text->plot(f);
@@ -538,6 +565,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
                    HORIZ_TUNE+width/HORIZ_RATIO;
 
     text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->dy = "-"+shiftY;
     text->dominantBaseline = "text-after-edge";
     text->label = "REDUNDANCY";
     text->plot(f);
@@ -548,6 +576,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
                    2*width/HORIZ_RATIO+2*HORIZ_TUNE;
 
     text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->dy = "-"+shiftY;
     text->dominantBaseline = "text-after-edge";
     text->label = "RELATIVE REDUNDANCY";
     text->plot(f);
@@ -555,6 +584,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
     // Redundancy
     text->origin = Point(rect->origin.x+rect->width/2, 
                          rect->origin.y+rect->height);
+    text->dy = shiftY;
     text->dominantBaseline = "text-before-edge";
     text->label = "REDUNDANCY";
     text->plot(f);
@@ -563,18 +593,21 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   plot_legend_gradient(f, rect, p.colorMode);
 
   // Print numbers (measures)
+  text->dy = "0";
   text->dominantBaseline = "middle";
   text->fontWeight = "normal";
-  text->fontSize   = 9;
+  text->fontSize = 9;
   text->textAnchor = "end";
   text->origin = Point(rect->origin.x-2, rect->origin.y+rect->height/2);
-  text->label  = "0.0";
+  text->dx = "-"+shiftX;
+  text->label = "0.0";
   // text->fontWeight = "bold";
   text->plot(f);
   text->textAnchor = "middle";
   for (u8 i=1; i!=4; ++i) {
     text->origin = 
       Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
+    text->dx = "0";
     if (p.colorMode==1 && i==3)  text->color="white";
     text->label = string_format("%.1f", i*0.5);
     text->plot(f);
@@ -582,6 +615,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   text->textAnchor = "start";
   text->origin = Point(rect->origin.x+rect->width+2, 
                        rect->origin.y+rect->height/2);
+  text->dx = shiftX;
   text->color = "black";
   text->label = "2.0";
   text->plot(f);
