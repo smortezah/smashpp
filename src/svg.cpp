@@ -83,9 +83,14 @@ void Ellipse::plot (ofstream& f) const {
 }
 
 void Path::plot (ofstream& f) const {
-  f << begin_elem("path")
-    << attrib("d", "M "+to_string(origin.x)+","+to_string(origin.y)+" "+trace)
-    << attrib("fill", fill)
+  f << begin_elem("path");
+  
+  if (!d.empty())
+    f << attrib("d", d);
+  else
+    f << attrib("d","M "+to_string(origin.x)+","+to_string(origin.y)+" "+trace);
+
+  f << attrib("fill", fill)
     << attrib("fill-opacity", opacity)
     << attrib("stroke", stroke)
     << attrib("stroke-linejoin", strokeLineJoin)
@@ -218,6 +223,31 @@ void Polygon::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
+void Pattern::set_head (ofstream& f) const {
+  f << begin_elem("pattern")
+    << attrib("id", id)
+    << attrib("x", origin.x, true)
+    << attrib("y", origin.y, true)
+    << attrib("width", width, true)
+    << attrib("height", height, true)
+    << attrib("patternUnits", patternUnits)
+    << mid_elem();
+}
+
+void Pattern::set_tail (ofstream& f) const {
+  f << end_elem("pattern");
+}
+
+void Defs::set_head (ofstream& f) const {
+  f << begin_elem("defs")
+    << attrib("id", id)
+    << mid_elem();
+}
+
+void Defs::set_tail (ofstream& f) const {
+  f << end_elem("defs");
+}
+
 void Chromosome::plot (ofstream& f) const {
   auto cyllinder = make_unique<Cyllinder>();
   cyllinder->width = width;
@@ -234,15 +264,15 @@ void Chromosome::plot_ir (ofstream& f, string&& wave) const {
 
   plot(f);
 
-  // auto cyllinder = make_unique<Cyllinder>();
-  // cyllinder->width = width;
-  // cyllinder->height = height;
-  // cyllinder->stroke = stroke;
-  // cyllinder->fill = "url("+wave+")";
-  // cyllinder->opacity = opacity;
-  // cyllinder->strokeWidth = strokeWidth;;
-  // cyllinder->origin = origin;
-  // cyllinder->plot(f);
+  auto cyllinder = make_unique<Cyllinder>();
+  cyllinder->width = width;
+  cyllinder->height = height;
+  cyllinder->stroke = stroke;
+  cyllinder->fill = "url("+wave+")";
+  cyllinder->opacity = opacity;
+  cyllinder->strokeWidth = strokeWidth;;
+  cyllinder->origin = origin;
+  cyllinder->plot(f);
 
   // f << begin_elem("rect")
   //   << attrib("fill-opacity", opacity)
