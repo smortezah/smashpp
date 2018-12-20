@@ -439,8 +439,7 @@ inline HsvColor VizPaint::rgb_to_hsv (const RgbColor& RGB) const {
   return HSV;
 }
 #endif
-
-inline string VizPaint::rgb_color (u32 start) const {
+string VizPaint::rgb_color (u32 start) const {
   const auto hue = static_cast<u8>(start * mult);
   HsvColor HSV (hue);
   RgbColor RGB {hsv_to_rgb(HSV)};

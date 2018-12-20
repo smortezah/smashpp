@@ -5,40 +5,18 @@
 #include "exception.hpp"
 
 namespace smashpp {
-template <typename Value>
-inline static string attrib (const string& name, const Value& value, 
-bool precise=false, const string& unit="") {
-  stringstream ss;
-  if (precise)  ss << name << "=\"" << PREC << value << unit << "\" ";
-  else          ss << name << "=\"" << value << unit << "\" ";
-  return ss.str();
-}
-
-inline static string begin_elem (const string& name) {
-  return "\t<" + name + " ";
-}
-inline static string mid_elem () {
-  return ">";
-}
-inline static string end_elem (const string& name) {
-  return "</" + name + ">\n";
-}
-inline static string end_empty_elem () {
-  return "/>\n";
-}
-
-class Color {
- protected:
-  Color () = default;
-};
-
-struct RgbColor : protected Color {
+struct RgbColor {
   u8 r, g, b;
+  float alpha;
   RgbColor () = default;
-  RgbColor (u8 r_, u8 g_, u8 b_) : r(r_), g(g_), b(b_) {}
+  RgbColor (u8 r_, u8 g_, u8 b_, float a=0.5) : r(r_), g(g_), b(b_), alpha(a) {}
+  RgbColor alpha_blend (const RgbColor&, const RgbColor&) const;
+  RgbColor shade (const RgbColor&) const;
+  RgbColor tint (const RgbColor&) const;
+  // RgbColor to_rgb (const string&) const;
 };
 
-struct HsvColor : protected Color {
+struct HsvColor {
   u8 h, s, v;
   HsvColor () = default;
   explicit HsvColor (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
@@ -143,6 +121,34 @@ struct Chromosome {
   void plot (ofstream&) const;
   void plot_ir (ofstream&, string&& wave=std::move("#Wavy")) const;
 };
+
+template <typename Value>
+inline static string attrib (const string& name, const Value& value, 
+bool precise=false, const string& unit="") {
+  stringstream ss;
+  if (precise)  ss << name << "=\"" << PREC << value << unit << "\" ";
+  else          ss << name << "=\"" << value << unit << "\" ";
+  return ss.str();
+}
+
+inline static string begin_elem (const string& name) {
+  return "\t<" + name + " ";
+}
+inline static string mid_elem () {
+  return ">";
+}
+inline static string end_elem (const string& name) {
+  return "</" + name + ">\n";
+}
+inline static string end_empty_elem () {
+  return "/>\n";
+}
+
+enum class DEFCOLORS {black, white, red, green, blue};
+
+DEFCOLORS to_defColors (const string&);
+
+RgbColor to_rgb (const string&);
 }
 
 #endif
