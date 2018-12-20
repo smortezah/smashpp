@@ -45,13 +45,8 @@ struct HsvColor {
 };
 
 inline static bool is_hex (const string& color) {
-  if (color.front()!='#' || color.size()!=7)
-    return false;
-
-  for (auto ch : color.substr(1))
-    if (!isxdigit(ch))
-      return false;
-
+  if (color.front()!='#' || color.size()!=7)          return false;
+  for (auto ch : color.substr(1))  if (!isxdigit(ch)) return false;
   return true;
 }
 
@@ -66,6 +61,7 @@ inline static RgbColor to_rgb (const string& color) {
   else {
     if      (color=="black")    return RgbColor(0,   0,   0);
     else if (color=="white")    return RgbColor(255, 255, 255);
+    else if (color=="grey")     return RgbColor(128, 128, 128);
     else if (color=="red")      return RgbColor(255, 0,   0);
     else if (color=="green")    return RgbColor(0,   255, 0);
     else if (color=="blue")     return RgbColor(0,   0,   255);
@@ -92,14 +88,20 @@ const RgbColor& color2, float alpha) {
 
 // Mix whith black
 template <typename InColor>
-inline static auto shade (const InColor& color, float alpha=0.25) {
-  return alpha_blend(color, RgbColor(0,0,0), alpha);
+inline static auto shade (const InColor& color, float alpha=0.5) {
+  return alpha_blend(color, to_rgb("black"), alpha);
 }
 
 // Mix with white
 template <typename InColor>
-inline static auto tint (const InColor& color, float alpha=0.25) {
-  return alpha_blend(color, RgbColor(255,255,255), alpha);
+inline static auto tint (const InColor& color, float alpha=0.5) {
+  return alpha_blend(color, to_rgb("white"), alpha);
+}
+
+// Mix with grey
+template <typename InColor>
+inline static auto tone (const InColor& color, float alpha=0.5) {
+  return alpha_blend(color, to_rgb("grey"), alpha);
 }
 
 struct Gradient {
@@ -151,9 +153,9 @@ struct Ellipse {
 struct Path {
   Point  origin;
   double strokeWidth;
-  string stroke, trace, strokeLineJoin, strokeDashArray, fill;
+  string stroke, d, trace, strokeLineJoin, strokeDashArray, fill;
   float  opacity;
-  Path () : strokeWidth(1), strokeLineJoin("round"), fill("transparent"),
+  Path () : strokeWidth(1), d(""), strokeLineJoin("round"), fill("transparent"),
     opacity(OPAC)  {}
   void plot (ofstream&) const;
 };
@@ -189,6 +191,22 @@ struct Polygon {
   string lineColor, fillColor;
   Polygon () = default;
   void plot (ofstream&) const;
+};
+
+struct Pattern {
+  Point origin;
+  string id, patternUnits;
+  double x, y, width, height;
+  Pattern () = default;
+  void set_head (ofstream&) const;
+  void set_tail (ofstream&) const;
+};
+
+struct Defs {
+  string id;
+  Defs () = default;
+  void set_head (ofstream&) const;
+  void set_tail (ofstream&) const;
 };
 
 struct Chromosome {

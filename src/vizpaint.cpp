@@ -81,9 +81,9 @@ void VizPaint::print_plot (VizParam& p) {
         auto chromosome = make_unique<Chromosome>();
         chromosome->width = width;
         chromosome->height = get_point(e.endRef-e.begRef);
-        chromosome->strokeWidth = 0.5;
-        chromosome->stroke = shade(rgb_color(e.start), 0.5);
         chromosome->fill = rgb_color(e.start);
+        chromosome->strokeWidth = 0.25;
+        chromosome->stroke = shade(rgb_color(e.start));
         chromosome->opacity = p.opacity;
         chromosome->origin = Point(cx, cy + get_point(e.begRef));
         chromosome->plot(fPlot);
@@ -106,47 +106,46 @@ void VizPaint::print_plot (VizParam& p) {
       auto chromosome = make_unique<Chromosome>();
       chromosome->width = width;
       chromosome->height = get_point(abs(e.begTar-e.endTar));
-      chromosome->strokeWidth = 0.5;
-      chromosome->fill = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
-      //todo handle > age 'fill', black bud
-      // chromosome->stroke = "darkgrey";
-      chromosome->stroke = shade(rgb_color(e.start), 0.5);
-
-// cerr<<'\n';
-//       cerr<<rgb_color(e.start)<<' ';
-//       cerr<<shade(rgb_color(e.start));
-
-
       chromosome->opacity = p.opacity;
+      chromosome->fill = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
+      chromosome->strokeWidth = 0.25;
+      if (chromosome->fill == "black")
+        chromosome->stroke = tint(rgb_color(e.start));
+      else
+        chromosome->stroke = shade(rgb_color(e.start));
 
       // rect->fill = rect->stroke 
       //            = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
-      // rect->width  = width;
-      // rect->height = get_point(abs(e.begTar-e.endTar));
+      rect->width  = width;
+      rect->height = get_point(abs(e.begTar-e.endTar));
 
       if (!inverted) {
         chromosome->origin = Point(cx+width+space, cy+get_point(e.begTar));
         chromosome->plot(fPlot);
-        // rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
+
+        rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
         // rect->plot(fPlot);
       } else {
         chromosome->origin = Point(cx+width+space, cy+get_point(e.endTar));
         if (e.begRef==DBLANK)  chromosome->plot_ir(fPlot, "#WavyWhite");
         else                   chromosome->plot_ir(fPlot);
-        // rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
+
+        rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
         // if (e.begRef==DBLANK)  rect->plot_ir(fPlot, "#WavyWhite");
         // else                   rect->plot_ir(fPlot);
       }
 
       if (p.showNRC) {
-        chromosome->fill = chromosome->stroke 
-                         = nrc_color(e.entTar, p.colorMode);
-        //// rect->fill = rect->stroke = nrc_color(e.entTar, p.colorMode);
-        // rect->plot_nrc_tar(fPlot);
+        // chromosome->fill = chromosome->stroke 
+        //                  = nrc_color(e.entTar, p.colorMode);
+
+        rect->fill = rect->stroke = nrc_color(e.entTar, p.colorMode);
+        rect->plot_nrc_tar(fPlot);
       }
       if (p.showRedun) {
-        // rect->fill = rect->stroke = redun_color(e.selfTar, p.colorMode);
-        // rect->plot_redun_tar(fPlot, p.showNRC);
+
+        rect->fill = rect->stroke = redun_color(e.selfTar, p.colorMode);
+        rect->plot_redun_tar(fPlot, p.showNRC);
       }
     };
 
@@ -488,47 +487,56 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     << mid_elem();
   
   // Patterns
-  f << begin_elem("defs")
-    << attrib("id", "ffff")
-    << mid_elem()
-    << begin_elem("pattern")
-    << attrib("id", "Wavy")
-    << attrib("height", 5.1805778)
-    << attrib("width", 30.0)
-    << attrib("patternUnits", "userSpaceOnUse")
-    << mid_elem()
-    << begin_elem("path")
-    << attrib("d", "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 "
-         "L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
-         "11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 L "
-         "30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 C 12.413,1.207 "
-         "10.115,0.311 7.597,0.061 z")
-    << attrib("fill", "black")
-    << attrib("stroke", "none")
-    << end_empty_elem()
-    << end_elem("pattern")
-    << end_elem("defs");
+  {
+  auto defs = make_unique<Defs>();
+  defs->id = "ffff";
+  defs->set_head(f);
 
-  f << begin_elem("defs")
-    << attrib("id", "ffff")
-    << mid_elem()
-    << begin_elem("pattern")
-    << attrib("id", "WavyWhite")
-    << attrib("height", 5.1805778)
-    << attrib("width", 30.0)
-    << attrib("patternUnits", "userSpaceOnUse")
-    << mid_elem()
-    << begin_elem("path")
-    << attrib("d", "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 "
-         "L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
-         "11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 "
-         "L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 "
-         "C 12.413,1.207 10.115,0.311 7.597,0.061 z")
-    << attrib("fill", "white")
-    << attrib("stroke", "none")
-    << end_empty_elem()
-    << end_elem("pattern")
-    << end_elem("defs");
+  auto pattern = make_unique<Pattern>();
+  pattern->id = "Wavy";
+  pattern->width = 30.0;
+  pattern->height = 5.1805778;
+  pattern->patternUnits = "userSpaceOnUse";
+  pattern->set_head(f);
+
+  auto path = make_unique<Path>();
+  path->d = "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 "
+    "L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
+    "11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 L "
+    "30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 C 12.413,1.207 "
+    "10.115,0.311 7.597,0.061 z";
+  path->stroke = "none";
+  path->fill = "black";
+  path->plot(f);
+
+  pattern->set_tail(f);
+  defs->set_tail(f);
+  }
+  {
+  auto defs = make_unique<Defs>();
+  defs->id = "ffff";
+  defs->set_head(f);
+
+  auto pattern = make_unique<Pattern>();
+  pattern->id = "WavyWhite";
+  pattern->width = 30.0;
+  pattern->height = 5.1805778;
+  pattern->patternUnits = "userSpaceOnUse";
+  pattern->set_head(f);
+
+  auto path = make_unique<Path>();
+  path->d = "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 "
+    "L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
+    "11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 "
+    "L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 "
+    "C 12.413,1.207 10.115,0.311 7.597,0.061 z";
+  path->stroke = "none";
+  path->fill = "white";
+  path->plot(f);
+
+  pattern->set_tail(f);
+  defs->set_tail(f);
+  }
 }
 
 inline void VizPaint::print_tail (ofstream& f) const {
