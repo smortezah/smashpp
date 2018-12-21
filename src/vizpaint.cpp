@@ -66,38 +66,40 @@ void VizPaint::print_plot (VizParam& p) {
 
   // Plot
   u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignore=0;
-  for (auto e : pos) {
-    if (abs(e.endTar-e.begTar) <= p.min) {
+  // for (auto e : pos) {
+  for (auto e=pos.rbegin(); e!=pos.rend(); ++e) {
+    if (abs(e->endTar-e->begTar) <= p.min) {
       ++n_ignore;    continue;
     }
-    else if (e.begRef!=DBLANK && e.endRef-e.begRef<=p.min) {
+    else if (e->begRef!=DBLANK && e->endRef-e->begRef<=p.min) {
       ++n_ignore;    continue;
     }
 
-    if (e.begRef==DBLANK) {e.endTar>e.begTar? ++n_regularSolo: ++n_inverseSolo;}
+    if (e->begRef==DBLANK) {e->endTar>e->begTar? ++n_regularSolo: ++n_inverseSolo;}
 
     const auto plot_main = [&](auto& cylinder) {
       cylinder->width = width;
-      cylinder->strokeWidth = 0.4;
+      cylinder->strokeWidth = 0.5;
       cylinder->opacity = p.opacity;
     };
 
     const auto plot_main_ref = [&]() {
-      if (e.begRef != DBLANK) {
+      if (e->begRef != DBLANK) {
         auto cylinder = make_unique<Cylinder>();
         plot_main(cylinder);
-        cylinder->height = get_point(e.endRef-e.begRef);
-        cylinder->fill = rgb_color(e.start);
+        cylinder->height = get_point(e->endRef-e->begRef);
+        cylinder->fill = rgb_color(e->start);
         cylinder->stroke = shade(cylinder->fill);
-        cylinder->origin = Point(cx, cy + get_point(e.begRef));
+        cylinder->origin = Point(cx, cy + get_point(e->begRef));
         cylinder->plot(fPlot);
 
+        cylinder->strokeWidth = 0.7;
         if (p.showNRC) {
-          cylinder->fill = nrc_color(e.entRef, p.colorMode);
+          cylinder->fill = nrc_color(e->entRef, p.colorMode);
           cylinder->plot_periph(fPlot, 'r');
         }
         if (p.showRedun) {
-          cylinder->fill = redun_color(e.selfRef, p.colorMode);
+          cylinder->fill = redun_color(e->selfRef, p.colorMode);
           cylinder->plot_periph(fPlot, 'r', u8(p.showNRC));
         }
       }
@@ -106,82 +108,83 @@ void VizPaint::print_plot (VizParam& p) {
     const auto plot_main_tar = [&](bool inverted) {
       auto cylinder = make_unique<Cylinder>();
       plot_main(cylinder);
-      cylinder->height = get_point(abs(e.begTar-e.endTar));
-      if (e.begRef == DBLANK) {
+      cylinder->height = get_point(abs(e->begTar-e->endTar));
+      if (e->begRef == DBLANK) {
         cylinder->fill = "black";
         cylinder->stroke = "white";
       } else {
-        cylinder->fill = rgb_color(e.start);
+        cylinder->fill = rgb_color(e->start);
         cylinder->stroke = shade(cylinder->fill);
       }
 
       if (!inverted) {
-        cylinder->origin = Point(cx+width+space, cy+get_point(e.begTar));
+        cylinder->origin = Point(cx+width+space, cy+get_point(e->begTar));
         cylinder->plot(fPlot);
       } else {
-        cylinder->origin = Point(cx+width+space, cy+get_point(e.endTar));
-        if (e.begRef==DBLANK)  cylinder->plot_ir(fPlot, "#WavyWhite");
+        cylinder->origin = Point(cx+width+space, cy+get_point(e->endTar));
+        if (e->begRef==DBLANK)  cylinder->plot_ir(fPlot, "#WavyWhite");
         else                   cylinder->plot_ir(fPlot);
       }
 
+      cylinder->strokeWidth = 0.7;
       if (p.showNRC) {
-        cylinder->fill = nrc_color(e.entTar, p.colorMode);
+        cylinder->fill = nrc_color(e->entTar, p.colorMode);
         cylinder->plot_periph(fPlot, 't');
       }
       if (p.showRedun) {
-        cylinder->fill = redun_color(e.selfTar, p.colorMode);
+        cylinder->fill = redun_color(e->selfTar, p.colorMode);
         cylinder->plot_periph(fPlot, 't', u8(p.showNRC));
       }
     };
 
-    if (e.endTar > e.begTar) {
+    if (e->endTar > e->begTar) {
       if (p.regular) {
         plot_main_ref();
         plot_main_tar(false);
 
-        if (e.begRef != DBLANK) {
+        if (e->begRef != DBLANK) {
           switch (p.link) {
           case 1:
-            poly->fillColor = rgb_color(e.start);
+            poly->fillColor = rgb_color(e->start);
             poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
-            poly->add_point(cx+width,       cy+get_point(e.begRef));
-            poly->add_point(cx+width,       cy+get_point(e.endRef));
-            poly->add_point(cx+width+space, cy+get_point(e.endTar));
-            poly->add_point(cx+width+space, cy+get_point(e.begTar));
+            poly->add_point(cx+width,       cy+get_point(e->begRef));
+            poly->add_point(cx+width,       cy+get_point(e->endRef));
+            poly->add_point(cx+width+space, cy+get_point(e->endTar));
+            poly->add_point(cx+width+space, cy+get_point(e->begTar));
             poly->plot(fPlot);
             break;
           case 2:
-            line->stroke = rgb_color(e.start);
+            line->stroke = rgb_color(e->start);
             line->beg = Point(
-              cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
+              cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
             line->end = Point(
-              cx+width+space, cy+get_point(e.begTar+(e.endTar-e.begTar)/2.0));
+              cx+width+space, cy+get_point(e->begTar+(e->endTar-e->begTar)/2.0));
             line->plot(fPlot);
             break;
           case 3:
             line->stroke = "black";
             line->beg = Point(
-              cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
+              cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
             line->end = Point(
-              cx+width+space, cy+get_point(e.begTar+(e.endTar-e.begTar)/2.0));
+              cx+width+space, cy+get_point(e->begTar+(e->endTar-e->begTar)/2.0));
             line->plot(fPlot);
             break;
           case 4:
-            line->stroke = rgb_color(e.start);
-            line->beg = Point(cx+width,       cy+get_point(e.begRef));
-            line->end = Point(cx+width+space, cy+get_point(e.begTar));
+            line->stroke = rgb_color(e->start);
+            line->beg = Point(cx+width,       cy+get_point(e->begRef));
+            line->end = Point(cx+width+space, cy+get_point(e->begTar));
             line->plot(fPlot);
-            line->beg = Point(cx+width,       cy+get_point(e.endRef));
-            line->end = Point(cx+width+space, cy+get_point(e.endTar));
+            line->beg = Point(cx+width,       cy+get_point(e->endRef));
+            line->end = Point(cx+width+space, cy+get_point(e->endTar));
             line->plot(fPlot);
             break;
           case 5:
             line->stroke = "black";
-            line->beg = Point(cx+width,       cy+get_point(e.begRef));
-            line->end = Point(cx+width+space, cy+get_point(e.begTar));
+            line->beg = Point(cx+width,       cy+get_point(e->begRef));
+            line->end = Point(cx+width+space, cy+get_point(e->begTar));
             line->plot(fPlot);
-            line->beg = Point(cx+width,       cy+get_point(e.endRef));
-            line->end = Point(cx+width+space, cy+get_point(e.endTar));
+            line->beg = Point(cx+width,       cy+get_point(e->endRef));
+            line->end = Point(cx+width+space, cy+get_point(e->endTar));
             line->plot(fPlot);
             break;
           default: break;
@@ -195,51 +198,51 @@ void VizPaint::print_plot (VizParam& p) {
         plot_main_ref();
         plot_main_tar(true);
 
-        if (e.begRef != DBLANK) {
+        if (e->begRef != DBLANK) {
           switch (p.link) {
           case 1:
-            poly->fillColor = rgb_color(e.start);
+            poly->fillColor = rgb_color(e->start);
             poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
-            poly->add_point(cx+width,       cy+get_point(e.begRef));
-            poly->add_point(cx+width,       cy+get_point(e.endRef));
-            poly->add_point(cx+width+space, cy+get_point(e.endTar));
-            poly->add_point(cx+width+space, cy+get_point(e.begTar));
+            poly->add_point(cx+width,       cy+get_point(e->begRef));
+            poly->add_point(cx+width,       cy+get_point(e->endRef));
+            poly->add_point(cx+width+space, cy+get_point(e->endTar));
+            poly->add_point(cx+width+space, cy+get_point(e->begTar));
             poly->plot(fPlot);
             break;
           case 2:
-            line->stroke = rgb_color(e.start);
+            line->stroke = rgb_color(e->start);
             line->beg = Point(
-              cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
+              cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
             line->end = Point(
-              cx+width+space, cy+get_point(e.endTar+(e.begTar-e.endTar)/2.0));
+              cx+width+space, cy+get_point(e->endTar+(e->begTar-e->endTar)/2.0));
             line->plot(fPlot);
             break;
           case 3:
             line->stroke = "green";
             line->beg = Point(
-              cx+width, cy+get_point(e.begRef+(e.endRef-e.begRef)/2.0));
+              cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
             line->end = Point(
-              cx+width+space, cy+get_point(e.endTar+(e.begTar-e.endTar)/2.0));
+              cx+width+space, cy+get_point(e->endTar+(e->begTar-e->endTar)/2.0));
             line->plot(fPlot);
             break;
           case 4:
-            line->stroke = rgb_color(e.start);
-            line->beg = Point(cx+width,       cy+get_point(e.begRef));
-            line->end = Point(cx+width+space, cy+get_point(e.begTar));
+            line->stroke = rgb_color(e->start);
+            line->beg = Point(cx+width,       cy+get_point(e->begRef));
+            line->end = Point(cx+width+space, cy+get_point(e->begTar));
             line->plot(fPlot);
   
-            line->beg = Point(cx+width,       cy+get_point(e.endRef));
-            line->end = Point(cx+width+space, cy+get_point(e.endTar));
+            line->beg = Point(cx+width,       cy+get_point(e->endRef));
+            line->end = Point(cx+width+space, cy+get_point(e->endTar));
             line->plot(fPlot);
             break;
           case 5:
             line->stroke = "green";
-            line->beg = Point(cx+width,       cy+get_point(e.begRef));
-            line->end = Point(cx+width+space, cy+get_point(e.begTar));
+            line->beg = Point(cx+width,       cy+get_point(e->begRef));
+            line->end = Point(cx+width+space, cy+get_point(e->begTar));
             line->plot(fPlot);
   
-            line->beg = Point(cx+width,       cy+get_point(e.endRef));
-            line->end = Point(cx+width+space, cy+get_point(e.endTar));
+            line->beg = Point(cx+width,       cy+get_point(e->endRef));
+            line->end = Point(cx+width+space, cy+get_point(e->endTar));
             line->plot(fPlot);
             break;
           default: break;

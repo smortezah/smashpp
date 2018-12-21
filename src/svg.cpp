@@ -110,9 +110,7 @@ void Cylinder::plot (ofstream& f) const {
     " a "+to_string(width/2)+","+to_string(ry)+" 0 0,0 "+to_string(width)+
     ",0 "+
     " v "+to_string(-height)+
-    " a "+to_string(width/2)+","+to_string(ry)+" 0 0,0 "+to_string(-width)+
-    ",0 "+
-    " a "+to_string(width/2)+","+to_string(ry)+" 0 0,0 "+to_string(width)+
+    " a "+to_string(width/2)+","+to_string(ry)+" 0 0,1 "+to_string(-width)+
     ",0 ";
   path->fill = fill;
   path->opacity = opacity;
@@ -121,16 +119,19 @@ void Cylinder::plot (ofstream& f) const {
   path->transform = transform;
   path->plot(f);
 
-  path->origin = Point(origin.x, origin.y+height);
-  path->trace = " a "+to_string(width/2)+","+to_string(ry)+" 0 0,1 "+
-    to_string(width)+",0 ";
-  path->fill = "transparent";
-  path->opacity = opacity;
-  path->stroke = stroke;
-  path->strokeWidth = strokeWidth/2;
-  // path->strokeDashArray = "4 1";
-  path->transform = transform;
-  path->plot(f);
+  auto ellipse = make_unique<Ellipse>();
+  ellipse->stroke = stroke;
+  ellipse->strokeWidth = 0.75 * strokeWidth;
+  ellipse->fill = fill;
+  ellipse->cx = origin.x + width/2;
+  ellipse->cy = origin.y;
+  ellipse->rx = width/2 + (strokeWidth-ellipse->strokeWidth)/2;
+  ellipse->ry = ry;
+  ellipse->plot(f);
+
+  ellipse->cy = origin.y + height;
+  ellipse->fill = "transparent";
+  ellipse->plot(f);
 }
 
 void Cylinder::plot_ir (ofstream& f, string&& wave) {
