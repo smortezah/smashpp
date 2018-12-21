@@ -99,7 +99,7 @@ void Path::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-void Cyllinder::plot (ofstream& f) const {
+void Cylinder::plot (ofstream& f) const {
   auto path = make_unique<Path>();
   path->origin = Point(origin.x, origin.y);
   path->trace = " v "+to_string(height)+
@@ -127,6 +127,70 @@ void Cyllinder::plot (ofstream& f) const {
   path->plot(f);
 }
 
+void Cylinder::plot_ir (ofstream& f, string&& wave) {
+  plot(f);
+
+  fill = "url("+std::move(wave)+")";
+  plot(f);
+}
+
+void Cylinder::plot_nrc (ofstream& f, char refTar=' ') {
+  if (refTar=='r')  origin.x = origin.x - HORIZ_TUNE - width/HORIZ_RATIO;
+  else              origin.x = origin.x + width + HORIZ_TUNE;
+  width = width/HORIZ_RATIO;
+  strokeWidth = 0.5;
+  stroke = shade(fill, 0.95);
+
+  plot(f);
+}
+
+// void Rectangle::plot_nrc_ref (ofstream& f) const {
+//   plot_nrc(f, 'r');
+// }
+
+// void Rectangle::plot_nrc_tar (ofstream& f) const {
+//   plot_nrc(f, 't');
+// }
+
+void Cylinder::plot_redun (ofstream& f, u8 showNRC, char refTar=' ') {
+  if (refTar=='r')
+    origin.x = origin.x - (1+showNRC) * (HORIZ_TUNE + width/HORIZ_RATIO);
+  else
+    origin.x = origin.x + width + HORIZ_TUNE + 
+               showNRC * (width/HORIZ_RATIO + HORIZ_TUNE);
+  strokeWidth = 0.5;
+  stroke = shade(fill, 0.95);
+
+  plot(f);
+
+  // f << begin_elem("rect")
+  //   << attrib("fill", fill)
+  //   << attrib("stroke", stroke)
+  //   << attrib("fill-opacity", opacity)
+  //   << attrib("width", width/HORIZ_RATIO, true)
+  //   << attrib("height", height, true);
+
+  // if (refTar=='r')
+  //   f << attrib("x", origin.x-(1+showNRC)*(HORIZ_TUNE+width/HORIZ_RATIO), true);
+  // else
+  //   f << attrib("x", origin.x + width + HORIZ_TUNE + 
+  //                    showNRC*(width/HORIZ_RATIO+HORIZ_TUNE), true);
+                     
+  // f << attrib("y", origin.y, true)
+  //   << attrib("ry", 2)
+  //   << end_empty_elem();
+}
+
+// void Rectangle::plot_redun_ref (ofstream& f, bool showNRC) const {
+//   showNRC ? plot_redun(f, 1, 'r') : plot_redun(f, 0, 'r');
+// }
+
+// void Rectangle::plot_redun_tar (ofstream& f, bool showNRC) const {
+//   showNRC ? plot_redun(f, 1, 't') : plot_redun(f, 0, 't');
+// }
+
+
+
 void Rectangle::plot (ofstream& f) const {
   f << begin_elem("rect")
     << attrib("fill", fill)
@@ -140,73 +204,73 @@ void Rectangle::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-void Rectangle::plot_ir (ofstream& f, string&& wave) const {
-  plot(f);
-  f << begin_elem("rect")
-    << attrib("fill-opacity", opacity)
-    << attrib("stroke-width", 2)
-    << attrib("fill", "url("+wave+")")
-    << attrib("width", width, true)
-    << attrib("height", height, true)
-    << attrib("x", origin.x, true)
-    << attrib("y", origin.y, true)
-    << attrib("ry", 3)
-    << end_empty_elem();
-}
+// void Rectangle::plot_ir (ofstream& f, string&& wave) const {
+//   plot(f);
+//   f << begin_elem("rect")
+//     << attrib("fill-opacity", opacity)
+//     << attrib("stroke-width", 2)
+//     << attrib("fill", "url("+wave+")")
+//     << attrib("width", width, true)
+//     << attrib("height", height, true)
+//     << attrib("x", origin.x, true)
+//     << attrib("y", origin.y, true)
+//     << attrib("ry", 3)
+//     << end_empty_elem();
+// }
 
-void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
-  f << begin_elem("rect")
-    << attrib("id", "rect3777")
-    << attrib("fill", fill)
-    << attrib("stroke", stroke)
-    << attrib("fill-opacity", opacity)
-    << attrib("width", width/HORIZ_RATIO, true)
-    << attrib("height", height, true);
+// void Rectangle::plot_nrc (ofstream& f, char refTar=' ') const {
+//   f << begin_elem("rect")
+//     << attrib("id", "rect3777")
+//     << attrib("fill", fill)
+//     << attrib("stroke", stroke)
+//     << attrib("fill-opacity", opacity)
+//     << attrib("width", width/HORIZ_RATIO, true)
+//     << attrib("height", height, true);
 
-  if (refTar=='r')
-    f << attrib("x", origin.x - HORIZ_TUNE - width/HORIZ_RATIO, true);
-  else
-    f << attrib("x", origin.x + width + HORIZ_TUNE, true);
+//   if (refTar=='r')
+//     f << attrib("x", origin.x - HORIZ_TUNE - width/HORIZ_RATIO, true);
+//   else
+//     f << attrib("x", origin.x + width + HORIZ_TUNE, true);
 
-  f << attrib("y", origin.y, true)
-    << attrib("ry", 2)
-    << end_empty_elem();
-}
+//   f << attrib("y", origin.y, true)
+//     << attrib("ry", 2)
+//     << end_empty_elem();
+// }
 
-void Rectangle::plot_nrc_ref (ofstream& f) const {
-  plot_nrc(f, 'r');
-}
+// void Rectangle::plot_nrc_ref (ofstream& f) const {
+//   plot_nrc(f, 'r');
+// }
 
-void Rectangle::plot_nrc_tar (ofstream& f) const {
-  plot_nrc(f, 't');
-}
+// void Rectangle::plot_nrc_tar (ofstream& f) const {
+//   plot_nrc(f, 't');
+// }
 
-void Rectangle::plot_redun (ofstream& f, u8 showNRC, char refTar=' ') const {
-  f << begin_elem("rect")
-    << attrib("fill", fill)
-    << attrib("stroke", stroke)
-    << attrib("fill-opacity", opacity)
-    << attrib("width", width/HORIZ_RATIO, true)
-    << attrib("height", height, true);
+// void Rectangle::plot_redun (ofstream& f, u8 showNRC, char refTar=' ') const {
+//   f << begin_elem("rect")
+//     << attrib("fill", fill)
+//     << attrib("stroke", stroke)
+//     << attrib("fill-opacity", opacity)
+//     << attrib("width", width/HORIZ_RATIO, true)
+//     << attrib("height", height, true);
 
-  if (refTar=='r')
-    f << attrib("x", origin.x-(1+showNRC)*(HORIZ_TUNE+width/HORIZ_RATIO), true);
-  else
-    f << attrib("x", origin.x + width + HORIZ_TUNE + 
-                     showNRC*(width/HORIZ_RATIO+HORIZ_TUNE), true);
+//   if (refTar=='r')
+//     f << attrib("x", origin.x-(1+showNRC)*(HORIZ_TUNE+width/HORIZ_RATIO), true);
+//   else
+//     f << attrib("x", origin.x + width + HORIZ_TUNE + 
+//                      showNRC*(width/HORIZ_RATIO+HORIZ_TUNE), true);
                      
-  f << attrib("y", origin.y, true)
-    << attrib("ry", 2)
-    << end_empty_elem();
-}
+//   f << attrib("y", origin.y, true)
+//     << attrib("ry", 2)
+//     << end_empty_elem();
+// }
 
-void Rectangle::plot_redun_ref (ofstream& f, bool showNRC) const {
-  showNRC ? plot_redun(f, 1, 'r') : plot_redun(f, 0, 'r');
-}
+// void Rectangle::plot_redun_ref (ofstream& f, bool showNRC) const {
+//   showNRC ? plot_redun(f, 1, 'r') : plot_redun(f, 0, 'r');
+// }
 
-void Rectangle::plot_redun_tar (ofstream& f, bool showNRC) const {
-  showNRC ? plot_redun(f, 1, 't') : plot_redun(f, 0, 't');
-}
+// void Rectangle::plot_redun_tar (ofstream& f, bool showNRC) const {
+//   showNRC ? plot_redun(f, 1, 't') : plot_redun(f, 0, 't');
+// }
 
 void Polygon::plot (ofstream& f) const {
   f << begin_elem("polygon")
@@ -226,8 +290,8 @@ void Polygon::plot (ofstream& f) const {
 void Pattern::set_head (ofstream& f) const {
   f << begin_elem("pattern")
     << attrib("id", id)
-    << attrib("x", origin.x, true)
-    << attrib("y", origin.y, true)
+    << attrib("x", x, true)
+    << attrib("y", y, true)
     << attrib("width", width, true)
     << attrib("height", height, true)
     << attrib("patternUnits", patternUnits)
@@ -246,42 +310,4 @@ void Defs::set_head (ofstream& f) const {
 
 void Defs::set_tail (ofstream& f) const {
   f << end_elem("defs");
-}
-
-void Chromosome::plot (ofstream& f) const {
-  auto cyllinder = make_unique<Cyllinder>();
-  cyllinder->width = width;
-  cyllinder->height = height;
-  cyllinder->stroke = stroke;
-  cyllinder->fill = fill;
-  cyllinder->opacity = opacity;
-  cyllinder->strokeWidth = strokeWidth;;
-  cyllinder->origin = origin;
-  cyllinder->plot(f);
-}
-
-void Chromosome::plot_ir (ofstream& f, string&& wave) const {
-
-  plot(f);
-
-  auto cyllinder = make_unique<Cyllinder>();
-  cyllinder->width = width;
-  cyllinder->height = height;
-  cyllinder->stroke = stroke;
-  cyllinder->fill = "url("+wave+")";
-  cyllinder->opacity = opacity;
-  cyllinder->strokeWidth = strokeWidth;;
-  cyllinder->origin = origin;
-  cyllinder->plot(f);
-
-  // f << begin_elem("rect")
-  //   << attrib("fill-opacity", opacity)
-  //   << attrib("stroke-width", 2)
-  //   << attrib("fill", "url("+wave+")")
-  //   << attrib("width", width, true)
-  //   << attrib("height", height, true)
-  //   << attrib("x", origin.x, true)
-  //   << attrib("y", origin.y, true)
-  //   << attrib("ry", 3)
-  //   << end_empty_elem();
 }
