@@ -169,8 +169,7 @@ struct Cylinder {
     fill("transparent"), strokeLineJoin("round"), opacity(OPAC) {}
   void plot (ofstream&) const;
   void plot_ir (ofstream&, string&& wave=std::move("#Wavy"));
-  void plot_nrc (ofstream&, char);
-  void plot_redun (ofstream&, u8, char);
+  void plot_periph (ofstream&, char=' ', u8=0);
 };
 
 struct Rectangle {
