@@ -128,7 +128,7 @@ void Cylinder::plot (ofstream& f) const {
   path->opacity = opacity;
   path->stroke = stroke;
   path->strokeWidth = strokeWidth/2;
-  path->strokeDashArray = "4 1";
+  // path->strokeDashArray = "4 1";
   path->transform = transform;
   path->plot(f);
 }
@@ -140,25 +140,11 @@ void Cylinder::plot_ir (ofstream& f, string&& wave) {
   plot(f);
 }
 
-void Cylinder::plot_nrc (ofstream& f, char refTar=' ') {
+void Cylinder::plot_periph (ofstream& f, char refTar, u8 showNRC) {
   const auto mainOriginX = origin.x;
-  const auto mainWidth   = width;
-
-  if (refTar=='r')  origin.x = origin.x - HORIZ_TUNE - width/HORIZ_RATIO;
-  else              origin.x = origin.x + width + HORIZ_TUNE;
-  width = width/HORIZ_RATIO;
-  strokeWidth = 0.5;
-  stroke = shade(fill, 0.95);
-
-  plot(f);
-
-  origin.x = mainOriginX;
-  width    = mainWidth;
-}
-
-void Cylinder::plot_redun (ofstream& f, u8 showNRC, char refTar=' ') {
-  const auto mainOriginX = origin.x;
-  const auto mainWidth   = width;
+  const auto mainWidth = width;
+  const auto mainStrokeWidth = strokeWidth;
+  const auto mainRy = ry;
 
   if (refTar=='r')
     origin.x = origin.x - (1+showNRC) * (HORIZ_TUNE + width/HORIZ_RATIO);
@@ -167,13 +153,16 @@ void Cylinder::plot_redun (ofstream& f, u8 showNRC, char refTar=' ') {
                showNRC * (width/HORIZ_RATIO + HORIZ_TUNE);
 
   width = width/HORIZ_RATIO;
-  strokeWidth = 0.5;
+  strokeWidth *= 2;
   stroke = shade(fill, 0.95);
+  ry /= 2;
 
   plot(f);
 
   origin.x = mainOriginX;
-  width    = mainWidth;
+  width = mainWidth;
+  strokeWidth = mainStrokeWidth;
+  ry = mainRy;
 }
 
 void Rectangle::plot (ofstream& f) const {

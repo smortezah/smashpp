@@ -82,7 +82,7 @@ void VizPaint::print_plot (VizParam& p) {
         cylinder->width = width;
         cylinder->height = get_point(e.endRef-e.begRef);
         cylinder->fill = rgb_color(e.start);
-        cylinder->strokeWidth = 0.25;
+        cylinder->strokeWidth = 0.4;
         cylinder->stroke = shade(cylinder->fill);
         cylinder->opacity = p.opacity;
         cylinder->origin = Point(cx, cy + get_point(e.begRef));
@@ -90,11 +90,11 @@ void VizPaint::print_plot (VizParam& p) {
 
         if (p.showNRC) {
           cylinder->fill = nrc_color(e.entRef, p.colorMode);
-          cylinder->plot_nrc(fPlot, 'r');
+          cylinder->plot_periph(fPlot, 'r');
         }
         if (p.showRedun) {
           cylinder->fill = redun_color(e.selfRef, p.colorMode);
-          cylinder->plot_redun(fPlot, u8(p.showNRC), 'r');
+          cylinder->plot_periph(fPlot, 'r', u8(p.showNRC));
         }
       }
     };
@@ -103,7 +103,7 @@ void VizPaint::print_plot (VizParam& p) {
       auto cylinder = make_unique<Cylinder>();
       cylinder->width = width;
       cylinder->height = get_point(abs(e.begTar-e.endTar));
-      cylinder->strokeWidth = 0.25;
+      cylinder->strokeWidth = 0.4;
       cylinder->opacity = p.opacity;
       if (e.begRef == DBLANK) {
         cylinder->fill = "black";
@@ -125,11 +125,11 @@ void VizPaint::print_plot (VizParam& p) {
 
       if (p.showNRC) {
         cylinder->fill = nrc_color(e.entTar, p.colorMode);
-        cylinder->plot_nrc(fPlot, 't');
+        cylinder->plot_periph(fPlot, 't');
       }
       if (p.showRedun) {
         cylinder->fill = redun_color(e.selfTar, p.colorMode);
-        cylinder->plot_redun(fPlot, u8(p.showNRC), 't');
+        cylinder->plot_periph(fPlot, 't', u8(p.showNRC));
       }
     };
 
