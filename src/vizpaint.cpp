@@ -77,13 +77,35 @@ void VizPaint::print_plot (VizParam& p) {
     if (e->begRef == DBLANK)
       e->endTar > e->begTar ? ++n_regularSolo : ++n_inverseSolo;
 
-    const auto make_gradient = [&](const string& color) {
+    const auto make_gradient = 
+      [&](const string& color, char c, const string& inId) {
       auto linearGradient = make_unique<LinearGradient>();
-      linearGradient->id = "mainGrad";
+      linearGradient->id = "grad"+inId;
       auto stop = make_unique<Stop>();
+      stop->offset = "30%";
+      stop->stop_color = shade(color, 0.25);
+      // stop->stop_color = (c=='r') ? shade(color, 0.25) : color;
+      linearGradient->stops.emplace_back(*stop);
       stop->offset = "100%";
       stop->stop_color = color;
-      // stop->stop_opacity = ;
+      // stop->stop_color = (c=='r') ? color : shade(color, 0.25);
+      linearGradient->stops.emplace_back(*stop);
+      linearGradient->plot(fPlot);
+      return "url(#"+linearGradient->id+")";
+    };
+
+    const auto make_gradient_periph = 
+      [&](const string& color, char c, const string& inId) {
+      auto linearGradient = make_unique<LinearGradient>();
+      linearGradient->id = "grad"+inId;
+      auto stop = make_unique<Stop>();
+      stop->offset = "30%";
+      stop->stop_color = tone(color, 0.4);
+      // stop->stop_color = (c=='r') ? tone(color, 0.4) : color;
+      linearGradient->stops.emplace_back(*stop);
+      stop->offset = "100%";
+      stop->stop_color = color;
+      // stop->stop_color = (c=='r') ? color : tone(color, 0.4);
       linearGradient->stops.emplace_back(*stop);
       linearGradient->plot(fPlot);
       return "url(#"+linearGradient->id+")";
@@ -91,8 +113,8 @@ void VizPaint::print_plot (VizParam& p) {
 
     const auto plot_main = [&](auto& cylinder) {
       cylinder->width = width;
-      // cylinder->strokeWidth = 0.5;
-      cylinder->strokeWidth = 2.5;
+      cylinder->strokeWidth = 0.75;
+      cylinder->stroke_opacity = p.opacity;
       cylinder->opacity = p.opacity;
     };
 
@@ -101,19 +123,26 @@ void VizPaint::print_plot (VizParam& p) {
         auto cylinder = make_unique<Cylinder>();
         plot_main(cylinder);
         cylinder->height = get_point(e->endRef-e->begRef);
-        // cylinder->fill = make_gradient(rgb_color(e->start));
-        cylinder->fill = rgb_color(e->start);
-        cylinder->stroke = shade(cylinder->fill);
+        cylinder->stroke = shade(rgb_color(e->start));
         cylinder->origin = Point(cx, cy + get_point(e->begRef));
+        cylinder->id = 
+          to_string(cylinder->origin.x)+to_string(cylinder->origin.y);
+        cylinder->fill = make_gradient(rgb_color(e->start), 'r', cylinder->id);
         cylinder->plot(fPlot);
 
         cylinder->strokeWidth = 0.7;
         if (p.showNRC) {
-          cylinder->fill = nrc_color(e->entRef, p.colorMode);
+          cylinder->id += "NRC";
+          cylinder->fill = make_gradient_periph(
+            nrc_color(e->entRef, p.colorMode), 'r', cylinder->id);
+          cylinder->stroke = shade(nrc_color(e->entRef, p.colorMode), 0.96);
           cylinder->plot_periph(fPlot, 'r');
         }
         if (p.showRedun) {
-          cylinder->fill = redun_color(e->selfRef, p.colorMode);
+          cylinder->id += "Redun";
+          cylinder->fill = make_gradient_periph(
+            redun_color(e->selfRef, p.colorMode), 'r', cylinder->id);
+          cylinder->stroke = shade(redun_color(e->selfRef, p.colorMode), 0.95);
           cylinder->plot_periph(fPlot, 'r', u8(p.showNRC));
         }
       }
@@ -123,30 +152,41 @@ void VizPaint::print_plot (VizParam& p) {
       auto cylinder = make_unique<Cylinder>();
       plot_main(cylinder);
       cylinder->height = get_point(abs(e->begTar-e->endTar));
+      cylinder->origin.x = cx + width + space;
+      cylinder->origin.y = !inverted ? cy+get_point(e->begTar) 
+                                     : cy+get_point(e->endTar);
+      cylinder->id = to_string(cylinder->origin.x)+
+                     to_string(cylinder->origin.y);
       if (e->begRef == DBLANK) {
         cylinder->fill = "black";
         cylinder->stroke = "white";
       } else {
-        cylinder->fill = rgb_color(e->start);
-        cylinder->stroke = shade(cylinder->fill);
+        cylinder->fill = make_gradient(rgb_color(e->start), 't', cylinder->id);
+        cylinder->stroke = shade(rgb_color(e->start));
       }
 
       if (!inverted) {
-        cylinder->origin = Point(cx+width+space, cy+get_point(e->begTar));
         cylinder->plot(fPlot);
       } else {
-        cylinder->origin = Point(cx+width+space, cy+get_point(e->endTar));
         if (e->begRef==DBLANK)  cylinder->plot_ir(fPlot, "#WavyWhite");
-        else                   cylinder->plot_ir(fPlot);
+        else                    cylinder->plot_ir(fPlot);
       }
 
       cylinder->strokeWidth = 0.7;
       if (p.showNRC) {
-        cylinder->fill = nrc_color(e->entTar, p.colorMode);
+        cylinder->id += "NRC";
+        cylinder->fill = make_gradient_periph(
+          nrc_color(e->entTar, p.colorMode), 'r', cylinder->id);
+        // cylinder->fill = nrc_color(e->entTar, p.colorMode);
+        cylinder->stroke = shade(nrc_color(e->entTar, p.colorMode), 0.96);
         cylinder->plot_periph(fPlot, 't');
       }
       if (p.showRedun) {
-        cylinder->fill = redun_color(e->selfTar, p.colorMode);
+        // cylinder->fill = redun_color(e->selfTar, p.colorMode);
+        cylinder->id += "Redun";
+        cylinder->fill = make_gradient_periph(
+          redun_color(e->selfTar, p.colorMode), 'r', cylinder->id);
+        cylinder->stroke = shade(redun_color(e->selfTar, p.colorMode), 0.95);
         cylinder->plot_periph(fPlot, 't', u8(p.showNRC));
       }
     };
@@ -459,14 +499,12 @@ inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
 #ifdef EXTEND
   // return heatmap_color(entropy/2 * (width+space+width));
 #endif
-
   switch (colorMode) {
   case 0:   return COLORSET[0][entropy/2 * (COLORSET[0].size()-1)];
   case 1:   return COLORSET[1][entropy/2 * (COLORSET[1].size()-1)];
   case 2:   return COLORSET[2][entropy/2 * (COLORSET[2].size()-1)];
   default:  error("undefined color mode.");
   }
-  
   return "";
 }
 
@@ -648,7 +686,7 @@ u8 colorMode) const {
     << end_elem("defs");
 
   rect->stroke = "black";
-  rect->strokeWidth = 0.35;
+  rect->strokeWidth = 0.4;
   rect->fill = "url(#grad"+id+")";
   rect->plot(f);
 
