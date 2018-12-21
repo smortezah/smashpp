@@ -180,13 +180,6 @@ struct Rectangle {
   float  opacity;
   Rectangle () : opacity(OPAC) {}
   void plot (ofstream&) const;
-  // void plot_ir (ofstream&, string&& wave=std::move("#Wavy")) const;
-  // void plot_nrc (ofstream&, char) const;
-  // void plot_nrc_ref (ofstream&) const;
-  // void plot_nrc_tar (ofstream&) const;
-  // void plot_redun (ofstream&, u8, char) const;
-  // void plot_redun_ref (ofstream&, bool) const;
-  // void plot_redun_tar (ofstream&, bool) const;
 };
 
 struct Polygon {

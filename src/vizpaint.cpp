@@ -83,14 +83,10 @@ void VizPaint::print_plot (VizParam& p) {
         cylinder->height = get_point(e.endRef-e.begRef);
         cylinder->fill = rgb_color(e.start);
         cylinder->strokeWidth = 0.25;
-        cylinder->stroke = shade(rgb_color(e.start));
+        cylinder->stroke = shade(cylinder->fill);
         cylinder->opacity = p.opacity;
         cylinder->origin = Point(cx, cy + get_point(e.begRef));
         cylinder->plot(fPlot);
-
-        // rect->width  = width;
-        // rect->height = get_point(e.endRef-e.begRef);
-        // rect->origin = Point(cx, cy + get_point(e.begRef));
 
         if (p.showNRC) {
           cylinder->fill = nrc_color(e.entRef, p.colorMode);
@@ -98,9 +94,7 @@ void VizPaint::print_plot (VizParam& p) {
         }
         if (p.showRedun) {
           cylinder->fill = redun_color(e.selfRef, p.colorMode);
-          cylinder->plot_redun(fPlot, p.showNRC, 'r');
-          // rect->fill = rect->stroke = redun_color(e.selfRef, p.colorMode);
-          // rect->plot_redun_ref(fPlot, p.showNRC);
+          cylinder->plot_redun(fPlot, u8(p.showNRC), 'r');
         }
       }
     };
@@ -109,43 +103,33 @@ void VizPaint::print_plot (VizParam& p) {
       auto cylinder = make_unique<Cylinder>();
       cylinder->width = width;
       cylinder->height = get_point(abs(e.begTar-e.endTar));
-      cylinder->opacity = p.opacity;
-      cylinder->fill = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
       cylinder->strokeWidth = 0.25;
-      if (cylinder->fill == "black")
-        cylinder->stroke = tint(rgb_color(e.start));
-      else
-        cylinder->stroke = shade(rgb_color(e.start));
-
-      // rect->fill = rect->stroke 
-      //            = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
-      rect->width  = width;
-      rect->height = get_point(abs(e.begTar-e.endTar));
+      cylinder->opacity = p.opacity;
+      if (e.begRef == DBLANK) {
+        cylinder->fill = "black";
+        cylinder->stroke = "white";
+      }
+      else {
+        cylinder->fill = rgb_color(e.start);
+        cylinder->stroke = shade(cylinder->fill);
+      }
 
       if (!inverted) {
         cylinder->origin = Point(cx+width+space, cy+get_point(e.begTar));
         cylinder->plot(fPlot);
-
-        rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
-        // rect->plot(fPlot);
       } else {
         cylinder->origin = Point(cx+width+space, cy+get_point(e.endTar));
         if (e.begRef==DBLANK)  cylinder->plot_ir(fPlot, "#WavyWhite");
         else                   cylinder->plot_ir(fPlot);
-
-        rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
-        // if (e.begRef==DBLANK)  rect->plot_ir(fPlot, "#WavyWhite");
-        // else                   rect->plot_ir(fPlot);
       }
 
       if (p.showNRC) {
-        rect->fill = rect->stroke = nrc_color(e.entTar, p.colorMode);
-        // rect->plot_nrc_tar(fPlot);
+        cylinder->fill = nrc_color(e.entTar, p.colorMode);
+        cylinder->plot_nrc(fPlot, 't');
       }
       if (p.showRedun) {
-
-        rect->fill = rect->stroke = redun_color(e.selfTar, p.colorMode);
-        // rect->plot_redun_tar(fPlot, p.showNRC);
+        cylinder->fill = redun_color(e.selfTar, p.colorMode);
+        cylinder->plot_redun(fPlot, u8(p.showNRC), 't');
       }
     };
 
@@ -634,7 +618,7 @@ u8 colorMode) const {
   for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
     f << begin_elem("stop") 
       << attrib("offset", 
-                     to_string(i*100/(grad->offsetColor.size()-1))+"%")
+                to_string(i*100/(grad->offsetColor.size()-1))+"%")
       << attrib("stop-color", grad->offsetColor[i]) 
       << attrib("stop-opacity", 1)
       << end_empty_elem();

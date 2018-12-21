@@ -40,7 +40,7 @@ static constexpr u32  PAINT_EXTRA     {120};
 static constexpr auto PAINT_SHORT     {0.035};
 static constexpr u8   PAINT_LVL_SATUR {160};
 static constexpr u8   PAINT_LVL_VAL   {160};
-static constexpr auto HORIZ_TUNE      {5.0};
+static constexpr auto HORIZ_TUNE      {8.0};
 static constexpr auto HORIZ_RATIO     {3.0};
 static constexpr auto HEAT_START      {0.35};
 static constexpr auto HEAT_ROT        {1.5};
