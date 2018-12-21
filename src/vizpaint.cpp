@@ -297,7 +297,7 @@ void VizPaint::print_plot (VizParam& p) {
   cylinder->height = refSize;
   cylinder->strokeWidth = 2;
   cylinder->origin = Point(cx, cy);
-  // cylinder->plot(fPlot);
+  cylinder->plot(fPlot);
 
   cylinder->height = tarSize;
   cylinder->origin = Point(cx+width+space, cy);
