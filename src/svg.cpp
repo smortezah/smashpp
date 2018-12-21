@@ -169,28 +169,35 @@ void Rectangle::plot (ofstream& f) const {
   f << begin_elem("rect")
     << attrib("fill", fill)
     << attrib("stroke", stroke)
+    << attrib("stroke-width", strokeWidth)
     << attrib("fill-opacity", opacity)
     << attrib("width", width, true)
     << attrib("height", height, true)
     << attrib("x", origin.x, true)
     << attrib("y", origin.y, true)
-    << attrib("ry", 3)
+    << attrib("ry", ry)
     << end_empty_elem();
 }
 
-void Polygon::plot (ofstream& f) const {
+void Polygon::add_point (double x, double y) {
+  stringstream ss;
+  ss << PREC << x << "," << PREC << y << " ";
+  points += ss.str();
+}
+
+void Polygon::plot (ofstream& f) {
   f << begin_elem("polygon")
-    << "points=\""
-    << PREC << one.x   << "," << PREC << one.y   << " "
-    << PREC << two.x   << "," << PREC << two.y   << " "
-    << PREC << three.x << "," << PREC << three.y << " "
-    << PREC << four.x  << "," << PREC << four.y  << "\" "
+    << attrib("points", points)
     << attrib("fill", fillColor)
     << attrib("stroke", fillColor)
-    << attrib("stroke-width", 1)
-    << attrib("stroke-opacity", 0.4)
-    << attrib("fill-opacity", 0.4)
+    << attrib("stroke-width", stroke_width)
+    << attrib("stroke-opacity", stroke_opacity)
+    << attrib("fill-opacity", fill_opacity)
+    // << attrib("stroke-opacity", 0.4)
+    // << attrib("fill-opacity", 0.4)
     << end_empty_elem();
+
+    points.clear();
 }
 
 void Pattern::set_head (ofstream& f) const {
