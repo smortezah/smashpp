@@ -174,18 +174,20 @@ struct Cylinder {
 
 struct Rectangle {
   Point  origin;
-  double width, height;
+  double width, height, ry;
   string fill, stroke;
-  float  opacity;
-  Rectangle () : opacity(OPAC) {}
+  float  opacity, strokeWidth;
+  Rectangle () : ry(1), opacity(OPAC) {}
   void plot (ofstream&) const;
 };
 
 struct Polygon {
   Point  one, two, three, four;
-  string lineColor, fillColor;
-  Polygon () = default;
-  void plot (ofstream&) const;
+  string points, lineColor, fillColor;
+  float  stroke_width, stroke_opacity, fill_opacity;
+  Polygon () : stroke_width(1), stroke_opacity(0.5), fill_opacity(0.5) {}
+  void add_point (double, double);
+  void plot (ofstream&);
 };
 
 struct Pattern {

@@ -76,15 +76,19 @@ void VizPaint::print_plot (VizParam& p) {
 
     if (e.begRef==DBLANK) {e.endTar>e.begTar? ++n_regularSolo: ++n_inverseSolo;}
 
+    const auto plot_main = [&](auto& cylinder) {
+      cylinder->width = width;
+      cylinder->strokeWidth = 0.4;
+      cylinder->opacity = p.opacity;
+    };
+
     const auto plot_main_ref = [&]() {
       if (e.begRef != DBLANK) {
         auto cylinder = make_unique<Cylinder>();
-        cylinder->width = width;
+        plot_main(cylinder);
         cylinder->height = get_point(e.endRef-e.begRef);
         cylinder->fill = rgb_color(e.start);
-        cylinder->strokeWidth = 0.4;
         cylinder->stroke = shade(cylinder->fill);
-        cylinder->opacity = p.opacity;
         cylinder->origin = Point(cx, cy + get_point(e.begRef));
         cylinder->plot(fPlot);
 
@@ -101,15 +105,12 @@ void VizPaint::print_plot (VizParam& p) {
 
     const auto plot_main_tar = [&](bool inverted) {
       auto cylinder = make_unique<Cylinder>();
-      cylinder->width = width;
+      plot_main(cylinder);
       cylinder->height = get_point(abs(e.begTar-e.endTar));
-      cylinder->strokeWidth = 0.4;
-      cylinder->opacity = p.opacity;
       if (e.begRef == DBLANK) {
         cylinder->fill = "black";
         cylinder->stroke = "white";
-      }
-      else {
+      } else {
         cylinder->fill = rgb_color(e.start);
         cylinder->stroke = shade(cylinder->fill);
       }
@@ -141,12 +142,12 @@ void VizPaint::print_plot (VizParam& p) {
         if (e.begRef != DBLANK) {
           switch (p.link) {
           case 1:
-            poly->lineColor = "grey";
             poly->fillColor = rgb_color(e.start);
-            poly->one   = Point(cx+width,       cy+get_point(e.begRef));
-            poly->two   = Point(cx+width,       cy+get_point(e.endRef));
-            poly->three = Point(cx+width+space, cy+get_point(e.endTar));
-            poly->four  = Point(cx+width+space, cy+get_point(e.begTar));
+            poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
+            poly->add_point(cx+width,       cy+get_point(e.begRef));
+            poly->add_point(cx+width,       cy+get_point(e.endRef));
+            poly->add_point(cx+width+space, cy+get_point(e.endTar));
+            poly->add_point(cx+width+space, cy+get_point(e.begTar));
             poly->plot(fPlot);
             break;
           case 2:
@@ -197,12 +198,12 @@ void VizPaint::print_plot (VizParam& p) {
         if (e.begRef != DBLANK) {
           switch (p.link) {
           case 1:
-            poly->lineColor = "grey";
             poly->fillColor = rgb_color(e.start);
-            poly->one   = Point(cx+width,       cy+get_point(e.begRef));
-            poly->two   = Point(cx+width,       cy+get_point(e.endRef));
-            poly->three = Point(cx+width+space, cy+get_point(e.endTar));
-            poly->four  = Point(cx+width+space, cy+get_point(e.begTar));
+            poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
+            poly->add_point(cx+width,       cy+get_point(e.begRef));
+            poly->add_point(cx+width,       cy+get_point(e.endRef));
+            poly->add_point(cx+width+space, cy+get_point(e.endTar));
+            poly->add_point(cx+width+space, cy+get_point(e.begTar));
             poly->plot(fPlot);
             break;
           case 2:
@@ -613,10 +614,10 @@ u8 colorMode) const {
     << attrib("id", "grad"+id)
     << attrib("x1", "0%")
     << attrib("y1", "0%")
-    << attrib("x2", "0%")
-    << attrib("y2", "100%")
-    // << attrib("x2", "100%")
-    // << attrib("y2", "0%")
+    // << attrib("x2", "0%")
+    // << attrib("y2", "100%")
+    << attrib("x2", "100%")
+    << attrib("y2", "0%")
     << mid_elem();
   for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
     f << begin_elem("stop") 
@@ -629,26 +630,22 @@ u8 colorMode) const {
   f << end_elem("linearGradient")
     << end_elem("defs");
 
-  auto cylinder = make_unique<Cylinder>();
-  cylinder->width = rect->height;
-  cylinder->height = rect->width;
-  cylinder->origin = Point(rect->origin.x, rect->origin.y+rect->height);
-  cylinder->ry = 1;
-  cylinder->transform = "rotate(-90 " + to_string(cylinder->origin.x) + " " +
-    to_string(cylinder->origin.y) + ")";
-  cylinder->fill = "url(#grad" + id + ")";
-  cylinder->strokeWidth = 0.5;
-  cylinder->stroke = "grey";
-  cylinder->plot(f);
+  rect->stroke = "black";
+  rect->strokeWidth = 0.35;
+  rect->fill = "url(#grad"+id+")";
+  rect->plot(f);
 
-  // f<< begin_elem("rect")
-  // << attrib("fill", "url(#grad"+id+")")
-  // << attrib("width", rect->width, true)
-  // << attrib("height", rect->height, true)
-  // << attrib("x", rect->origin.x, true)
-  // << attrib("y", rect->origin.y, true)
-  // << attrib("ry", 3)
-  // << end_empty_elem();
+  // auto cylinder = make_unique<Cylinder>();
+  // cylinder->width = rect->height;
+  // cylinder->height = rect->width;
+  // cylinder->origin = Point(rect->origin.x, rect->origin.y+rect->height);
+  // cylinder->transform = "rotate(-90 " + to_string(cylinder->origin.x) + " " +
+  //   to_string(cylinder->origin.y) + ")";
+  // cylinder->fill = "url(#grad" + id + ")";
+  // cylinder->ry = 0;
+  // cylinder->strokeWidth = 0.35;
+  // cylinder->stroke = "black";
+  // cylinder->plot(f);
 }
 
 inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight, bool showNRC,
