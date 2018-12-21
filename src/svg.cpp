@@ -106,6 +106,7 @@ void Ellipse::plot (ofstream& f) const {
     << attrib("fill", fill)
     << attrib("fill-opacity", opacity)
     << attrib("stroke", stroke)
+    << attrib("stroke-opacity", stroke_opacity)
     << attrib("stroke-width", strokeWidth)
     << end_empty_elem();
 }
@@ -122,6 +123,7 @@ void Path::plot (ofstream& f) const {
   f << attrib("fill", fill)
     << attrib("fill-opacity", opacity)
     << attrib("stroke", stroke)
+    << attrib("stroke-opacity", stroke_opacity)
     << attrib("stroke-linejoin", strokeLineJoin)
     << attrib("stroke-dasharray", strokeDashArray)
     << attrib("stroke-width", strokeWidth, true)
@@ -142,12 +144,14 @@ void Cylinder::plot (ofstream& f) const {
   path->fill = fill;
   path->opacity = opacity;
   path->stroke = stroke;
+  path->stroke_opacity = stroke_opacity;
   path->strokeWidth = strokeWidth;
   path->transform = transform;
   path->plot(f);
 
   auto ellipse = make_unique<Ellipse>();
   ellipse->stroke = path->stroke;
+  ellipse->stroke_opacity = stroke_opacity;
   ellipse->strokeWidth = 0.75 * strokeWidth;
   ellipse->fill = fill;
   ellipse->opacity = opacity;
@@ -183,7 +187,7 @@ void Cylinder::plot_periph (ofstream& f, char refTar, u8 showNRC) {
 
   width = width/HORIZ_RATIO;
   strokeWidth *= 2;
-  stroke = shade(fill, 0.95);
+  // stroke = shade(fill, 0.95);
   ry /= 2;
 
   plot(f);

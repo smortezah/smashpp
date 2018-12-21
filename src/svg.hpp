@@ -15,11 +15,11 @@ bool precise=false, const string& unit="") {
 }
 
 inline static string begin_elem (const string& name) {
-  return "\n<" + name + " ";
+  return "<" + name + " ";
 }
 
 inline static string mid_elem () {
-  return ">";
+  return ">\n";
 }
 
 inline static string end_elem (const string& name) {
@@ -122,7 +122,7 @@ struct Stop {
 struct LinearGradient {
   string id, x1, y1, x2, y2;
   vector<Stop> stops;
-  LinearGradient () : x1("0%"), y1("0%"), x2("0%"), y2("100%") {}
+  LinearGradient () : x1("0%"), y1("0%"), x2("100%"), y2("0%") {}
   void plot (ofstream&) const;
 };
 
@@ -158,9 +158,9 @@ struct Ellipse {
   double cx, cy, rx, ry;
   double strokeWidth;
   string stroke, fill;
-  float  opacity;
+  float  opacity, stroke_opacity;
   Ellipse () : rx(2.0), ry(2.0), strokeWidth(1.0), stroke("black"), 
-    fill("transparent"), opacity(OPAC) {}
+    fill("transparent"), opacity(OPAC), stroke_opacity(1) {}
   void plot (ofstream&) const;
 };
 
@@ -168,19 +168,19 @@ struct Path {
   Point  origin;
   double strokeWidth;
   string id, stroke, d, trace, strokeLineJoin, strokeDashArray, fill, transform;
-  float  opacity;
+  float  opacity, stroke_opacity;
   Path () : strokeWidth(1), d(""), strokeLineJoin("round"), fill("transparent"),
-    opacity(OPAC)  {}
+    opacity(OPAC), stroke_opacity(1)  {}
   void plot (ofstream&) const;
 };
 
 struct Cylinder {
   Point  origin;
   double width, height, ry, strokeWidth;
-  string stroke, fill, strokeLineJoin, strokeDashArray, transform;
-  float  opacity;
-  Cylinder () : ry(2.0), strokeWidth(1.0), stroke("black"), 
-    fill("transparent"), strokeLineJoin("round"), opacity(OPAC) {}
+  string id, stroke, fill, strokeLineJoin, strokeDashArray, transform;
+  float  opacity, stroke_opacity;
+  Cylinder () : ry(2.0), strokeWidth(1.0), stroke("black"), fill("transparent"),
+    strokeLineJoin("round"), opacity(OPAC), stroke_opacity(1) {}
   void plot (ofstream&) const;
   void plot_ir (ofstream&, string&& wave=std::move("#Wavy"));
   void plot_periph (ofstream&, char=' ', u8=0);
