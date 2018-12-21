@@ -78,41 +78,44 @@ void VizPaint::print_plot (VizParam& p) {
 
     const auto plot_main_ref = [&]() {
       if (e.begRef != DBLANK) {
-        auto chromosome = make_unique<Chromosome>();
-        chromosome->width = width;
-        chromosome->height = get_point(e.endRef-e.begRef);
-        chromosome->fill = rgb_color(e.start);
-        chromosome->strokeWidth = 0.25;
-        chromosome->stroke = shade(rgb_color(e.start));
-        chromosome->opacity = p.opacity;
-        chromosome->origin = Point(cx, cy + get_point(e.begRef));
-        chromosome->plot(fPlot);
+        auto cylinder = make_unique<Cylinder>();
+        cylinder->width = width;
+        cylinder->height = get_point(e.endRef-e.begRef);
+        cylinder->fill = rgb_color(e.start);
+        cylinder->strokeWidth = 0.25;
+        cylinder->stroke = shade(rgb_color(e.start));
+        cylinder->opacity = p.opacity;
+        cylinder->origin = Point(cx, cy + get_point(e.begRef));
+        cylinder->plot(fPlot);
 
-        rect->width  = width;
-        rect->height = get_point(e.endRef-e.begRef);
-        rect->origin = Point(cx, cy + get_point(e.begRef));        
+        // rect->width  = width;
+        // rect->height = get_point(e.endRef-e.begRef);
+        // rect->origin = Point(cx, cy + get_point(e.begRef));
+
         if (p.showNRC) {
-          rect->fill = rect->stroke = nrc_color(e.entRef, p.colorMode);
-          rect->plot_nrc_ref(fPlot);
+          cylinder->fill = nrc_color(e.entRef, p.colorMode);
+          cylinder->plot_nrc(fPlot, 'r');
         }
         if (p.showRedun) {
-          rect->fill = rect->stroke = redun_color(e.selfRef, p.colorMode);
-          rect->plot_redun_ref(fPlot, p.showNRC);
+          cylinder->fill = redun_color(e.selfRef, p.colorMode);
+          cylinder->plot_redun(fPlot, p.showNRC, 'r');
+          // rect->fill = rect->stroke = redun_color(e.selfRef, p.colorMode);
+          // rect->plot_redun_ref(fPlot, p.showNRC);
         }
       }
     };
 
     const auto plot_main_tar = [&](bool inverted) {
-      auto chromosome = make_unique<Chromosome>();
-      chromosome->width = width;
-      chromosome->height = get_point(abs(e.begTar-e.endTar));
-      chromosome->opacity = p.opacity;
-      chromosome->fill = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
-      chromosome->strokeWidth = 0.25;
-      if (chromosome->fill == "black")
-        chromosome->stroke = tint(rgb_color(e.start));
+      auto cylinder = make_unique<Cylinder>();
+      cylinder->width = width;
+      cylinder->height = get_point(abs(e.begTar-e.endTar));
+      cylinder->opacity = p.opacity;
+      cylinder->fill = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
+      cylinder->strokeWidth = 0.25;
+      if (cylinder->fill == "black")
+        cylinder->stroke = tint(rgb_color(e.start));
       else
-        chromosome->stroke = shade(rgb_color(e.start));
+        cylinder->stroke = shade(rgb_color(e.start));
 
       // rect->fill = rect->stroke 
       //            = (e.begRef==DBLANK ? "black" : rgb_color(e.start));
@@ -120,15 +123,15 @@ void VizPaint::print_plot (VizParam& p) {
       rect->height = get_point(abs(e.begTar-e.endTar));
 
       if (!inverted) {
-        chromosome->origin = Point(cx+width+space, cy+get_point(e.begTar));
-        chromosome->plot(fPlot);
+        cylinder->origin = Point(cx+width+space, cy+get_point(e.begTar));
+        cylinder->plot(fPlot);
 
         rect->origin = Point(cx+width+space, cy+get_point(e.begTar));
         // rect->plot(fPlot);
       } else {
-        chromosome->origin = Point(cx+width+space, cy+get_point(e.endTar));
-        if (e.begRef==DBLANK)  chromosome->plot_ir(fPlot, "#WavyWhite");
-        else                   chromosome->plot_ir(fPlot);
+        cylinder->origin = Point(cx+width+space, cy+get_point(e.endTar));
+        if (e.begRef==DBLANK)  cylinder->plot_ir(fPlot, "#WavyWhite");
+        else                   cylinder->plot_ir(fPlot);
 
         rect->origin = Point(cx+width+space, cy+get_point(e.endTar));
         // if (e.begRef==DBLANK)  rect->plot_ir(fPlot, "#WavyWhite");
@@ -136,16 +139,13 @@ void VizPaint::print_plot (VizParam& p) {
       }
 
       if (p.showNRC) {
-        // chromosome->fill = chromosome->stroke 
-        //                  = nrc_color(e.entTar, p.colorMode);
-
         rect->fill = rect->stroke = nrc_color(e.entTar, p.colorMode);
-        rect->plot_nrc_tar(fPlot);
+        // rect->plot_nrc_tar(fPlot);
       }
       if (p.showRedun) {
 
         rect->fill = rect->stroke = redun_color(e.selfTar, p.colorMode);
-        rect->plot_redun_tar(fPlot, p.showNRC);
+        // rect->plot_redun_tar(fPlot, p.showNRC);
       }
     };
 
@@ -290,16 +290,16 @@ void VizPaint::print_plot (VizParam& p) {
   remove((file_name(tar)+"."+FMT_N).c_str());
   
   // Plot chromosomes
-  auto chromosome = make_unique<Chromosome>();
-  chromosome->width = width;
-  chromosome->height = refSize;
-  chromosome->strokeWidth = 2;
-  chromosome->origin = Point(cx, cy);
-  chromosome->plot(fPlot);
+  auto cylinder = make_unique<Cylinder>();
+  cylinder->width = width;
+  cylinder->height = refSize;
+  cylinder->strokeWidth = 2;
+  cylinder->origin = Point(cx, cy);
+  cylinder->plot(fPlot);
 
-  chromosome->height = tarSize;
-  chromosome->origin = Point(cx+width+space, cy);
-  chromosome->plot(fPlot);
+  cylinder->height = tarSize;
+  cylinder->origin = Point(cx+width+space, cy);
+  cylinder->plot(fPlot);
 
   // Plot legend and annotation
   plot_legend(fPlot, p);
@@ -487,56 +487,29 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     << mid_elem();
   
   // Patterns
-  {
   auto defs = make_unique<Defs>();
-  defs->id = "ffff";
-  defs->set_head(f);
-
   auto pattern = make_unique<Pattern>();
+  auto path = make_unique<Path>();
+  defs->id = "ffff";
   pattern->id = "Wavy";
-  pattern->width = 30.0;
-  pattern->height = 5.1805778;
   pattern->patternUnits = "userSpaceOnUse";
-  pattern->set_head(f);
+  pattern->x=-width/2;
+  pattern->y=0;
+  pattern->width = width;
+  pattern->height = 7;
+  path->d = "m0,0 a "+to_string(pattern->width/2)+","+to_string(ry)+
+    " 0 0,0 "+to_string(width)+",0 ";
+  path->stroke = "black";
+  path->fill = "transparent";
+  // pattern->width = width;
+  // pattern->height = 49;
+  // path->d = "M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z";
+  // path->fill = "black";
+  make_pattern(f, defs, pattern, path);
 
-  auto path = make_unique<Path>();
-  path->d = "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 "
-    "L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
-    "11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 L "
-    "30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 C 12.413,1.207 "
-    "10.115,0.311 7.597,0.061 z";
-  path->stroke = "none";
-  path->fill = "black";
-  path->plot(f);
-
-  pattern->set_tail(f);
-  defs->set_tail(f);
-  }
-  {
-  auto defs = make_unique<Defs>();
-  defs->id = "ffff";
-  defs->set_head(f);
-
-  auto pattern = make_unique<Pattern>();
   pattern->id = "WavyWhite";
-  pattern->width = 30.0;
-  pattern->height = 5.1805778;
-  pattern->patternUnits = "userSpaceOnUse";
-  pattern->set_head(f);
-
-  auto path = make_unique<Path>();
-  path->d = "M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 "
-    "L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 "
-    "11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 "
-    "L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 "
-    "C 12.413,1.207 10.115,0.311 7.597,0.061 z";
-  path->stroke = "none";
-  path->fill = "white";
-  path->plot(f);
-
-  pattern->set_tail(f);
-  defs->set_tail(f);
-  }
+  path->stroke = "white";
+  make_pattern(f, defs, pattern, path);
 }
 
 inline void VizPaint::print_tail (ofstream& f) const {
@@ -916,12 +889,12 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
   i64    printPos  = 0;
   char   printType = 'b';
   u64    nOverlap  = 0;
-  double X         = 0;
+  double shiftX    = 4;
   if (par.showNRC && par.showRedun)
-    X = 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
+    shiftX += 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
   else if (par.showNRC ^ par.showRedun)
-    X = HORIZ_TUNE + width/HORIZ_RATIO;
-  double CX=cx;    type=="ref" ? CX-=X : CX+=width+space+width+X;
+    shiftX += HORIZ_TUNE + width/HORIZ_RATIO;
+  double CX=cx;    type=="ref" ? CX-=shiftX : CX+=width+space+width+shiftX;
 
   const auto set_dominantBaseline = [&](char type) {
     switch (type) {

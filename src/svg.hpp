@@ -15,7 +15,7 @@ bool precise=false, const string& unit="") {
 }
 
 inline static string begin_elem (const string& name) {
-  return "\t<" + name + " ";
+  return "\n<" + name + " ";
 }
 
 inline static string mid_elem () {
@@ -160,14 +160,17 @@ struct Path {
   void plot (ofstream&) const;
 };
 
-struct Cyllinder {
+struct Cylinder {
   Point  origin;
   double width, height, ry, strokeWidth;
   string stroke, fill, strokeLineJoin, strokeDashArray;
   float  opacity;
-  Cyllinder () : ry(2.0), strokeWidth(1.0), stroke("black"), 
+  Cylinder () : ry(2.0), strokeWidth(1.0), stroke("black"), 
     fill("transparent"), strokeLineJoin("round"), opacity(OPAC) {}
   void plot (ofstream&) const;
+  void plot_ir (ofstream&, string&& wave=std::move("#Wavy"));
+  void plot_nrc (ofstream&, char);
+  void plot_redun (ofstream&, u8, char);
 };
 
 struct Rectangle {
@@ -177,13 +180,13 @@ struct Rectangle {
   float  opacity;
   Rectangle () : opacity(OPAC) {}
   void plot (ofstream&) const;
-  void plot_ir (ofstream&, string&& wave=std::move("#Wavy")) const;
-  void plot_nrc (ofstream&, char) const;
-  void plot_nrc_ref (ofstream&) const;
-  void plot_nrc_tar (ofstream&) const;
-  void plot_redun (ofstream&, u8, char) const;
-  void plot_redun_ref (ofstream&, bool) const;
-  void plot_redun_tar (ofstream&, bool) const;
+  // void plot_ir (ofstream&, string&& wave=std::move("#Wavy")) const;
+  // void plot_nrc (ofstream&, char) const;
+  // void plot_nrc_ref (ofstream&) const;
+  // void plot_nrc_tar (ofstream&) const;
+  // void plot_redun (ofstream&, u8, char) const;
+  // void plot_redun_ref (ofstream&, bool) const;
+  // void plot_redun_tar (ofstream&, bool) const;
 };
 
 struct Polygon {
@@ -194,7 +197,6 @@ struct Polygon {
 };
 
 struct Pattern {
-  Point origin;
   string id, patternUnits;
   double x, y, width, height;
   Pattern () = default;
@@ -209,16 +211,25 @@ struct Defs {
   void set_tail (ofstream&) const;
 };
 
-struct Chromosome {
-  Point  origin;
-  double width, height, ry, strokeWidth;
-  string stroke, fill, strokeLineJoin, strokeDashArray;
-  float  opacity;
-  Chromosome () : ry(2.0), strokeWidth(1.0), stroke("black"), 
-    fill("transparent"), strokeLineJoin("round"), opacity(OPAC) {}
-  void plot (ofstream&) const;
-  void plot_ir (ofstream&, string&& wave=std::move("#Wavy")) const;
-};
+template <typename T>
+inline static void make_pattern (ofstream& file, unique_ptr<Defs>& defs, 
+unique_ptr<Pattern>& pattern, unique_ptr<T>& figBase) {
+  defs->set_head(file);
+  pattern->set_head(file);
+  figBase->plot(file);
+  pattern->set_tail(file);
+  defs->set_tail(file);
+}
+template <typename T, typename... Ts>
+inline static void make_pattern (ofstream& file, unique_ptr<Defs>& defs, 
+unique_ptr<Pattern>& pattern, unique_ptr<T>& figBase, unique_ptr<Ts...>& fig) {
+  defs->set_head(file);
+  pattern->set_head(file);
+  figBase->plot(file);
+  fig->plot(file);
+  pattern->set_tail(file);
+  defs->set_tail(file);
+}
 }
 
 #endif
