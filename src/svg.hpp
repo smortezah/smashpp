@@ -112,6 +112,20 @@ struct Gradient {
     stopColor(std::move(stop)) {}
 };
 
+struct Stop {
+  string offset, stop_color;
+  float  stop_opacity;
+  Stop () : stop_opacity(1) {}
+  void plot (ofstream&) const;
+};
+
+struct LinearGradient {
+  string id, x1, y1, x2, y2;
+  vector<Stop> stops;
+  LinearGradient () : x1("0%"), y1("0%"), x2("0%"), y2("100%") {}
+  void plot (ofstream&) const;
+};
+
 struct Point {
   double x, y;
   Point () = default;

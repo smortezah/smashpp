@@ -66,7 +66,6 @@ void VizPaint::print_plot (VizParam& p) {
 
   // Plot
   u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignore=0;
-  // for (auto e : pos) {
   for (auto e=pos.rbegin(); e!=pos.rend(); ++e) {
     if (abs(e->endTar-e->begTar) <= p.min) {
       ++n_ignore;    continue;
@@ -75,11 +74,25 @@ void VizPaint::print_plot (VizParam& p) {
       ++n_ignore;    continue;
     }
 
-    if (e->begRef==DBLANK) {e->endTar>e->begTar? ++n_regularSolo: ++n_inverseSolo;}
+    if (e->begRef == DBLANK)
+      e->endTar > e->begTar ? ++n_regularSolo : ++n_inverseSolo;
+
+    const auto make_gradient = [&](const string& color) {
+      auto linearGradient = make_unique<LinearGradient>();
+      linearGradient->id = "mainGrad";
+      auto stop = make_unique<Stop>();
+      stop->offset = "100%";
+      stop->stop_color = color;
+      // stop->stop_opacity = ;
+      linearGradient->stops.emplace_back(*stop);
+      linearGradient->plot(fPlot);
+      return "url(#"+linearGradient->id+")";
+    };
 
     const auto plot_main = [&](auto& cylinder) {
       cylinder->width = width;
-      cylinder->strokeWidth = 0.5;
+      // cylinder->strokeWidth = 0.5;
+      cylinder->strokeWidth = 2.5;
       cylinder->opacity = p.opacity;
     };
 
@@ -88,6 +101,7 @@ void VizPaint::print_plot (VizParam& p) {
         auto cylinder = make_unique<Cylinder>();
         plot_main(cylinder);
         cylinder->height = get_point(e->endRef-e->begRef);
+        // cylinder->fill = make_gradient(rgb_color(e->start));
         cylinder->fill = rgb_color(e->start);
         cylinder->stroke = shade(cylinder->fill);
         cylinder->origin = Point(cx, cy + get_point(e->begRef));
@@ -158,7 +172,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->beg = Point(
               cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
             line->end = Point(
-              cx+width+space, cy+get_point(e->begTar+(e->endTar-e->begTar)/2.0));
+              cx+width+space,cy+get_point(e->begTar+(e->endTar-e->begTar)/2.0));
             line->plot(fPlot);
             break;
           case 3:
@@ -166,7 +180,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->beg = Point(
               cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
             line->end = Point(
-              cx+width+space, cy+get_point(e->begTar+(e->endTar-e->begTar)/2.0));
+              cx+width+space,cy+get_point(e->begTar+(e->endTar-e->begTar)/2.0));
             line->plot(fPlot);
             break;
           case 4:
@@ -214,7 +228,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->beg = Point(
               cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
             line->end = Point(
-              cx+width+space, cy+get_point(e->endTar+(e->begTar-e->endTar)/2.0));
+              cx+width+space,cy+get_point(e->endTar+(e->begTar-e->endTar)/2.0));
             line->plot(fPlot);
             break;
           case 3:
@@ -222,7 +236,7 @@ void VizPaint::print_plot (VizParam& p) {
             line->beg = Point(
               cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
             line->end = Point(
-              cx+width+space, cy+get_point(e->endTar+(e->begTar-e->endTar)/2.0));
+              cx+width+space,cy+get_point(e->endTar+(e->begTar-e->endTar)/2.0));
             line->plot(fPlot);
             break;
           case 4:
@@ -283,7 +297,7 @@ void VizPaint::print_plot (VizParam& p) {
   cylinder->height = refSize;
   cylinder->strokeWidth = 2;
   cylinder->origin = Point(cx, cy);
-  cylinder->plot(fPlot);
+  // cylinder->plot(fPlot);
 
   cylinder->height = tarSize;
   cylinder->origin = Point(cx+width+space, cy);

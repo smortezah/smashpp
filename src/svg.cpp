@@ -3,6 +3,33 @@
 #include "vizdef.hpp"
 using namespace smashpp;
 
+void Stop::plot (ofstream& f) const {
+  f << begin_elem("stop")
+    << attrib("offset", offset)
+    << attrib("stop-color", stop_color)
+    << attrib("stop-opacity", stop_opacity, true)
+    << end_empty_elem();
+}
+
+void LinearGradient::plot (ofstream& f) const {
+  auto defs = make_unique<Defs>();
+  defs->set_head(f);
+
+  f << begin_elem("linearGradient")
+    << attrib("id", id)
+    << attrib("x1", x1)
+    << attrib("y1", y1)
+    << attrib("x2", x2)
+    << attrib("y2", y2)
+    << mid_elem();
+
+  for (auto s : stops)
+    s.plot(f);
+
+  f << end_elem("linearGradient");
+  defs->set_tail(f);
+}
+
 void Text::plot (ofstream& f) const {
   f << begin_elem("text")
     << attrib("id", to_string(origin.x)+to_string(origin.y))
@@ -120,9 +147,10 @@ void Cylinder::plot (ofstream& f) const {
   path->plot(f);
 
   auto ellipse = make_unique<Ellipse>();
-  ellipse->stroke = stroke;
+  ellipse->stroke = path->stroke;
   ellipse->strokeWidth = 0.75 * strokeWidth;
   ellipse->fill = fill;
+  ellipse->opacity = opacity;
   ellipse->cx = origin.x + width/2;
   ellipse->cy = origin.y;
   ellipse->rx = width/2 + (strokeWidth-ellipse->strokeWidth)/2;
