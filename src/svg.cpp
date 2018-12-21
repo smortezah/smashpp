@@ -27,6 +27,7 @@ void Text::plot (ofstream& f) const {
 void Text::print_title (ofstream& f) {
   textAnchor = "middle";
   fontSize = 12;
+  // fontWeight = "bold";
   plot(f);
 }
 
@@ -83,7 +84,8 @@ void Ellipse::plot (ofstream& f) const {
 }
 
 void Path::plot (ofstream& f) const {
-  f << begin_elem("path");
+  f << begin_elem("path")
+    << attrib("id", id);
   
   if (!d.empty())
     f << attrib("d", d);
@@ -96,12 +98,14 @@ void Path::plot (ofstream& f) const {
     << attrib("stroke-linejoin", strokeLineJoin)
     << attrib("stroke-dasharray", strokeDashArray)
     << attrib("stroke-width", strokeWidth, true)
+    << attrib("transform", transform)
     << end_empty_elem();
 }
 
 void Cylinder::plot (ofstream& f) const {
   auto path = make_unique<Path>();
   path->origin = Point(origin.x, origin.y);
+  path->id = to_string(origin.x)+to_string(origin.y);
   path->trace = " v "+to_string(height)+
     " a "+to_string(width/2)+","+to_string(ry)+" 0 0,0 "+to_string(width)+
     ",0 "+
@@ -114,6 +118,7 @@ void Cylinder::plot (ofstream& f) const {
   path->opacity = opacity;
   path->stroke = stroke;
   path->strokeWidth = strokeWidth;
+  path->transform = transform;
   path->plot(f);
 
   path->origin = Point(origin.x, origin.y+height);
@@ -124,6 +129,7 @@ void Cylinder::plot (ofstream& f) const {
   path->stroke = stroke;
   path->strokeWidth = strokeWidth/2;
   path->strokeDashArray = "4 1";
+  path->transform = transform;
   path->plot(f);
 }
 

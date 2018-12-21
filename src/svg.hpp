@@ -153,7 +153,7 @@ struct Ellipse {
 struct Path {
   Point  origin;
   double strokeWidth;
-  string stroke, d, trace, strokeLineJoin, strokeDashArray, fill;
+  string id, stroke, d, trace, strokeLineJoin, strokeDashArray, fill, transform;
   float  opacity;
   Path () : strokeWidth(1), d(""), strokeLineJoin("round"), fill("transparent"),
     opacity(OPAC)  {}
@@ -163,7 +163,7 @@ struct Path {
 struct Cylinder {
   Point  origin;
   double width, height, ry, strokeWidth;
-  string stroke, fill, strokeLineJoin, strokeDashArray;
+  string stroke, fill, strokeLineJoin, strokeDashArray, transform;
   float  opacity;
   Cylinder () : ry(2.0), strokeWidth(1.0), stroke("black"), 
     fill("transparent"), strokeLineJoin("round"), opacity(OPAC) {}

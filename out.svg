@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Morteza Hosseini, IEETA 2018-2019 -->
 
-<svg xmlns="http://www.w3.org/2000/svg" width="504" height="650" >
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="504" height="650" >
 <defs id="ffff" >
 <pattern id="Wavy" x="-10.50" y="0.00" width="21.00" height="7.00" patternUnits="userSpaceOnUse" >
-<path d="m0,0 a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="1.00" />
+<path id="" d="m0,0 a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="1.00" transform="" />
 </pattern>
 </defs>
 
 <defs id="ffff" >
 <pattern id="WavyWhite" x="-10.50" y="0.00" width="21.00" height="7.00" patternUnits="userSpaceOnUse" >
-<path d="m0,0 a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="white" stroke-linejoin="round" stroke-dasharray="" stroke-width="1.00" />
+<path id="" d="m0,0 a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="white" stroke-linejoin="round" stroke-dasharray="" stroke-width="1.00" transform="" />
 </pattern>
 </defs>
 
-<rect fill="white" stroke="white" fill-opacity="0.9" width="504.00" height="650.00" x="0.00" y="0.00" ry="3" />
+<rect fill="white" stroke="white" fill-opacity="0.8" width="504.00" height="650.00" x="0.00" y="0.00" ry="3" />
 
 <text id="210.50000085.000000" x="210.50" y="85.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="12px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >refs</text>
 
@@ -62,132 +62,132 @@
 <text id="343.000000599.500000" x="343.00" y="599.50" dx="0" dy="0" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="1" style="fill:#9FA03B">999</tspan>
 </text>
 
-<path d="M 200.000000,220.000000  v 119.500000 a 10.500000,2.000000 0 0,0 21.000000,0  v -119.500000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#A03C3B" fill-opacity="0.9" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="200.000000220.000000" d="M 200.000000,220.000000  v 119.500000 a 10.500000,2.000000 0 0,0 21.000000,0  v -119.500000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#A03C3B" fill-opacity="0.8" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 200.000000,339.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="200.000000220.000000" d="M 200.000000,339.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 185.000000,220.000000  v 119.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -119.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ffff00" fill-opacity="0.9" stroke="#CC0" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="185.000000220.000000" d="M 185.000000,220.000000  v 119.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -119.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ffff00" fill-opacity="0.8" stroke="#CC0" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 185.000000,339.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#CC0" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="185.000000220.000000" d="M 185.000000,339.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#CC0" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 170.000000,220.000000  v 119.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -119.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="170.000000220.000000" d="M 170.000000,220.000000  v 119.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -119.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 170.000000,339.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="170.000000220.000000" d="M 170.000000,339.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,100.000000  v 112.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -112.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#A03C3B" fill-opacity="0.9" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="283.000000100.000000" d="M 283.000000,100.000000  v 112.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -112.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#A03C3B" fill-opacity="0.8" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,212.000000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="283.000000100.000000" d="M 283.000000,212.000000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 312.000000,100.000000  v 112.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -112.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff5500" fill-opacity="0.9" stroke="#C40" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="312.000000100.000000" d="M 312.000000,100.000000  v 112.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -112.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff5500" fill-opacity="0.8" stroke="#C40" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 312.000000,212.000000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C40" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="312.000000100.000000" d="M 312.000000,212.000000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C40" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 327.000000,100.000000  v 112.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -112.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="327.000000100.000000" d="M 327.000000,100.000000  v 112.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -112.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 327.000000,212.000000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="327.000000100.000000" d="M 327.000000,212.000000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
 <polygon points="221.00,220.00 221.00,339.50 283.00,212.00 283.00,100.00" fill="#A03C3B" stroke="#A03C3B" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
 
-<path d="M 200.000000,344.500000  v 133.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -133.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#9FA03B" fill-opacity="0.9" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="200.000000344.500000" d="M 200.000000,344.500000  v 133.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -133.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#9FA03B" fill-opacity="0.8" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 200.000000,477.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="200.000000344.500000" d="M 200.000000,477.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 185.000000,344.500000  v 133.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -133.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ffaa00" fill-opacity="0.9" stroke="#C80" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="185.000000344.500000" d="M 185.000000,344.500000  v 133.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -133.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ffaa00" fill-opacity="0.8" stroke="#C80" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 185.000000,477.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C80" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="185.000000344.500000" d="M 185.000000,477.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C80" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 170.000000,344.500000  v 133.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -133.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="170.000000344.500000" d="M 170.000000,344.500000  v 133.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -133.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 170.000000,477.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="170.000000344.500000" d="M 170.000000,477.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,478.000000  v 121.500000 a 10.500000,2.000000 0 0,0 21.000000,0  v -121.500000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#9FA03B" fill-opacity="0.9" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="283.000000478.000000" d="M 283.000000,478.000000  v 121.500000 a 10.500000,2.000000 0 0,0 21.000000,0  v -121.500000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#9FA03B" fill-opacity="0.8" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,599.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="283.000000478.000000" d="M 283.000000,599.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 312.000000,478.000000  v 121.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -121.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff5500" fill-opacity="0.9" stroke="#C40" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="312.000000478.000000" d="M 312.000000,478.000000  v 121.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -121.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff5500" fill-opacity="0.8" stroke="#C40" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 312.000000,599.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C40" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="312.000000478.000000" d="M 312.000000,599.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C40" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 327.000000,478.000000  v 121.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -121.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="327.000000478.000000" d="M 327.000000,478.000000  v 121.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -121.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 327.000000,599.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="327.000000478.000000" d="M 327.000000,599.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
 <polygon points="221.00,344.50 221.00,477.50 283.00,599.50 283.00,478.00" fill="#9FA03B" stroke="#9FA03B" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
 
-<path d="M 200.000000,100.000000  v 120.500000 a 10.500000,2.000000 0 0,0 21.000000,0  v -120.500000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3BA03C" fill-opacity="0.9" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="200.000000100.000000" d="M 200.000000,100.000000  v 120.500000 a 10.500000,2.000000 0 0,0 21.000000,0  v -120.500000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3BA03C" fill-opacity="0.8" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 200.000000,220.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="200.000000100.000000" d="M 200.000000,220.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 185.000000,100.000000  v 120.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -120.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ffaa00" fill-opacity="0.9" stroke="#C80" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="185.000000100.000000" d="M 185.000000,100.000000  v 120.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -120.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ffaa00" fill-opacity="0.8" stroke="#C80" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 185.000000,220.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C80" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="185.000000100.000000" d="M 185.000000,220.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C80" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 170.000000,100.000000  v 120.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -120.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="170.000000100.000000" d="M 170.000000,100.000000  v 120.500000 a 3.500000,2.000000 0 0,0 7.000000,0  v -120.500000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 170.000000,220.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="170.000000100.000000" d="M 170.000000,220.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,221.500000  v 239.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -239.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3BA03C" fill-opacity="0.9" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="283.000000221.500000" d="M 283.000000,221.500000  v 239.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -239.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3BA03C" fill-opacity="0.8" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,460.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="283.000000221.500000" d="M 283.000000,460.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 283.000000,221.500000  v 239.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -239.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="url(#Wavy)" fill-opacity="0.9" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="283.000000221.500000" d="M 283.000000,221.500000  v 239.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -239.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="url(#Wavy)" fill-opacity="0.8" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,460.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="283.000000221.500000" d="M 283.000000,460.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 312.000000,221.500000  v 239.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -239.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff5500" fill-opacity="0.9" stroke="#C40" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="312.000000221.500000" d="M 312.000000,221.500000  v 239.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -239.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff5500" fill-opacity="0.8" stroke="#C40" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 312.000000,460.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C40" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="312.000000221.500000" d="M 312.000000,460.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C40" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 327.000000,221.500000  v 239.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -239.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="327.000000221.500000" d="M 327.000000,221.500000  v 239.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -239.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 327.000000,460.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="327.000000221.500000" d="M 327.000000,460.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
 <polygon points="221.00,100.00 221.00,220.50 283.00,221.50 283.00,460.50" fill="#3BA03C" stroke="#3BA03C" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
 
-<path d="M 200.000000,487.500000  v 112.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -112.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3B9FA0" fill-opacity="0.9" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="200.000000487.500000" d="M 200.000000,487.500000  v 112.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -112.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3B9FA0" fill-opacity="0.8" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 200.000000,599.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="200.000000487.500000" d="M 200.000000,599.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 185.000000,487.500000  v 112.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -112.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ffaa00" fill-opacity="0.9" stroke="#C80" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="185.000000487.500000" d="M 185.000000,487.500000  v 112.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -112.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ffaa00" fill-opacity="0.8" stroke="#C80" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 185.000000,599.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C80" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="185.000000487.500000" d="M 185.000000,599.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C80" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 170.000000,487.500000  v 112.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -112.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="170.000000487.500000" d="M 170.000000,487.500000  v 112.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -112.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 170.000000,599.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="170.000000487.500000" d="M 170.000000,599.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,221.500000  v 239.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -239.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3B9FA0" fill-opacity="0.9" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="283.000000221.500000" d="M 283.000000,221.500000  v 239.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -239.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3B9FA0" fill-opacity="0.8" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,460.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="283.000000221.500000" d="M 283.000000,460.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 283.000000,221.500000  v 239.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -239.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="url(#Wavy)" fill-opacity="0.9" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+<path id="283.000000221.500000" d="M 283.000000,221.500000  v 239.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -239.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="url(#Wavy)" fill-opacity="0.8" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" transform="" />
 
-<path d="M 283.000000,460.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+<path id="283.000000221.500000" d="M 283.000000,460.500000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#1D4F50" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" transform="" />
 
-<path d="M 312.000000,221.500000  v 239.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -239.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff5500" fill-opacity="0.9" stroke="#C40" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="312.000000221.500000" d="M 312.000000,221.500000  v 239.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -239.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff5500" fill-opacity="0.8" stroke="#C40" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 312.000000,460.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C40" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="312.000000221.500000" d="M 312.000000,460.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C40" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
-<path d="M 327.000000,221.500000  v 239.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -239.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+<path id="327.000000221.500000" d="M 327.000000,221.500000  v 239.000000 a 3.500000,2.000000 0 0,0 7.000000,0  v -239.000000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="" />
 
-<path d="M 327.000000,460.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.9" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+<path id="327.000000221.500000" d="M 327.000000,460.500000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="0.8" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="" />
 
 <polygon points="221.00,487.50 221.00,599.50 283.00,221.50 283.00,460.50" fill="#3B9FA0" stroke="#3B9FA0" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
 
-<path d="M 200.000000,100.000000  v 500.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -500.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="2.00" />
+<path id="200.000000100.000000" d="M 200.000000,100.000000  v 500.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -500.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="2.00" transform="" />
 
-<path d="M 200.000000,600.000000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="1.00" />
+<path id="200.000000100.000000" d="M 200.000000,600.000000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="1.00" transform="" />
 
-<path d="M 283.000000,100.000000  v 500.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -500.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="2.00" />
+<path id="283.000000100.000000" d="M 283.000000,100.000000  v 500.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -500.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="2.00" transform="" />
 
-<path d="M 283.000000,600.000000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="1.00" />
+<path id="283.000000100.000000" d="M 283.000000,600.000000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="1.00" transform="" />
 
-<text id="252.00000024.000000" x="252.00" y="24.00" dx="0" dy="-2" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >RELATIVE REDUNDANCY</text>
+<text id="252.00000024.000000" x="252.00" y="24.00" dx="0" dy="-3" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >RELATIVE REDUNDANCY</text>
 
-<text id="252.00000036.000000" x="252.00" y="36.00" dx="0" dy="2" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >REDUNDANCY</text>
+<text id="252.00000036.000000" x="252.00" y="36.00" dx="0" dy="3" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >REDUNDANCY</text>
 
 <defs >
-<linearGradient id="grad170.00000024.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad170.00000024.000000" x1="0%" y1="0%" x2="0%" y2="100%" >
 <stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
 
 <stop offset="8%" stop-color="#0055ff" stop-opacity="1" />
@@ -216,9 +216,11 @@
 </linearGradient>
 </defs>
 
-<rect fill="url(#grad170.00000024.000000)" width="164.00" height="12.00" x="170.00" y="24.00" ry="3" />
+<path id="170.00000036.000000" d="M 170.000000,36.000000  v 164.000000 a 6.000000,1.000000 0 0,0 12.000000,0  v -164.000000 a 6.000000,1.000000 0 0,0 -12.000000,0  a 6.000000,1.000000 0 0,0 12.000000,0 " fill="url(#grad170.00000024.000000)" fill-opacity="0.8" stroke="grey" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" transform="rotate(-90 170.000000 36.000000)" />
 
-<text id="168.00000030.000000" x="168.00" y="30.00" dx="-2" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" >0.0</text>
+<path id="170.00000036.000000" d="M 170.000000,200.000000  a 6.000000,1.000000 0 0,1 12.000000,0 " fill="transparent" fill-opacity="0.8" stroke="grey" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" transform="rotate(-90 170.000000 36.000000)" />
+
+<text id="168.00000030.000000" x="168.00" y="30.00" dx="-2.5" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" >0.0</text>
 
 <text id="211.00000030.000000" x="211.00" y="30.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >0.5</text>
 
@@ -226,17 +228,17 @@
 
 <text id="293.00000030.000000" x="293.00" y="30.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.5</text>
 
-<text id="336.00000030.000000" x="336.00" y="30.00" dx="2" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" >2.0</text>
+<text id="336.00000030.000000" x="336.00" y="30.00" dx="2.5" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" >2.0</text>
 
-<path d="M 188.500000,599.500000 v 20.500000 h 12.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+<path id="" d="M 188.500000,599.500000 v 20.500000 h 12.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" transform="" />
 
-<path d="M 315.500000,599.500000 v 20.500000 h -12.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+<path id="" d="M 315.500000,599.500000 v 20.500000 h -12.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" transform="" />
 
 <text id="252.000000620.000000" x="252.00" y="620.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >Relative Redundancy</text>
 
-<path d="M 173.500000,599.500000 v 35.500000 h 42.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+<path id="" d="M 173.500000,599.500000 v 35.500000 h 42.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" transform="" />
 
-<path d="M 330.500000,599.500000 v 35.500000 h -42.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+<path id="" d="M 330.500000,599.500000 v 35.500000 h -42.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" transform="" />
 
 <text id="252.000000635.000000" x="252.00" y="635.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >Redundancy</text>
 </svg>

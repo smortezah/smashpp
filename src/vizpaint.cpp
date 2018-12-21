@@ -466,6 +466,7 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) const {
     << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
     << begin_elem("svg")
     << attrib("xmlns", "http://www.w3.org/2000/svg")
+    << attrib("xmlns:xlink", "http://www.w3.org/1999/xlink")
     << attrib("width", w)
     << attrib("height", h)
     << mid_elem();
@@ -510,7 +511,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
   if (!p.showNRC && !p.showRedun)  return;
   
   const auto vert = 24;
-  const string shiftX="2", shiftY="2";
+  const string shiftX="2.5", shiftY="3";
   auto rect = make_shared<Rectangle>();
   rect->height = 12;
 
@@ -612,8 +613,10 @@ u8 colorMode) const {
     << attrib("id", "grad"+id)
     << attrib("x1", "0%")
     << attrib("y1", "0%")
-    << attrib("x2", "100%")
-    << attrib("y2", "0%")
+    << attrib("x2", "0%")
+    << attrib("y2", "100%")
+    // << attrib("x2", "100%")
+    // << attrib("y2", "0%")
     << mid_elem();
   for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
     f << begin_elem("stop") 
@@ -624,15 +627,28 @@ u8 colorMode) const {
       << end_empty_elem();
   }
   f << end_elem("linearGradient")
-    << end_elem("defs")
-    << begin_elem("rect")
-    << attrib("fill", "url(#grad"+id+")")
-    << attrib("width", rect->width, true)
-    << attrib("height", rect->height, true)
-    << attrib("x", rect->origin.x, true)
-    << attrib("y", rect->origin.y, true)
-    << attrib("ry", 3)
-    << end_empty_elem();
+    << end_elem("defs");
+
+  auto cylinder = make_unique<Cylinder>();
+  cylinder->width = rect->height;
+  cylinder->height = rect->width;
+  cylinder->origin = Point(rect->origin.x, rect->origin.y+rect->height);
+  cylinder->ry = 1;
+  cylinder->transform = "rotate(-90 " + to_string(cylinder->origin.x) + " " +
+    to_string(cylinder->origin.y) + ")";
+  cylinder->fill = "url(#grad" + id + ")";
+  cylinder->strokeWidth = 0.5;
+  cylinder->stroke = "grey";
+  cylinder->plot(f);
+
+  // f<< begin_elem("rect")
+  // << attrib("fill", "url(#grad"+id+")")
+  // << attrib("width", rect->width, true)
+  // << attrib("height", rect->height, true)
+  // << attrib("x", rect->origin.x, true)
+  // << attrib("y", rect->origin.y, true)
+  // << attrib("ry", 3)
+  // << end_empty_elem();
 }
 
 inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight, bool showNRC,

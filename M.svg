@@ -1,88 +1,204 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Morteza Hosseini, IEETA 2018-2019 -->
-	<svg xmlns="http://www.w3.org/2000/svg" width="511" height="650" >	<defs id="ffff" >	<pattern id="Wavy" height="5.18058" width="30" patternUnits="userSpaceOnUse" >	<path d="M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z" fill="black" stroke="none" />
+
+<svg xmlns="http://www.w3.org/2000/svg" width="504" height="650" >
+<defs id="ffff" >
+<pattern id="Wavy" x="-10.50" y="0.00" width="21.00" height="7.00" patternUnits="userSpaceOnUse" >
+<path d="m0,0 a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="1.00" />
 </pattern>
 </defs>
-	<defs id="ffff" >	<pattern id="WavyWhite" height="5.18058" width="30" patternUnits="userSpaceOnUse" >	<path d="M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z" fill="white" stroke="none" />
+
+<defs id="ffff" >
+<pattern id="WavyWhite" x="-10.50" y="0.00" width="21.00" height="7.00" patternUnits="userSpaceOnUse" >
+<path d="m0,0 a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="white" stroke-linejoin="round" stroke-dasharray="" stroke-width="1.00" />
 </pattern>
 </defs>
-	<rect fill="white" stroke="white" fill-opacity="1" width="511.00" height="650.00" x="0.00" y="0.00" ry="3" />
-	<text id="211.50000085.000000" x="211.50" y="85.00" dominant-baseline="middle" transform="" font-size="12px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >RefM</text>
-	<text id="299.50000085.000000" x="299.50" y="85.00" dominant-baseline="middle" transform="" font-size="12px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >TarM</text>
-	<text id="169.666667100.080000" x="169.67" y="100.08" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="3" style="fill:#A03B65">16</tspan>
+
+<rect fill="white" stroke="white" fill-opacity="1" width="504.00" height="650.00" x="0.00" y="0.00" ry="3" />
+
+<text id="210.50000085.000000" x="210.50" y="85.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="12px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >RefM</text>
+
+<text id="293.50000085.000000" x="293.50" y="85.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="12px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >TarM</text>
+
+<text id="161.000000100.080000" x="161.00" y="100.08" dx="0" dy="0" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="1" style="fill:#9FA03B">16</tspan>
 </text>
-	<text id="169.666667225.030000" x="169.67" y="225.03" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="3" style="fill:#A03B65">25012, </tspan>
-<tspan id="4" style="fill:#6EA03B">25000</tspan>
+
+<text id="161.000000225.030000" x="161.00" y="225.03" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="1" style="fill:#9FA03B">25012, </tspan>
+<tspan id="2" style="fill:#3BA03C">25000</tspan>
 </text>
-	<text id="169.666667350.045000" x="169.67" y="350.04" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="4" style="fill:#6EA03B">50009</tspan>
+
+<text id="161.000000350.045000" x="161.00" y="350.04" dx="0" dy="0" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="2" style="fill:#3BA03C">50009</tspan>
 </text>
-	<text id="169.666667350.205000" x="169.67" y="350.21" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="2" style="fill:#3B56A0">50041</tspan>
+
+<text id="161.000000350.205000" x="161.00" y="350.21" dx="0" dy="0" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="0" style="fill:#A03C3B">50041</tspan>
 </text>
-	<text id="169.666667599.995000" x="169.67" y="600.00" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="2" style="fill:#3B56A0">99999</tspan>
+
+<text id="161.000000599.995000" x="161.00" y="600.00" dx="0" dy="0" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" ><tspan id="0" style="fill:#A03C3B">99999</tspan>
 </text>
-	<text id="341.333333100.000000" x="341.33" y="100.00" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="4" style="fill:#6EA03B">0</tspan>
+
+<text id="343.000000100.000000" x="343.00" y="100.00" dx="0" dy="0" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="2" style="fill:#3BA03C">0</tspan>
 </text>
-	<text id="341.333333225.045000" x="341.33" y="225.05" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="4" style="fill:#6EA03B">25009</tspan>
+
+<text id="343.000000225.045000" x="343.00" y="225.05" dx="0" dy="0" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="2" style="fill:#3BA03C">25009</tspan>
 </text>
-	<text id="341.333333225.135000" x="341.33" y="225.13" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="2" style="fill:#3B56A0">25027</tspan>
+
+<text id="343.000000225.135000" x="343.00" y="225.13" dx="0" dy="0" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="0" style="fill:#A03C3B">25027</tspan>
 </text>
-	<text id="341.333333474.980000" x="341.33" y="474.98" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="2" style="fill:#3B56A0">74996</tspan>
+
+<text id="343.000000474.980000" x="343.00" y="474.98" dx="0" dy="0" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="0" style="fill:#A03C3B">74996</tspan>
 </text>
-	<text id="341.333333475.085000" x="341.33" y="475.08" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="3" style="fill:#A03B65">75017</tspan>
+
+<text id="343.000000475.085000" x="343.00" y="475.08" dx="0" dy="0" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="1" style="fill:#9FA03B">75017</tspan>
 </text>
-	<text id="341.333333599.995000" x="341.33" y="600.00" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="3" style="fill:#A03B65">99999</tspan>
+
+<text id="343.000000599.995000" x="343.00" y="600.00" dx="0" dy="0" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" ><tspan id="1" style="fill:#9FA03B">99999</tspan>
 </text>
-	<rect fill="#3B56A0" stroke="#3B56A0" fill-opacity="1" width="23.00" height="249.79" x="200.00" y="350.21" ry="3" />
-	<rect id="rect3777" fill="#0000ff" stroke="#0000ff" fill-opacity="1" width="7.67" height="249.79" x="187.33" y="350.21" ry="2" />
-	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="1" width="7.67" height="249.79" x="174.67" y="350.21" ry="2" />
-	<rect fill="#3B56A0" stroke="#3B56A0" fill-opacity="1" width="23.00" height="249.84" x="288.00" y="225.13" ry="3" />
-	<rect id="rect3777" fill="#0000ff" stroke="#0000ff" fill-opacity="1" width="7.67" height="249.84" x="316.00" y="225.13" ry="2" />
-	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="1" width="7.67" height="249.84" x="328.67" y="225.13" ry="2" />
-	<polygon points="223.00,350.21 223.00,600.00 288.00,474.98 288.00,225.13" fill="#3B56A0" stroke="#3B56A0" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
-	<rect fill="#A03B65" stroke="#A03B65" fill-opacity="1" width="23.00" height="124.98" x="200.00" y="100.08" ry="3" />
-	<rect id="rect3777" fill="#0000ff" stroke="#0000ff" fill-opacity="1" width="7.67" height="124.98" x="187.33" y="100.08" ry="2" />
-	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="1" width="7.67" height="124.98" x="174.67" y="100.08" ry="2" />
-	<rect fill="#A03B65" stroke="#A03B65" fill-opacity="1" width="23.00" height="124.91" x="288.00" y="475.08" ry="3" />
-	<rect id="rect3777" fill="#0000ff" stroke="#0000ff" fill-opacity="1" width="7.67" height="124.91" x="316.00" y="475.08" ry="2" />
-	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="1" width="7.67" height="124.91" x="328.67" y="475.08" ry="2" />
-	<polygon points="223.00,100.08 223.00,225.06 288.00,600.00 288.00,475.08" fill="#A03B65" stroke="#A03B65" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
-	<rect fill="#6EA03B" stroke="#6EA03B" fill-opacity="1" width="23.00" height="125.05" x="200.00" y="225.00" ry="3" />
-	<rect id="rect3777" fill="#0000ff" stroke="#0000ff" fill-opacity="1" width="7.67" height="125.05" x="187.33" y="225.00" ry="2" />
-	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="1" width="7.67" height="125.05" x="174.67" y="225.00" ry="2" />
-	<rect fill="#6EA03B" stroke="#6EA03B" fill-opacity="1" width="23.00" height="125.05" x="288.00" y="100.00" ry="3" />
-	<rect fill-opacity="1" stroke-width="2" fill="url(#Wavy)" width="23.00" height="125.05" x="288.00" y="100.00" ry="3" />
-	<rect id="rect3777" fill="#0000ff" stroke="#0000ff" fill-opacity="1" width="7.67" height="125.05" x="316.00" y="100.00" ry="2" />
-	<rect fill="#ff0000" stroke="#ff0000" fill-opacity="1" width="7.67" height="125.05" x="328.67" y="100.00" ry="2" />
-	<polygon points="223.00,225.00 223.00,350.04 288.00,100.00 288.00,225.05" fill="#6EA03B" stroke="#6EA03B" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
-	<rect fill="none" stroke="#000000" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" width="23.00" height="500.00" x="200.00" y="100.00" ry="3" />
-	<rect fill="none" stroke="#000000" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" width="23.00" height="500.00" x="288.00" y="100.00" ry="3" />
-	<text id="255.50000024.000000" x="255.50" y="24.00" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >RELATIVE REDUNDANCY</text>
-	<text id="255.50000036.000000" x="255.50" y="36.00" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >REDUNDANCY</text>
-	<defs >	<linearGradient id="grad187.33333324.000000" x1="0%" y1="0%" x2="100%" y2="0%" >	<stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
-	<stop offset="8%" stop-color="#0055ff" stop-opacity="1" />
-	<stop offset="16%" stop-color="#00aaff" stop-opacity="1" />
-	<stop offset="25%" stop-color="#00ffff" stop-opacity="1" />
-	<stop offset="33%" stop-color="#00ffaa" stop-opacity="1" />
-	<stop offset="41%" stop-color="#00ff55" stop-opacity="1" />
-	<stop offset="50%" stop-color="#00ff00" stop-opacity="1" />
-	<stop offset="58%" stop-color="#55ff00" stop-opacity="1" />
-	<stop offset="66%" stop-color="#aaff00" stop-opacity="1" />
-	<stop offset="75%" stop-color="#ffff00" stop-opacity="1" />
-	<stop offset="83%" stop-color="#ffaa00" stop-opacity="1" />
-	<stop offset="91%" stop-color="#ff5500" stop-opacity="1" />
-	<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+
+<path d="M 200.000000,350.205000  v 249.790000 a 10.500000,2.000000 0 0,0 21.000000,0  v -249.790000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#A03C3B" fill-opacity="1" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+
+<path d="M 200.000000,599.995000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="1" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+
+<path d="M 185.000000,350.205000  v 249.790000 a 3.500000,2.000000 0 0,0 7.000000,0  v -249.790000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#0000ff" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 185.000000,599.995000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<path d="M 170.000000,350.205000  v 249.790000 a 3.500000,2.000000 0 0,0 7.000000,0  v -249.790000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 170.000000,599.995000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<path d="M 283.000000,225.135000  v 249.845000 a 10.500000,2.000000 0 0,0 21.000000,0  v -249.845000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#A03C3B" fill-opacity="1" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+
+<path d="M 283.000000,474.980000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="1" stroke="#501E1D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+
+<path d="M 312.000000,225.135000  v 249.845000 a 3.500000,2.000000 0 0,0 7.000000,0  v -249.845000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#0000ff" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 312.000000,474.980000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<path d="M 327.000000,225.135000  v 249.845000 a 3.500000,2.000000 0 0,0 7.000000,0  v -249.845000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 327.000000,474.980000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<polygon points="221.00,350.21 221.00,600.00 283.00,474.98 283.00,225.13" fill="#A03C3B" stroke="#A03C3B" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
+
+<path d="M 200.000000,100.080000  v 124.980000 a 10.500000,2.000000 0 0,0 21.000000,0  v -124.980000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#9FA03B" fill-opacity="1" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+
+<path d="M 200.000000,225.060000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="1" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+
+<path d="M 185.000000,100.080000  v 124.980000 a 3.500000,2.000000 0 0,0 7.000000,0  v -124.980000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#0000ff" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 185.000000,225.060000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<path d="M 170.000000,100.080000  v 124.980000 a 3.500000,2.000000 0 0,0 7.000000,0  v -124.980000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 170.000000,225.060000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<path d="M 283.000000,475.085000  v 124.910000 a 10.500000,2.000000 0 0,0 21.000000,0  v -124.910000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#9FA03B" fill-opacity="1" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+
+<path d="M 283.000000,599.995000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="1" stroke="#4F501D" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+
+<path d="M 312.000000,475.085000  v 124.910000 a 3.500000,2.000000 0 0,0 7.000000,0  v -124.910000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#0000ff" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 312.000000,599.995000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<path d="M 327.000000,475.085000  v 124.910000 a 3.500000,2.000000 0 0,0 7.000000,0  v -124.910000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 327.000000,599.995000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<polygon points="221.00,100.08 221.00,225.06 283.00,600.00 283.00,475.08" fill="#9FA03B" stroke="#9FA03B" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
+
+<path d="M 200.000000,225.000000  v 125.045000 a 10.500000,2.000000 0 0,0 21.000000,0  v -125.045000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3BA03C" fill-opacity="1" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+
+<path d="M 200.000000,350.045000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="1" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+
+<path d="M 185.000000,225.000000  v 125.045000 a 3.500000,2.000000 0 0,0 7.000000,0  v -125.045000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#0000ff" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 185.000000,350.045000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<path d="M 170.000000,225.000000  v 125.045000 a 3.500000,2.000000 0 0,0 7.000000,0  v -125.045000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 170.000000,350.045000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<path d="M 283.000000,100.000000  v 125.045000 a 10.500000,2.000000 0 0,0 21.000000,0  v -125.045000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="#3BA03C" fill-opacity="1" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+
+<path d="M 283.000000,225.045000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="1" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+
+<path d="M 283.000000,100.000000  v 125.045000 a 10.500000,2.000000 0 0,0 21.000000,0  v -125.045000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="url(#Wavy)" fill-opacity="1" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.25" />
+
+<path d="M 283.000000,225.045000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="1" stroke="#1D501E" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.12" />
+
+<path d="M 312.000000,100.000000  v 125.045000 a 3.500000,2.000000 0 0,0 7.000000,0  v -125.045000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#0000ff" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 312.000000,225.045000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#00C" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<path d="M 327.000000,100.000000  v 125.045000 a 3.500000,2.000000 0 0,0 7.000000,0  v -125.045000 a 3.500000,2.000000 0 0,0 -7.000000,0  a 3.500000,2.000000 0 0,0 7.000000,0 " fill="#ff0000" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="" stroke-width="0.50" />
+
+<path d="M 327.000000,225.045000  a 3.500000,2.000000 0 0,1 7.000000,0 " fill="transparent" fill-opacity="1" stroke="#C00" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="0.25" />
+
+<polygon points="221.00,225.00 221.00,350.04 283.00,100.00 283.00,225.05" fill="#3BA03C" stroke="#3BA03C" stroke-width="1" stroke-opacity="0.4" fill-opacity="0.4" />
+
+<path d="M 200.000000,100.000000  v 500.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -500.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="2.00" />
+
+<path d="M 200.000000,600.000000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="1.00" />
+
+<path d="M 283.000000,100.000000  v 500.000000 a 10.500000,2.000000 0 0,0 21.000000,0  v -500.000000 a 10.500000,2.000000 0 0,0 -21.000000,0  a 10.500000,2.000000 0 0,0 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="" stroke-width="2.00" />
+
+<path d="M 283.000000,600.000000  a 10.500000,2.000000 0 0,1 21.000000,0 " fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="4 1" stroke-width="1.00" />
+
+<text id="252.00000024.000000" x="252.00" y="24.00" dx="0" dy="-2" dominant-baseline="text-after-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >RELATIVE REDUNDANCY</text>
+
+<text id="252.00000036.000000" x="252.00" y="36.00" dx="0" dy="2" dominant-baseline="text-before-edge" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >REDUNDANCY</text>
+
+<defs >
+<linearGradient id="grad170.00000024.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
+
+<stop offset="8%" stop-color="#0055ff" stop-opacity="1" />
+
+<stop offset="16%" stop-color="#00aaff" stop-opacity="1" />
+
+<stop offset="25%" stop-color="#00ffff" stop-opacity="1" />
+
+<stop offset="33%" stop-color="#00ffaa" stop-opacity="1" />
+
+<stop offset="41%" stop-color="#00ff55" stop-opacity="1" />
+
+<stop offset="50%" stop-color="#00ff00" stop-opacity="1" />
+
+<stop offset="58%" stop-color="#55ff00" stop-opacity="1" />
+
+<stop offset="66%" stop-color="#aaff00" stop-opacity="1" />
+
+<stop offset="75%" stop-color="#ffff00" stop-opacity="1" />
+
+<stop offset="83%" stop-color="#ffaa00" stop-opacity="1" />
+
+<stop offset="91%" stop-color="#ff5500" stop-opacity="1" />
+
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
 </linearGradient>
 </defs>
-	<rect fill="url(#grad187.33333324.000000)" width="136.33" height="12.00" x="187.33" y="24.00" ry="3" />
-	<text id="185.33333330.000000" x="185.33" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" >0.0</text>
-	<text id="221.41666730.000000" x="221.42" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >0.5</text>
-	<text id="255.50000030.000000" x="255.50" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.0</text>
-	<text id="289.58333330.000000" x="289.58" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.5</text>
-	<text id="325.66666730.000000" x="325.67" y="30.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" >2.0</text>
-	<path d="M 191.166667,599.995000 v 20.005000 h 13.000000" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
-	<path d="M 319.833333,599.995000 v 20.005000 h -13.000000" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
-	<text id="255.500000620.000000" x="255.50" y="620.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >Relative Redundancy</text>
-	<path d="M 178.500000,599.995000 v 35.005000 h 40.666667" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
-	<path d="M 332.500000,599.995000 v 35.005000 h -40.666667" fill="none" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
-	<text id="255.500000635.000000" x="255.50" y="635.00" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >Redundancy</text>
+
+<rect fill="url(#grad170.00000024.000000)" width="164.00" height="12.00" x="170.00" y="24.00" ry="3" />
+
+<text id="168.00000030.000000" x="168.00" y="30.00" dx="-2" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="end" >0.0</text>
+
+<text id="211.00000030.000000" x="211.00" y="30.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >0.5</text>
+
+<text id="252.00000030.000000" x="252.00" y="30.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.0</text>
+
+<text id="293.00000030.000000" x="293.00" y="30.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >1.5</text>
+
+<text id="336.00000030.000000" x="336.00" y="30.00" dx="2" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="start" >2.0</text>
+
+<path d="M 188.500000,599.995000 v 20.005000 h 12.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+
+<path d="M 315.500000,599.995000 v 20.005000 h -12.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+
+<text id="252.000000620.000000" x="252.00" y="620.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >Relative Redundancy</text>
+
+<path d="M 173.500000,599.995000 v 35.005000 h 42.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+
+<path d="M 330.500000,599.995000 v 35.005000 h -42.400000" fill="transparent" fill-opacity="0.8" stroke="black" stroke-linejoin="round" stroke-dasharray="8 3" stroke-width="1.00" />
+
+<text id="252.000000635.000000" x="252.00" y="635.00" dx="0" dy="0" dominant-baseline="middle" transform="" font-size="9px" font-weight="normal" font-family="Arial" fill="black" text-align="start" line-height="125%%" text-anchor="middle" >Redundancy</text>
 </svg>
