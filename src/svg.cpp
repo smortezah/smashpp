@@ -3,6 +3,36 @@
 #include "vizdef.hpp"
 using namespace smashpp;
 
+string SVG::attrib (const string& name, float value, bool precise,
+const string& unit) const {
+  stringstream ss;
+  if (precise)  ss << name << "=\"" << PREC << value << unit << "\" ";
+  else          ss << name << "=\"" << value << unit << "\" ";
+  return ss.str();
+}
+string SVG::attrib (const string& name, const string& value, bool precise,
+const string& unit) const {
+  stringstream ss;
+  ss << name << "=\"" << value << unit << "\" ";
+  return ss.str();
+}
+
+string SVG::begin_elem (const string& name) const {
+  return "<" + name + " ";
+}
+
+string SVG::mid_elem () const {
+  return ">\n";
+}
+
+string SVG::end_elem (const string& name) const {
+  return "</" + name + ">\n";
+}
+
+string SVG::end_empty_elem () const {
+  return "/>\n";
+}
+
 void Stop::plot (ofstream& f) const {
   f << begin_elem("stop")
     << attrib("offset", offset)

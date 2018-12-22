@@ -32,8 +32,8 @@ static constexpr u32  MAX_BEGN        {255};
 static constexpr u32  MINP            {1};
 static constexpr u32  MIN_MINP        {1};
 static constexpr u32  MAX_MINP        {0xffffffff};  // 2^32 - 1
-static constexpr auto PAINT_CX        {200.0};
-static constexpr auto PAINT_CY        {100.0};
+static constexpr auto PAINT_CX        {200.0f};
+static constexpr auto PAINT_CY        {100.0f};
 static const     auto PAINT_BGCOLOR   {"white"};
 static constexpr u32  PAINT_SCALE     {100};
 static constexpr u32  PAINT_EXTRA     {120};
