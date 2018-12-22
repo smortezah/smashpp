@@ -538,12 +538,12 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) {
   // Header
   f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
-    << begin_elem("svg")
-    << attrib("xmlns", "http://www.w3.org/2000/svg")
-    << attrib("xmlns:xlink", "http://www.w3.org/1999/xlink")
-    << attrib("width", w)
-    << attrib("height", h)
-    << mid_elem();
+    << svg->begin_elem("svg")
+    << svg->attrib("xmlns", "http://www.w3.org/2000/svg")
+    << svg->attrib("xmlns:xlink", "http://www.w3.org/1999/xlink")
+    << svg->attrib("width", w)
+    << svg->attrib("height", h)
+    << svg->mid_elem();
   
   // Patterns
   auto defs = make_unique<Defs>();

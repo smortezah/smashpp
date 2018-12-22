@@ -26,15 +26,14 @@ struct PosNode {
 
 class VizPaint {
  public:
-  double cx, cy;
+  float  cx, cy;
   string backColor;
-  double width, space;
-  double refSize, tarSize, maxSize;
+  float  width, space;
+  float  refSize, tarSize, maxSize;
+  unique_ptr<SVG> svg;
 
-  VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), width(0.0),
-    space(0.0), refSize(0.0), tarSize(0.0), maxSize(0.0), ratio(1), 
-    plottable(true), ry(2) {}
-    
+  VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), 
+    svg(make_unique<SVG>()), ratio(1), plottable(true), ry(2.0f) {}
   void print_plot (VizParam&);
 
  private:

@@ -10,35 +10,15 @@ class SVG {
   string id;
 
   SVG () = default;
-  // template <typename Value>
-  // string attrib (const string&, const Value&, bool precise=false,
-  //   const string& unit="");
+  string attrib (const string&, float, bool=false, const string& unit="") const;
+  string attrib (const string&, const string&, bool=false, 
+    const string& unit="") const;
+  string begin_elem (const string&) const;
+  string mid_elem () const;
+  string end_elem (const string&) const;
+  string end_empty_elem () const;
 };
 
-template <typename Value>
-inline static string attrib (const string& name, const Value& value, 
-bool precise=false, const string& unit="") {
-  stringstream ss;
-  if (precise)  ss << name << "=\"" << PREC << value << unit << "\" ";
-  else          ss << name << "=\"" << value << unit << "\" ";
-  return ss.str();
-}
-
-inline static string begin_elem (const string& name) {
-  return "<" + name + " ";
-}
-
-inline static string mid_elem () {
-  return ">\n";
-}
-
-inline static string end_elem (const string& name) {
-  return "</" + name + ">\n";
-}
-
-inline static string end_empty_elem () {
-  return "/>\n";
-}
 
 struct RgbColor : public SVG {
   u8 r, g, b;
