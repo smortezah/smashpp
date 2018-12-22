@@ -34,16 +34,19 @@ void VizPaint::print_plot (VizParam& p) {
 
   // Plot background page
   rect->fill = rect->stroke = backColor;
-  rect->origin = Point(0, 0);
+  rect->origin.x = 0;
+  rect->origin.y = 0;
   rect->width  = PAINT_CX + width + space + width + PAINT_CX;
   rect->height = maxSize + Paint_Extra;
   rect->plot(fPlot);
 
   // Print titles
-  text->origin = Point(cx + width/2, cy - 15);
+  text->origin.x = cx + width/2;
+  text->origin.y = cy - 15;
   text->label  = ref;
   text->print_title(fPlot);
-  text->origin = Point(cx + width + space + width/2, cy - 15);
+  text->origin.x = cx + width + space + width/2;
+  text->origin.y = cy - 15;
   text->label  = tar;
   text->print_title(fPlot);
 
@@ -119,7 +122,8 @@ void VizPaint::print_plot (VizParam& p) {
         plot_main(cylinder);
         cylinder->height = get_point(e->endRef-e->begRef);
         cylinder->stroke = shade(rgb_color(e->start));
-        cylinder->origin = Point(cx, cy + get_point(e->begRef));
+        cylinder->origin.x = cx;
+        cylinder->origin.y = cy + get_point(e->begRef);
         cylinder->id = 
           to_string(cylinder->origin.x)+to_string(cylinder->origin.y);
         cylinder->fill = make_gradient(rgb_color(e->start), 'r', cylinder->id);
@@ -204,36 +208,44 @@ void VizPaint::print_plot (VizParam& p) {
             break;
           case 2:
             line->stroke = rgb_color(e->start);
-            line->beg = Point(
-              cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
-            line->end = Point(
-              cx+width+space,cy+get_point(e->begTar+(e->endTar-e->begTar)/2.0));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+            line->end.x = cx + width + space;
+            line->end.y = cy + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
             line->plot(fPlot);
             break;
           case 3:
             line->stroke = "black";
-            line->beg = Point(
-              cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
-            line->end = Point(
-              cx+width+space,cy+get_point(e->begTar+(e->endTar-e->begTar)/2.0));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+            line->end.x = cx + width + space;
+            line->end.y = cy + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
             line->plot(fPlot);
             break;
           case 4:
             line->stroke = rgb_color(e->start);
-            line->beg = Point(cx+width,       cy+get_point(e->begRef));
-            line->end = Point(cx+width+space, cy+get_point(e->begTar));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->begRef);
+            line->end.x = cx + width+space;
+            line->end.y = cy + get_point(e->begTar);
             line->plot(fPlot);
-            line->beg = Point(cx+width,       cy+get_point(e->endRef));
-            line->end = Point(cx+width+space, cy+get_point(e->endTar));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->endRef);
+            line->end.x = cx + width + space;
+            line->end.y = cx + width + space;
             line->plot(fPlot);
             break;
           case 5:
             line->stroke = "black";
-            line->beg = Point(cx+width,       cy+get_point(e->begRef));
-            line->end = Point(cx+width+space, cy+get_point(e->begTar));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->begRef);
+            line->end.x = cx + width + space;
+            line->end.y = cy + get_point(e->begTar);
             line->plot(fPlot);
-            line->beg = Point(cx+width,       cy+get_point(e->endRef));
-            line->end = Point(cx+width+space, cy+get_point(e->endTar));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->endRef);
+            line->end.x = cx + width + space;
+            line->end.y = cy + get_point(e->endTar);
             line->plot(fPlot);
             break;
           default: break;
@@ -260,38 +272,46 @@ void VizPaint::print_plot (VizParam& p) {
             break;
           case 2:
             line->stroke = rgb_color(e->start);
-            line->beg = Point(
-              cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
-            line->end = Point(
-              cx+width+space,cy+get_point(e->endTar+(e->begTar-e->endTar)/2.0));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+            line->end.x = cx + width + space;
+            line->end.y = cy + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
             line->plot(fPlot);
             break;
           case 3:
             line->stroke = "green";
-            line->beg = Point(
-              cx+width, cy+get_point(e->begRef+(e->endRef-e->begRef)/2.0));
-            line->end = Point(
-              cx+width+space,cy+get_point(e->endTar+(e->begTar-e->endTar)/2.0));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+            line->end.x = cx + width + space;
+            line->end.y = cy + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
             line->plot(fPlot);
             break;
           case 4:
             line->stroke = rgb_color(e->start);
-            line->beg = Point(cx+width,       cy+get_point(e->begRef));
-            line->end = Point(cx+width+space, cy+get_point(e->begTar));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->begRef);
+            line->end.x = cx + width + space;
+            line->end.y = cy + get_point(e->begTar);
             line->plot(fPlot);
   
-            line->beg = Point(cx+width,       cy+get_point(e->endRef));
-            line->end = Point(cx+width+space, cy+get_point(e->endTar));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->endRef);
+            line->end.x = cx + width + space;
+            line->end.y = cy + get_point(e->endTar);
             line->plot(fPlot);
             break;
           case 5:
             line->stroke = "green";
-            line->beg = Point(cx+width,       cy+get_point(e->begRef));
-            line->end = Point(cx+width+space, cy+get_point(e->begTar));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->begRef);
+            line->end.x = cx + width + space;
+            line->end.y = cy + get_point(e->begTar);
             line->plot(fPlot);
   
-            line->beg = Point(cx+width,       cy+get_point(e->endRef));
-            line->end = Point(cx+width+space, cy+get_point(e->endTar));
+            line->beg.x = cx + width;
+            line->beg.y = cy + get_point(e->endRef);
+            line->end.x = cx + width+space;
+            line->end.y = cy + get_point(e->endTar);
             line->plot(fPlot);
             break;
           default: break;
@@ -308,7 +328,8 @@ void VizPaint::print_plot (VizParam& p) {
   ifstream refFile(file_name(ref)+"."+FMT_N);
   for (i64 beg,end; refFile>>beg>>end;) {
     rect->fill = rect->stroke  = "grey";
-    rect->origin = Point(cx, cy+get_point(beg));
+    rect->origin.x = cx;
+    rect->origin.y = cy + get_point(beg);
     rect->height = get_point(end-beg+1);
     rect->plot(fPlot);
   }
@@ -319,7 +340,8 @@ void VizPaint::print_plot (VizParam& p) {
   ifstream tarFile(file_name(tar)+"."+FMT_N);
   for (i64 beg,end; tarFile>>beg>>end;) {
     rect->fill = rect->stroke  = "grey";
-    rect->origin = Point(cx+width+space, cy+get_point(beg));
+    rect->origin.x = cx + width + space;
+    rect->origin.y = cy + get_point(beg);
     rect->height = get_point(end-beg+1);
     rect->plot(fPlot);
   }
@@ -331,11 +353,13 @@ void VizPaint::print_plot (VizParam& p) {
   cylinder->width = width;
   cylinder->height = refSize;
   cylinder->strokeWidth = 2;
-  cylinder->origin = Point(cx, cy);
+  cylinder->origin.x = cx;
+  cylinder->origin.y = cy;
   cylinder->plot(fPlot);
 
   cylinder->height = tarSize;
-  cylinder->origin = Point(cx+width+space, cy);
+  cylinder->origin.x = cx + width + space;
+  cylinder->origin.y = cy;
   cylinder->plot(fPlot);
 
   // Plot legend and annotation
@@ -572,41 +596,47 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
   text->fontSize = 9;
 
   if (p.showNRC && !p.showRedun) {
-    rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
+    rect->origin.x = cx - (HORIZ_TUNE+width/HORIZ_RATIO);
+    rect->origin.y = vert;
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
                    HORIZ_TUNE+width/HORIZ_RATIO;
 
-    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->origin.x = rect->origin.x+rect->width/2;
+    text->origin.y = rect->origin.y;
     text->dy = "-"+shiftY;
     text->dominantBaseline = "text-after-edge";
     text->label = "RELATIVE REDUNDANCY";
     text->plot(f);
   }
   else if (!p.showNRC && p.showRedun) {
-    rect->origin = Point(cx-(HORIZ_TUNE+width/HORIZ_RATIO), vert);
+    rect->origin.x = cx - (HORIZ_TUNE+width/HORIZ_RATIO);
+    rect->origin.y = vert;
     rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
                    HORIZ_TUNE+width/HORIZ_RATIO;
 
-    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->origin.x = rect->origin.x+rect->width/2;
+    text->origin.y = rect->origin.y;
     text->dy = "-"+shiftY;
     text->dominantBaseline = "text-after-edge";
     text->label = "REDUNDANCY";
     text->plot(f);
   }
   else if (p.showNRC && p.showRedun) {
-    rect->origin = Point(cx-2*(HORIZ_TUNE+width/HORIZ_RATIO), vert);
+    rect->origin.x = cx - 2 * (HORIZ_TUNE+width/HORIZ_RATIO);
+    rect->origin.y = vert;
     rect->width  = 2*width/HORIZ_RATIO+2*HORIZ_TUNE+width+space+width+
                    2*width/HORIZ_RATIO+2*HORIZ_TUNE;
 
-    text->origin = Point(rect->origin.x+rect->width/2, rect->origin.y);
+    text->origin.x = rect->origin.x + rect->width/2;
+    text->origin.y = rect->origin.y;
     text->dy = "-"+shiftY;
     text->dominantBaseline = "text-after-edge";
     text->label = "RELATIVE REDUNDANCY";
     text->plot(f);
 
     // Redundancy
-    text->origin = Point(rect->origin.x+rect->width/2, 
-                         rect->origin.y+rect->height);
+    text->origin.x = rect->origin.x+rect->width/2;
+    text->origin.y = rect->origin.y+rect->height;
     text->dy = shiftY;
     text->dominantBaseline = "text-before-edge";
     text->label = "REDUNDANCY";
@@ -621,23 +651,24 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
   text->fontWeight = "normal";
   text->fontSize = 9;
   text->textAnchor = "end";
-  text->origin = Point(rect->origin.x-2, rect->origin.y+rect->height/2);
+  text->origin.x = rect->origin.x - 2;
+  text->origin.y = rect->origin.y + rect->height/2;
   text->dx = "-"+shiftX;
   text->label = "0.0";
   // text->fontWeight = "bold";
   text->plot(f);
   text->textAnchor = "middle";
   for (u8 i=1; i!=4; ++i) {
-    text->origin = 
-      Point(rect->origin.x+(rect->width*i)/4, rect->origin.y+rect->height/2);
+    text->origin.x = rect->origin.x + (rect->width*i)/4;
+    text->origin.y = rect->origin.y + rect->height/2;
     text->dx = "0";
     if (p.colorMode==1 && i==3)  text->color="white";
     text->label = string_format("%.1f", i*0.5);
     text->plot(f);
   }
   text->textAnchor = "start";
-  text->origin = Point(rect->origin.x+rect->width+2, 
-                       rect->origin.y+rect->height/2);
+  text->origin.x = rect->origin.x + rect->width + 2;
+  text->origin.y = rect->origin.y + rect->height/2;
   text->dx = shiftX;
   text->color = "black";
   text->label = "2.0";
@@ -672,7 +703,8 @@ u8 colorMode) {
   // auto cylinder = make_unique<Cylinder>();
   // cylinder->width = rect->height;
   // cylinder->height = rect->width;
-  // cylinder->origin = Point(rect->origin.x, rect->origin.y+rect->height);
+  // cylinder->origin.x = rect->origin.x;
+  // cylinder->origin.y = rect->origin.y + rect->height;
   // cylinder->transform = "rotate(-90 " + to_string(cylinder->origin.x) + " " +
   //   to_string(cylinder->origin.y) + ")";
   // cylinder->fill = "url(#grad" + id + ")";
@@ -699,17 +731,20 @@ bool showRedun) const {
   path->strokeDashArray = "8 3";
   
   if (lastPos.size() == 1) {
-    path->origin = Point(X2, cy+get_point(lastPos[0]));
+    path->origin.x = X2;
+    path->origin.y = cy+get_point(lastPos[0]);
     path->trace  = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
     path->plot(f);
   }
   else if (lastPos.size() == 2) {
-    path->origin = Point(X1, cy+get_point(lastPos[0]));
+    path->origin.x = X1;
+    path->origin.y = cy+get_point(lastPos[0]);
     path->trace  = "v "+to_string(vertSize)+" h "+to_string(horizSize);
     path->plot(f);
 
     vertSize = Y - cy - get_point(lastPos[1]);
-    path->origin = Point(X2, cy+get_point(lastPos[1]));
+    path->origin.x = X2;
+    path->origin.y = cy+get_point(lastPos[1]);
     path->trace  = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
     path->plot(f);
   }
@@ -719,17 +754,20 @@ bool showRedun) const {
   text->color="black";
 
   if (showNRC && !showRedun) {
-    text->origin = Point((X1+X2)/2, Y);
+    text->origin.x = (X1+X2)/2;
+    text->origin.y = Y;
     text->label  = "Relative Redundancy";
     text->plot(f);
   }
   else if (!showNRC && showRedun) {
-    text->origin = Point((X1+X2)/2, Y);
+    text->origin.x = (X1+X2)/2;
+    text->origin.y = Y;
     text->label  = "Redundancy";
     text->plot(f);
   }
   else if (showNRC && showRedun) {
-    text->origin = Point((X1+X2)/2, Y);
+    text->origin.x = (X1+X2)/2;
+    text->origin.y = Y;
     text->label  = "Relative Redundancy";
     text->plot(f);
 
@@ -741,25 +779,29 @@ bool showRedun) const {
     if (lastPos.size() == 1) {
       vertSize     = redunY - cy - get_point(lastPos[0]);
       horizSize   += HORIZ_TUNE + width/HORIZ_RATIO + 15;
-      path->origin = Point(redunX2, cy+get_point(lastPos[0]));
+      path->origin.x = redunX2;
+      path->origin.y = cy + get_point(lastPos[0]);
       path->trace  = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
       path->plot(f);
     }
     else if (lastPos.size() == 2) {
       vertSize     = redunY - cy - get_point(lastPos[0]);
       horizSize   += HORIZ_TUNE + width/HORIZ_RATIO + 15;
-      path->origin = Point(redunX1, cy+get_point(lastPos[0]));
+      path->origin.x = redunX1;
+      path->origin.y = cy + get_point(lastPos[0]);
       path->trace  = "v "+to_string(vertSize)+" h "+to_string(horizSize);
       path->plot(f);
 
       vertSize = redunY - cy - get_point(lastPos[1]);
-      path->origin = Point(redunX2, cy+get_point(lastPos[1]));
+      path->origin.x = redunX2;
+      path->origin.y = cy + get_point(lastPos[1]);
       path->trace  = "v "+to_string(vertSize)+" h "+to_string(-horizSize);
       path->plot(f);
     }
 
-    text->origin=Point((redunX1+redunX2)/2, redunY);
-    text->label="Redundancy";
+    text->origin.x = (redunX1 + redunX2) / 2;
+    text->origin.y = redunY;
+    text->label = "Redundancy";
     text->plot(f);
   }
 }
@@ -998,7 +1040,8 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
       // text->fontWeight = "bold";
       set_dominantBaseline(printType);
       text->label  = finalLine;
-      text->origin = Point(CX, cy+get_point(printPos));
+      text->origin.x = CX;
+      text->origin.y = cy+get_point(printPos);
       type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
 
       line.clear();
@@ -1012,7 +1055,8 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
 
         text->dominantBaseline="text-after-edge";
         text->label  = finalLine;
-        text->origin = Point(CX, cy+get_point(printPos));
+        text->origin.x = CX;
+        text->origin.y = cy + get_point(printPos);
         type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       }
     }
@@ -1025,7 +1069,8 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
       // text->fontWeight = "bold";
       set_dominantBaseline(printType);
       text->label  = finalLine;
-      text->origin = Point(CX, cy+get_point(printPos));
+      text->origin.x = CX;
+      text->origin.y = cy + get_point(printPos);
       type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       break;
     }

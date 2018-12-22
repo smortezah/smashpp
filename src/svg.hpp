@@ -120,8 +120,8 @@ class Stop : public SVG {
   float  stop_opacity;
 
   Stop () : stop_opacity(1) {}
-  template <typename Stream>
-  void plot (Stream&) const;
+  void plot (ofstream&) const;
+  void plot (stringstream&) const;
 };
 
 class LinearGradient : public SVG {
@@ -129,7 +129,7 @@ class LinearGradient : public SVG {
   string /*id,*/ x1, y1, x2, y2;
   
   LinearGradient () : x1("0%"), y1("0%"), x2("100%"), y2("0%") {}
-  void plot (ofstream&);
+  void plot (ofstream&) const;
   void add_stop (unique_ptr<Stop>&);
   void add_stop (const string&, const string&);
 
