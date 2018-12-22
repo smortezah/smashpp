@@ -3,7 +3,16 @@
 #include "vizdef.hpp"
 using namespace smashpp;
 
-void Stop::plot (ofstream& f) const {
+// template <typename Value>
+// string SVG::attrib (const string& name, const Value& value, bool precise,
+// const string& unit) {
+//   stringstream ss;
+//   if (precise)  ss << name << "=\"" << PREC << value << unit << "\" ";
+//   else          ss << name << "=\"" << value << unit << "\" ";
+//   return ss.str();
+// }
+
+void Stop::plot (ofstream& f) {
   f << begin_elem("stop")
     << attrib("offset", offset)
     << attrib("stop-color", stop_color)
@@ -11,7 +20,7 @@ void Stop::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-void LinearGradient::plot (ofstream& f) const {
+void LinearGradient::plot (ofstream& f) {
   auto defs = make_unique<Defs>();
   defs->set_head(f);
 
@@ -30,7 +39,7 @@ void LinearGradient::plot (ofstream& f) const {
   defs->set_tail(f);
 }
 
-void Text::plot (ofstream& f) const {
+void Text::plot (ofstream& f) {
   f << begin_elem("text")
     << attrib("id", to_string(origin.x)+to_string(origin.y))
     << attrib("x", origin.x, true)
@@ -84,7 +93,7 @@ void Text::print_pos_tar (ofstream& f, char c) {
   plot(f);
 }
 
-void Line::plot (ofstream& f) const {
+void Line::plot (ofstream& f) {
   f << begin_elem("line")
     << attrib("id", to_string(beg.x)+to_string(beg.y)+to_string(end.x)+
                     to_string(end.y))
@@ -97,7 +106,7 @@ void Line::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-void Ellipse::plot (ofstream& f) const {
+void Ellipse::plot (ofstream& f) {
   f << begin_elem("ellipse")
     << attrib("cx", cx)
     << attrib("cy", cy)
@@ -111,7 +120,7 @@ void Ellipse::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-void Path::plot (ofstream& f) const {
+void Path::plot (ofstream& f) {
   f << begin_elem("path")
     << attrib("id", id);
   
@@ -131,7 +140,7 @@ void Path::plot (ofstream& f) const {
     << end_empty_elem();
 }
 
-void Cylinder::plot (ofstream& f) const {
+void Cylinder::plot (ofstream& f) {
   auto path = make_unique<Path>();
   path->origin = Point(origin.x, origin.y);
   path->id = to_string(origin.x)+to_string(origin.y);
@@ -198,7 +207,7 @@ void Cylinder::plot_periph (ofstream& f, char refTar, u8 showNRC) {
   ry = mainRy;
 }
 
-void Rectangle::plot (ofstream& f) const {
+void Rectangle::plot (ofstream& f) {
   f << begin_elem("rect")
     << attrib("fill", fill)
     << attrib("stroke", stroke)
@@ -233,7 +242,7 @@ void Polygon::plot (ofstream& f) {
     points.clear();
 }
 
-void Pattern::set_head (ofstream& f) const {
+void Pattern::set_head (ofstream& f) {
   f << begin_elem("pattern")
     << attrib("id", id)
     << attrib("x", x, true)
@@ -244,16 +253,16 @@ void Pattern::set_head (ofstream& f) const {
     << mid_elem();
 }
 
-void Pattern::set_tail (ofstream& f) const {
+void Pattern::set_tail (ofstream& f) {
   f << end_elem("pattern");
 }
 
-void Defs::set_head (ofstream& f) const {
+void Defs::set_head (ofstream& f) {
   f << begin_elem("defs")
     << attrib("id", id)
     << mid_elem();
 }
 
-void Defs::set_tail (ofstream& f) const {
+void Defs::set_tail (ofstream& f) {
   f << end_elem("defs");
 }

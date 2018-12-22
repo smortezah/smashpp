@@ -24,7 +24,7 @@ struct PosNode {
   PosNode (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
 };
 
-class VizPaint {
+class VizPaint : public SVG {
  public:
   double cx, cy;
   string backColor;
@@ -54,13 +54,13 @@ class VizPaint {
   auto rgb_color (u32) const -> string;
   auto nrc_color (double, u32) const -> string;
   auto redun_color (double, u32) const -> string;
-  void print_head (ofstream&, double, double) const;
+  void print_head (ofstream&, double, double);
   void print_tail (ofstream&) const;
   template <typename Value>
   auto get_point (Value) const -> double;
-  void plot_legend (ofstream&, const VizParam&) const;
+  void plot_legend (ofstream&, const VizParam&);
   template <typename Rect>
-  void plot_legend_gradient (ofstream&, const Rect&, u8) const;
+  void plot_legend_gradient (ofstream&, const Rect&, u8);
   void plot_annot (ofstream&, i64, bool, bool) const;
   auto tspan (u32, i64) const -> string;
   auto tspan (u32, const string&) const -> string;
