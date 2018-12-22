@@ -126,7 +126,7 @@ class Stop : public SVG {
 
 class LinearGradient : public SVG {
  public:
-  string /*id,*/ x1, y1, x2, y2;
+  string x1, y1, x2, y2;
   
   LinearGradient () : x1("0%"), y1("0%"), x2("100%"), y2("0%") {}
   void plot (ofstream&) const;
@@ -137,97 +137,103 @@ class LinearGradient : public SVG {
   string stops;
 };
 
-struct Point : public SVG {
-  double x, y;
-  Point () = default;
-  Point (double x_, double y_) : x(x_), y(y_) {}
-};
-
-struct Text : public SVG {
-  Point  origin;
-  string dx, dy;
-  string label, textAnchor, dominantBaseline, transform, color, fontWeight;
+class Text : public SVG {
+ public:
+  float  x, y, dx, dy;
+  string dominant_baseline, transform, font_weight, font_family, fill, 
+         text_anchor, text_align, line_height;
   u8     fontSize;
-  Text () : dx("0"), dy("0"), textAnchor("middle"), dominantBaseline("middle"),
-    color("black"), fontWeight("normal"), fontSize(13) {}
-  Text (const string& lbl_, const string& clr_) : label(lbl_), color(clr_) {}
-  void plot (ofstream&);
+  string Label;  // Not in standard
+
+  Text () : dx(0), dy(0), dominant_baseline("middle"), font_weight("normal"),
+    font_family("Arial"), fill("black"), text_anchor("middle"), 
+    text_align("start"), line_height("125%%"), fontSize(13) {}
+  void plot (ofstream&) const;
   void print_title (ofstream&);
   void print_pos_ref (ofstream&, char c='\0');
   void print_pos_tar (ofstream&, char c='\0');
 };
 
-struct Line : public SVG {
-  Point  beg, end;
-  double strokeWidth;
+class Line : public SVG {
+ public:
+  float  x1, y1, x2, y2, stroke_width;
   string stroke;
-  Line () : strokeWidth(1.0), stroke("black") {}
-  void plot (ofstream&);
+
+  Line () : stroke_width(1.0f), stroke("black") {}
+  void plot (ofstream&) const;
 };
 
-struct Ellipse : public SVG {
-  double cx, cy, rx, ry;
-  double strokeWidth;
+class Ellipse : public SVG {
+ public:
+  float  cx, cy, rx, ry, stroke_width, fill_opacity, stroke_opacity;
   string stroke, fill;
-  float  opacity, stroke_opacity;
-  Ellipse () : rx(2.0), ry(2.0), strokeWidth(1.0), stroke("black"), 
-    fill("transparent"), opacity(OPAC), stroke_opacity(1) {}
-  void plot (ofstream&);
+  
+  Ellipse () : rx(2.0f), ry(2.0f), stroke_width(1.0f), fill_opacity(OPAC),
+    stroke_opacity(1.0f), stroke("black"), fill("transparent") {}
+  void plot (ofstream&) const;
 };
 
-struct Path : public SVG {
-  Point  origin;
-  double strokeWidth;
-  string id, stroke, d, trace, strokeLineJoin, strokeDashArray, fill, transform;
-  float  opacity, stroke_opacity;
-  Path () : strokeWidth(1), d(""), strokeLineJoin("round"), fill("transparent"),
-    opacity(OPAC), stroke_opacity(1)  {}
-  void plot (ofstream&);
+class Path : public SVG {
+ public:
+  string id, d, fill, stroke, stroke_lineJoin, stroke_dasharray, transform;
+  float  fill_opacity, stroke_opacity, stroke_width;
+
+  Path () : fill("transparent"), stroke_lineJoin("round"), fill_opacity(OPAC),
+    stroke_opacity(1.0f), stroke_width(1.0f) {}
+  void plot (ofstream&) const;
 };
 
-struct Cylinder : public SVG {
-  Point  origin;
-  double width, height, ry, strokeWidth;
-  string id, stroke, fill, strokeLineJoin, strokeDashArray, transform;
-  float  opacity, stroke_opacity;
-  Cylinder () : ry(2.0), strokeWidth(1.0), stroke("black"), fill("transparent"),
-    strokeLineJoin("round"), opacity(OPAC), stroke_opacity(1) {}
-  void plot (ofstream&);
+// Not in standard
+class Cylinder : public SVG {
+ public:
+  float  x, y, width, height, ry, stroke_width, fill_opacity, stroke_opacity;
+  string id, stroke, fill, stroke_lineJoin, stroke_dasharray, transform;
+
+  Cylinder () : ry(2.0f), stroke_width(1.0f), fill_opacity(OPAC), 
+    stroke_opacity(1.0f), stroke("black"), fill("transparent"), 
+    stroke_lineJoin("round") {}
+  void plot (ofstream&) const;
   void plot_ir (ofstream&, string&& wave=std::move("#Wavy"));
   void plot_periph (ofstream&, char=' ', u8=0);
 };
 
-struct Rectangle : public SVG {
-  Point  origin;
-  double width, height, ry;
+class Rectangle : public SVG {
+ public:
+  float  x, y, width, height, rx, ry, fill_opacity, stroke_width;
   string fill, stroke;
-  float  opacity, strokeWidth;
-  Rectangle () : ry(1), opacity(OPAC) {}
-  void plot (ofstream&);
+
+  Rectangle () : ry(1.0f), fill_opacity(OPAC) {}
+  void plot (ofstream&) const;
 };
 
-struct Polygon : public SVG {
-  Point  one, two, three, four;
-  string points, lineColor, fillColor;
+class Polygon : public SVG {
+ public:
   float  stroke_width, stroke_opacity, fill_opacity;
-  Polygon () : stroke_width(1), stroke_opacity(0.5), fill_opacity(0.5) {}
-  void add_point (double, double);
+  string fill, stroke;
+ 
+  Polygon () : stroke_width(1.0f), stroke_opacity(0.5f), fill_opacity(0.5f) {}
+  void add_point (float, float);
   void plot (ofstream&);
+
+ private:
+  string points;
 };
 
-struct Pattern : public SVG {
+class Pattern : public SVG {
+ public:
+  float x, y, width, height;
   string id, patternUnits;
-  double x, y, width, height;
+
   Pattern () = default;
-  void set_head (ofstream&);
-  void set_tail (ofstream&);
+  void set_head (ofstream&) const;
+  void set_tail (ofstream&) const;
 };
 
-struct Defs : public SVG {
-  // string id;
+class Defs : public SVG {
+ public:
   Defs () = default;
-  void set_head (ofstream&);
-  void set_tail (ofstream&);
+  void set_head (ofstream&) const;
+  void set_tail (ofstream&) const;
 };
 
 template <typename T>
