@@ -2,6 +2,7 @@
 #include "exception.hpp"
 #include "file.hpp"
 #include "number.hpp"
+#include"svg.hpp"
 using namespace smashpp;
 
 void VizPaint::print_plot (VizParam& p) {
@@ -516,7 +517,7 @@ inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
   return nrc_color(entropy, colorMode);
 }
 
-inline void VizPaint::print_head (ofstream& f, double w, double h) const {
+inline void VizPaint::print_head (ofstream& f, double w, double h) {
   // Header
   f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
@@ -563,7 +564,7 @@ inline double VizPaint::get_point (Value p) const {
   return 5 * p / static_cast<double>(ratio);
 }
 
-inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
+inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
   if (!p.showNRC && !p.showRedun)  return;
   
   const auto vert = 24;
@@ -653,7 +654,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) const {
 
 template <typename Rect>
 inline void VizPaint::plot_legend_gradient (ofstream& f, const Rect& rect, 
-u8 colorMode) const {
+u8 colorMode) {
   auto grad = make_unique<Gradient>();
   switch (colorMode) {
   case 0:   grad->offsetColor=COLORSET[0];   break;
