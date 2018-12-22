@@ -3,8 +3,9 @@
 #include "vizdef.hpp"
 using namespace smashpp;
 
-void Stop::plot (ofstream& f) {
-  f << begin_elem("stop")
+template <typename Stream>
+void Stop::plot (Stream& s) const {
+  s << begin_elem("stop")
     << attrib("offset", offset)
     << attrib("stop-color", stop_color)
     << attrib("stop-opacity", stop_opacity, true)
@@ -23,11 +24,25 @@ void LinearGradient::plot (ofstream& f) {
     << attrib("y2", y2)
     << mid_elem();
 
-  for (auto s : stops)
-    s.plot(f);
+  f << stops;
 
   f << end_elem("linearGradient");
   defs->set_tail(f);
+}
+
+void LinearGradient::add_stop (unique_ptr<Stop>& stop) {
+  stringstream ss;
+  stop->plot(ss);
+  stops += ss.str();
+}
+void LinearGradient::add_stop (const string& offset, const string& stop_color) {
+  auto stop = make_unique<Stop>();
+  stop->offset = offset;
+  stop->stop_color = stop_color;
+  
+  stringstream ss;
+  stop->plot(ss);
+  stops += ss.str();
 }
 
 void Text::plot (ofstream& f) {

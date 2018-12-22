@@ -80,36 +80,30 @@ void VizPaint::print_plot (VizParam& p) {
 
     const auto make_gradient = 
       [&](const string& color, char c, const string& inId) {
-      auto linearGradient = make_unique<LinearGradient>();
-      linearGradient->id = "grad"+inId;
-      auto stop = make_unique<Stop>();
-      stop->offset = "30%";
-      stop->stop_color = shade(color, 0.25);
-      // stop->stop_color = (c=='r') ? shade(color, 0.25) : color;
-      linearGradient->stops.emplace_back(*stop);
-      stop->offset = "100%";
-      stop->stop_color = color;
-      // stop->stop_color = (c=='r') ? color : shade(color, 0.25);
-      linearGradient->stops.emplace_back(*stop);
-      linearGradient->plot(fPlot);
-      return "url(#"+linearGradient->id+")";
+      auto grad = make_unique<LinearGradient>();
+      grad->id = "grad"+inId;
+      grad->add_stop("30%", shade(color, 0.25));
+      grad->add_stop("100%", color);
+      // c=='r' ? grad->add_stop("30%", shade(color, 0.25)) 
+      //        : grad->add_stop("30%", color);
+      // c=='r' ? grad->add_stop("100%", color)
+      //        : grad->add_stop("100%", shade(color, 0.25));
+      grad->plot(fPlot);
+      return "url(#"+grad->id+")";
     };
 
     const auto make_gradient_periph = 
       [&](const string& color, char c, const string& inId) {
-      auto linearGradient = make_unique<LinearGradient>();
-      linearGradient->id = "grad"+inId;
-      auto stop = make_unique<Stop>();
-      stop->offset = "30%";
-      stop->stop_color = tone(color, 0.4);
-      // stop->stop_color = (c=='r') ? tone(color, 0.4) : color;
-      linearGradient->stops.emplace_back(*stop);
-      stop->offset = "100%";
-      stop->stop_color = color;
-      // stop->stop_color = (c=='r') ? color : tone(color, 0.4);
-      linearGradient->stops.emplace_back(*stop);
-      linearGradient->plot(fPlot);
-      return "url(#"+linearGradient->id+")";
+      auto grad = make_unique<LinearGradient>();
+      grad->id = "grad"+inId;
+      grad->add_stop("30%", tone(color, 0.4));
+      grad->add_stop("100%", color);
+      // c=='r' ? grad->add_stop("30%", tone(color, 0.4)) 
+      //        : grad->add_stop("30%", color);
+      // c=='r' ? grad->add_stop("100%", color)
+      //        : grad->add_stop("100%", tone(color, 0.4));
+      grad->plot(fPlot);
+      return "url(#"+grad->id+")";
     };
 
     const auto plot_main = [&](auto& cylinder) {
@@ -655,36 +649,20 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
 template <typename Rect>
 inline void VizPaint::plot_legend_gradient (ofstream& f, const Rect& rect, 
 u8 colorMode) {
-  auto grad = make_unique<Gradient>();
+  vector<string> colorset;
   switch (colorMode) {
-  case 0:   grad->offsetColor=COLORSET[0];   break;
-  case 1:   grad->offsetColor=COLORSET[1];   break;
-  case 2:   grad->offsetColor=COLORSET[2];   break;
+  case 0:   colorset = COLORSET[0];  break;
+  case 1:   colorset = COLORSET[1];  break;
+  case 2:   colorset = COLORSET[2];  break;
   default:  error("undefined color mode.");
   }
-
   auto id = to_string(rect->origin.x) + to_string(rect->origin.y);
-  f << begin_elem("defs")
-    << mid_elem()
-    << begin_elem("linearGradient")
-    << attrib("id", "grad"+id)
-    << attrib("x1", "0%")
-    << attrib("y1", "0%")
-    // << attrib("x2", "0%")
-    // << attrib("y2", "100%")
-    << attrib("x2", "100%")
-    << attrib("y2", "0%")
-    << mid_elem();
-  for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
-    f << begin_elem("stop") 
-      << attrib("offset", 
-                to_string(i*100/(grad->offsetColor.size()-1))+"%")
-      << attrib("stop-color", grad->offsetColor[i]) 
-      << attrib("stop-opacity", 1)
-      << end_empty_elem();
-  }
-  f << end_elem("linearGradient")
-    << end_elem("defs");
+
+  auto grad = make_unique<LinearGradient>();
+  grad->id = "grad"+id;
+  for (u8 i=0; i!=colorset.size(); ++i)
+    grad->add_stop(to_string(i*100/(colorset.size()-1))+"%", colorset[i]);
+  grad->plot(f);
 
   rect->stroke = "black";
   rect->strokeWidth = 0.4;

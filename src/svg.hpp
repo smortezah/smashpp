@@ -5,7 +5,8 @@
 #include "exception.hpp"
 
 namespace smashpp {
-struct SVG {
+class SVG {
+ public:
   string id;
 
   SVG () = default;
@@ -113,27 +114,27 @@ inline static auto tone (const InColor& color, float alpha=0.5) {
   return alpha_blend(color, to_rgb("grey"), alpha);
 }
 
-struct Gradient : public SVG {
-  string startColor, stopColor;
-  vector<string> offsetColor;
-  Gradient () = default;
-  Gradient (string&& start, string&& stop) : startColor(std::move(start)), 
-    stopColor(std::move(stop)) {}
-};
-
-struct Stop : public SVG {
+class Stop : public SVG {
+ public:
   string offset, stop_color;
   float  stop_opacity;
+
   Stop () : stop_opacity(1) {}
-  void plot (ofstream&);
-  // void plot (ofstream&) const;
+  template <typename Stream>
+  void plot (Stream&) const;
 };
 
-struct LinearGradient : public SVG {
-  string id, x1, y1, x2, y2;
-  vector<Stop> stops;
+class LinearGradient : public SVG {
+ public:
+  string /*id,*/ x1, y1, x2, y2;
+  
   LinearGradient () : x1("0%"), y1("0%"), x2("100%"), y2("0%") {}
   void plot (ofstream&);
+  void add_stop (unique_ptr<Stop>&);
+  void add_stop (const string&, const string&);
+
+ private:
+  string stops;
 };
 
 struct Point : public SVG {
