@@ -52,41 +52,41 @@ void LinearGradient::add_stop (const string& offset, const string& stop_color) {
   stops += ss.str();
 }
 
-void Text::plot (ofstream& f) {
+void Text::plot (ofstream& f) const {
   f << begin_elem("text")
-    << attrib("id", to_string(origin.x)+to_string(origin.y))
-    << attrib("x", origin.x, true)
-    << attrib("y", origin.y, true)
+    << attrib("id", to_string(x)+to_string(y))
+    << attrib("x", x, true)
+    << attrib("y", y, true)
     << attrib("dx", dx, true)
     << attrib("dy", dy, true)
-    << attrib("dominant-baseline", dominantBaseline)
+    << attrib("dominant-baseline", dominant_baseline)
     << attrib("transform", transform)
     << attrib("font-size", to_string(fontSize), false, "px")
-    << attrib("font-weight", fontWeight)
-    << attrib("font-family", "Arial")
-    << attrib("fill", color)
-    << attrib("text-align", "start")
-    << attrib("line-height", "125%%")
-    << attrib("text-anchor", textAnchor) 
+    << attrib("font-weight", font_weight)
+    << attrib("font-family", font_family)
+    << attrib("fill", fill)
+    << attrib("text-anchor", text_anchor)
+    << attrib("text-align", text_align)
+    << attrib("line-height", line_height)
     << mid_elem()
-    << label
+    << Label
     << end_elem("text");
 }
 
 void Text::print_title (ofstream& f) {
-  textAnchor = "middle";
+  text_anchor = "middle";
   fontSize = 12;
-  // fontWeight = "bold";
+  // font_weight = "bold";
   plot(f);
 }
 
 void Text::print_pos_ref (ofstream& f, char c) {
-  textAnchor = "end";
-  origin.x += -5;
+  text_anchor = "end";
+  x = x - 5;
   switch (c) {
-    case 'b':  dominantBaseline = "hanging";   break;  // begin
-    case 'm':  dominantBaseline = "middle";    break;  // middle
-    case 'e':  dominantBaseline = "baseline";  break;  // end
+    case 'b':  dominant_baseline = "hanging";   break;  // begin
+    case 'm':  dominant_baseline = "middle";    break;  // middle
+    case 'e':  dominant_baseline = "baseline";  break;  // end
     default:                                   break;
   }
   fontSize = 9;
@@ -94,97 +94,90 @@ void Text::print_pos_ref (ofstream& f, char c) {
 }
 
 void Text::print_pos_tar (ofstream& f, char c) {
-  textAnchor = "start";
-  origin.x += 5;
+  text_anchor = "start";
+  x = x + 5;
   switch (c) {
-    case 'b':  dominantBaseline = "hanging";   break;  // begin
-    case 'm':  dominantBaseline = "middle";    break;  // middle
-    case 'e':  dominantBaseline = "baseline";  break;  // end
+    case 'b':  dominant_baseline = "hanging";   break;  // begin
+    case 'm':  dominant_baseline = "middle";    break;  // middle
+    case 'e':  dominant_baseline = "baseline";  break;  // end
     default:                                   break;
   }
   fontSize = 9;
   plot(f);
 }
 
-void Line::plot (ofstream& f) {
+void Line::plot (ofstream& f) const {
   f << begin_elem("line")
-    << attrib("id", to_string(beg.x)+to_string(beg.y)+to_string(end.x)+
-                    to_string(end.y))
-    << attrib("x1", beg.x, true)
-    << attrib("y1", beg.y, true)
-    << attrib("x2", end.x, true) 
-    << attrib("y2", end.y, true)
-    << attrib("stroke", stroke) 
-    << attrib("stroke-width", strokeWidth, true)
+    << attrib("id", to_string(x1)+to_string(y1)+to_string(x2)+to_string(y2))
+    << attrib("x1", x1, true)
+    << attrib("y1", y1, true)
+    << attrib("x2", x2, true) 
+    << attrib("y2", y2, true)
+    << attrib("stroke-width", stroke_width, true)
+    << attrib("stroke", stroke)
     << end_empty_elem();
 }
 
-void Ellipse::plot (ofstream& f) {
+void Ellipse::plot (ofstream& f) const {
   f << begin_elem("ellipse")
-    << attrib("cx", cx)
-    << attrib("cy", cy)
-    << attrib("rx", rx)
-    << attrib("ry", ry)
-    << attrib("fill", fill)
-    << attrib("fill-opacity", opacity)
+    << attrib("cx", cx, true)
+    << attrib("cy", cy, true)
+    << attrib("rx", rx, true)
+    << attrib("ry", ry, true)
+    << attrib("stroke-width", stroke_width, true)
+    << attrib("fill-opacity", fill_opacity, true)
+    << attrib("stroke-opacity", stroke_opacity, true)
     << attrib("stroke", stroke)
-    << attrib("stroke-opacity", stroke_opacity)
-    << attrib("stroke-width", strokeWidth)
+    << attrib("fill", fill)
     << end_empty_elem();
 }
 
-void Path::plot (ofstream& f) {
+void Path::plot (ofstream& f) const {
   f << begin_elem("path")
-    << attrib("id", id);
-  
-  if (!d.empty())
-    f << attrib("d", d);
-  else
-    f << attrib("d","M "+to_string(origin.x)+","+to_string(origin.y)+" "+trace);
-
-  f << attrib("fill", fill)
-    << attrib("fill-opacity", opacity)
+    << attrib("id", id)
+    << attrib("d", d)
+    << attrib("fill", fill)
+    << attrib("fill-opacity", fill_opacity, true)
     << attrib("stroke", stroke)
-    << attrib("stroke-opacity", stroke_opacity)
-    << attrib("stroke-linejoin", strokeLineJoin)
-    << attrib("stroke-dasharray", strokeDashArray)
-    << attrib("stroke-width", strokeWidth, true)
+    << attrib("stroke-opacity", stroke_opacity, true)
+    << attrib("stroke-linejoin", stroke_lineJoin)
+    << attrib("stroke-dasharray", stroke_dasharray)
+    << attrib("stroke-width", stroke_width, true)
     << attrib("transform", transform)
     << end_empty_elem();
 }
 
-void Cylinder::plot (ofstream& f) {
+void Cylinder::plot (ofstream& f) const {
   auto path = make_unique<Path>();
-  path->origin.x = origin.x;
-  path->origin.y = origin.y;
-  path->id = to_string(origin.x)+to_string(origin.y);
-  path->trace = " v "+to_string(height)+
+  path->id = to_string(x)+to_string(y);
+  path->d = "M "+to_string(x)+","+to_string(y)+" "+
+    " v "+to_string(height)+
     " a "+to_string(width/2)+","+to_string(ry)+" 0 0,0 "+to_string(width)+
     ",0 "+
     " v "+to_string(-height)+
     " a "+to_string(width/2)+","+to_string(ry)+" 0 0,1 "+to_string(-width)+
     ",0 ";
   path->fill = fill;
-  path->opacity = opacity;
+  path->fill_opacity = fill_opacity;
   path->stroke = stroke;
   path->stroke_opacity = stroke_opacity;
-  path->strokeWidth = strokeWidth;
+  path->stroke_width = stroke_width;
   path->transform = transform;
   path->plot(f);
 
   auto ellipse = make_unique<Ellipse>();
   ellipse->stroke = path->stroke;
   ellipse->stroke_opacity = stroke_opacity;
-  ellipse->strokeWidth = 0.75 * strokeWidth;
+  ellipse->stroke_width = 0.75 * stroke_width;
   ellipse->fill = fill;
-  ellipse->opacity = opacity;
-  ellipse->cx = origin.x + width/2;
-  ellipse->cy = origin.y;
-  ellipse->rx = width/2 + (strokeWidth-ellipse->strokeWidth)/2;
+  ellipse->fill_opacity = fill_opacity;
+  ellipse->cx = x + width/2;
+  ellipse->cy = y;
+  ellipse->rx = width/2 + (stroke_width-ellipse->stroke_width)/2;
   ellipse->ry = ry;
   ellipse->plot(f);
 
-  ellipse->cy = origin.y + height;
+  ellipse->cy = y + height;
   ellipse->fill = "transparent";
   ellipse->plot(f);
 }
@@ -197,45 +190,45 @@ void Cylinder::plot_ir (ofstream& f, string&& wave) {
 }
 
 void Cylinder::plot_periph (ofstream& f, char refTar, u8 showNRC) {
-  const auto mainOriginX = origin.x;
+  const auto mainOriginX = x;
   const auto mainWidth = width;
-  const auto mainStrokeWidth = strokeWidth;
+  const auto mainStrokeWidth = stroke_width;
   const auto mainRy = ry;
 
   if (refTar=='r')
-    origin.x = origin.x - (1+showNRC) * (HORIZ_TUNE + width/HORIZ_RATIO);
+    x = x - (1+showNRC) * (HORIZ_TUNE + width/HORIZ_RATIO);
   else
-    origin.x = origin.x + width + HORIZ_TUNE + 
-               showNRC * (width/HORIZ_RATIO + HORIZ_TUNE);
+    x = x + width + HORIZ_TUNE + showNRC * (width/HORIZ_RATIO + HORIZ_TUNE);
 
   width = width/HORIZ_RATIO;
-  strokeWidth *= 2;
+  stroke_width *= 2;
   // stroke = shade(fill, 0.95);
   ry /= 2;
 
   plot(f);
 
-  origin.x = mainOriginX;
+  x = mainOriginX;
   width = mainWidth;
-  strokeWidth = mainStrokeWidth;
+  stroke_width = mainStrokeWidth;
   ry = mainRy;
 }
 
-void Rectangle::plot (ofstream& f) {
+void Rectangle::plot (ofstream& f) const {
   f << begin_elem("rect")
-    << attrib("fill", fill)
-    << attrib("stroke", stroke)
-    << attrib("stroke-width", strokeWidth)
-    << attrib("fill-opacity", opacity)
+    << attrib("x", x, true)
+    << attrib("y", y, true)
     << attrib("width", width, true)
     << attrib("height", height, true)
-    << attrib("x", origin.x, true)
-    << attrib("y", origin.y, true)
-    << attrib("ry", ry)
+    << attrib("rx", rx, true)
+    << attrib("ry", ry, true)
+    << attrib("fill", fill)
+    << attrib("fill-opacity", fill_opacity, true)
+    << attrib("stroke", stroke)
+    << attrib("stroke-width", stroke_width, true)
     << end_empty_elem();
 }
 
-void Polygon::add_point (double x, double y) {
+void Polygon::add_point (float x, float y) {
   stringstream ss;
   ss << PREC << x << "," << PREC << y << " ";
   points += ss.str();
@@ -244,19 +237,17 @@ void Polygon::add_point (double x, double y) {
 void Polygon::plot (ofstream& f) {
   f << begin_elem("polygon")
     << attrib("points", points)
-    << attrib("fill", fillColor)
-    << attrib("stroke", fillColor)
-    << attrib("stroke-width", stroke_width)
-    << attrib("stroke-opacity", stroke_opacity)
-    << attrib("fill-opacity", fill_opacity)
-    // << attrib("stroke-opacity", 0.4)
-    // << attrib("fill-opacity", 0.4)
+    << attrib("fill", fill)
+    << attrib("stroke", stroke)
+    << attrib("stroke-width", stroke_width, true)
+    << attrib("stroke-opacity", stroke_opacity, true)
+    << attrib("fill-opacity", fill_opacity, true)
     << end_empty_elem();
 
     points.clear();
 }
 
-void Pattern::set_head (ofstream& f) {
+void Pattern::set_head (ofstream& f) const {
   f << begin_elem("pattern")
     << attrib("id", id)
     << attrib("x", x, true)
@@ -267,16 +258,16 @@ void Pattern::set_head (ofstream& f) {
     << mid_elem();
 }
 
-void Pattern::set_tail (ofstream& f) {
+void Pattern::set_tail (ofstream& f) const {
   f << end_elem("pattern");
 }
 
-void Defs::set_head (ofstream& f) {
+void Defs::set_head (ofstream& f) const {
   f << begin_elem("defs")
     << attrib("id", id)
     << mid_elem();
 }
 
-void Defs::set_tail (ofstream& f) {
+void Defs::set_tail (ofstream& f) const {
   f << end_elem("defs");
 }
