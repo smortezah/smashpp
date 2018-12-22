@@ -24,7 +24,7 @@ struct PosNode {
   PosNode (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
 };
 
-class VizPaint : public SVG {
+class VizPaint {
  public:
   double cx, cy;
   string backColor;
