@@ -5,15 +5,6 @@
 #include "exception.hpp"
 
 namespace smashpp {
-struct SVG {
-  string id;
-
-  SVG () = default;
-  // template <typename Value>
-  // string attrib (const string&, const Value&, bool precise=false,
-  //   const string& unit="");
-};
-
 template <typename Value>
 inline static string attrib (const string& name, const Value& value, 
 bool precise=false, const string& unit="") {
@@ -39,7 +30,7 @@ inline static string end_empty_elem () {
   return "/>\n";
 }
 
-struct RgbColor : public SVG {
+struct RgbColor {
   u8 r, g, b;
   // float alpha;
   RgbColor () = default;
@@ -47,7 +38,7 @@ struct RgbColor : public SVG {
     /*, alpha(a)*/ {}
 };
 
-struct HsvColor : public SVG {
+struct HsvColor {
   u8 h, s, v;
   HsvColor () = default;
   explicit HsvColor (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
@@ -113,7 +104,8 @@ inline static auto tone (const InColor& color, float alpha=0.5) {
   return alpha_blend(color, to_rgb("grey"), alpha);
 }
 
-struct Gradient : public SVG {
+//todo remove. avval dependency hasho az code hazf kon
+struct Gradient {
   string startColor, stopColor;
   vector<string> offsetColor;
   Gradient () = default;
@@ -121,42 +113,50 @@ struct Gradient : public SVG {
     stopColor(std::move(stop)) {}
 };
 
-struct Stop : public SVG {
+struct Stop {
   string offset, stop_color;
   float  stop_opacity;
+
   Stop () : stop_opacity(1) {}
-  void plot (ofstream&);
-  // void plot (ofstream&) const;
+  template <typename Stream>
+  void plot (Stream&) const;
 };
 
-struct LinearGradient : public SVG {
+struct LinearGradient {
   string id, x1, y1, x2, y2;
-  vector<Stop> stops;
+  string stops;
+
   LinearGradient () : x1("0%"), y1("0%"), x2("100%"), y2("0%") {}
-  void plot (ofstream&);
+  template <typename Stream>
+  void plot (Stream&) const;
+  void add_stop (const Stop&);
 };
 
-struct Point : public SVG {
+//todo remove. first cut dependencies
+struct Point {
   double x, y;
+
   Point () = default;
   Point (double x_, double y_) : x(x_), y(y_) {}
 };
 
-struct Text : public SVG {
+struct Text {
   Point  origin;
-  string dx, dy;
+  string x, y, dx, dy;
   string label, textAnchor, dominantBaseline, transform, color, fontWeight;
   u8     fontSize;
+
   Text () : dx("0"), dy("0"), textAnchor("middle"), dominantBaseline("middle"),
     color("black"), fontWeight("normal"), fontSize(13) {}
   Text (const string& lbl_, const string& clr_) : label(lbl_), color(clr_) {}
-  void plot (ofstream&);
+  template <typename Stream>
+  void plot (Stream&);
   void print_title (ofstream&);
   void print_pos_ref (ofstream&, char c='\0');
   void print_pos_tar (ofstream&, char c='\0');
 };
 
-struct Line : public SVG {
+struct Line {
   Point  beg, end;
   double strokeWidth;
   string stroke;
@@ -164,7 +164,7 @@ struct Line : public SVG {
   void plot (ofstream&);
 };
 
-struct Ellipse : public SVG {
+struct Ellipse {
   double cx, cy, rx, ry;
   double strokeWidth;
   string stroke, fill;
@@ -174,7 +174,7 @@ struct Ellipse : public SVG {
   void plot (ofstream&);
 };
 
-struct Path : public SVG {
+struct Path {
   Point  origin;
   double strokeWidth;
   string id, stroke, d, trace, strokeLineJoin, strokeDashArray, fill, transform;
@@ -184,7 +184,7 @@ struct Path : public SVG {
   void plot (ofstream&);
 };
 
-struct Cylinder : public SVG {
+struct Cylinder {
   Point  origin;
   double width, height, ry, strokeWidth;
   string id, stroke, fill, strokeLineJoin, strokeDashArray, transform;
@@ -196,7 +196,7 @@ struct Cylinder : public SVG {
   void plot_periph (ofstream&, char=' ', u8=0);
 };
 
-struct Rectangle : public SVG {
+struct Rectangle {
   Point  origin;
   double width, height, ry;
   string fill, stroke;
@@ -205,7 +205,7 @@ struct Rectangle : public SVG {
   void plot (ofstream&);
 };
 
-struct Polygon : public SVG {
+struct Polygon {
   Point  one, two, three, four;
   string points, lineColor, fillColor;
   float  stroke_width, stroke_opacity, fill_opacity;
@@ -214,7 +214,7 @@ struct Polygon : public SVG {
   void plot (ofstream&);
 };
 
-struct Pattern : public SVG {
+struct Pattern {
   string id, patternUnits;
   double x, y, width, height;
   Pattern () = default;
@@ -222,8 +222,8 @@ struct Pattern : public SVG {
   void set_tail (ofstream&);
 };
 
-struct Defs : public SVG {
-  // string id;
+struct Defs {
+  string id;
   Defs () = default;
   void set_head (ofstream&);
   void set_tail (ofstream&);

@@ -3,19 +3,21 @@
 #include "vizdef.hpp"
 using namespace smashpp;
 
-void Stop::plot (ofstream& f) {
-  f << begin_elem("stop")
+template <typename Stream>
+void Stop::plot (Stream& s) const {
+  s << begin_elem("stop")
     << attrib("offset", offset)
     << attrib("stop-color", stop_color)
     << attrib("stop-opacity", stop_opacity, true)
     << end_empty_elem();
 }
 
-void LinearGradient::plot (ofstream& f) {
+template <typename Stream>
+void LinearGradient::plot (Stream& s) const {
   auto defs = make_unique<Defs>();
-  defs->set_head(f);
+  defs->set_head(s);
 
-  f << begin_elem("linearGradient")
+  s << begin_elem("linearGradient")
     << attrib("id", id)
     << attrib("x1", x1)
     << attrib("y1", y1)
@@ -23,18 +25,26 @@ void LinearGradient::plot (ofstream& f) {
     << attrib("y2", y2)
     << mid_elem();
 
-  for (auto s : stops)
-    s.plot(f);
+  s << stops;
 
-  f << end_elem("linearGradient");
-  defs->set_tail(f);
+  s << end_elem("linearGradient");
+  defs->set_tail(s);
 }
 
-void Text::plot (ofstream& f) {
-  f << begin_elem("text")
+void LinearGradient::add_stop (const Stop& stop) {
+  stringstream ss;
+  stop.plot(ss);
+  stops += ss.str();
+}
+
+template <typename Stream>
+void Text::plot (Stream& s) {
+  s << begin_elem("text")
     << attrib("id", to_string(origin.x)+to_string(origin.y))
-    << attrib("x", origin.x, true)
-    << attrib("y", origin.y, true)
+    << attrib("x", origin.x, true)//todo remove
+    << attrib("y", origin.y, true)//todo remove
+    // << attrib("x", x, true)//todo add
+    // << attrib("y", y, true)//todo add
     << attrib("dx", dx, true)
     << attrib("dy", dy, true)
     << attrib("dominant-baseline", dominantBaseline)
