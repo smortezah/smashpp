@@ -86,11 +86,13 @@ void VizPaint::print_plot (VizParam& p) {
       stop->offset = "30%";
       stop->stop_color = shade(color, 0.25);
       // stop->stop_color = (c=='r') ? shade(color, 0.25) : color;
-      linearGradient->stops.emplace_back(*stop);
+      // linearGradient->stops.emplace_back(*stop);
+      linearGradient->add_stop(*stop);
       stop->offset = "100%";
       stop->stop_color = color;
       // stop->stop_color = (c=='r') ? color : shade(color, 0.25);
-      linearGradient->stops.emplace_back(*stop);
+      // linearGradient->stops.emplace_back(*stop);
+      linearGradient->add_stop(*stop);
       linearGradient->plot(fPlot);
       return "url(#"+linearGradient->id+")";
     };
@@ -103,14 +105,56 @@ void VizPaint::print_plot (VizParam& p) {
       stop->offset = "30%";
       stop->stop_color = tone(color, 0.4);
       // stop->stop_color = (c=='r') ? tone(color, 0.4) : color;
-      linearGradient->stops.emplace_back(*stop);
+      // linearGradient->stops.emplace_back(*stop);
+      linearGradient->add_stop(*stop);
       stop->offset = "100%";
       stop->stop_color = color;
       // stop->stop_color = (c=='r') ? color : tone(color, 0.4);
-      linearGradient->stops.emplace_back(*stop);
+      // linearGradient->stops.emplace_back(*stop);
+      linearGradient->add_stop(*stop);
       linearGradient->plot(fPlot);
       return "url(#"+linearGradient->id+")";
     };
+
+
+    // const auto make_gradient = 
+    //   [&](const string& color, char c, const string& inId) {
+    //   auto grad = LinearGradient();
+    //   grad.id = "grad"+inId;
+    //   auto stop = Stop();
+    //   stop.offset = "30%";
+    //   stop.stop_color = shade(color, 0.25);
+    //   // stop->stop_color = (c=='r') ? shade(color, 0.25) : color;
+    //   // linearGradient->stops.emplace_back(*stop);
+    //   grad.add_stop(stop);
+    //   stop.offset = "100%";
+    //   stop.stop_color = color;
+    //   // stop->stop_color = (c=='r') ? color : shade(color, 0.25);
+    //   // linearGradient->stops.emplace_back(*stop);
+    //   grad.add_stop(stop);
+    //   grad.plot(fPlot);
+    //   return "url(#"+grad.id+")";
+    // };
+
+    // const auto make_gradient_periph = 
+    //   [&](const string& color, char c, const string& inId) {
+    //   auto grad = LinearGradient();
+    //   grad.id = "grad"+inId;
+    //   auto stop = Stop();
+    //   stop.offset = "30%";
+    //   stop.stop_color = tone(color, 0.4);
+    //   // stop->stop_color = (c=='r') ? tone(color, 0.4) : color;
+    //   // linearGradient->stops.emplace_back(*stop);
+    //   grad.add_stop(stop);
+    //   stop.offset = "100%";
+    //   stop.stop_color = color;
+    //   // stop->stop_color = (c=='r') ? color : tone(color, 0.4);
+    //   // linearGradient->stops.emplace_back(*stop);
+    //   grad.add_stop(stop);
+    //   grad.plot(fPlot);
+    //   return "url(#"+grad.id+")";
+    // };
+
 
     const auto plot_main = [&](auto& cylinder) {
       cylinder->width = width;
@@ -655,42 +699,64 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
 template <typename Rect>
 inline void VizPaint::plot_legend_gradient (ofstream& f, const Rect& rect, 
 u8 colorMode) {
-  auto grad = make_unique<Gradient>();
-  switch (colorMode) {
-  case 0:   grad->offsetColor=COLORSET[0];   break;
-  case 1:   grad->offsetColor=COLORSET[1];   break;
-  case 2:   grad->offsetColor=COLORSET[2];   break;
-  default:  error("undefined color mode.");
-  }
+  // vector<string> offsetColors;
+  // switch (colorMode) {
+  // case 0:   offsetColors = COLORSET[0];  break;
+  // case 1:   offsetColors = COLORSET[1];  break;
+  // case 2:   offsetColors = COLORSET[2];  break;
+  // default:  error("undefined color mode.");
+  // }
 
-  auto id = to_string(rect->origin.x) + to_string(rect->origin.y);
-  f << begin_elem("defs")
-    << mid_elem()
-    << begin_elem("linearGradient")
-    << attrib("id", "grad"+id)
-    << attrib("x1", "0%")
-    << attrib("y1", "0%")
-    // << attrib("x2", "0%")
-    // << attrib("y2", "100%")
-    << attrib("x2", "100%")
-    << attrib("y2", "0%")
-    << mid_elem();
-  for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
-    f << begin_elem("stop") 
-      << attrib("offset", 
-                to_string(i*100/(grad->offsetColor.size()-1))+"%")
-      << attrib("stop-color", grad->offsetColor[i]) 
-      << attrib("stop-opacity", 1)
-      << end_empty_elem();
-  }
-  f << end_elem("linearGradient")
-    << end_elem("defs");
+  // auto id = to_string(rect->origin.x) + to_string(rect->origin.y);
+  // auto grad = make_unique<LinearGradient>();
+  // grad->id = "grad" + id;
 
-  rect->stroke = "black";
-  rect->strokeWidth = 0.4;
-  rect->fill = "url(#grad"+id+")";
-  rect->plot(f);
+  // auto stop = make_unique<Stop>();
+  // for (u8 i=0; i!=offsetColors.size(); ++i) {
+  //   stop->offset = to_string(i*100 / (offsetColors.size()-1)) + "%";
+  //   stop->stop_color = offsetColors[i];
+  //   grad->add_stop(*stop);
+  // }
 
+  // grad->plot(f);
+
+  // auto grad = make_unique<Gradient>();
+  // switch (colorMode) {
+  // case 0:   grad->offsetColor=COLORSET[0];   break;
+  // case 1:   grad->offsetColor=COLORSET[1];   break;
+  // case 2:   grad->offsetColor=COLORSET[2];   break;
+  // default:  error("undefined color mode.");
+  // }
+
+  // auto id = to_string(rect->origin.x) + to_string(rect->origin.y);
+  // f << begin_elem("defs")
+  //   << mid_elem()
+  //   << begin_elem("linearGradient")
+  //   << attrib("id", "grad"+id)
+  //   << attrib("x1", "0%")
+  //   << attrib("y1", "0%")
+  //   // << attrib("x2", "0%")
+  //   // << attrib("y2", "100%")
+  //   << attrib("x2", "100%")
+  //   << attrib("y2", "0%")
+  //   << mid_elem();
+  // for (u8 i=0; i!=grad->offsetColor.size(); ++i) {
+  //   f << begin_elem("stop") 
+  //     << attrib("offset", 
+  //               to_string(i*100/(grad->offsetColor.size()-1))+"%")
+  //     << attrib("stop-color", grad->offsetColor[i]) 
+  //     << attrib("stop-opacity", 1)
+  //     << end_empty_elem();
+  // }
+  // f << end_elem("linearGradient")
+  //   << end_elem("defs");
+
+  // rect->stroke = "black";
+  // rect->strokeWidth = 0.4;
+  // rect->fill = "url(#grad"+id+")";
+  // rect->plot(f);
+
+  // // Cylinder shape gradient
   // auto cylinder = make_unique<Cylinder>();
   // cylinder->width = rect->height;
   // cylinder->height = rect->width;
