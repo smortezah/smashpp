@@ -3,8 +3,14 @@
 #include "vizdef.hpp"
 using namespace smashpp;
 
-template <typename Stream>
-void Stop::plot (Stream& s) const {
+void Stop::plot (ofstream& f) const {
+  f << begin_elem("stop")
+    << attrib("offset", offset)
+    << attrib("stop-color", stop_color)
+    << attrib("stop-opacity", stop_opacity, true)
+    << end_empty_elem();
+}
+void Stop::plot (stringstream& s) const {
   s << begin_elem("stop")
     << attrib("offset", offset)
     << attrib("stop-color", stop_color)
@@ -12,7 +18,7 @@ void Stop::plot (Stream& s) const {
     << end_empty_elem();
 }
 
-void LinearGradient::plot (ofstream& f) {
+void LinearGradient::plot (ofstream& f) const {
   auto defs = make_unique<Defs>();
   defs->set_head(f);
 
@@ -42,6 +48,7 @@ void LinearGradient::add_stop (const string& offset, const string& stop_color) {
   
   stringstream ss;
   stop->plot(ss);
+
   stops += ss.str();
 }
 
@@ -148,7 +155,8 @@ void Path::plot (ofstream& f) {
 
 void Cylinder::plot (ofstream& f) {
   auto path = make_unique<Path>();
-  path->origin = Point(origin.x, origin.y);
+  path->origin.x = origin.x;
+  path->origin.y = origin.y;
   path->id = to_string(origin.x)+to_string(origin.y);
   path->trace = " v "+to_string(height)+
     " a "+to_string(width/2)+","+to_string(ry)+" 0 0,0 "+to_string(width)+
