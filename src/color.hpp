@@ -8,39 +8,23 @@ class RGB;
 class HSV;
 
 // Global functions
-// bool is_hex (const string&);
-inline static bool is_hex (const string& color) {
-  if (color.front()!='#' || color.size()!=7)          return false;
-  for (auto ch : color.substr(1))  if (!isxdigit(ch)) return false;
-  return true;
-}
+bool is_hex (const string&);
 string to_hex (const RGB&);
-// RGB to_rgb (const string&);
-inline static RGB to_rgb (const string& color) {
-  if (is_hex(color)) {
-    return RGB(stoi(color.substr(1,2), 0, 16 /*base*/), 
-               stoi(color.substr(3,2), 0, 16 /*base*/),
-               stoi(color.substr(5,2), 0, 16 /*base*/));
-  }
-  else {
-    if      (color=="black")  return RGB(0,   0,   0);
-    else if (color=="white")  return RGB(255, 255, 255);
-    else if (color=="grey")   return RGB(128, 128, 128);
-    else if (color=="red")    return RGB(255, 0,   0);
-    else if (color=="green")  return RGB(0,   255, 0);
-    else if (color=="blue")   return RGB(0,   0,   255);
-    else                      error("color undefined");
-  }
-  return RGB();
-}
+RGB to_rgb (const string&);
 RGB hsv_to_rgb (const HSV&);
 HSV rgb_to_hsv (const RGB&);
+RGB alpha_blend (const RGB&, const RGB&, float);
+string alpha_blend (const string&, const RGB&, float);
+RGB shade (const RGB&, float=0.5);       // Mix whith black
+string shade (const string&, float=0.5);
+RGB tint (const RGB&, float=0.5);        // Mix with white
+string tint (const string&, float=0.5);
+RGB tone (const RGB&, float=0.5);        // Mix with grey
+string tone (const string&, float=0.5);
 
 class Color {
  public:
   Color () = default;
-  RGB alpha_blend (const RGB&, const RGB&, float) const;
-  string alpha_blend (const string&, const RGB&, float) const;
 };
 
 class RGB : public Color {
@@ -51,12 +35,6 @@ class RGB : public Color {
   RGB (u8 r_, u8 g_, u8 b_) : r(r_), g(g_), b(b_) {}
   RGB (const string& color) : r(to_rgb(color).r), g(to_rgb(color).g), 
     b(to_rgb(color).b) {}
-  template <typename OutColor>
-  OutColor shade (float=0.5);  // Mix whith black
-  template <typename OutColor>
-  OutColor tint (float=0.5);   // Mix with white
-  template <typename OutColor>
-  OutColor tone (float=0.5);   // Mix with grey
 };
 
 class HSV : public Color {
@@ -66,10 +44,6 @@ class HSV : public Color {
   HSV () = default;
   explicit HSV (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
 };
-
-string to_hex (const RGB& color) {
-  return string_format("#%X%X%X", color.r, color.g, color.b);
-}
 
 // // Global functions
 // inline bool is_hex (const string& color) {

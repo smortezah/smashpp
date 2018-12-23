@@ -4,6 +4,8 @@
 #include "vizdef.hpp"
 #include "par.hpp"
 #include "svg.hpp"
+#include "color.hpp"
+#include "color.cpp"
 
 namespace smashpp {
 struct Position {
