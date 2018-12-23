@@ -11,91 +11,17 @@ class SVG {
   float  width, height;
 
   SVG () = default;
-  string attrib (const string&, float, bool=false, const string& ="") const;
-  string attrib (const string&, const string&, bool=false, 
-    const string& ="") const;
-  string begin_elem (const string&) const;
-  string mid_elem () const;
-  string end_elem (const string&) const;
-  string end_empty_elem () const;
-
+  auto attrib (const string&, float, bool=false, const string& ="")
+    const -> string;
+  auto attrib (const string&, const string&, bool=false, const string& ="")
+    const -> string;
+  auto begin_elem (const string&) const -> string;
+  auto mid_elem () const -> string;
+  auto end_elem (const string&) const -> string;
+  auto end_empty_elem () const -> string;
   void print_header (ofstream&) const;
   void print_tailer (ofstream&) const;
 };
-
-// struct RgbColor : public SVG {
-//   u8 r, g, b;
-//   // float alpha;
-//   RgbColor () = default;
-//   RgbColor (u8 r_, u8 g_, u8 b_/*, float a=0.5*/) : r(r_), g(g_), b(b_)
-//     /*, alpha(a)*/ {}
-// };
-
-// struct HsvColor : public SVG {
-//   u8 h, s, v;
-//   HsvColor () = default;
-//   explicit HsvColor (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
-// };
-
-// inline static bool is_hex (const string& color) {
-//   if (color.front()!='#' || color.size()!=7)          return false;
-//   for (auto ch : color.substr(1))  if (!isxdigit(ch)) return false;
-//   return true;
-// }
-
-// inline static RgbColor to_rgb (const string& color) {
-//   if (is_hex(color)) {
-//     constexpr int base = 16;
-//     const string 
-//       strR=color.substr(1,2), strG=color.substr(3,2), strB=color.substr(5,2);
-
-//     return RgbColor(stoi(strR,0,base), stoi(strG,0,base), stoi(strB,0,base));
-//   }
-//   else {
-//     if      (color=="black")    return RgbColor(0,   0,   0);
-//     else if (color=="white")    return RgbColor(255, 255, 255);
-//     else if (color=="grey")     return RgbColor(128, 128, 128);
-//     else if (color=="red")      return RgbColor(255, 0,   0);
-//     else if (color=="green")    return RgbColor(0,   255, 0);
-//     else if (color=="blue")     return RgbColor(0,   0,   255);
-//     else                        error("color undefined");
-//   }
-//   return RgbColor();
-// }
-
-// inline static string to_hex (const RgbColor& color) {
-//   return string_format("#%X%X%X", color.r, color.g, color.b);
-// }
-
-// inline static RgbColor alpha_blend (const RgbColor& color1, 
-// const RgbColor& color2, float alpha) {
-//   return RgbColor(static_cast<u8>(color1.r + (color2.r-color1.r) * alpha),
-//                   static_cast<u8>(color1.g + (color2.g-color1.g) * alpha),
-//                   static_cast<u8>(color1.b + (color2.b-color1.b) * alpha));
-// }
-// inline static string alpha_blend (const string& hexColor, 
-// const RgbColor& color2, float alpha) {
-//   RgbColor color1 {to_rgb(hexColor)};
-//   return to_hex(alpha_blend(color1, color2, alpha));
-// }
-
-// // Mix whith black
-// template <typename InColor>
-// inline static auto shade (const InColor& color, float alpha=0.5) {
-//   return alpha_blend(color, to_rgb("black"), alpha);
-// }
-
-// // Mix with white
-// template <typename InColor>
-// inline static auto tint (const InColor& color, float alpha=0.5) {
-//   return alpha_blend(color, to_rgb("white"), alpha);
-// }
-
-// // Mix with grey
-// template <typename InColor>
-// inline static auto tone (const InColor& color, float alpha=0.5) {
-//   return alpha_blend(color, to_rgb("grey"), alpha);
-// }
 
 class Stop : public SVG {
  public:
@@ -163,6 +89,26 @@ class Path : public SVG {
 
   Path () : fill("transparent"), stroke_lineJoin("round"), fill_opacity(OPAC),
     stroke_opacity(1.0f), stroke_width(1.0f) {}
+  auto M (float, float)                              const -> string;
+  auto m (float, float)                              const -> string;
+  auto L (float, float)                              const -> string;
+  auto l (float, float)                              const -> string;
+  auto H (float)                                     const -> string;
+  auto h (float)                                     const -> string;
+  auto V (float)                                     const -> string;
+  auto v (float)                                     const -> string;
+  auto C (float, float, float, float, float, float)  const -> string;
+  auto c (float, float, float, float, float, float)  const -> string;
+  auto S (float, float, float, float)                const -> string;
+  auto s (float, float, float, float)                const -> string;
+  auto Q (float, float, float, float)                const -> string;
+  auto q (float, float, float, float)                const -> string;
+  auto T (float, float)                              const -> string;
+  auto t (float, float)                              const -> string;
+  auto A (float, float, float, u8, u8, float, float) const -> string;
+  auto a (float, float, float, u8, u8, float, float) const -> string;
+  auto Z ()                                          const -> string;
+  auto z ()                                          const -> string;
   void plot (ofstream&) const;
 };
 
@@ -176,7 +122,7 @@ class Cylinder : public SVG {
     stroke_opacity(1.0f), stroke("black"), fill("transparent"), 
     stroke_lineJoin("round") {}
   void plot (ofstream&) const;
-  void plot_ir (ofstream&, string&& wave=std::move("#Wavy"));
+  void plot_ir (ofstream&, string&& =std::move("#Wavy"));
   void plot_periph (ofstream&, char=' ', u8=0);
 };
 
@@ -192,19 +138,16 @@ class Rectangle : public SVG {
 class Polygon : public SVG {
  public:
   float  stroke_width, stroke_opacity, fill_opacity;
-  string fill, stroke;
+  string points, fill, stroke;
  
   Polygon () : stroke_width(1.0f), stroke_opacity(0.5f), fill_opacity(0.5f) {}
-  void add_point (float, float);
+  string point (float, float) const;
   void plot (ofstream&);
-
- private:
-  string points;
 };
 
 class Pattern : public SVG {
  public:
-  float x, y, width, height;
+  float  x, y, width, height;
   string id, patternUnits;
 
   Pattern () = default;
@@ -220,8 +163,9 @@ class Defs : public SVG {
 };
 
 template <typename T>
-inline static void make_pattern (ofstream& file, unique_ptr<Defs>& defs, 
-unique_ptr<Pattern>& pattern, unique_ptr<T>& figBase) {
+void make_pattern (ofstream& file, unique_ptr<Pattern>& pattern, 
+unique_ptr<T>& figBase) {
+  auto defs = make_unique<Defs>();
   defs->set_head(file);
   pattern->set_head(file);
   figBase->plot(file);
@@ -229,8 +173,9 @@ unique_ptr<Pattern>& pattern, unique_ptr<T>& figBase) {
   defs->set_tail(file);
 }
 template <typename T, typename... Ts>
-inline static void make_pattern (ofstream& file, unique_ptr<Defs>& defs, 
-unique_ptr<Pattern>& pattern, unique_ptr<T>& figBase, unique_ptr<Ts...>& fig) {
+void make_pattern (ofstream& file, unique_ptr<Pattern>& pattern, 
+unique_ptr<T>& figBase, unique_ptr<Ts...>& fig) {
+  auto defs = make_unique<Defs>();
   defs->set_head(file);
   pattern->set_head(file);
   figBase->plot(file);
