@@ -8,91 +8,94 @@ namespace smashpp {
 class SVG {
  public:
   string id;
+  float  width, height;
 
   SVG () = default;
-  string attrib (const string&, float, bool=false, const string& unit="") const;
+  string attrib (const string&, float, bool=false, const string& ="") const;
   string attrib (const string&, const string&, bool=false, 
-    const string& unit="") const;
+    const string& ="") const;
   string begin_elem (const string&) const;
   string mid_elem () const;
   string end_elem (const string&) const;
   string end_empty_elem () const;
+
+  void print_header (ofstream&) const;
+  void print_tailer (ofstream&) const;
 };
 
+// struct RgbColor : public SVG {
+//   u8 r, g, b;
+//   // float alpha;
+//   RgbColor () = default;
+//   RgbColor (u8 r_, u8 g_, u8 b_/*, float a=0.5*/) : r(r_), g(g_), b(b_)
+//     /*, alpha(a)*/ {}
+// };
 
-struct RgbColor : public SVG {
-  u8 r, g, b;
-  // float alpha;
-  RgbColor () = default;
-  RgbColor (u8 r_, u8 g_, u8 b_/*, float a=0.5*/) : r(r_), g(g_), b(b_)
-    /*, alpha(a)*/ {}
-};
+// struct HsvColor : public SVG {
+//   u8 h, s, v;
+//   HsvColor () = default;
+//   explicit HsvColor (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
+// };
 
-struct HsvColor : public SVG {
-  u8 h, s, v;
-  HsvColor () = default;
-  explicit HsvColor (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
-};
+// inline static bool is_hex (const string& color) {
+//   if (color.front()!='#' || color.size()!=7)          return false;
+//   for (auto ch : color.substr(1))  if (!isxdigit(ch)) return false;
+//   return true;
+// }
 
-inline static bool is_hex (const string& color) {
-  if (color.front()!='#' || color.size()!=7)          return false;
-  for (auto ch : color.substr(1))  if (!isxdigit(ch)) return false;
-  return true;
-}
+// inline static RgbColor to_rgb (const string& color) {
+//   if (is_hex(color)) {
+//     constexpr int base = 16;
+//     const string 
+//       strR=color.substr(1,2), strG=color.substr(3,2), strB=color.substr(5,2);
 
-inline static RgbColor to_rgb (const string& color) {
-  if (is_hex(color)) {
-    constexpr int base = 16;
-    const string 
-      strR=color.substr(1,2), strG=color.substr(3,2), strB=color.substr(5,2);
+//     return RgbColor(stoi(strR,0,base), stoi(strG,0,base), stoi(strB,0,base));
+//   }
+//   else {
+//     if      (color=="black")    return RgbColor(0,   0,   0);
+//     else if (color=="white")    return RgbColor(255, 255, 255);
+//     else if (color=="grey")     return RgbColor(128, 128, 128);
+//     else if (color=="red")      return RgbColor(255, 0,   0);
+//     else if (color=="green")    return RgbColor(0,   255, 0);
+//     else if (color=="blue")     return RgbColor(0,   0,   255);
+//     else                        error("color undefined");
+//   }
+//   return RgbColor();
+// }
 
-    return RgbColor(stoi(strR,0,base), stoi(strG,0,base), stoi(strB,0,base));
-  }
-  else {
-    if      (color=="black")    return RgbColor(0,   0,   0);
-    else if (color=="white")    return RgbColor(255, 255, 255);
-    else if (color=="grey")     return RgbColor(128, 128, 128);
-    else if (color=="red")      return RgbColor(255, 0,   0);
-    else if (color=="green")    return RgbColor(0,   255, 0);
-    else if (color=="blue")     return RgbColor(0,   0,   255);
-    else                        error("color undefined");
-  }
-  return RgbColor();
-}
+// inline static string to_hex (const RgbColor& color) {
+//   return string_format("#%X%X%X", color.r, color.g, color.b);
+// }
 
-inline static string to_hex_color (const RgbColor& color) {
-  return string_format("#%X%X%X", color.r, color.g, color.b);
-}
+// inline static RgbColor alpha_blend (const RgbColor& color1, 
+// const RgbColor& color2, float alpha) {
+//   return RgbColor(static_cast<u8>(color1.r + (color2.r-color1.r) * alpha),
+//                   static_cast<u8>(color1.g + (color2.g-color1.g) * alpha),
+//                   static_cast<u8>(color1.b + (color2.b-color1.b) * alpha));
+// }
+// inline static string alpha_blend (const string& hexColor, 
+// const RgbColor& color2, float alpha) {
+//   RgbColor color1 {to_rgb(hexColor)};
+//   return to_hex(alpha_blend(color1, color2, alpha));
+// }
 
-inline static RgbColor alpha_blend (const RgbColor& color1, 
-const RgbColor& color2, float alpha) {
-  return RgbColor(static_cast<u8>(color1.r + (color2.r-color1.r) * alpha),
-                  static_cast<u8>(color1.g + (color2.g-color1.g) * alpha),
-                  static_cast<u8>(color1.b + (color2.b-color1.b) * alpha));
-}
-inline static string alpha_blend (const string& hexColor, 
-const RgbColor& color2, float alpha) {
-  RgbColor color1 {to_rgb(hexColor)};
-  return to_hex_color(alpha_blend(color1, color2, alpha));
-}
+// // Mix whith black
+// template <typename InColor>
+// inline static auto shade (const InColor& color, float alpha=0.5) {
+//   return alpha_blend(color, to_rgb("black"), alpha);
+// }
 
-// Mix whith black
-template <typename InColor>
-inline static auto shade (const InColor& color, float alpha=0.5) {
-  return alpha_blend(color, to_rgb("black"), alpha);
-}
+// // Mix with white
+// template <typename InColor>
+// inline static auto tint (const InColor& color, float alpha=0.5) {
+//   return alpha_blend(color, to_rgb("white"), alpha);
+// }
 
-// Mix with white
-template <typename InColor>
-inline static auto tint (const InColor& color, float alpha=0.5) {
-  return alpha_blend(color, to_rgb("white"), alpha);
-}
-
-// Mix with grey
-template <typename InColor>
-inline static auto tone (const InColor& color, float alpha=0.5) {
-  return alpha_blend(color, to_rgb("grey"), alpha);
-}
+// // Mix with grey
+// template <typename InColor>
+// inline static auto tone (const InColor& color, float alpha=0.5) {
+//   return alpha_blend(color, to_rgb("grey"), alpha);
+// }
 
 class Stop : public SVG {
  public:

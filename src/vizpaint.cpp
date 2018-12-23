@@ -2,7 +2,8 @@
 #include "exception.hpp"
 #include "file.hpp"
 #include "number.hpp"
-#include"svg.hpp"
+#include "svg.hpp"
+#include "color.hpp"
 using namespace smashpp;
 
 void VizPaint::print_plot (VizParam& p) {
@@ -23,7 +24,7 @@ void VizPaint::print_plot (VizParam& p) {
   auto Paint_Extra = PAINT_EXTRA;
   if (p.showAnnot)  Paint_Extra+=30;
 
-  print_head(fPlot, PAINT_CX+width+space+width+PAINT_CX, maxSize+Paint_Extra);
+  print_header(fPlot, PAINT_CX+width+space+width+PAINT_CX, maxSize+Paint_Extra);
 
   auto poly = make_unique<Polygon>();
   auto text = make_unique<Text>();
@@ -70,7 +71,11 @@ void VizPaint::print_plot (VizParam& p) {
 
   // Plot
   u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignore=0;
-  for (auto e=pos.rbegin(); e!=pos.rend(); ++e) {
+  std::sort(pos.begin(), pos.end(),
+    [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
+
+  // for (auto e=pos.rbegin(); e!=pos.rend(); ++e) {
+  for (auto e=pos.begin(); e!=pos.end(); ++e) {
     if (abs(e->endTar-e->begTar) <= p.min) {
       ++n_ignore;    continue;
     }
@@ -85,7 +90,8 @@ void VizPaint::print_plot (VizParam& p) {
       [&](const string& color, char c, const string& inId) {
       auto grad = make_unique<LinearGradient>();
       grad->id = "grad"+inId;
-      grad->add_stop("30%", shade(color, 0.25));
+      auto rgb = make_unique<RGB>();
+      grad->add_stop("30%", rgb->shade(color, 0.25));
       grad->add_stop("100%", color);
       // c=='r' ? grad->add_stop("30%", shade(color, 0.25)) 
       //        : grad->add_stop("30%", color);
@@ -99,7 +105,8 @@ void VizPaint::print_plot (VizParam& p) {
       [&](const string& color, char c, const string& inId) {
       auto grad = make_unique<LinearGradient>();
       grad->id = "grad"+inId;
-      grad->add_stop("30%", tone(color, 0.4));
+      auto rgb = make_unique<RGB>();
+      grad->add_stop("30%", rgb->tone(color, 0.4));
       grad->add_stop("100%", color);
       // c=='r' ? grad->add_stop("30%", tone(color, 0.4)) 
       //        : grad->add_stop("30%", color);
@@ -117,14 +124,14 @@ void VizPaint::print_plot (VizParam& p) {
 
     const auto plot_main_ref = [&]() {
       if (e->begRef != DBLANK) {
+        auto rgb = make_unique<RGB>();
         auto cylinder = make_unique<Cylinder>();
         plot_main(cylinder);
         cylinder->height = get_point(e->endRef-e->begRef);
-        cylinder->stroke = shade(rgb_color(e->start));
+        cylinder->stroke = rgb->shade(rgb_color(e->start));
         cylinder->x = cx;
         cylinder->y = cy + get_point(e->begRef);
-        cylinder->id = 
-          to_string(cylinder->x)+to_string(cylinder->y);
+        cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
         cylinder->fill = make_gradient(rgb_color(e->start), 'r', cylinder->id);
         cylinder->plot(fPlot);
 
@@ -133,34 +140,34 @@ void VizPaint::print_plot (VizParam& p) {
           cylinder->id += "NRC";
           cylinder->fill = make_gradient_periph(
             nrc_color(e->entRef, p.colorMode), 'r', cylinder->id);
-          cylinder->stroke = shade(nrc_color(e->entRef, p.colorMode), 0.96);
+          cylinder->stroke = rgb->shade(nrc_color(e->entRef, p.colorMode),0.96);
           cylinder->plot_periph(fPlot, 'r');
         }
         if (p.showRedun) {
           cylinder->id += "Redun";
           cylinder->fill = make_gradient_periph(
             redun_color(e->selfRef, p.colorMode), 'r', cylinder->id);
-          cylinder->stroke = shade(redun_color(e->selfRef, p.colorMode), 0.95);
+          cylinder->stroke =
+            rgb->shade(redun_color(e->selfRef, p.colorMode), 0.95);
           cylinder->plot_periph(fPlot, 'r', u8(p.showNRC));
         }
       }
     };
 
     const auto plot_main_tar = [&](bool inverted) {
+      auto rgb = make_unique<RGB>();
       auto cylinder = make_unique<Cylinder>();
       plot_main(cylinder);
       cylinder->height = get_point(abs(e->begTar-e->endTar));
       cylinder->x = cx + width + space;
-      cylinder->y = !inverted ? cy+get_point(e->begTar) 
-                                     : cy+get_point(e->endTar);
-      cylinder->id = to_string(cylinder->x)+
-                     to_string(cylinder->y);
+      cylinder->y = !inverted ?cy+get_point(e->begTar) :cy+get_point(e->endTar);
+      cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
       if (e->begRef == DBLANK) {
         cylinder->fill = "black";
         cylinder->stroke = "white";
       } else {
         cylinder->fill = make_gradient(rgb_color(e->start), 't', cylinder->id);
-        cylinder->stroke = shade(rgb_color(e->start));
+        cylinder->stroke = rgb->shade(rgb_color(e->start));
       }
 
       if (!inverted) {
@@ -176,7 +183,7 @@ void VizPaint::print_plot (VizParam& p) {
         cylinder->fill = make_gradient_periph(
           nrc_color(e->entTar, p.colorMode), 'r', cylinder->id);
         // cylinder->fill = nrc_color(e->entTar, p.colorMode);
-        cylinder->stroke = shade(nrc_color(e->entTar, p.colorMode), 0.96);
+        cylinder->stroke = rgb->shade(nrc_color(e->entTar, p.colorMode), 0.96);
         cylinder->plot_periph(fPlot, 't');
       }
       if (p.showRedun) {
@@ -184,7 +191,8 @@ void VizPaint::print_plot (VizParam& p) {
         cylinder->id += "Redun";
         cylinder->fill = make_gradient_periph(
           redun_color(e->selfTar, p.colorMode), 'r', cylinder->id);
-        cylinder->stroke = shade(redun_color(e->selfTar, p.colorMode), 0.95);
+        cylinder->stroke = 
+          rgb->shade(redun_color(e->selfTar, p.colorMode), 0.95);
         cylinder->plot_periph(fPlot, 't', u8(p.showNRC));
       }
     };
@@ -366,7 +374,7 @@ void VizPaint::print_plot (VizParam& p) {
   if (p.showAnnot)
     plot_annot(fPlot, max(n_refBases,n_tarBases), p.showNRC, p.showRedun);
 
-  print_tail(fPlot);
+  svg->print_tailer(fPlot);
 
   // Log
   cerr << "Plotting finished.\n";
@@ -465,51 +473,52 @@ u64 refSize_, u64 tarSize_) {
   maxSize = max(refSize, tarSize);
 }
 
-inline RgbColor VizPaint::hsv_to_rgb (const HsvColor& HSV) const {
-  RgbColor RGB {};
-  if (HSV.s==0) { RGB.r = RGB.g = RGB.b = HSV.v;    return RGB; }
+// inline RgbColor VizPaint::hsv_to_rgb (const HsvColor& HSV) const {
+//   RgbColor RGB {};
+//   if (HSV.s==0) { RGB.r = RGB.g = RGB.b = HSV.v;    return RGB; }
 
-  const auto region    = u8(HSV.h / 43),
-             remainder = u8((HSV.h - region*43) * 6),
-             p = u8((HSV.v * (255 - HSV.s)) >> 8),
-             q = u8((HSV.v * (255 - ((HSV.s*remainder)>>8))) >> 8),
-             t = u8((HSV.v * (255 - ((HSV.s*(255-remainder))>>8))) >> 8);
+//   const auto region    = u8(HSV.h / 43),
+//              remainder = u8((HSV.h - region*43) * 6),
+//              p = u8((HSV.v * (255 - HSV.s)) >> 8),
+//              q = u8((HSV.v * (255 - ((HSV.s*remainder)>>8))) >> 8),
+//              t = u8((HSV.v * (255 - ((HSV.s*(255-remainder))>>8))) >> 8);
 
-  switch (region) {
-  case 0:   RGB.r=HSV.v;  RGB.g=t;      RGB.b=p;      break;
-  case 1:   RGB.r=q;      RGB.g=HSV.v;  RGB.b=p;      break;
-  case 2:   RGB.r=p;      RGB.g=HSV.v;  RGB.b=t;      break;
-  case 3:   RGB.r=p;      RGB.g=q;      RGB.b=HSV.v;  break;
-  case 4:   RGB.r=t;      RGB.g=p;      RGB.b=HSV.v;  break;
-  default:  RGB.r=HSV.v;  RGB.g=p;      RGB.b=q;      break;
-  }
-  return RGB;
-}
+//   switch (region) {
+//   case 0:   RGB.r=HSV.v;  RGB.g=t;      RGB.b=p;      break;
+//   case 1:   RGB.r=q;      RGB.g=HSV.v;  RGB.b=p;      break;
+//   case 2:   RGB.r=p;      RGB.g=HSV.v;  RGB.b=t;      break;
+//   case 3:   RGB.r=p;      RGB.g=q;      RGB.b=HSV.v;  break;
+//   case 4:   RGB.r=t;      RGB.g=p;      RGB.b=HSV.v;  break;
+//   default:  RGB.r=HSV.v;  RGB.g=p;      RGB.b=q;      break;
+//   }
+//   return RGB;
+// }
 
-#ifdef EXTEND
-inline HsvColor VizPaint::rgb_to_hsv (const RgbColor& RGB) const {
-  const u8 rgbMin { min({RGB.r, RGB.g, RGB.b}) };
-  const u8 rgbMax { max({RGB.r, RGB.g, RGB.b}) };
+// #ifdef EXTEND
+// inline HsvColor VizPaint::rgb_to_hsv (const RgbColor& RGB) const {
+//   const u8 rgbMin { min({RGB.r, RGB.g, RGB.b}) };
+//   const u8 rgbMax { max({RGB.r, RGB.g, RGB.b}) };
 
-  HsvColor HSV {};
-  HSV.v = rgbMax;
-  if (HSV.v==0) { HSV.h = HSV.s = 0;    return HSV; }
+//   HsvColor HSV {};
+//   HSV.v = rgbMax;
+//   if (HSV.v==0) { HSV.h = HSV.s = 0;    return HSV; }
 
-  HSV.s = u8(255 * u16((rgbMax-rgbMin)/HSV.v));
-  if (HSV.s==0) { HSV.h = 0;            return HSV; }
+//   HSV.s = u8(255 * u16((rgbMax-rgbMin)/HSV.v));
+//   if (HSV.s==0) { HSV.h = 0;            return HSV; }
 
-  if      (rgbMax==RGB.r)    HSV.h = u8(43*(RGB.g-RGB.b)/(rgbMax-rgbMin));
-  else if (rgbMax==RGB.g)    HSV.h = u8(85 + 43*(RGB.b-RGB.r)/(rgbMax-rgbMin));
-  else                       HSV.h = u8(171 + 43*(RGB.r-RGB.g)/(rgbMax-rgbMin));
+//   if      (rgbMax==RGB.r)    HSV.h = u8(43*(RGB.g-RGB.b)/(rgbMax-rgbMin));
+//   else if (rgbMax==RGB.g)    HSV.h = u8(85 + 43*(RGB.b-RGB.r)/(rgbMax-rgbMin));
+//   else                       HSV.h = u8(171 + 43*(RGB.r-RGB.g)/(rgbMax-rgbMin));
   
-  return HSV;
-}
-#endif
+//   return HSV;
+// }
+// #endif
+
 string VizPaint::rgb_color (u32 start) const {
   const auto hue = static_cast<u8>(start * mult);
-  HsvColor HSV (hue);
-  RgbColor RGB {hsv_to_rgb(HSV)};
-  return to_hex_color(RGB);
+  HSV hsv (hue);
+  RGB rgb {hsv_to_rgb(hsv)};
+  return to_hex(rgb);
 }
 
 inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
@@ -534,16 +543,19 @@ inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
   return nrc_color(entropy, colorMode);
 }
 
-inline void VizPaint::print_head (ofstream& f, double w, double h) {
-  // Header
-  f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-    << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
-    << svg->begin_elem("svg")
-    << svg->attrib("xmlns", "http://www.w3.org/2000/svg")
-    << svg->attrib("xmlns:xlink", "http://www.w3.org/1999/xlink")
-    << svg->attrib("width", w)
-    << svg->attrib("height", h)
-    << svg->mid_elem();
+inline void VizPaint::print_header (ofstream& f, double w, double h) {
+  // // Header
+  // f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+  //   << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
+  //   << svg->begin_elem("svg")
+  //   << svg->attrib("xmlns", "http://www.w3.org/2000/svg")
+  //   << svg->attrib("xmlns:xlink", "http://www.w3.org/1999/xlink")
+  //   << svg->attrib("width", w)
+  //   << svg->attrib("height", h)
+  //   << svg->mid_elem();
+  svg->width = w;
+  svg->height = h;
+  svg->print_header(f);
   
   // Patterns
   auto defs = make_unique<Defs>();
@@ -569,11 +581,6 @@ inline void VizPaint::print_head (ofstream& f, double w, double h) {
   pattern->id = "WavyWhite";
   path->stroke = "white";
   make_pattern(f, defs, pattern, path);
-}
-
-inline void VizPaint::print_tail (ofstream& f) const {
-  f << "</svg>";
-  // f << "</g>\n</svg>";
 }
 
 template <typename Value>

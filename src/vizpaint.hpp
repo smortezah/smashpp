@@ -46,15 +46,14 @@ class VizPaint {
 
   void show_info (VizParam&, const string&, const string&, u64, u64) const;
   void config (double, double, u32, u64, u64);
-  auto hsv_to_rgb (const HsvColor&) const -> RgbColor;
-#ifdef EXTEND
-  auto rgb_to_hsv (const RgbColor&) const -> HsvColor;
-#endif
+//   auto hsv_to_rgb (const HsvColor&) const -> RgbColor;
+// #ifdef EXTEND
+//   auto rgb_to_hsv (const RgbColor&) const -> HsvColor;
+// #endif
   auto rgb_color (u32) const -> string;
   auto nrc_color (double, u32) const -> string;
   auto redun_color (double, u32) const -> string;
-  void print_head (ofstream&, double, double);
-  void print_tail (ofstream&) const;
+  void print_header (ofstream&, double, double);
   template <typename Value>
   auto get_point (Value) const -> double;
   void plot_legend (ofstream&, const VizParam&);
