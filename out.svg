@@ -15,26 +15,26 @@ a 10.50,2.00 0.00 0,0 21.00,0.00
 " fill="transparent" fill-opacity="0.90" stroke="white" stroke-opacity="1.00" stroke-linejoin="round" stroke-width="1.00" />
 </pattern>
 </defs>
-<rect x="0.00" y="0.00" width="504.00" height="650.00" rx="-1972983465893764856878727168.00" ry="1.00" fill="white" fill-opacity="0.90" stroke="white" stroke-width="0.00" />
+<rect x="0.00" y="0.00" width="504.00" height="650.00" rx="0.00" ry="1.00" fill="white" fill-opacity="0.90" stroke="white" stroke-width="0.00" />
 <defs >
 <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" >
-<feGaussianBlur stdDeviation="4 4" result="shadow" />
+<feGaussianBlur stdDeviation="5 5" result="shadow" />
 <feOffset dx="0" dy="0" />
 </filter>
 </defs>
-<text id="210.50000085.000000" x="210.50" y="85.00" dominant-baseline="middle" font-size="12px" font-family="Arial" fill="#cecb1b" text-anchor="middle" text-align="start" line-height="125%%" filter="url(#shadow)" >
+<text id="210.50000085.000000" x="210.50" y="85.00" dominant-baseline="middle" font-size="12px" font-family="Impact" fill="#cecb1b" text-anchor="middle" text-align="start" line-height="125%%" filter="url(#shadow)" >
 refs</text>
-<text id="210.50000085.000000" x="210.50" y="85.00" dominant-baseline="middle" font-size="12px" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
+<text id="210.50000085.000000" x="210.50" y="85.00" dominant-baseline="middle" font-size="12px" font-family="Impact" text-anchor="middle" text-align="start" line-height="125%%" >
 refs</text>
 <defs >
 <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" >
-<feGaussianBlur stdDeviation="4 4" result="shadow" />
+<feGaussianBlur stdDeviation="5 5" result="shadow" />
 <feOffset dx="0" dy="0" />
 </filter>
 </defs>
-<text id="293.50000085.000000" x="293.50" y="85.00" dominant-baseline="middle" font-size="12px" font-family="Arial" fill="#cecb1b" text-anchor="middle" text-align="start" line-height="125%%" filter="url(#shadow)" >
+<text id="293.50000085.000000" x="293.50" y="85.00" dominant-baseline="middle" font-size="12px" font-family="Impact" fill="#cecb1b" text-anchor="middle" text-align="start" line-height="125%%" filter="url(#shadow)" >
 tars</text>
-<text id="293.50000085.000000" x="293.50" y="85.00" dominant-baseline="middle" font-size="12px" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
+<text id="293.50000085.000000" x="293.50" y="85.00" dominant-baseline="middle" font-size="12px" font-family="Impact" text-anchor="middle" text-align="start" line-height="125%%" >
 tars</text>
 <text id="161.000000100.000000" x="161.00" y="100.00" dominant-baseline="text-before-edge" font-size="9px" font-family="Arial" text-anchor="end" text-align="start" line-height="125%%" >
 <tspan id="2" style="fill:#3BA03C">0</tspan>
