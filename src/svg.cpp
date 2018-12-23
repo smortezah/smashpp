@@ -137,7 +137,7 @@ f << begin_elem("defs")
 << attrib("height", "140%")
 << mid_elem()
 << begin_elem("feGaussianBlur")
-<< attrib("stdDeviation", "4 4")
+<< attrib("stdDeviation", "5 5")
 << attrib("result", "shadow")
 << end_empty_elem()
 << begin_elem("feOffset")
@@ -162,6 +162,7 @@ f << begin_elem("defs")
   fill = "#cecb1b";
   text_anchor = "middle";
   font_size = 12;
+  font_family = "Impact";
   plot(f);
 
   // Text is written on top of blurred filter
