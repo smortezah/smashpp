@@ -1,33 +1,58 @@
 #include "color.hpp"
 using namespace smashpp;
 
-inline static bool is_hex (const string& color) {
-  if (color.front()!='#' || color.size()!=7)          return false;
-  for (auto ch : color.substr(1))  if (!isxdigit(ch)) return false;
-  return true;
+RGB Color::alpha_blend (const RGB& color1, const RGB& color2, float alpha)
+const {
+  return RGB(static_cast<u8>(color1.r + (color2.r-color1.r) * alpha),
+             static_cast<u8>(color1.g + (color2.g-color1.g) * alpha),
+             static_cast<u8>(color1.b + (color2.b-color1.b) * alpha));
+}
+string Color::alpha_blend (const string& hexColor, const RGB& color2, 
+float alpha) const {
+  RGB color1 {to_rgb(hexColor)};
+  return to_hex(alpha_blend(color1, color2, alpha));
 }
 
-inline static string to_hex (const RGB& color) {
-  return string_format("#%X%X%X", color.r, color.g, color.b);
+template <typename OutColor>
+OutColor RGB::shade (float alpha) {
+  return alpha_blend(*this, to_rgb("black"), alpha);
 }
 
-inline static RGB to_rgb (const string& color) {
-  if (is_hex(color)) {
-    return RGB(stoi(color.substr(1,2), 0, 16 /*base*/), 
-               stoi(color.substr(3,2), 0, 16 /*base*/),
-               stoi(color.substr(5,2), 0, 16 /*base*/));
-  }
-  else {
-    if      (color=="black")  return RGB(0,   0,   0);
-    else if (color=="white")  return RGB(255, 255, 255);
-    else if (color=="grey")   return RGB(128, 128, 128);
-    else if (color=="red")    return RGB(255, 0,   0);
-    else if (color=="green")  return RGB(0,   255, 0);
-    else if (color=="blue")   return RGB(0,   0,   255);
-    else                      error("color undefined");
-  }
-  return RGB();
+template <typename OutColor>
+OutColor RGB::tint (float alpha) {
+  return alpha_blend(*this, to_rgb("white"), alpha);
 }
+
+template <typename OutColor>
+OutColor RGB::tone (float alpha) {
+  return alpha_blend(*this, to_rgb("grey"), alpha);
+}
+
+namespace smashpp {
+// Global functions
+// inline static bool is_hex (const string& color) {
+//   if (color.front()!='#' || color.size()!=7)          return false;
+//   for (auto ch : color.substr(1))  if (!isxdigit(ch)) return false;
+//   return true;
+// }
+
+// inline static RGB to_rgb (const string& color) {
+//   if (is_hex(color)) {
+//     return RGB(stoi(color.substr(1,2), 0, 16 /*base*/), 
+//                stoi(color.substr(3,2), 0, 16 /*base*/),
+//                stoi(color.substr(5,2), 0, 16 /*base*/));
+//   }
+//   else {
+//     if      (color=="black")  return RGB(0,   0,   0);
+//     else if (color=="white")  return RGB(255, 255, 255);
+//     else if (color=="grey")   return RGB(128, 128, 128);
+//     else if (color=="red")    return RGB(255, 0,   0);
+//     else if (color=="green")  return RGB(0,   255, 0);
+//     else if (color=="blue")   return RGB(0,   0,   255);
+//     else                      error("color undefined");
+//   }
+//   return RGB();
+// }
 
 inline static RGB hsv_to_rgb (const HSV& hsv) {
   RGB rgb {};
@@ -67,30 +92,4 @@ inline static HSV rgb_to_hsv (const RGB& rgb) {
   
   return hsv;
 }
-
-RGB RGB::alpha_blend (const RGB& color1, const RGB& color2, float alpha) const {
-  return RGB(static_cast<u8>(color1.r + (color2.r-color1.r) * alpha),
-             static_cast<u8>(color1.g + (color2.g-color1.g) * alpha),
-             static_cast<u8>(color1.b + (color2.b-color1.b) * alpha));
 }
-string RGB::alpha_blend (const string& hexColor, const RGB& color2, float alpha)
-const {
-  RGB color1 {to_rgb(hexColor)};
-  return to_hex(alpha_blend(color1, color2, alpha));
-}
-
-template <typename InColor>
-auto RGB::shade (const InColor& color, float alpha=0.5) {
-  return alpha_blend(color, to_rgb("black"), alpha);
-}
-
-template <typename InColor>
-auto RGB::tint (const InColor& color, float alpha=0.5) {
-  return alpha_blend(color, to_rgb("white"), alpha);
-}
-
-template <typename InColor>
-auto RGB::tone (const InColor& color, float alpha=0.5) {
-  return alpha_blend(color, to_rgb("grey"), alpha);
-}
-
