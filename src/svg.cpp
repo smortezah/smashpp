@@ -102,16 +102,16 @@ void Text::plot (ofstream& f) const {
   f << begin_elem("text")
     << attrib("id", to_string(x)+to_string(y))
     << attrib("x", x, true)
-    << attrib("y", y, true)
-    << attrib("dx", dx, true)
-    << attrib("dy", dy, true)
-    << attrib("dominant-baseline", dominant_baseline)
-    << attrib("transform", transform)
-    << attrib("font-size", to_string(fontSize), false, "px")
-    << attrib("font-weight", font_weight)
-    << attrib("font-family", font_family)
-    << attrib("fill", fill)
-    << attrib("text-anchor", text_anchor)
+    << attrib("y", y, true);
+  if (dx!=0.0f)  f << attrib("dx", dx, true);
+  if (dy!=0.0f)  f << attrib("dy", dy, true);
+  f << attrib("dominant-baseline", dominant_baseline);
+  if (!transform.empty())    f << attrib("transform", transform);
+  f << attrib("font-size", to_string(fontSize), false, "px");
+  if (!font_weight.empty())  f << attrib("font-weight", font_weight);
+  f << attrib("font-family", font_family);
+  if (!fill.empty() && fill!="black")  f << attrib("fill", fill);
+  f << attrib("text-anchor", text_anchor)
     << attrib("text-align", text_align)
     << attrib("line-height", line_height)
     << mid_elem()
@@ -319,11 +319,12 @@ void Path::plot (ofstream& f) const {
     << attrib("fill-opacity", fill_opacity, true)
     << attrib("stroke", stroke)
     << attrib("stroke-opacity", stroke_opacity, true)
-    << attrib("stroke-linejoin", stroke_lineJoin)
-    << attrib("stroke-dasharray", stroke_dasharray)
-    << attrib("stroke-width", stroke_width, true)
-    << attrib("transform", transform)
-    << end_empty_elem();
+    << attrib("stroke-linejoin", stroke_lineJoin);
+  if (!stroke_dasharray.empty())  
+    f << attrib("stroke-dasharray", stroke_dasharray);
+  f << attrib("stroke-width", stroke_width, true);
+  if (!transform.empty())  f << attrib("transform", transform);
+  f << end_empty_elem();
 }
 
 void Cylinder::plot (ofstream& f) const {
@@ -392,9 +393,9 @@ void Rectangle::plot (ofstream& f) const {
     << attrib("x", x, true)
     << attrib("y", y, true)
     << attrib("width", width, true)
-    << attrib("height", height, true)
-    << attrib("rx", rx, true)
-    << attrib("ry", ry, true)
+    << attrib("height", height, true);
+  if (rx!=0.0f)  f << attrib("rx", rx, true);
+  f << attrib("ry", ry, true)
     << attrib("fill", fill)
     << attrib("fill-opacity", fill_opacity, true)
     << attrib("stroke", stroke)
@@ -418,7 +419,7 @@ void Polygon::plot (ofstream& f) {
     << attrib("fill-opacity", fill_opacity, true)
     << end_empty_elem();
 
-    points.clear();
+  points.clear();
 }
 
 void Pattern::set_head (ofstream& f) const {
