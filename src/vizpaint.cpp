@@ -2,8 +2,6 @@
 #include "exception.hpp"
 #include "file.hpp"
 #include "number.hpp"
-#include "svg.hpp"
-#include "color.hpp"
 using namespace smashpp;
 
 void VizPaint::print_plot (VizParam& p) {
