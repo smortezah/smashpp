@@ -586,7 +586,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
   auto text = make_unique<Text>();
   text->text_anchor = "middle";
   // text->font_weight = "bold";
-  text->fontSize = 9;
+  text->font_size = 9;
 
   if (p.showNRC && !p.showRedun) {
     rect->x = cx - (HORIZ_TUNE+width/HORIZ_RATIO);
@@ -642,7 +642,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
   text->dy = 0;
   text->dominant_baseline = "middle";
   text->font_weight = "normal";
-  text->fontSize = 9;
+  text->font_size = 9;
   text->text_anchor = "end";
   text->x = rect->x - 2;
   text->y = rect->y + rect->height/2;
@@ -740,7 +740,7 @@ bool showRedun) const {
   }
 
   auto text = make_unique<Text>();
-  text->fontSize=9;
+  text->font_size=9;
 
   if (showNRC && !showRedun) {
     text->x = (X1 + X2) / 2;

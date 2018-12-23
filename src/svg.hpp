@@ -7,7 +7,7 @@
 namespace smashpp {
 class SVG {
  public:
-  string id;
+  string id, filter;
   float  width, height;
 
   SVG () = default;
@@ -51,12 +51,12 @@ class Text : public SVG {
   float  x, y, dx, dy;
   string dominant_baseline, transform, font_weight, font_family, fill, 
          text_anchor, text_align, line_height;
-  u8     fontSize;
+  u8     font_size;
   string Label;  // Not in standard
 
   Text () : dx(0), dy(0), dominant_baseline("middle"), font_family("Arial"),
     text_anchor("middle"), text_align("start"), line_height("125%%"), 
-    fontSize(13) {}
+    font_size(13) {}
   void plot (ofstream&) const;
   void print_title (ofstream&);
   void print_pos_ref (ofstream&, char c='\0');
