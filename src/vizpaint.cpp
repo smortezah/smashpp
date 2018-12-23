@@ -90,8 +90,9 @@ void VizPaint::print_plot (VizParam& p) {
       [&](const string& color, char c, const string& inId) {
       auto grad = make_unique<LinearGradient>();
       grad->id = "grad"+inId;
-      auto rgb = make_unique<RGB>();
-      grad->add_stop("30%", rgb->shade(color, 0.25));
+      auto rgb = make_unique<RGB>(color);
+      // grad->add_stop("30%", rgb->shade(color, 0.25));
+      grad->add_stop("30%", rgb->shade<string>(0.25));
       grad->add_stop("100%", color);
       // c=='r' ? grad->add_stop("30%", shade(color, 0.25)) 
       //        : grad->add_stop("30%", color);
@@ -105,8 +106,8 @@ void VizPaint::print_plot (VizParam& p) {
       [&](const string& color, char c, const string& inId) {
       auto grad = make_unique<LinearGradient>();
       grad->id = "grad"+inId;
-      auto rgb = make_unique<RGB>();
-      grad->add_stop("30%", rgb->tone(color, 0.4));
+      auto rgb = make_unique<RGB>(color);
+      grad->add_stop("30%", rgb->tone<string>(0.4));
       grad->add_stop("100%", color);
       // c=='r' ? grad->add_stop("30%", tone(color, 0.4)) 
       //        : grad->add_stop("30%", color);
@@ -124,11 +125,11 @@ void VizPaint::print_plot (VizParam& p) {
 
     const auto plot_main_ref = [&]() {
       if (e->begRef != DBLANK) {
-        auto rgb = make_unique<RGB>();
         auto cylinder = make_unique<Cylinder>();
         plot_main(cylinder);
         cylinder->height = get_point(e->endRef-e->begRef);
-        cylinder->stroke = rgb->shade(rgb_color(e->start));
+        auto rgb = make_unique<RGB>(rgb_color(e->start));
+        cylinder->stroke = rgb->shade<string>();
         cylinder->x = cx;
         cylinder->y = cy + get_point(e->begRef);
         cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
@@ -140,34 +141,35 @@ void VizPaint::print_plot (VizParam& p) {
           cylinder->id += "NRC";
           cylinder->fill = make_gradient_periph(
             nrc_color(e->entRef, p.colorMode), 'r', cylinder->id);
-          cylinder->stroke = rgb->shade(nrc_color(e->entRef, p.colorMode),0.96);
+          rgb = make_unique<RGB>(nrc_color(e->entRef, p.colorMode));
+          cylinder->stroke = rgb->shade<string>(0.96);
           cylinder->plot_periph(fPlot, 'r');
         }
         if (p.showRedun) {
           cylinder->id += "Redun";
           cylinder->fill = make_gradient_periph(
             redun_color(e->selfRef, p.colorMode), 'r', cylinder->id);
-          cylinder->stroke =
-            rgb->shade(redun_color(e->selfRef, p.colorMode), 0.95);
+          rgb = make_unique<RGB>(redun_color(e->selfRef, p.colorMode));
+          cylinder->stroke = rgb->shade<string>(0.95);
           cylinder->plot_periph(fPlot, 'r', u8(p.showNRC));
         }
       }
     };
 
     const auto plot_main_tar = [&](bool inverted) {
-      auto rgb = make_unique<RGB>();
       auto cylinder = make_unique<Cylinder>();
       plot_main(cylinder);
       cylinder->height = get_point(abs(e->begTar-e->endTar));
       cylinder->x = cx + width + space;
       cylinder->y = !inverted ?cy+get_point(e->begTar) :cy+get_point(e->endTar);
       cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
+      auto rgb = make_unique<RGB>(rgb_color(e->start));
       if (e->begRef == DBLANK) {
         cylinder->fill = "black";
         cylinder->stroke = "white";
       } else {
         cylinder->fill = make_gradient(rgb_color(e->start), 't', cylinder->id);
-        cylinder->stroke = rgb->shade(rgb_color(e->start));
+        cylinder->stroke = rgb->shade<string>();
       }
 
       if (!inverted) {
@@ -183,7 +185,8 @@ void VizPaint::print_plot (VizParam& p) {
         cylinder->fill = make_gradient_periph(
           nrc_color(e->entTar, p.colorMode), 'r', cylinder->id);
         // cylinder->fill = nrc_color(e->entTar, p.colorMode);
-        cylinder->stroke = rgb->shade(nrc_color(e->entTar, p.colorMode), 0.96);
+        rgb = make_unique<RGB>(nrc_color(e->entTar, p.colorMode));
+        cylinder->stroke = rgb->shade<string>(0.96);
         cylinder->plot_periph(fPlot, 't');
       }
       if (p.showRedun) {
@@ -191,8 +194,8 @@ void VizPaint::print_plot (VizParam& p) {
         cylinder->id += "Redun";
         cylinder->fill = make_gradient_periph(
           redun_color(e->selfTar, p.colorMode), 'r', cylinder->id);
-        cylinder->stroke = 
-          rgb->shade(redun_color(e->selfTar, p.colorMode), 0.95);
+        rgb = make_unique<RGB>(redun_color(e->selfTar, p.colorMode));
+        cylinder->stroke = rgb->shade<string>(0.95);
         cylinder->plot_periph(fPlot, 't', u8(p.showNRC));
       }
     };
