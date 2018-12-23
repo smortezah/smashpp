@@ -14,7 +14,7 @@ static constexpr u8   MAX_LINK        {5};
 static constexpr u8   COLOR           {0};
 static constexpr u8   MIN_COLOR       {0};
 static constexpr u8   MAX_COLOR       {2};
-static constexpr auto OPAC            {0.8f};
+static constexpr auto OPAC            {0.9f};
 static constexpr auto MIN_OPAC        {0.0f};
 static constexpr auto MAX_OPAC        {1.0f};
 static constexpr u32  WDTH            {21};

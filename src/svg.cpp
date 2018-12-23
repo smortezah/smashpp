@@ -33,6 +33,22 @@ string SVG::end_empty_elem () const {
   return "/>\n";
 }
 
+void SVG::print_header (ofstream& f) const {
+  f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+    << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
+    << begin_elem("svg")
+    << attrib("xmlns", "http://www.w3.org/2000/svg")
+    << attrib("xmlns:xlink", "http://www.w3.org/1999/xlink")
+    << attrib("width", width)
+    << attrib("height", height)
+    << mid_elem();
+}
+
+void SVG::print_tailer (ofstream& f) const {
+  f << "</svg>";
+  // f << "</g>\n</svg>";
+}
+
 void Stop::plot (ofstream& f) const {
   f << begin_elem("stop")
     << attrib("offset", offset)
