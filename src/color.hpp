@@ -8,18 +8,18 @@ class RGB;
 class HSV;
 
 // Global functions
-bool is_hex (const string&);
-string to_hex (const RGB&);
-RGB to_rgb (const string&);
-HSV to_hsv (const RGB&);
-RGB alpha_blend (const RGB&, const RGB&, float);
-string alpha_blend (const string&, const RGB&, float);
-RGB shade (const RGB&, float=0.5);       // Mix whith black
-string shade (const string&, float=0.5);
-RGB tint (const RGB&, float=0.5);        // Mix with white
-string tint (const string&, float=0.5);
-RGB tone (const RGB&, float=0.5);        // Mix with grey
-string tone (const string&, float=0.5);
+auto is_hex (const string&) -> bool;
+auto to_hex (const RGB&) -> string;
+auto to_rgb (const string&) -> RGB;
+auto to_hsv (const RGB&) -> HSV;
+auto alpha_blend (const RGB&, const RGB&, float) -> RGB;
+auto alpha_blend (const string&, const RGB&, float) -> string;
+auto shade (const RGB&, float=0.5) -> RGB;        // Mix whith black
+auto shade (const string&, float=0.5) -> string;
+auto tint (const RGB&, float=0.5) -> RGB;         // Mix with white
+auto tint (const string&, float=0.5) -> string;
+auto tone (const RGB&, float=0.5) -> RGB;         // Mix with grey
+auto tone (const string&, float=0.5) -> string;
 
 class Color {
  public:
