@@ -22,8 +22,8 @@ add_executable(
            src/naming.hpp
            src/mdlpar.hpp
            src/string.hpp
+           src/svg.hpp
            src/color.hpp
-          #  src/vizpaint.hpp
            src/fcm.cpp
            src/tbl64.cpp
            src/tbl32.cpp

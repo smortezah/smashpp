@@ -22,7 +22,9 @@ void VizPaint::print_plot (VizParam& p) {
   auto Paint_Extra = PAINT_EXTRA;
   if (p.showAnnot)  Paint_Extra+=30;
 
-  print_header(fPlot, PAINT_CX+width+space+width+PAINT_CX, maxSize+Paint_Extra);
+  svg->width = PAINT_CX + width + space + width + PAINT_CX;
+  svg->height = maxSize + Paint_Extra;
+  print_header(fPlot);
 
   auto poly = make_unique<Polygon>();
   auto text = make_unique<Text>();
@@ -88,9 +90,7 @@ void VizPaint::print_plot (VizParam& p) {
       [&](const string& color, char c, const string& inId) {
       auto grad = make_unique<LinearGradient>();
       grad->id = "grad"+inId;
-      auto rgb = make_unique<RGB>(color);
-      // grad->add_stop("30%", rgb->shade(color, 0.25));
-      grad->add_stop("30%", rgb->shade<string>(0.25));
+      grad->add_stop("30%", shade(color, 0.25));
       grad->add_stop("100%", color);
       // c=='r' ? grad->add_stop("30%", shade(color, 0.25)) 
       //        : grad->add_stop("30%", color);
@@ -104,8 +104,7 @@ void VizPaint::print_plot (VizParam& p) {
       [&](const string& color, char c, const string& inId) {
       auto grad = make_unique<LinearGradient>();
       grad->id = "grad"+inId;
-      auto rgb = make_unique<RGB>(color);
-      grad->add_stop("30%", rgb->tone<string>(0.4));
+      grad->add_stop("30%", tone(color, 0.4));
       grad->add_stop("100%", color);
       // c=='r' ? grad->add_stop("30%", tone(color, 0.4)) 
       //        : grad->add_stop("30%", color);
@@ -126,8 +125,7 @@ void VizPaint::print_plot (VizParam& p) {
         auto cylinder = make_unique<Cylinder>();
         plot_main(cylinder);
         cylinder->height = get_point(e->endRef-e->begRef);
-        auto rgb = make_unique<RGB>(rgb_color(e->start));
-        cylinder->stroke = rgb->shade<string>();
+        cylinder->stroke = shade(rgb_color(e->start));
         cylinder->x = cx;
         cylinder->y = cy + get_point(e->begRef);
         cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
@@ -139,16 +137,14 @@ void VizPaint::print_plot (VizParam& p) {
           cylinder->id += "NRC";
           cylinder->fill = make_gradient_periph(
             nrc_color(e->entRef, p.colorMode), 'r', cylinder->id);
-          rgb = make_unique<RGB>(nrc_color(e->entRef, p.colorMode));
-          cylinder->stroke = rgb->shade<string>(0.96);
+          cylinder->stroke = shade(nrc_color(e->entRef, p.colorMode), 0.96);
           cylinder->plot_periph(fPlot, 'r');
         }
         if (p.showRedun) {
           cylinder->id += "Redun";
           cylinder->fill = make_gradient_periph(
             redun_color(e->selfRef, p.colorMode), 'r', cylinder->id);
-          rgb = make_unique<RGB>(redun_color(e->selfRef, p.colorMode));
-          cylinder->stroke = rgb->shade<string>(0.95);
+          cylinder->stroke = shade(redun_color(e->selfRef, p.colorMode), 0.95);
           cylinder->plot_periph(fPlot, 'r', u8(p.showNRC));
         }
       }
@@ -161,13 +157,12 @@ void VizPaint::print_plot (VizParam& p) {
       cylinder->x = cx + width + space;
       cylinder->y = !inverted ?cy+get_point(e->begTar) :cy+get_point(e->endTar);
       cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
-      auto rgb = make_unique<RGB>(rgb_color(e->start));
       if (e->begRef == DBLANK) {
         cylinder->fill = "black";
         cylinder->stroke = "white";
       } else {
         cylinder->fill = make_gradient(rgb_color(e->start), 't', cylinder->id);
-        cylinder->stroke = rgb->shade<string>();
+        cylinder->stroke = shade(rgb_color(e->start));
       }
 
       if (!inverted) {
@@ -183,8 +178,7 @@ void VizPaint::print_plot (VizParam& p) {
         cylinder->fill = make_gradient_periph(
           nrc_color(e->entTar, p.colorMode), 'r', cylinder->id);
         // cylinder->fill = nrc_color(e->entTar, p.colorMode);
-        rgb = make_unique<RGB>(nrc_color(e->entTar, p.colorMode));
-        cylinder->stroke = rgb->shade<string>(0.96);
+        cylinder->stroke = shade(nrc_color(e->entTar, p.colorMode), 0.96);
         cylinder->plot_periph(fPlot, 't');
       }
       if (p.showRedun) {
@@ -192,8 +186,7 @@ void VizPaint::print_plot (VizParam& p) {
         cylinder->id += "Redun";
         cylinder->fill = make_gradient_periph(
           redun_color(e->selfTar, p.colorMode), 'r', cylinder->id);
-        rgb = make_unique<RGB>(redun_color(e->selfTar, p.colorMode));
-        cylinder->stroke = rgb->shade<string>(0.95);
+        cylinder->stroke = shade(redun_color(e->selfTar, p.colorMode), 0.95);
         cylinder->plot_periph(fPlot, 't', u8(p.showNRC));
       }
     };
@@ -208,10 +201,11 @@ void VizPaint::print_plot (VizParam& p) {
           case 1:
             poly->stroke = poly->fill = rgb_color(e->start);
             poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
-            poly->add_point(cx+width,       cy+get_point(e->begRef));
-            poly->add_point(cx+width,       cy+get_point(e->endRef));
-            poly->add_point(cx+width+space, cy+get_point(e->endTar));
-            poly->add_point(cx+width+space, cy+get_point(e->begTar));
+            poly->points 
+              = poly->point(cx+width,       cy+get_point(e->begRef)) +
+                poly->point(cx+width,       cy+get_point(e->endRef)) +
+                poly->point(cx+width+space, cy+get_point(e->endTar)) +
+                poly->point(cx+width+space, cy+get_point(e->begTar));
             poly->plot(fPlot);
             break;
           case 2:
@@ -272,10 +266,11 @@ void VizPaint::print_plot (VizParam& p) {
           case 1:
             poly->stroke = poly->fill = rgb_color(e->start);
             poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
-            poly->add_point(cx+width,       cy+get_point(e->begRef));
-            poly->add_point(cx+width,       cy+get_point(e->endRef));
-            poly->add_point(cx+width+space, cy+get_point(e->endTar));
-            poly->add_point(cx+width+space, cy+get_point(e->begTar));
+            poly->points
+              = poly->point(cx+width,       cy+get_point(e->begRef)) +
+                poly->point(cx+width,       cy+get_point(e->endRef)) +
+                poly->point(cx+width+space, cy+get_point(e->endTar)) +
+                poly->point(cx+width+space, cy+get_point(e->begTar));
             poly->plot(fPlot);
             break;
           case 2:
@@ -375,7 +370,7 @@ void VizPaint::print_plot (VizParam& p) {
   if (p.showAnnot)
     plot_annot(fPlot, max(n_refBases,n_tarBases), p.showNRC, p.showRedun);
 
-  svg->print_tailer(fPlot);
+  print_tailer(fPlot);
 
   // Log
   cerr << "Plotting finished.\n";
@@ -518,7 +513,7 @@ u64 refSize_, u64 tarSize_) {
 string VizPaint::rgb_color (u32 start) const {
   const auto hue = static_cast<u8>(start * mult);
   HSV hsv (hue);
-  RGB rgb {hsv_to_rgb(hsv)};
+  RGB rgb {to_rgb(hsv)};
   return to_hex(rgb);
 }
 
@@ -544,44 +539,35 @@ inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
   return nrc_color(entropy, colorMode);
 }
 
-inline void VizPaint::print_header (ofstream& f, double w, double h) {
-  // // Header
-  // f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-  //   << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
-  //   << svg->begin_elem("svg")
-  //   << svg->attrib("xmlns", "http://www.w3.org/2000/svg")
-  //   << svg->attrib("xmlns:xlink", "http://www.w3.org/1999/xlink")
-  //   << svg->attrib("width", w)
-  //   << svg->attrib("height", h)
-  //   << svg->mid_elem();
-  svg->width = w;
-  svg->height = h;
+inline void VizPaint::print_header (ofstream& f) const {
   svg->print_header(f);
-  
+
   // Patterns
-  auto defs = make_unique<Defs>();
   auto pattern = make_unique<Pattern>();
-  auto path = make_unique<Path>();
-  defs->id = "ffff";
   pattern->id = "Wavy";
   pattern->patternUnits = "userSpaceOnUse";
   pattern->x = -width/2;
   pattern->y = 0;
   pattern->width = width;
   pattern->height = 7;
-  path->d = "m0,0 a "+to_string(pattern->width/2)+","+to_string(ry)+
-    " 0 0,0 "+to_string(width)+",0 ";
+
+  auto path = make_unique<Path>();
+  path->d = path->m(0, 0) + path->a(pattern->width/2, ry, 0, 0, 0, width, 0);
   path->stroke = "black";
   path->fill = "transparent";
   // pattern->width = width;
   // pattern->height = 49;
   // path->d = "M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z";
   // path->fill = "black";
-  make_pattern(f, defs, pattern, path);
+  make_pattern(f, pattern, path);
 
   pattern->id = "WavyWhite";
   path->stroke = "white";
-  make_pattern(f, defs, pattern, path);
+  make_pattern(f, pattern, path);
+}
+
+inline void VizPaint::print_tailer (ofstream& f) const {
+  svg->print_tailer(f);
 }
 
 template <typename Value>
@@ -738,18 +724,18 @@ bool showRedun) const {
   path->stroke_dasharray = "8 3";
   
   if (lastPos.size() == 1) {
-    path->d = "M "+to_string(X2)+","+to_string(cy+get_point(lastPos[0]))+" "+
-      "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+    path->d = path->M(X2, cy+get_point(lastPos[0])) + path->v(vertSize) +
+              path->h(-horizSize);
     path->plot(f);
   }
   else if (lastPos.size() == 2) {
-    path->d = "M "+to_string(X1)+","+to_string(cy+get_point(lastPos[0]))+" "+
-      "v "+to_string(vertSize)+" h "+to_string(horizSize);
+    path->d = path->M(X1, cy+get_point(lastPos[0])) + path->v(vertSize) +
+              path->h(horizSize);
     path->plot(f);
 
     vertSize = Y - cy - get_point(lastPos[1]);
-    path->d = "M "+to_string(X2)+","+to_string(cy+get_point(lastPos[1]))+" "+
-      "v "+to_string(vertSize)+" h "+to_string(-horizSize);
+    path->d = path->M(X2, cy+get_point(lastPos[1])) + path->v(vertSize) +
+              path->h(-horizSize);
     path->plot(f);
   }
 
@@ -782,20 +768,20 @@ bool showRedun) const {
     if (lastPos.size() == 1) {
       vertSize   = redunY - cy - get_point(lastPos[0]);
       horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
-      path->d = "M "+to_string(redunX2)+","+to_string(cy+get_point(lastPos[0]))
-        +" "+"v "+to_string(vertSize)+" h "+to_string(-horizSize);
+      path->d = path->M(redunX2, cy+get_point(lastPos[0])) + 
+                path->v(vertSize) + path->h(-horizSize);
       path->plot(f);
     }
     else if (lastPos.size() == 2) {
       vertSize   = redunY - cy - get_point(lastPos[0]);
       horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
-      path->d = "M "+to_string(redunX1)+","+to_string(cy+get_point(lastPos[0]))
-        +" "+"v "+to_string(vertSize)+" h "+to_string(horizSize);
+      path->d = path->M(redunX1, cy+get_point(lastPos[0])) + 
+                path->v(vertSize) + path->h(horizSize);
       path->plot(f);
 
       vertSize = redunY - cy - get_point(lastPos[1]);
-      path->d = "M "+to_string(redunX2)+","+to_string(cy+get_point(lastPos[1]))
-        +" "+"v "+to_string(vertSize)+" h "+to_string(-horizSize);
+      path->d = path->M(redunX2, cy+get_point(lastPos[1])) + 
+                path->v(vertSize) + path->h(-horizSize);
       path->plot(f);
     }
 
