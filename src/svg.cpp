@@ -107,23 +107,79 @@ void Text::plot (ofstream& f) const {
   if (dy!=0.0f)  f << attrib("dy", dy, true);
   f << attrib("dominant-baseline", dominant_baseline);
   if (!transform.empty())    f << attrib("transform", transform);
-  f << attrib("font-size", to_string(fontSize), false, "px");
+  f << attrib("font-size", to_string(font_size), false, "px");
   if (!font_weight.empty())  f << attrib("font-weight", font_weight);
   f << attrib("font-family", font_family);
   if (!fill.empty() && fill!="black")  f << attrib("fill", fill);
   f << attrib("text-anchor", text_anchor)
     << attrib("text-align", text_align)
-    << attrib("line-height", line_height)
-    << mid_elem()
+    << attrib("line-height", line_height);
+  if (!filter.empty())  f << attrib("filter", filter);
+  f << mid_elem()
     << Label
     << end_elem("text");
 }
 
 void Text::print_title (ofstream& f) {
+  // text_anchor = "middle";
+  // font_size = 12;
+  // // font_weight = "bold";
+  // plot(f);
+
+
+f << begin_elem("defs")
+<< mid_elem()
+<< begin_elem("filter")
+<< attrib("id", "shadow")
+<< attrib("x", "-20%")
+<< attrib("y", "-20%")
+<< attrib("width", "140%")
+<< attrib("height", "140%")
+<< mid_elem()
+<< begin_elem("feGaussianBlur")
+<< attrib("stdDeviation", "4 4")
+<< attrib("result", "shadow")
+<< end_empty_elem()
+<< begin_elem("feOffset")
+<< attrib("dx", "0")
+<< attrib("dy", "0")
+<< end_empty_elem()
+<< end_elem("filter")
+<< end_elem("defs");
+
+// f<< begin_elem("text")
+// << attrib("filter", "url(#shadow)")
+// << attrib("fill", "grey")
+// << attrib("text-anchor", "middle")
+// << attrib("font-size", 12)
+// << attrib("x", x)
+// << attrib("y", y)
+// << mid_elem()
+// << Label
+// << end_elem("text");
+
+  filter = "url(#shadow)";
+  fill = "#cecb1b";
   text_anchor = "middle";
-  fontSize = 12;
-  // font_weight = "bold";
+  font_size = 12;
   plot(f);
+
+  // Text is written on top of blurred filter
+  filter.clear();  // Essential
+  fill = "black";
+  plot(f);
+
+
+
+// f<< begin_elem("text")
+// << attrib("fill", "black")
+// << attrib("text-anchor", "middle")
+// << attrib("font-size", 12)
+// << attrib("x", x)
+// << attrib("y", y)
+// << mid_elem()
+// << Label
+// << end_elem("text");
 }
 
 void Text::print_pos_ref (ofstream& f, char c) {
@@ -135,7 +191,7 @@ void Text::print_pos_ref (ofstream& f, char c) {
     case 'e':  dominant_baseline = "baseline";  break;  // end
     default:                                    break;
   }
-  fontSize = 9;
+  font_size = 9;
   plot(f);
 }
 
@@ -148,7 +204,7 @@ void Text::print_pos_tar (ofstream& f, char c) {
     case 'e':  dominant_baseline = "baseline";  break;  // end
     default:                                    break;
   }
-  fontSize = 9;
+  font_size = 9;
   plot(f);
 }
 
