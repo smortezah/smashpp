@@ -599,6 +599,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
     text->dy = -shiftY;
     text->dominant_baseline = "text-after-edge";
     text->Label = "RELATIVE REDUNDANCY";
+    // text->plot_shadow(f);
     text->plot(f);
   }
   else if (!p.showNRC && p.showRedun) {
@@ -612,6 +613,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
     text->dy = -shiftY;
     text->dominant_baseline = "text-after-edge";
     text->Label = "REDUNDANCY";
+    // text->plot_shadow(f);
     text->plot(f);
   }
   else if (p.showNRC && p.showRedun) {
@@ -625,6 +627,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
     text->dy = -shiftY;
     text->dominant_baseline = "text-after-edge";
     text->Label = "RELATIVE REDUNDANCY";
+    // text->plot_shadow(f);
     text->plot(f);
 
     // Redundancy
@@ -633,6 +636,7 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
     text->dy = shiftY;
     text->dominant_baseline = "text-before-edge";
     text->Label = "REDUNDANCY";
+    // text->plot_shadow(f);
     text->plot(f);
   }
 
@@ -726,16 +730,19 @@ bool showRedun) const {
   if (lastPos.size() == 1) {
     path->d = path->M(X2, cy+get_point(lastPos[0])) + path->v(vertSize) +
               path->h(-horizSize);
+    // path->plot_shadow(f);
     path->plot(f);
   }
   else if (lastPos.size() == 2) {
     path->d = path->M(X1, cy+get_point(lastPos[0])) + path->v(vertSize) +
               path->h(horizSize);
+    // path->plot_shadow(f);
     path->plot(f);
 
     vertSize = Y - cy - get_point(lastPos[1]);
     path->d = path->M(X2, cy+get_point(lastPos[1])) + path->v(vertSize) +
               path->h(-horizSize);
+    // path->plot_shadow(f);
     path->plot(f);
   }
 
@@ -746,18 +753,21 @@ bool showRedun) const {
     text->x = (X1 + X2) / 2;
     text->y = Y;
     text->Label  = "Relative Redundancy";
+    // text->plot_shadow(f);
     text->plot(f);
   }
   else if (!showNRC && showRedun) {
     text->x = (X1 + X2) / 2;
     text->y = Y;
     text->Label  = "Redundancy";
+    // text->plot_shadow(f);
     text->plot(f);
   }
   else if (showNRC && showRedun) {
     text->x = (X1 + X2) / 2;
     text->y = Y;
     text->Label  = "Relative Redundancy";
+    // text->plot_shadow(f);
     text->plot(f);
 
     const auto redunX1 = cx - 2*HORIZ_TUNE - 1.5*width/HORIZ_RATIO;
@@ -770,6 +780,7 @@ bool showRedun) const {
       horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
       path->d = path->M(redunX2, cy+get_point(lastPos[0])) + 
                 path->v(vertSize) + path->h(-horizSize);
+      // path->plot_shadow(f);
       path->plot(f);
     }
     else if (lastPos.size() == 2) {
@@ -777,17 +788,20 @@ bool showRedun) const {
       horizSize += HORIZ_TUNE + width/HORIZ_RATIO + 15;
       path->d = path->M(redunX1, cy+get_point(lastPos[0])) + 
                 path->v(vertSize) + path->h(horizSize);
+      // path->plot_shadow(f);
       path->plot(f);
 
       vertSize = redunY - cy - get_point(lastPos[1]);
       path->d = path->M(redunX2, cy+get_point(lastPos[1])) + 
                 path->v(vertSize) + path->h(-horizSize);
+      // path->plot_shadow(f);
       path->plot(f);
     }
 
     text->x = (redunX1 + redunX2) / 2;
     text->y = redunY;
     text->Label = "Redundancy";
+    // text->plot_shadow(f);
     text->plot(f);
   }
 }
