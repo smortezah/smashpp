@@ -14,6 +14,13 @@
 #include "vizdef.hpp"
 
 namespace smashpp {
+//todo
+// template <typename Iterator>
+// string get_arg (Iterator& iter, const string& shortName, const string& longName) {
+//   if (*iter=="-"+shortName || *iter=="--"+longName)
+//     return *++iter;
+// }
+
 class Param {  // Parameters
  public:
   string      ref, tar, seq;
@@ -435,6 +442,7 @@ inline void VizParam::parse (int argc, char**& argv) {
   vector<string> vArgs;    vArgs.reserve(static_cast<u64>(argc));
   for (int i=0; i!=argc; ++i)
     vArgs.emplace_back(static_cast<string>(argv[i]));
+
 
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
     if ((*i=="-o" || *i=="--out") && i+1!=vArgs.end())

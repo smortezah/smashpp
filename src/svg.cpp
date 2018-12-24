@@ -122,6 +122,7 @@ void Text::plot (ofstream& f) const {
 
 void Text::print_title (ofstream& f) {
   text_anchor = "middle";
+  font_family.clear();
   font_size = 12;
   // plot_shadow(f);
   font_weight="bold";
