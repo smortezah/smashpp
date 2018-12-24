@@ -436,13 +436,25 @@ inline string Param::print_filter_scale () const {
   }
 }
 
+//todo
+// inline void get_arg (vector<string>::const_iterator iter, const string& shortName, const string& longName) {
+//   const auto curr = *iter;
+//   const auto next = *(iter + 1);
+//   if (next[0] == '-') {
+//     if (curr[1]=='-')  return iter->substr(longName.size()+2);
+//     else                return iter->substr(shortName.size()+1);
+//   } 
+//   else {
+//     return *(iter+1);
+//   }
+// }
+
 inline void VizParam::parse (int argc, char**& argv) {
   if (argc < 3) { help();  throw EXIT_SUCCESS; }
 
   vector<string> vArgs;    vArgs.reserve(static_cast<u64>(argc));
   for (int i=0; i!=argc; ++i)
     vArgs.emplace_back(static_cast<string>(argv[i]));
-
 
   for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
     if ((*i=="-o" || *i=="--out") && i+1!=vArgs.end())
