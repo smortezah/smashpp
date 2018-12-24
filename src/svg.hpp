@@ -52,7 +52,7 @@ class Text : public SVG {
   string dominant_baseline, transform, font_weight, font_family, fill, 
          text_anchor, text_align, line_height;
   u8     font_size;
-  string Label;  // Not in standard
+  string Label;       // Not in standard
 
   Text () : dx(0), dy(0), dominant_baseline("middle"), font_family("Arial"),
     text_anchor("middle"), text_align("start"), line_height("125%%"), 
@@ -61,6 +61,7 @@ class Text : public SVG {
   void print_title (ofstream&);
   void print_pos_ref (ofstream&, char c='\0');
   void print_pos_tar (ofstream&, char c='\0');
+  void plot_shadow (ofstream&, const string& ="grey");
 };
 
 class Line : public SVG {
@@ -84,10 +85,11 @@ class Ellipse : public SVG {
 
 class Path : public SVG {
  public:
-  string id, d, fill, stroke, stroke_lineJoin, stroke_dasharray, transform;
+  string id, d, fill, stroke, stroke_lineJoin, stroke_dasharray, transform,
+         filter;
   float  fill_opacity, stroke_opacity, stroke_width;
 
-  Path () : fill("transparent"), stroke_lineJoin("round"), fill_opacity(OPAC),
+  Path () : fill("transparent"), stroke_lineJoin("round"), filter(""), fill_opacity(OPAC),
     stroke_opacity(1.0f), stroke_width(1.0f) {}
   auto M (float, float)                              const -> string;
   auto m (float, float)                              const -> string;
@@ -110,6 +112,7 @@ class Path : public SVG {
   auto Z ()                                          const -> string;
   auto z ()                                          const -> string;
   void plot (ofstream&) const;
+  void plot_shadow (ofstream&, const string& ="#d0d0ff");
 };
 
 // Not in standard
@@ -162,6 +165,47 @@ class Defs : public SVG {
   void set_tail (ofstream&) const;
 };
 
+// Standard name of SVG element is filter
+class FilterSVG : public SVG {
+ public:
+  string x, y, width, height;
+
+  FilterSVG () : x("0%"), y("0%"), width("100%"), height("100%") {}
+  void set_head (ofstream&) const;
+  void set_tail (ofstream&) const;
+};
+
+class FeGaussianBlur : public SVG {
+ public:
+  string in, stdDeviation, result;
+
+  FeGaussianBlur () : in("SourceAlpha"), stdDeviation("3") {}
+  void plot (ofstream&) const;
+};
+
+class FeOffset : public SVG {
+ public:
+  float dx, dy;
+
+  FeOffset () = default;
+  void plot (ofstream&) const;
+};
+
+class FeMerge : public SVG {
+ public:
+  FeMerge () = default;
+  void set_head (ofstream&) const;
+  void set_tail (ofstream&) const;
+};
+
+class FeMergeNode : public SVG {
+ public:
+  string in;
+
+  FeMergeNode () : in("SourceGraphic") {}
+  void plot (ofstream&) const;
+};
+
 template <typename T>
 void make_pattern (ofstream& file, unique_ptr<Pattern>& pattern, 
 unique_ptr<T>& figBase) {
@@ -182,6 +226,81 @@ unique_ptr<T>& figBase, unique_ptr<Ts...>& fig) {
   fig->plot(file);
   pattern->set_tail(file);
   defs->set_tail(file);
+}
+
+inline string text_shadow (ofstream& file) {
+  auto filter = make_unique<FilterSVG>();
+  filter->id = "textShadow";
+  filter->x = "-20%";
+  filter->y = "-20%";
+  filter->width = "140%";
+  filter->height = "140%";
+  filter->set_head(file);
+
+  auto feGaussianBlur = make_unique<FeGaussianBlur>();
+  feGaussianBlur->stdDeviation = "0.0";
+  feGaussianBlur->result = "textShadow";
+  feGaussianBlur->plot(file);
+
+  auto feOffset = make_unique<FeOffset>();
+  feOffset->dx = 0;
+  feOffset->dy = 0;
+  feOffset->plot(file);
+
+  filter->set_tail(file);
+
+  // // Apply filter on object (text, shape, ...)
+  // auto filter = make_unique<FilterSVG>();
+  // filter->id = "dropShadow";
+  // filter->set_head(file);
+
+  // auto feGaussianBlur = make_unique<FeGaussianBlur>();
+  // feGaussianBlur->in = "SourceAlpha";
+  // feGaussianBlur->stdDeviation = "3";
+  // feGaussianBlur->plot(file);
+
+  // auto feOffset = make_unique<FeOffset>();
+  // feOffset->dx = 2;
+  // feOffset->dy = 4;
+  // feOffset->plot(file);
+
+  // auto feMerge = make_unique<FeMerge>();
+  // feMerge->set_head(file);
+
+  // auto feMergeNode = make_unique<FeMergeNode>();
+  // feMergeNode->plot(file);
+
+  // feMergeNode->in = "SourceGraphic";
+  // feMergeNode->plot(file);
+
+  // feMerge->set_tail(file);
+  // filter->set_tail(file);
+
+  return filter->id;
+}
+
+inline string path_shadow (ofstream& file) {
+  auto filter = make_unique<FilterSVG>();
+  filter->id = "pathShadow";
+  filter->x = "-3%";
+  filter->y = "-3%";
+  filter->width = "106%";
+  filter->height = "106%";
+  filter->set_head(file);
+
+  auto feGaussianBlur = make_unique<FeGaussianBlur>();
+  feGaussianBlur->stdDeviation = "0.5";
+  feGaussianBlur->result = "pathShadow";
+  feGaussianBlur->plot(file);
+
+  auto feOffset = make_unique<FeOffset>();
+  feOffset->dx = 0;
+  feOffset->dy = 0;
+  feOffset->plot(file);
+
+  filter->set_tail(file);
+
+  return filter->id;
 }
 }
 

@@ -114,73 +114,18 @@ void Text::plot (ofstream& f) const {
   f << attrib("text-anchor", text_anchor)
     << attrib("text-align", text_align)
     << attrib("line-height", line_height);
-  if (!filter.empty())  f << attrib("filter", filter);
+  if (!filter.empty())  f << attrib("filter", "url(#"+filter+")");
   f << mid_elem()
     << Label
     << end_elem("text");
 }
 
 void Text::print_title (ofstream& f) {
-  // text_anchor = "middle";
-  // font_size = 12;
-  // // font_weight = "bold";
-  // plot(f);
-
-
-f << begin_elem("defs")
-<< mid_elem()
-<< begin_elem("filter")
-<< attrib("id", "shadow")
-<< attrib("x", "-20%")
-<< attrib("y", "-20%")
-<< attrib("width", "140%")
-<< attrib("height", "140%")
-<< mid_elem()
-<< begin_elem("feGaussianBlur")
-<< attrib("stdDeviation", "5 5")
-<< attrib("result", "shadow")
-<< end_empty_elem()
-<< begin_elem("feOffset")
-<< attrib("dx", "0")
-<< attrib("dy", "0")
-<< end_empty_elem()
-<< end_elem("filter")
-<< end_elem("defs");
-
-// f<< begin_elem("text")
-// << attrib("filter", "url(#shadow)")
-// << attrib("fill", "grey")
-// << attrib("text-anchor", "middle")
-// << attrib("font-size", 12)
-// << attrib("x", x)
-// << attrib("y", y)
-// << mid_elem()
-// << Label
-// << end_elem("text");
-
-  filter = "url(#shadow)";
-  fill = "#cecb1b";
   text_anchor = "middle";
   font_size = 12;
-  font_family = "Impact";
-  plot(f);
-
-  // Text is written on top of blurred filter
-  filter.clear();  // Essential
-  fill = "black";
-  plot(f);
-
-
-
-// f<< begin_elem("text")
-// << attrib("fill", "black")
-// << attrib("text-anchor", "middle")
-// << attrib("font-size", 12)
-// << attrib("x", x)
-// << attrib("y", y)
-// << mid_elem()
-// << Label
-// << end_elem("text");
+  // plot_shadow(f);
+  font_weight="bold";
+  plot(f);  // Text is written on top of shadow
 }
 
 void Text::print_pos_ref (ofstream& f, char c) {
@@ -207,6 +152,17 @@ void Text::print_pos_tar (ofstream& f, char c) {
   }
   font_size = 9;
   plot(f);
+}
+
+void Text::plot_shadow (ofstream& f, const string& shadowFill) {
+  // Filter
+  filter = text_shadow(f);
+  fill = shadowFill;
+  plot(f);
+
+  // Essential
+  filter.clear();
+  fill = "black";
 }
 
 void Line::plot (ofstream& f) const {
@@ -372,8 +328,9 @@ void Path::plot (ofstream& f) const {
   f << begin_elem("path")
     << attrib("id", id)
     << attrib("d", d)
-    << attrib("fill", fill)
-    << attrib("fill-opacity", fill_opacity, true)
+    << attrib("fill", fill);
+  if (!filter.empty())  f << attrib("filter", "url(#"+filter+")");
+  f << attrib("fill-opacity", fill_opacity, true)
     << attrib("stroke", stroke)
     << attrib("stroke-opacity", stroke_opacity, true)
     << attrib("stroke-linejoin", stroke_lineJoin);
@@ -382,6 +339,15 @@ void Path::plot (ofstream& f) const {
   f << attrib("stroke-width", stroke_width, true);
   if (!transform.empty())  f << attrib("transform", transform);
   f << end_empty_elem();
+}
+
+void Path::plot_shadow (ofstream& f, const string& shadowFill) {
+  // Filter
+  filter = path_shadow(f);
+  plot(f);
+
+  // Essential
+  filter.clear();
 }
 
 void Cylinder::plot (ofstream& f) const {
@@ -502,4 +468,47 @@ void Defs::set_head (ofstream& f) const {
 
 void Defs::set_tail (ofstream& f) const {
   f << end_elem("defs");
+}
+
+void FilterSVG::set_head (ofstream& f) const {
+  f << begin_elem("filter")
+    << attrib("id", id)
+    << attrib("x", x)
+    << attrib("y", y)
+    << attrib("width", width)
+    << attrib("height", height)
+    << mid_elem();
+}
+
+void FilterSVG::set_tail (ofstream& f) const {
+  f << end_elem("filter");
+}
+
+void FeGaussianBlur::plot (ofstream& f) const {
+  f << begin_elem("feGaussianBlur")
+    << attrib("stdDeviation", stdDeviation)
+    << attrib("result", result)
+    << end_empty_elem();
+}
+
+void FeOffset::plot (ofstream& f) const {
+  f << begin_elem("feOffset")
+    << attrib("dx", dx, true)
+    << attrib("dy", dy, true)
+    << end_empty_elem();
+}
+
+void FeMerge::set_head (ofstream& f) const {
+  f << begin_elem("feMerge")
+    << mid_elem();
+}
+
+void FeMerge::set_tail (ofstream& f) const {
+  f << end_elem("feMerge");
+}
+
+void FeMergeNode::plot (ofstream& f) const {
+  f << begin_elem("feMergeNode")
+    << attrib("in", in)
+    << end_empty_elem();
 }
