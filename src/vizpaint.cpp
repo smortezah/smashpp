@@ -41,15 +41,15 @@ void VizPaint::print_plot (VizParam& p) {
   rect->height = maxSize + Paint_Extra;
   rect->plot(fPlot);
 
-  // Print titles
-  text->x = cx + width/2;
-  text->y = cy - 15;
-  text->Label  = ref;
-  text->print_title(fPlot);
-  text->x = cx + width + space + width/2;
-  text->y = cy - 15;
-  text->Label  = tar;
-  text->print_title(fPlot);
+  // // Print titles
+  // text->x = cx + width/2;
+  // text->y = cy - 15;
+  // text->Label  = ref;
+  // text->print_title(fPlot);
+  // text->x = cx + width + space + width/2;
+  // text->y = cy - 15;
+  // text->Label  = tar;
+  // text->print_title(fPlot);
 
   // If min is set to default, reset to base max proportion
   if (p.min==0)    p.min=static_cast<u32>(maxSize / 100);
@@ -250,6 +250,8 @@ void VizPaint::print_plot (VizParam& p) {
             line->y2 = cy + get_point(e->endTar);
             line->plot(fPlot);
             break;
+          case 6:
+            break;
           default: break;
           }
           ++n_regular;
@@ -317,6 +319,8 @@ void VizPaint::print_plot (VizParam& p) {
             line->y2 = cy + get_point(e->endTar);
             line->plot(fPlot);
             break;
+          case 6:
+            break;
           default: break;
           }
           ++n_inverse;
@@ -365,7 +369,8 @@ void VizPaint::print_plot (VizParam& p) {
   cylinder->y = cy;
   cylinder->plot(fPlot);
 
-  // Plot legend and annotation
+  // Plot title, legend and annotation
+  plot_title(fPlot, ref, tar);
   plot_legend(fPlot, p);
   if (p.showAnnot)
     plot_annot(fPlot, max(n_refBases,n_tarBases), p.showNRC, p.showRedun);
@@ -469,47 +474,6 @@ u64 refSize_, u64 tarSize_) {
   maxSize = max(refSize, tarSize);
 }
 
-// inline RgbColor VizPaint::hsv_to_rgb (const HsvColor& HSV) const {
-//   RgbColor RGB {};
-//   if (HSV.s==0) { RGB.r = RGB.g = RGB.b = HSV.v;    return RGB; }
-
-//   const auto region    = u8(HSV.h / 43),
-//              remainder = u8((HSV.h - region*43) * 6),
-//              p = u8((HSV.v * (255 - HSV.s)) >> 8),
-//              q = u8((HSV.v * (255 - ((HSV.s*remainder)>>8))) >> 8),
-//              t = u8((HSV.v * (255 - ((HSV.s*(255-remainder))>>8))) >> 8);
-
-//   switch (region) {
-//   case 0:   RGB.r=HSV.v;  RGB.g=t;      RGB.b=p;      break;
-//   case 1:   RGB.r=q;      RGB.g=HSV.v;  RGB.b=p;      break;
-//   case 2:   RGB.r=p;      RGB.g=HSV.v;  RGB.b=t;      break;
-//   case 3:   RGB.r=p;      RGB.g=q;      RGB.b=HSV.v;  break;
-//   case 4:   RGB.r=t;      RGB.g=p;      RGB.b=HSV.v;  break;
-//   default:  RGB.r=HSV.v;  RGB.g=p;      RGB.b=q;      break;
-//   }
-//   return RGB;
-// }
-
-// #ifdef EXTEND
-// inline HsvColor VizPaint::rgb_to_hsv (const RgbColor& RGB) const {
-//   const u8 rgbMin { min({RGB.r, RGB.g, RGB.b}) };
-//   const u8 rgbMax { max({RGB.r, RGB.g, RGB.b}) };
-
-//   HsvColor HSV {};
-//   HSV.v = rgbMax;
-//   if (HSV.v==0) { HSV.h = HSV.s = 0;    return HSV; }
-
-//   HSV.s = u8(255 * u16((rgbMax-rgbMin)/HSV.v));
-//   if (HSV.s==0) { HSV.h = 0;            return HSV; }
-
-//   if      (rgbMax==RGB.r)    HSV.h = u8(43*(RGB.g-RGB.b)/(rgbMax-rgbMin));
-//   else if (rgbMax==RGB.g)    HSV.h = u8(85 + 43*(RGB.b-RGB.r)/(rgbMax-rgbMin));
-//   else                       HSV.h = u8(171 + 43*(RGB.r-RGB.g)/(rgbMax-rgbMin));
-  
-//   return HSV;
-// }
-// #endif
-
 string VizPaint::rgb_color (u32 start) const {
   const auto hue = static_cast<u8>(start * mult);
   HSV hsv (hue);
@@ -573,6 +537,37 @@ inline void VizPaint::print_tailer (ofstream& f) const {
 template <typename Value>
 inline double VizPaint::get_point (Value p) const {
   return 5 * p / static_cast<double>(ratio);
+}
+
+inline void VizPaint::plot_title (ofstream& f, const string& ref, 
+const string& tar) const {
+  const auto H=width/2, V=20.0f;
+  const auto X1 = cx + width/2,
+             X2 = cx + width + space + width/2,
+             Y  = cy;// - ry;
+
+  auto path = make_unique<Path>();
+  path->stroke = "black";
+  path->stroke_dasharray = "8 3";
+  path->d = path->M(X1, Y) + path->v(-V) + path->h(-H);
+  path->plot(f);
+
+  path->d = path->M(X2, Y) + path->v(-V) + path->h(H);
+  path->plot(f);
+
+  auto text = make_unique<Text>();
+  text->font_weight = "bold";
+  text->x = X1 - H - 5;
+  text->y = Y  - V;
+  text->text_anchor = "end";
+  text->Label = ref;
+  text->plot(f);
+
+  text->x = X2 + H + 5;
+  text->y = Y  - V;
+  text->text_anchor = "start";
+  text->Label = tar;
+  text->plot(f);
 }
 
 inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
@@ -713,6 +708,16 @@ u8 colorMode) {
 
 inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight, bool showNRC,
 bool showRedun) const {
+  auto path = make_unique<Path>();
+  path->stroke = "black";
+  path->stroke_dasharray = "8 3";
+
+  // const auto title_h=10, title_v=20;
+
+  // path->d = path->M(cx+width/2, cy) + path->v(-title_v) + path->h(-title_h);
+  // path->plot(f);
+
+
   if (!showNRC && !showRedun)  return;
 
   double horizSize=0.0, vertSize=0.0;
@@ -723,9 +728,9 @@ bool showRedun) const {
                                       : space/5.0;
   vertSize  = Y - cy - get_point(lastPos[0]);
 
-  auto path = make_unique<Path>();
-  path->stroke="black";
-  path->stroke_dasharray = "8 3";
+  // auto path = make_unique<Path>();
+  // path->stroke = "black";
+  // path->stroke_dasharray = "8 3";
   
   if (lastPos.size() == 1) {
     path->d = path->M(X2, cy+get_point(lastPos[0])) + path->v(vertSize) +
