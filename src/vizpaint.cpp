@@ -1242,7 +1242,8 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
       text->Label  = finalLine;
       text->x = CX;
       text->y = cy + get_point(printPos);
-      type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
+      type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
+      // type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
 
       line.clear();
       lastLine.clear();
@@ -1257,7 +1258,8 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
         text->Label  = finalLine;
         text->x = CX;
         text->y = cy + get_point(printPos);
-        type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
+        type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
+        // type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       }
     }
     
@@ -1271,8 +1273,37 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
       text->Label  = finalLine;
       text->x = CX;
       text->y = cy + get_point(printPos);
-      type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
+      type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
+      // type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       break;
     }
   } // for
+}
+
+inline void VizPaint::print_pos_ref (ofstream& f, unique_ptr<Text>& text, 
+char c) {
+  text->text_anchor = "end";
+  text->x -= 5;
+  switch (c) {
+    case 'b':  text->dominant_baseline = "hanging";   break;  // begin
+    case 'm':  text->dominant_baseline = "middle";    break;  // middle
+    case 'e':  text->dominant_baseline = "baseline";  break;  // end
+    default:                                          break;
+  }
+  text->font_size = 9;
+  text->plot(f);
+}
+
+inline void VizPaint::print_pos_tar (ofstream& f, unique_ptr<Text>& text, 
+char c) {
+  text->text_anchor = "start";
+  text->x += 5;
+  switch (c) {
+    case 'b':  text->dominant_baseline = "hanging";   break;  // begin
+    case 'm':  text->dominant_baseline = "middle";    break;  // middle
+    case 'e':  text->dominant_baseline = "baseline";  break;  // end
+    default:                                          break;
+  }
+  text->font_size = 9;
+  text->plot(f);
 }

@@ -120,32 +120,6 @@ void Text::plot (ofstream& f) const {
     << end_elem("text");
 }
 
-void Text::print_pos_ref (ofstream& f, char c) {
-  text_anchor = "end";
-  x = x - 5;
-  switch (c) {
-    case 'b':  dominant_baseline = "hanging";   break;  // begin
-    case 'm':  dominant_baseline = "middle";    break;  // middle
-    case 'e':  dominant_baseline = "baseline";  break;  // end
-    default:                                    break;
-  }
-  font_size = 9;
-  plot(f);
-}
-
-void Text::print_pos_tar (ofstream& f, char c) {
-  text_anchor = "start";
-  x = x + 5;
-  switch (c) {
-    case 'b':  dominant_baseline = "hanging";   break;  // begin
-    case 'm':  dominant_baseline = "middle";    break;  // middle
-    case 'e':  dominant_baseline = "baseline";  break;  // end
-    default:                                    break;
-  }
-  font_size = 9;
-  plot(f);
-}
-
 void Text::plot_shadow (ofstream& f, const string& shadowFill) {
   // Filter
   filter = text_shadow(f);
