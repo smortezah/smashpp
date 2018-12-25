@@ -58,9 +58,8 @@ class Text : public SVG {
     text_anchor("middle"), text_align("start"), line_height("125%%"), 
     font_size(13) {}
   void plot (ofstream&) const;
-  void print_title (ofstream&);
-  void print_pos_ref (ofstream&, char c='\0');
-  void print_pos_tar (ofstream&, char c='\0');
+  void print_pos_ref (ofstream&, char c='\0');//todo move to vizpaint class
+  void print_pos_tar (ofstream&, char c='\0');//todo move to vizpaint class
   void plot_shadow (ofstream&, const string& ="grey");
 };
 

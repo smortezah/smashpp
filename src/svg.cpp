@@ -120,15 +120,6 @@ void Text::plot (ofstream& f) const {
     << end_elem("text");
 }
 
-void Text::print_title (ofstream& f) {
-  text_anchor = "middle";
-  font_family.clear();
-  font_size = 12;
-  // plot_shadow(f);
-  font_weight="bold";
-  plot(f);  // Text is written on top of shadow
-}
-
 void Text::print_pos_ref (ofstream& f, char c) {
   text_anchor = "end";
   x = x - 5;
