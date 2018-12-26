@@ -4,14 +4,13 @@
 #include <stdint.h>
 #define __STDC_FORMAT_MACROS
 #include "def.hpp"
-#define PREC  std::fixed << std::setprecision(2)
 
 namespace smashpp {
+static constexpr u8   PREC_VIZ        {2};  // Precision
 static const     auto IMAGE           {"map.svg"};
 static constexpr u8   LINK            {1};
 static constexpr u8   MIN_LINK        {1};
 static constexpr u8   MAX_LINK        {6};
-// static constexpr u8   MAX_LINK        {5};
 static constexpr u8   COLOR           {0};
 static constexpr u8   MIN_COLOR       {0};
 static constexpr u8   MAX_COLOR       {2};

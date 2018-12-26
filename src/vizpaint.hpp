@@ -67,8 +67,6 @@ class VizPaint {
   void read_pos (ifstream&, vector<Position>&, VizParam&);
   void make_posNode (const vector<Position>&, const VizParam&, string&&);
   void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
-  void print_pos_ref (ofstream&, unique_ptr<Text>&, char c='\0');
-  void print_pos_tar (ofstream&, unique_ptr<Text>&, char c='\0');
 };
 }
 

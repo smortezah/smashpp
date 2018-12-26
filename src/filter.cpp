@@ -245,8 +245,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     jump_lines();
   }
   filtered = sum / seq.size();
-  if (SaveFilter)
-    filF /*<< std::fixed*/ << setprecision(FIL_PREC) << filtered << '\n';
+  if (SaveFilter)  filF << precision(PREC_FIL) << filtered << '\n';
   seg->partition(posF, filtered);
 
   // Next wsize>>1 values
@@ -256,8 +255,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     sum += val;
     ++seg->pos;
     filtered = sum / seq.size();
-    if (SaveFilter)
-      filF /*<< std::fixed*/<< setprecision(FIL_PREC) << filtered << '\n';
+    if (SaveFilter)  filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
     show_progress(++symsNo, totalSize, message);
     jump_lines();
@@ -270,8 +268,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     sum += val - seq[idx];
     ++seg->pos;
     filtered = sum / wsize;
-    if (SaveFilter)
-      filF /*<< std::fixed*/<< setprecision(FIL_PREC) << filtered << '\n';
+    if (SaveFilter)  filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
     seq[idx] = val;
     idx = (idx+1) % wsize;
@@ -285,8 +282,7 @@ inline void Filter::smooth_seg_rect (const Param& p) {
     sum -= seq[idx];
     ++seg->pos;
     filtered = sum / (wsize-i);
-    if (SaveFilter)
-      filF /*<< std::fixed*/<< setprecision(FIL_PREC) << filtered << '\n';
+    if (SaveFilter)  filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
     idx = (idx+1) % wsize;
     show_progress(++symsNo, totalSize, message);
@@ -333,8 +329,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   }
   sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.f);
   filtered = sum / sWeight;
-  if (SaveFilter)
-    filF /*<< std::fixed*/ << setprecision(FIL_PREC) << filtered << '\n';
+  if (SaveFilter)  filF << precision(PREC_FIL) << filtered << '\n';
   seg->partition(posF, filtered);
   show_progress(++symsNo, totalSize, message);
 
@@ -345,8 +340,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
     ++seg->pos;
     sWeight += window[i];
     filtered = sum / sWeight;
-    if (SaveFilter)
-      filF /*<< std::fixed*/<< setprecision(FIL_PREC) << filtered << '\n';
+    if (SaveFilter)  filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
     show_progress(++symsNo, totalSize, message);
     jump_lines();
@@ -361,8 +355,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
            inner_product(winEnd-idx, winEnd,     seqBeg,     0.f));
     ++seg->pos;
     filtered = sum / sWeight;
-    if (SaveFilter)
-      filF /*<< std::fixed*/<< setprecision(FIL_PREC) << filtered << '\n';
+    if (SaveFilter)  filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
     show_progress(++symsNo, totalSize, message);
     jump_lines();
@@ -381,8 +374,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
     ++seg->pos;
     sWeight -= window[wsize-i];
     filtered = sum / sWeight;
-    if (SaveFilter)
-      filF /*<< std::fixed*/<< setprecision(FIL_PREC) << filtered << '\n';
+    if (SaveFilter)  filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
     show_progress(++symsNo, totalSize, message);
   }

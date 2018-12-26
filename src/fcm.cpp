@@ -313,7 +313,7 @@ void FCM::compress (const Param& p) {
     compress_n(p);
 
   cerr << message << "finished. Average entropy="
-       << std::fixed << setprecision(PRF_PREC) << aveEnt << " bps.\n";
+       << fixed_precision(PREC_PRF) << aveEnt << " bps.\n";
 }
 
 template <typename ContIter>
@@ -345,7 +345,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
             pp.config_ir0(c, ctx);
             entr = entropyN;
           }
-          pf /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
+          pf << precision(PREC_PRF) << entr << '\n';
           sumEnt += entr;
           update_ctx_ir0(ctx, &pp);
         }
@@ -360,7 +360,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
             pp.config_ir1(c, ctxIr);
             entr = entropyN;
           }
-          pf /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
+          pf << precision(PREC_PRF) << entr << '\n';
           sumEnt += entr;
           update_ctx_ir1(ctxIr, &pp);
         }
@@ -375,7 +375,7 @@ inline void FCM::compress_1 (const Param& par, ContIter cont) {
             pp.config_ir2(c, ctx, ctxIr);
             entr = entropyN;
           }
-          pf /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
+          pf << precision(PREC_PRF) << entr << '\n';
           sumEnt += entr;
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
@@ -446,7 +446,7 @@ inline void FCM::compress_n (const Param& par) {
         }
 
         const auto ent=entropy(cp->w.begin(),cp->probs.begin(),cp->probs.end());
-        pf /*<< std::fixed*/ << setprecision(PRF_PREC) << ent << '\n';
+        pf << precision(PREC_PRF) << ent << '\n';
         normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
 ////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
         sumEnt += ent;
@@ -593,7 +593,7 @@ void FCM::self_compress (const Param& p, u64 ID) {
     self_compress_n(p, ID);
 
   cerr << message << "finished. Average entropy="
-       << std::fixed << setprecision(PRF_PREC) << selfEnt[ID] << " bps.\n";
+       << fixed_precision(PREC_PRF) << selfEnt[ID] << " bps.\n";
 }
 
 inline void FCM::self_compress_alloc () {
@@ -644,7 +644,7 @@ u64 ID) {
           } else {
             entr = entropyN;
           }
-          // cout /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
+          // cout << precision(PREC_PRF) << entr << '\n';
           sumEnt += entr;
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir0(ctx, &pp);
@@ -658,7 +658,7 @@ u64 ID) {
           } else {
             entr = entropyN;
           }
-          // cout /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
+          // cout << precision(PREC_PRF) << entr << '\n';
           sumEnt += entr;
           (*cont)->update((pp.revNumSym<<pp.shl) | pp.r);
           update_ctx_ir1(ctxIr, &pp);
@@ -672,7 +672,7 @@ u64 ID) {
           } else {
             entr = entropyN;
           }
-          // cout /*<< std::fixed*/ << setprecision(PRF_PREC) << entr << '\n';
+          // cout << precision(PREC_PRF) << entr << '\n';
           sumEnt += entr;
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
@@ -749,7 +749,7 @@ inline void FCM::self_compress_n (const Param& par, u64 ID) {
         }
 
         const auto ent=entropy(cp->w.begin(),cp->probs.begin(),cp->probs.end());
-        // cout /*<< std::fixed*/ << setprecision(PRF_PREC) << ent << '\n';
+        // cout << precision(PREC_PRF) << ent << '\n';
         normalize(cp->w.begin(), cp->wNext.begin(), cp->wNext.end());
 ////        update_weights(cp->w.begin(), cp->probs.begin(), cp->probs.end());
         sumEnt += ent;
@@ -819,7 +819,7 @@ void FCM::aggregate_slf (const Param& p) const {
 
   for (string line; getline(pfOld, line); ++i) {
     pf << line << '\t';
-    if (!p.noRedun)    pf << fixed << setprecision(FIL_PREC) << selfEnt[i];
+    if (!p.noRedun)    pf << fixed_precision(PREC_FIL) << selfEnt[i];
     else               pf << DBLANK;
     pf << '\n';
   }
