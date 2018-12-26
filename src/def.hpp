@@ -58,8 +58,8 @@ static constexpr u8     THRD         {4};         // No. threads
 static constexpr u8     MIN_THRD     {1};
 static constexpr u8     MAX_THRD     {8};
 static constexpr u8     LVL          {0};         // Level
-static constexpr u8     MIN_LVL      {0};  
-static constexpr u8     MAX_LVL      {4};  
+static constexpr u8     MIN_LVL      {0};
+static constexpr u8     MAX_LVL      {5};
 static constexpr u32    SSIZE        {1};         // Min segment size
 static constexpr u32    MIN_SSIZE    {1};
 static constexpr u32    MAX_SSIZE    {0xffffffff};// 2^32 - 1
@@ -189,7 +189,9 @@ static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
   "14,0,0.005,0.95:6,0,0.1,0.95",                                     // Level 2
   "18,0,0.002,0.95/3,0,0.02,0.95:13,0,0.01,0.95:6,0,0.1,0.95",        // Level 3
   "20,0,0.002,0.95/5,0,0.05,0.95:14,0,0.005,0.95/3,0,1,0.95:"
-  "8,0,0.1,0.95:4,0,1,0.95"                                           // Level 4
+  "8,0,0.1,0.95:4,0,1,0.95",                                          // Level 4
+  "20,0,0.002,0.95/10,0,0.01,0.95:14,0,0.005,0.95/5,0,1,0.95:"
+  "8,0,0.1,0.95:4,0,1,0.95"                                           // Level 5
 };
 static const vector<string> REFFREE_LEVEL {
   "14,0,0.05,0.95",                                                   // Level 0
@@ -197,7 +199,9 @@ static const vector<string> REFFREE_LEVEL {
   "14,0,0.05,0.95:6,0,1,0.95",                                        // Level 2
   "18,0,0.05,0.95/3,0,0.1,0.95:13,0,0.5,0.95:6,0,1,0.95",             // Level 3
   "20,0,0.05,0.95/5,0,1,0.95:14,0,0.05,0.95/3,0,0.1,0.95:"
-  "8,0,1,0.95:4,0,1,0.95"                                             // Level 4
+  "8,0,1,0.95:4,0,1,0.95",                                            // Level 4
+  "20,0,0.05,0.95/10,0,0.01,0.95:14,0,0.05,0.95/5,0,1,0.95:"
+  "8,0,1,0.95:4,0,1,0.95"                                             // Level 5
 };
 
 ////template<u32 N>    // Up to 262144=2^18 elements

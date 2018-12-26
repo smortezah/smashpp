@@ -559,7 +559,8 @@ const string& tar) const {
 
   auto text = make_unique<Text>();
   text->font_weight = "bold";
-  text->font_size = 12;
+  text->font_size = 10;
+
   text->x = XLeft - H - 5;
   text->y = Y - V;
   text->text_anchor = "end";
@@ -733,37 +734,37 @@ bool showRedun) const {
       XLeftRelRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
       XRightRelRedun =
         cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRelRedun = cy + get_point(lastPos[0]);
+      YRelRedun = cy + get_point(maxHeight) + V;
 
       if (space > 54) {
         // Right wing
-        path->d = path->M(XRightRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Label
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V;
+        text->y = YRelRedun;
         text->Label = "Relative Redundancy";
         // text->plot_shadow(f);
         text->plot(f);
       }
       else {
         // Right wing
-        path->d = path->M(XRightRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Label
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V - 5;
+        text->y = YRelRedun - 5;
         text->Label = "Relative";
         // text->plot_shadow(f);
         text->plot(f);
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V + 5;
+        text->y = YRelRedun + 5;
         text->Label = "Redundancy";
         // text->plot_shadow(f);
         text->plot(f);
@@ -772,17 +773,17 @@ bool showRedun) const {
     else if (!showNRC && showRedun) {
       XLeftRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
       XRightRedun = cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRedun = cy + get_point(lastPos[0]);
+      YRedun = cy + get_point(maxHeight) + V;
 
       // Right wing
-      path->d = path->M(XRightRedun, YRedun) + path->v(V) + 
-                path->H((XLeftRedun+XRightRedun)/2 + 32);
+      path->d = path->M(XRightRedun, cy+get_point(lastPos[1])) + 
+        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
       // path->plot_shadow(f);
       path->plot(f);
 
       // Label
       text->x = (XLeftRedun + XRightRedun) / 2;
-      text->y = YRedun + V;
+      text->y = YRedun;
       text->Label = "Redundancy";
       // text->plot_shadow(f);
       text->plot(f);
@@ -791,58 +792,58 @@ bool showRedun) const {
       XLeftRelRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
       XRightRelRedun =
         cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRelRedun = cy + get_point(lastPos[0]);
+      YRelRedun = cy + get_point(maxHeight) + V;
 
       // Relative Redundancy
       if (space > 54) {
         // Right wing
-        path->d = path->M(XRightRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) +
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Label
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V;
+        text->y = YRelRedun;
         text->Label = "Relative Redundancy";
         // text->plot_shadow(f);
         text->plot(f);
       }
       else {
         // Right wing
-        path->d = path->M(XRightRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Label
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V - 5;
+        text->y = YRelRedun - 5;
         text->Label = "Relative";
         // text->plot_shadow(f);
         text->plot(f);
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V + 5;
+        text->y = YRelRedun + 5;
         text->Label = "Redundancy";
         // text->plot_shadow(f);
         text->plot(f);
       }
 
       // Redundancy
-      V *= 2;
+      V *= (space > 54) ? 1.75 : 2;
       XLeftRedun = cx - 2*HORIZ_TUNE - 1.5*width/HORIZ_RATIO;
       XRightRedun = cx + 2*width + space + 2*HORIZ_TUNE + 1.5*width/HORIZ_RATIO;
-      YRedun = cy + get_point(lastPos[1]);
+      YRedun = cy + get_point(maxHeight) + V;
 
       // Right wing
-      path->d = path->M(XRightRedun, YRedun) + path->v(V) + 
-                path->H((XLeftRedun+XRightRedun)/2 + 32);
+      path->d = path->M(XRightRedun, cy+get_point(lastPos[1])) + 
+        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
       // path->plot_shadow(f);
       path->plot(f);
 
       // Label
       text->x = (XLeftRedun + XRightRedun) / 2;
-      text->y = YRedun + V;
+      text->y = YRedun;
       text->Label = "Redundancy";
       // text->plot_shadow(f);
       text->plot(f);
@@ -853,49 +854,49 @@ bool showRedun) const {
       XLeftRelRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
       XRightRelRedun =
         cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRelRedun = cy + get_point(lastPos[0]);
+      YRelRedun = cy + get_point(maxHeight) + V;
 
       if (space > 54) {
         // Left wing
-        path->d = path->M(XLeftRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 - 50);
+        path->d = path->M(XLeftRelRedun, cy+get_point(lastPos[0])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 - 50);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Right wing
-        path->d = path->M(XRightRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Label
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V;
+        text->y = YRelRedun;
         text->Label = "Relative Redundancy";
         // text->plot_shadow(f);
         text->plot(f);
       }
       else {
         // Left wing
-        path->d = path->M(XLeftRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 - 32);
+        path->d = path->M(XLeftRelRedun, cy+get_point(lastPos[0])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 - 32);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Right wing
-        path->d = path->M(XRightRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Label
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V - 5;
+        text->y = YRelRedun - 5;
         text->Label = "Relative";
         // text->plot_shadow(f);
         text->plot(f);
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V + 5;
+        text->y = YRelRedun + 5;
         text->Label = "Redundancy";
         // text->plot_shadow(f);
         text->plot(f);
@@ -904,23 +905,23 @@ bool showRedun) const {
     else if (!showNRC && showRedun) {
       XLeftRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
       XRightRedun = cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRedun = cy + get_point(lastPos[0]);
+      YRedun = cy + get_point(maxHeight) + V;
 
       // Left wing
-      path->d = path->M(XLeftRedun, YRedun) + path->v(V) + 
-                path->H((XLeftRedun+XRightRedun)/2 - 32);
+      path->d = path->M(XLeftRedun, cy+get_point(lastPos[0])) + 
+        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 - 32);
       // path->plot_shadow(f);
       path->plot(f);
 
       // Right wing
-      path->d = path->M(XRightRedun, YRedun) + path->v(V) + 
-                path->H((XLeftRedun+XRightRedun)/2 + 32);
+      path->d = path->M(XRightRedun, cy+get_point(lastPos[1])) + 
+        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
       // path->plot_shadow(f);
       path->plot(f);
 
       // Label
       text->x = (XLeftRedun + XRightRedun) / 2;
-      text->y = YRedun + V;
+      text->y = YRedun;
       text->Label = "Redundancy";
       // text->plot_shadow(f);
       text->plot(f);
@@ -929,50 +930,50 @@ bool showRedun) const {
       XLeftRelRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
       XRightRelRedun =
         cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRelRedun = cy + get_point(lastPos[0]);
+      YRelRedun = cy + get_point(maxHeight) + V;
 
       // Relative Redundancy
       if (space > 54) {
         // Left wing
-        path->d = path->M(XLeftRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 - 50);
+        path->d = path->M(XLeftRelRedun, cy+get_point(lastPos[0])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 - 50);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Right wing
-        path->d = path->M(XRightRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) +
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Label
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V;
+        text->y = YRelRedun;
         text->Label = "Relative Redundancy";
         // text->plot_shadow(f);
         text->plot(f);
       }
       else {
         // Left wing
-        path->d = path->M(XLeftRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 - 32);
+        path->d = path->M(XLeftRelRedun, cy+get_point(lastPos[0])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 - 32);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Right wing
-        path->d = path->M(XRightRelRedun, YRelRedun) + path->v(V) + 
-                  path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
+          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
         // path->plot_shadow(f);
         path->plot(f);
 
         // Label
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V - 5;
+        text->y = YRelRedun - 5;
         text->Label = "Relative";
         // text->plot_shadow(f);
         text->plot(f);
         text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + V + 5;
+        text->y = YRelRedun + 5;
         text->Label = "Redundancy";
         // text->plot_shadow(f);
         text->plot(f);
@@ -982,23 +983,23 @@ bool showRedun) const {
       V *= (space > 54) ? 1.75 : 2;
       XLeftRedun = cx - 2*HORIZ_TUNE - 1.5*width/HORIZ_RATIO;
       XRightRedun = cx + 2*width + space + 2*HORIZ_TUNE + 1.5*width/HORIZ_RATIO;
-      YRedun = cy + get_point(lastPos[1]);
+      YRedun = cy + get_point(maxHeight) + V;
 
       // Left wing
-      path->d = path->M(XLeftRedun, YRedun) + path->v(V) + 
-                path->H((XLeftRedun+XRightRedun)/2 - 32);
+      path->d = path->M(XLeftRedun, cy+get_point(lastPos[0])) + 
+        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 - 32);
       // path->plot_shadow(f);
       path->plot(f);
 
       // Right wing
-      path->d = path->M(XRightRedun, YRedun) + path->v(V) + 
-                path->H((XLeftRedun+XRightRedun)/2 + 32);
+      path->d = path->M(XRightRedun, cy+get_point(lastPos[1])) + 
+        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
       // path->plot_shadow(f);
       path->plot(f);
 
       // Label
       text->x = (XLeftRedun + XRightRedun) / 2;
-      text->y = YRedun + V;
+      text->y = YRedun;
       text->Label = "Redundancy";
       // text->plot_shadow(f);
       text->plot(f);

@@ -436,36 +436,6 @@ inline string Param::print_filter_scale () const {
   }
 }
 
-
-// template <typename T>
-// inline string mori (string shortName, string longName, T iter, u8 possibleArg) {
-//   auto curr = *iter;
-//   auto next = *(iter+1);
-
-//   // if(curr.substr(0, shortName.size()+1) == curr ||
-//   // curr.substr(0, longName.size()+2) == curr) {
-//   switch (possibleArg) {
-//   case 0:
-//   // if(curr.substr(0, shortName.size()+1) == curr ||
-//   // curr.substr(0, longName.size()+2) == curr) {
-//     return "ack";
-//   }
-//   case 1:
-//     if (next[0] == '-')
-//       return "nack";
-//     else
-//       return next;
-//     break;
-//   case 2:
-//     return next;
-//     break;
-//   default:
-//     break;
-//   }
-    
-//   // }
-// }
-
 inline void VizParam::parse (int argc, char**& argv) {
   if (argc < 3) { help();  throw EXIT_SUCCESS; }
 
