@@ -159,7 +159,7 @@ fi
 #if [[ $DATASET_REAL -eq 1 ]]; then
 #fi
 
-### Get real dataset
+### Run tests
 if [[ $RUN -eq 1 ]]; then
   ### S
   ./smashpp -r RefS -t TarS -l 3 -w 45
@@ -174,6 +174,7 @@ if [[ $RUN -eq 1 ]]; then
   ./smashpp -r RefXL -t TarXL -l 3 -w 275
   ./smashpp -viz -p 1 -m 20000000 -o XL.svg RefXL-TarXL.pos
   ### Mut
-  ./smashpp -r RefMut -t TarMut -m 700000 -th 1.5 -l 5 -w 5000
+  ./smashpp -r RefMut -t TarMut -th 1.5 -l 5 -w 5000
   ./smashpp -viz -p 1 -b 2 -t 50 -o Mut.svg RefMut-TarMut.pos
+  ./smash -wt 1 -d 1 -w 5000 RefMut TarMut
 fi
