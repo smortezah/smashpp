@@ -6,8 +6,10 @@ using namespace smashpp;
 string SVG::attrib (const string& name, float value, bool precise,
 const string& unit) const {
   stringstream ss;
-  if (precise)  ss << name << "=\"" << PREC << value << unit << "\" ";
-  else          ss << name << "=\"" << value << unit << "\" ";
+  if (precise)  
+    ss << name << "=\"" << fixed_precision(PREC_VIZ) << value << unit << "\" ";
+  else          
+    ss << name << "=\"" << value << unit << "\" ";
   return ss.str();
 }
 string SVG::attrib (const string& name, const string& value, bool precise,
@@ -159,126 +161,150 @@ void Ellipse::plot (ofstream& f) const {
 
 string Path::M (float x, float y) const {
   stringstream ss;
-  ss << "M " << PREC << x << "," << PREC << y << "\n";
+  ss << "M " << fixed_precision(PREC_VIZ) << x << "," 
+             << fixed_precision(PREC_VIZ) << y << "\n";
   return ss.str();
 }
 
 string Path::m (float dx, float dy) const {
   stringstream ss;
-  ss << "m " << PREC << dx << "," << PREC << dy << "\n";
+  ss << "m " << fixed_precision(PREC_VIZ) << dx << "," 
+             << fixed_precision(PREC_VIZ) << dy << "\n";
   return ss.str();
 }
 
 string Path::L (float x, float y) const {
   stringstream ss;
-  ss << "L " << PREC << x << "," << PREC << y << "\n";
+  ss << "L " << fixed_precision(PREC_VIZ) << x << "," 
+             << fixed_precision(PREC_VIZ) << y << "\n";
   return ss.str();
 }
 
 string Path::l (float dx, float dy) const {
   stringstream ss;
-  ss << "l " << PREC << dx << "," << PREC << dy << "\n";
+  ss << "l " << fixed_precision(PREC_VIZ) << dx << "," 
+             << fixed_precision(PREC_VIZ) << dy << "\n";
   return ss.str();
 }
 
 string Path::H (float x) const {
   stringstream ss;
-  ss << "H " << PREC << x << "\n";
+  ss << "H " << fixed_precision(PREC_VIZ) << x << "\n";
   return ss.str();
 }
 
 string Path::h (float dx) const {
   stringstream ss;
-  ss << "h " << PREC << dx << "\n";
+  ss << "h " << fixed_precision(PREC_VIZ) << dx << "\n";
   return ss.str();
 }
 
 string Path::V (float y) const {
   stringstream ss;
-  ss << "V " << PREC << y << "\n";
+  ss << "V " << fixed_precision(PREC_VIZ) << y << "\n";
   return ss.str();
 }
 
 string Path::v (float dy) const {
   stringstream ss;
-  ss << "v " << PREC << dy << "\n";
+  ss << "v " << fixed_precision(PREC_VIZ) << dy << "\n";
   return ss.str();
 }
 
 string Path::C (float x1, float y1, float x2, float y2, float x, float y) const{
   stringstream ss;
-  ss << "C " << PREC << x1 << "," << PREC << y1 << " "
-             << PREC << x2 << "," << PREC << y2 << " "
-             << PREC << x  << "," << PREC << y  << "\n";
+  ss << "C " << fixed_precision(PREC_VIZ) << x1 << "," 
+             << fixed_precision(PREC_VIZ) << y1 << " "
+             << fixed_precision(PREC_VIZ) << x2 << ","
+             << fixed_precision(PREC_VIZ) << y2 << " "
+             << fixed_precision(PREC_VIZ) << x  << ","
+             << fixed_precision(PREC_VIZ) << y  << "\n";
   return ss.str();
 }
 
 string Path::c (float dx1, float dy1, float dx2, float dy2, float dx, float dy) 
 const {
   stringstream ss;
-  ss << "c " << PREC << dx1 << "," << PREC << dy1 << " "
-             << PREC << dx2 << "," << PREC << dy2 << " "
-             << PREC << dx  << "," << PREC << dy  << "\n";
+  ss << "c " << fixed_precision(PREC_VIZ) << dx1 << "," 
+             << fixed_precision(PREC_VIZ) << dy1 << " "
+             << fixed_precision(PREC_VIZ) << dx2 << "," 
+             << fixed_precision(PREC_VIZ) << dy2 << " "
+             << fixed_precision(PREC_VIZ) << dx  << "," 
+             << fixed_precision(PREC_VIZ) << dy  << "\n";
   return ss.str();
 }
 
 string Path::S (float x2, float y2, float x, float y) const {
   stringstream ss;
-  ss << "S " << PREC << x2 << "," << PREC << y2 << " "
-             << PREC << x  << "," << PREC << y  << "\n";
+  ss << "S " << fixed_precision(PREC_VIZ) << x2 << "," 
+             << fixed_precision(PREC_VIZ) << y2 << " "
+             << fixed_precision(PREC_VIZ) << x  << "," 
+             << fixed_precision(PREC_VIZ) << y  << "\n";
   return ss.str();
 }
 
 string Path::s (float dx2, float dy2, float dx, float dy) const {
   stringstream ss;
-  ss << "s " << PREC << dx2 << "," << PREC << dy2 << " "
-             << PREC << dx  << "," << PREC << dy  << "\n";
+  ss << "s " << fixed_precision(PREC_VIZ) << dx2 << ","
+             << fixed_precision(PREC_VIZ) << dy2 << " "
+             << fixed_precision(PREC_VIZ) << dx  << "," 
+             << fixed_precision(PREC_VIZ) << dy  << "\n";
   return ss.str();
 }
 
 string Path::Q (float x1, float y1, float x, float y) const {
   stringstream ss;
-  ss << "Q " << PREC << x1 << "," << PREC << y1 << " "
-             << PREC << x  << "," << PREC << y  << "\n";
+  ss << "Q " << fixed_precision(PREC_VIZ) << x1 << "," 
+             << fixed_precision(PREC_VIZ) << y1 << " "
+             << fixed_precision(PREC_VIZ) << x  << "," 
+             << fixed_precision(PREC_VIZ) << y  << "\n";
   return ss.str();
 }
 
 string Path::q (float dx1, float dy1, float dx, float dy) const {
   stringstream ss;
-  ss << "q " << PREC << dx1 << "," << PREC << dy1 << " "
-             << PREC << dx  << "," << PREC << dy  << "\n";
+  ss << "q " << fixed_precision(PREC_VIZ) << dx1 << ","
+             << fixed_precision(PREC_VIZ) << dy1 << " "
+             << fixed_precision(PREC_VIZ) << dx  << "," 
+             << fixed_precision(PREC_VIZ) << dy  << "\n";
   return ss.str();
 }
 
 string Path::T (float x, float y) const {
   stringstream ss;
-  ss << "T " << PREC << x << "," << PREC << y << "\n";
+  ss << "T " << fixed_precision(PREC_VIZ) << x << "," 
+             << fixed_precision(PREC_VIZ) << y << "\n";
   return ss.str();
 }
 
 string Path::t (float dx, float dy) const {
   stringstream ss;
-  ss << "t " << PREC << dx << "," << PREC << dy << "\n";
+  ss << "t " << fixed_precision(PREC_VIZ) << dx << "," 
+             << fixed_precision(PREC_VIZ) << dy << "\n";
   return ss.str();
 }
 
 string Path::A (float rx, float ry, float angle, u8 large_arc_flag, 
 u8 sweep_flag, float x, float y) const {
   stringstream ss;
-  ss << "A " << PREC << rx << "," << PREC << ry << " "
-             << PREC << angle << " "
+  ss << "A " << fixed_precision(PREC_VIZ) << rx << "," 
+             << fixed_precision(PREC_VIZ) << ry << " "
+             << fixed_precision(PREC_VIZ) << angle << " "
              << u16(large_arc_flag) << "," << u16(sweep_flag) << " "
-             << PREC << x << "," << PREC << y << "\n";
+             << fixed_precision(PREC_VIZ) << x << "," 
+             << fixed_precision(PREC_VIZ) << y << "\n";
   return ss.str();
 }
 
 string Path::a (float rx, float ry, float angle, u8 large_arc_flag, 
 u8 sweep_flag, float dx, float dy) const {
   stringstream ss;
-  ss << "a " << PREC << rx << "," << PREC << ry << " "
-             << PREC << angle << " "
+  ss << "a " << fixed_precision(PREC_VIZ) << rx << "," 
+             << fixed_precision(PREC_VIZ) << ry << " "
+             << fixed_precision(PREC_VIZ) << angle << " "
              << u16(large_arc_flag) << "," << u16(sweep_flag) << " "
-             << PREC << dx << "," << PREC << dy << "\n";
+             << fixed_precision(PREC_VIZ) << dx << "," 
+             << fixed_precision(PREC_VIZ) << dy << "\n";
   return ss.str();
 }
 
@@ -394,7 +420,8 @@ void Rectangle::plot (ofstream& f) const {
 
 string Polygon::point (float x, float y) const {
   stringstream ss;
-  ss << PREC << x << "," << PREC << y << " ";
+  ss << fixed_precision(PREC_VIZ) << x << "," 
+     << fixed_precision(PREC_VIZ) << y << " ";
   return ss.str();
 }
 

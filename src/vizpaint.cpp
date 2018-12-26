@@ -979,7 +979,7 @@ bool showRedun) const {
       }
 
       // Redundancy
-      V *= 2;
+      V *= (space > 54) ? 1.75 : 2;
       XLeftRedun = cx - 2*HORIZ_TUNE - 1.5*width/HORIZ_RATIO;
       XRightRedun = cx + 2*width + space + 2*HORIZ_TUNE + 1.5*width/HORIZ_RATIO;
       YRedun = cy + get_point(lastPos[1]);
@@ -1178,6 +1178,34 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
     }
   };
 
+  const auto print_pos_ref = 
+    [&](ofstream& f, unique_ptr<Text>& text, char c='\0') {
+    text->text_anchor = "end";
+    text->x -= 5;
+    switch (c) {
+      case 'b':  text->dominant_baseline = "hanging";   break;  // begin
+      case 'm':  text->dominant_baseline = "middle";    break;  // middle
+      case 'e':  text->dominant_baseline = "baseline";  break;  // end
+      default:                                          break;
+    }
+    text->font_size = 9;
+    text->plot(f);
+  };
+
+  const auto print_pos_tar =
+    [&](ofstream& f, unique_ptr<Text>& text, char c='\0') {
+    text->text_anchor = "start";
+    text->x += 5;
+    switch (c) {
+      case 'b':  text->dominant_baseline = "hanging";   break;  // begin
+      case 'm':  text->dominant_baseline = "middle";    break;  // middle
+      case 'e':  text->dominant_baseline = "baseline";  break;  // end
+      default:                                          break;
+    }
+    text->font_size = 9;
+    text->plot(f);
+  };
+
   for (auto it=nodes.begin(); it<nodes.end()-1; ++it) {
     if ((it->type=='b' && (it+1)->type=='b') ||
         (it->type=='e' && (it+1)->type=='e')) {
@@ -1278,32 +1306,4 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
       break;
     }
   } // for
-}
-
-inline void VizPaint::print_pos_ref (ofstream& f, unique_ptr<Text>& text, 
-char c) {
-  text->text_anchor = "end";
-  text->x -= 5;
-  switch (c) {
-    case 'b':  text->dominant_baseline = "hanging";   break;  // begin
-    case 'm':  text->dominant_baseline = "middle";    break;  // middle
-    case 'e':  text->dominant_baseline = "baseline";  break;  // end
-    default:                                          break;
-  }
-  text->font_size = 9;
-  text->plot(f);
-}
-
-inline void VizPaint::print_pos_tar (ofstream& f, unique_ptr<Text>& text, 
-char c) {
-  text->text_anchor = "start";
-  text->x += 5;
-  switch (c) {
-    case 'b':  text->dominant_baseline = "hanging";   break;  // begin
-    case 'm':  text->dominant_baseline = "middle";    break;  // middle
-    case 'e':  text->dominant_baseline = "baseline";  break;  // end
-    default:                                          break;
-  }
-  text->font_size = 9;
-  text->plot(f);
 }

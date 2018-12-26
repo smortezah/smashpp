@@ -84,8 +84,8 @@ static constexpr u64    W            {pow2(29ull)};     // Width of CML sketch
 static constexpr u8     D            {5};               // Depth of CML sketch
 static constexpr u32    G            {64};  // Machine word size-univers hash fn
 static constexpr u8     LOG_BASE     {2};   // Logarithmic counting
-static constexpr u8     PRF_PREC     {3};   // Precisions - floats in Inf. prof
-static constexpr u8     FIL_PREC     {3};   // Precisions - floats in filt. file
+static constexpr u8     PREC_PRF     {3};   // Precisions - floats in Inf. prof
+static constexpr u8     PREC_FIL     {3};   // Precisions - floats in filt. file
 static const     string FMT_PRF      {"prf"};   // Format - inf. profile
 static const     string FMT_POS      {"pos"};   // Format - positions file
 static const     string FMT_FIL      {"fil"};   // Format - filtered files

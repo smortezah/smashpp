@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include "def.hpp"
+#include "number.hpp"
 
 namespace smashpp {
 class Segment {

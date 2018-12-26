@@ -3,6 +3,7 @@
 
 #include "par.hpp"
 #include "exception.hpp"
+#include "number.hpp"
 
 namespace smashpp {
 class SVG {

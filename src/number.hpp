@@ -59,6 +59,20 @@ inline static void keep_in_range (MinVal min, Val& val, MaxVal max) {
   if      (val < min)    val = min;
   else if (val > max)    val = max;
 }
+
+template <typename T>
+inline static string precision (T value) {
+  ostringstream oss;
+  oss << std::setprecision(value);
+  return oss.str();
+}
+
+template <typename T>
+inline static string fixed_precision (T value) {
+  ostringstream oss;
+  oss << std::fixed << std::setprecision(value);
+  return oss.str();
+}
 }
 
 #endif //PROJECT_NUMBER_HPP
