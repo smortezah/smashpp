@@ -738,7 +738,7 @@ bool showRedun) const {
 
       if (space > 54) {
         // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
           path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
         // path->plot_shadow(f);
         path->plot(f);
@@ -752,7 +752,7 @@ bool showRedun) const {
       }
       else {
         // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
           path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
         // path->plot_shadow(f);
         path->plot(f);
@@ -776,7 +776,7 @@ bool showRedun) const {
       YRedun = cy + get_point(maxHeight) + V;
 
       // Right wing
-      path->d = path->M(XRightRedun, cy+get_point(lastPos[1])) + 
+      path->d = path->M(XRightRedun, cy+get_point(lastPos[0])) + 
         path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
       // path->plot_shadow(f);
       path->plot(f);
@@ -797,7 +797,7 @@ bool showRedun) const {
       // Relative Redundancy
       if (space > 54) {
         // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) +
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) +
           path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
         // path->plot_shadow(f);
         path->plot(f);
@@ -811,7 +811,7 @@ bool showRedun) const {
       }
       else {
         // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
+        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
           path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
         // path->plot_shadow(f);
         path->plot(f);
@@ -836,7 +836,7 @@ bool showRedun) const {
       YRedun = cy + get_point(maxHeight) + V;
 
       // Right wing
-      path->d = path->M(XRightRedun, cy+get_point(lastPos[1])) + 
+      path->d = path->M(XRightRedun, cy+get_point(lastPos[0])) + 
         path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
       // path->plot_shadow(f);
       path->plot(f);
