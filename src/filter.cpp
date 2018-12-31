@@ -25,8 +25,7 @@ inline void Filter::set_wsize (const Param& p) {
     }
   } 
   else {
-    const auto size = p.wsize/p.sampleStep;
-    wsize = is_odd(size) ? size : size+1;
+    if (!is_odd(wsize))  wsize+=1;
   }
 
   window.resize(wsize);

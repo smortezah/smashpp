@@ -33,7 +33,7 @@ To see the possible options for Smash++, type:
 ```bash
 ./smashpp
 ```
-which provides the following: **UPDATE**
+which provides the following: **UPDATE** <!-- todo -->
 ```text
 NAME
   Smash++ v18.11 - rearrangements finder

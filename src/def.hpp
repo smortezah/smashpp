@@ -69,7 +69,7 @@ static constexpr prc_t  MAX_ENTR_N   {100.0};
 static constexpr char   TAR_ALT_N    {'T'};       // Alter. to Ns in target file
 static constexpr u32    WS           {256};             // Window size -- filter
 static constexpr u32    MIN_WS       {1};
-static constexpr u32    MAX_WS       {100000};
+static constexpr u32    MAX_WS       {0xffffffff};// 2^32 - 1
 static constexpr auto   WT           {WType::HANN};     // Window type -- filter
 static constexpr auto   FS           {FilterScale::L};  // Filt. scale -- filter
 static constexpr float  THRSH        {1.5};             // Threshold   -- filter
