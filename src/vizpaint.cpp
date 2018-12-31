@@ -618,10 +618,10 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
     text->plot(f);
   }
   else if (p.showNRC && p.showRedun) {
-    rect->x = cx - 2 * (HORIZ_TUNE+width/HORIZ_RATIO);
+    rect->x = cx - 2*(HORIZ_TUNE+width/HORIZ_RATIO);
     rect->y = vert;
-    rect->width  = 2*width/HORIZ_RATIO+2*HORIZ_TUNE+width+space+width+
-                   2*width/HORIZ_RATIO+2*HORIZ_TUNE;
+    rect->width  = 2*width/HORIZ_RATIO + 2*HORIZ_TUNE+width+space+width+
+                   2*width/HORIZ_RATIO + 2*HORIZ_TUNE;
 
     text->x = rect->x + rect->width/2;
     text->y = rect->y;
@@ -696,7 +696,8 @@ u8 colorMode) {
   grad->plot(f);
 
   rect->stroke = "black";
-  rect->stroke_width = 0.4;
+  rect->stroke_width = 0.5;
+  rect->rx = rect->ry = 2;
   rect->fill = "url(#grad"+id+")";
   rect->plot(f);
 

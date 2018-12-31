@@ -236,7 +236,7 @@ inline void Param::parse (int argc, char**& argv) {
   manFilterScale = !manThresh;
   manFilterScale = !manWSize;
   
-  keep_in_range(0ull, wsize, min(file_size(ref),file_size(tar)));
+  keep_in_range(1ull, wsize, min(file_size(ref),file_size(tar))/sampleStep);
 
   // Fasta/Fastq to Seq
   auto convert_to_seq = [&](const string& f, const FileType& type) {
