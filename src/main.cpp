@@ -109,7 +109,7 @@ int main (int argc, char* argv[]) {
       VizParam vizpar;
       vizpar.parse(argc, argv);
       auto paint = make_unique<VizPaint>();
-      paint->print_plot(vizpar);
+      paint->plot(vizpar);
     }
     else {
       Param par;
