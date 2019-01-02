@@ -155,8 +155,9 @@ void Ellipse::plot (ofstream& f) const {
     << attrib("fill-opacity", fill_opacity, true)
     << attrib("stroke-opacity", stroke_opacity, true)
     << attrib("stroke", stroke)
-    << attrib("fill", fill)
-    << end_empty_elem();
+    << attrib("fill", fill);
+  if (!transform.empty())  f << attrib("transform", transform);
+  f << end_empty_elem();
 }
 
 string Path::M (float x, float y) const {
@@ -366,10 +367,12 @@ void Cylinder::plot (ofstream& f) const {
   ellipse->cy = y;
   ellipse->rx = width/2 + (stroke_width-ellipse->stroke_width)/2;
   ellipse->ry = ry;
+  ellipse->transform = transform;
   ellipse->plot(f);
 
   ellipse->cy = y + height;
   ellipse->fill = "transparent";
+  ellipse->transform = transform;
   ellipse->plot(f);
 }
 
@@ -387,11 +390,13 @@ void Cylinder::plot_periph (ofstream& f, char refTar, u8 showNRC) {
   const auto mainRy = ry;
 
   if (refTar=='r')
-    x = x - (1+showNRC) * (HORIZ_TUNE + width/HORIZ_RATIO);
+    x = x + width + TITLE_SPACE + VERT_TUNE + 
+        showNRC*(width/VERT_RATIO + VERT_TUNE);
   else
-    x = x + width + HORIZ_TUNE + showNRC * (width/HORIZ_RATIO + HORIZ_TUNE);
+    x = x - (width/VERT_RATIO + TITLE_SPACE + VERT_TUNE + 
+        showNRC*(VERT_TUNE + width/VERT_RATIO));
 
-  width = width/HORIZ_RATIO;
+  width = width/VERT_RATIO;
   stroke_width *= 2;
   ry /= 2;
 

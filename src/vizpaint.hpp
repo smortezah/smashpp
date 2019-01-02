@@ -28,15 +28,15 @@ struct PosNode {
 
 class VizPaint {
  public:
-  float  cx, cy;
+  float  x, y;
   string backColor;
-  float  width, space;
+  float  chromHeight, innerSpace;
   float  refSize, tarSize, maxSize;
   unique_ptr<SVG> svg;
 
-  VizPaint() : cx(PAINT_CX), cy(PAINT_CY), backColor(PAINT_BGCOLOR), 
+  VizPaint() : x(20.0f), y(100.0f), backColor("white"), 
     svg(make_unique<SVG>()), ratio(1), plottable(true), ry(2.0f) {}
-  void print_plot (VizParam&);
+  void plot (VizParam&);
 
  private:
   u32   ratio;
@@ -56,7 +56,7 @@ class VizPaint {
   template <typename Value>
   auto get_point (Value) const -> double;
   void plot_title (ofstream&, const string&, const string&) const;
-  void plot_legend (ofstream&, const VizParam&);
+  void plot_legend (ofstream&, const VizParam&, i64);
   template <typename Rect>
   void plot_legend_gradient (ofstream&, const Rect&, u8);
   void plot_annot (ofstream&, i64, bool, bool) const;
@@ -67,6 +67,7 @@ class VizPaint {
   void read_pos (ifstream&, vector<Position>&, VizParam&);
   void make_posNode (const vector<Position>&, const VizParam&, string&&);
   void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
+  // void plot_pos_axes ();
 };
 }
 

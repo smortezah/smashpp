@@ -4,7 +4,8 @@
 #include "number.hpp"
 using namespace smashpp;
 
-void VizPaint::print_plot (VizParam& p) {
+// todo
+void VizPaint::plot (VizParam& p) {
   check_file(p.posFile);
   ifstream fPos (p.posFile);
   ofstream fPlot(p.image);
@@ -20,10 +21,11 @@ void VizPaint::print_plot (VizParam& p) {
   config(p.width, p.space, p.mult, n_refBases, n_tarBases);
 
   auto Paint_Extra = PAINT_EXTRA;
-  if (p.showAnnot)  Paint_Extra+=30;
+  // if (p.showAnnot)//todo
+    Paint_Extra+=30;
 
-  svg->width = PAINT_CX + width + space + width + PAINT_CX;
-  svg->height = maxSize + Paint_Extra;
+  svg->width = maxSize + Paint_Extra;
+  svg->height = 2*y + 2*chromHeight + innerSpace;
   print_header(fPlot);
 
   auto poly = make_unique<Polygon>();
@@ -37,19 +39,9 @@ void VizPaint::print_plot (VizParam& p) {
   rect->fill = rect->stroke = backColor;
   rect->x = 0;
   rect->y = 0;
-  rect->width  = PAINT_CX + width + space + width + PAINT_CX;
-  rect->height = maxSize + Paint_Extra;
+  rect->width  = svg->width;
+  rect->height = svg->height;
   rect->plot(fPlot);
-
-  // // Print titles
-  // text->x = cx + width/2;
-  // text->y = cy - 15;
-  // text->Label  = ref;
-  // text->print_title(fPlot);
-  // text->x = cx + width + space + width/2;
-  // text->y = cy - 15;
-  // text->Label  = tar;
-  // text->print_title(fPlot);
 
   // If min is set to default, reset to base max proportion
   if (p.min==0)    p.min=static_cast<u32>(maxSize / 100);
@@ -115,7 +107,7 @@ void VizPaint::print_plot (VizParam& p) {
     };
 
     const auto plot_main = [&](auto& cylinder) {
-      cylinder->width = width;
+      cylinder->width = chromHeight;
       cylinder->stroke_width = 0.75;
       cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
     };
@@ -126,10 +118,12 @@ void VizPaint::print_plot (VizParam& p) {
         plot_main(cylinder);
         cylinder->height = get_point(e->endRef-e->begRef);
         cylinder->stroke = shade(rgb_color(e->start));
-        cylinder->x = cx;
-        cylinder->y = cy + get_point(e->begRef);
+        cylinder->x = x + get_point(e->begRef);
+        cylinder->y = y + chromHeight;
         cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
         cylinder->fill = make_gradient(rgb_color(e->start), 'r', cylinder->id);
+        cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                              to_string(cylinder->y) + ")";
         cylinder->plot(fPlot);
 
         cylinder->stroke_width = 0.7;
@@ -154,9 +148,11 @@ void VizPaint::print_plot (VizParam& p) {
       auto cylinder = make_unique<Cylinder>();
       plot_main(cylinder);
       cylinder->height = get_point(abs(e->begTar-e->endTar));
-      cylinder->x = cx + width + space;
-      cylinder->y = !inverted ?cy+get_point(e->begTar) :cy+get_point(e->endTar);
+      cylinder->x = !inverted ? x+get_point(e->begTar) : x+get_point(e->endTar);
+      cylinder->y = y + 2*chromHeight + innerSpace;
       cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
+      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                            to_string(cylinder->y) + ")";
       if (e->begRef == DBLANK) {
         cylinder->fill = "black";
         cylinder->stroke = "white";
@@ -202,52 +198,52 @@ void VizPaint::print_plot (VizParam& p) {
             poly->stroke = poly->fill = rgb_color(e->start);
             poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
             poly->points 
-              = poly->point(cx+width,       cy+get_point(e->begRef)) +
-                poly->point(cx+width,       cy+get_point(e->endRef)) +
-                poly->point(cx+width+space, cy+get_point(e->endTar)) +
-                poly->point(cx+width+space, cy+get_point(e->begTar));
+              = poly->point(x+get_point(e->begRef), y+chromHeight) +
+                poly->point(x+get_point(e->endRef), y+chromHeight) +
+                poly->point(x+get_point(e->endTar), y+chromHeight+innerSpace) +
+                poly->point(x+get_point(e->begTar), y+chromHeight+innerSpace);
             poly->plot(fPlot);
             break;
           case 2:
             line->stroke = rgb_color(e->start);
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-            line->x2 = cx + width + space;
-            line->y2 = cy + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+            line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 3:
             line->stroke = "black";
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-            line->x2 = cx + width + space;
-            line->y2 = cy + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+            line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 4:
             line->stroke = rgb_color(e->start);
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->begRef);
-            line->x2 = cx + width+space;
-            line->y2 = cy + get_point(e->begTar);
+            line->x1 = x + get_point(e->begRef);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->begTar);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->endRef);
-            line->x2 = cx + width + space;
-            line->y2 = cx + width + space;
+            line->x1 = x + get_point(e->endRef);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->endTar);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 5:
             line->stroke = "black";
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->begRef);
-            line->x2 = cx + width + space;
-            line->y2 = cy + get_point(e->begTar);
+            line->x1 = x + get_point(e->begRef);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->begTar);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->endRef);
-            line->x2 = cx + width + space;
-            line->y2 = cy + get_point(e->endTar);
+            line->x1 = x + get_point(e->endRef);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->endTar);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 6:
@@ -269,54 +265,54 @@ void VizPaint::print_plot (VizParam& p) {
             poly->stroke = poly->fill = rgb_color(e->start);
             poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
             poly->points
-              = poly->point(cx+width,       cy+get_point(e->begRef)) +
-                poly->point(cx+width,       cy+get_point(e->endRef)) +
-                poly->point(cx+width+space, cy+get_point(e->endTar)) +
-                poly->point(cx+width+space, cy+get_point(e->begTar));
+              = poly->point(x+get_point(e->begRef), y+chromHeight) +
+                poly->point(x+get_point(e->endRef), y+chromHeight) +
+                poly->point(x+get_point(e->endTar), y+chromHeight+innerSpace) +
+                poly->point(x+get_point(e->begTar), y+chromHeight+innerSpace);
             poly->plot(fPlot);
             break;
           case 2:
             line->stroke = rgb_color(e->start);
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-            line->x2 = cx + width + space;
-            line->y2 = cy + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
+            line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 3:
             line->stroke = "green";
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-            line->x2 = cx + width + space;
-            line->y2 = cy + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
+            line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 4:
             line->stroke = rgb_color(e->start);
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->begRef);
-            line->x2 = cx + width + space;
-            line->y2 = cy + get_point(e->begTar);
+            line->x1 = x + get_point(e->begRef);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->begTar);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
   
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->endRef);
-            line->x2 = cx + width + space;
-            line->y2 = cy + get_point(e->endTar);
+            line->x1 = x + get_point(e->endRef);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->endTar);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 5:
             line->stroke = "green";
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->begRef);
-            line->x2 = cx + width + space;
-            line->y2 = cy + get_point(e->begTar);
+            line->x1 = x + get_point(e->begRef);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->begTar);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
   
-            line->x1 = cx + width;
-            line->y1 = cy + get_point(e->endRef);
-            line->x2 = cx + width+space;
-            line->y2 = cy + get_point(e->endTar);
+            line->x1 = x + get_point(e->endRef);
+            line->y1 = y + chromHeight;
+            line->x2 = x + get_point(e->endTar);
+            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 6:
@@ -335,9 +331,9 @@ void VizPaint::print_plot (VizParam& p) {
   ifstream refFile(file_name(ref)+"."+FMT_N);
   for (i64 beg,end; refFile>>beg>>end;) {
     rect->fill = rect->stroke  = "grey";
-    rect->x = cx;
-    rect->y = cy + get_point(beg);
-    rect->height = get_point(end-beg+1);
+    rect->x = x + get_point(beg);
+    rect->y = y;
+    rect->width = get_point(end-beg+1);
     rect->plot(fPlot);
   }
   refFile.close();
@@ -347,9 +343,9 @@ void VizPaint::print_plot (VizParam& p) {
   ifstream tarFile(file_name(tar)+"."+FMT_N);
   for (i64 beg,end; tarFile>>beg>>end;) {
     rect->fill = rect->stroke  = "grey";
-    rect->x = cx + width + space;
-    rect->y = cy + get_point(beg);
-    rect->height = get_point(end-beg+1);
+    rect->x = x + get_point(beg);
+    rect->y = y + chromHeight + innerSpace;
+    rect->width = get_point(end-beg+1);
     rect->plot(fPlot);
   }
   tarFile.close();
@@ -357,22 +353,26 @@ void VizPaint::print_plot (VizParam& p) {
   
   // Plot chromosomes
   auto cylinder = make_unique<Cylinder>();
-  cylinder->width = width;
+  cylinder->width = chromHeight;
   cylinder->height = refSize;
   cylinder->stroke_width = 2;
-  cylinder->x = cx;
-  cylinder->y = cy;
+  cylinder->x = x;
+  cylinder->y = y + chromHeight;
+  cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                        to_string(cylinder->y) + ")";
   cylinder->plot(fPlot);
 
   cylinder->height = tarSize;
-  cylinder->x = cx + width + space;
-  cylinder->y = cy;
+  cylinder->x = x;
+  cylinder->y = y + 2*chromHeight + innerSpace;
+  cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                        to_string(cylinder->y) + ")";
   cylinder->plot(fPlot);
 
   // Plot title, legend and annotation
   plot_title(fPlot, ref, tar);
-  plot_legend(fPlot, p);
-  if (p.showAnnot)
+  plot_legend(fPlot, p, max(n_refBases,n_tarBases));
+  // if (p.showAnnot)//todo
     plot_annot(fPlot, max(n_refBases,n_tarBases), p.showNRC, p.showRedun);
 
   print_tailer(fPlot);
@@ -466,9 +466,9 @@ const string& tar, u64 n_refBases, u64 n_tarBases) const {
 inline void VizPaint::config (double width_, double space_, u32 mult_,
 u64 refSize_, u64 tarSize_) {
   ratio   = static_cast<u32>(max(refSize_,tarSize_) / PAINT_SCALE);
-  width   = width_;
-  space   = space_;
-  mult    = mult_;
+  chromHeight = width_;
+  innerSpace = space_;
+  mult = mult_;
   refSize = get_point(refSize_);
   tarSize = get_point(tarSize_);
   maxSize = max(refSize, tarSize);
@@ -510,19 +510,17 @@ inline void VizPaint::print_header (ofstream& f) const {
   auto pattern = make_unique<Pattern>();
   pattern->id = "Wavy";
   pattern->patternUnits = "userSpaceOnUse";
-  pattern->x = cx + width + space;
-  pattern->y = 0;
-  pattern->width = width;
+  pattern->x = chromHeight/2 - 2;
+  pattern->y = y + chromHeight + innerSpace;
+  pattern->width = chromHeight;
   pattern->height = 7;
 
   auto path = make_unique<Path>();
-  path->d = path->m(0, 0) + path->a(pattern->width/2, ry, 0, 0, 0, width, 0);
-  path->stroke = "black";
   path->fill = "transparent";
-  // pattern->width = width;
-  // pattern->height = 49;
-  // path->d = "M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z";
-  // path->fill = "black";
+  path->stroke_width = 0.75;
+  path->d = path->m(0, 0) + 
+            path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
+  path->stroke = "black";
   make_pattern(f, pattern, path);
 
   pattern->id = "WavyWhite";
@@ -541,46 +539,30 @@ inline double VizPaint::get_point (Value p) const {
 
 inline void VizPaint::plot_title (ofstream& f, const string& ref, 
 const string& tar) const {
-  const auto H = 10.0f,
-             V = 20.0f,
-             XLeft = cx + width/2,
-             XRight = cx + width + space + width/2,
-             Y = cy;// - ry;
-
-  auto path = make_unique<Path>();
-  path->stroke = "black";
-  path->stroke_width = 0.5;
-  // path->stroke_dasharray = "8 3";
-  path->d = path->M(XLeft, Y) + path->v(-V) + path->h(-H);
-  path->plot(f);
-
-  path->d = path->M(XRight, Y) + path->v(-V) + path->h(H);
-  path->plot(f);
-
   auto text = make_unique<Text>();
   text->font_weight = "bold";
   text->font_size = 10;
+  text->text_anchor = "start";
+  text->x = x;
 
-  text->x = XLeft - H - 5;
-  text->y = Y - V;
-  text->text_anchor = "end";
+  text->y = y - TITLE_SPACE;
+  text->dominant_baseline = "text-before-edge";
   text->Label = ref;
   text->plot(f);
 
-  text->x = XRight + H + 5;
-  text->y = Y - V;
-  text->text_anchor = "start";
+  text->y = y + 2*chromHeight + innerSpace + TITLE_SPACE;
+  text->dominant_baseline = "text-after-edge";
   text->Label = tar;
   text->plot(f);
 }
 
-inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
+inline void VizPaint::plot_legend (ofstream& f, const VizParam& p, 
+i64 maxWidth) {
   if (!p.showNRC && !p.showRedun)  return;
   
-  constexpr auto vert = 24;
-  constexpr float shiftX=2.5, shiftY=3;
+  const auto horiz = x + get_point(maxWidth) + 40;
   auto rect = make_shared<Rectangle>();
-  rect->height = 12;
+  rect->width = 15;
 
   auto text = make_unique<Text>();
   text->text_anchor = "middle";
@@ -588,93 +570,83 @@ inline void VizPaint::plot_legend (ofstream& f, const VizParam& p) {
   text->font_size = 9;
 
   if (p.showNRC && !p.showRedun) {
-    rect->x = cx - (HORIZ_TUNE+width/HORIZ_RATIO);
-    rect->y = vert;
-    rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
-                   HORIZ_TUNE+width/HORIZ_RATIO;
+    rect->x = horiz;
+    rect->y = y - (TITLE_SPACE + VERT_TUNE);
+    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*chromHeight + innerSpace;
 
-    text->x = rect->x + rect->width/2;
-    text->y = rect->y;
-    text->dy = -shiftY;
-    text->dominant_baseline = "text-after-edge";
+    text->x = rect->x - 8;
+    text->y = rect->y + rect->height/2;
+    text->transform = "rotate(90 " + to_string(text->x) + " " +
+                      to_string(text->y) + ")";
     text->Label = "Relative Redundancy";
-    // text->Label = "RELATIVE REDUNDANCY";
     // text->plot_shadow(f);
     text->plot(f);
+
+    text->transform.clear();
   }
   else if (!p.showNRC && p.showRedun) {
-    rect->x = cx - (HORIZ_TUNE+width/HORIZ_RATIO);
-    rect->y = vert;
-    rect->width  = width/HORIZ_RATIO+HORIZ_TUNE+width+space+width+
-                   HORIZ_TUNE+width/HORIZ_RATIO;
+    rect->x = horiz;
+    rect->y = y - (TITLE_SPACE + VERT_TUNE);
+    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*chromHeight + innerSpace;
 
-    text->x = rect->x + rect->width/2;
-    text->y = rect->y;
-    text->dy = -shiftY;
-    text->dominant_baseline = "text-after-edge";
+    text->x = rect->x - 8;
+    text->y = rect->y + rect->height/2;
+    text->transform = "rotate(90 " + to_string(text->x) + " " +
+                      to_string(text->y) + ")";
     text->Label = "Redundancy";
-    // text->Label = "REDUNDANCY";
     // text->plot_shadow(f);
     text->plot(f);
+
+    text->transform.clear();
   }
   else if (p.showNRC && p.showRedun) {
-    rect->x = cx - 2*(HORIZ_TUNE+width/HORIZ_RATIO);
-    rect->y = vert;
-    rect->width  = 2*width/HORIZ_RATIO + 2*HORIZ_TUNE+width+space+width+
-                   2*width/HORIZ_RATIO + 2*HORIZ_TUNE;
+    rect->x = horiz;
+    rect->y = y - (TITLE_SPACE + VERT_TUNE);
+    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*chromHeight + innerSpace;
 
-    text->x = rect->x + rect->width/2;
-    text->y = rect->y;
-    text->dy = -shiftY;
-    text->dominant_baseline = "text-after-edge";
+    text->x = rect->x - 8;
+    text->y = rect->y + rect->height/2;
+    text->transform = "rotate(90 " + to_string(text->x) + " " +
+                      to_string(text->y) + ")";
     text->Label = "Relative Redundancy";
-    // text->Label = "RELATIVE REDUNDANCY";
     // text->plot_shadow(f);
     text->plot(f);
 
     // Redundancy
-    text->x = rect->x + rect->width/2;
-    text->y = rect->y + rect->height;
-    text->dy = shiftY;
-    text->dominant_baseline = "text-before-edge";
+    text->x = rect->x + rect->width + 8;
+    text->y = rect->y + rect->height/2;
+    text->transform = "rotate(90 " + to_string(text->x) + " " +
+                      to_string(text->y) + ")";
     text->Label = "Redundancy";
-    // text->Label = "REDUNDANCY";
     // text->plot_shadow(f);
     text->plot(f);
+
+    text->transform.clear();
   }
 
   plot_legend_gradient(f, rect, p.colorMode);
 
   // Print numbers (measures)
-  text->dy = 0;
-  text->dominant_baseline = "middle";
   text->font_weight = "normal";
-  text->font_size = 9;
-  text->text_anchor = "end";
-  text->x = rect->x - 2;
-  text->y = rect->y + rect->height/2;
-  text->dx = -shiftX;
+  text->text_align = "middle";
+  text->dominant_baseline = "middle";
+  text->font_size = 8;
+  text->x = rect->x + rect->width/2;
+  text->y = rect->y + rect->height + 6;
   text->Label = "0.0";
-  // text->font_weight = "bold";
   text->plot(f);
-  text->text_anchor = "middle";
   for (u8 i=1; i!=4; ++i) {
-    text->x = rect->x + (rect->width*i)/4;
-    text->y = rect->y + rect->height/2;
-    text->dx = 0;
+    text->x = rect->x + rect->width/2;
+    text->y = rect->y + rect->height - rect->height*i/4;
     if (p.colorMode==1 && i==3)  text->fill="white";
     text->Label = string_format("%.1f", i*0.5);
     text->plot(f);
   }
-  text->text_anchor = "start";
-  text->x = rect->x + rect->width + 2;
-  text->y = rect->y + rect->height/2;
-  text->dx = shiftX;
+  text->x = rect->x + rect->width/2;
+  text->y = rect->y + -6;
   text->fill = "black";
   text->Label = "2.0";
   text->plot(f);
-  text->text_anchor = "middle";
-  text->font_weight = "normal";
 }
 
 template <typename Rect>
@@ -691,6 +663,9 @@ u8 colorMode) {
 
   auto grad = make_unique<LinearGradient>();
   grad->id = "grad"+id;
+  grad->x1 = "0%";
+  grad->y1 = "100%";
+  grad->x2 = grad->y2 = "0%";
   for (u8 i=0; i!=colorset.size(); ++i)
     grad->add_stop(to_string(i*100/(colorset.size()-1))+"%", colorset[i]);
   grad->plot(f);
@@ -719,8 +694,8 @@ inline void VizPaint::plot_annot (ofstream& f, i64 maxHeight, bool showNRC,
 bool showRedun) const {
   if (!showNRC && !showRedun)  return;
 
-  float V=20.0f, XLeftRedun=0, XRightRedun=0, XLeftRelRedun=0, XRightRelRedun=0,
-        YRedun=0, YRelRedun=0;
+  float H=32.0f, YTopRelRedun=0, YBottomRelRedun=0, YTopRedun=0, YBottomRedun=0,
+        XRelRedun=0, XRedun=0;
 
   auto path = make_unique<Path>();
   path->stroke = "black";
@@ -731,279 +706,204 @@ bool showRedun) const {
   text->font_size = 9;
 
   if (lastPos.size() == 1) {
-    if (showNRC && !showRedun) {
-      XLeftRelRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
-      XRightRelRedun =
-        cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRelRedun = cy + get_point(maxHeight) + V;
+    // if (showNRC && !showRedun) {
+    //   XLeftRelRedun = cx - VERT_TUNE - 0.5*width/VERT_RATIO;
+    //   XRightRelRedun =
+    //     cx + 2*width + space + VERT_TUNE + 0.5*width/VERT_RATIO;
+    //   YRelRedun = cy + get_point(maxHeight) + V;
 
-      if (space > 54) {
-        // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
-        // path->plot_shadow(f);
-        path->plot(f);
+    //   if (space > 54) {
+    //     // Right wing
+    //     path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
+    //       path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
+    //     // path->plot_shadow(f);
+    //     path->plot(f);
 
-        // Label
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun;
-        text->Label = "Relative Redundancy";
-        // text->plot_shadow(f);
-        text->plot(f);
-      }
-      else {
-        // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
-        // path->plot_shadow(f);
-        path->plot(f);
+    //     // Label
+    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
+    //     text->y = YRelRedun;
+    //     text->Label = "Relative Redundancy";
+    //     // text->plot_shadow(f);
+    //     text->plot(f);
+    //   }
+    //   else {
+    //     // Right wing
+    //     path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
+    //       path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
+    //     // path->plot_shadow(f);
+    //     path->plot(f);
 
-        // Label
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun - 5;
-        text->Label = "Relative";
-        // text->plot_shadow(f);
-        text->plot(f);
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + 5;
-        text->Label = "Redundancy";
-        // text->plot_shadow(f);
-        text->plot(f);
-      }
-    }
-    else if (!showNRC && showRedun) {
-      XLeftRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
-      XRightRedun = cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRedun = cy + get_point(maxHeight) + V;
+    //     // Label
+    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
+    //     text->y = YRelRedun - 5;
+    //     text->Label = "Relative";
+    //     // text->plot_shadow(f);
+    //     text->plot(f);
+    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
+    //     text->y = YRelRedun + 5;
+    //     text->Label = "Redundancy";
+    //     // text->plot_shadow(f);
+    //     text->plot(f);
+    //   }
+    // }
+    // else if (!showNRC && showRedun) {
+    //   XLeftRedun = cx - VERT_TUNE - 0.5*width/VERT_RATIO;
+    //   XRightRedun = cx + 2*width + space + VERT_TUNE + 0.5*width/VERT_RATIO;
+    //   YRedun = cy + get_point(maxHeight) + V;
 
-      // Right wing
-      path->d = path->M(XRightRedun, cy+get_point(lastPos[0])) + 
-        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
-      // path->plot_shadow(f);
-      path->plot(f);
+    //   // Right wing
+    //   path->d = path->M(XRightRedun, cy+get_point(lastPos[0])) + 
+    //     path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
+    //   // path->plot_shadow(f);
+    //   path->plot(f);
 
-      // Label
-      text->x = (XLeftRedun + XRightRedun) / 2;
-      text->y = YRedun;
-      text->Label = "Redundancy";
-      // text->plot_shadow(f);
-      text->plot(f);
-    }
-    else if (showNRC && showRedun) {
-      XLeftRelRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
-      XRightRelRedun =
-        cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRelRedun = cy + get_point(maxHeight) + V;
+    //   // Label
+    //   text->x = (XLeftRedun + XRightRedun) / 2;
+    //   text->y = YRedun;
+    //   text->Label = "Redundancy";
+    //   // text->plot_shadow(f);
+    //   text->plot(f);
+    // }
+    // else if (showNRC && showRedun) {
+    //   XLeftRelRedun = cx - VERT_TUNE - 0.5*width/VERT_RATIO;
+    //   XRightRelRedun =
+    //     cx + 2*width + space + VERT_TUNE + 0.5*width/VERT_RATIO;
+    //   YRelRedun = cy + get_point(maxHeight) + V;
 
-      // Relative Redundancy
-      if (space > 54) {
-        // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) +
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
-        // path->plot_shadow(f);
-        path->plot(f);
+    //   // Relative Redundancy
+    //   if (space > 54) {
+    //     // Right wing
+    //     path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) +
+    //       path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
+    //     // path->plot_shadow(f);
+    //     path->plot(f);
 
-        // Label
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun;
-        text->Label = "Relative Redundancy";
-        // text->plot_shadow(f);
-        text->plot(f);
-      }
-      else {
-        // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
-        // path->plot_shadow(f);
-        path->plot(f);
+    //     // Label
+    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
+    //     text->y = YRelRedun;
+    //     text->Label = "Relative Redundancy";
+    //     // text->plot_shadow(f);
+    //     text->plot(f);
+    //   }
+    //   else {
+    //     // Right wing
+    //     path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
+    //       path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
+    //     // path->plot_shadow(f);
+    //     path->plot(f);
 
-        // Label
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun - 5;
-        text->Label = "Relative";
-        // text->plot_shadow(f);
-        text->plot(f);
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + 5;
-        text->Label = "Redundancy";
-        // text->plot_shadow(f);
-        text->plot(f);
-      }
+    //     // Label
+    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
+    //     text->y = YRelRedun - 5;
+    //     text->Label = "Relative";
+    //     // text->plot_shadow(f);
+    //     text->plot(f);
+    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
+    //     text->y = YRelRedun + 5;
+    //     text->Label = "Redundancy";
+    //     // text->plot_shadow(f);
+    //     text->plot(f);
+    //   }
 
-      // Redundancy
-      V *= (space > 54) ? 1.75 : 2;
-      XLeftRedun = cx - 2*HORIZ_TUNE - 1.5*width/HORIZ_RATIO;
-      XRightRedun = cx + 2*width + space + 2*HORIZ_TUNE + 1.5*width/HORIZ_RATIO;
-      YRedun = cy + get_point(maxHeight) + V;
+    //   // Redundancy
+    //   V *= (space > 54) ? 1.75 : 2;
+    //   XLeftRedun = cx - 2*VERT_TUNE - 1.5*width/VERT_RATIO;
+    //   XRightRedun = cx + 2*width + space + 2*VERT_TUNE + 1.5*width/VERT_RATIO;
+    //   YRedun = cy + get_point(maxHeight) + V;
 
-      // Right wing
-      path->d = path->M(XRightRedun, cy+get_point(lastPos[0])) + 
-        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
-      // path->plot_shadow(f);
-      path->plot(f);
+    //   // Right wing
+    //   path->d = path->M(XRightRedun, cy+get_point(lastPos[0])) + 
+    //     path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
+    //   // path->plot_shadow(f);
+    //   path->plot(f);
 
-      // Label
-      text->x = (XLeftRedun + XRightRedun) / 2;
-      text->y = YRedun;
-      text->Label = "Redundancy";
-      // text->plot_shadow(f);
-      text->plot(f);
-    }
+    //   // Label
+    //   text->x = (XLeftRedun + XRightRedun) / 2;
+    //   text->y = YRedun;
+    //   text->Label = "Redundancy";
+    //   // text->plot_shadow(f);
+    //   text->plot(f);
+    // }
   }
   else if (lastPos.size() == 2) {
     if (showNRC && !showRedun) {
-      XLeftRelRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
-      XRightRelRedun =
-        cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRelRedun = cy + get_point(maxHeight) + V;
+      // Relative Redundancy
+      XRelRedun = x + get_point(maxHeight) + H;
+      YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
+      YBottomRelRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + 
+                        VERT_TUNE + 0.5*chromHeight/VERT_RATIO;
+      // Top wing
+      path->d = path->M(x+get_point(lastPos[0]), YTopRelRedun) + 
+                path->H(XRelRedun) + 
+                path->V((YTopRelRedun+YBottomRelRedun)/2 - 47);
+      // path->plot_shadow(f);
+      path->plot(f);
 
-      if (space > 54) {
-        // Left wing
-        path->d = path->M(XLeftRelRedun, cy+get_point(lastPos[0])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 - 50);
-        // path->plot_shadow(f);
-        path->plot(f);
-
-        // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
-        // path->plot_shadow(f);
-        path->plot(f);
-
-        // Label
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun;
-        text->Label = "Relative Redundancy";
-        // text->plot_shadow(f);
-        text->plot(f);
-      }
-      else {
-        // Left wing
-        path->d = path->M(XLeftRelRedun, cy+get_point(lastPos[0])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 - 32);
-        // path->plot_shadow(f);
-        path->plot(f);
-
-        // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
-        // path->plot_shadow(f);
-        path->plot(f);
-
-        // Label
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun - 5;
-        text->Label = "Relative";
-        // text->plot_shadow(f);
-        text->plot(f);
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + 5;
-        text->Label = "Redundancy";
-        // text->plot_shadow(f);
-        text->plot(f);
-      }
+      // Bottom wing
+      path->d = path->M(x+get_point(lastPos[1]), YBottomRelRedun) +
+                path->H(XRelRedun) + 
+                path->V((YTopRelRedun+YBottomRelRedun)/2 + 47);
+      // path->plot_shadow(f);
+      path->plot(f);
     }
     else if (!showNRC && showRedun) {
-      XLeftRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
-      XRightRedun = cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRedun = cy + get_point(maxHeight) + V;
-
-      // Left wing
-      path->d = path->M(XLeftRedun, cy+get_point(lastPos[0])) + 
-        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 - 32);
+      // Relative Redundancy
+      XRedun = x + get_point(maxHeight) + H;
+      YTopRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
+      YBottomRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + VERT_TUNE +
+                     0.5*chromHeight/VERT_RATIO;
+      // Top wing
+      path->d = path->M(x+get_point(lastPos[0]), YTopRedun) + 
+                path->H(XRedun) + 
+                path->V((YTopRedun+YBottomRedun)/2 - 32);
       // path->plot_shadow(f);
       path->plot(f);
 
-      // Right wing
-      path->d = path->M(XRightRedun, cy+get_point(lastPos[1])) + 
-        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
+      // Bottom wing
+      path->d = path->M(x+get_point(lastPos[1]), YBottomRedun) +
+                path->H(XRedun) + 
+                path->V((YTopRedun+YBottomRedun)/2 + 32);
       // path->plot_shadow(f);
       path->plot(f);
-
-      // Label
-      text->x = (XLeftRedun + XRightRedun) / 2;
-      text->y = YRedun;
-      text->Label = "Redundancy";
-      // text->plot_shadow(f);
-      text->plot(f);
     }
     else if (showNRC && showRedun) {
-      XLeftRelRedun = cx - HORIZ_TUNE - 0.5*width/HORIZ_RATIO;
-      XRightRelRedun =
-        cx + 2*width + space + HORIZ_TUNE + 0.5*width/HORIZ_RATIO;
-      YRelRedun = cy + get_point(maxHeight) + V;
-
       // Relative Redundancy
-      if (space > 54) {
-        // Left wing
-        path->d = path->M(XLeftRelRedun, cy+get_point(lastPos[0])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 - 50);
-        // path->plot_shadow(f);
-        path->plot(f);
+      XRelRedun = x + get_point(maxHeight) + H;
+      YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
+      YBottomRelRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + 
+                        VERT_TUNE + 0.5*chromHeight/VERT_RATIO;
+      // Top wing
+      path->d = path->M(x+get_point(lastPos[0]), YTopRelRedun) + 
+                path->H(XRelRedun) + 
+                path->V((YTopRelRedun+YBottomRelRedun)/2 - 47);
+      // path->plot_shadow(f);
+      path->plot(f);
 
-        // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) +
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
-        // path->plot_shadow(f);
-        path->plot(f);
-
-        // Label
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun;
-        text->Label = "Relative Redundancy";
-        // text->plot_shadow(f);
-        text->plot(f);
-      }
-      else {
-        // Left wing
-        path->d = path->M(XLeftRelRedun, cy+get_point(lastPos[0])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 - 32);
-        // path->plot_shadow(f);
-        path->plot(f);
-
-        // Right wing
-        path->d = path->M(XRightRelRedun, cy+get_point(lastPos[1])) + 
-          path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
-        // path->plot_shadow(f);
-        path->plot(f);
-
-        // Label
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun - 5;
-        text->Label = "Relative";
-        // text->plot_shadow(f);
-        text->plot(f);
-        text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-        text->y = YRelRedun + 5;
-        text->Label = "Redundancy";
-        // text->plot_shadow(f);
-        text->plot(f);
-      }
+      // Bottom wing
+      path->d = path->M(x+get_point(lastPos[1]), YBottomRelRedun) +
+                path->H(XRelRedun) + 
+                path->V((YTopRelRedun+YBottomRelRedun)/2 + 47);
+      // path->plot_shadow(f);
+      path->plot(f);
 
       // Redundancy
-      V *= (space > 54) ? 1.75 : 2;
-      XLeftRedun = cx - 2*HORIZ_TUNE - 1.5*width/HORIZ_RATIO;
-      XRightRedun = cx + 2*width + space + 2*HORIZ_TUNE + 1.5*width/HORIZ_RATIO;
-      YRedun = cy + get_point(maxHeight) + V;
-
-      // Left wing
-      path->d = path->M(XLeftRedun, cy+get_point(lastPos[0])) + 
-        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 - 32);
+      XRedun = x + get_point(maxHeight) + H + 31;
+      YTopRedun = y - (TITLE_SPACE + 2*VERT_TUNE + 1.5*chromHeight/VERT_RATIO);
+      YBottomRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE +
+                     2*VERT_TUNE + 1.5*chromHeight/VERT_RATIO;
+      // Top wing
+      path->d = path->M(x+get_point(lastPos[0]), YTopRedun) + 
+                path->H(XRedun) + 
+                path->V((YTopRedun+YBottomRedun)/2 - 32);
       // path->plot_shadow(f);
       path->plot(f);
 
-      // Right wing
-      path->d = path->M(XRightRedun, cy+get_point(lastPos[1])) + 
-        path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
+      // Bottom wing
+      path->d = path->M(x+get_point(lastPos[1]), YBottomRedun) +
+                path->H(XRedun) + 
+                path->V((YTopRedun+YBottomRedun)/2 + 32);
       // path->plot_shadow(f);
       path->plot(f);
-
-      // Label
-      text->x = (XLeftRedun + XRightRedun) / 2;
-      text->y = YRedun;
-      text->Label = "Redundancy";
-      // text->plot_shadow(f);
-      text->plot(f);
     }
   }
 }
@@ -1166,10 +1066,11 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
   u64    nOverlap  = 0;
   double shiftX    = 4;
   if (par.showNRC && par.showRedun)
-    shiftX += 2 * (HORIZ_TUNE + width/HORIZ_RATIO);
+    shiftX += 2 * (VERT_TUNE + chromHeight/VERT_RATIO);
   else if (par.showNRC ^ par.showRedun)
-    shiftX += HORIZ_TUNE + width/HORIZ_RATIO;
-  double CX=cx;    type=="ref" ? CX-=shiftX : CX+=width+space+width+shiftX;
+    shiftX += VERT_TUNE + chromHeight/VERT_RATIO;
+  double CX=x;
+  type=="ref" ? CX-=shiftX : CX+=chromHeight+innerSpace+chromHeight+shiftX;
 
   const auto set_dominantBaseline = [&](char type) {
     switch (type) {
@@ -1271,7 +1172,7 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
       set_dominantBaseline(printType);
       text->Label  = finalLine;
       text->x = CX;
-      text->y = cy + get_point(printPos);
+      text->y = y + get_point(printPos);
       type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
       // type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
 
@@ -1287,7 +1188,7 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
         text->dominant_baseline="text-after-edge";
         text->Label  = finalLine;
         text->x = CX;
-        text->y = cy + get_point(printPos);
+        text->y = y + get_point(printPos);
         type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
         // type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       }
@@ -1302,7 +1203,7 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
       set_dominantBaseline(printType);
       text->Label  = finalLine;
       text->x = CX;
-      text->y = cy + get_point(printPos);
+      text->y = y + get_point(printPos);
       type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
       // type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       break;

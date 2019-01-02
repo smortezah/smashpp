@@ -74,10 +74,10 @@ class Line : public SVG {
 class Ellipse : public SVG {
  public:
   float  cx, cy, rx, ry, stroke_width, fill_opacity, stroke_opacity;
-  string stroke, fill;
+  string stroke, fill, transform;
   
   Ellipse () : rx(2.0f), ry(2.0f), stroke_width(1.0f), fill_opacity(OPAC),
-    stroke_opacity(1.0f), stroke("black"), fill("transparent") {}
+    stroke_opacity(1.0f), stroke("black"), fill("transparent"), transform("") {}
   void plot (ofstream&) const;
 };
 
