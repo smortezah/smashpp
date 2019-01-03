@@ -21,7 +21,7 @@ inline static string hms (Time elapsed) {
     return to_string(s)+" sec.\n";
   else if (h < 1)
     return to_string(m)+":"+to_string(s)+" min:sec.\n";
-  else
+  else  
     return to_string(h)+":"+to_string(m)+":"+to_string(s)+" hour:min:sec.\n";
 }
 }

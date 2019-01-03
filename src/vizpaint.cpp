@@ -52,7 +52,8 @@ void VizPaint::plot (VizParam& p) {
 
   make_posNode(pos, p, "ref");
   if (p.showPos)
-    print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
+    plot_pos_axes(fPlot);
+    // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
 
   make_posNode(pos, p, "tar");
   if (p.showPos)
@@ -1088,6 +1089,15 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
   } // for
 }
 
-inline void VizPaint::plot_pos_axes (ofstream& fPlot) {
-  auto path = make_unique<Path>();
+inline void VizPaint::plot_pos_axes (ofstream& f) {
+  auto line = make_unique<Line>();
+  line->stroke_width = 3;
+  line->stroke="red";
+
+  line->x1 = x;
+  line->y1 = y - TITLE_SPACE - 2*(VERT_TUNE+chromHeight/VERT_RATIO) - 15;
+  line->x2 = x + refSize;
+  line->y2 = line->y1;
+
+  line->plot(f);
 }
