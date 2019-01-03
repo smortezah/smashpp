@@ -705,206 +705,86 @@ bool showRedun) const {
   auto text = make_unique<Text>();
   text->font_size = 9;
 
-  if (lastPos.size() == 1) {
-    // if (showNRC && !showRedun) {
-    //   XLeftRelRedun = cx - VERT_TUNE - 0.5*width/VERT_RATIO;
-    //   XRightRelRedun =
-    //     cx + 2*width + space + VERT_TUNE + 0.5*width/VERT_RATIO;
-    //   YRelRedun = cy + get_point(maxHeight) + V;
-
-    //   if (space > 54) {
-    //     // Right wing
-    //     path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
-    //       path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
-    //     // path->plot_shadow(f);
-    //     path->plot(f);
-
-    //     // Label
-    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-    //     text->y = YRelRedun;
-    //     text->Label = "Relative Redundancy";
-    //     // text->plot_shadow(f);
-    //     text->plot(f);
-    //   }
-    //   else {
-    //     // Right wing
-    //     path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
-    //       path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
-    //     // path->plot_shadow(f);
-    //     path->plot(f);
-
-    //     // Label
-    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-    //     text->y = YRelRedun - 5;
-    //     text->Label = "Relative";
-    //     // text->plot_shadow(f);
-    //     text->plot(f);
-    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-    //     text->y = YRelRedun + 5;
-    //     text->Label = "Redundancy";
-    //     // text->plot_shadow(f);
-    //     text->plot(f);
-    //   }
-    // }
-    // else if (!showNRC && showRedun) {
-    //   XLeftRedun = cx - VERT_TUNE - 0.5*width/VERT_RATIO;
-    //   XRightRedun = cx + 2*width + space + VERT_TUNE + 0.5*width/VERT_RATIO;
-    //   YRedun = cy + get_point(maxHeight) + V;
-
-    //   // Right wing
-    //   path->d = path->M(XRightRedun, cy+get_point(lastPos[0])) + 
-    //     path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
-    //   // path->plot_shadow(f);
-    //   path->plot(f);
-
-    //   // Label
-    //   text->x = (XLeftRedun + XRightRedun) / 2;
-    //   text->y = YRedun;
-    //   text->Label = "Redundancy";
-    //   // text->plot_shadow(f);
-    //   text->plot(f);
-    // }
-    // else if (showNRC && showRedun) {
-    //   XLeftRelRedun = cx - VERT_TUNE - 0.5*width/VERT_RATIO;
-    //   XRightRelRedun =
-    //     cx + 2*width + space + VERT_TUNE + 0.5*width/VERT_RATIO;
-    //   YRelRedun = cy + get_point(maxHeight) + V;
-
-    //   // Relative Redundancy
-    //   if (space > 54) {
-    //     // Right wing
-    //     path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) +
-    //       path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 50);
-    //     // path->plot_shadow(f);
-    //     path->plot(f);
-
-    //     // Label
-    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-    //     text->y = YRelRedun;
-    //     text->Label = "Relative Redundancy";
-    //     // text->plot_shadow(f);
-    //     text->plot(f);
-    //   }
-    //   else {
-    //     // Right wing
-    //     path->d = path->M(XRightRelRedun, cy+get_point(lastPos[0])) + 
-    //       path->V(YRelRedun) + path->H((XLeftRelRedun+XRightRelRedun)/2 + 32);
-    //     // path->plot_shadow(f);
-    //     path->plot(f);
-
-    //     // Label
-    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-    //     text->y = YRelRedun - 5;
-    //     text->Label = "Relative";
-    //     // text->plot_shadow(f);
-    //     text->plot(f);
-    //     text->x = (XLeftRelRedun + XRightRelRedun) / 2;
-    //     text->y = YRelRedun + 5;
-    //     text->Label = "Redundancy";
-    //     // text->plot_shadow(f);
-    //     text->plot(f);
-    //   }
-
-    //   // Redundancy
-    //   V *= (space > 54) ? 1.75 : 2;
-    //   XLeftRedun = cx - 2*VERT_TUNE - 1.5*width/VERT_RATIO;
-    //   XRightRedun = cx + 2*width + space + 2*VERT_TUNE + 1.5*width/VERT_RATIO;
-    //   YRedun = cy + get_point(maxHeight) + V;
-
-    //   // Right wing
-    //   path->d = path->M(XRightRedun, cy+get_point(lastPos[0])) + 
-    //     path->V(YRedun) + path->H((XLeftRedun+XRightRedun)/2 + 32);
-    //   // path->plot_shadow(f);
-    //   path->plot(f);
-
-    //   // Label
-    //   text->x = (XLeftRedun + XRightRedun) / 2;
-    //   text->y = YRedun;
-    //   text->Label = "Redundancy";
-    //   // text->plot_shadow(f);
-    //   text->plot(f);
-    // }
+  if (showNRC && !showRedun) {
+    XRelRedun = x + get_point(maxHeight) + H;
+    YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
+    YBottomRelRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + VERT_TUNE +
+                      0.5*chromHeight/VERT_RATIO;
+    // Top wing
+    if (lastPos.size() == 2) {
+      path->d = path->M(x+get_point(lastPos[0]), YTopRelRedun) + 
+                path->H(XRelRedun) + 
+                path->V((YTopRelRedun+YBottomRelRedun)/2 - 47);
+      // path->plot_shadow(f);
+      path->plot(f);
+    }
+    // Bottom wing
+    path->d = path->M(x+get_point(lastPos[1]), YBottomRelRedun) +
+              path->H(XRelRedun) + 
+              path->V((YTopRelRedun+YBottomRelRedun)/2 + 47);
+    // path->plot_shadow(f);
+    path->plot(f);
   }
-  else if (lastPos.size() == 2) {
-    if (showNRC && !showRedun) {
-      // Relative Redundancy
-      XRelRedun = x + get_point(maxHeight) + H;
-      YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
-      YBottomRelRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + 
-                        VERT_TUNE + 0.5*chromHeight/VERT_RATIO;
-      // Top wing
-      path->d = path->M(x+get_point(lastPos[0]), YTopRelRedun) + 
-                path->H(XRelRedun) + 
-                path->V((YTopRelRedun+YBottomRelRedun)/2 - 47);
-      // path->plot_shadow(f);
-      path->plot(f);
-
-      // Bottom wing
-      path->d = path->M(x+get_point(lastPos[1]), YBottomRelRedun) +
-                path->H(XRelRedun) + 
-                path->V((YTopRelRedun+YBottomRelRedun)/2 + 47);
-      // path->plot_shadow(f);
-      path->plot(f);
-    }
-    else if (!showNRC && showRedun) {
-      // Relative Redundancy
-      XRedun = x + get_point(maxHeight) + H;
-      YTopRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
-      YBottomRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + VERT_TUNE +
-                     0.5*chromHeight/VERT_RATIO;
-      // Top wing
+  else if (!showNRC && showRedun) {
+    XRedun = x + get_point(maxHeight) + H;
+    YTopRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
+    YBottomRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + VERT_TUNE +
+                   0.5*chromHeight/VERT_RATIO;
+    // Top wing
+    if (lastPos.size() == 2) {
       path->d = path->M(x+get_point(lastPos[0]), YTopRedun) + 
                 path->H(XRedun) + 
                 path->V((YTopRedun+YBottomRedun)/2 - 32);
       // path->plot_shadow(f);
       path->plot(f);
-
-      // Bottom wing
-      path->d = path->M(x+get_point(lastPos[1]), YBottomRedun) +
-                path->H(XRedun) + 
-                path->V((YTopRedun+YBottomRedun)/2 + 32);
-      // path->plot_shadow(f);
-      path->plot(f);
     }
-    else if (showNRC && showRedun) {
-      // Relative Redundancy
-      XRelRedun = x + get_point(maxHeight) + H;
-      YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
-      YBottomRelRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + 
-                        VERT_TUNE + 0.5*chromHeight/VERT_RATIO;
-      // Top wing
+    // Bottom wing
+    path->d = path->M(x+get_point(lastPos[1]), YBottomRedun) +
+              path->H(XRedun) + 
+              path->V((YTopRedun+YBottomRedun)/2 + 32);
+    // path->plot_shadow(f);
+    path->plot(f);
+  }
+  else if (showNRC && showRedun) {
+    // Relative Redundancy
+    XRelRedun = x + get_point(maxHeight) + H;
+    YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
+    YBottomRelRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + VERT_TUNE +
+                      0.5*chromHeight/VERT_RATIO;
+    // Top wing
+    if (lastPos.size() == 2) {
       path->d = path->M(x+get_point(lastPos[0]), YTopRelRedun) + 
                 path->H(XRelRedun) + 
                 path->V((YTopRelRedun+YBottomRelRedun)/2 - 47);
       // path->plot_shadow(f);
       path->plot(f);
+    }
+    // Bottom wing
+    path->d = path->M(x+get_point(lastPos[1]), YBottomRelRedun) +
+              path->H(XRelRedun) + 
+              path->V((YTopRelRedun+YBottomRelRedun)/2 + 47);
+    // path->plot_shadow(f);
+    path->plot(f);
 
-      // Bottom wing
-      path->d = path->M(x+get_point(lastPos[1]), YBottomRelRedun) +
-                path->H(XRelRedun) + 
-                path->V((YTopRelRedun+YBottomRelRedun)/2 + 47);
-      // path->plot_shadow(f);
-      path->plot(f);
-
-      // Redundancy
-      XRedun = x + get_point(maxHeight) + H + 31;
-      YTopRedun = y - (TITLE_SPACE + 2*VERT_TUNE + 1.5*chromHeight/VERT_RATIO);
-      YBottomRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE +
-                     2*VERT_TUNE + 1.5*chromHeight/VERT_RATIO;
-      // Top wing
+    // Redundancy
+    XRedun = x + get_point(maxHeight) + H + 31;
+    YTopRedun = y - (TITLE_SPACE + 2*VERT_TUNE + 1.5*chromHeight/VERT_RATIO);
+    YBottomRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE +
+                   2*VERT_TUNE + 1.5*chromHeight/VERT_RATIO;
+    // Top wing
+    if (lastPos.size() == 2) {
       path->d = path->M(x+get_point(lastPos[0]), YTopRedun) + 
                 path->H(XRedun) + 
                 path->V((YTopRedun+YBottomRedun)/2 - 32);
       // path->plot_shadow(f);
       path->plot(f);
-
-      // Bottom wing
-      path->d = path->M(x+get_point(lastPos[1]), YBottomRedun) +
-                path->H(XRedun) + 
-                path->V((YTopRedun+YBottomRedun)/2 + 32);
-      // path->plot_shadow(f);
-      path->plot(f);
     }
+    // Bottom wing
+    path->d = path->M(x+get_point(lastPos[1]), YBottomRedun) +
+              path->H(XRedun) + 
+              path->V((YTopRedun+YBottomRedun)/2 + 32);
+    // path->plot_shadow(f);
+    path->plot(f);
   }
 }
 
@@ -1064,13 +944,13 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
   i64    printPos  = 0;
   char   printType = 'b';
   u64    nOverlap  = 0;
-  double shiftX    = 4;
+  double shiftY    = 4;
   if (par.showNRC && par.showRedun)
-    shiftX += 2 * (VERT_TUNE + chromHeight/VERT_RATIO);
+    shiftY += 2 * (VERT_TUNE + chromHeight/VERT_RATIO);
   else if (par.showNRC ^ par.showRedun)
-    shiftX += VERT_TUNE + chromHeight/VERT_RATIO;
-  double CX=x;
-  type=="ref" ? CX-=shiftX : CX+=chromHeight+innerSpace+chromHeight+shiftX;
+    shiftY += VERT_TUNE + chromHeight/VERT_RATIO;
+  double CY=y;
+  type=="ref" ? CY-=shiftY : CY+=chromHeight+innerSpace+chromHeight+shiftY;
 
   const auto set_dominantBaseline = [&](char type) {
     switch (type) {
@@ -1084,7 +964,7 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
   const auto print_pos_ref = 
     [&](ofstream& f, unique_ptr<Text>& text, char c='\0') {
     text->text_anchor = "end";
-    text->x -= 5;
+    text->y -= 5;
     switch (c) {
       case 'b':  text->dominant_baseline = "hanging";   break;  // begin
       case 'm':  text->dominant_baseline = "middle";    break;  // middle
@@ -1098,7 +978,7 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
   const auto print_pos_tar =
     [&](ofstream& f, unique_ptr<Text>& text, char c='\0') {
     text->text_anchor = "start";
-    text->x += 5;
+    text->y += 5;
     switch (c) {
       case 'b':  text->dominant_baseline = "hanging";   break;  // begin
       case 'm':  text->dominant_baseline = "middle";    break;  // middle
@@ -1171,15 +1051,14 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
       // text->font_weight = "bold";
       set_dominantBaseline(printType);
       text->Label  = finalLine;
-      text->x = CX;
-      text->y = y + get_point(printPos);
+      text->x = x + get_point(printPos);
+      text->y = CY;
       type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
-      // type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
 
       line.clear();
       lastLine.clear();
 
-      //last
+      // Last
       if (it+2 == nodes.end()) {
         finalLine = tspan((it+1)->start, (it+1)->position);
         sort_merge(finalLine);
@@ -1187,10 +1066,9 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
 
         text->dominant_baseline="text-after-edge";
         text->Label  = finalLine;
-        text->x = CX;
-        text->y = y + get_point(printPos);
+        text->x = x + get_point(printPos);
+        text->y = CY;
         type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
-        // type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       }
     }
     
@@ -1202,11 +1080,14 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
       // text->font_weight = "bold";
       set_dominantBaseline(printType);
       text->Label  = finalLine;
-      text->x = CX;
-      text->y = y + get_point(printPos);
+      text->x = x + get_point(printPos);
+      text->y = CY;
       type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
-      // type=="ref" ? text->print_pos_ref(fPlot) : text->print_pos_tar(fPlot);
       break;
     }
   } // for
+}
+
+inline void VizPaint::plot_pos_axes (ofstream& fPlot) {
+  auto path = make_unique<Path>();
 }
