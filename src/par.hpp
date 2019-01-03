@@ -75,11 +75,13 @@ class VizParam {
   u32    width, space, mult, start, min;
   bool   manMult;
   string posFile;
+  u8     majorTick, minorTick;
 
   VizParam () : verbose(false), inverse(true), regular(true), showPos(true),
     showNRC(true), showRedun(true), showAnnot(true), image(IMAGE), 
     link(LINK), colorMode(COLOR), opacity(OPAC), width(WDTH), space(SPC), 
-    mult(MULT), start(BEGN), min(MINP), manMult(false) {}
+    mult(MULT), start(BEGN), min(MINP), manMult(false), majorTick(MAJTICK),
+    minorTick(MINTICK) {}
 
   void parse (int, char**&);
 
@@ -477,6 +479,18 @@ inline void VizParam::parse (int argc, char**& argv) {
         "Begin", "[]", "default", Problem::WARNING);
       range->assert(start);
     }
+    else if ((*i=="-Mt" || *i=="--major-tick") && i+1!=vArgs.end()) {
+      majorTick = static_cast<u8>(stoi(*++i));
+      auto range = make_unique<ValRange<u8>>(MIN_MAJTICK, MAX_MAJTICK, MAJTICK,
+        "Major tick", "[]", "default", Problem::WARNING);
+      range->assert(majorTick);
+    }
+    else if ((*i=="-mt" || *i=="--minor-tick") && i+1!=vArgs.end()) {
+      minorTick = static_cast<u8>(stoi(*++i));
+      auto range = make_unique<ValRange<u8>>(MIN_MINTICK, MAX_MINTICK, MINTICK,
+        "Minor tick", "[]", "default", Problem::WARNING);
+      range->assert(minorTick);
+    }
     else if ((*i=="-c" || *i=="--color") && i+1!=vArgs.end()) {
       colorMode = static_cast<u8>(stoi(*++i));
       auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, COLOR, 
@@ -568,11 +582,17 @@ inline void VizParam::help () const {
      "         multiplication factor for"                                 <<'\n'
   << "                             color ID "
      "[" << to_string(MIN_MULT) << "," << to_string(MAX_MULT) << "]"      <<'\n'
-  << "  " << b("-b") << ",  "  << b("--begin") << "   " << ul("INT") <<
-     "         beginning of color ID "
+  << "  " << b("-b") << ",  "  << b("--begin") << "      " << ul("INT") <<
+     "      beginning of color ID "
      "[" << to_string(MIN_BEGN) << "," << to_string(MAX_BEGN) << "]"      <<'\n'
-  << "  " << b("-m") << ",  "  << b("--min") << "     " << ul("INT") <<
-     "         minimum block size "
+  << "  " << b("-Mt") << ", "  << b("--major-tick") << " " << ul("INT") <<
+     "      number of major ticks "
+     "[" << to_string(MIN_MAJTICK) << "," << to_string(MAX_MAJTICK) << "]"<<'\n'
+  << "  " << b("-mt") << ", "  << b("--minor-tick") << " " << ul("INT") <<
+     "      number of minor ticks "
+     "[" << to_string(MIN_MINTICK) << "," << to_string(MAX_MINTICK) << "]"<<'\n'
+  << "  " << b("-m") << ",  "  << b("--min") << "        " << ul("INT") <<
+     "      minimum block size "
      "[" << to_string(MIN_MINP) << "," << to_string(MAX_MINP) << "]"      <<'\n'
   << "  " << b("-h") << ",  " << b("--help") << "                usage guide \n"
   <<                                                                        '\n'
