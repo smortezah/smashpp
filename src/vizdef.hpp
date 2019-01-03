@@ -32,12 +32,11 @@ static constexpr u32  MAX_BEGN        {255};
 static constexpr u32  MINP            {1};
 static constexpr u32  MIN_MINP        {1};
 static constexpr u32  MAX_MINP        {0xffffffff};  // 2^32 - 1
-static constexpr u8   MAJTICK         {9};  // Major tick
-static constexpr u8   MIN_MAJTICK     {2};
-static constexpr u8   MAX_MAJTICK     {20};
-static constexpr u8   MINTICK         {3};  // Minor tick
-static constexpr u8   MIN_MINTICK     {0};
-static constexpr u8   MAX_MINTICK     {20};
+
+//todo
+static constexpr u64  TICK            {9};  // Major tick
+static constexpr u64  MIN_TICK        {200};
+static constexpr u64  MAX_TICK        {20};
 static constexpr u32  PAINT_SCALE     {100};
 static constexpr u32  PAINT_EXTRA     {75};
 static constexpr auto PAINT_SHORT     {0.035};

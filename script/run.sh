@@ -112,15 +112,15 @@ if [[ $RUN -eq 1 ]]; then
   ./smashpp -viz -p 1 -b 3 -o S.svg RefS-TarS.pos
   ### M
   ./smashpp -r RefM -t TarM -l 3 -w 100
-  ./smashpp -viz -p 1 -b 2 -t 80 -o M.svg RefM-TarM.pos
+  ./smashpp -viz -p 1 -b 2 -f 80 -o M.svg RefM-TarM.pos
   ### L
   ./smashpp -r RefL -t TarL -l 3 -w 135
-  ./smashpp -viz -p 1 -t 100 -o L.svg RefL-TarL.pos
+  ./smashpp -viz -p 1 -f 100 -o L.svg RefL-TarL.pos
   ### XL
   ./smashpp -r RefXL -t TarXL -l 3 -w 275
   ./smashpp -viz -p 1 -m 20000000 -o XL.svg RefXL-TarXL.pos
   ### Mut
   ./smashpp -r RefMut -t TarMut -th 1.5 -l 5 -w 5000
-  ./smashpp -viz -p 1 -b 2 -t 50 -o Mut.svg RefMut-TarMut.pos
+  ./smashpp -viz -p 1 -b 2 -f 50 -o Mut.svg RefMut-TarMut.pos
   ./smash -wt 1 -d 1 -w 5000 RefMut TarMut
 fi

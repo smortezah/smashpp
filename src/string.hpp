@@ -152,15 +152,15 @@ inline static string human_readable (u64 bytes, u8 precision=0) {
   const string precFormat = "%." + to_string(precision) + "f";
 
   if (bytes >= TB_div)
-    return string_format(precFormat+" TB", float(bytes) / TB_div);
+    return string_format(precFormat+" T", float(bytes) / TB_div);
   else if (bytes >= GB_div && bytes < TB_div)
-    return string_format(precFormat+" GB", float(bytes) / GB_div);
+    return string_format(precFormat+" G", float(bytes) / GB_div);
   else if (bytes >= MB_div && bytes < GB_div)
-    return string_format(precFormat+" MB", float(bytes) / MB_div);
+    return string_format(precFormat+" M", float(bytes) / MB_div);
   else if (bytes >= KB_div && bytes < MB_div)
-    return string_format(precFormat+" KB", float(bytes) / KB_div);
+    return string_format(precFormat+" K", float(bytes) / KB_div);
   else if (bytes < KB_div)
-    return string_format(precFormat+" B", float(bytes));
+    return string_format(precFormat, float(bytes));
 
   return "";
 }

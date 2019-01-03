@@ -534,8 +534,12 @@ inline void VizPaint::print_tailer (ofstream& f) const {
 }
 
 template <typename Value>
-inline double VizPaint::get_point (Value p) const {
-  return 5 * p / static_cast<double>(ratio);
+inline double VizPaint::get_point (Value index) const {
+  return 5.0 * index / ratio;
+}
+
+inline u64 VizPaint::get_index (double point) const {
+  return static_cast<u64>(point * ratio / 5.0);
 }
 
 inline void VizPaint::plot_title (ofstream& f, const string& ref, 
@@ -1091,8 +1095,7 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
 
 inline void VizPaint::plot_pos_axes (ofstream& f, VizParam& par, u64 n_bases) {
   const auto  maxPos           = get_point(n_bases);
-  const u8    n_ranges         = par.majorTick - 1, 
-              n_subranges      = par.minorTick + 1;
+  const u8    n_subranges      = 3;
   const u16   minorTickSize    = 7,
               majorTickSize    = 1.75*minorTickSize,
               tickLabelSkip    = 8,
@@ -1118,11 +1121,17 @@ inline void VizPaint::plot_pos_axes (ofstream& f, VizParam& par, u64 n_bases) {
   //     majorHop = n_subranges * minorHop;
 
 
-  float majorHop = n_bases / n_ranges,
-      minorHop = majorHop / n_subranges;
+  // float majorHop = n_bases / n_ranges;
+  float majorHop;
+  // if (par.tick==0)  majorHop = par.tick;
+  majorHop = 100;
+  float minorHop = majorHop / n_subranges;
 
 
-      cerr<<minorHop<<'\n';
+cerr<<get_index(get_point(1003201));
+
+
+      // cerr<<minorHop<<'\n';
 
 
 // if (get_point(hop * n_subranges) < 64)
@@ -1131,7 +1140,7 @@ inline void VizPaint::plot_pos_axes (ofstream& f, VizParam& par, u64 n_bases) {
   for (float pos=minorHop; pos <= n_bases; pos+=minorHop) {
     line->x1 = line->x2 = x + get_point((u64)pos) + line->stroke_width/2;
 
-cerr<<pos<<' ';
+// cerr<<pos<<' ';
 
     if ((u64)pos % (u64)majorHop == 0) {  // Major ticks
       line->stroke_width = majorStrokeWidth;

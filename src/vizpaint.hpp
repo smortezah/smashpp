@@ -55,6 +55,7 @@ class VizPaint {
   void print_tailer (ofstream&) const;
   template <typename Value>
   auto get_point (Value) const -> double;
+  auto get_index (double point) const -> u64;
   void plot_title (ofstream&, const string&, const string&) const;
   void plot_legend (ofstream&, const VizParam&, i64);
   template <typename Rect>
