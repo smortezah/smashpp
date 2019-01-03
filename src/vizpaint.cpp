@@ -52,7 +52,7 @@ void VizPaint::plot (VizParam& p) {
 
   make_posNode(pos, p, "ref");
   if (p.showPos)
-    plot_pos_axes(fPlot, n_refBases, p.majorTick, p.minorTick);
+    plot_pos_axes(fPlot, p, n_refBases);
     // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
 
   make_posNode(pos, p, "tar");
@@ -1089,17 +1089,16 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
   } // for
 }
 
-inline void VizPaint::plot_pos_axes (ofstream& f, u64 n_bases, u8 n_majorTicks,
-u8 n_minorTicks) {
+inline void VizPaint::plot_pos_axes (ofstream& f, VizParam& par, u64 n_bases) {
   const auto  maxPos           = get_point(n_bases);
-  const u8    n_ranges         = n_majorTicks - 1, 
-              n_subranges      = n_minorTicks + 1;
+  const u8    n_ranges         = par.majorTick - 1, 
+              n_subranges      = par.minorTick + 1;
   const u16   minorTickSize    = 7,
-              majorTickSize    = 2*minorTickSize,
+              majorTickSize    = 1.75*minorTickSize,
               tickLabelSkip    = 8,
               vertSkip         = 13;
   const float minorStrokeWidth = 0.8f,
-              majorStrokeWidth = 2*minorStrokeWidth;
+              majorStrokeWidth = 1.9*minorStrokeWidth;
 
   auto line = make_unique<Line>();
   line->stroke_width = majorStrokeWidth;
@@ -1114,12 +1113,27 @@ u8 n_minorTicks) {
 
   // Ticks
   line->y1 -= line->stroke_width/2;
-  u16 count = 0;
-  for (u64 pos=0; pos < 1 + n_bases - n_bases/(n_ranges*n_subranges); 
-       pos += n_bases/(n_ranges*n_subranges)) {
-    line->x1 = line->x2 = x + get_point(pos) + line->stroke_width/2;
 
-    if (count++ % n_subranges == 0) {  // Major ticks
+  // u64 minorHop = n_bases / (n_ranges*n_subranges),
+  //     majorHop = n_subranges * minorHop;
+
+
+  float majorHop = n_bases / n_ranges,
+      minorHop = majorHop / n_subranges;
+
+
+      cerr<<minorHop<<'\n';
+
+
+// if (get_point(hop * n_subranges) < 64)
+//   hop = 
+
+  for (float pos=minorHop; pos <= n_bases; pos+=minorHop) {
+    line->x1 = line->x2 = x + get_point((u64)pos) + line->stroke_width/2;
+
+cerr<<pos<<' ';
+
+    if ((u64)pos % (u64)majorHop == 0) {  // Major ticks
       line->stroke_width = majorStrokeWidth;
       line->y2 = line->y1 - majorTickSize;
       line->plot(f);
@@ -1136,14 +1150,14 @@ u8 n_minorTicks) {
     }
   }
 
-  // Last tick (major)
-  line->stroke_width = majorStrokeWidth;
-  line->x1 = line->x2 = x + maxPos - line->stroke_width/2;
-  line->y2 = line->y1 - majorTickSize;
-  line->plot(f);
+  // // Last tick (major)
+  // line->stroke_width = majorStrokeWidth;
+  // line->x1 = line->x2 = x + maxPos - line->stroke_width/2;
+  // line->y2 = line->y1 - majorTickSize;
+  // line->plot(f);
 
-  text->x = line->x1;
-  text->y = line->y2 - tickLabelSkip;
-  text->Label = human_readable(n_bases);
-  text->plot(f);
+  // text->x = line->x1;
+  // text->y = line->y2 - tickLabelSkip;
+  // text->Label = human_readable(n_bases);
+  // text->plot(f);
 }
