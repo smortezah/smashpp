@@ -73,6 +73,10 @@ inline static string fixed_precision (T value) {
   oss << std::fixed << std::setprecision(value);
   return oss.str();
 }
+
+inline static u8 num_digits (u64 number) {
+  return number==0 ? 1 : log10(static_cast<double>(number)) + 1;
+}
 }
 
 #endif //PROJECT_NUMBER_HPP

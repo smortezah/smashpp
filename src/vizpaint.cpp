@@ -1112,31 +1112,44 @@ inline void VizPaint::plot_pos_axes (ofstream& f, VizParam& par, u64 n_bases) {
   line->x2 = x + maxPos + 0.75*line->stroke_width;
   line->y1 = line->y2 = y - TITLE_SPACE - vertSkip -
     (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+chromHeight/VERT_RATIO);
-  // line->plot(f);
+  line->plot(f);
 
-  text->x = line->x1;
-  text->y = line->y1 - majorTickSize - tickLabelSkip;
   text->text_anchor = "start";
   text->font_weight = "bold";
   text->font_size = 10;
+  text->x = line->x1;
+  text->y = line->y1 - majorTickSize - tickLabelSkip;
   text->Label = "bp";
+  text->plot(f);
+
+  text->x = line->x1;
+  text->y = line->y1 + tickLabelSkip;
+  text->Label = "bp %";
   text->plot(f);
 
   // Ticks
   line->y1 -= line->stroke_width/2;
 
-  // u64 minorHop = n_bases / (n_ranges*n_subranges),
-  //     majorHop = n_subranges * minorHop;
 
-
-  // float majorHop = n_bases / n_ranges;
-  float majorHop;
+  float majorHop = n_bases / 10;
+  // float majorHop;
   // if (par.tick==0)  majorHop = par.tick;
-  majorHop = 100;
+  // majorHop = 100;
+
+  // if (n_bases/10 > 5 * pow(10, num_digits(n_bases)-2))
+  //   majorHop = pow(10, num_digits(n_bases)-1);
+  // else
+  //   majorHop = 5 * pow(10, num_digits(n_bases)-2);
+
+  // if (n_bases <= pow(10, num_digits(n_bases)-1))
+  //   majorHop = 5 * pow(10, num_digits(n_bases)-2);
+  // else
+  //   majorHop = pow(10, num_digits(n_bases)-1);
+
   float minorHop = majorHop / n_subranges;
 
 
-cerr<<get_index(get_point(1003201));
+// cerr<<get_index(get_point(1003201));
 
 
       // cerr<<minorHop<<'\n';
@@ -1145,6 +1158,9 @@ cerr<<get_index(get_point(1003201));
 // if (get_point(hop * n_subranges) < 64)
 //   hop = 
 
+      line->y1 += majorTickSize/2;
+      
+u8 percent = 0;
   for (float pos=minorHop; pos <= n_bases; pos+=minorHop) {
     line->x1 = line->x2 = x + get_point((u64)pos) + line->stroke_width/2;
 
@@ -1161,6 +1177,12 @@ cerr<<get_index(get_point(1003201));
       text->x = line->x1;
       text->y = line->y2 - tickLabelSkip;
       text->Label = human_readable(pos);
+      text->plot(f);
+
+      percent += 10;
+      text->x = line->x1;
+      text->y = line->y1 + tickLabelSkip;
+      text->Label = to_string(percent) + " %";
       text->plot(f);
     }
     else {  // Minor ticks
