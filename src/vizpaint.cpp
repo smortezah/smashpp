@@ -1095,24 +1095,32 @@ const vector<Position>& pos, u64 maxBases, string&& type) {
 
 inline void VizPaint::plot_pos_axes (ofstream& f, VizParam& par, u64 n_bases) {
   const auto  maxPos           = get_point(n_bases);
-  const u8    n_subranges      = 3;
+  const u8    n_subranges      = 2;
   const u16   minorTickSize    = 7,
-              majorTickSize    = 1.75*minorTickSize,
+              majorTickSize    = 1.7*minorTickSize,
               tickLabelSkip    = 8,
               vertSkip         = 13;
   const float minorStrokeWidth = 0.8f,
               majorStrokeWidth = 1.9*minorStrokeWidth;
 
   auto line = make_unique<Line>();
-  line->stroke_width = majorStrokeWidth;
+  line->stroke_width = minorStrokeWidth;
   auto text = make_unique<Text>();
   text->font_size = 9;
 
-  // line->x1 = x;
-  // line->x2 = x + maxPos;
-  line->y1 = line->y2 
-           = y - TITLE_SPACE - 2*(VERT_TUNE+chromHeight/VERT_RATIO) - vertSkip;
+  line->x1 = x;
+  line->x2 = x + maxPos + 0.75*line->stroke_width;
+  line->y1 = line->y2 = y - TITLE_SPACE - vertSkip -
+    (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+chromHeight/VERT_RATIO);
   // line->plot(f);
+
+  text->x = line->x1;
+  text->y = line->y1 - majorTickSize - tickLabelSkip;
+  text->text_anchor = "start";
+  text->font_weight = "bold";
+  text->font_size = 10;
+  text->Label = "bp";
+  text->plot(f);
 
   // Ticks
   line->y1 -= line->stroke_width/2;
@@ -1147,6 +1155,9 @@ cerr<<get_index(get_point(1003201));
       line->y2 = line->y1 - majorTickSize;
       line->plot(f);
 
+      text->text_anchor = "middle";
+      text->font_weight = "normal";
+      text->font_size = 9;
       text->x = line->x1;
       text->y = line->y2 - tickLabelSkip;
       text->Label = human_readable(pos);
