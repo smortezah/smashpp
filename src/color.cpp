@@ -1,5 +1,4 @@
 #include "color.hpp"
-// using namespace smashpp;
 
 namespace smashpp {
 // Global functions

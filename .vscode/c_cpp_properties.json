@@ -3,18 +3,29 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        },
+        {
+            "name": "MinGW",
+            "includePath": [
                 "${workspaceFolder}",
                 "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/c++/4.8",
                 "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/x86_64-linux-gnu/c++/4.8",
                 "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "C:/mingw64/bin/gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "msvc-x64"
         }
     ],
+    
     "version": 4
 }
