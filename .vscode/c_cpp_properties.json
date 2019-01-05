@@ -9,23 +9,32 @@
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-x64"
+            "intelliSenseMode": "clang-x64"
         },
         {
-            "name": "MinGW",
+            "name": "Win32",
             "includePath": [
                 "${workspaceFolder}",
                 "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/c++/4.8",
                 "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/x86_64-linux-gnu/c++/4.8",
                 "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include"
             ],
-            "defines": [],
-            "compilerPath": "C:/mingw64/bin/gcc.exe",
-            "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "msvc-x64"
+            "defines": [
+                "_DEBUG",
+                "UNICODE"
+            ],
+            "compilerPath": "C:\\mingw-w64\\bin\\gcc.exe",
+            "intelliSenseMode": "clang-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "configurationProvider": "vector-of-bool.cmake-tools",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
         }
     ],
-    
     "version": 4
 }

@@ -2,6 +2,7 @@
 #define PROJECT_NUMBER_HPP
 
 #include <cmath>
+#include <typeinfo>
 #include "def.hpp"
 #include "exception.hpp"
 

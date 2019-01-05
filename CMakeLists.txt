@@ -1,5 +1,5 @@
-project(smashpp)
 cmake_minimum_required(VERSION 3.3.2)
+project(smashpp)
 # set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall")
