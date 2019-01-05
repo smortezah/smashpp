@@ -15,6 +15,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}",
+                "${workspaceFolder}/src",
                 "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/c++/4.8",
                 "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/x86_64-linux-gnu/c++/4.8",
                 "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include"
@@ -32,8 +33,7 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             },
-            "configurationProvider": "vector-of-bool.cmake-tools",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+            "configurationProvider": "vector-of-bool.cmake-tools"
         }
     ],
     "version": 4
