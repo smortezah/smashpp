@@ -1,7 +1,7 @@
 #include "color.hpp"
-using namespace smashpp;
+// using namespace smashpp;
 
-// namespace smashpp {
+namespace smashpp {
 // Global functions
 inline bool is_hex (const string& color) {
   if (color.front()!='#' || color.size()!=7)          return false;
@@ -95,4 +95,4 @@ inline RGB tone (const RGB& color, float alpha) {
 inline string tone (const string& color, float alpha) {
   return to_hex(alpha_blend(to_rgb(color), to_rgb("grey"), alpha));
 }
-// }
+}
