@@ -4,7 +4,6 @@
 #include "number.hpp"
 using namespace smashpp;
 
-// todo
 void VizPaint::plot (VizParam& p) {
   check_file(p.posFile);
   ifstream fPos (p.posFile);
