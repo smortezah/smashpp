@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include "exception.hpp"
 
-namespace smashpp { //
+namespace smashpp {
 template <typename Value>
 class ValRange {
  public:

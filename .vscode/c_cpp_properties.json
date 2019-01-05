@@ -3,7 +3,11 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}",
+                "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/c++/4.8",
+                "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/x86_64-linux-gnu/c++/4.8",
+                "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
