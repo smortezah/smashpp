@@ -51,7 +51,11 @@
         "optional": "cpp",
         "string_view": "cpp",
         "algorithm": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "condition_variable": "cpp",
+        "future": "cpp",
+        "mutex": "cpp",
+        "shared_mutex": "cpp"
     },
     "python.pythonPath": "/usr/bin/python3",
     "git.postCommitCommand": "push",

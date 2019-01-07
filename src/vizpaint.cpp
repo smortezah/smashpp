@@ -51,12 +51,13 @@ void VizPaint::plot (VizParam& p) {
 
   make_posNode(pos, p, "ref");
   if (p.showPos)
-    plot_pos_axes(fPlot, p, n_refBases);
+    plot_pos(fPlot, p, n_refBases, true);
     // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
 
   make_posNode(pos, p, "tar");
   if (p.showPos)
-    print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
+    plot_pos(fPlot, p, n_tarBases, false);
+  //   print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
 
   if (p.showPos)
     if (!plottable)  error("not plottable positions.");
@@ -941,166 +942,167 @@ const VizParam& par, string&& type) {
   lastPos.emplace_back(nodes.back().position);
 }
 
-inline void VizPaint::print_pos (ofstream& fPlot, VizParam& par, 
-const vector<Position>& pos, u64 maxBases, string&& type) {
-  auto   text = make_unique<Text>();
-  string line, lastLine;
-  i64    printPos  = 0;
-  char   printType = 'b';
-  u64    nOverlap  = 0;
-  double shiftY    = 4;
-  if (par.showNRC && par.showRedun)
-    shiftY += 2 * (VERT_TUNE + chromHeight/VERT_RATIO);
-  else if (par.showNRC ^ par.showRedun)
-    shiftY += VERT_TUNE + chromHeight/VERT_RATIO;
-  double CY=y;
-  type=="ref" ? CY-=shiftY : CY+=chromHeight+innerSpace+chromHeight+shiftY;
+// inline void VizPaint::print_pos (ofstream& fPlot, VizParam& par, 
+// const vector<Position>& pos, u64 maxBases, string&& type) {
+//   auto   text = make_unique<Text>();
+//   string line, lastLine;
+//   i64    printPos  = 0;
+//   char   printType = 'b';
+//   u64    nOverlap  = 0;
+//   double shiftY    = 4;
+//   if (par.showNRC && par.showRedun)
+//     shiftY += 2 * (VERT_TUNE + chromHeight/VERT_RATIO);
+//   else if (par.showNRC ^ par.showRedun)
+//     shiftY += VERT_TUNE + chromHeight/VERT_RATIO;
+//   double CY=y;
+//   type=="ref" ? CY-=shiftY : CY+=chromHeight+innerSpace+chromHeight+shiftY;
 
-  const auto set_dominantBaseline = [&](char type) {
-    switch (type) {
-    case 'b':  text->dominant_baseline="text-before-edge";  break;
-    case 'm':  text->dominant_baseline="middle";            break;
-    case 'e':  text->dominant_baseline="text-after-edge";   break;
-    default:   text->dominant_baseline="middle";            break;
-    }
-  };
+//   const auto set_dominantBaseline = [&](char type) {
+//     switch (type) {
+//     case 'b':  text->dominant_baseline="text-before-edge";  break;
+//     case 'm':  text->dominant_baseline="middle";            break;
+//     case 'e':  text->dominant_baseline="text-after-edge";   break;
+//     default:   text->dominant_baseline="middle";            break;
+//     }
+//   };
 
-  const auto print_pos_ref = 
-    [&](ofstream& f, unique_ptr<Text>& text, char c='\0') {
-    text->text_anchor = "end";
-    text->y -= 5;
-    switch (c) {
-      case 'b':  text->dominant_baseline = "hanging";   break;  // begin
-      case 'm':  text->dominant_baseline = "middle";    break;  // middle
-      case 'e':  text->dominant_baseline = "baseline";  break;  // end
-      default:                                          break;
-    }
-    text->font_size = 9;
-    text->plot(f);
-  };
+//   const auto print_pos_ref = 
+//     [&](ofstream& f, unique_ptr<Text>& text, char c='\0') {
+//     text->text_anchor = "end";
+//     text->y -= 5;
+//     switch (c) {
+//       case 'b':  text->dominant_baseline = "hanging";   break;  // begin
+//       case 'm':  text->dominant_baseline = "middle";    break;  // middle
+//       case 'e':  text->dominant_baseline = "baseline";  break;  // end
+//       default:                                          break;
+//     }
+//     text->font_size = 9;
+//     text->plot(f);
+//   };
 
-  const auto print_pos_tar =
-    [&](ofstream& f, unique_ptr<Text>& text, char c='\0') {
-    text->text_anchor = "start";
-    text->y += 5;
-    switch (c) {
-      case 'b':  text->dominant_baseline = "hanging";   break;  // begin
-      case 'm':  text->dominant_baseline = "middle";    break;  // middle
-      case 'e':  text->dominant_baseline = "baseline";  break;  // end
-      default:                                          break;
-    }
-    text->font_size = 9;
-    text->plot(f);
-  };
+//   const auto print_pos_tar =
+//     [&](ofstream& f, unique_ptr<Text>& text, char c='\0') {
+//     text->text_anchor = "start";
+//     text->y += 5;
+//     switch (c) {
+//       case 'b':  text->dominant_baseline = "hanging";   break;  // begin
+//       case 'm':  text->dominant_baseline = "middle";    break;  // middle
+//       case 'e':  text->dominant_baseline = "baseline";  break;  // end
+//       default:                                          break;
+//     }
+//     text->font_size = 9;
+//     text->plot(f);
+//   };
 
-  for (auto it=nodes.begin(); it<nodes.end()-1; ++it) {
-    if ((it->type=='b' && (it+1)->type=='b') ||
-        (it->type=='e' && (it+1)->type=='e')) {
-      if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
-        if (++nOverlap == 1) {
-          if (it->start == (it+1)->start) {
-            printPos  = (it->position + (it+1)->position) / 2;
-            printType = 'm';
-          } else {
-            printPos  = it->position;
-            printType = it->type;
-          }
-        }
-        line    += tspan(it->start, it->position);
-        lastLine = tspan((it+1)->start, (it+1)->position);
-      }
-      else {
-        if (nOverlap == 0) {
-          printPos  = it->position;
-          printType = it->type;
-        }
-        nOverlap = 0;
-      }
-    }
-    else if (it->type=='b' && (it+1)->type=='e') {
-      if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
-        if (++nOverlap == 1) {
-          if (it->start == (it+1)->start) {
-            printPos  = (it->position + (it+1)->position) / 2;
-            printType = 'm';
-          } else {
-            printPos  = (it->position + (it+1)->position) / 2;
-            printType = 'm';
-          }
-        }
-        line    += tspan(it->start, it->position);
-        lastLine = tspan((it+1)->start, (it+1)->position);
-      }
-      else {
-        if (nOverlap == 0) {
-          printPos  = it->position;
-          printType = it->type;
-        }
-        nOverlap = 0;
-      }
-    }
-    else if (it->type=='e' && (it+1)->type=='b') {
-      if (nOverlap == 0) {
-        printPos  = it->position;
-        printType = it->type;
-      }
-      nOverlap = 0;
-    }
+//   for (auto it=nodes.begin(); it<nodes.end()-1; ++it) {
+//     if ((it->type=='b' && (it+1)->type=='b') ||
+//         (it->type=='e' && (it+1)->type=='e')) {
+//       if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
+//         if (++nOverlap == 1) {
+//           if (it->start == (it+1)->start) {
+//             printPos  = (it->position + (it+1)->position) / 2;
+//             printType = 'm';
+//           } else {
+//             printPos  = it->position;
+//             printType = it->type;
+//           }
+//         }
+//         line    += tspan(it->start, it->position);
+//         lastLine = tspan((it+1)->start, (it+1)->position);
+//       }
+//       else {
+//         if (nOverlap == 0) {
+//           printPos  = it->position;
+//           printType = it->type;
+//         }
+//         nOverlap = 0;
+//       }
+//     }
+//     else if (it->type=='b' && (it+1)->type=='e') {
+//       if ((it+1)->position - it->position < PAINT_SHORT * maxBases) {
+//         if (++nOverlap == 1) {
+//           if (it->start == (it+1)->start) {
+//             printPos  = (it->position + (it+1)->position) / 2;
+//             printType = 'm';
+//           } else {
+//             printPos  = (it->position + (it+1)->position) / 2;
+//             printType = 'm';
+//           }
+//         }
+//         line    += tspan(it->start, it->position);
+//         lastLine = tspan((it+1)->start, (it+1)->position);
+//       }
+//       else {
+//         if (nOverlap == 0) {
+//           printPos  = it->position;
+//           printType = it->type;
+//         }
+//         nOverlap = 0;
+//       }
+//     }
+//     else if (it->type=='e' && (it+1)->type=='b') {
+//       if (nOverlap == 0) {
+//         printPos  = it->position;
+//         printType = it->type;
+//       }
+//       nOverlap = 0;
+//     }
 
-    if (nOverlap == 0) {
-      lastLine = tspan(it->start, it->position);
-      string finalLine {line+lastLine};
-      sort_merge(finalLine);
+//     if (nOverlap == 0) {
+//       lastLine = tspan(it->start, it->position);
+//       string finalLine {line+lastLine};
+//       sort_merge(finalLine);
 
-      // text->font_weight = "bold";
-      set_dominantBaseline(printType);
-      text->Label  = finalLine;
-      text->x = x + get_point(printPos);
-      text->y = CY;
-      type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
+//       // text->font_weight = "bold";
+//       set_dominantBaseline(printType);
+//       text->Label  = finalLine;
+//       text->x = x + get_point(printPos);
+//       text->y = CY;
+//       type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
 
-      line.clear();
-      lastLine.clear();
+//       line.clear();
+//       lastLine.clear();
 
-      // Last
-      if (it+2 == nodes.end()) {
-        finalLine = tspan((it+1)->start, (it+1)->position);
-        sort_merge(finalLine);
-        printPos = (it+1)->position;
+//       // Last
+//       if (it+2 == nodes.end()) {
+//         finalLine = tspan((it+1)->start, (it+1)->position);
+//         sort_merge(finalLine);
+//         printPos = (it+1)->position;
 
-        text->dominant_baseline="text-after-edge";
-        text->Label  = finalLine;
-        text->x = x + get_point(printPos);
-        text->y = CY;
-        type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
-      }
-    }
+//         text->dominant_baseline="text-after-edge";
+//         text->Label  = finalLine;
+//         text->x = x + get_point(printPos);
+//         text->y = CY;
+//         type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
+//       }
+//     }
     
-    if (it+2==nodes.end() && nOverlap!=0) {
-      lastLine = tspan((it+1)->start, (it+1)->position);
-      string finalLine {line+lastLine};
-      sort_merge(finalLine);
+//     if (it+2==nodes.end() && nOverlap!=0) {
+//       lastLine = tspan((it+1)->start, (it+1)->position);
+//       string finalLine {line+lastLine};
+//       sort_merge(finalLine);
 
-      // text->font_weight = "bold";
-      set_dominantBaseline(printType);
-      text->Label  = finalLine;
-      text->x = x + get_point(printPos);
-      text->y = CY;
-      type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
-      break;
-    }
-  } // for
-}
+//       // text->font_weight = "bold";
+//       set_dominantBaseline(printType);
+//       text->Label  = finalLine;
+//       text->x = x + get_point(printPos);
+//       text->y = CY;
+//       type=="ref" ? print_pos_ref(fPlot, text) : print_pos_tar(fPlot, text);
+//       break;
+//     }
+//   } // for
+// }
 
-inline void VizPaint::plot_pos_axes (ofstream& f, VizParam& par, u64 n_bases) {
+inline void VizPaint::plot_pos (ofstream& f, VizParam& par, u64 n_bases, 
+bool plotRef) {
   const auto  maxPos           = get_point(n_bases);
   const u8    n_subranges      = 2;
-  const u16   minorTickSize    = 7,
-              majorTickSize    = 1.7*minorTickSize,
+  const u16   minorTickSize    = 6,
+              majorTickSize    = 1.6*minorTickSize,
               tickLabelSkip    = 8,
               vertSkip         = 13;
   const float minorStrokeWidth = 0.8f,
-              majorStrokeWidth = 1.9*minorStrokeWidth;
+              majorStrokeWidth = 1.6*minorStrokeWidth;
 
   auto line = make_unique<Line>();
   line->stroke_width = minorStrokeWidth;
@@ -1109,111 +1111,60 @@ inline void VizPaint::plot_pos_axes (ofstream& f, VizParam& par, u64 n_bases) {
 
   line->x1 = x;
   line->x2 = x + maxPos + 0.75*line->stroke_width;
-  line->y1 = line->y2 = y - TITLE_SPACE - vertSkip -
-    (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+chromHeight/VERT_RATIO);
-  // line->plot(f);
+  if (plotRef)
+    line->y1 = line->y2 = y - TITLE_SPACE - vertSkip -
+      (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+chromHeight/VERT_RATIO) -
+      majorTickSize;
+  else
+    line->y1 = line->y2 = y + 2*chromHeight + innerSpace + TITLE_SPACE +
+      vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
+      (VERT_TUNE+chromHeight/VERT_RATIO) + majorTickSize;
+  line->plot(f);
 
   text->text_anchor = "start";
   text->font_weight = "bold";
   text->font_size = 10;
   text->x = line->x1;
-  text->y = line->y1 - majorTickSize - tickLabelSkip;
+  text->y = plotRef ? line->y1 + tickLabelSkip : line->y1 - tickLabelSkip;
   text->Label = "bp";
   text->plot(f);
 
-  // text->x = line->x1;
-  // text->y = line->y1 + tickLabelSkip;
-  // text->Label = "bp %";
-  // text->plot(f);
+  const u64 oneTenth = n_bases / 10,
+            tens = POW10[num_digits(oneTenth) - 1],
+            divInt = oneTenth / tens;
+  double divDouble = double(oneTenth) / tens;
 
-  // Ticks
-  line->y1 -= line->stroke_width/2;
-
-
-  int tmp = n_bases / 10;
-  int tens = pow(10, num_digits(tmp)-1);
-  int divInt = tmp / tens;
-  float divFloat = float(tmp) / tens;
-  if (float(divInt) != divFloat) {
-    float roundHalfUp = divInt + 0.5;
-    if (divFloat <= roundHalfUp)
-      divFloat = roundHalfUp;
-    else
-      divFloat = roundHalfUp + 0.5;
+  if (double(divInt) != divDouble) {
+    const double roundHalfUp = divInt + 0.5;
+    divDouble = (divDouble<=roundHalfUp) ? roundHalfUp : roundHalfUp+0.5;
   }
 
-  float majorHop = divFloat * tens;
+  float majorHop = divDouble * tens,
+        minorHop = majorHop / n_subranges;
 
+  for (float pos=0; pos <= n_bases; pos+=minorHop) {
+    line->x1 = line->x2 = x + get_point((u64)pos);
 
-  // float majorHop = n_bases / 10;
-  // float majorHop;
-  // if (par.tick==0)  majorHop = par.tick;
-  // majorHop = 100;
-
-  // if (n_bases/10 > 5 * pow(10, num_digits(n_bases)-2))
-  //   majorHop = pow(10, num_digits(n_bases)-1);
-  // else
-  //   majorHop = 5 * pow(10, num_digits(n_bases)-2);
-
-  // if (n_bases <= pow(10, num_digits(n_bases)-1))
-  //   majorHop = 5 * pow(10, num_digits(n_bases)-2);
-  // else
-  //   majorHop = pow(10, num_digits(n_bases)-1);
-
-  float minorHop = majorHop / n_subranges;
-
-
-// cerr<<get_index(get_point(1003201));
-
-
-      // cerr<<minorHop<<'\n';
-
-
-// if (get_point(hop * n_subranges) < 64)
-//   hop = 
-
-      // line->y1 += majorTickSize/2;
-      
-// u8 percent = 0;
-  for (float pos=minorHop; pos <= n_bases; pos+=minorHop) {
-    line->x1 = line->x2 = x + get_point((u64)pos) + line->stroke_width/2;
-
-// cerr<<pos<<' ';
-
-    if ((u64)pos % (u64)majorHop == 0) {  // Major ticks
-      line->stroke_width = majorStrokeWidth;
-      line->y2 = line->y1 - majorTickSize;
-      line->plot(f);
+     if ((u64)pos % (u64)majorHop == 0) {  // Major ticks
+       line->stroke_width = majorStrokeWidth;
+       line->y2 = plotRef ? line->y1 + majorTickSize : line->y1 - majorTickSize;
+       if (pos != 0.0f) {
+         line->plot(f);
+       }
 
       text->text_anchor = "middle";
       text->font_weight = "normal";
-      text->font_size = 9;
+      text->font_size = (n_bases < POW10[7]) ? 9 : 8.5;
       text->x = line->x1;
-      text->y = line->y2 - tickLabelSkip;
-      text->Label = human_readable(pos);
+      text->y = plotRef ? line->y1 - tickLabelSkip : line->y1 + tickLabelSkip;
+      // text->Label = human_readable_non_cs(pos);
+      text->Label = thousands_sep(u64(pos));
       text->plot(f);
-
-      // percent += 10;
-      // text->x = line->x1;
-      // text->y = line->y1 + tickLabelSkip;
-      // text->Label = to_string(percent) + " %";
-      // text->plot(f);
     }
     else {  // Minor ticks
       line->stroke_width = minorStrokeWidth;
-      line->y2 = line->y1 - minorTickSize;
+      line->y2 = plotRef ? line->y1 + minorTickSize : line->y1 - minorTickSize;
       line->plot(f);
     }
   }
-
-  // // Last tick (major)
-  // line->stroke_width = majorStrokeWidth;
-  // line->x1 = line->x2 = x + maxPos - line->stroke_width/2;
-  // line->y2 = line->y1 - majorTickSize;
-  // line->plot(f);
-
-  // text->x = line->x1;
-  // text->y = line->y2 - tickLabelSkip;
-  // text->Label = human_readable(n_bases);
-  // text->plot(f);
 }

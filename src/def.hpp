@@ -13,7 +13,7 @@ using namespace std;
 namespace smashpp {
 // Version
 static const string SMASHPP   {"SMASHPP"};
-static const string VERSION   {"18.12"};
+static const string VERSION   {"19.01"};
 static const string DEV_YEARS {"2018-2019"};
 
 // Typedef
@@ -181,6 +181,11 @@ static constexpr u64 POW5[23] {
        244140625,      1220703125,       6103515625,    30517578125,
     152587890625,    762939453125,    3814697265625, 19073486328125,
   95367431640625, 476837158203125, 2384185791015625
+};
+static constexpr u64 POW10[13] {
+              1,       10,       100,       1000,       10000,       100000,//#6
+        1000000, 10000000, 100000000, 1000000000, 10000000000, 100000000000, 
+  1000000000000
 };
 static constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3  n,N=0
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,             // #20

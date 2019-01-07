@@ -67,8 +67,8 @@ class VizPaint {
   void save_n_pos (const string&) const;
   void read_pos (ifstream&, vector<Position>&, VizParam&);
   void make_posNode (const vector<Position>&, const VizParam&, string&&);
-  void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
-  void plot_pos_axes (ofstream&, VizParam&, u64);
+  // void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
+  void plot_pos (ofstream&, VizParam&, u64, bool);
 };
 }
 
