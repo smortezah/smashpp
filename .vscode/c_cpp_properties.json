@@ -15,10 +15,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}",
-                "${workspaceFolder}/src",
-                "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/c++/4.8",
-                "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include/x86_64-linux-gnu/c++/4.8",
-                "C:/Users/Utilizador/AppData/Local/lxss/rootfs/usr/include"
+                "${workspaceFolder}/src"
             ],
             "defines": [
                 "_DEBUG",
