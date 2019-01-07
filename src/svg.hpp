@@ -218,6 +218,7 @@ template <typename T, typename... Ts>
 void make_pattern (ofstream& file, unique_ptr<Pattern>& pattern, 
 unique_ptr<T>& figBase, unique_ptr<Ts...>& fig) {
   auto defs = make_unique<Defs>();
+  // defs->id = pattern->id;//todo
   defs->set_head(file);
   pattern->set_head(file);
   figBase->plot(file);

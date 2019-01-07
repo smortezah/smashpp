@@ -361,7 +361,7 @@ void VizPaint::plot (VizParam& p) {
   cylinder->y = y + chromHeight;
   cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
                         to_string(cylinder->y) + ")";
-  cylinder->plot(fPlot);
+  // cylinder->plot(fPlot);
 
   cylinder->height = tarSize;
   cylinder->x = x;
@@ -517,14 +517,16 @@ inline void VizPaint::print_header (ofstream& f) const {
   pattern->height = 7;
 
   auto path = make_unique<Path>();
+  // path->id = pattern->id;
   path->fill = "transparent";
   path->stroke_width = 0.75;
-  path->d = path->m(0, 0) + 
-            path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
+  path->d = path->M(0, 0) + 
+            path->q(0, 1.5*ry, pattern->width, 0);
+            // path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
   path->stroke = "black";
   make_pattern(f, pattern, path);
 
-  pattern->id = "WavyWhite";
+  /*path->id =*/ pattern->id = "WavyWhite";
   path->stroke = "white";
   make_pattern(f, pattern, path);
 }
@@ -1122,6 +1124,7 @@ bool plotRef) {
   line->plot(f);
 
   text->text_anchor = "start";
+  text->dominant_baseline = "middle";
   text->font_weight = "bold";
   text->font_size = 10;
   text->x = line->x1;
@@ -1145,14 +1148,15 @@ bool plotRef) {
   for (float pos=0; pos <= n_bases; pos+=minorHop) {
     line->x1 = line->x2 = x + get_point((u64)pos);
 
-     if ((u64)pos % (u64)majorHop == 0) {  // Major ticks
-       line->stroke_width = majorStrokeWidth;
-       line->y2 = plotRef ? line->y1 + majorTickSize : line->y1 - majorTickSize;
-       if (pos != 0.0f) {
-         line->plot(f);
-       }
+    if ((u64)pos % (u64)majorHop == 0) {  // Major ticks
+      line->stroke_width = majorStrokeWidth;
+      line->y2 = plotRef ? line->y1 + majorTickSize : line->y1 -majorTickSize;
+      if (pos != 0.0f) {
+        line->plot(f);
+        text->text_anchor = "middle";
+      } else 
+        text->text_anchor = "start";
 
-      text->text_anchor = "middle";
       text->font_weight = "normal";
       text->font_size = (n_bases < POW10[7]) ? 9 : 8.5;
       text->x = line->x1;
