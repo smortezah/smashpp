@@ -77,6 +77,14 @@ inline static string fixed_precision (T value) {
 inline static u8 num_digits (u64 number) {
   return number==0 ? 1 : log10(static_cast<double>(number)) + 1;
 }
+
+template <typename T>
+inline static string thousands_sep (T number) {
+  ostringstream ss;
+  ss.imbue(std::locale("en_US.UTF-8"));
+  ss << number;
+  return ss.str();
+}
 }
 
 #endif //PROJECT_NUMBER_HPP

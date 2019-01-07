@@ -23,9 +23,9 @@ inline void Filter::set_wsize (const Param& p) {
     case FilterScale::M:  wsize=pow(2, 2*lg+1) + 1;  break;
     case FilterScale::L:  wsize=pow(2, 2*lg+2) + 1;  break;
     }
-  } 
+  }
   else {
-    if (!is_odd(wsize))  wsize+=1;
+    wsize = is_odd(p.wsize) ? p.wsize : p.wsize+1;
   }
 
   window.resize(wsize);
@@ -41,7 +41,7 @@ inline void Filter::show_info (const Param& p) const {
   const auto toprule = [&]() { rule(tblWidth, "~"); };
   const auto midrule = [&]() { rule(tblWidth, "~"); };
   const auto botrule = [&]() { rule(tblWidth, " "); };
-  const auto label   = [&](const string& s){ cerr<<setw(lblWidth) <<left<<s;  };
+  const auto label   = [&](const string& s){ cerr<<setw(lblWidth)  <<left<<s; };
   const auto header  = [&](const string& s){ cerr<<setw(2*colWidth)<<left<<s; };
   const auto filter_vals = [&](char c) {
     cerr << setw(colWidth) << left;
