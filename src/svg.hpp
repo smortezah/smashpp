@@ -123,7 +123,7 @@ class Cylinder : public SVG {
     stroke_opacity(1.0f), stroke("black"), fill("transparent"), 
     stroke_lineJoin("round") {}
   void plot (ofstream&) const;
-  void plot_ir (ofstream&, string&& =std::move("#Wavy"));
+  void plot_ir (ofstream&, const string& ="Wavy");
   void plot_periph (ofstream&, char=' ', u8=0);
 };
 
@@ -132,7 +132,7 @@ class Rectangle : public SVG {
   float  x, y, width, height, rx, ry, fill_opacity, stroke_width;
   string fill, stroke;
 
-  Rectangle () : ry(1.0f), fill_opacity(OPAC) {}
+  Rectangle () : rx(1.0f), ry(1.0f), fill_opacity(OPAC) {}
   void plot (ofstream&) const;
 };
 

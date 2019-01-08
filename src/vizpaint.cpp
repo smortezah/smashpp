@@ -25,7 +25,7 @@ void VizPaint::plot (VizParam& p) {
 
   svg->width = maxSize + Paint_Extra;
   svg->height = 2*y + 2*chromHeight + innerSpace;
-  print_header(fPlot);
+  svg->print_header(fPlot);
 
   auto poly = make_unique<Polygon>();
   auto text = make_unique<Text>();
@@ -368,7 +368,7 @@ void VizPaint::plot (VizParam& p) {
   cylinder->y = y + 2*chromHeight + innerSpace;
   cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
                         to_string(cylinder->y) + ")";
-  cylinder->plot(fPlot);
+  // cylinder->plot(fPlot);
 
   // Plot title, legend and annotation
   plot_title(fPlot, ref, tar);
@@ -376,7 +376,7 @@ void VizPaint::plot (VizParam& p) {
   // if (p.showAnnot)//todo
     plot_annot(fPlot, max(n_refBases,n_tarBases), p.showNRC, p.showRedun);
 
-  print_tailer(fPlot);
+  svg->print_tailer(fPlot);
 
   // Log
   cerr << "Plotting finished.\n";
@@ -502,37 +502,6 @@ inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
   // return heatmap_color(entropy/2 * (width+space+width));
 #endif
   return nrc_color(entropy, colorMode);
-}
-
-inline void VizPaint::print_header (ofstream& f) const {
-  svg->print_header(f);
-
-  // Patterns
-  auto pattern = make_unique<Pattern>();
-  pattern->id = "Wavy";
-  pattern->patternUnits = "userSpaceOnUse";
-  pattern->x = chromHeight/2 - 2;
-  pattern->y = y + chromHeight + innerSpace;
-  pattern->width = chromHeight;
-  pattern->height = 7;
-
-  auto path = make_unique<Path>();
-  // path->id = pattern->id;
-  path->fill = "transparent";
-  path->stroke_width = 0.75;
-  path->d = path->M(0, 0) + 
-            path->q(0, 1.5*ry, pattern->width, 0);
-            // path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
-  path->stroke = "black";
-  make_pattern(f, pattern, path);
-
-  /*path->id =*/ pattern->id = "WavyWhite";
-  path->stroke = "white";
-  make_pattern(f, pattern, path);
-}
-
-inline void VizPaint::print_tailer (ofstream& f) const {
-  svg->print_tailer(f);
 }
 
 template <typename Value>

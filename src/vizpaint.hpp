@@ -51,8 +51,6 @@ class VizPaint {
   auto rgb_color (u32) const -> string;
   auto nrc_color (double, u32) const -> string;
   auto redun_color (double, u32) const -> string;
-  void print_header (ofstream&) const;
-  void print_tailer (ofstream&) const;
   template <typename Value>
   auto get_point (Value) const -> double;
   auto get_index (double point) const -> u64;
