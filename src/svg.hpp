@@ -83,11 +83,12 @@ class Ellipse : public SVG {
 
 class Path : public SVG {
  public:
-  string id, d, fill, stroke, stroke_lineJoin, stroke_dasharray, transform,
-         filter;
+  string id, d, fill, stroke, stroke_lineJoin, stroke_linecap, stroke_dasharray,
+         transform, filter;
   float  fill_opacity, stroke_opacity, stroke_width;
 
-  Path () : fill("transparent"), stroke_lineJoin("round"), filter(""), fill_opacity(OPAC),
+  Path () : fill("transparent"), stroke_lineJoin("round"), 
+    stroke_linecap("butt"), filter(""), fill_opacity(OPAC),
     stroke_opacity(1.0f), stroke_width(1.0f) {}
   auto M (float, float)                              const -> string;
   auto m (float, float)                              const -> string;

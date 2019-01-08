@@ -20,8 +20,7 @@ void VizPaint::plot (VizParam& p) {
   config(p.width, p.space, p.mult, n_refBases, n_tarBases);
 
   auto Paint_Extra = PAINT_EXTRA;
-  // if (p.showAnnot)//todo
-    Paint_Extra+=30;
+  Paint_Extra+=30;
 
   svg->width = maxSize + Paint_Extra;
   svg->height = 2*y + 2*chromHeight + innerSpace;
@@ -50,17 +49,14 @@ void VizPaint::plot (VizParam& p) {
   read_pos(fPos, pos, p);
 
   make_posNode(pos, p, "ref");
-  if (p.showPos)
-    plot_pos(fPlot, p, n_refBases, true);
-    // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
+  plot_pos(fPlot, p, n_refBases, true);
+  // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
 
   make_posNode(pos, p, "tar");
-  if (p.showPos)
-    plot_pos(fPlot, p, n_tarBases, false);
-  //   print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
+  plot_pos(fPlot, p, n_tarBases, false);
+  // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
 
-  if (p.showPos)
-    if (!plottable)  error("not plottable positions.");
+  if (!plottable)  error("not plottable positions.");
 
   // Plot
   u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignore=0;
@@ -356,40 +352,50 @@ void VizPaint::plot (VizParam& p) {
   auto cylinder = make_unique<Cylinder>();
   cylinder->width = chromHeight;
   cylinder->height = refSize;
-  cylinder->stroke_width = 2;
+  cylinder->stroke_width = 1.25;
   cylinder->x = x;
   cylinder->y = y + chromHeight;
   cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
                         to_string(cylinder->y) + ")";
-  // cylinder->plot(fPlot);
+  cylinder->plot(fPlot);
 
   cylinder->height = tarSize;
   cylinder->x = x;
   cylinder->y = y + 2*chromHeight + innerSpace;
   cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
                         to_string(cylinder->y) + ")";
-  // cylinder->plot(fPlot);
+  cylinder->plot(fPlot);
 
   // Plot title, legend and annotation
   plot_title(fPlot, ref, tar);
   plot_legend(fPlot, p, max(n_refBases,n_tarBases));
-  // if (p.showAnnot)//todo
-    plot_annot(fPlot, max(n_refBases,n_tarBases), p.showNRC, p.showRedun);
+  plot_annot(fPlot, max(n_refBases,n_tarBases), p.showNRC, p.showRedun);
 
   svg->print_tailer(fPlot);
 
   // Log
   cerr << "Plotting finished.\n";
   cerr << "Found ";
-  if (p.regular)         cerr <<         n_regular     << " regular";
-  if (n_regularSolo!=0)  cerr << ", " << n_regularSolo << " solo regular";
-  if (p.inverse)         cerr << ", " << n_inverse     << " inverted";
-  if (n_inverseSolo!=0)  cerr << ", " << n_inverseSolo << " solo inverted";
+  u8 n_pluses = 0;
+  if (p.regular)         ++n_pluses;
+  if (n_regularSolo!=0)  ++n_pluses;
+  if (p.inverse)         ++n_pluses;
+  if (n_inverseSolo!=0)  ++n_pluses;
+  --n_pluses;
+  
+  if (p.regular)         cerr << n_regular     << " regular";
+  if (n_pluses!=0) {     cerr << " + ";  --n_pluses; }
+  if (n_regularSolo!=0)  cerr << n_regularSolo << " solo regular";
+  if (n_pluses!=0) {     cerr << " + ";  --n_pluses; }
+  if (p.inverse)         cerr << n_inverse     << " inverted";
+  if (n_pluses!=0) {     cerr << " + ";  --n_pluses; }
+  if (n_inverseSolo!=0)  cerr << n_inverseSolo << " solo inverted";
+
   cerr << " region" <<
     (n_regular+n_regularSolo+n_inverse+n_inverseSolo>1 ? "s" : "") << ".\n";
 
   if (n_ignore!=0)
-    cerr << "Ignored " << n_ignore << " region" << (n_ignore>1 ? "s" : "") 
+    cerr << "Ignored " << n_ignore << " region" << (n_ignore>1 ? "s" : "")
          << ".\n";
   cerr << '\n';
 
