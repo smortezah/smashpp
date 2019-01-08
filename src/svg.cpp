@@ -376,10 +376,28 @@ void Cylinder::plot (ofstream& f) const {
   ellipse->plot(f);
 }
 
-void Cylinder::plot_ir (ofstream& f, string&& wave) {
+void Cylinder::plot_ir (ofstream& f, const string& wave) {
   plot(f);
 
-  fill = "url("+std::move(wave)+")";
+  // Plot pattern
+  auto pattern = make_unique<Pattern>();
+  pattern->id = wave + to_string(x) + to_string(y);
+  pattern->patternUnits = "userSpaceOnUse";
+  pattern->x = x;
+  pattern->y = y;
+  pattern->width = width;
+  pattern->height = 7;
+
+  auto path = make_unique<Path>();
+  path->fill = "transparent";
+  path->stroke_width = 0.75;
+  path->d = path->m(0, 0) + 
+            path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
+  if      (wave=="Wavy")       path->stroke = "black";
+  else if (wave=="WavyWhite")  path->stroke = "white";
+  make_pattern(f, pattern, path);
+  
+  fill = "url(#" + pattern->id + ")";
   plot(f);
 }
 
