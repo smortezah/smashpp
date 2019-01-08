@@ -68,7 +68,7 @@ class Param {  // Parameters
 
 class VizParam {
  public:
-  bool   verbose, inverse, regular, showPos, showNRC, showRedun, showAnnot;
+  bool   verbose, inverse, regular, showNRC, showRedun;
   string image;
   u8     link, colorMode;
   float  opacity;
@@ -77,10 +77,10 @@ class VizParam {
   string posFile;
   u64    tick;
 
-  VizParam () : verbose(false), inverse(true), regular(true), showPos(true),
-    showNRC(true), showRedun(true), showAnnot(true), image(IMAGE), 
-    link(LINK), colorMode(COLOR), opacity(OPAC), width(WDTH), space(SPC), 
-    mult(MULT), start(BEGN), min(MINP), manMult(false), tick(0) {}
+  VizParam () : verbose(false), inverse(true), regular(true), showNRC(true),
+    showRedun(true), image(IMAGE), link(LINK), colorMode(COLOR), opacity(OPAC),
+    width(WDTH), space(SPC), mult(MULT), start(BEGN), min(MINP), manMult(false),
+    tick(0) {}
 
   void parse (int, char**&);
 
@@ -502,10 +502,8 @@ inline void VizParam::parse (int argc, char**& argv) {
         "Space", "[]", "default", Problem::WARNING);
       range->assert(space);
     }
-    else if (*i=="-np" || *i=="--no-pos")      showPos  =false;
     else if (*i=="-nn" || *i=="--no-nrc")      showNRC  =false;
     else if (*i=="-nr" || *i=="--no-redun")    showRedun=false;
-    else if (*i=="-na" || *i=="--no-annot")    showAnnot=false;
     else if (*i=="-ni" || *i=="--no-inv")      inverse  =false;
     else if (*i=="-ng" || *i=="--no-reg")      regular  =false;
     else if (*i=="-v"  || *i=="--verbose")     verbose  =true;
@@ -543,15 +541,11 @@ inline void VizParam::help () const {
      "more information"                                                   <<'\n'
   << "  " << b("-o")  << ",  " << b("--out") << " " << ul("SVG-FILE") <<
      "        output image name (*.svg)       " << fit("OUTPUT")          <<'\n'
-  << "  " << b("-np") << ", "  << b("--no-pos") << "              "
-     "NOT show positions             " << fit("NO SHOW")                  <<'\n'
   << "  " << b("-nn") << ", "  << b("--no-nrc") << "              "
      "NOT show normalized            " << fit("NO SHOW")                  <<'\n'
   << "                             relative compression (NRC)"            <<'\n'
   << "  " << b("-nr") << ", "  << b("--no-redun") << "            "
      "NOT show self complexity       " << fit("NO SHOW")                  <<'\n'
-  << "  " << b("-na") << ", "  << b("--no-annot") << "            "
-     "NOT show annotation            " << fit("NO SHOW")                  <<'\n'
   << "  " << b("-ni") << ", "  << b("--no-inv") << "              "
      "NOT show inverse maps          " << fit("NO SHOW")                  <<'\n'
   << "  " << b("-ng") << ", "  << b("--no-reg") << "              "

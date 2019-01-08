@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "svg.hpp"
 #include "vizdef.hpp"
+#include "color.hpp"
 using namespace smashpp;
 
 string SVG::attrib (const string& name, float value, bool precise,
@@ -348,7 +349,7 @@ void Cylinder::plot (ofstream& f) const {
   path->id = to_string(x)+to_string(y);
   path->d = path->M(x, y) + path->v(height) + 
             path->a(width/2, ry, 0, 0, 0, width ,0) + path->v(-height) + 
-            path->a(width/2, ry, 0, 0, 1, -width, 0);
+            path->a(width/2, ry, 0, 0, 0 /*1*/, -width, 0) + path->z();
   path->fill = fill;
   path->fill_opacity = fill_opacity;
   path->stroke = stroke;
@@ -360,12 +361,12 @@ void Cylinder::plot (ofstream& f) const {
   auto ellipse = make_unique<Ellipse>();
   ellipse->stroke = path->stroke;
   ellipse->stroke_opacity = stroke_opacity;
-  ellipse->stroke_width = 0.5 * stroke_width;
+  ellipse->stroke_width = 0.4 * stroke_width;
   ellipse->fill = fill;
   ellipse->fill_opacity = fill_opacity;
   ellipse->cx = x + width/2;
   ellipse->cy = y;
-  ellipse->rx = width/2 + (stroke_width-ellipse->stroke_width)/2;
+  ellipse->rx = width/2 + 0.4*(stroke_width-ellipse->stroke_width);
   ellipse->ry = ry;
   ellipse->transform = transform;
   ellipse->plot(f);
@@ -386,15 +387,22 @@ void Cylinder::plot_ir (ofstream& f, const string& wave) {
   pattern->x = x;
   pattern->y = y;
   pattern->width = width;
-  pattern->height = 7;
+  pattern->height = 14;
 
   auto path = make_unique<Path>();
   path->fill = "transparent";
-  path->stroke_width = 0.75;
-  path->d = path->m(0, 0) + 
-            path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
-  if      (wave=="Wavy")       path->stroke = "black";
-  else if (wave=="WavyWhite")  path->stroke = "white";
+  path->stroke_width = 0.3 * pattern->height;
+  path->d = 
+    path->m(-path->stroke_width/2, pattern->height - path->stroke_width/2) +
+    path->l(pattern->width/2 + path->stroke_width/2, 
+            -pattern->height + path->stroke_width) + 
+    path->l(pattern->width/2 + path->stroke_width/2, 
+            pattern->height  - path->stroke_width);
+  // path->stroke_width = 1.3 * stroke_width;
+  // path->d = path->m(0, 0) + 
+  //           path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
+  if      (wave=="Wavy")       path->stroke=shade(stroke, 0.95);
+  else if (wave=="WavyWhite")  path->stroke="white";
   make_pattern(f, pattern, path);
   
   fill = "url(#" + pattern->id + ")";
