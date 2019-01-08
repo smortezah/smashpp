@@ -735,7 +735,7 @@ u8 colorMode) {
   rect->stroke = "black";
   rect->stroke_width = 0.5;
   rect->rx = rect->ry = 2;
-  rect->fill = "url(#grad"+id+")";
+  rect->fill = "url(#grad" + id + ")";
   rect->plot(f);
 
   // auto cylinder = make_unique<Cylinder>();
