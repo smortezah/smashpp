@@ -409,18 +409,27 @@ void Cylinder::plot_ir (ofstream& f, const string& wave) {
   plot(f);
 }
 
-void Cylinder::plot_periph (ofstream& f, char refTar, u8 showNRC) {
+void Cylinder::plot_periph (ofstream& f, bool vertical, char refTar, 
+u8 showNRC) {
   const auto mainOriginX = x;
   const auto mainWidth = width;
   const auto mainStrokeWidth = stroke_width;
   const auto mainRy = ry;
 
-  if (refTar=='r')
-    x = x + width + TITLE_SPACE + VERT_TUNE + 
-        showNRC*(width/VERT_RATIO + VERT_TUNE);
+  if (refTar=='r') {
+    if (vertical)
+      x = x - TITLE_SPACE/2 - (1+showNRC)*(width/VERT_RATIO + VERT_TUNE);
+    else
+      x = x + width + TITLE_SPACE + VERT_TUNE + 
+          showNRC*(width/VERT_RATIO + VERT_TUNE);
+  }
   else
-    x = x - (width/VERT_RATIO + TITLE_SPACE + VERT_TUNE + 
-        showNRC*(VERT_TUNE + width/VERT_RATIO));
+    if (vertical)
+      x = x + (TITLE_SPACE/2 + TITLE_SPACE + VERT_TUNE + 
+          showNRC*(VERT_TUNE + width/VERT_RATIO));
+    else
+      x = x - (width/VERT_RATIO + TITLE_SPACE + VERT_TUNE + 
+          showNRC*(VERT_TUNE + width/VERT_RATIO));
 
   width = width/VERT_RATIO;
   stroke_width *= 2;

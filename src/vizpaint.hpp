@@ -30,11 +30,11 @@ class VizPaint {
  public:
   float  x, y;
   string backColor;
-  float  chromHeight, innerSpace;
+  float  seqWidth, innerSpace;
   float  refSize, tarSize, maxSize;
   unique_ptr<SVG> svg;
 
-  VizPaint() : x(20.0f), y(100.0f), backColor("white"), 
+  VizPaint() : /*x(20.0f), y(100.0f),*/ backColor("white"), 
     svg(make_unique<SVG>()), ratio(1), plottable(true), ry(2.0f) {}
   void plot (VizParam&);
 
@@ -43,6 +43,7 @@ class VizPaint {
   u32   mult;
   bool  plottable;
   float ry;
+  // bool  vertical;//todo
   vector<i64>     lastPos;
   vector<PosNode> nodes;
 
@@ -54,7 +55,7 @@ class VizPaint {
   template <typename Value>
   auto get_point (Value) const -> double;
   auto get_index (double point) const -> u64;
-  void plot_title (ofstream&, const string&, const string&) const;
+  void plot_title (ofstream&, const string&, const string&, bool) const;
   void plot_legend (ofstream&, const VizParam&, i64);
   template <typename Rect>
   void plot_legend_gradient (ofstream&, const Rect&, u8);
