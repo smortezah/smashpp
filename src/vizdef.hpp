@@ -41,8 +41,8 @@ static constexpr u32  PAINT_SCALE     {100};
 static constexpr auto PAINT_SHORT     {0.035};
 static constexpr u8   PAINT_LVL_SATUR {160};
 static constexpr u8   PAINT_LVL_VAL   {160};
-static constexpr auto VERT_TUNE       {6.0f};
-static constexpr auto VERT_RATIO      {3.0f};
+static constexpr auto VERT_TUNE       {6.0f};//todo vert o vardar
+static constexpr auto VERT_RATIO      {3.0f};//todo vert o vardar
 static constexpr auto TITLE_SPACE     {16.0f};
 static constexpr auto HEAT_START      {0.35};
 static constexpr auto HEAT_ROT        {1.5};
