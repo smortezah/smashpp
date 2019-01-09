@@ -38,7 +38,6 @@ static constexpr u64  TICK            {100};  // Major tick
 static constexpr u64  MIN_TICK        {100};
 static constexpr u64  MAX_TICK        {0xffffffff};
 static constexpr u32  PAINT_SCALE     {100};
-static constexpr u32  PAINT_EXTRA     {75};
 static constexpr auto PAINT_SHORT     {0.035};
 static constexpr u8   PAINT_LVL_SATUR {160};
 static constexpr u8   PAINT_LVL_VAL   {160};

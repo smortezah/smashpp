@@ -506,6 +506,7 @@ inline void VizParam::parse (int argc, char**& argv) {
       range->assert(space);
     }
     else if (*i=="-nn" || *i=="--no-nrc")      showNRC  =false;
+    else if (*i=="-vv" || *i=="--vertical")    vertical =true;
     else if (*i=="-nr" || *i=="--no-redun")    showRedun=false;
     else if (*i=="-ni" || *i=="--no-inv")      inverse  =false;
     else if (*i=="-ng" || *i=="--no-reg")      regular  =false;
@@ -560,7 +561,7 @@ inline void VizParam::help () const {
     "opacity: [" + string_format("%.1f",MIN_OPAC) + ", " + 
     string_format("%.1f",MAX_OPAC) + "]");
   ll(bold("-w") + ",  " + bold("--width") + "   " + underline("INT"), 3, 
-    "width of the image sequence: [" + to_string(MIN_WDTH) + ", " +
+    "width of the sequence: [" + to_string(MIN_WDTH) + ", " + 
     to_string(MAX_WDTH) + "]");
   ll(bold("-s") + ",  " + bold("--space") + "   " + underline("INT"), 3, 
     "space between sequences: [" + to_string(MIN_SPC) + ", " + 

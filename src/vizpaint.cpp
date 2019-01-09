@@ -19,11 +19,22 @@ void VizPaint::plot (VizParam& p) {
   cerr << "Plotting ...\r";
   config(p.width, p.space, p.mult, n_refBases, n_tarBases);
 
-  auto Paint_Extra = PAINT_EXTRA;
-  Paint_Extra+=30;
-
-  svg->width = maxSize + Paint_Extra;
-  svg->height = 2*y + 2*chromHeight + innerSpace;
+  if (p.vertical) {
+    const auto max_n_digits = 
+      max(num_digits(n_refBases), num_digits(n_tarBases));
+    x = 100.0f;
+    if (max_n_digits > 4)   x += 17.0f;
+    if (max_n_digits > 7)   x += 17.0f;
+    if (max_n_digits > 10)  x += 17.0f;
+    y = 30.0f;
+    svg->width = 2*x + 2*seqWidth + innerSpace;
+    svg->height = maxSize + 105;
+  } else {
+    x = 20.0f;
+    y = 100.0f;
+    svg->width = maxSize + 105;
+    svg->height = 2*y + 2*seqWidth + innerSpace;
+  }
   svg->print_header(fPlot);
 
   auto poly = make_unique<Polygon>();
@@ -37,12 +48,12 @@ void VizPaint::plot (VizParam& p) {
   rect->fill = rect->stroke = backColor;
   rect->x = 0;
   rect->y = 0;
-  rect->width  = svg->width;
+  rect->width = svg->width;
   rect->height = svg->height;
   rect->plot(fPlot);
 
   // If min is set to default, reset to base max proportion
-  if (p.min==0)    p.min=static_cast<u32>(maxSize / 100);
+  if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
 
   // Read positions from file and Print them
   vector<Position> pos;
@@ -63,7 +74,6 @@ void VizPaint::plot (VizParam& p) {
   std::sort(pos.begin(), pos.end(),
     [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
 
-  // for (auto e=pos.rbegin(); e!=pos.rend(); ++e) {
   for (auto e=pos.begin(); e!=pos.end(); ++e) {
     if (abs(e->endTar-e->begTar) <= p.min) {
       ++n_ignore;    continue;
@@ -88,7 +98,7 @@ void VizPaint::plot (VizParam& p) {
       grad->plot(fPlot);
       return "url(#"+grad->id+")";
     };
-
+    
     const auto make_gradient_periph = 
       [&](const string& color, char c, const string& inId) {
       auto grad = make_unique<LinearGradient>();
@@ -104,7 +114,7 @@ void VizPaint::plot (VizParam& p) {
     };
 
     const auto plot_main = [&](auto& cylinder) {
-      cylinder->width = chromHeight;
+      cylinder->width = seqWidth;
       cylinder->stroke_width = 0.75;
       cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
     };
@@ -115,12 +125,17 @@ void VizPaint::plot (VizParam& p) {
         plot_main(cylinder);
         cylinder->height = get_point(e->endRef-e->begRef);
         cylinder->stroke = shade(rgb_color(e->start));
-        cylinder->x = x + get_point(e->begRef);
-        cylinder->y = y + chromHeight;
+        if (p.vertical) {
+          cylinder->x = x;
+          cylinder->y = y + get_point(e->begRef);
+        } else {
+          cylinder->x = x + get_point(e->begRef);
+          cylinder->y = y + seqWidth;
+          cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                                to_string(cylinder->y) + ")";
+        }
         cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
         cylinder->fill = make_gradient(rgb_color(e->start), 'r', cylinder->id);
-        cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                              to_string(cylinder->y) + ")";
         cylinder->plot(fPlot);
 
         cylinder->stroke_width = 0.7;
@@ -129,14 +144,14 @@ void VizPaint::plot (VizParam& p) {
           cylinder->fill = make_gradient_periph(
             nrc_color(e->entRef, p.colorMode), 'r', cylinder->id);
           cylinder->stroke = shade(nrc_color(e->entRef, p.colorMode), 0.96);
-          cylinder->plot_periph(fPlot, 'r');
+          cylinder->plot_periph(fPlot, p.vertical, 'r');
         }
         if (p.showRedun) {
           cylinder->id += "Redun";
           cylinder->fill = make_gradient_periph(
             redun_color(e->selfRef, p.colorMode), 'r', cylinder->id);
           cylinder->stroke = shade(redun_color(e->selfRef, p.colorMode), 0.95);
-          cylinder->plot_periph(fPlot, 'r', u8(p.showNRC));
+          cylinder->plot_periph(fPlot, p.vertical, 'r', u8(p.showNRC));
         }
       }
     };
@@ -145,11 +160,18 @@ void VizPaint::plot (VizParam& p) {
       auto cylinder = make_unique<Cylinder>();
       plot_main(cylinder);
       cylinder->height = get_point(abs(e->begTar-e->endTar));
-      cylinder->x = !inverted ? x+get_point(e->begTar) : x+get_point(e->endTar);
-      cylinder->y = y + 2*chromHeight + innerSpace;
+      if (p.vertical) {
+        cylinder->x = x + seqWidth + innerSpace;
+        cylinder->y = !inverted ? y+get_point(e->begTar) 
+                                : y+get_point(e->endTar);
+      } else {
+        cylinder->x = !inverted ? x+get_point(e->begTar) 
+                                : x+get_point(e->endTar);
+        cylinder->y = y + 2*seqWidth + innerSpace;
+        cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                              to_string(cylinder->y) + ")";
+      }
       cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
-      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                            to_string(cylinder->y) + ")";
       if (e->begRef == DBLANK) {
         cylinder->fill = "black";
         cylinder->stroke = "white";
@@ -170,17 +192,15 @@ void VizPaint::plot (VizParam& p) {
         cylinder->id += "NRC";
         cylinder->fill = make_gradient_periph(
           nrc_color(e->entTar, p.colorMode), 'r', cylinder->id);
-        // cylinder->fill = nrc_color(e->entTar, p.colorMode);
         cylinder->stroke = shade(nrc_color(e->entTar, p.colorMode), 0.96);
-        cylinder->plot_periph(fPlot, 't');
+        cylinder->plot_periph(fPlot, p.vertical, 't');
       }
       if (p.showRedun) {
-        // cylinder->fill = redun_color(e->selfTar, p.colorMode);
         cylinder->id += "Redun";
         cylinder->fill = make_gradient_periph(
           redun_color(e->selfTar, p.colorMode), 'r', cylinder->id);
         cylinder->stroke = shade(redun_color(e->selfTar, p.colorMode), 0.95);
-        cylinder->plot_periph(fPlot, 't', u8(p.showNRC));
+        cylinder->plot_periph(fPlot, p.vertical, 't', u8(p.showNRC));
       }
     };
 
@@ -192,56 +212,103 @@ void VizPaint::plot (VizParam& p) {
         if (e->begRef != DBLANK) {
           switch (p.link) {
           case 1:
+            if (p.vertical)
+              poly->points 
+                = poly->point(x+seqWidth,            y+get_point(e->begRef)) +
+                  poly->point(x+seqWidth,            y+get_point(e->endRef)) +
+                  poly->point(x+seqWidth+innerSpace, y+get_point(e->endTar)) +
+                  poly->point(x+seqWidth+innerSpace, y+get_point(e->begTar));
+            else
+              poly->points 
+                = poly->point(x+get_point(e->begRef), y+seqWidth) +
+                  poly->point(x+get_point(e->endRef), y+seqWidth) +
+                  poly->point(x+get_point(e->endTar), y+seqWidth+innerSpace) +
+                  poly->point(x+get_point(e->begTar), y+seqWidth+innerSpace);
             poly->stroke = poly->fill = rgb_color(e->start);
             poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
-            poly->points 
-              = poly->point(x+get_point(e->begRef), y+chromHeight) +
-                poly->point(x+get_point(e->endRef), y+chromHeight) +
-                poly->point(x+get_point(e->endTar), y+chromHeight+innerSpace) +
-                poly->point(x+get_point(e->begTar), y+chromHeight+innerSpace);
             poly->plot(fPlot);
             break;
           case 2:
+            if (p.vertical) {
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+            } else {
+              line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+              line->y2 = y + seqWidth + innerSpace;
+            }
             line->stroke = rgb_color(e->start);
-            line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
-            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 3:
+            if (p.vertical) {
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+            } else {
+              line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+              line->y2 = y + seqWidth + innerSpace;
+            }
             line->stroke = "black";
-            line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
-            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 4:
             line->stroke = rgb_color(e->start);
-            line->x1 = x + get_point(e->begRef);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->begTar);
-            line->y2 = y + chromHeight + innerSpace;
-            line->plot(fPlot);
-            line->x1 = x + get_point(e->endRef);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->endTar);
-            line->y2 = y + chromHeight + innerSpace;
-            line->plot(fPlot);
+            if (p.vertical) {
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->begRef);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->begTar);
+              line->plot(fPlot);
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->endRef);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->endTar);
+              line->plot(fPlot);
+            } else {
+              line->x1 = x + get_point(e->begRef);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->begTar);
+              line->y2 = y + seqWidth + innerSpace;
+              line->plot(fPlot);
+              line->x1 = x + get_point(e->endRef);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->endTar);
+              line->y2 = y + seqWidth + innerSpace;
+              line->plot(fPlot);
+            }
             break;
           case 5:
             line->stroke = "black";
-            line->x1 = x + get_point(e->begRef);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->begTar);
-            line->y2 = y + chromHeight + innerSpace;
-            line->plot(fPlot);
-            line->x1 = x + get_point(e->endRef);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->endTar);
-            line->y2 = y + chromHeight + innerSpace;
-            line->plot(fPlot);
+            if (p.vertical) {
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->begRef);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->begTar);
+              line->plot(fPlot);
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->endRef);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->endTar);
+              line->plot(fPlot);
+            } else {
+              line->x1 = x + get_point(e->begRef);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->begTar);
+              line->y2 = y + seqWidth + innerSpace;
+              line->plot(fPlot);
+              line->x1 = x + get_point(e->endRef);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->endTar);
+              line->y2 = y + seqWidth + innerSpace;
+              line->plot(fPlot);
+            }
             break;
           case 6:
             break;
@@ -259,58 +326,107 @@ void VizPaint::plot (VizParam& p) {
         if (e->begRef != DBLANK) {
           switch (p.link) {
           case 1:
+            if (p.vertical)
+              poly->points
+                = poly->point(x+seqWidth,            y+get_point(e->begRef)) +
+                  poly->point(x+seqWidth,            y+get_point(e->endRef)) +
+                  poly->point(x+seqWidth+innerSpace, y+get_point(e->endTar)) +
+                  poly->point(x+seqWidth+innerSpace, y+get_point(e->begTar));
+            else
+              poly->points
+                = poly->point(x+get_point(e->begRef), y+seqWidth) +
+                  poly->point(x+get_point(e->endRef), y+seqWidth) +
+                  poly->point(x+get_point(e->endTar), y+seqWidth+innerSpace) +
+                  poly->point(x+get_point(e->begTar), y+seqWidth+innerSpace);
             poly->stroke = poly->fill = rgb_color(e->start);
             poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
-            poly->points
-              = poly->point(x+get_point(e->begRef), y+chromHeight) +
-                poly->point(x+get_point(e->endRef), y+chromHeight) +
-                poly->point(x+get_point(e->endTar), y+chromHeight+innerSpace) +
-                poly->point(x+get_point(e->begTar), y+chromHeight+innerSpace);
             poly->plot(fPlot);
             break;
           case 2:
+            if (p.vertical) {
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
+            } else {
+              line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
+              line->y2 = y + seqWidth + innerSpace;
+            }
             line->stroke = rgb_color(e->start);
-            line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
-            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 3:
+            if (p.vertical) {
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
+            } else {
+              line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
+              line->y2 = y + seqWidth + innerSpace;
+            }
             line->stroke = "green";
-            line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
-            line->y2 = y + chromHeight + innerSpace;
             line->plot(fPlot);
             break;
           case 4:
             line->stroke = rgb_color(e->start);
-            line->x1 = x + get_point(e->begRef);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->begTar);
-            line->y2 = y + chromHeight + innerSpace;
-            line->plot(fPlot);
-  
-            line->x1 = x + get_point(e->endRef);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->endTar);
-            line->y2 = y + chromHeight + innerSpace;
-            line->plot(fPlot);
+            if (p.vertical) {
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->begRef);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->begTar);
+              line->plot(fPlot);
+
+              line->x1 = x + seqWidth;
+              line->y1 = y + get_point(e->endRef);
+              line->x2 = x + seqWidth + innerSpace;
+              line->y2 = y + get_point(e->endTar);
+              line->plot(fPlot);
+            } else {
+              line->x1 = x + get_point(e->begRef);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->begTar);
+              line->y2 = y + seqWidth + innerSpace;
+              line->plot(fPlot);
+
+              line->x1 = x + get_point(e->endRef);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->endTar);
+              line->y2 = y + seqWidth + innerSpace;
+              line->plot(fPlot);
+            }
             break;
           case 5:
             line->stroke = "green";
-            line->x1 = x + get_point(e->begRef);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->begTar);
-            line->y2 = y + chromHeight + innerSpace;
-            line->plot(fPlot);
-  
-            line->x1 = x + get_point(e->endRef);
-            line->y1 = y + chromHeight;
-            line->x2 = x + get_point(e->endTar);
-            line->y2 = y + chromHeight + innerSpace;
-            line->plot(fPlot);
+            if (p.vertical) {
+              line->y1 = y + get_point(e->begRef);
+              line->x1 = x + seqWidth;
+              line->y2 = y + get_point(e->begTar);
+              line->x2 = x + seqWidth + innerSpace;
+              line->plot(fPlot);
+
+              line->y1 = y + get_point(e->endRef);
+              line->x1 = x + seqWidth;
+              line->y2 = y + get_point(e->endTar);
+              line->x2 = x + seqWidth + innerSpace;
+              line->plot(fPlot);
+            } else {
+              line->x1 = x + get_point(e->begRef);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->begTar);
+              line->y2 = y + seqWidth + innerSpace;
+              line->plot(fPlot);
+
+              line->x1 = x + get_point(e->endRef);
+              line->y1 = y + seqWidth;
+              line->x2 = x + get_point(e->endTar);
+              line->y2 = y + seqWidth + innerSpace;
+              line->plot(fPlot);
+            }
             break;
           case 6:
             break;
@@ -327,11 +443,23 @@ void VizPaint::plot (VizParam& p) {
   save_n_pos(ref);
   ifstream refFile(file_name(ref)+"."+FMT_N);
   for (i64 beg,end; refFile>>beg>>end;) {
-    rect->fill = rect->stroke  = "grey";
-    rect->x = x + get_point(beg);
-    rect->y = y;
-    rect->width = get_point(end-beg+1);
-    rect->plot(fPlot);
+    auto cylinder = make_unique<Cylinder>();
+    cylinder->stroke_width = 0.75;
+    cylinder->fill = cylinder->stroke = "grey";
+    cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
+    cylinder->width = seqWidth;
+    cylinder->height = get_point(end-beg+1);
+    if (p.vertical) {
+      cylinder->x = x;
+      cylinder->y = y + get_point(beg);
+    } else {
+      cylinder->x = x + get_point(beg);
+      cylinder->y = y + seqWidth;
+      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                            to_string(cylinder->y) + ")";
+    }
+    cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
+    cylinder->plot(fPlot);
   }
   refFile.close();
   remove((file_name(ref)+"."+FMT_N).c_str());
@@ -339,35 +467,57 @@ void VizPaint::plot (VizParam& p) {
   save_n_pos(tar);
   ifstream tarFile(file_name(tar)+"."+FMT_N);
   for (i64 beg,end; tarFile>>beg>>end;) {
-    rect->fill = rect->stroke  = "grey";
-    rect->x = x + get_point(beg);
-    rect->y = y + chromHeight + innerSpace;
-    rect->width = get_point(end-beg+1);
-    rect->plot(fPlot);
+    auto cylinder = make_unique<Cylinder>();
+    cylinder->stroke_width = 0.75;
+    cylinder->fill = cylinder->stroke = "grey";
+    cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
+    cylinder->width = seqWidth;
+    cylinder->height = get_point(end-beg+1);
+    if (p.vertical) {
+      cylinder->x = x + seqWidth + innerSpace;
+      cylinder->y = y + get_point(beg);
+    } else {
+      cylinder->x = x + get_point(beg);
+      cylinder->y = y + 2*seqWidth + innerSpace;
+      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                            to_string(cylinder->y) + ")";
+    }
+    cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
+    cylinder->plot(fPlot);
   }
   tarFile.close();
   remove((file_name(tar)+"."+FMT_N).c_str());
   
   // Plot chromosomes
   auto cylinder = make_unique<Cylinder>();
-  cylinder->width = chromHeight;
+  cylinder->width = seqWidth;
   cylinder->height = refSize;
   cylinder->stroke_width = 1.25;
-  cylinder->x = x;
-  cylinder->y = y + chromHeight;
-  cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                        to_string(cylinder->y) + ")";
+  if (p.vertical) {
+    cylinder->x = x;
+    cylinder->y = y;
+  } else {
+    cylinder->x = x;
+    cylinder->y = y + seqWidth;
+    cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                          to_string(cylinder->y) + ")";
+  }
   cylinder->plot(fPlot);
 
   cylinder->height = tarSize;
-  cylinder->x = x;
-  cylinder->y = y + 2*chromHeight + innerSpace;
-  cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                        to_string(cylinder->y) + ")";
+  if (p.vertical) {
+    cylinder->x = x + seqWidth + innerSpace;
+    cylinder->y = y;
+  } else {
+    cylinder->x = x;
+    cylinder->y = y + 2*seqWidth + innerSpace;
+    cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+                          to_string(cylinder->y) + ")";
+  }
   cylinder->plot(fPlot);
 
   // Plot title, legend and annotation
-  plot_title(fPlot, ref, tar);
+  plot_title(fPlot, ref, tar, p.vertical);
   plot_legend(fPlot, p, max(n_refBases,n_tarBases));
 
   svg->print_tailer(fPlot);
@@ -472,7 +622,7 @@ const string& tar, u64 n_refBases, u64 n_tarBases) const {
 inline void VizPaint::config (double width_, double space_, u32 mult_,
 u64 refSize_, u64 tarSize_) {
   ratio = static_cast<u32>(max(refSize_,tarSize_) / PAINT_SCALE);
-  chromHeight = width_;
+  seqWidth = width_;
   innerSpace = space_;
   mult = mult_;
   refSize = get_point(refSize_);
@@ -519,22 +669,38 @@ inline u64 VizPaint::get_index (double point) const {
 }
 
 inline void VizPaint::plot_title (ofstream& f, const string& ref, 
-const string& tar) const {
+const string& tar, bool vertical) const {
   auto text = make_unique<Text>();
   text->font_weight = "bold";
   text->font_size = 10;
-  text->text_anchor = "start";
-  text->x = x;
 
-  text->y = y - TITLE_SPACE;
-  text->dominant_baseline = "text-before-edge";
-  text->Label = ref;
-  text->plot(f);
+  if (vertical) {
+    text->text_anchor = "middle";
+    text->dominant_baseline = "middle";
+    text->y = y - 0.75*TITLE_SPACE;
 
-  text->y = y + 2*chromHeight + innerSpace + TITLE_SPACE;
-  text->dominant_baseline = "text-after-edge";
-  text->Label = tar;
-  text->plot(f);
+    text->x = x + seqWidth/2;
+    text->Label = ref;
+    text->plot(f);
+
+    text->x = x + 1.5*seqWidth + innerSpace;
+    text->Label = tar;
+    text->plot(f);
+  }
+  else {
+    text->text_anchor = "start";
+    text->x = x;
+
+    text->y = y - TITLE_SPACE;
+    text->dominant_baseline = "text-before-edge";
+    text->Label = ref;
+    text->plot(f);
+
+    text->y = y + 2*seqWidth + innerSpace + TITLE_SPACE;
+    text->dominant_baseline = "text-after-edge";
+    text->Label = tar;
+    text->plot(f);
+  }
 }
 
 inline void VizPaint::plot_legend (ofstream& f, const VizParam& p, 
@@ -562,7 +728,7 @@ i64 maxWidth) {
   if (p.showNRC && !p.showRedun) {
     rect->x = horiz;
     rect->y = y - (TITLE_SPACE + VERT_TUNE);
-    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*chromHeight + innerSpace;
+    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*seqWidth + innerSpace;
 
     text->x = rect->x - label_shift;
     text->y = rect->y + rect->height/2;
@@ -572,9 +738,9 @@ i64 maxWidth) {
     // text->plot_shadow(f);
     text->plot(f);
     
-    YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
-    YBottomRelRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + VERT_TUNE +
-                      0.5*chromHeight/VERT_RATIO;
+    YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*seqWidth/VERT_RATIO);
+    YBottomRelRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE + VERT_TUNE +
+                      0.5*seqWidth/VERT_RATIO;
     // Top wing
     if (lastPos.size() == 2) {
       path->d = path->M(x+get_point(lastPos[0]), YTopRelRedun) + 
@@ -595,7 +761,7 @@ i64 maxWidth) {
   else if (!p.showNRC && p.showRedun) {
     rect->x = horiz;
     rect->y = y - (TITLE_SPACE + VERT_TUNE);
-    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*chromHeight + innerSpace;
+    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*seqWidth + innerSpace;
 
     text->x = rect->x - label_shift;
     text->y = rect->y + rect->height/2;
@@ -605,9 +771,9 @@ i64 maxWidth) {
     // text->plot_shadow(f);
     text->plot(f);
     
-    YTopRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
-    YBottomRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + VERT_TUNE +
-                   0.5*chromHeight/VERT_RATIO;
+    YTopRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*seqWidth/VERT_RATIO);
+    YBottomRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE + VERT_TUNE +
+                   0.5*seqWidth/VERT_RATIO;
     // Top wing
     if (lastPos.size() == 2) {
       path->d = path->M(x+get_point(lastPos[0]), YTopRedun) + 
@@ -628,7 +794,7 @@ i64 maxWidth) {
   else if (p.showNRC && p.showRedun) {
     rect->x = horiz;
     rect->y = y - (TITLE_SPACE + VERT_TUNE);
-    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*chromHeight + innerSpace;
+    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*seqWidth + innerSpace;
 
     text->x = rect->x - label_shift;
     text->y = rect->y + rect->height/2;
@@ -638,9 +804,9 @@ i64 maxWidth) {
     // text->plot_shadow(f);
     text->plot(f);
 
-    YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*chromHeight/VERT_RATIO);
-    YBottomRelRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE + 
-                      VERT_TUNE + 0.5*chromHeight/VERT_RATIO;
+    YTopRelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*seqWidth/VERT_RATIO);
+    YBottomRelRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE + 
+                      VERT_TUNE + 0.5*seqWidth/VERT_RATIO;
     // Top wing
     if (lastPos.size() == 2) {
       path->d = path->M(x+get_point(lastPos[0]), YTopRelRedun) + 
@@ -665,9 +831,9 @@ i64 maxWidth) {
     // text->plot_shadow(f);
     text->plot(f);
 
-    YTopRedun = y - (TITLE_SPACE + 2*VERT_TUNE + 1.5*chromHeight/VERT_RATIO);
-    YBottomRedun = y + 2*chromHeight + innerSpace + TITLE_SPACE +
-                   2*VERT_TUNE + 1.5*chromHeight/VERT_RATIO;
+    YTopRedun = y - (TITLE_SPACE + 2*VERT_TUNE + 1.5*seqWidth/VERT_RATIO);
+    YBottomRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE +
+                   2*VERT_TUNE + 1.5*seqWidth/VERT_RATIO;
     // Top wing
     if (lastPos.size() == 2) {
       path->d = path->M(x+get_point(lastPos[0]), YTopRedun) + 
@@ -910,11 +1076,11 @@ const VizParam& par, string&& type) {
 //   u64    nOverlap  = 0;
 //   double shiftY    = 4;
 //   if (par.showNRC && par.showRedun)
-//     shiftY += 2 * (VERT_TUNE + chromHeight/VERT_RATIO);
+//     shiftY += 2 * (VERT_TUNE + seqWidth/VERT_RATIO);
 //   else if (par.showNRC ^ par.showRedun)
-//     shiftY += VERT_TUNE + chromHeight/VERT_RATIO;
+//     shiftY += VERT_TUNE + seqWidth/VERT_RATIO;
 //   double CY=y;
-//   type=="ref" ? CY-=shiftY : CY+=chromHeight+innerSpace+chromHeight+shiftY;
+//   type=="ref" ? CY-=shiftY : CY+=seqWidth+innerSpace+seqWidth+shiftY;
 
 //   const auto set_dominantBaseline = [&](char type) {
 //     switch (type) {
@@ -1068,24 +1234,51 @@ bool plotRef) {
   auto text = make_unique<Text>();
   text->font_size = 9;
 
-  line->x1 = x;
-  line->x2 = x + maxPos + 0.75*line->stroke_width;
-  if (plotRef)
-    line->y1 = line->y2 = y - TITLE_SPACE - vertSkip -
-      (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+chromHeight/VERT_RATIO) -
-      majorTickSize;
-  else
-    line->y1 = line->y2 = y + 2*chromHeight + innerSpace + TITLE_SPACE +
-      vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
-      (VERT_TUNE+chromHeight/VERT_RATIO) + majorTickSize;
+  if (par.vertical) {
+    line->y1 = y;
+    line->y2 = y + maxPos + 0.75*line->stroke_width;
+    if (plotRef)
+      line->x1 = line->x2 = x - TITLE_SPACE - vertSkip -
+        (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+seqWidth/VERT_RATIO) -
+        majorTickSize;
+    else
+      line->x1 = line->x2 = x + 2*seqWidth + innerSpace + TITLE_SPACE +
+        vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
+        (VERT_TUNE+seqWidth/VERT_RATIO) + majorTickSize;
+  }
+  else {
+    line->x1 = x;
+    line->x2 = x + maxPos + 0.75*line->stroke_width;
+    if (plotRef)
+      line->y1 = line->y2 = y - TITLE_SPACE - vertSkip -
+        (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+seqWidth/VERT_RATIO) -
+        majorTickSize;
+    else
+      line->y1 = line->y2 = y + 2*seqWidth + innerSpace + TITLE_SPACE +
+        vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
+        (VERT_TUNE+seqWidth/VERT_RATIO) + majorTickSize;
+  }
   line->plot(f);
 
-  text->text_anchor = "start";
-  text->dominant_baseline = "middle";
+  // Print bp
   text->font_weight = "bold";
   text->font_size = 10;
-  text->x = line->x1;
-  text->y = plotRef ? line->y1 + tickLabelSkip : line->y1 - tickLabelSkip;
+  if (par.vertical) {
+    if (plotRef) {
+      text->text_anchor = "start";
+      text->x = line->x1 + tickLabelSkip/2;
+    } else {
+      text->text_anchor = "end";
+      text->x = line->x1 - tickLabelSkip/2;
+    }
+    text->dominant_baseline = "text-before-edge";
+    text->y = line->y1;
+  } else {
+    text->text_anchor = "start";
+    text->dominant_baseline = "middle";
+    text->x = line->x1;
+    text->y = plotRef ? line->y1 + tickLabelSkip : line->y1 - tickLabelSkip;
+  }
   text->Label = "bp";
   text->plot(f);
 
@@ -1093,7 +1286,6 @@ bool plotRef) {
             tens = POW10[num_digits(oneTenth) - 1],
             divInt = oneTenth / tens;
   double divDouble = double(oneTenth) / tens;
-
   if (double(divInt) != divDouble) {
     const double roundHalfUp = divInt + 0.5;
     divDouble = (divDouble<=roundHalfUp) ? roundHalfUp : roundHalfUp+0.5;
@@ -1103,28 +1295,51 @@ bool plotRef) {
         minorHop = majorHop / n_subranges;
 
   for (float pos=0; pos <= n_bases; pos+=minorHop) {
-    line->x1 = line->x2 = x + get_point((u64)pos);
+    if (par.vertical)  line->y1 = line->y2 = y + get_point((u64)pos);
+    else               line->x1 = line->x2 = x + get_point((u64)pos);
 
-    if ((u64)pos % (u64)majorHop == 0) {  // Major ticks
+    // Major ticks
+    if ((u64)pos % (u64)majorHop == 0) {  
       line->stroke_width = majorStrokeWidth;
-      line->y2 = plotRef ? line->y1 + majorTickSize : line->y1 -majorTickSize;
-      if (pos != 0.0f) {
-        line->plot(f);
-        text->text_anchor = "middle";
-      } else 
-        text->text_anchor = "start";
+      if (par.vertical) {
+        line->x2 = plotRef ? line->x1 + majorTickSize : line->x1 -majorTickSize;
+        if (pos!=0.0f) {
+          line->plot(f);
+          text->dominant_baseline = "middle";
+        } else {
+          text->dominant_baseline = "text-before-edge";
+        }
+        text->text_anchor = plotRef ? "end" : "start";
+      }
+      else {
+        line->y2 = plotRef ? line->y1 + majorTickSize : line->y1 -majorTickSize;
+        if (pos != 0.0f) {
+          line->plot(f);
+          text->text_anchor = "middle";
+        } else {
+          text->text_anchor = "start";
+        }
+      }
 
       text->font_weight = "normal";
       text->font_size = (n_bases < POW10[7]) ? 9 : 8.5;
-      text->x = line->x1;
-      text->y = plotRef ? line->y1 - tickLabelSkip : line->y1 + tickLabelSkip;
+      if (par.vertical) {
+        text->x = plotRef ? line->x1 - tickLabelSkip : line->x1 + tickLabelSkip;
+        text->y = line->y1;
+      } else {
+        text->x = line->x1;
+        text->y = plotRef ? line->y1 - tickLabelSkip : line->y1 + tickLabelSkip;
+      }
       // text->Label = human_readable_non_cs(pos);
       text->Label = thousands_sep(u64(pos));
       text->plot(f);
     }
     else {  // Minor ticks
       line->stroke_width = minorStrokeWidth;
-      line->y2 = plotRef ? line->y1 + minorTickSize : line->y1 - minorTickSize;
+      if (par.vertical)
+        line->x2 = plotRef ? line->x1+minorTickSize : line->x1-minorTickSize;
+      else
+        line->y2 = plotRef ? line->y1+minorTickSize : line->y1-minorTickSize;
       line->plot(f);
     }
   }
