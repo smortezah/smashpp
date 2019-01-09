@@ -679,15 +679,23 @@ const string& tar, bool vertical) const {
     text->dominant_baseline = "middle";
     text->y = y - 0.75*TITLE_SPACE;
 
-    text->x = x + seqWidth/2;
-    if (innerSpace - (abs(ref.size()*1-seqWidth)/2 + abs(tar.size()*1-seqWidth)/2) < 15)
-      // text->x -= 10;
-      cerr<<"too close";
+    const auto charSpace = 5;
+    const bool tooClose = (innerSpace - abs(ref.size()*charSpace - seqWidth)/2
+      - abs(tar.size()*charSpace - seqWidth)/2 < 15);
 
+    text->x = x + seqWidth/2;
+    if (tooClose) {
+      text->x += seqWidth/2;
+      text->text_anchor = "end";
+    }
     text->Label = ref;
     text->plot(f);
 
     text->x = x + 1.5*seqWidth + innerSpace;
+    if (tooClose) {
+      text->x -= seqWidth/2;
+      text->text_anchor = "start";
+    }
     text->Label = tar;
     text->plot(f);
   }
