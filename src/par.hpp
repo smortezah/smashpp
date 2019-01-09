@@ -76,11 +76,12 @@ class VizParam {
   bool   manMult;
   string posFile;
   u64    tick;
+  bool   vertical;
 
   VizParam () : verbose(false), inverse(true), regular(true), showNRC(true),
     showRedun(true), image(IMAGE), link(LINK), colorMode(COLOR), opacity(OPAC),
     width(WDTH), space(SPC), mult(MULT), start(BEGN), min(MINP), manMult(false),
-    tick(0) {}
+    tick(0), vertical(false) {}
 
   void parse (int, char**&);
 
@@ -287,112 +288,114 @@ inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms) {
 }
 
 inline void Param::help () const {
-  const auto b   = [] (string&& s) { return bold(std::move(s));          };
-  const auto it  = [] (string&& s) { return italic(std::move(s));        };
-  const auto fit = [] (string&& s) { return faint(italic(std::move(s))); };
-  const auto ul  = [] (string&& s) { return underline(std::move(s));     };
+  // Print title
+  const auto t = [&](string&& str) { cerr << bold(std::move(str)) << '\n'; };
+  const auto l = [&](const string& str) { cerr << "  " << str << '\n'; }; //Line
+  // Print column 1: left-aligned + column 2: left-aligned
+  const auto ll = [&](const string& strL, u8 n, const string& strR) {
+    cerr << "  " << std::left << std::setw(27+n*8) << strL;
+    cerr.clear();
+    cerr << strR << '\n';
+  };
+  // Print column 1: right-aligned + column 2: left-aligned
+  const auto rl = [&](const string& strL, u8 n, const string& strR) {
+    cerr << "  " << std::right << std::setw(27+n*8) << strL;
+    cerr.clear();
+    cerr << strR << '\n';
+  };
 
-  cerr 
-  << b("NAME")                                                            <<'\n'
-  << "  Smash++ v" << VERSION << " - rearrangements finder"               <<'\n'
-  <<                                                                        '\n'
-  << b("SYNOPSIS")                                                        <<'\n'
-  << "  ./smashpp  " << ul("OPTIONS") << "...  -r " << ul("REF-FILE") << "  "
-     "-t " << ul("TAR-FILE")                                              <<'\n'
-  <<                                                                        '\n'
-  << b("SAMPLE")                                                          <<'\n'
-//    "  ./smashpp -t TAR -r REF                                             \n"
-  <<                                                                        '\n'
-  << b("DESCRIPTION")                                                     <<'\n'
-  << "  " << it("Mandatory arguments") << ":"                             <<'\n'
-  << "  " << b("-r") << ",  " << b("--ref") << " " << ul("FILE") << 
-     "            reference file (Seq/Fasta/Fastq)"                       <<'\n'
-  << "  " << b("-t") << ",  " << b("--tar") << " " << ul("FILE") << 
-     "            target file    (Seq/Fasta/Fastq)"                       <<'\n'
-  <<                                                                        '\n'
-  << "  " << it("Options") << ":"                                         <<'\n'
-  << "  " << b("-v") << ",  " << b("--verbose") << "             "
-     "more information"                                                   <<'\n'
-  << "  " << b("-l") << ",  " << b("--level") << " " << ul("INT") << 
-     "           level of compression "
-     "[" << to_string(MIN_LVL) << "," << to_string(MAX_LVL) << "]      " << 
-     fit("COMPRESS")                                                      <<'\n'
-  << "  " << b("-m") << ",  " << b("--min") << "   " << ul("INT") << 
-     "           min segment size "
-     "[" << to_string(MIN_SSIZE) << "," << to_string(MAX_SSIZE) << "] " << 
-     fit("COMPRESS")                                                      <<'\n'
-  << "  " << b("-nr") << ", "  << b("--no-redun") << "            "
-     "NOT compute self complexity  " << fit("NO COMPRESS")                <<'\n'
-  << "  " << b("-e") << ",  " << b("--ent-n") << " " << ul("FLOAT") << 
-     "         Entropy of 'N's [" << 
-     string_format("%.1f",MIN_ENTR_N) << "," << string_format("%.1f",MAX_ENTR_N)
-     << "]     " << fit("COMPRESS")                                       <<'\n'
-  << "  " << b("-n") << ",  " << b("--nthr") << "  " << ul("INT") << 
-     "           number of threads "
-     "[" << to_string(MIN_THRD) << "," << to_string(MAX_THRD) << "]"      <<'\n'
-  << "  " << b("-fs") << ", " << b("--filter-scale") << " S|M|L  "
-     "scale of the filter {S|small,     " << fit("FILTER")                <<'\n'
-  << "                             M|medium, L|large}"                    <<'\n'
-  << "  " << b("-w") << ",  " << b("--wsize") << " " << ul("INT") <<
-     "           window size "
-     "[" << to_string(MIN_WS) << "," << to_string(MAX_WS) << "]            " << 
-     fit("FILTER")                                                        <<'\n'
-  << "  " << b("-wt") << ", " << b("--wtype") << " [0,7]         "
-     "type of windowing function        " << fit("FILTER")                <<'\n'
-  << "                             {0|rectangular, 1|hamming, 2|hann,"    <<'\n'
-  << "                             3|blackman, 4|triangular, 5|welch,"    <<'\n'
-  << "                             6|sine, 7|nuttall}"                    <<'\n'
-  << "  " << b("-d") << ",  " << b("--step") << "   " << ul("INT") << 
-     "          sampling steps                    " << fit("FILTER")      <<'\n'
-  << "  " << b("-th") << ", " << b("--thresh") << " " << ul("FLOAT") << 
-     "        threshold [" << 
-     string_format("%.1f",MIN_THRSH) << "," << string_format("%.1f",MAX_THRSH)
-     << "]              " << fit("FILTER")                                <<'\n'
-  << "  " << b("-sp") << ", " << b("--save-profile") << "        "
-     "save profile (*.prf)                " << fit("SAVE")                <<'\n'
-  << "  " << b("-sf") << ", " << b("--save-filter") << "         "
-     "save filtered file (*.fil)          " << fit("SAVE")                <<'\n'
-  << "  " << b("-sb") << ", " << b("--save-seq") << "            "
-     "save sequence (input: Fasta/Fastq)  " << fit("SAVE")                <<'\n'
-  << "  " << b("-ss") << ", " << b("--save-segment") << "        "
-     "save segmented files (*-s\U00002099)         " << fit("SAVE")       <<'\n'
-  << "  " << b("-sa") << ", " << b("--save-all") << "            "
-     "save profile, filetered and         " << fit("SAVE")                <<'\n'
-  << "                             segmented files"                       <<'\n'
-  // << "  " << b("-R") << ",  " << b("--report") << "              "
-  //    "save results in file \"report\"    " << fit("REPORT")               <<'\n'
-  << "  " << b("-h") << ",  " << b("--help") << "                usage guide \n"
-  << "  " << b("-rm") << ", " << b("--ref-model") << " [\U0001D705,"
-     "[\U0001D464,\U0001D451,]ir,\U0001D6FC,\U0001D6FE/\U0001D70F,ir,"
-     "\U0001D6FC,\U0001D6FE:...]                " << fit("MODEL")         <<'\n'
-  << "  " << b("-tm") << ", " << b("--tar-model") << " [\U0001D705,"
-     "[\U0001D464,\U0001D451,]ir,\U0001D6FC,\U0001D6FE/\U0001D70F,ir,"
-     "\U0001D6FC,\U0001D6FE:...]                " << fit("MODEL")         <<'\n'
-  << "                             parameters of models"                  <<'\n'
-  << "                       (" << ul("INT") << ") \U0001D705:  context size \n"
-  << "                       (" << ul("INT") << ") \U0001D464:  width of "
-     "sketch in log2 form, "                                              <<'\n'
-  << "                                 e.g., set 10 for w=2^10=1024"      <<'\n'
-  << "                       (" << ul("INT") << ") \U0001D451:  depth "
-     "of sketch"                                                          <<'\n'
-  << "                     ([0,2]) ir: inverted repeat {0, 1, 2}"         <<'\n'
-  << "                                 0: regular (not inverted)"         <<'\n'
-  << "                                 1: inverted, solely"               <<'\n'
-  << "                                 2: both regular and inverted"      <<'\n'
-  << "                     (" << ul("FLOAT") << ") \U0001D6FC:  estimator"<<'\n'
-  << "                     (" << ul("FLOAT") << ") \U0001D6FE:  "
-     "forgetting factor [0.0,1.0)"                                        <<'\n'
-  << "                       (" << ul("INT") << ") \U0001D70F:  "
-     "threshold (no. substitutions)"                                      <<'\n'
-  <<                                                                        '\n'
-  << b("AUTHOR")                                                          <<'\n'
-  << "  Morteza Hosseini           seyedmorteza@ua.pt"                    <<'\n'
-  <<                                                                        '\n'
-  << b("COPYRIGHT")                                                       <<'\n'
-  << "  Copyright (C) "<<DEV_YEARS<<", IEETA, University of Aveiro. You may  \n"
-  << "  redistribute copies of this Free software under the terms of the" <<'\n'
-  << "  GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>." <<'\n'
-  << "  There is NO WARRANTY, to the extent permitted by law."           <<endl;
+  t("NAME");
+  l("Smash++ v" + VERSION + " - rearrangements finder");
+  l("");
+  t("SYNOPSIS");
+  l("./smashpp  " + underline("OPTIONS") + "...  -r " + underline("REF-FILE") +
+    "  -t " + underline("TAR-FILE"));
+  l("");
+  t("SAMPLE");
+  // l("./smashpp -t TAR -r REF");
+  l("");
+  t("DESCRIPTION");
+  l(italic("Mandatory arguments"));
+  ll(bold("-r") + ",  " + bold("--ref") + " " + underline("FILE"), 3,
+    "reference file (Seq/Fasta/Fastq)");
+  ll(bold("-t") + ",  " + bold("--tar") + " " + underline("FILE"), 3,
+    "target file    (Seq/Fasta/Fastq)");
+  l("");
+  l(italic("Options"));
+  ll(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
+  ll(bold("-l") + ",  " + bold("--level") + " " + underline("INT"), 3,
+    "level of compression: [" + to_string(MIN_LVL) + ", " + 
+    to_string(MAX_LVL) + "]");
+  ll(bold("-m") + ",  " + bold("--min") + "   " + underline("INT"), 3,
+    "min segment size: [" + to_string(MIN_SSIZE) + ", " + 
+    to_string(MAX_SSIZE) + "]");
+  ll(bold("-nr") + ", " + bold("--no-redun"), 2,
+    "do NOT compute self complexity");
+  ll(bold("-e") + ",  " + bold("--ent-n") + " " + underline("FLOAT"), 3,
+    "Entropy of 'N's: [" + string_format("%.1f",MIN_ENTR_N) + ", " +
+    string_format("%.1f",MAX_ENTR_N) + "]");
+  ll(bold("-n") + ",  " + bold("--nthr") + "  " + underline("INT"), 3,
+    "number of threads: [" + to_string(MIN_THRD) + ", " + to_string(MAX_THRD) +
+    "]");
+  ll(bold("-fs") + ", " + bold("--filter-scale") + " S|M|L", 2,
+    "scale of the filter:");
+  ll("", 0, "{S|small, M|medium, L|large}");
+  ll(bold("-w") + ",  " + bold("--wsize") + " " + underline("INT"), 3,
+    "window size: [" + to_string(MIN_WS) + ", " + to_string(MAX_WS) + "]");
+  ll(bold("-wt") + ", " + bold("--wtype") + " " + underline("INT") + "/" +
+    underline("STRING"), 4, "type of windowing function:");
+  ll("", 0, "{0|rectangular, 1|hamming, 2|hann,");
+  ll("", 0, "3|blackman, 4|triangular, 5|welch,");
+  ll("", 0, "6|sine, 7|nuttall}");
+  ll(bold("-d") + ",  " + bold("--step") + "   " + underline("INT"), 3,
+    "sampling steps");
+  ll(bold("-th") + ", " + bold("--thresh") + " " + underline("FLOAT"), 3,
+    "threshold: [" + string_format("%.1f",MIN_THRSH) + ", " + 
+    string_format("%.1f",MAX_THRSH) + "]");
+  ll(bold("-sp") + ", " + bold("--save-profile"), 2, "save profile (*.prf)");
+  ll(bold("-sf") + ", " + bold("--save-filter"), 2,
+    "save filtered file (*.fil)");
+  ll(bold("-sb") + ", " + bold("--save-seq"), 2,
+    "save sequence (input: Fasta/Fastq)");
+  ll(bold("-ss") + ", " + bold("--save-segment"), 2,
+    "save segmented files (*-s_" + italic("i") + ")");
+  ll(bold("-sa") + ", " + bold("--save-all"), 2, "save profile, filetered and");
+  ll("", 0, "segmented files");
+  // ll(bold("-R") + ",  " + bold("--report"), 2,
+  //   "save results in file \"report\");
+  ll(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
+  l(bold("-rm") + ", " + bold("--ref-model") + "  " + italic("k") + ",[" +
+    italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," + 
+    italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," + 
+    italic("g") + ":...");
+  l(bold("-tm") + ", " + bold("--tar-model") + "  " + italic("k") + ",[" +
+    italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," + 
+    italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," + 
+    italic("g") + ":...");
+  ll("", 0, "parameters of models");
+  rl("(" + underline("INT") + ") ", 1, italic("k") + ":  context size");
+  rl("(" + underline("INT") + ") ", 1, italic("w") + 
+    ":  width of sketch in log2 form,");
+  ll("", 0, "    e.g., set 10 for w=2^10=1024");
+  rl("(" + underline("INT") + ") ", 1, italic("d") + ":  depth of sketch");
+  rl("(" + underline("INT") + ") ", 1, "ir: inverted repeat: {0, 1, 2}");
+  ll("", 0, "    0: regular (not inverted)");
+  ll("", 0, "    1: inverted, solely");
+  ll("", 0, "    2: both regular and inverted");
+  rl("(" + underline("FLOAT") + ") ", 1, italic("a") + ":  estimator");
+  rl("(" + underline("FLOAT") + ") ", 1, italic("g") + 
+    ":  forgetting factor: [0.0, 1.0)");
+  rl("(" + underline("INT") + ") ", 1, italic("t") + 
+    ":  threshold (no. substitutions)");
+  l("");
+  t("AUTHOR");
+  ll("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
+  l("");
+  t("COPYRIGHT");
+  l("Copyright (C) " + DEV_YEARS + ", IEETA, University of Aveiro. You may  ");
+  l("redistribute copies of this Free software under the terms of the");
+  l("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
+  l("There is NO WARRANTY, to the extent permitted by law.");
 }
 
 inline WType Param::win_type (const string& t) const {
@@ -513,82 +516,78 @@ inline void VizParam::parse (int argc, char**& argv) {
 }
 
 inline void VizParam::help () const {
-  const auto b   = [](string&& s) { return bold(std::move(s));          };
-  const auto it  = [](string&& s) { return italic(std::move(s));        };
-  const auto fit = [](string&& s) { return faint(italic(std::move(s))); };
-  const auto ul  = [](string&& s) { return underline(std::move(s));     };
+  // Print title
+  const auto t = [&](string&& str) { cerr << bold(std::move(str)) << '\n'; };
+  const auto l = [&](const string& str) { cerr << "  " << str << '\n'; }; //Line
+  // Print column 1: left-aligned + column 2: left-aligned
+  const auto ll = [&](const string& strL, u8 n, const string& strR) {
+    cerr << "  " << std::left << std::setw(27+n*8) << strL;
+    cerr.clear();
+    cerr << strR << '\n';
+  };
 
-  cerr 
-  << b("NAME")                                                            <<'\n'
-  << "  Smash++ Visualizer v" << VERSION << " - "
-     "Visualization of Samsh++ output"                                    <<'\n'
-  <<                                                                        '\n'
-  << b("SYNOPSIS")                                                        <<'\n'
-  << "  ./smashpp -viz  " << ul("OPTIONS") << "...  "
-     "-o " << ul("SVG-FILE") << "  " << ul("POS-FILE") << ""              <<'\n'
-  <<                                                                        '\n'
-  << b("SAMPLE")                                                          <<'\n'
-//    "  ./smashpp -viz -o out.svg ab.pos                            \n"
-  <<                                                                        '\n'
-  << b("DESCRIPTION")                                                     <<'\n'
-  << "  " << it("Mandatory arguments") << ":"                             <<'\n'
-  << "  " << ul("POS-FILE") << "                   "
-     "positions file, generated by     " << fit("INPUT")                  <<'\n'
-  << "                             Smash++ tool (*.pos)"                  <<'\n'
-  <<                                                                        '\n'
-  << "  " << it("Options") << ":"                                         <<'\n'
-  << "  " << b("-v")  << ",  " << b("--verbose") << "             "
-     "more information"                                                   <<'\n'
-  << "  " << b("-o")  << ",  " << b("--out") << " " << ul("SVG-FILE") <<
-     "        output image name (*.svg)       " << fit("OUTPUT")          <<'\n'
-  << "  " << b("-nn") << ", "  << b("--no-nrc") << "              "
-     "NOT show normalized            " << fit("NO SHOW")                  <<'\n'
-  << "                             relative compression (NRC)"            <<'\n'
-  << "  " << b("-nr") << ", "  << b("--no-redun") << "            "
-     "NOT show self complexity       " << fit("NO SHOW")                  <<'\n'
-  << "  " << b("-ni") << ", "  << b("--no-inv") << "              "
-     "NOT show inverse maps          " << fit("NO SHOW")                  <<'\n'
-  << "  " << b("-ng") << ", "  << b("--no-reg") << "              "
-     "NOT show regular maps          " << fit("NO SHOW")                  <<'\n'
-  << "  " << b("-l") << ",  "  << b("--link") << "    " << ul("INT") <<
-     "         type of the link between maps "
-     "[" << to_string(MIN_LINK) << "," << to_string(MAX_LINK) << "]"      <<'\n'
-  << "  " << b("-c") << ",  "  << b("--color") << "   " << ul("INT") <<
-     "         color mode "
-     "[" << to_string(MIN_COLOR) << "," << to_string(MAX_COLOR) << "]"    <<'\n'
-  << "  " << b("-p") << ",  "  << b("--opacity") << " " << ul("FLOAT") <<
-     "       opacity [" << string_format("%.1f",MIN_OPAC) << "," 
-                        << string_format("%.1f",MAX_OPAC) << "]"          <<'\n'
-  << "  " << b("-w") << ",  "  << b("--width") << "   " << ul("INT") <<
-     "         width of the image sequence "
-     "[" << to_string(MIN_WDTH) << "," << to_string(MAX_WDTH) << "]"      <<'\n'
-  << "  " << b("-s") << ",  "  << b("--space") << "   " << ul("INT") <<
-     "         space between sequences "
-     "[" << to_string(MIN_SPC) << "," << to_string(MAX_SPC) << "]"        <<'\n'
-  << "  " << b("-f") << ",  "  << b("--mult") << "    " << ul("INT") <<
-     "         multiplication factor for"                                 <<'\n'
-  << "                             color ID "
-     "[" << to_string(MIN_MULT) << "," << to_string(MAX_MULT) << "]"      <<'\n'
-  << "  " << b("-b") << ",  "  << b("--begin") << "   " << ul("INT") <<
-     "         beginning of color ID "
-     "[" << to_string(MIN_BEGN) << "," << to_string(MAX_BEGN) << "]"      <<'\n'
-  << "  " << b("-t") << ",  "  << b("--tick") << "    " << ul("INT") <<
-     "         tick hop "
-     "[" << to_string(MIN_TICK) << "," << to_string(MAX_TICK) << "]"      <<'\n'
-  << "  " << b("-m") << ",  "  << b("--min") << "     " << ul("INT") <<
-     "         minimum block size "
-     "[" << to_string(MIN_MINP) << "," << to_string(MAX_MINP) << "]"      <<'\n'
-  << "  " << b("-h") << ",  " << b("--help") << "                usage guide \n"
-  <<                                                                        '\n'
-  << b("AUTHORS")                                                         <<'\n'
-  << "  Morteza Hosseini           seyedmorteza@ua.pt"                    <<'\n'
-  << "  Diogo   Pratas             pratas@ua.pt"                          <<'\n'
-  <<                                                                        '\n'
-  << b("COPYRIGHT")                                                       <<'\n'
-  << "  Copyright (C) "<<DEV_YEARS<<", IEETA, University of Aveiro. You may  \n"
-  << "  redistribute copies of this Free software under the terms of the" <<'\n'
-  << "  GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>." <<'\n'
-  << "  There is NO WARRANTY, to the extent permitted by law."           <<endl;
+  t("NAME");
+  l("Smash++ Visualizer v" + VERSION + " - Visualization of Samsh++ output");
+  l("");
+  t("SYNOPSIS");
+  l("./smashpp -viz  " + underline("OPTIONS") + "...  -o " + 
+    underline("SVG-FILE") + "  " + underline("POS-FILE"));
+  l("");
+  t("SAMPLE");
+  // l("./smashpp -viz -o out.svg ab.pos");
+  l("");
+  t("DESCRIPTION");
+  l(italic("Mandatory arguments") + ":");
+  ll(underline("POS-FILE"), 1, "positions file, generated by");
+  ll("", 0, "Smash++ tool (*.pos)");
+  l("");
+  l(italic("Options") + ":");
+  ll(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
+  ll(bold("-o") + ",  " + bold("--out") + " " + underline("SVG-FILE"), 3, 
+    "output image name (*.svg)");
+  ll(bold("-vv") + ", " + bold("--vertical"), 2, "vertical view");
+  ll(bold("-nn") + ", " + bold("--no-nrc"), 2, "do NOT show normalized");
+  ll("", 0, "relative compression (NRC)");
+  ll(bold("-nr") + ", " + bold("--no-redun"), 2, "do NOT show self complexity");
+  ll(bold("-ni") + ", " + bold("--no-inv"), 2, "do NOT show inverse maps");
+  ll(bold("-ng") + ", " + bold("--no-reg"), 2, "do NOT show regular maps");
+  ll(bold("-l") + ",  " + bold("--link") + "    " + underline("INT"), 3,
+    "type of the link between maps: [" + to_string(MIN_LINK) + ", " +
+    to_string(MAX_LINK) + "]");
+  ll(bold("-c") + ",  " + bold("--color") + "   " + underline("INT"), 3,
+    "color mode: [" + to_string(MIN_COLOR) + ", " + to_string(MAX_COLOR) + "]");
+  ll(bold("-p") + ",  " + bold("--opacity") + " " + underline("FLOAT"), 3,
+    "opacity: [" + string_format("%.1f",MIN_OPAC) + ", " + 
+    string_format("%.1f",MAX_OPAC) + "]");
+  ll(bold("-w") + ",  " + bold("--width") + "   " + underline("INT"), 3, 
+    "width of the image sequence: [" + to_string(MIN_WDTH) + ", " +
+    to_string(MAX_WDTH) + "]");
+  ll(bold("-s") + ",  " + bold("--space") + "   " + underline("INT"), 3, 
+    "space between sequences: [" + to_string(MIN_SPC) + ", " + 
+    to_string(MAX_SPC) + "]");
+  ll(bold("-f") + ",  " + bold("--mult") + "    " + underline("INT"), 3,
+    "multiplication factor for");
+  ll("", 0, "color ID: [" + to_string(MIN_MULT) + ", " + to_string(MAX_MULT) +
+    "]");
+  ll(bold("-b") + ",  " + bold("--begin") + "   " + underline("INT"), 3,
+    "beginning of color ID: [" + to_string(MIN_BEGN) + ", " + 
+    to_string(MAX_BEGN) + "]");
+  ll(bold("-t") + ",  " + bold("--tick") + "    " + underline("INT"), 3,
+    "tick hop: [" + to_string(MIN_TICK) + ", " + to_string(MAX_TICK) + "]");
+  ll(bold("-m") + ",  " + bold("--min") + "     " + underline("INT"), 3,
+    "minimum block size: [" + to_string(MIN_MINP) + ", " + to_string(MAX_MINP) +
+    "]");
+  ll(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
+  l("");
+  t("AUTHORS");
+  ll("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
+  ll("Diogo   Pratas", 0, "pratas@ua.pt");
+  l("");
+  t("COPYRIGHT");
+  l("Copyright (C) " + DEV_YEARS + ", IEETA, University of Aveiro. You may  ");
+  l("redistribute copies of this Free software under the terms of the");
+  l("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
+  l("There is NO WARRANTY, to the extent permitted by law.");
 }
 }
 

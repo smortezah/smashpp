@@ -51,21 +51,11 @@ inline static string bold_red (const string& text) {
 #ifdef DEBUG
 // Print variadic inputs
 // template <class Head, class... Tail>
-// static void print (Head const& head, Tail const&... tail) {
+// inline static void print (Head const& head, Tail const&... tail) {
 //   cerr << head;
 //   if (std::is_convertible<Head, u8>::value)
 //   (void) initializer_list<int>{((cerr<<", "<<tail), 0)...};
 // }
-
-template <typename Integral>
-static void print (Integral&& in) {
-  cerr << (is_u8(in) ? static_cast<u32>(in) : in);
-}
-template <typename Integral, typename... Args>
-static void print (Integral&& in, Args&&... args) {
-  cerr << (is_u8(in) ? static_cast<u32>(in) : in) << '\t';
-  print(args...);
-}
 #endif
 
 inline static void wrap_text (string& text) {

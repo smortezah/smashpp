@@ -404,10 +404,26 @@ z
 RefM</text>
 <text id="20.000000210.000000" x="20" y="210" dominant-baseline="text-after-edge" font-size="10px" font-weight="bold" font-family="Arial" text-anchor="start" text-align="start" line-height="125%%" >
 TarM</text>
-<text id="552.000000147.000000" x="552" y="147" dominant-baseline="middle" transform="rotate(90 552.000000 147.000000)" font-size="9px" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
+<text id="550.000000147.000000" x="550" y="147" dominant-baseline="middle" transform="rotate(90 550.000000 147.000000)" font-size="9px" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
 Relative Redundancy</text>
-<text id="583.000000147.000000" x="583" y="147" dominant-baseline="middle" transform="rotate(90 583.000000 147.000000)" font-size="9px" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
+<path id="" d="M 519.995,75.3333
+H 550
+V 100
+" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+<path id="" d="M 519.995,218.667
+H 550
+V 194
+" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+<text id="585.000000147.000000" x="585" y="147" dominant-baseline="middle" transform="rotate(90 585.000000 147.000000)" font-size="9px" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
 Redundancy</text>
+<path id="" d="M 519.995,64
+H 585
+V 115
+" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+<path id="" d="M 519.995,230
+H 585
+V 179
+" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
 <defs id="" >
 <linearGradient id="grad560.00000078.000000" x1="0%" y1="100%" x2="0%" y2="0%" >
 <stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
@@ -436,20 +452,4 @@ Redundancy</text>
 1.5</text>
 <text id="567.50000072.000000" x="567.5" y="72" dominant-baseline="middle" font-size="8px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="middle" line-height="125%%" >
 2.0</text>
-<path id="" d="M 519.995,75.3333
-H 552
-V 100
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
-<path id="" d="M 519.995,218.667
-H 552
-V 194
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
-<path id="" d="M 519.995,64
-H 583
-V 115
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
-<path id="" d="M 519.995,230
-H 583
-V 179
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
 </svg>
