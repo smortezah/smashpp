@@ -1486,12 +1486,20 @@ bool plotRef) {
             divInt = oneTenth / tens;
   double divDouble = double(oneTenth) / tens;
   if (double(divInt) != divDouble) {
-    const double roundHalfUp = divInt + 0.5;
-    divDouble = (divDouble<=roundHalfUp) ? roundHalfUp : roundHalfUp+0.5;
+    // const double roundHalfUp = divInt + 0.5;
+    if (divDouble <= divInt+0.25)
+      divDouble = divInt;
+    else if (divDouble > divInt+0.25 && divDouble < divInt+0.75)
+      divDouble = divInt + 0.5;
+    else
+      divDouble = divInt + 1;
+    // divDouble = (divDouble<=roundHalfUp) ? roundHalfUp : roundHalfUp+0.5;
   }
 
-  float majorHop = divDouble * tens,
-        minorHop = majorHop / n_subranges;
+  float majorHop = divDouble * tens;
+  if (plotRef) { if (par.refTick!=0)  majorHop=par.refTick; } 
+  else         { if (par.tarTick!=0)  majorHop=par.tarTick; }
+  float minorHop = majorHop / n_subranges;
 
   for (float pos=0; pos <= n_bases; pos+=minorHop) {
     if (par.vertical)  line->y1 = line->y2 = y + get_point((u64)pos);

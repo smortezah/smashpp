@@ -75,13 +75,13 @@ class VizParam {
   u32    width, space, mult, start, min;
   bool   manMult;
   string posFile;
-  u64    tick;
+  u64    refTick, tarTick;
   bool   vertical;
 
   VizParam () : verbose(false), inverse(true), regular(true), showNRC(true),
     showRedun(true), image(IMAGE), link(LINK), colorMode(COLOR), opacity(OPAC),
     width(WDTH), space(SPC), mult(MULT), start(BEGN), min(MINP), manMult(false),
-    tick(0), vertical(false) {}
+    refTick(0), tarTick(0), vertical(false) {}
 
   void parse (int, char**&);
 
@@ -481,11 +481,17 @@ inline void VizParam::parse (int argc, char**& argv) {
         "Begin", "[]", "default", Problem::WARNING);
       range->assert(start);
     }
-    else if ((*i=="-t" || *i=="--tick") && i+1!=vArgs.end()) {
-      tick = stoull(*++i);
+    else if ((*i=="-rt" || *i=="--ref-tick") && i+1!=vArgs.end()) {
+      refTick = stoull(*++i);
       auto range = make_unique<ValRange<u64>>(MIN_TICK, MAX_TICK, TICK,
-        "Tick hop", "[]", "default", Problem::WARNING);
-      range->assert(tick);
+        "Tick hop for reference", "[]", "default", Problem::WARNING);
+      range->assert(refTick);
+    }
+    else if ((*i=="-tt" || *i=="--tar-tick") && i+1!=vArgs.end()) {
+      tarTick = stoull(*++i);
+      auto range = make_unique<ValRange<u64>>(MIN_TICK, MAX_TICK, TICK,
+        "Tick hop for target", "[]", "default", Problem::WARNING);
+      range->assert(tarTick);
     }
     else if ((*i=="-c" || *i=="--color") && i+1!=vArgs.end()) {
       colorMode = static_cast<u8>(stoi(*++i));
@@ -552,30 +558,33 @@ inline void VizParam::help () const {
   ll(bold("-nr") + ", " + bold("--no-redun"), 2, "do NOT show self complexity");
   ll(bold("-ni") + ", " + bold("--no-inv"), 2, "do NOT show inverse maps");
   ll(bold("-ng") + ", " + bold("--no-reg"), 2, "do NOT show regular maps");
-  ll(bold("-l") + ",  " + bold("--link") + "    " + underline("INT"), 3,
+  ll(bold("-l") + ",  " + bold("--link") + "     " + underline("INT"), 3,
     "type of the link between maps: [" + to_string(MIN_LINK) + ", " +
     to_string(MAX_LINK) + "]");
-  ll(bold("-c") + ",  " + bold("--color") + "   " + underline("INT"), 3,
+  ll(bold("-c") + ",  " + bold("--color") + "    " + underline("INT"), 3,
     "color mode: [" + to_string(MIN_COLOR) + ", " + to_string(MAX_COLOR) + "]");
-  ll(bold("-p") + ",  " + bold("--opacity") + " " + underline("FLOAT"), 3,
+  ll(bold("-p") + ",  " + bold("--opacity") + "  " + underline("FLOAT"), 3,
     "opacity: [" + string_format("%.1f",MIN_OPAC) + ", " + 
     string_format("%.1f",MAX_OPAC) + "]");
-  ll(bold("-w") + ",  " + bold("--width") + "   " + underline("INT"), 3, 
+  ll(bold("-w") + ",  " + bold("--width") + "    " + underline("INT"), 3, 
     "width of the sequence: [" + to_string(MIN_WDTH) + ", " + 
     to_string(MAX_WDTH) + "]");
-  ll(bold("-s") + ",  " + bold("--space") + "   " + underline("INT"), 3, 
+  ll(bold("-s") + ",  " + bold("--space") + "    " + underline("INT"), 3, 
     "space between sequences: [" + to_string(MIN_SPC) + ", " + 
     to_string(MAX_SPC) + "]");
-  ll(bold("-f") + ",  " + bold("--mult") + "    " + underline("INT"), 3,
+  ll(bold("-f") + ",  " + bold("--mult") + "     " + underline("INT"), 3,
     "multiplication factor for");
   ll("", 0, "color ID: [" + to_string(MIN_MULT) + ", " + to_string(MAX_MULT) +
     "]");
-  ll(bold("-b") + ",  " + bold("--begin") + "   " + underline("INT"), 3,
+  ll(bold("-b") + ",  " + bold("--begin") + "    " + underline("INT"), 3,
     "beginning of color ID: [" + to_string(MIN_BEGN) + ", " + 
     to_string(MAX_BEGN) + "]");
-  ll(bold("-t") + ",  " + bold("--tick") + "    " + underline("INT"), 3,
-    "tick hop: [" + to_string(MIN_TICK) + ", " + to_string(MAX_TICK) + "]");
-  ll(bold("-m") + ",  " + bold("--min") + "     " + underline("INT"), 3,
+  ll(bold("-rt") + ", " + bold("--ref-tick") + " " + underline("INT"), 3,
+    "reference tick: [" + to_string(MIN_TICK) + ", " + to_string(MAX_TICK) +
+    "]");
+  ll(bold("-tt") + ", " + bold("--tar-tick") + " " + underline("INT"), 3,
+    "target tick: [" + to_string(MIN_TICK) + ", " + to_string(MAX_TICK) + "]");
+  ll(bold("-m") + ",  " + bold("--min") + "      " + underline("INT"), 3,
     "minimum block size: [" + to_string(MIN_MINP) + ", " + to_string(MAX_MINP) +
     "]");
   ll(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
