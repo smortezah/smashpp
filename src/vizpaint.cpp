@@ -1697,13 +1697,13 @@ unique_ptr<PosPlot>& posPlot) {
   line->y1 = y;
   line->y2 = y + get_point(posPlot->n_bases) + 0.5*line->stroke_width;
   if (posPlot->plotRef)
-    line->x1 = line->x2 = x - TITLE_SPACE - 
-    static_cast<u8>(posPlot->showNRC | posPlot->showRedun) *
-    posPlot->vertSkip -
-      (u8(posPlot->showNRC)+u8(posPlot->showRedun)) * 
-      (VERT_TUNE+seqWidth/VERT_RATIO) - posPlot->majorTickSize;
+    line->x1 = line->x2 = x - u8(posPlot->showNRC | posPlot->showRedun) *
+      TITLE_SPACE/2 - (u8(posPlot->showNRC)+u8(posPlot->showRedun)) * 
+      (VERT_TUNE+seqWidth/VERT_RATIO) - posPlot->vertSkip -
+      posPlot->majorTickSize;
   else
-    line->x1 = line->x2 = x + 2*seqWidth + innerSpace + TITLE_SPACE +
+    line->x1 = line->x2 = x + 2*seqWidth + innerSpace + 
+      u8(posPlot->showNRC | posPlot->showRedun) * TITLE_SPACE/2 + 
       posPlot->vertSkip + (u8(posPlot->showNRC)+u8(posPlot->showRedun)) * 
       (VERT_TUNE+seqWidth/VERT_RATIO) + posPlot->majorTickSize;
   line->plot(f);
