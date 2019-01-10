@@ -35,7 +35,7 @@ static constexpr u32  MAX_MINP        {0xffffffff};  // 2^32 - 1
 
 //todo
 static constexpr u64  TICK            {100};  // Major tick
-static constexpr u64  MIN_TICK        {100};
+static constexpr u64  MIN_TICK        {1};
 static constexpr u64  MAX_TICK        {0xffffffff};
 static constexpr u32  PAINT_SCALE     {100};
 static constexpr auto PAINT_SHORT     {0.035};
