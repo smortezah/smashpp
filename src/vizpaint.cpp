@@ -1464,19 +1464,20 @@ bool plotRef) {
   text->font_size = 10;
   if (par.vertical) {
     if (plotRef) {
-      text->text_anchor = "start";
-      text->x = line->x1 + tickLabelSkip/2;
-    } else {
       text->text_anchor = "end";
-      text->x = line->x1 - tickLabelSkip/2;
+      text->x = line->x1 - tickLabelSkip;
+    } else {
+      text->text_anchor = "start";
+      text->x = line->x1 + tickLabelSkip;
     }
-    text->dominant_baseline = "text-before-edge";
+    text->dominant_baseline = "middle";
     text->y = line->y1;
-  } else {
+  }
+  else {
     text->text_anchor = "start";
     text->dominant_baseline = "middle";
     text->x = line->x1;
-    text->y = plotRef ? line->y1 + tickLabelSkip : line->y1 - tickLabelSkip;
+    text->y = plotRef ? line->y1 - tickLabelSkip : line->y1 + tickLabelSkip;
   }
   text->Label = "bp";
   text->plot(f);
@@ -1493,7 +1494,6 @@ bool plotRef) {
       divDouble = divInt + 0.5;
     else
       divDouble = divInt + 1;
-    // divDouble = (divDouble<=roundHalfUp) ? roundHalfUp : roundHalfUp+0.5;
   }
 
   float majorHop = divDouble * tens;
@@ -1502,30 +1502,34 @@ bool plotRef) {
   float minorHop = majorHop / n_subranges;
 
   for (float pos=0; pos <= n_bases; pos+=minorHop) {
-    if (par.vertical)  line->y1 = line->y2 = y + get_point((u64)pos);
-    else               line->x1 = line->x2 = x + get_point((u64)pos);
-
+    if (par.vertical) {
+      line->y1 = line->y2 = y + get_point((u64)pos);
+      if (pos == 0.0f) {
+        line->y1 += 0.75*line->stroke_width;
+        line->y2 = line->y1;
+      }
+    }
+    else {            
+      line->x1 = line->x2 = x + get_point((u64)pos);
+      if (pos == 0.0f) {
+        line->x1 += 0.75*line->stroke_width;
+        line->x2 = line->x1;
+      }
+    }
+    
     // Major ticks
     if ((u64)pos % (u64)majorHop == 0) {  
       line->stroke_width = majorStrokeWidth;
       if (par.vertical) {
         line->x2 = plotRef ? line->x1 + majorTickSize : line->x1 -majorTickSize;
-        if (pos!=0.0f) {
-          line->plot(f);
-          text->dominant_baseline = "middle";
-        } else {
-          text->dominant_baseline = "text-before-edge";
-        }
+        line->plot(f);
         text->text_anchor = plotRef ? "end" : "start";
+        text->dominant_baseline = "middle";
       }
       else {
         line->y2 = plotRef ? line->y1 + majorTickSize : line->y1 -majorTickSize;
-        if (pos != 0.0f) {
-          line->plot(f);
-          text->text_anchor = "middle";
-        } else {
-          text->text_anchor = "start";
-        }
+        text->text_anchor = "middle";
+        line->plot(f);
       }
 
       text->font_weight = "normal";
@@ -1539,7 +1543,8 @@ bool plotRef) {
       }
       // text->Label = human_readable_non_cs(pos);
       text->Label = thousands_sep(u64(pos));
-      text->plot(f);
+      if (pos!=0.0f)
+        text->plot(f);
     }
     else {  // Minor ticks
       line->stroke_width = minorStrokeWidth;
