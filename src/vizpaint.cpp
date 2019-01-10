@@ -24,8 +24,8 @@ void VizPaint::plot (VizParam& p) {
       max(num_digits(n_refBases), num_digits(n_tarBases));
     x = 100.0f;
     if (max_n_digits > 4)   x += 17.0f;
-    if (max_n_digits > 7)   x += 17.0f;
-    if (max_n_digits > 10)  x += 17.0f;
+    if (max_n_digits > 7)   x += 8.5f;
+    if (max_n_digits > 10)  x += 8.5f;
     y = 30.0f;
     svg->width = 2*x + 2*seqWidth + innerSpace;
     svg->height = maxSize + 105;
@@ -1027,7 +1027,7 @@ i64 maxWidth) {
   plot_legend_gradient(f, rect, p.colorMode, p.vertical);
 
   // Print numbers (measures)
-  text->font_weight = "normal";
+  text->font_weight = "bold";
   text->dominant_baseline = "middle";
   text->font_size = 8;
   if (p.vertical) {
@@ -1424,14 +1424,13 @@ bool plotRef) {
               n_subranges      = 4;
   const u16   minorTickSize    = 6,
               majorTickSize    = 1.75*minorTickSize,
-              tickLabelSkip    = 5,
               vertSkip         = 13;
   const float minorStrokeWidth = 0.8f,
               majorStrokeWidth = 1.6*minorStrokeWidth;
+  u16 tickLabelSkip = par.vertical ? 5 : 7;
 
   auto line = make_unique<Line>();
   line->stroke_width = majorStrokeWidth;
-  // line->stroke_width = minorStrokeWidth;
   auto text = make_unique<Text>();
   text->font_size = 9;
 
@@ -1477,8 +1476,7 @@ bool plotRef) {
   }
   else {
     text->text_anchor = "start";
-    text->dominant_baseline = plotRef ? "text-after-edge" : "text-before-edge";
-    // text->dominant_baseline = "middle";
+    text->dominant_baseline = plotRef ? "baseline" : "hanging";
     text->x = line->x1;
     text->y = plotRef ? line->y1 - tickLabelSkip : line->y1 + tickLabelSkip;
   }
@@ -1520,17 +1518,17 @@ bool plotRef) {
       if (par.vertical) {
         text->x = plotRef ? line->x1 - tickLabelSkip : line->x1 + tickLabelSkip;
         text->y = line->y1;
+        text->font_size = 9;
         text->text_anchor = plotRef ? "end" : "start";
         text->dominant_baseline = "middle";
       } else {
         text->x = line->x1;
         text->y = plotRef ? line->y1 - tickLabelSkip : line->y1 + tickLabelSkip;
+        text->font_size = (n_bases < POW10[7]) ? 9 : 8.5;
         text->text_anchor = "middle";
-        text->dominant_baseline = plotRef ? "text-after-edge" 
-                                          : "text-before-edge";
+        text->dominant_baseline = plotRef ? "baseline" : "hanging";
       }
       text->font_weight = "normal";
-      text->font_size = (n_bases < POW10[7]) ? 9 : 8.5;
       // text->Label = human_readable_non_cs(pos);
       text->Label = thousands_sep(u64(round(pos)));
       if (pos!=0.0f)
