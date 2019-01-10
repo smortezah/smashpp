@@ -9,29 +9,30 @@
 
 namespace smashpp {
 struct Position {
-  i64   begRef, endRef;
-  prc_t entRef, selfRef;
-  i64   begTar, endTar;
-  prc_t entTar, selfTar;
+  i64   begRef, endRef,  begTar, endTar;
+  prc_t entRef, selfRef, entTar, selfTar;
   u64   start;
+
   Position (i64 br, i64 er, prc_t nr, prc_t sr, i64 bt, i64 et, prc_t nt, 
-    prc_t st, u64 s) : begRef(br), endRef(er), entRef(nr), selfRef(sr), 
-    begTar(bt), endTar(et), entTar(nt), selfTar(st), start(s) {}
+    prc_t st, u64 s) : begRef(br), endRef(er), begTar(bt), endTar(et), 
+    entRef(nr), selfRef(sr), entTar(nt), selfTar(st), start(s) {}
 };
 
 struct PosNode {
   i64  position;
   char type;
   u64  start;
+
   PosNode (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
 };
 
 struct PosPlot {
   u8     n_ranges, n_subranges;
   u16    minorTickSize, majorTickSize, vertSkip, tickLabelSkip;
-  bool   vertical;
+  bool   vertical, showNRC, showRedun, plotRef, refTick, tarTick;
   float  minorStrokeWidth, majorStrokeWidth;
-  double maxPos;
+  double n_bases;
+
   PosPlot () : n_ranges(10), n_subranges(4), minorTickSize(6),
     majorTickSize(1.75*minorTickSize), vertSkip(13), vertical(false),
     minorStrokeWidth(0.8f), majorStrokeWidth(1.6*minorStrokeWidth) {}
@@ -67,7 +68,8 @@ class VizPaint {
   auto get_point (Value) const -> double;
   auto get_index (double point) const -> u64;
   void plot_title (ofstream&, const string&, const string&, bool) const;
-  void plot_legend (ofstream&, const VizParam&, i64);
+  void plot_legend_horizontal (ofstream&, const VizParam&, i64);
+  void plot_legend_vertical (ofstream&, const VizParam&, i64);
   template <typename Rect>
   void plot_legend_gradient (ofstream&, const Rect&, u8, bool);
   auto tspan (u32, i64) const -> string;
@@ -77,9 +79,8 @@ class VizPaint {
   void read_pos (ifstream&, vector<Position>&, VizParam&);
   void make_posNode (const vector<Position>&, const VizParam&, string&&);
   // void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
-  // void plot_pos (ofstream&, VizParam&, u64, bool);
-  void plot_pos (ofstream&, unique_ptr<PosPlot>&, VizParam&, u64, bool);
-  void plot_pos_vertical (ofstream&, unique_ptr<PosPlot>&, VizParam&, u64, bool);
+  void plot_pos_horizontal (ofstream&, unique_ptr<PosPlot>&);
+  void plot_pos_vertical (ofstream&, unique_ptr<PosPlot>&);
 };
 }
 

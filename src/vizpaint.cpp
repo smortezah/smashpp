@@ -61,17 +61,23 @@ void VizPaint::plot (VizParam& p) {
 
   auto posPlot = make_unique<PosPlot>();
   posPlot->vertical = p.vertical;
+  posPlot->showNRC = p.showNRC;
+  posPlot->showRedun = p.showRedun;
+  posPlot->refTick = p.refTick;
+  posPlot->tarTick = p.tarTick;
 
   make_posNode(pos, p, "ref");
-  posPlot->maxPos = get_point(n_refBases);
-  plot_pos(fPlot, posPlot, p, true);
-  // plot_pos(fPlot, p, n_refBases, true);
+  posPlot->n_bases = n_refBases;
+  posPlot->plotRef = true;
+  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
+                    : plot_pos_horizontal(fPlot, posPlot);
   // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
 
   make_posNode(pos, p, "tar");
-  posPlot->maxPos = get_point(n_tarBases);
-  plot_pos(fPlot, posPlot, p, true);
-  // plot_pos(fPlot, p, n_tarBases, false);
+  posPlot->n_bases = n_tarBases;
+  posPlot->plotRef = false;
+  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
+                    : plot_pos_horizontal(fPlot, posPlot);
   // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
 
   if (!plottable)  error("not plottable positions.");
@@ -525,7 +531,8 @@ void VizPaint::plot (VizParam& p) {
 
   // Plot title, legend and annotation
   plot_title(fPlot, ref, tar, p.vertical);
-  plot_legend(fPlot, p, max(n_refBases,n_tarBases));
+  p.vertical ? plot_legend_horizontal(fPlot, p, max(n_refBases,n_tarBases))
+             : plot_legend_vertical(fPlot, p, max(n_refBases,n_tarBases));
 
   svg->print_tailer(fPlot);
 
@@ -722,7 +729,7 @@ const string& tar, bool vertical) const {
   }
 }
 
-inline void VizPaint::plot_legend (ofstream& f, const VizParam& p, 
+inline void VizPaint::plot_legend_horizontal (ofstream& f, const VizParam& p, 
 i64 maxWidth) {
   if (!p.showNRC && !p.showRedun)  return;
   
@@ -1075,6 +1082,189 @@ i64 maxWidth) {
   text->plot(f);
 }
 
+inline void VizPaint::plot_legend_vertical (ofstream& f, const VizParam& p, 
+i64 maxWidth) {
+  if (!p.showNRC && !p.showRedun)  return;
+  
+  const auto originFixed = x + get_point(maxWidth) + 40;
+  const auto label_shift = 10;
+  auto rect = make_shared<Rectangle>();
+
+  auto text = make_unique<Text>();
+  text->text_anchor = "middle";
+  // text->font_weight = "bold";
+  text->font_size = 9;
+
+  auto path = make_unique<Path>();
+  path->stroke = "black";
+  path->stroke_width = 0.5;
+  // path->stroke_dasharray = "8 3";
+
+  float Y1RelRedun=0.0f, Y2RelRedun=0.0f, Y1Redun=0.0f, Y2Redun=0.0f;
+
+  if (p.showNRC && !p.showRedun) {
+    rect->x = originFixed;
+    rect->y = y - (TITLE_SPACE + VERT_TUNE);
+    rect->width = 15;
+    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*seqWidth + innerSpace;
+
+    text->x = rect->x - label_shift;
+    text->y = rect->y + rect->height/2;
+    text->transform = "rotate(90 " + to_string(text->x) + " " +
+                      to_string(text->y) + ")";
+    text->Label = "Relative Redundancy";
+    // text->plot_shadow(f);
+    text->plot(f);
+
+    Y1RelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*seqWidth/VERT_RATIO);
+    Y2RelRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE + VERT_TUNE +
+                 0.5*seqWidth/VERT_RATIO;
+
+    // Top wing
+    if (lastPos.size() == 2) {
+      path->d = path->M(x+get_point(lastPos[0]), Y1RelRedun) + 
+                path->H(text->x) + 
+                path->V((Y1RelRedun+Y2RelRedun)/2 - 47);
+    // path->plot_shadow(f);
+      path->plot(f);
+    }
+    // Bottom wing
+    path->d = path->M(x+get_point(lastPos[1]), Y2RelRedun) +
+              path->H(text->x) + 
+              path->V((Y1RelRedun+Y2RelRedun)/2 + 47);
+    // path->plot_shadow(f);
+    path->plot(f);
+
+    text->transform.clear();
+  }
+  else if (!p.showNRC && p.showRedun) {
+    rect->x = originFixed;
+    rect->y = y - (TITLE_SPACE + VERT_TUNE);
+    rect->width = 15;
+    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*seqWidth + innerSpace;
+
+    text->x = rect->x - label_shift;
+    text->y = rect->y + rect->height/2;
+    text->transform = "rotate(90 " + to_string(text->x) + " " +
+                      to_string(text->y) + ")";
+    text->Label = "Redundancy";
+    // text->plot_shadow(f);
+    text->plot(f);
+
+    Y1Redun = y - (TITLE_SPACE + VERT_TUNE + 0.5*seqWidth/VERT_RATIO);
+    Y2Redun = y + 2*seqWidth + innerSpace + TITLE_SPACE + VERT_TUNE +
+              0.5*seqWidth/VERT_RATIO;
+    
+    // Top wing
+    if (lastPos.size() == 2) {
+      path->d = path->M(x+get_point(lastPos[0]), Y1Redun) + 
+                path->H(text->x) + 
+                path->V((Y1Redun+Y2Redun)/2 - 32);
+    // path->plot_shadow(f);
+      path->plot(f);
+    }
+    // Bottom wing
+    path->d = path->M(x+get_point(lastPos[1]), Y2Redun) +
+              path->H(text->x) + 
+              path->V((Y1Redun+Y2Redun)/2 + 32);
+  // path->plot_shadow(f);
+    path->plot(f);
+
+    text->transform.clear();
+  }
+  else if (p.showNRC && p.showRedun) {
+    rect->x = originFixed;
+    rect->y = y - (TITLE_SPACE + VERT_TUNE);
+    rect->width = 15;
+    rect->height = 2*(TITLE_SPACE + VERT_TUNE) + 2*seqWidth + innerSpace;
+
+    text->x = rect->x - label_shift;
+    text->y = rect->y + rect->height/2;
+    text->transform = "rotate(90 " + to_string(text->x) + " " +
+                      to_string(text->y) + ")";
+    text->Label = "Relative Redundancy";
+    // text->plot_shadow(f);
+    text->plot(f);
+
+    Y1RelRedun = y - (TITLE_SPACE + VERT_TUNE + 0.5*seqWidth/VERT_RATIO);
+    Y2RelRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE + VERT_TUNE +
+                 0.5*seqWidth/VERT_RATIO;
+    
+    // Top wing
+    if (lastPos.size() == 2) {
+      path->d = path->M(x+get_point(lastPos[0]), Y1RelRedun) + 
+                path->H(text->x) + 
+                path->V((Y1RelRedun+Y2RelRedun)/2 - 47);
+    // path->plot_shadow(f);
+      path->plot(f);
+    }
+    // Bottom wing
+    path->d = path->M(x+get_point(lastPos[1]), Y2RelRedun) +
+              path->H(text->x) + 
+              path->V((Y1RelRedun+Y2RelRedun)/2 + 47);
+    // path->plot_shadow(f);
+    path->plot(f);
+
+    // Redundancy
+    text->x = rect->x + rect->width + label_shift;
+    text->y = rect->y + rect->height/2;
+    text->transform = "rotate(90 " + to_string(text->x) + " " +
+                      to_string(text->y) + ")";
+    text->Label = "Redundancy";
+    // text->plot_shadow(f);
+    text->plot(f);
+
+    Y1Redun = y - (TITLE_SPACE + 2*VERT_TUNE + 1.5*seqWidth/VERT_RATIO);
+    Y2Redun = y + 2*seqWidth + innerSpace + TITLE_SPACE + 2*VERT_TUNE +
+              1.5*seqWidth/VERT_RATIO;
+    
+    // Top wing
+    if (lastPos.size() == 2) {
+      path->d = path->M(x+get_point(lastPos[0]), Y1Redun) + 
+                path->H(text->x) + 
+                path->V((Y1Redun+Y2Redun)/2 - 32);
+      // path->plot_shadow(f);
+      path->plot(f);
+    }
+    // Bottom wing
+    path->d = path->M(x+get_point(lastPos[1]), Y2Redun) +
+              path->H(text->x) + 
+              path->V((Y1Redun+Y2Redun)/2 + 32);
+    // path->plot_shadow(f);
+    path->plot(f);
+
+    text->transform.clear();
+  }
+
+  plot_legend_gradient(f, rect, p.colorMode, p.vertical);
+
+  // Print numbers (measures)
+  text->font_weight = "bold";
+  text->dominant_baseline = "middle";
+  text->font_size = 8;
+  text->text_align = "middle";
+  text->x = rect->x + rect->width/2;
+  text->y = rect->y + rect->height + 6;  
+  text->Label = "0.0";
+  text->plot(f);
+
+  for (u8 i=1; i!=4; ++i) {
+    text->text_align = "middle";
+    text->x = rect->x + rect->width/2;
+    text->y = rect->y + rect->height - rect->height*i/4;  
+    if (p.colorMode==1 && i==3)  text->fill="white";
+    text->Label = string_format("%.1f", i*0.5);
+    text->plot(f);
+  }
+
+  text->text_align = "middle";
+  text->x = rect->x + rect->width/2;
+  text->y = rect->y - 6;  
+  text->fill = "black";
+  text->Label = "2.0";
+  text->plot(f);
+}
+
 template <typename Rect>
 inline void VizPaint::plot_legend_gradient (ofstream& f, const Rect& rect, 
 u8 colorMode, bool vertical) {
@@ -1089,15 +1279,11 @@ u8 colorMode, bool vertical) {
 
   auto grad = make_unique<LinearGradient>();
   if (vertical) {
-    grad->x1 = "0%";
-    grad->y1 = "0%";
-    grad->x2 = "100%";
-    grad->y2 = "0%";
+    grad->x1="0%";    grad->y1="0%";
+    grad->x2="100%";  grad->y2="0%";
   } else {
-    grad->x1 = "0%";
-    grad->y1 = "100%";
-    grad->x2 = "0%";
-    grad->y2 = "0%";
+    grad->x1="0%";    grad->y1="100%";
+    grad->x2="0%";    grad->y2="0%";
   }
   grad->id = "grad"+id;
   for (u8 i=0; i!=colorset.size(); ++i)
@@ -1424,138 +1610,162 @@ const VizParam& par, string&& type) {
 //   } // for
 // }
 
-// inline void VizPaint::plot_pos (ofstream& f, VizParam& par, u64 n_bases, 
-// bool plotRef) {
-inline void VizPaint::plot_pos (ofstream& f, unique_ptr<PosPlot>& posPlot,
-VizParam& par, u64 n_bases, bool plotRef) {
-  // auto posPlot = make_unique<PosPlot>();
-  // posPlot->maxPos = get_point(n_bases);
-  // posPlot->vertical = par.vertical;
-
-  if (posPlot->vertical) {
-    plot_pos_vertical(f, posPlot, par, n_bases, plotRef);
-    return;
-  }
-
-  posPlot->tickLabelSkip = (posPlot->vertical=par.vertical) ? 5 : 7;
+inline void VizPaint::plot_pos_horizontal (ofstream& f, 
+unique_ptr<PosPlot>& posPlot) {
+  posPlot->tickLabelSkip = 7;
 
   auto line = make_unique<Line>();
   line->stroke_width = posPlot->majorStrokeWidth;
-  auto text = make_unique<Text>();
-  text->font_size = 9;
-
-  if (par.vertical) {
-    line->y1 = y;
-    line->y2 = y + posPlot->maxPos + 0.5*line->stroke_width;
-    if (plotRef)
-      line->x1 = line->x2 = x - TITLE_SPACE - posPlot->vertSkip -
-        (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+seqWidth/VERT_RATIO) -
-        posPlot->majorTickSize;
-    else
-      line->x1 = line->x2 = x + 2*seqWidth + innerSpace + TITLE_SPACE +
-        posPlot->vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
-        (VERT_TUNE+seqWidth/VERT_RATIO) + posPlot->majorTickSize;
-  }
-  else {
-    line->x1 = x;
-    line->x2 = x + posPlot->maxPos + 0.5*line->stroke_width;
-    if (plotRef)
-      line->y1 = line->y2 = y - TITLE_SPACE - posPlot->vertSkip -
-        (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+seqWidth/VERT_RATIO) -
-        posPlot->majorTickSize;
-    else
-      line->y1 = line->y2 = y + 2*seqWidth + innerSpace + TITLE_SPACE +
-        posPlot->vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
-        (VERT_TUNE+seqWidth/VERT_RATIO) + posPlot->majorTickSize;
-  }
+  line->x1 = x;
+  line->x2 = x + get_point(posPlot->n_bases) + 0.5*line->stroke_width;
+  if (posPlot->plotRef)
+    line->y1 = line->y2 = y - TITLE_SPACE - posPlot->vertSkip -
+      (u8(posPlot->showNRC)+u8(posPlot->showRedun)) * 
+      (VERT_TUNE+seqWidth/VERT_RATIO) - posPlot->majorTickSize;
+  else
+    line->y1 = line->y2 = y + 2*seqWidth + innerSpace + TITLE_SPACE +
+      posPlot->vertSkip + (u8(posPlot->showNRC)+u8(posPlot->showRedun)) * 
+      (VERT_TUNE+seqWidth/VERT_RATIO) + posPlot->majorTickSize;
   line->plot(f);
 
+  auto text = make_unique<Text>();
+  text->font_size = 9;
   // Print bp
   text->font_weight = "bold";
   text->font_size = 10;
-  if (par.vertical) {
-    if (plotRef) {
-      text->text_anchor = "end";
-      text->x = line->x1 - posPlot->tickLabelSkip;
-    } else {
-      text->text_anchor = "start";
-      text->x = line->x1 + posPlot->tickLabelSkip;
-    }
-    text->dominant_baseline = "middle";
-    text->y = line->y1;
-  }
-  else {
-    text->text_anchor = "start";
-    text->dominant_baseline = plotRef ? "baseline" : "hanging";
-    text->x = line->x1;
-    text->y = plotRef ? line->y1 - posPlot->tickLabelSkip 
-                      : line->y1 + posPlot->tickLabelSkip;
-  }
+  text->text_anchor = "start";
+  text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
+  text->x = line->x1;
+  text->y = posPlot->plotRef ? line->y1 - posPlot->tickLabelSkip 
+                             : line->y1 + posPlot->tickLabelSkip;
   text->Label = "bp";
   text->plot(f);
 
-  float majorTick = tick_round(0, n_bases, posPlot->n_ranges);
-  if (plotRef) { if (par.refTick!=0)  majorTick=par.refTick; }
-  else         { if (par.tarTick!=0)  majorTick=par.tarTick; }
+  float majorTick = tick_round(0, posPlot->n_bases, posPlot->n_ranges);
+  if (posPlot->plotRef) {
+    if (posPlot->refTick != 0)
+      majorTick = posPlot->refTick;
+  } else {
+    if (posPlot->tarTick != 0)
+      majorTick = posPlot->tarTick;
+  }
   float minorTick = majorTick / posPlot->n_subranges;
 
-  for (float pos=0; pos <= n_bases; pos+=minorTick) {
-    if (par.vertical) {
-      line->y1 = line->y2 = y + get_point((u64)pos);
-      if (pos == 0.0f) {
-        line->y1 += 0.5*line->stroke_width;
-        line->y2 = line->y1;
-      }
+  for (float pos=0; pos <= posPlot->n_bases; pos+=minorTick) {
+    line->x1 = line->x2 = x + get_point((u64)pos);
+    if (pos == 0.0f) {
+      line->x1 += 0.5*line->stroke_width;
+      line->x2 = line->x1;
     }
-    else {            
-      line->x1 = line->x2 = x + get_point((u64)pos);
-      if (pos == 0.0f) {
-        line->x1 += 0.5*line->stroke_width;
-        line->x2 = line->x1;
-      }
+    
+    // Major ticks
+    if (u64(round(pos)) % u64(majorTick) == 0) {
+      // Line
+      line->y2 = posPlot->plotRef ? line->y1 + posPlot->majorTickSize 
+                                  : line->y1 - posPlot->majorTickSize;
+      line->stroke_width = posPlot->majorStrokeWidth;
+      line->plot(f);
+
+      // Text
+      text->x = line->x1;
+      text->y = posPlot->plotRef ? line->y1 - posPlot->tickLabelSkip 
+                                 : line->y1 + posPlot->tickLabelSkip;
+      text->font_size = (posPlot->n_bases < POW10[7]) ? 9 : 8.5;
+      text->font_weight = "normal";
+      text->text_anchor = "middle";
+      text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
+      // text->Label = human_readable_non_cs(u64(round(pos)));
+      text->Label = thousands_sep(u64(round(pos)));
+      if (pos!=0.0f)
+        text->plot(f);
+    }
+    else {  // Minor ticks
+      line->y2 = posPlot->plotRef ? line->y1 + posPlot->minorTickSize
+                                  : line->y1 - posPlot->minorTickSize;
+      line->stroke_width = posPlot->minorStrokeWidth;
+      line->plot(f);
+    }
+  }
+}
+
+inline void VizPaint::plot_pos_vertical (ofstream& f, 
+unique_ptr<PosPlot>& posPlot) {
+  posPlot->tickLabelSkip = 5;
+
+  auto line = make_unique<Line>();
+  line->stroke_width = posPlot->majorStrokeWidth;
+  line->y1 = y;
+  line->y2 = y + get_point(posPlot->n_bases) + 0.5*line->stroke_width;
+  if (posPlot->plotRef)
+    line->x1 = line->x2 = x - TITLE_SPACE - 
+    static_cast<u8>(posPlot->showNRC | posPlot->showRedun) *
+    posPlot->vertSkip -
+      (u8(posPlot->showNRC)+u8(posPlot->showRedun)) * 
+      (VERT_TUNE+seqWidth/VERT_RATIO) - posPlot->majorTickSize;
+  else
+    line->x1 = line->x2 = x + 2*seqWidth + innerSpace + TITLE_SPACE +
+      posPlot->vertSkip + (u8(posPlot->showNRC)+u8(posPlot->showRedun)) * 
+      (VERT_TUNE+seqWidth/VERT_RATIO) + posPlot->majorTickSize;
+  line->plot(f);
+
+  auto text = make_unique<Text>();
+  text->font_size = 9;
+  // Print bp
+  text->font_weight = "bold";
+  text->font_size = 10;
+  if (posPlot->plotRef) {
+    text->text_anchor = "end";
+    text->x = line->x1 - posPlot->tickLabelSkip;
+  } else {
+    text->text_anchor = "start";
+    text->x = line->x1 + posPlot->tickLabelSkip;
+  }
+  text->y = line->y1;
+  text->dominant_baseline = "middle";
+  text->Label = "bp";
+  text->plot(f);
+
+  float majorTick = tick_round(0, posPlot->n_bases, posPlot->n_ranges);
+  if (posPlot->plotRef) {
+    if (posPlot->refTick != 0)
+      majorTick = posPlot->refTick;
+  } else {
+    if (posPlot->tarTick != 0)
+      majorTick = posPlot->tarTick;
+  }
+  float minorTick = majorTick / posPlot->n_subranges;
+
+  for (float pos=0; pos <= posPlot->n_bases; pos+=minorTick) {
+    line->y1 = line->y2 = y + get_point((u64)pos);
+    if (pos == 0.0f) {
+      line->y1 += 0.5*line->stroke_width;
+      line->y2 = line->y1;
     }
     
     // Major ticks
     if ((u64)round(pos) % (u64)majorTick == 0) {
       // Line
-      if (par.vertical)
-        line->x2 = plotRef ? line->x1 + posPlot->majorTickSize 
-                           : line->x1 - posPlot->majorTickSize;
-      else
-        line->y2 = plotRef ? line->y1 + posPlot->majorTickSize 
-                           : line->y1 - posPlot->majorTickSize;
+      line->x2 = posPlot->plotRef ? line->x1 + posPlot->majorTickSize 
+                                  : line->x1 - posPlot->majorTickSize;
       line->stroke_width = posPlot->majorStrokeWidth;
       line->plot(f);
 
       // Text
-      if (par.vertical) {
-        text->x = plotRef ? line->x1 - posPlot->tickLabelSkip 
-                          : line->x1 + posPlot->tickLabelSkip;
-        text->y = line->y1;
-        text->font_size = 9;
-        text->text_anchor = plotRef ? "end" : "start";
-        text->dominant_baseline = "middle";
-      } else {
-        text->x = line->x1;
-        text->y = plotRef ? line->y1 - posPlot->tickLabelSkip 
-                          : line->y1 + posPlot->tickLabelSkip;
-        text->font_size = (n_bases < POW10[7]) ? 9 : 8.5;
-        text->text_anchor = "middle";
-        text->dominant_baseline = plotRef ? "baseline" : "hanging";
-      }
+      text->x = posPlot->plotRef ? line->x1 - posPlot->tickLabelSkip 
+                                 : line->x1 + posPlot->tickLabelSkip;
+      text->y = line->y1;
+      text->font_size = 9;
       text->font_weight = "normal";
+      text->text_anchor = posPlot->plotRef ? "end" : "start";
+      text->dominant_baseline = "middle";
       // text->Label = human_readable_non_cs(pos);
       text->Label = thousands_sep(u64(round(pos)));
       if (pos!=0.0f)
         text->plot(f);
     }
     else {  // Minor ticks
-      if (par.vertical)
-        line->x2 = plotRef ? line->x1 + posPlot->minorTickSize
-                           : line->x1 - posPlot->minorTickSize;
-      else
-        line->y2 = plotRef ? line->y1 + posPlot->minorTickSize
-                           : line->y1 - posPlot->minorTickSize;
+      line->x2 = posPlot->plotRef ? line->x1 + posPlot->minorTickSize
+                                  : line->x1 - posPlot->minorTickSize;
       line->stroke_width = posPlot->minorStrokeWidth;
       line->plot(f);
     }
