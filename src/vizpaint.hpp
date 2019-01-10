@@ -26,6 +26,17 @@ struct PosNode {
   PosNode (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
 };
 
+struct PosPlot {
+  u8     n_ranges, n_subranges;
+  u16    minorTickSize, majorTickSize, vertSkip, tickLabelSkip;
+  bool   vertical;
+  float  minorStrokeWidth, majorStrokeWidth;
+  double maxPos;
+  PosPlot () : n_ranges(10), n_subranges(4), minorTickSize(6),
+    majorTickSize(1.75*minorTickSize), vertSkip(13), vertical(false),
+    minorStrokeWidth(0.8f), majorStrokeWidth(1.6*minorStrokeWidth) {}
+};
+
 class VizPaint {
  public:
   float  x, y;
@@ -66,7 +77,9 @@ class VizPaint {
   void read_pos (ifstream&, vector<Position>&, VizParam&);
   void make_posNode (const vector<Position>&, const VizParam&, string&&);
   // void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
-  void plot_pos (ofstream&, VizParam&, u64, bool);
+  // void plot_pos (ofstream&, VizParam&, u64, bool);
+  void plot_pos (ofstream&, unique_ptr<PosPlot>&, VizParam&, u64, bool);
+  void plot_pos_vertical (ofstream&, unique_ptr<PosPlot>&, VizParam&, u64, bool);
 };
 }
 

@@ -59,12 +59,19 @@ void VizPaint::plot (VizParam& p) {
   vector<Position> pos;
   read_pos(fPos, pos, p);
 
+  auto posPlot = make_unique<PosPlot>();
+  posPlot->vertical = p.vertical;
+
   make_posNode(pos, p, "ref");
-  plot_pos(fPlot, p, n_refBases, true);
+  posPlot->maxPos = get_point(n_refBases);
+  plot_pos(fPlot, posPlot, p, true);
+  // plot_pos(fPlot, p, n_refBases, true);
   // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
 
   make_posNode(pos, p, "tar");
-  plot_pos(fPlot, p, n_tarBases, false);
+  posPlot->maxPos = get_point(n_tarBases);
+  plot_pos(fPlot, posPlot, p, true);
+  // plot_pos(fPlot, p, n_tarBases, false);
   // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
 
   if (!plottable)  error("not plottable positions.");
@@ -1417,46 +1424,49 @@ const VizParam& par, string&& type) {
 //   } // for
 // }
 
-inline void VizPaint::plot_pos (ofstream& f, VizParam& par, u64 n_bases, 
-bool plotRef) {
-  const auto  maxPos           = get_point(n_bases);
-  const u8    n_ranges         = 10,
-              n_subranges      = 4;
-  const u16   minorTickSize    = 6,
-              majorTickSize    = 1.75*minorTickSize,
-              vertSkip         = 13;
-  const float minorStrokeWidth = 0.8f,
-              majorStrokeWidth = 1.6*minorStrokeWidth;
-  u16 tickLabelSkip = par.vertical ? 5 : 7;
+// inline void VizPaint::plot_pos (ofstream& f, VizParam& par, u64 n_bases, 
+// bool plotRef) {
+inline void VizPaint::plot_pos (ofstream& f, unique_ptr<PosPlot>& posPlot,
+VizParam& par, u64 n_bases, bool plotRef) {
+  // auto posPlot = make_unique<PosPlot>();
+  // posPlot->maxPos = get_point(n_bases);
+  // posPlot->vertical = par.vertical;
+
+  if (posPlot->vertical) {
+    plot_pos_vertical(f, posPlot, par, n_bases, plotRef);
+    return;
+  }
+
+  posPlot->tickLabelSkip = (posPlot->vertical=par.vertical) ? 5 : 7;
 
   auto line = make_unique<Line>();
-  line->stroke_width = majorStrokeWidth;
+  line->stroke_width = posPlot->majorStrokeWidth;
   auto text = make_unique<Text>();
   text->font_size = 9;
 
   if (par.vertical) {
     line->y1 = y;
-    line->y2 = y + maxPos + 0.5*line->stroke_width;
+    line->y2 = y + posPlot->maxPos + 0.5*line->stroke_width;
     if (plotRef)
-      line->x1 = line->x2 = x - TITLE_SPACE - vertSkip -
+      line->x1 = line->x2 = x - TITLE_SPACE - posPlot->vertSkip -
         (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+seqWidth/VERT_RATIO) -
-        majorTickSize;
+        posPlot->majorTickSize;
     else
       line->x1 = line->x2 = x + 2*seqWidth + innerSpace + TITLE_SPACE +
-        vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
-        (VERT_TUNE+seqWidth/VERT_RATIO) + majorTickSize;
+        posPlot->vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
+        (VERT_TUNE+seqWidth/VERT_RATIO) + posPlot->majorTickSize;
   }
   else {
     line->x1 = x;
-    line->x2 = x + maxPos + 0.5*line->stroke_width;
+    line->x2 = x + posPlot->maxPos + 0.5*line->stroke_width;
     if (plotRef)
-      line->y1 = line->y2 = y - TITLE_SPACE - vertSkip -
+      line->y1 = line->y2 = y - TITLE_SPACE - posPlot->vertSkip -
         (u8(par.showNRC)+u8(par.showRedun)) * (VERT_TUNE+seqWidth/VERT_RATIO) -
-        majorTickSize;
+        posPlot->majorTickSize;
     else
       line->y1 = line->y2 = y + 2*seqWidth + innerSpace + TITLE_SPACE +
-        vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
-        (VERT_TUNE+seqWidth/VERT_RATIO) + majorTickSize;
+        posPlot->vertSkip + (u8(par.showNRC)+u8(par.showRedun)) * 
+        (VERT_TUNE+seqWidth/VERT_RATIO) + posPlot->majorTickSize;
   }
   line->plot(f);
 
@@ -1466,10 +1476,10 @@ bool plotRef) {
   if (par.vertical) {
     if (plotRef) {
       text->text_anchor = "end";
-      text->x = line->x1 - tickLabelSkip;
+      text->x = line->x1 - posPlot->tickLabelSkip;
     } else {
       text->text_anchor = "start";
-      text->x = line->x1 + tickLabelSkip;
+      text->x = line->x1 + posPlot->tickLabelSkip;
     }
     text->dominant_baseline = "middle";
     text->y = line->y1;
@@ -1478,15 +1488,16 @@ bool plotRef) {
     text->text_anchor = "start";
     text->dominant_baseline = plotRef ? "baseline" : "hanging";
     text->x = line->x1;
-    text->y = plotRef ? line->y1 - tickLabelSkip : line->y1 + tickLabelSkip;
+    text->y = plotRef ? line->y1 - posPlot->tickLabelSkip 
+                      : line->y1 + posPlot->tickLabelSkip;
   }
   text->Label = "bp";
   text->plot(f);
 
-  float majorTick = tick_round(0, n_bases, n_ranges);
+  float majorTick = tick_round(0, n_bases, posPlot->n_ranges);
   if (plotRef) { if (par.refTick!=0)  majorTick=par.refTick; }
   else         { if (par.tarTick!=0)  majorTick=par.tarTick; }
-  float minorTick = majorTick / n_subranges;
+  float minorTick = majorTick / posPlot->n_subranges;
 
   for (float pos=0; pos <= n_bases; pos+=minorTick) {
     if (par.vertical) {
@@ -1508,22 +1519,26 @@ bool plotRef) {
     if ((u64)round(pos) % (u64)majorTick == 0) {
       // Line
       if (par.vertical)
-        line->x2 = plotRef ? line->x1 + majorTickSize : line->x1 -majorTickSize;
+        line->x2 = plotRef ? line->x1 + posPlot->majorTickSize 
+                           : line->x1 - posPlot->majorTickSize;
       else
-        line->y2 = plotRef ? line->y1 + majorTickSize : line->y1 -majorTickSize;
-      line->stroke_width = majorStrokeWidth;
+        line->y2 = plotRef ? line->y1 + posPlot->majorTickSize 
+                           : line->y1 - posPlot->majorTickSize;
+      line->stroke_width = posPlot->majorStrokeWidth;
       line->plot(f);
 
       // Text
       if (par.vertical) {
-        text->x = plotRef ? line->x1 - tickLabelSkip : line->x1 + tickLabelSkip;
+        text->x = plotRef ? line->x1 - posPlot->tickLabelSkip 
+                          : line->x1 + posPlot->tickLabelSkip;
         text->y = line->y1;
         text->font_size = 9;
         text->text_anchor = plotRef ? "end" : "start";
         text->dominant_baseline = "middle";
       } else {
         text->x = line->x1;
-        text->y = plotRef ? line->y1 - tickLabelSkip : line->y1 + tickLabelSkip;
+        text->y = plotRef ? line->y1 - posPlot->tickLabelSkip 
+                          : line->y1 + posPlot->tickLabelSkip;
         text->font_size = (n_bases < POW10[7]) ? 9 : 8.5;
         text->text_anchor = "middle";
         text->dominant_baseline = plotRef ? "baseline" : "hanging";
@@ -1536,10 +1551,12 @@ bool plotRef) {
     }
     else {  // Minor ticks
       if (par.vertical)
-        line->x2 = plotRef ? line->x1+minorTickSize : line->x1-minorTickSize;
+        line->x2 = plotRef ? line->x1 + posPlot->minorTickSize
+                           : line->x1 - posPlot->minorTickSize;
       else
-        line->y2 = plotRef ? line->y1+minorTickSize : line->y1-minorTickSize;
-      line->stroke_width = minorStrokeWidth;
+        line->y2 = plotRef ? line->y1 + posPlot->minorTickSize
+                           : line->y1 - posPlot->minorTickSize;
+      line->stroke_width = posPlot->minorStrokeWidth;
       line->plot(f);
     }
   }
