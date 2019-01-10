@@ -423,13 +423,14 @@ u8 showNRC) {
       x = x + width + TITLE_SPACE + VERT_TUNE + 
           showNRC*(width/VERT_RATIO + VERT_TUNE);
   }
-  else
+  else {
     if (vertical)
-      x = x + (TITLE_SPACE/2 + TITLE_SPACE + VERT_TUNE + 
-          showNRC*(VERT_TUNE + width/VERT_RATIO));
+      x = x + width + TITLE_SPACE/2 + VERT_TUNE + 
+          showNRC*(VERT_TUNE + width/VERT_RATIO);
     else
       x = x - (width/VERT_RATIO + TITLE_SPACE + VERT_TUNE + 
           showNRC*(VERT_TUNE + width/VERT_RATIO));
+  }
 
   width = width/VERT_RATIO;
   stroke_width *= 2;
