@@ -107,7 +107,7 @@ const FileType& type) {
     for (vector<char> buffer(FILE_BUF,0); fIn.peek()!=EOF;) {
       fIn.read(buffer.data(), FILE_BUF);
       string out;
-      for (auto it=buffer.begin(); it!=buffer.begin()+fIn.gcount(); ++it) {
+      for (auto it=begin(buffer); it!=begin(buffer)+fIn.gcount(); ++it) {
         const auto c = *it;
         if      (c=='>')        {               isHeader=true;   continue; }
         else if (c=='\n')       { if (isHeader) isHeader=false;  continue; }
@@ -123,7 +123,7 @@ const FileType& type) {
     for (vector<char> buffer(FILE_BUF,0); fIn.peek()!=EOF;) {
       fIn.read(buffer.data(), FILE_BUF);
       string out;
-      for (auto it=buffer.begin(); it!=buffer.begin()+fIn.gcount(); ++it) {
+      for (auto it=begin(buffer); it!=begin(buffer)+fIn.gcount(); ++it) {
         const auto c = *it;
         switch (line) {
         case 0:  if (c=='\n') { line=1;  isDNA=true;  }  break;

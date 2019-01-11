@@ -92,7 +92,7 @@ inline void ValSet<Value>::assert (Value& val) {
   };
 
   string msg = "{";
-  for (auto it=set.begin(); it!=set.end()-1; ++it)
+  for (auto it=begin(set); it!=end(set)-1; ++it)
     msg += conv_to_string(*it)+", ";
   msg += conv_to_string(set.back())+"}. ";
 

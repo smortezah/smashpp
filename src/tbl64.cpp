@@ -28,11 +28,11 @@ void Table64::load (ifstream& ifs) const {
 
 #ifdef DEBUG
 u64 Table64::count_empty () const {
-  return static_cast<u64>(std::count(tbl.begin(), tbl.end(), 0));
+  return static_cast<u64>(std::count(begin(tbl), end(tbl), 0));
 }
 
 u64 Table64::max_tbl_val () const {
-  return *std::max_element(tbl.begin(), tbl.end());
+  return *std::max_element(begin(tbl), end(tbl));
 }
 
 void Table64::print () const {

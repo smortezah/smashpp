@@ -100,65 +100,65 @@ inline void Param::parse (int argc, char**& argv) {
   bool man_rm=false, man_tm=false;
   string rModelsPars, tModelsPars;
 
-  for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
+  for (auto i=begin(vArgs); i!=end(vArgs); ++i) {
     if (*i=="-r"  || *i=="--ref") {
-      if (i+1 != vArgs.end()) {
+      if (i+1 != end(vArgs)) {
         ref = *++i;
         check_file(ref);
         refName = file_name(ref);
       } else error("reference file not specified. Use \"-r <fileName>\".");
     }
     else if (*i=="-t"  || *i=="--tar") {
-      if (i+1 != vArgs.end()) {
+      if (i+1 != end(vArgs)) {
         tar = *++i;
         check_file(tar);
         tarName = file_name(tar);
       } else error("target file not specified. Use \"-t <fileName>\".");
     }
-    else if ((*i=="-l" || *i=="--level") && i+1!=vArgs.end()) {
+    else if ((*i=="-l" || *i=="--level") && i+1!=end(vArgs)) {
       level = static_cast<u8>(stoi(*++i));
       auto range = make_unique<ValRange<u8>>(MIN_LVL, MAX_LVL, LVL, 
         "Level", "[]", "default", Problem::WARNING);
       range->assert(level);
     }
-    else if ((*i=="-m" || *i=="--min") && i+1!=vArgs.end()) {
+    else if ((*i=="-m" || *i=="--min") && i+1!=end(vArgs)) {
       manSegSize = true;
       segSize = stoul(*++i);
       auto range = make_unique<ValRange<u32>>(MIN_SSIZE, MAX_SSIZE, SSIZE, 
         "Minimum segment size", "[]", "default", Problem::WARNING);
       range->assert(segSize);
     }
-    else if ((*i=="-rm" || *i=="--ref-model") && i+1!=vArgs.end()) {
+    else if ((*i=="-rm" || *i=="--ref-model") && i+1!=end(vArgs)) {
       man_rm = true;
       rModelsPars = *++i;
       if (rModelsPars.front()=='-' || rModelsPars.empty())
         error("incorrect reference model parameters.");
       else
-        parseModelsPars(rModelsPars.begin(), rModelsPars.end(), refMs);
+        parseModelsPars(begin(rModelsPars), end(rModelsPars), refMs);
     }
-    else if ((*i=="-tm" || *i=="--tar-model") && i+1!=vArgs.end()) {
+    else if ((*i=="-tm" || *i=="--tar-model") && i+1!=end(vArgs)) {
       man_tm = true;
       tModelsPars = *++i;
       if (tModelsPars.front()=='-' || tModelsPars.empty())
         error("incorrect target model parameters.");
       else
-        parseModelsPars(tModelsPars.begin(), tModelsPars.end(), tarMs);
+        parseModelsPars(begin(tModelsPars), end(tModelsPars), tarMs);
     }
-    else if ((*i=="-w" || *i=="--wsize") && i+1!=vArgs.end()) {
+    else if ((*i=="-w" || *i=="--wsize") && i+1!=end(vArgs)) {
       manWSize = true;
       wsize = static_cast<u32>(stoi(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_WS, MAX_WS, WS, 
         "Window size", "[]", "default", Problem::WARNING);
       range->assert(wsize);
     }
-    else if ((*i=="-th"|| *i=="--thresh") && i+1!=vArgs.end()) {
+    else if ((*i=="-th"|| *i=="--thresh") && i+1!=end(vArgs)) {
       manThresh = true;
       thresh = stof(*++i);
       auto range = make_unique<ValRange<float>>(MIN_THRSH, MAX_THRSH, THRSH,
         "Threshold", "(]", "default", Problem::WARNING);
       range->assert(thresh);
     }
-    else if ((*i=="-wt"|| *i=="--wtype") && i+1!=vArgs.end()) {
+    else if ((*i=="-wt"|| *i=="--wtype") && i+1!=end(vArgs)) {
       const auto is_win_type = [] (const string& t) {
         if (t=="0" || t=="rectangular" || t=="1" || t=="hamming"  ||
             t=="2" || t=="hann"        || t=="3" || t=="blackman" ||
@@ -172,23 +172,23 @@ inline void Param::parse (int argc, char**& argv) {
         "default", Problem::WARNING, win_type(cmd), is_win_type(cmd));
       set->assert(wtype);
     }
-    else if ((*i=="-e" || *i=="--ent-n") && i+1!=vArgs.end()) {
+    else if ((*i=="-e" || *i=="--ent-n") && i+1!=end(vArgs)) {
       entropyN = static_cast<prc_t>(stod(*++i));
       auto range = make_unique<ValRange<prc_t>>(MIN_ENTR_N, MAX_ENTR_N, ENTR_N, 
         "Entropy of N bases", "[]", "default", Problem::WARNING);
       range->assert(entropyN);
     }
-    else if ((*i=="-n" || *i=="--nthr") && i+1!=vArgs.end()) {
+    else if ((*i=="-n" || *i=="--nthr") && i+1!=end(vArgs)) {
       nthr = static_cast<u8>(stoi(*++i));
       auto range = make_unique<ValRange<u8>>(MIN_THRD, MAX_THRD, THRD, 
         "Number of threads", "[]", "default", Problem::WARNING);
       range->assert(nthr);
     }
-    else if ((*i=="-d" || *i=="--step") && i+1!=vArgs.end()) {
+    else if ((*i=="-d" || *i=="--step") && i+1!=end(vArgs)) {
       sampleStep = stoull(*++i);
       if (sampleStep==0)  sampleStep=1ull;
     }
-    else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=vArgs.end()) {
+    else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=end(vArgs)) {
       manFilterScale = true;
       const auto is_filter_scale = [] (const string& s) {
         if (s=="S" || s=="small" || s=="M" || s=="medium" || 
@@ -212,16 +212,16 @@ inline void Param::parse (int argc, char**& argv) {
     else if (*i=="-filter")                        filter     =true;
     else if (*i=="-segment")                       segment    =true;
     else if (*i=="-R"  || *i=="--report")
-      report = (i+1!=vArgs.end()) ? *++i : "report.txt";
+      report = (i+1!=end(vArgs)) ? *++i : "report.txt";
     else if (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
     else if (*i=="-v"  || *i=="--verbose")         verbose    =true;
   }
 
   // Mandatory args
-  const bool has_t   {has(vArgs.begin(), vArgs.end(), "-t")   };
-  const bool has_tar {has(vArgs.begin(), vArgs.end(), "--tar")};
-  const bool has_r   {has(vArgs.begin(), vArgs.end(), "-r")   };
-  const bool has_ref {has(vArgs.begin(), vArgs.end(), "--ref")};
+  const bool has_t   {has(begin(vArgs), end(vArgs), "-t")   };
+  const bool has_tar {has(begin(vArgs), end(vArgs), "--tar")};
+  const bool has_r   {has(begin(vArgs), end(vArgs), "-r")   };
+  const bool has_ref {has(begin(vArgs), end(vArgs), "--ref")};
   if (!has_t && !has_tar)
     error("target file not specified. Use \"-t <fileName>\".");
   else if (!has_r && !has_ref)
@@ -261,8 +261,11 @@ inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms) {
   vector<string> mdls;      split(begin, end, ':', mdls);
   for (const auto& e : mdls) {
     // Markov and tolerant models
-    vector<string> m_tm;    split(e.begin(),       e.end(),       '/', m_tm);
-    vector<string> m;       split(m_tm[0].begin(), m_tm[0].end(), ',', m);
+    vector<string> m_tm;    
+    split(std::begin(e), std::end(e), '/', m_tm);
+    vector<string> m;       
+    split(std::begin(m_tm[0]), std::end(m_tm[0]), ',', m);
+
     if (m.size() == 4) {
       if (stoi(m[0]) > K_MAX_LGTBL8)
         Ms.emplace_back(
@@ -279,7 +282,8 @@ inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms) {
     
     // Tolerant models
     if (m_tm.size() == 2) {
-      vector<string> tm;    split(m_tm[1].begin(), m_tm[1].end(), ',', tm);
+      vector<string> tm;    
+      split(std::begin(m_tm[1]), std::end(m_tm[1]), ',', tm);
       Ms.back().child = make_shared<STMMPar>(
         STMMPar(u8(stoi(m[0])), u8(stoi(tm[0])), u8(stoi(tm[1])), stof(tm[2]),
           stof(tm[3])));
@@ -447,65 +451,65 @@ inline void VizParam::parse (int argc, char**& argv) {
   for (int i=0; i!=argc; ++i)
     vArgs.emplace_back(static_cast<string>(argv[i]));
 
-  for (auto i=vArgs.begin(); i!=vArgs.end(); ++i) {
-    if ((*i=="-o" || *i=="--out") && i+1!=vArgs.end())
+  for (auto i=begin(vArgs); i!=end(vArgs); ++i) {
+    if ((*i=="-o" || *i=="--out") && i+1!=end(vArgs))
       image = *++i;
-    else if ((*i=="-p" || *i=="--opacity")  && i+1!=vArgs.end()) {
+    else if ((*i=="-p" || *i=="--opacity")  && i+1!=end(vArgs)) {
       opacity = stof(*++i);
       auto range = make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, 
         "Opacity", "[]", "default", Problem::WARNING);
       range->assert(opacity);
     }
-    else if ((*i=="-l" || *i=="--link")  && i+1!=vArgs.end()) {
+    else if ((*i=="-l" || *i=="--link")  && i+1!=end(vArgs)) {
       link = static_cast<u8>(stoul(*++i));
       auto range = make_unique<ValRange<u8>>(MIN_LINK, MAX_LINK, LINK, 
         "Link", "[]", "default", Problem::WARNING);
       range->assert(link);
     }
-    else if ((*i=="-m" || *i=="--min")   && i+1!=vArgs.end()) {
+    else if ((*i=="-m" || *i=="--min")   && i+1!=end(vArgs)) {
       min = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, MINP,
         "Min", "[]", "default", Problem::WARNING);
       range->assert(min);
     }
-    else if ((*i=="-f" || *i=="--mult")  && i+1!=vArgs.end()) {
+    else if ((*i=="-f" || *i=="--mult")  && i+1!=end(vArgs)) {
       manMult = true;
       mult = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_MULT, MAX_MULT, MULT,
         "Mult", "[]", "default", Problem::WARNING);
       range->assert(mult);
     }
-    else if ((*i=="-b" || *i=="--begin") && i+1!=vArgs.end()) {
+    else if ((*i=="-b" || *i=="--begin") && i+1!=end(vArgs)) {
       start = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_BEGN, MAX_BEGN, BEGN,
         "Begin", "[]", "default", Problem::WARNING);
       range->assert(start);
     }
-    else if ((*i=="-rt" || *i=="--ref-tick") && i+1!=vArgs.end()) {
+    else if ((*i=="-rt" || *i=="--ref-tick") && i+1!=end(vArgs)) {
       refTick = stoull(*++i);
       auto range = make_unique<ValRange<u64>>(MIN_TICK, MAX_TICK, TICK,
         "Tick hop for reference", "[]", "default", Problem::WARNING);
       range->assert(refTick);
     }
-    else if ((*i=="-tt" || *i=="--tar-tick") && i+1!=vArgs.end()) {
+    else if ((*i=="-tt" || *i=="--tar-tick") && i+1!=end(vArgs)) {
       tarTick = stoull(*++i);
       auto range = make_unique<ValRange<u64>>(MIN_TICK, MAX_TICK, TICK,
         "Tick hop for target", "[]", "default", Problem::WARNING);
       range->assert(tarTick);
     }
-    else if ((*i=="-c" || *i=="--color") && i+1!=vArgs.end()) {
+    else if ((*i=="-c" || *i=="--color") && i+1!=end(vArgs)) {
       colorMode = static_cast<u8>(stoi(*++i));
       auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, COLOR, 
         "Color", "[]", "default", Problem::WARNING);
       range->assert(colorMode);
     }
-    else if ((*i=="-w" || *i=="--width") && i+1!=vArgs.end()) {
+    else if ((*i=="-w" || *i=="--width") && i+1!=end(vArgs)) {
       width = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_WDTH, MAX_WDTH, WDTH,
         "Width", "[]", "default", Problem::WARNING);
       range->assert(width);
     }
-    else if ((*i=="-s" || *i=="--space") && i+1!=vArgs.end()) {
+    else if ((*i=="-s" || *i=="--space") && i+1!=end(vArgs)) {
       space = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_SPC, MAX_SPC, SPC,
         "Space", "[]", "default", Problem::WARNING);

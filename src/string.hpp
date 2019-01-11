@@ -69,10 +69,10 @@ inline static void wrap_text (string& text) {
       if (word.empty())  
         return;
 
-      auto p = word.end();
-      while (p!=word.begin() && *--p!=' ');
+      auto p = end(word);
+      while (p!=begin(word) && *--p!=' ');
       if (*p == ' ') 
-        word = string(++p, word.end());
+        word = string(++p, end(word));
 
       out += "\n" + word;
       pos  = word.length();
