@@ -723,50 +723,44 @@ const string& tar, bool vertical) const {
   text->font_weight = "bold";
   text->font_size = 10;
 
-  vertical ? plot_title_vertical(f, ref, tar, text)
-           : plot_title_horizontal(f, ref, tar, text);
-}
+  if (vertical) {
+    text->text_anchor = "middle";
+    text->dominant_baseline = "middle";
+    text->y = y - 0.75*TITLE_SPACE;
 
-inline void VizPaint::plot_title_horizontal (ofstream& f, const string& ref, 
-const string& tar, unique_ptr<Text>& text) const {
-  text->text_anchor = "start";
-  text->x = x;
-  text->y = y - TITLE_SPACE;
-  text->dominant_baseline = "text-before-edge";
-  text->Label = ref;
-  text->plot(f);
+    const auto charSpace = 5;
+    const bool tooClose = (innerSpace - abs(ref.size()*charSpace - seqWidth)/2 -
+      abs(tar.size()*charSpace - seqWidth)/2 < 15);
 
-  text->y = y + 2*seqWidth + innerSpace + TITLE_SPACE;
-  text->dominant_baseline = "text-after-edge";
-  text->Label = tar;
-  text->plot(f);
-}
+    text->x = x + seqWidth/2;
+    if (tooClose) {
+      text->x += seqWidth/2;
+      text->text_anchor = "end";
+    }
+    text->Label = ref;
+    text->plot(f);
 
-inline void VizPaint::plot_title_vertical (ofstream& f, const string& ref, 
-const string& tar, unique_ptr<Text>& text) const {
-  text->text_anchor = "middle";
-  text->dominant_baseline = "middle";
-  text->y = y - 0.75*TITLE_SPACE;
-
-  const auto charSpace = 5;
-  const bool tooClose = (innerSpace - abs(ref.size()*charSpace - seqWidth)/2 -
-    abs(tar.size()*charSpace - seqWidth)/2 < 15);
-
-  text->x = x + seqWidth/2;
-  if (tooClose) {
-    text->x += seqWidth/2;
-    text->text_anchor = "end";
+    text->x = x + 1.5*seqWidth + innerSpace;
+    if (tooClose) {
+      text->x -= seqWidth/2;
+      text->text_anchor = "start";
+    }
+    text->Label = tar;
+    text->plot(f);
   }
-  text->Label = ref;
-  text->plot(f);
-
-  text->x = x + 1.5*seqWidth + innerSpace;
-  if (tooClose) {
-    text->x -= seqWidth/2;
+  else {
     text->text_anchor = "start";
+    text->x = x;
+    text->y = y - TITLE_SPACE;
+    text->dominant_baseline = "text-before-edge";
+    text->Label = ref;
+    text->plot(f);
+
+    text->y = y + 2*seqWidth + innerSpace + TITLE_SPACE;
+    text->dominant_baseline = "text-after-edge";
+    text->Label = tar;
+    text->plot(f);
   }
-  text->Label = tar;
-  text->plot(f);
 }
 
 inline void VizPaint::plot_legend (ofstream& f, const VizParam& p, i64 maxWidth)
@@ -781,413 +775,43 @@ const {
   legend->vertical  = p.vertical;
   legend->colorMode = p.colorMode;
 
-  legend->vertical ? plot_legend_horizontal(f, legend)
-                   : plot_legend_vertical(f, legend);
+  legend->text.emplace_back(make_unique<Text>());      // Numbers
+  if (legend->showNRC && !legend->showRedun)
+    legend->text.emplace_back(make_unique<Text>());    // NRC
+  else if (!legend->showNRC && legend->showRedun)
+    legend->text.emplace_back(make_unique<Text>());    // Redun
+  else if (legend->showNRC && legend->showRedun)
+    for(u8 i=0; i != 2; ++i)                         
+      legend->text.emplace_back(make_unique<Text>());  // NRC + Redun
+
+  if (legend->vertical) {
+    set_legend_rect(f, legend, 'h');
+    plot_legend_gradient(f, legend);
+    plot_legend_text_horiz(f, legend);
+    plot_legend_path_horiz(f, legend);
+  } else {
+    set_legend_rect(f, legend, 'v');
+    plot_legend_gradient(f, legend);
+    plot_legend_text_vert(f, legend);
+    plot_legend_path_vert(f, legend);
+  }
 }
 
-inline void VizPaint::plot_legend_horizontal (ofstream& f,
-unique_ptr<LegendPlot>& legend) const {
-  const auto originFixed = y + get_point(legend->maxWidth) + 40;
-  legend->rect->height = 11;
-
-  legend->text->text_anchor = "middle";
-  // text->font_weight = "bold";
-  legend->text->font_size = 9;
-
-  legend->path->stroke = "black";
-  legend->path->stroke_width = 0.5;
-  // path->stroke_dasharray = "8 3";
-
-  auto X1RelRedun=0.0f, X2RelRedun=0.0f, X1Redun=0.0f, X2Redun=0.0f;
-
-  if (legend->showNRC && !legend->showRedun) {
+inline void VizPaint::set_legend_rect (ofstream& f,
+unique_ptr<LegendPlot>& legend, char direction) const {
+  if (direction=='h' || direction=='H') {
+    legend->rect->height = 11;
     legend->rect->x = x - TITLE_SPACE/2;
-    legend->rect->y = originFixed;
+    legend->rect->y = y + get_point(legend->maxWidth) + 40;
     legend->rect->width = TITLE_SPACE + 2*seqWidth + innerSpace;
-
-    legend->text->x = legend->rect->x + legend->rect->width/2;
-    if (legend->rect->width > 64) {
-      legend->text->y = legend->rect->y - legend->labelShift;
-      legend->text->Label = "Relative Redundancy";
-      // text->plot_shadow(f);
-      legend->text->plot(f);
-    }
-    else {
-      legend->text->y = legend->rect->y - legend->labelShift - 8;
-      legend->text->Label = "Relative";
-      // legend->text->plot_shadow(f);
-      legend->text->plot(f);
-      legend->text->y = legend->rect->y - legend->labelShift + 2;
-      legend->text->Label = "Redundancy";
-      // legend->text->plot_shadow(f);
-      legend->text->plot(f);
-    }
-
-    X1RelRedun = x - (TITLE_SPACE/2 + SPACE_TUNE + 0.5*periphWidth);
-    X2RelRedun = x + 2*seqWidth + innerSpace + TITLE_SPACE/2 + SPACE_TUNE +
-                 0.5*periphWidth;
-    
-    // Left wing
-    if (lastPos.size() == 2) {
-      if (legend->rect->width > 64)
-        legend->path->d = 
-          legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
-          legend->path->V(legend->text->y) + 
-          legend->path->H((X1RelRedun+X2RelRedun)/2 - 50);
-      else
-        legend->path->d = 
-          legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
-          legend->path->V(legend->text->y-5) + 
-          legend->path->H((X1RelRedun+X2RelRedun)/2 - 32);
-      // legend->path->plot_shadow(f);
-      legend->path->plot(f);
-    }
-    // Right wing
-    if (legend->rect->width > 64)
-      legend->path->d = 
-        legend->path->M(X2RelRedun, y+get_point(lastPos[1])) +
-        legend->path->V(legend->text->y) + 
-        legend->path->H((X1RelRedun+X2RelRedun)/2 + 50);
-    else
-      legend->path->d = 
-        legend->path->M(X2RelRedun, y+get_point(lastPos[1])) + 
-        legend->path->V(legend->text->y-5) + 
-        legend->path->H((X1RelRedun+X2RelRedun)/2 + 32);
-    // legend->path->plot_shadow(f);
-    legend->path->plot(f);
-
-    legend->text->transform.clear();
   }
-  else if (!legend->showNRC && legend->showRedun) {
-    legend->rect->x = x - TITLE_SPACE/2;
-    legend->rect->y = originFixed;
-    legend->rect->width = TITLE_SPACE + 2*seqWidth + innerSpace;
-
-    legend->text->x = legend->rect->x + legend->rect->width/2;
-    legend->text->y = legend->rect->y - legend->labelShift;
-    legend->text->Label = "Redundancy";
-    // legend->text->plot_shadow(f);
-    legend->text->plot(f);
-
-    X1Redun = x - (TITLE_SPACE/2 + SPACE_TUNE + 0.5*periphWidth);
-    X2Redun = x + 2*seqWidth + innerSpace + TITLE_SPACE/2 + SPACE_TUNE +
-              0.5*periphWidth;
-    
-    // Left wing
-    if (lastPos.size() == 2) {
-      legend->path->d = 
-        legend->path->M(X1Redun, y+get_point(lastPos[0])) + 
-        legend->path->V(legend->text->y) + 
-        legend->path->H((X1Redun+X2Redun)/2 - 32);
-      // legend->path->plot_shadow(f);
-      legend->path->plot(f);
-    }
-    // Right wing
-    legend->path->d = 
-      legend->path->M(X2Redun, y+get_point(lastPos[1])) +
-      legend->path->V(legend->text->y) + 
-      legend->path->H((X1Redun+X2Redun)/2 + 32);
-    // legend->path->plot_shadow(f);
-    legend->path->plot(f);
-
-    legend->text->transform.clear();
+  else if (direction=='v' || direction=='V') {
+    legend->rect->width = 15;
+    legend->rect->x = x + get_point(legend->maxWidth) + 40;
+    legend->rect->y = y - TITLE_SPACE - SPACE_TUNE;
+    legend->rect->height = 
+      2*(TITLE_SPACE + SPACE_TUNE) + 2*seqWidth + innerSpace;
   }
-  else if (legend->showNRC && legend->showRedun) {
-    legend->rect->x = x - TITLE_SPACE/2;
-    legend->rect->y = originFixed;
-    legend->rect->width = TITLE_SPACE + 2*seqWidth + innerSpace;
-
-    legend->text->x = legend->rect->x + legend->rect->width/2;
-    if (legend->rect->width > 64) {
-      legend->text->y = legend->rect->y - legend->labelShift;
-      legend->text->Label = "Relative Redundancy";
-      // legend->text->plot_shadow(f);
-      legend->text->plot(f);
-    }
-    else {
-      legend->text->y = legend->rect->y - legend->labelShift - 8;
-      legend->text->Label = "Relative";
-      // legend->text->plot_shadow(f);
-      legend->text->plot(f);
-      legend->text->y = legend->rect->y - legend->labelShift + 2;
-      legend->text->Label = "Redundancy";
-      // legend->text->plot_shadow(f);
-      legend->text->plot(f);
-    }
-
-    X1RelRedun = x - (TITLE_SPACE/2 + SPACE_TUNE + 0.5*periphWidth);
-    X2RelRedun = x + 2*seqWidth + innerSpace + TITLE_SPACE/2 + SPACE_TUNE +
-                 0.5*periphWidth;
-    
-    // Left wing
-    if (lastPos.size() == 2) {
-      if (legend->rect->width > 64)
-        legend->path->d = 
-          legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
-          legend->path->V(legend->text->y) + 
-          legend->path->H((X1RelRedun+X2RelRedun)/2 - 50);
-      else
-        legend->path->d = 
-          legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
-          legend->path->V(legend->text->y-5) + 
-          legend->path->H((X1RelRedun+X2RelRedun)/2 - 32);
-      // legend->path->plot_shadow(f);
-      legend->path->plot(f);
-    }
-    // Right wing
-    if (legend->rect->width > 64)
-      legend->path->d = 
-        legend->path->M(X2RelRedun, y+get_point(lastPos[1])) +
-        legend->path->V(legend->text->y) + 
-        legend->path->H((X1RelRedun+X2RelRedun)/2 + 50);
-    else
-      legend->path->d = 
-        legend->path->M(X2RelRedun, y+get_point(lastPos[1])) + 
-        legend->path->V(legend->text->y-5) + 
-        legend->path->H((X1RelRedun+X2RelRedun)/2 + 32);
-    // legend->path->plot_shadow(f);
-    legend->path->plot(f);
-
-    // Redundancy
-    legend->text->x = legend->rect->x + legend->rect->width/2;
-    legend->text->y = legend->rect->y + legend->rect->height +
-                      legend->labelShift;
-    legend->text->Label = "Redundancy";
-    // legend->text->plot_shadow(f);
-    legend->text->plot(f);
-
-    X1Redun = x - (TITLE_SPACE/2 + 2*SPACE_TUNE + 1.5*periphWidth);
-    X2Redun = x + 2*seqWidth + innerSpace + TITLE_SPACE/2 + 2*SPACE_TUNE +
-              1.5*periphWidth;
-    
-    // Left wing
-    if (lastPos.size() == 2) {
-      legend->path->d = 
-        legend->path->M(X1Redun, y+get_point(lastPos[0])) + 
-        legend->path->V(legend->text->y) + 
-        legend->path->H((X1Redun+X2Redun)/2 - 32);
-      // legend->path->plot_shadow(f);
-      legend->path->plot(f);
-    }
-    // Right wing
-    legend->path->d = 
-      legend->path->M(X2Redun, y+get_point(lastPos[1])) +
-      legend->path->V(legend->text->y) + 
-      legend->path->H((X1Redun+X2Redun)/2 + 32);
-    // legend->path->plot_shadow(f);
-    legend->path->plot(f);
-
-    legend->text->transform.clear();
-  }
-
-  plot_legend_gradient(f, legend);
-
-  // Print numbers (measures)
-  legend->text->font_weight = "bold";
-  legend->text->dominant_baseline = "middle";
-  legend->text->font_size = 8;
-  legend->text->text_align = "end";
-  legend->text->x = legend->rect->x - 9;
-  legend->text->y = legend->rect->y + legend->rect->height/2;
-  legend->text->Label = "0.0";
-  legend->text->plot(f);
-
-  for (u8 i=1; i!=4; ++i) {
-    legend->text->text_align = "middle";
-    legend->text->x = legend->rect->x + legend->rect->width*i/4;
-    legend->text->y = legend->rect->y + legend->rect->height/2;
-    if (legend->colorMode==1 && i==3)
-      legend->text->fill="white";
-    legend->text->Label = string_format("%.1f", i*0.5);
-    legend->text->plot(f);
-  }
-
-  legend->text->text_align = "start";
-  legend->text->x = legend->rect->x + legend->rect->width + 9;
-  legend->text->y = legend->rect->y + legend->rect->height/2;
-  legend->text->fill = "black";
-  legend->text->Label = "2.0";
-  legend->text->plot(f);
-}
-
-inline void VizPaint::plot_legend_vertical (ofstream& f,
-unique_ptr<LegendPlot>& legend) const {  
-  const auto originFixed = x + get_point(legend->maxWidth) + 40;
-  legend->rect->width = 15;
-
-  legend->text->text_anchor = "middle";
-  // legend->text->font_weight = "bold";
-  legend->text->font_size = 9;
-
-  legend->path->stroke = "black";
-  legend->path->stroke_width = 0.5;
-  // legend->path->stroke_dasharray = "8 3";
-
-  float Y1RelRedun=0.0f, Y2RelRedun=0.0f, Y1Redun=0.0f, Y2Redun=0.0f;
-
-  if (legend->showNRC && !legend->showRedun) {
-    legend->rect->x = originFixed;
-    legend->rect->y = y - (TITLE_SPACE + SPACE_TUNE);
-    legend->rect->height = 2*(TITLE_SPACE + SPACE_TUNE) + 2*seqWidth +
-      innerSpace;
-
-    legend->text->x = legend->rect->x - legend->labelShift;
-    legend->text->y = legend->rect->y + legend->rect->height/2;
-    legend->text->transform = "rotate(90 " + to_string(legend->text->x) + " " +
-                              to_string(legend->text->y) + ")";
-    legend->text->Label = "Relative Redundancy";
-    // legend->text->plot_shadow(f);
-    legend->text->plot(f);
-
-    Y1RelRedun = y - (TITLE_SPACE + SPACE_TUNE + 0.5*periphWidth);
-    Y2RelRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE +
-                 0.5*periphWidth;
-
-    // Top wing
-    if (lastPos.size() == 2) {
-      legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1RelRedun) + 
-                        legend->path->H(legend->text->x) + 
-                        legend->path->V((Y1RelRedun+Y2RelRedun)/2 - 47);
-    // legend->path->plot_shadow(f);
-      legend->path->plot(f);
-    }
-    // Bottom wing
-    legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2RelRedun) +
-                      legend->path->H(legend->text->x) + 
-                      legend->path->V((Y1RelRedun+Y2RelRedun)/2 + 47);
-    // legend->path->plot_shadow(f);
-    legend->path->plot(f);
-
-    legend->text->transform.clear();
-  }
-  else if (!legend->showNRC && legend->showRedun) {
-    legend->rect->x = originFixed;
-    legend->rect->y = y - (TITLE_SPACE + SPACE_TUNE);
-    legend->rect->height = 2*(TITLE_SPACE + SPACE_TUNE) + 2*seqWidth +
-      innerSpace;
-
-    legend->text->x = legend->rect->x - legend->labelShift;
-    legend->text->y = legend->rect->y + legend->rect->height/2;
-    legend->text->transform = "rotate(90 " + to_string(legend->text->x) + " " +
-                              to_string(legend->text->y) + ")";
-    legend->text->Label = "Redundancy";
-    // legend->text->plot_shadow(f);
-    legend->text->plot(f);
-
-    Y1Redun = y - (TITLE_SPACE + SPACE_TUNE + 0.5*periphWidth);
-    Y2Redun = y + 2*seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE +
-              0.5*periphWidth;
-    
-    // Top wing
-    if (lastPos.size() == 2) {
-      legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1Redun) + 
-                        legend->path->H(legend->text->x) + 
-                        legend->path->V((Y1Redun+Y2Redun)/2 - 32);
-    // legend->path->plot_shadow(f);
-      legend->path->plot(f);
-    }
-    // Bottom wing
-    legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2Redun) +
-                      legend->path->H(legend->text->x) + 
-                      legend->path->V((Y1Redun+Y2Redun)/2 + 32);
-  // legend->path->plot_shadow(f);
-    legend->path->plot(f);
-
-    legend->text->transform.clear();
-  }
-  else if (legend->showNRC && legend->showRedun) {
-    legend->rect->x = originFixed;
-    legend->rect->y = y - (TITLE_SPACE + SPACE_TUNE);
-    legend->rect->height = 2*(TITLE_SPACE + SPACE_TUNE) + 2*seqWidth +
-      innerSpace;
-
-    legend->text->x = legend->rect->x - legend->labelShift;
-    legend->text->y = legend->rect->y + legend->rect->height/2;
-    legend->text->transform = "rotate(90 " + to_string(legend->text->x) + " " +
-                              to_string(legend->text->y) + ")";
-    legend->text->Label = "Relative Redundancy";
-    // legend->text->plot_shadow(f);
-    legend->text->plot(f);
-
-    Y1RelRedun = y - (TITLE_SPACE + SPACE_TUNE + 0.5*periphWidth);
-    Y2RelRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE +
-                 0.5*periphWidth;
-    
-    // Top wing
-    if (lastPos.size() == 2) {
-      legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1RelRedun) + 
-                        legend->path->H(legend->text->x) + 
-                        legend->path->V((Y1RelRedun+Y2RelRedun)/2 - 47);
-    // legend->path->plot_shadow(f);
-      legend->path->plot(f);
-    }
-    // Bottom wing
-    legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2RelRedun) +
-                      legend->path->H(legend->text->x) + 
-                      legend->path->V((Y1RelRedun+Y2RelRedun)/2 + 47);
-    // legend->path->plot_shadow(f);
-    legend->path->plot(f);
-
-    // Redundancy
-    legend->text->x = legend->rect->x + legend->rect->width + 
-      legend->labelShift;
-    legend->text->y = legend->rect->y + legend->rect->height/2;
-    legend->text->transform = "rotate(90 " + to_string(legend->text->x) + " " +
-                              to_string(legend->text->y) + ")";
-    legend->text->Label = "Redundancy";
-    // legend->text->plot_shadow(f);
-    legend->text->plot(f);
-
-    Y1Redun = y - (TITLE_SPACE + 2*SPACE_TUNE + 1.5*periphWidth);
-    Y2Redun = y + 2*seqWidth + innerSpace + TITLE_SPACE + 2*SPACE_TUNE +
-              1.5*periphWidth;
-    
-    // Top wing
-    if (lastPos.size() == 2) {
-      legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1Redun) + 
-                        legend->path->H(legend->text->x) + 
-                        legend->path->V((Y1Redun+Y2Redun)/2 - 32);
-      // legend->path->plot_shadow(f);
-      legend->path->plot(f);
-    }
-    // Bottom wing
-    legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2Redun) +
-                      legend->path->H(legend->text->x) + 
-                      legend->path->V((Y1Redun+Y2Redun)/2 + 32);
-    // legend->path->plot_shadow(f);
-    legend->path->plot(f);
-
-    legend->text->transform.clear();
-  }
-
-  plot_legend_gradient(f, legend);
-
-  // Print numbers (measures)
-  legend->text->font_weight = "bold";
-  legend->text->dominant_baseline = "middle";
-  legend->text->font_size = 8;
-  legend->text->text_align = "middle";
-  legend->text->x = legend->rect->x + legend->rect->width/2;
-  legend->text->y = legend->rect->y + legend->rect->height + 6;  
-  legend->text->Label = "0.0";
-  legend->text->plot(f);
-
-  for (u8 i=1; i!=4; ++i) {
-    legend->text->text_align = "middle";
-    legend->text->x = legend->rect->x + legend->rect->width/2;
-    legend->text->y = 
-      legend->rect->y + legend->rect->height - legend->rect->height*i/4;  
-    if (legend->colorMode==1 && i==3)  legend->text->fill="white";
-    legend->text->Label = string_format("%.1f", i*0.5);
-    legend->text->plot(f);
-  }
-
-  legend->text->text_align = "middle";
-  legend->text->x = legend->rect->x + legend->rect->width/2;
-  legend->text->y = legend->rect->y - 6;  
-  legend->text->fill = "black";
-  legend->text->Label = "2.0";
-  legend->text->plot(f);
 }
 
 inline void VizPaint::plot_legend_gradient (ofstream& f, 
@@ -1232,6 +856,377 @@ unique_ptr<LegendPlot>& legend) const {
   // cylinder->stroke_width = 0.35;
   // cylinder->stroke = "black";
   // cylinder->plot(f);
+}
+
+inline void VizPaint::plot_legend_text_horiz (ofstream& f,
+unique_ptr<LegendPlot>& legend) const {
+  for (auto& e : legend->text) {
+    e->text_anchor = "middle";
+    e->dominant_baseline = "middle";
+    e->font_size = 9;
+  }
+  
+  if (legend->showNRC && !legend->showRedun) {
+    legend->text[1]->x = legend->rect->x + legend->rect->width/2;
+    if (legend->rect->width > 64) {
+      legend->text[1]->y = legend->rect->y - legend->labelShift;
+      legend->text[1]->Label = "Relative Redundancy";
+      // legend->text[1]->plot_shadow(f);
+      legend->text[1]->plot(f);
+    }
+    else {
+      legend->text[1]->y = legend->rect->y - legend->labelShift - 8;
+      legend->text[1]->Label = "Relative";
+      // legend->text[1]->plot_shadow(f);
+      legend->text[1]->plot(f);
+      legend->text[1]->y = legend->rect->y - legend->labelShift + 2;
+      legend->text[1]->Label = "Redundancy";
+      // legend->text[1]->plot_shadow(f);
+      legend->text[1]->plot(f);
+    }
+  }
+  else if (!legend->showNRC && legend->showRedun) {
+    legend->text[1]->x = legend->rect->x + legend->rect->width/2;
+    legend->text[1]->y = legend->rect->y - legend->labelShift;
+    legend->text[1]->Label = "Redundancy";
+    // legend->text[1]->plot_shadow(f);
+    legend->text[1]->plot(f);
+  }
+  else if (legend->showNRC && legend->showRedun) {
+    legend->text[1]->x = legend->rect->x + legend->rect->width/2;
+    if (legend->rect->width > 64) {
+      legend->text[1]->y = legend->rect->y - legend->labelShift;
+      legend->text[1]->Label = "Relative Redundancy";
+      // legend->text[1]->plot_shadow(f);
+      legend->text[1]->plot(f);
+    }
+    else {
+      legend->text[1]->y = legend->rect->y - legend->labelShift - 8;
+      legend->text[1]->Label = "Relative";
+      // legend->text[1]->plot_shadow(f);
+      legend->text[1]->plot(f);
+      legend->text[1]->y = legend->rect->y - legend->labelShift + 2;
+      legend->text[1]->Label = "Redundancy";
+      // legend->text[1]->plot_shadow(f);
+      legend->text[1]->plot(f);
+    }
+    
+    // Redundancy
+    legend->text[2]->x = legend->rect->x + legend->rect->width/2;
+    legend->text[2]->y = 
+      legend->rect->y + legend->rect->height + legend->labelShift;
+    legend->text[2]->Label = "Redundancy";
+    // legend->text[2]->plot_shadow(f);
+    legend->text[2]->plot(f);
+  }
+
+  //Numbers (measures)
+  // 0.0
+  legend->text[0]->font_weight = "bold";
+  legend->text[0]->font_size = 8;
+  legend->text[0]->fill = "black";
+  legend->text[0]->x = legend->rect->x - 4;
+  legend->text[0]->y = legend->rect->y + legend->rect->height/2;
+  legend->text[0]->text_anchor = "end";
+  legend->text[0]->Label = "0.0";
+  legend->text[0]->plot(f);
+  // 2.0
+  legend->text[0]->x = legend->rect->x + legend->rect->width + 4;
+  legend->text[0]->y = legend->rect->y + legend->rect->height/2;
+  legend->text[0]->text_anchor = "start";
+  legend->text[0]->Label = "2.0";
+  legend->text[0]->plot(f);
+  // 0.5  1.0  1.5
+  for (u8 i=1; i!=4; ++i) {
+    legend->text[0]->text_anchor = "middle";
+    legend->text[0]->x = legend->rect->x + legend->rect->width/4*i;
+    legend->text[0]->y = legend->rect->y + legend->rect->height/2;
+    if (legend->colorMode==1 && i==3)
+      legend->text[0]->fill="white";
+    legend->text[0]->Label = string_format("%.1f", i*0.5);
+    legend->text[0]->plot(f);
+  }
+
+  // for (auto& e : legend->text)
+  //   e->transform.clear();
+}
+
+inline void VizPaint::plot_legend_path_horiz (ofstream& f,
+unique_ptr<LegendPlot>& legend) const {
+  legend->path->stroke = "black";
+  legend->path->stroke_width = 0.5;
+  // path->stroke_dasharray = "8 3";
+
+  if (legend->showNRC && !legend->showRedun) {
+    float X1RelRedun = x - (TITLE_SPACE/2 + SPACE_TUNE + 0.5*periphWidth);
+    float X2RelRedun = x + 2*seqWidth + innerSpace + TITLE_SPACE/2 + 
+                       SPACE_TUNE + 0.5*periphWidth;
+    // Left wing
+    if (lastPos.size() == 2) {
+      if (legend->rect->width > 64)
+        legend->path->d = 
+          legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
+          legend->path->V(legend->text[1]->y) + 
+          legend->path->H((X1RelRedun+X2RelRedun)/2 - 50);
+      else
+        legend->path->d = 
+          legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
+          legend->path->V(legend->text[1]->y-5) + 
+          legend->path->H((X1RelRedun+X2RelRedun)/2 - 32);
+      // legend->path->plot_shadow(f);
+      legend->path->plot(f);
+    }
+    // Right wing
+    if (legend->rect->width > 64)
+      legend->path->d = 
+        legend->path->M(X2RelRedun, y+get_point(lastPos[1])) +
+        legend->path->V(legend->text[1]->y) + 
+        legend->path->H((X1RelRedun+X2RelRedun)/2 + 50);
+    else
+      legend->path->d = 
+        legend->path->M(X2RelRedun, y+get_point(lastPos[1])) + 
+        legend->path->V(legend->text[1]->y-5) + 
+        legend->path->H((X1RelRedun+X2RelRedun)/2 + 32);
+    // legend->path->plot_shadow(f);
+    legend->path->plot(f);
+  }
+  else if (!legend->showNRC && legend->showRedun) {
+    float X1Redun = x - (TITLE_SPACE/2 + SPACE_TUNE + 0.5*periphWidth);
+    float X2Redun = x + 2*seqWidth + innerSpace + TITLE_SPACE/2 + SPACE_TUNE +
+                    0.5*periphWidth;
+    // Left wing
+    if (lastPos.size() == 2) {
+      legend->path->d = 
+        legend->path->M(X1Redun, y+get_point(lastPos[0])) + 
+        legend->path->V(legend->text[1]->y) + 
+        legend->path->H((X1Redun+X2Redun)/2 - 32);
+      // legend->path->plot_shadow(f);
+      legend->path->plot(f);
+    }
+    // Right wing
+    legend->path->d = 
+      legend->path->M(X2Redun, y+get_point(lastPos[1])) +
+      legend->path->V(legend->text[1]->y) + 
+      legend->path->H((X1Redun+X2Redun)/2 + 32);
+    // legend->path->plot_shadow(f);
+    legend->path->plot(f);
+  }
+  else if (legend->showNRC && legend->showRedun) {
+    float X1RelRedun = x - (TITLE_SPACE/2 + SPACE_TUNE + 0.5*periphWidth);
+    float X2RelRedun = x + 2*seqWidth + innerSpace + TITLE_SPACE/2 + 
+                       SPACE_TUNE + 0.5*periphWidth;
+    // Left wing
+    if (lastPos.size() == 2) {
+      if (legend->rect->width > 64)
+        legend->path->d = 
+          legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
+          legend->path->V(legend->text[1]->y) + 
+          legend->path->H((X1RelRedun+X2RelRedun)/2 - 50);
+      else
+        legend->path->d = 
+          legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
+          legend->path->V(legend->text[1]->y-5) + 
+          legend->path->H((X1RelRedun+X2RelRedun)/2 - 32);
+      // legend->path->plot_shadow(f);
+      legend->path->plot(f);
+    }
+    // Right wing
+    if (legend->rect->width > 64)
+      legend->path->d = 
+        legend->path->M(X2RelRedun, y+get_point(lastPos[1])) +
+        legend->path->V(legend->text[1]->y) + 
+        legend->path->H((X1RelRedun+X2RelRedun)/2 + 50);
+    else
+      legend->path->d = 
+        legend->path->M(X2RelRedun, y+get_point(lastPos[1])) + 
+        legend->path->V(legend->text[1]->y-5) + 
+        legend->path->H((X1RelRedun+X2RelRedun)/2 + 32);
+    // legend->path->plot_shadow(f);
+    legend->path->plot(f);
+
+    // Redundancy
+    float X1Redun = x - (TITLE_SPACE/2 + 2*SPACE_TUNE + 1.5*periphWidth);
+    float X2Redun = x + 2*seqWidth + innerSpace + TITLE_SPACE/2 + 2*SPACE_TUNE +
+                    1.5*periphWidth;
+    // Left wing
+    if (lastPos.size() == 2) {
+      legend->path->d = 
+        legend->path->M(X1Redun, y+get_point(lastPos[0])) + 
+        legend->path->V(legend->text[2]->y) + 
+        legend->path->H((X1Redun+X2Redun)/2 - 32);
+      // legend->path->plot_shadow(f);
+      legend->path->plot(f);
+    }
+    // Right wing
+    legend->path->d = 
+      legend->path->M(X2Redun, y+get_point(lastPos[1])) +
+      legend->path->V(legend->text[2]->y) + 
+      legend->path->H((X1Redun+X2Redun)/2 + 32);
+    // legend->path->plot_shadow(f);
+    legend->path->plot(f);
+  }
+}
+
+inline void VizPaint::plot_legend_text_vert (ofstream& f,
+unique_ptr<LegendPlot>& legend) const {
+  for (auto& e : legend->text) {
+    e->text_anchor = "middle";
+    e->font_size = 9;
+  }
+  
+  if (legend->showNRC && !legend->showRedun) {
+    legend->text[1]->x = legend->rect->x - legend->labelShift;
+    legend->text[1]->y = legend->rect->y + legend->rect->height/2;
+    legend->text[1]->transform = "rotate(90 " + to_string(legend->text[1]->x) +
+      " " + to_string(legend->text[1]->y) + ")";
+    legend->text[1]->Label = "Relative Redundancy";
+    // legend->text[1]->plot_shadow(f);
+    legend->text[1]->plot(f);
+  }
+  else if (!legend->showNRC && legend->showRedun) {
+    legend->text[1]->x = legend->rect->x - legend->labelShift;
+    legend->text[1]->y = legend->rect->y + legend->rect->height/2;
+    legend->text[1]->transform = "rotate(90 " + to_string(legend->text[1]->x) +
+      " " + to_string(legend->text[1]->y) + ")";
+    legend->text[1]->Label = "Redundancy";
+    // legend->text[1]->plot_shadow(f);
+    legend->text[1]->plot(f);
+  }
+  else if (legend->showNRC && legend->showRedun) {
+    legend->text[1]->x = legend->rect->x - legend->labelShift;
+    legend->text[1]->y = legend->rect->y + legend->rect->height/2;
+    legend->text[1]->transform = "rotate(90 " + to_string(legend->text[1]->x) +
+      " " + to_string(legend->text[1]->y) + ")";
+    legend->text[1]->Label = "Relative Redundancy";
+    // legend->text[1]->plot_shadow(f);
+    legend->text[1]->plot(f);
+
+    // Redundancy
+    legend->text[2]->x = legend->rect->x + legend->rect->width + 
+      legend->labelShift;
+    legend->text[2]->y = legend->rect->y + legend->rect->height/2;
+    legend->text[2]->transform = "rotate(90 " + to_string(legend->text[2]->x) +
+      " " + to_string(legend->text[2]->y) + ")";
+    legend->text[2]->Label = "Redundancy";
+    // legend->text[2]->plot_shadow(f);
+    legend->text[2]->plot(f);
+  }
+  
+  // Numbers (measures)
+  // 0.0
+  legend->text[0]->font_weight = "bold";
+  legend->text[0]->font_size = 8;
+  legend->text[0]->fill = "black";
+  legend->text[0]->dominant_baseline = "middle";
+  legend->text[0]->text_anchor = "middle";
+  legend->text[0]->x = legend->rect->x + legend->rect->width/2;
+  legend->text[0]->y = legend->rect->y + legend->rect->height + 6;  
+  legend->text[0]->Label = "0.0";
+  legend->text[0]->plot(f);
+  // 2.0
+  legend->text[0]->text_anchor = "middle";
+  legend->text[0]->x = legend->rect->x + legend->rect->width/2;
+  legend->text[0]->y = legend->rect->y - 6;
+  legend->text[0]->Label = "2.0";
+  legend->text[0]->plot(f);
+  // 0.5  1.0  1.5
+  for (u8 i=1; i!=4; ++i) {
+    legend->text[0]->text_anchor = "middle";
+    legend->text[0]->x = legend->rect->x + legend->rect->width/2;
+    legend->text[0]->y = legend->rect->y + legend->rect->height -
+      legend->rect->height*i/4;  
+    if (legend->colorMode==1 && i==3)
+      legend->text[0]->fill="white";
+    legend->text[0]->Label = string_format("%.1f", i*0.5);
+    legend->text[0]->plot(f);
+  }
+  
+  // for (auto& e : legend->text)
+  //   e->transform.clear();
+}
+
+inline void VizPaint::plot_legend_path_vert (ofstream& f,
+unique_ptr<LegendPlot>& legend) const {
+  legend->path->stroke = "black";
+  legend->path->stroke_width = 0.5;
+  // legend->path->stroke_dasharray = "8 3";
+  
+  if (legend->showNRC && !legend->showRedun) {
+    float Y1RelRedun = y - (TITLE_SPACE + SPACE_TUNE + 0.5*periphWidth);
+    float Y2RelRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE +
+                       0.5*periphWidth;
+    // Top wing
+    if (lastPos.size() == 2) {
+      legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1RelRedun) + 
+                        legend->path->H(legend->text[1]->x) + 
+                        legend->path->V((Y1RelRedun+Y2RelRedun)/2 - 47);
+    // legend->path->plot_shadow(f);
+      legend->path->plot(f);
+    }
+    // Bottom wing
+    legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2RelRedun) +
+                      legend->path->H(legend->text[1]->x) + 
+                      legend->path->V((Y1RelRedun+Y2RelRedun)/2 + 47);
+    // legend->path->plot_shadow(f);
+    legend->path->plot(f);
+  }
+  else if (!legend->showNRC && legend->showRedun) {
+    float Y1Redun = y - (TITLE_SPACE + SPACE_TUNE + 0.5*periphWidth);
+    float Y2Redun = y + 2*seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE +
+                    0.5*periphWidth;
+    // Top wing
+    if (lastPos.size() == 2) {
+      legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1Redun) + 
+                        legend->path->H(legend->text[1]->x) + 
+                        legend->path->V((Y1Redun+Y2Redun)/2 - 30);
+    // legend->path->plot_shadow(f);
+      legend->path->plot(f);
+    }
+    // Bottom wing
+    legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2Redun) +
+                      legend->path->H(legend->text[1]->x) + 
+                      legend->path->V((Y1Redun+Y2Redun)/2 + 30);
+  // legend->path->plot_shadow(f);
+    legend->path->plot(f);
+  }
+  else if (legend->showNRC && legend->showRedun) {
+    float Y1RelRedun = y - (TITLE_SPACE + SPACE_TUNE + 0.5*periphWidth);
+    float Y2RelRedun = y + 2*seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE +
+                       0.5*periphWidth;
+    // Top wing
+    if (lastPos.size() == 2) {
+      legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1RelRedun) + 
+                        legend->path->H(legend->text[1]->x) + 
+                        legend->path->V((Y1RelRedun+Y2RelRedun)/2 - 47);
+    // legend->path->plot_shadow(f);
+      legend->path->plot(f);
+    }
+    // Bottom wing
+    legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2RelRedun) +
+                      legend->path->H(legend->text[1]->x) + 
+                      legend->path->V((Y1RelRedun+Y2RelRedun)/2 + 47);
+    // legend->path->plot_shadow(f);
+    legend->path->plot(f);
+
+    // Redundancy
+    float Y1Redun = y - (TITLE_SPACE + 2*SPACE_TUNE + 1.5*periphWidth);
+    float Y2Redun = y + 2*seqWidth + innerSpace + TITLE_SPACE + 2*SPACE_TUNE +
+                    1.5*periphWidth;
+    // Top wing
+    if (lastPos.size() == 2) {
+      legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1Redun) + 
+                        legend->path->H(legend->text[2]->x) + 
+                        legend->path->V((Y1Redun+Y2Redun)/2 - 30);
+      // legend->path->plot_shadow(f);
+      legend->path->plot(f);
+    }
+    // Bottom wing
+    legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2Redun) +
+                      legend->path->H(legend->text[2]->x) + 
+                      legend->path->V((Y1Redun+Y2Redun)/2 + 30);
+    // legend->path->plot_shadow(f);
+    legend->path->plot(f);
+  }
 }
 
 inline string VizPaint::tspan (u32 start, i64 pos) const {
