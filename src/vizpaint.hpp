@@ -38,16 +38,27 @@ struct PosPlot {
     minorStrokeWidth(0.8f), majorStrokeWidth(1.6*minorStrokeWidth) {}
 };
 
+struct LegendPlot {
+  i64 maxWidth;
+  u8  labelShift;
+  unique_ptr<Rectangle> rect;
+  unique_ptr<Path>      path;
+  unique_ptr<Text>      text;
+
+  LegendPlot () : labelShift(10), rect(make_unique<Rectangle>()), 
+    path(make_unique<Path>()), text(make_unique<Text>()) {}
+};
+
 class VizPaint {
  public:
   float  x, y;
   string backColor;
-  float  seqWidth, innerSpace;
+  float  seqWidth, periphWidth, innerSpace;
   float  refSize, tarSize, maxSize;
   unique_ptr<SVG> svg;
 
-  VizPaint() : /*x(20.0f), y(100.0f),*/ backColor("white"), 
-    svg(make_unique<SVG>()), ratio(1), plottable(true), ry(2.0f) {}
+  VizPaint() : backColor("white"), svg(make_unique<SVG>()), ratio(1), 
+    plottable(true), ry(2.0f) {}
   void plot (VizParam&);
 
  private:
@@ -55,7 +66,6 @@ class VizPaint {
   u32   mult;
   bool  plottable;
   float ry;
-  // bool  vertical;//todo
   vector<i64>     lastPos;
   vector<PosNode> nodes;
 
@@ -68,19 +78,26 @@ class VizPaint {
   auto get_point (Value) const -> double;
   auto get_index (double point) const -> u64;
   void plot_title (ofstream&, const string&, const string&, bool) const;
-  void plot_legend_horizontal (ofstream&, const VizParam&, i64);
-  void plot_legend_vertical (ofstream&, const VizParam&, i64);
+  void plot_title_horizontal (ofstream&, const string&, const string&,
+    unique_ptr<Text>&) const;
+  void plot_title_vertical (ofstream&, const string&, const string&,
+    unique_ptr<Text>&) const;
+  void plot_legend (ofstream&, const VizParam&, i64) const;
+  void plot_legend_horizontal (ofstream&, const VizParam&,
+    unique_ptr<LegendPlot>&) const;
+  void plot_legend_vertical (ofstream&, const VizParam&, 
+    unique_ptr<LegendPlot>&) const;
   template <typename Rect>
-  void plot_legend_gradient (ofstream&, const Rect&, u8, bool);
+  void plot_legend_gradient (ofstream&, const Rect&, u8, bool) const;
   auto tspan (u32, i64) const -> string;
   auto tspan (u32, const string&) const -> string;
   void sort_merge (string&) const;
   void save_n_pos (const string&) const;
   void read_pos (ifstream&, vector<Position>&, VizParam&);
   void make_posNode (const vector<Position>&, const VizParam&, string&&);
+  void plot_pos_horizontal (ofstream&, unique_ptr<PosPlot>&) const;
+  void plot_pos_vertical (ofstream&, unique_ptr<PosPlot>&) const;
   // void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
-  void plot_pos_horizontal (ofstream&, unique_ptr<PosPlot>&);
-  void plot_pos_vertical (ofstream&, unique_ptr<PosPlot>&);
 };
 }
 

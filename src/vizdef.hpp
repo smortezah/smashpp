@@ -32,8 +32,6 @@ static constexpr u32  MAX_BEGN        {255};
 static constexpr u32  MINP            {1};
 static constexpr u32  MIN_MINP        {1};
 static constexpr u32  MAX_MINP        {0xffffffff};  // 2^32 - 1
-
-//todo
 static constexpr u64  TICK            {100};  // Major tick
 static constexpr u64  MIN_TICK        {1};
 static constexpr u64  MAX_TICK        {0xffffffff};
@@ -41,8 +39,7 @@ static constexpr u32  PAINT_SCALE     {100};
 static constexpr auto PAINT_SHORT     {0.035};
 static constexpr u8   PAINT_LVL_SATUR {160};
 static constexpr u8   PAINT_LVL_VAL   {160};
-static constexpr auto VERT_TUNE       {6.0f};//todo vert o vardar
-static constexpr auto VERT_RATIO      {3.0f};//todo vert o vardar
+static constexpr auto SPACE_TUNE      {6.0f};
 static constexpr auto TITLE_SPACE     {16.0f};
 static constexpr auto HEAT_START      {0.35};
 static constexpr auto HEAT_ROT        {1.5};

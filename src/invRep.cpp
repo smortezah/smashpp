@@ -30,7 +30,7 @@ int main (int argc, char* argv[]) {
   inFile.read(buffer.data(), size);
   inFile.close();
 
-  reverse(buffer.begin(), buffer.end()-1);
+  reverse(begin(buffer), end(buffer)-1);
 
   for (auto& c : buffer)
     c = REV[static_cast<unsigned char>(c)];

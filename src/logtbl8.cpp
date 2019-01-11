@@ -37,11 +37,11 @@ u64 LogTable8::get_total () const {
 }
 
 u64 LogTable8::count_empty () const {
-  return static_cast<u64>(std::count(tbl.begin(), tbl.end(), 0));
+  return static_cast<u64>(std::count(begin(tbl), end(tbl), 0));
 }
 
 u32 LogTable8::max_tbl_val () const {
-  return *std::max_element(tbl.begin(), tbl.end());
+  return *std::max_element(begin(tbl), end(tbl));
 }
 
 void LogTable8::print () const {

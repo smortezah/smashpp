@@ -310,7 +310,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   seg->thresh = p.thresh;
   if (p.manSegSize)
     seg->minSize=p.segSize;
-  const auto winBeg=window.begin(), winEnd=window.end();
+  const auto winBeg=begin(window), winEnd=end(window);
   auto sWeight = accumulate(winBeg+(wsize>>1u), winEnd, 0.f);
   string num;
   auto sum = 0.f;
@@ -326,7 +326,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
     seq.emplace_back(stof(num));
     jump_lines();
   }
-  sum = inner_product(winBeg+(wsize>>1u), winEnd, seq.begin(), 0.f);
+  sum = inner_product(winBeg+(wsize>>1u), winEnd, begin(seq), 0.f);
   filtered = sum / sWeight;
   if (SaveFilter)  filF << precision(PREC_FIL) << filtered << '\n';
   seg->partition(posF, filtered);
@@ -335,7 +335,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   // Next wsize>>1 values
   for (auto i=(wsize>>1u); i-- && getline(prfF,num);) {
     seq.emplace_back(stof(num));
-    sum = inner_product(winBeg+i, winEnd, seq.begin(), 0.f);
+    sum = inner_product(winBeg+i, winEnd, begin(seq), 0.f);
     ++seg->pos;
     sWeight += window[i];
     filtered = sum / sWeight;
@@ -347,7 +347,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
 
   // The rest
   u32 idx = 0;
-  for(auto seqBeg=seq.begin(); getline(prfF,num);) {
+  for(auto seqBeg=begin(seq); getline(prfF,num);) {
     seq[idx] = stof(num);
     idx = (idx+1) % wsize;
     sum = (inner_product(winBeg,     winEnd-idx, seqBeg+idx, 0.f) +
@@ -364,7 +364,7 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   // Until half of the window goes outside the array
   const auto offset = idx;
   for (auto i=1u; i!=(wsize>>1u)+1; ++i) {
-    auto seqBeg=seq.begin(), seqEnd=seq.end();
+    auto seqBeg=begin(seq), seqEnd=end(seq);
     if (++idx < wsize+1)
       sum = (inner_product(seqBeg+idx, seqEnd,        winBeg,     0.f) +
              inner_product(seqBeg,     seqBeg+offset, winEnd-idx, 0.f));

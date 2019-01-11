@@ -125,7 +125,6 @@ class Cylinder : public SVG {
     stroke_lineJoin("round") {}
   void plot (ofstream&) const;
   void plot_ir (ofstream&, const string& ="Wavy");
-  void plot_periph (ofstream&, bool=false, char=' ', u8=0);
 };
 
 class Rectangle : public SVG {
@@ -219,7 +218,6 @@ template <typename T, typename... Ts>
 void make_pattern (ofstream& file, unique_ptr<Pattern>& pattern, 
 unique_ptr<T>& figBase, unique_ptr<Ts...>& fig) {
   auto defs = make_unique<Defs>();
-  // defs->id = pattern->id;//todo
   defs->set_head(file);
   pattern->set_head(file);
   figBase->plot(file);
