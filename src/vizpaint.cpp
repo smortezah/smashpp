@@ -258,110 +258,7 @@ void VizPaint::plot (VizParam& p) {
         plot_main_tar(false);
 
         if (e->begRef != DBLANK) {
-          switch (p.link) {
-          case 1:
-            if (p.vertical)
-              poly->points 
-                = poly->point(x+seqWidth,            y+get_point(e->begRef)) +
-                  poly->point(x+seqWidth,            y+get_point(e->endRef)) +
-                  poly->point(x+seqWidth+innerSpace, y+get_point(e->endTar)) +
-                  poly->point(x+seqWidth+innerSpace, y+get_point(e->begTar));
-            else
-              poly->points 
-                = poly->point(x+get_point(e->begRef), y+seqWidth) +
-                  poly->point(x+get_point(e->endRef), y+seqWidth) +
-                  poly->point(x+get_point(e->endTar), y+seqWidth+innerSpace) +
-                  poly->point(x+get_point(e->begTar), y+seqWidth+innerSpace);
-            poly->stroke = poly->fill = rgb_color(e->start);
-            poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
-            poly->plot(fPlot);
-            break;
-          case 2:
-            if (p.vertical) {
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
-            } else {
-              line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
-              line->y2 = y + seqWidth + innerSpace;
-            }
-            line->stroke = rgb_color(e->start);
-            line->plot(fPlot);
-            break;
-          case 3:
-            if (p.vertical) {
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
-            } else {
-              line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
-              line->y2 = y + seqWidth + innerSpace;
-            }
-            line->stroke = "black";
-            line->plot(fPlot);
-            break;
-          case 4:
-            line->stroke = rgb_color(e->start);
-            if (p.vertical) {
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->begRef);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->begTar);
-              line->plot(fPlot);
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->endRef);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->endTar);
-              line->plot(fPlot);
-            } else {
-              line->x1 = x + get_point(e->begRef);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->begTar);
-              line->y2 = y + seqWidth + innerSpace;
-              line->plot(fPlot);
-              line->x1 = x + get_point(e->endRef);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->endTar);
-              line->y2 = y + seqWidth + innerSpace;
-              line->plot(fPlot);
-            }
-            break;
-          case 5:
-            line->stroke = "black";
-            if (p.vertical) {
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->begRef);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->begTar);
-              line->plot(fPlot);
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->endRef);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->endTar);
-              line->plot(fPlot);
-            } else {
-              line->x1 = x + get_point(e->begRef);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->begTar);
-              line->y2 = y + seqWidth + innerSpace;
-              line->plot(fPlot);
-              line->x1 = x + get_point(e->endRef);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->endTar);
-              line->y2 = y + seqWidth + innerSpace;
-              line->plot(fPlot);
-            }
-            break;
-          case 6:
-            break;
-          default: break;
-          }
+          plot_connector(fPlot, e, p, false /*ir*/);
           ++n_regular;
         }
       }
@@ -372,114 +269,7 @@ void VizPaint::plot (VizParam& p) {
         plot_main_tar(true);
 
         if (e->begRef != DBLANK) {
-          switch (p.link) {
-          case 1:
-            if (p.vertical)
-              poly->points
-                = poly->point(x+seqWidth,            y+get_point(e->begRef)) +
-                  poly->point(x+seqWidth,            y+get_point(e->endRef)) +
-                  poly->point(x+seqWidth+innerSpace, y+get_point(e->endTar)) +
-                  poly->point(x+seqWidth+innerSpace, y+get_point(e->begTar));
-            else
-              poly->points
-                = poly->point(x+get_point(e->begRef), y+seqWidth) +
-                  poly->point(x+get_point(e->endRef), y+seqWidth) +
-                  poly->point(x+get_point(e->endTar), y+seqWidth+innerSpace) +
-                  poly->point(x+get_point(e->begTar), y+seqWidth+innerSpace);
-            poly->stroke = poly->fill = rgb_color(e->start);
-            poly->stroke_opacity = poly->fill_opacity = 0.5 * p.opacity;
-            poly->plot(fPlot);
-            break;
-          case 2:
-            if (p.vertical) {
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
-            } else {
-              line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
-              line->y2 = y + seqWidth + innerSpace;
-            }
-            line->stroke = rgb_color(e->start);
-            line->plot(fPlot);
-            break;
-          case 3:
-            if (p.vertical) {
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
-            } else {
-              line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->endTar+(e->begTar-e->endTar)/2.0);
-              line->y2 = y + seqWidth + innerSpace;
-            }
-            line->stroke = "green";
-            line->plot(fPlot);
-            break;
-          case 4:
-            line->stroke = rgb_color(e->start);
-            if (p.vertical) {
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->begRef);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->begTar);
-              line->plot(fPlot);
-
-              line->x1 = x + seqWidth;
-              line->y1 = y + get_point(e->endRef);
-              line->x2 = x + seqWidth + innerSpace;
-              line->y2 = y + get_point(e->endTar);
-              line->plot(fPlot);
-            } else {
-              line->x1 = x + get_point(e->begRef);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->begTar);
-              line->y2 = y + seqWidth + innerSpace;
-              line->plot(fPlot);
-
-              line->x1 = x + get_point(e->endRef);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->endTar);
-              line->y2 = y + seqWidth + innerSpace;
-              line->plot(fPlot);
-            }
-            break;
-          case 5:
-            line->stroke = "green";
-            if (p.vertical) {
-              line->y1 = y + get_point(e->begRef);
-              line->x1 = x + seqWidth;
-              line->y2 = y + get_point(e->begTar);
-              line->x2 = x + seqWidth + innerSpace;
-              line->plot(fPlot);
-
-              line->y1 = y + get_point(e->endRef);
-              line->x1 = x + seqWidth;
-              line->y2 = y + get_point(e->endTar);
-              line->x2 = x + seqWidth + innerSpace;
-              line->plot(fPlot);
-            } else {
-              line->x1 = x + get_point(e->begRef);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->begTar);
-              line->y2 = y + seqWidth + innerSpace;
-              line->plot(fPlot);
-
-              line->x1 = x + get_point(e->endRef);
-              line->y1 = y + seqWidth;
-              line->x2 = x + get_point(e->endTar);
-              line->y2 = y + seqWidth + innerSpace;
-              line->plot(fPlot);
-            }
-            break;
-          case 6:
-            break;
-          default: break;
-          }
+          plot_connector(fPlot, e, p, true /*ir*/);
           ++n_inverse;
         }
       }
@@ -715,6 +505,104 @@ inline double VizPaint::get_point (Value index) const {
 
 inline u64 VizPaint::get_index (double point) const {
   return static_cast<u64>(point * ratio / 5.0);
+}
+
+template <typename VecIter>
+inline void VizPaint::plot_connector (ofstream& fPlot, const VecIter& e,
+VizParam& par, bool ir) {
+  auto poly = make_unique<Polygon>();
+  auto line = make_unique<Line>();
+  line->stroke_width = 1.5;
+
+  switch (par.link) {
+  case 1:
+    if (par.vertical)
+      poly->points = poly->point(x+seqWidth,            y+get_point(e->begRef))+
+                     poly->point(x+seqWidth,            y+get_point(e->endRef))+
+                     poly->point(x+seqWidth+innerSpace, y+get_point(e->endTar))+
+                     poly->point(x+seqWidth+innerSpace, y+get_point(e->begTar));
+    else
+      poly->points = poly->point(x+get_point(e->begRef), y+seqWidth) +
+                     poly->point(x+get_point(e->endRef), y+seqWidth) +
+                     poly->point(x+get_point(e->endTar), y+seqWidth+innerSpace)+
+                     poly->point(x+get_point(e->begTar), y+seqWidth+innerSpace);
+    poly->stroke = poly->fill = rgb_color(e->start);
+    poly->stroke_opacity = poly->fill_opacity = 0.5 * par.opacity;
+    poly->plot(fPlot);
+    break;
+  case 2:
+    if (par.vertical) {
+      line->x1 = x + seqWidth;
+      line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+      line->x2 = x + seqWidth + innerSpace;
+      line->y2 = ir ? y + get_point(e->endTar+(e->begTar-e->endTar)/2.0)
+                    : y + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+    } else {
+      line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+      line->y1 = y + seqWidth;
+      line->x2 = ir ? x + get_point(e->endTar+(e->begTar-e->endTar)/2.0)
+                    : x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+      line->y2 = y + seqWidth + innerSpace;
+    }
+    line->stroke = rgb_color(e->start);
+    line->plot(fPlot);
+    break;
+  case 3:
+    if (par.vertical) {
+      line->x1 = x + seqWidth;
+      line->y1 = y + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+      line->x2 = x + seqWidth + innerSpace;
+      line->y2 = ir ? y + get_point(e->endTar+(e->begTar-e->endTar)/2.0)
+                    : y + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+    } else {
+      line->x1 = x + get_point(e->begRef+(e->endRef-e->begRef)/2.0);
+      line->y1 = y + seqWidth;
+      line->x2 = ir ? x + get_point(e->endTar+(e->begTar-e->endTar)/2.0)
+                    : x + get_point(e->begTar+(e->endTar-e->begTar)/2.0);
+      line->y2 = y + seqWidth + innerSpace;
+    }
+    line->stroke = ir ? "green" : "black";
+    line->plot(fPlot);
+    break;
+  case 4:
+    line->stroke = rgb_color(e->start);
+    if (par.vertical) {
+      line->x1 = x+seqWidth;               line->y1 = y+get_point(e->begRef);
+      line->x2 = x+seqWidth+innerSpace;    line->y2 = y+get_point(e->begTar);
+      line->plot(fPlot);
+      line->x1 = x+seqWidth;               line->y1 = y+get_point(e->endRef);
+      line->x2 = x+seqWidth+innerSpace;    line->y2 = y+get_point(e->endTar);
+      line->plot(fPlot);
+    } else {
+      line->x1 = x+get_point(e->begRef);   line->y1 = y+seqWidth;
+      line->x2 = x+get_point(e->begTar);   line->y2 = y+seqWidth+innerSpace;
+      line->plot(fPlot);
+      line->x1 = x+get_point(e->endRef);   line->y1 = y+seqWidth;
+      line->x2 = x+get_point(e->endTar);   line->y2 = y+seqWidth+innerSpace;
+      line->plot(fPlot);
+    }
+    break;
+  case 5:
+    line->stroke = ir ? "green" : "black";
+    if (par.vertical) {
+      line->x1 = x+seqWidth;                line->y1 = y+get_point(e->begRef);
+      line->x2 = x+seqWidth+innerSpace;     line->y2 = y+get_point(e->begTar);
+      line->plot(fPlot);
+      line->x1 = x+seqWidth;                line->y1 = y+get_point(e->endRef);
+      line->x2 = x+seqWidth+innerSpace;     line->y2 = y+get_point(e->endTar);
+      line->plot(fPlot);
+    } else {
+      line->x1 = x+get_point(e->begRef);    line->y1 = y+seqWidth;
+      line->x2 = x+get_point(e->begTar);    line->y2 = y+seqWidth+innerSpace;
+      line->plot(fPlot);
+      line->x1 = x+get_point(e->endRef);    line->y1 = y+seqWidth;
+      line->x2 = x+get_point(e->endTar);    line->y2 = y+seqWidth+innerSpace;
+      line->plot(fPlot);
+    }
+    break;
+  case 6:   break;
+  default:  break;
+  }
 }
 
 inline void VizPaint::plot_title (ofstream& f, const string& ref, 

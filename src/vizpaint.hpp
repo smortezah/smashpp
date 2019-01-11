@@ -78,6 +78,8 @@ class VizPaint {
   template <typename Value>
   auto get_point (Value) const -> double;
   auto get_index (double point) const -> u64;
+  template <typename VecIter>
+  void plot_connector (ofstream&, const VecIter&, VizParam&, bool);
   void plot_title (ofstream&, const string&, const string&, bool) const;
   void plot_legend (ofstream&, const VizParam&, i64) const;
   void set_legend_rect (ofstream&, unique_ptr<LegendPlot>&, char) const;
