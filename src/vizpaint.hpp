@@ -42,12 +42,12 @@ struct LegendPlot {
   bool showNRC, showRedun, vertical;
   i64  maxWidth;
   u8   labelShift, colorMode;
-  unique_ptr<Rectangle> rect;
-  unique_ptr<Path>      path;
-  unique_ptr<Text>      text;
+  unique_ptr<Rectangle>    rect;
+  unique_ptr<Path>         path;
+  vector<unique_ptr<Text>> text;
 
   LegendPlot () : labelShift(10), rect(make_unique<Rectangle>()), 
-    path(make_unique<Path>()), text(make_unique<Text>()) {}
+    path(make_unique<Path>()) {}
 };
 
 class VizPaint {
@@ -79,14 +79,13 @@ class VizPaint {
   auto get_point (Value) const -> double;
   auto get_index (double point) const -> u64;
   void plot_title (ofstream&, const string&, const string&, bool) const;
-  void plot_title_horizontal (ofstream&, const string&, const string&,
-    unique_ptr<Text>&) const;
-  void plot_title_vertical (ofstream&, const string&, const string&,
-    unique_ptr<Text>&) const;
   void plot_legend (ofstream&, const VizParam&, i64) const;
-  void plot_legend_horizontal (ofstream&, unique_ptr<LegendPlot>&) const;
-  void plot_legend_vertical (ofstream&, unique_ptr<LegendPlot>&) const;
+  void set_legend_rect (ofstream&, unique_ptr<LegendPlot>&, char) const;
   void plot_legend_gradient (ofstream&, unique_ptr<LegendPlot>&) const;
+  void plot_legend_text_horiz (ofstream&, unique_ptr<LegendPlot>&) const;
+  void plot_legend_path_horiz (ofstream&, unique_ptr<LegendPlot>&) const;
+  void plot_legend_text_vert (ofstream&, unique_ptr<LegendPlot>&) const;
+  void plot_legend_path_vert (ofstream&, unique_ptr<LegendPlot>&) const;
   auto tspan (u32, i64) const -> string;
   auto tspan (u32, const string&) const -> string;
   void sort_merge (string&) const;
