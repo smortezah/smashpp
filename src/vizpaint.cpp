@@ -564,7 +564,7 @@ void VizPaint::plot (VizParam& p) {
   }
   cylinder->plot(fPlot);
 
-  // Plot title, legend and annotation
+  // Plot title and legend
   plot_title(fPlot, ref, tar, p.vertical);
   plot_legend(fPlot, p, max(n_refBases,n_tarBases));
 
@@ -775,18 +775,17 @@ const {
     return;
 
   auto legend = make_unique<LegendPlot>();
-  legend->maxWidth = maxWidth;
+  legend->maxWidth  = maxWidth;
+  legend->showNRC   = p.showNRC;
+  legend->showRedun = p.showRedun;
+  legend->vertical  = p.vertical;
+  legend->colorMode = p.colorMode;
 
-  // const u8 label_shift = 10;
-
-  if (p.vertical) {
-    plot_legend_horizontal(f, p, legend);
-  } else {
-    plot_legend_vertical(f, p, legend);
-  }
+  legend->vertical ? plot_legend_horizontal(f, legend)
+                   : plot_legend_vertical(f, legend);
 }
 
-inline void VizPaint::plot_legend_horizontal (ofstream& f, const VizParam& p, 
+inline void VizPaint::plot_legend_horizontal (ofstream& f,
 unique_ptr<LegendPlot>& legend) const {
   const auto originFixed = y + get_point(legend->maxWidth) + 40;
   legend->rect->height = 11;
@@ -799,9 +798,9 @@ unique_ptr<LegendPlot>& legend) const {
   legend->path->stroke_width = 0.5;
   // path->stroke_dasharray = "8 3";
 
-  float X1RelRedun=0.0f, X2RelRedun=0.0f, X1Redun=0.0f, X2Redun=0.0f;
+  auto X1RelRedun=0.0f, X2RelRedun=0.0f, X1Redun=0.0f, X2Redun=0.0f;
 
-  if (p.showNRC && !p.showRedun) {
+  if (legend->showNRC && !legend->showRedun) {
     legend->rect->x = x - TITLE_SPACE/2;
     legend->rect->y = originFixed;
     legend->rect->width = TITLE_SPACE + 2*seqWidth + innerSpace;
@@ -859,7 +858,7 @@ unique_ptr<LegendPlot>& legend) const {
 
     legend->text->transform.clear();
   }
-  else if (!p.showNRC && p.showRedun) {
+  else if (!legend->showNRC && legend->showRedun) {
     legend->rect->x = x - TITLE_SPACE/2;
     legend->rect->y = originFixed;
     legend->rect->width = TITLE_SPACE + 2*seqWidth + innerSpace;
@@ -893,7 +892,7 @@ unique_ptr<LegendPlot>& legend) const {
 
     legend->text->transform.clear();
   }
-  else if (p.showNRC && p.showRedun) {
+  else if (legend->showNRC && legend->showRedun) {
     legend->rect->x = x - TITLE_SPACE/2;
     legend->rect->y = originFixed;
     legend->rect->width = TITLE_SPACE + 2*seqWidth + innerSpace;
@@ -981,7 +980,7 @@ unique_ptr<LegendPlot>& legend) const {
     legend->text->transform.clear();
   }
 
-  plot_legend_gradient(f, legend->rect, p.colorMode, p.vertical);
+  plot_legend_gradient(f, legend);
 
   // Print numbers (measures)
   legend->text->font_weight = "bold";
@@ -997,7 +996,8 @@ unique_ptr<LegendPlot>& legend) const {
     legend->text->text_align = "middle";
     legend->text->x = legend->rect->x + legend->rect->width*i/4;
     legend->text->y = legend->rect->y + legend->rect->height/2;
-    if (p.colorMode==1 && i==3)  legend->text->fill="white";
+    if (legend->colorMode==1 && i==3)
+      legend->text->fill="white";
     legend->text->Label = string_format("%.1f", i*0.5);
     legend->text->plot(f);
   }
@@ -1010,7 +1010,7 @@ unique_ptr<LegendPlot>& legend) const {
   legend->text->plot(f);
 }
 
-inline void VizPaint::plot_legend_vertical (ofstream& f, const VizParam& p, 
+inline void VizPaint::plot_legend_vertical (ofstream& f,
 unique_ptr<LegendPlot>& legend) const {  
   const auto originFixed = x + get_point(legend->maxWidth) + 40;
   legend->rect->width = 15;
@@ -1025,7 +1025,7 @@ unique_ptr<LegendPlot>& legend) const {
 
   float Y1RelRedun=0.0f, Y2RelRedun=0.0f, Y1Redun=0.0f, Y2Redun=0.0f;
 
-  if (p.showNRC && !p.showRedun) {
+  if (legend->showNRC && !legend->showRedun) {
     legend->rect->x = originFixed;
     legend->rect->y = y - (TITLE_SPACE + SPACE_TUNE);
     legend->rect->height = 2*(TITLE_SPACE + SPACE_TUNE) + 2*seqWidth +
@@ -1060,7 +1060,7 @@ unique_ptr<LegendPlot>& legend) const {
 
     legend->text->transform.clear();
   }
-  else if (!p.showNRC && p.showRedun) {
+  else if (!legend->showNRC && legend->showRedun) {
     legend->rect->x = originFixed;
     legend->rect->y = y - (TITLE_SPACE + SPACE_TUNE);
     legend->rect->height = 2*(TITLE_SPACE + SPACE_TUNE) + 2*seqWidth +
@@ -1095,7 +1095,7 @@ unique_ptr<LegendPlot>& legend) const {
 
     legend->text->transform.clear();
   }
-  else if (p.showNRC && p.showRedun) {
+  else if (legend->showNRC && legend->showRedun) {
     legend->rect->x = originFixed;
     legend->rect->y = y - (TITLE_SPACE + SPACE_TUNE);
     legend->rect->height = 2*(TITLE_SPACE + SPACE_TUNE) + 2*seqWidth +
@@ -1160,7 +1160,7 @@ unique_ptr<LegendPlot>& legend) const {
     legend->text->transform.clear();
   }
 
-  plot_legend_gradient(f, legend->rect, p.colorMode, p.vertical);
+  plot_legend_gradient(f, legend);
 
   // Print numbers (measures)
   legend->text->font_weight = "bold";
@@ -1177,7 +1177,7 @@ unique_ptr<LegendPlot>& legend) const {
     legend->text->x = legend->rect->x + legend->rect->width/2;
     legend->text->y = 
       legend->rect->y + legend->rect->height - legend->rect->height*i/4;  
-    if (p.colorMode==1 && i==3)  legend->text->fill="white";
+    if (legend->colorMode==1 && i==3)  legend->text->fill="white";
     legend->text->Label = string_format("%.1f", i*0.5);
     legend->text->plot(f);
   }
@@ -1190,20 +1190,19 @@ unique_ptr<LegendPlot>& legend) const {
   legend->text->plot(f);
 }
 
-template <typename Rect>
-inline void VizPaint::plot_legend_gradient (ofstream& f, const Rect& rect, 
-u8 colorMode, bool vertical) const {
+inline void VizPaint::plot_legend_gradient (ofstream& f, 
+unique_ptr<LegendPlot>& legend) const {
   vector<string> colorset;
-  switch (colorMode) {
+  switch (legend->colorMode) {
   case 0:   colorset = COLORSET[0];  break;
   case 1:   colorset = COLORSET[1];  break;
   case 2:   colorset = COLORSET[2];  break;
   default:  error("undefined color mode.");
   }
-  auto id = to_string(rect->x) + to_string(rect->y);
+  auto id = to_string(legend->rect->x) + to_string(legend->rect->y);
 
   auto grad = make_unique<LinearGradient>();
-  if (vertical) {
+  if (legend->vertical) {
     grad->x1="0%";    grad->y1="0%";
     grad->x2="100%";  grad->y2="0%";
   } else {
@@ -1215,17 +1214,17 @@ u8 colorMode, bool vertical) const {
     grad->add_stop(to_string(i*100/(colorset.size()-1))+"%", colorset[i]);
   grad->plot(f);
 
-  rect->stroke = "black";
-  rect->stroke_width = 0.5;
-  rect->rx = rect->ry = 2;
-  rect->fill = "url(#grad" + id + ")";
-  rect->plot(f);
+  legend->rect->stroke = "black";
+  legend->rect->stroke_width = 0.5;
+  legend->rect->rx = legend->rect->ry = 2;
+  legend->rect->fill = "url(#grad" + id + ")";
+  legend->rect->plot(f);
 
   // auto cylinder = make_unique<Cylinder>();
-  // cylinder->width = rect->height;
-  // cylinder->height = rect->width;
-  // cylinder->x = rect->x;
-  // cylinder->y = rect->y + rect->height;
+  // cylinder->width = legend->rect->height;
+  // cylinder->height = legend->rect->width;
+  // cylinder->x = legend->rect->x;
+  // cylinder->y = legend->rect->y + legend->rect->height;
   // cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " +
   //   to_string(cylinder->y) + ")";
   // cylinder->fill = "url(#grad" + id + ")";

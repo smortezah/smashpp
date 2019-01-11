@@ -39,8 +39,9 @@ struct PosPlot {
 };
 
 struct LegendPlot {
-  i64 maxWidth;
-  u8  labelShift;
+  bool showNRC, showRedun, vertical;
+  i64  maxWidth;
+  u8   labelShift, colorMode;
   unique_ptr<Rectangle> rect;
   unique_ptr<Path>      path;
   unique_ptr<Text>      text;
@@ -83,12 +84,9 @@ class VizPaint {
   void plot_title_vertical (ofstream&, const string&, const string&,
     unique_ptr<Text>&) const;
   void plot_legend (ofstream&, const VizParam&, i64) const;
-  void plot_legend_horizontal (ofstream&, const VizParam&,
-    unique_ptr<LegendPlot>&) const;
-  void plot_legend_vertical (ofstream&, const VizParam&, 
-    unique_ptr<LegendPlot>&) const;
-  template <typename Rect>
-  void plot_legend_gradient (ofstream&, const Rect&, u8, bool) const;
+  void plot_legend_horizontal (ofstream&, unique_ptr<LegendPlot>&) const;
+  void plot_legend_vertical (ofstream&, unique_ptr<LegendPlot>&) const;
+  void plot_legend_gradient (ofstream&, unique_ptr<LegendPlot>&) const;
   auto tspan (u32, i64) const -> string;
   auto tspan (u32, const string&) const -> string;
   void sort_merge (string&) const;
