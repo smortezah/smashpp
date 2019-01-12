@@ -513,12 +513,20 @@ const string& tar, bool vertical) const {
     text->text_anchor = "start";
     text->x = x;
     text->y = y - TITLE_SPACE;
-    text->dominant_baseline = "text-before-edge";
+    // text->y = y - TITLE_SPACE + text->font_size;
+    // text->dominant_baseline = "text-before-edge";
     text->Label = ref;
     text->plot(f);
+//todo
+    text->x = x+20;
+    // text->y = y - TITLE_SPACE;
+    text->Label = ref;
+    text->transform="rotate(180 "+to_string(text->x)+","+to_string(text->y)+")";
+    text->plot(f);
+    // text->transform.clear();
 
     text->y = y + 2*seqWidth + innerSpace + TITLE_SPACE;
-    text->dominant_baseline = "text-after-edge";
+    // text->dominant_baseline = "text-after-edge";
     text->Label = tar;
     text->plot(f);
   }

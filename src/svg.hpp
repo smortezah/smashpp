@@ -56,9 +56,8 @@ class Text : public SVG {
   u8     font_size;
   string Label;       // Not in standard
 
-  Text () : dx(0), dy(0), dominant_baseline("middle"), font_family("Arial"),
-    text_anchor("middle"), text_align("start"), line_height("125%%"), 
-    font_size(13) {}
+  Text () : dx(0), dy(0), font_family("Arial"), text_anchor("middle"),
+    text_align("start"), line_height("125%%"), font_size(13) {}
   void plot (ofstream&) const;
   void plot_shadow (ofstream&, const string& ="grey");
 };
@@ -78,8 +77,8 @@ class Ellipse : public SVG {
   string stroke, fill, stroke_dasharray, transform;
   
   Ellipse () : rx(2.0f), ry(2.0f), stroke_width(1.0f), fill_opacity(OPAC),
-    stroke_opacity(1.0f), stroke("black"), fill("transparent"), 
-    stroke_dasharray(""), transform("") {}
+    stroke_opacity(1.0f), stroke("black"), fill("none"), stroke_dasharray(""),
+    transform("") {}
   void plot (ofstream&) const;
 };
 
@@ -89,9 +88,9 @@ class Path : public SVG {
          transform, filter;
   float  fill_opacity, stroke_opacity, stroke_width;
 
-  Path () : fill("transparent"), stroke_lineJoin("round"), 
-    stroke_linecap("butt"), stroke_dasharray(""), filter(""), 
-    fill_opacity(OPAC), stroke_opacity(1.0f), stroke_width(1.0f) {}
+  Path () : fill("none"), stroke_lineJoin("round"), stroke_linecap("butt"),
+    stroke_dasharray(""), filter(""), fill_opacity(OPAC), stroke_opacity(1.0f),
+    stroke_width(1.0f) {}
   auto M (float, float)                              const -> string;
   auto m (float, float)                              const -> string;
   auto L (float, float)                              const -> string;
@@ -123,7 +122,7 @@ class Cylinder : public SVG {
   string id, stroke, fill, stroke_lineJoin, stroke_dasharray, transform;
 
   Cylinder () : ry(2.0f), stroke_width(1.0f), fill_opacity(OPAC), 
-    stroke_opacity(1.0f), stroke("black"), fill("transparent"), 
+    stroke_opacity(1.0f), stroke("black"), fill("none"), 
     stroke_lineJoin("round"), stroke_dasharray("") {}
   void plot (ofstream&) const;
   void plot_ir (ofstream&, const string& ="Wavy");
