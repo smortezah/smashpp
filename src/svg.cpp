@@ -4,7 +4,7 @@
 #include "color.hpp"
 using namespace smashpp;
 
-string SVG::attrib (const string& name, float value, bool precise,
+string SVG::attr (const string& name, float value, bool precise,
 const string& unit) const {
   stringstream ss;
   if (precise)  
@@ -13,7 +13,7 @@ const string& unit) const {
     ss << name << "=\"" << value << unit << "\" ";
   return ss.str();
 }
-string SVG::attrib (const string& name, const string& value, bool precise,
+string SVG::attr (const string& name, const string& value, bool precise,
 const string& unit) const {
   stringstream ss;
   ss << name << "=\"" << value << unit << "\" ";
@@ -40,10 +40,10 @@ void SVG::print_header (ofstream& f) const {
   f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
     << begin_elem("svg")
-    << attrib("xmlns", "http://www.w3.org/2000/svg")
-    << attrib("xmlns:xlink", "http://www.w3.org/1999/xlink")
-    << attrib("width", width, true)
-    << attrib("height", height, true)
+    << attr("xmlns", "http://www.w3.org/2000/svg")
+    << attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
+    << attr("width", width, true)
+    << attr("height", height, true)
     << mid_elem();
 }
 
@@ -54,16 +54,16 @@ void SVG::print_tailer (ofstream& f) const {
 
 void Stop::plot (ofstream& f) const {
   f << begin_elem("stop")
-    << attrib("offset", offset)
-    << attrib("stop-color", stop_color)
-    << attrib("stop-opacity", stop_opacity, true)
+    << attr("offset", offset)
+    << attr("stop-color", stop_color)
+    << attr("stop-opacity", stop_opacity, true)
     << end_empty_elem();
 }
 void Stop::plot (stringstream& s) const {
   s << begin_elem("stop")
-    << attrib("offset", offset)
-    << attrib("stop-color", stop_color)
-    << attrib("stop-opacity", stop_opacity, true)
+    << attr("offset", offset)
+    << attr("stop-color", stop_color)
+    << attr("stop-opacity", stop_opacity, true)
     << end_empty_elem();
 }
 
@@ -72,11 +72,11 @@ void LinearGradient::plot (ofstream& f) const {
   defs->set_head(f);
 
   f << begin_elem("linearGradient")
-    << attrib("id", id)
-    << attrib("x1", x1)
-    << attrib("y1", y1)
-    << attrib("x2", x2)
-    << attrib("y2", y2)
+    << attr("id", id)
+    << attr("x1", x1)
+    << attr("y1", y1)
+    << attr("x2", x2)
+    << attr("y2", y2)
     << mid_elem();
 
   f << stops;
@@ -103,21 +103,21 @@ void LinearGradient::add_stop (const string& offset, const string& stop_color) {
 
 void Text::plot (ofstream& f) const {
   f << begin_elem("text")
-    << attrib("id", to_string(x)+to_string(y))
-    << attrib("x", x, true)
-    << attrib("y", y, true);
-  if (dx!=0.0f)  f << attrib("dx", dx, true);
-  if (dy!=0.0f)  f << attrib("dy", dy, true);
-  f << attrib("dominant-baseline", dominant_baseline);
-  if (!transform.empty())    f << attrib("transform", transform);
-  f << attrib("font-size", to_string(font_size), false, "px");
-  if (!font_weight.empty())  f << attrib("font-weight", font_weight);
-  f << attrib("font-family", font_family);
-  if (!fill.empty() && fill!="black")  f << attrib("fill", fill);
-  f << attrib("text-anchor", text_anchor)
-    << attrib("text-align", text_align)
-    << attrib("line-height", line_height);
-  if (!filter.empty())  f << attrib("filter", "url(#"+filter+")");
+    << attr("id", to_string(x)+to_string(y))
+    << attr("x", x, true)
+    << attr("y", y, true);
+  if (dx!=0.0f)  f << attr("dx", dx, true);
+  if (dy!=0.0f)  f << attr("dy", dy, true);
+  f << attr("dominant-baseline", dominant_baseline);
+  if (!transform.empty())    f << attr("transform", transform);
+  f << attr("font-size", to_string(font_size), false, "px");
+  if (!font_weight.empty())  f << attr("font-weight", font_weight);
+  f << attr("font-family", font_family);
+  if (!fill.empty() && fill!="black")  f << attr("fill", fill);
+  f << attr("text-anchor", text_anchor)
+    << attr("text-align", text_align)
+    << attr("line-height", line_height);
+  if (!filter.empty())  f << attr("filter", "url(#"+filter+")");
   f << mid_elem()
     << Label
     << end_elem("text");
@@ -136,28 +136,28 @@ void Text::plot_shadow (ofstream& f, const string& shadowFill) {
 
 void Line::plot (ofstream& f) const {
   f << begin_elem("line")
-    << attrib("id", to_string(x1)+to_string(y1)+to_string(x2)+to_string(y2))
-    << attrib("x1", x1, true)
-    << attrib("y1", y1, true)
-    << attrib("x2", x2, true) 
-    << attrib("y2", y2, true)
-    << attrib("stroke-width", stroke_width, true)
-    << attrib("stroke", stroke)
+    << attr("id", to_string(x1)+to_string(y1)+to_string(x2)+to_string(y2))
+    << attr("x1", x1, true)
+    << attr("y1", y1, true)
+    << attr("x2", x2, true) 
+    << attr("y2", y2, true)
+    << attr("stroke-width", stroke_width, true)
+    << attr("stroke", stroke)
     << end_empty_elem();
 }
 
 void Ellipse::plot (ofstream& f) const {
   f << begin_elem("ellipse")
-    << attrib("cx", cx, true)
-    << attrib("cy", cy, true)
-    << attrib("rx", rx, true)
-    << attrib("ry", ry, true)
-    << attrib("stroke-width", stroke_width, true)
-    << attrib("fill-opacity", fill_opacity, true)
-    << attrib("stroke-opacity", stroke_opacity, true)
-    << attrib("stroke", stroke)
-    << attrib("fill", fill);
-  if (!transform.empty())  f << attrib("transform", transform);
+    << attr("cx", cx, true)
+    << attr("cy", cy, true)
+    << attr("rx", rx, true)
+    << attr("ry", ry, true)
+    << attr("stroke-width", stroke_width, true)
+    << attr("fill-opacity", fill_opacity, true)
+    << attr("stroke-opacity", stroke_opacity, true)
+    << attr("stroke", stroke)
+    << attr("fill", fill);
+  if (!transform.empty())  f << attr("transform", transform);
   f << end_empty_elem();
 }
 
@@ -320,18 +320,18 @@ string Path::z () const {
 
 void Path::plot (ofstream& f) const {
   f << begin_elem("path")
-    << attrib("id", id)
-    << attrib("d", d)
-    << attrib("fill", fill);
-  if (!filter.empty())  f << attrib("filter", "url(#"+filter+")");
-  f << attrib("fill-opacity", fill_opacity, true)
-    << attrib("stroke", stroke)
-    << attrib("stroke-opacity", stroke_opacity, true)
-    << attrib("stroke-linejoin", stroke_lineJoin);
+    << attr("id", id)
+    << attr("d", d)
+    << attr("fill", fill);
+  if (!filter.empty())  f << attr("filter", "url(#"+filter+")");
+  f << attr("fill-opacity", fill_opacity, true)
+    << attr("stroke", stroke)
+    << attr("stroke-opacity", stroke_opacity, true)
+    << attr("stroke-linejoin", stroke_lineJoin);
   if (!stroke_dasharray.empty())  
-    f << attrib("stroke-dasharray", stroke_dasharray);
-  f << attrib("stroke-width", stroke_width, true);
-  if (!transform.empty())  f << attrib("transform", transform);
+    f << attr("stroke-dasharray", stroke_dasharray);
+  f << attr("stroke-width", stroke_width, true);
+  if (!transform.empty())  f << attr("transform", transform);
   f << end_empty_elem();
 }
 
@@ -355,6 +355,7 @@ void Cylinder::plot (ofstream& f) const {
   path->stroke = stroke;
   path->stroke_opacity = stroke_opacity;
   path->stroke_width = stroke_width;
+  path->stroke_dasharray = stroke_dasharray;
   path->transform = transform;
   path->plot(f);
 
@@ -362,6 +363,7 @@ void Cylinder::plot (ofstream& f) const {
   ellipse->stroke = path->stroke;
   ellipse->stroke_opacity = stroke_opacity;
   ellipse->stroke_width = 0.4 * stroke_width;
+  ellipse->stroke_dasharray = stroke_dasharray;
   ellipse->fill = fill;
   ellipse->fill_opacity = fill_opacity;
   ellipse->cx = x + width/2;
@@ -411,16 +413,16 @@ void Cylinder::plot_ir (ofstream& f, const string& wave) {
 
 void Rectangle::plot (ofstream& f) const {
   f << begin_elem("rect")
-    << attrib("x", x, true)
-    << attrib("y", y, true)
-    << attrib("width", width, true)
-    << attrib("height", height, true);
-  if (rx!=0.0f)  f << attrib("rx", rx, true);
-  f << attrib("ry", ry, true)
-    << attrib("fill", fill)
-    << attrib("fill-opacity", fill_opacity, true)
-    << attrib("stroke", stroke)
-    << attrib("stroke-width", stroke_width, true)
+    << attr("x", x, true)
+    << attr("y", y, true)
+    << attr("width", width, true)
+    << attr("height", height, true);
+  if (rx!=0.0f)  f << attr("rx", rx, true);
+  f << attr("ry", ry, true)
+    << attr("fill", fill)
+    << attr("fill-opacity", fill_opacity, true)
+    << attr("stroke", stroke)
+    << attr("stroke-width", stroke_width, true)
     << end_empty_elem();
 }
 
@@ -433,12 +435,12 @@ string Polygon::point (float x, float y) const {
 
 void Polygon::plot (ofstream& f) {
   f << begin_elem("polygon")
-    << attrib("points", points)
-    << attrib("fill", fill)
-    << attrib("stroke", stroke)
-    << attrib("stroke-width", stroke_width, true)
-    << attrib("stroke-opacity", stroke_opacity, true)
-    << attrib("fill-opacity", fill_opacity, true)
+    << attr("points", points)
+    << attr("fill", fill)
+    << attr("stroke", stroke)
+    << attr("stroke-width", stroke_width, true)
+    << attr("stroke-opacity", stroke_opacity, true)
+    << attr("fill-opacity", fill_opacity, true)
     << end_empty_elem();
 
   points.clear();
@@ -446,12 +448,12 @@ void Polygon::plot (ofstream& f) {
 
 void Pattern::set_head (ofstream& f) const {
   f << begin_elem("pattern")
-    << attrib("id", id)
-    << attrib("x", x, true)
-    << attrib("y", y, true)
-    << attrib("width", width, true)
-    << attrib("height", height, true)
-    << attrib("patternUnits", patternUnits)
+    << attr("id", id)
+    << attr("x", x, true)
+    << attr("y", y, true)
+    << attr("width", width, true)
+    << attr("height", height, true)
+    << attr("patternUnits", patternUnits)
     << mid_elem();
 }
 
@@ -461,7 +463,7 @@ void Pattern::set_tail (ofstream& f) const {
 
 void Defs::set_head (ofstream& f) const {
   f << begin_elem("defs")
-    << attrib("id", id)
+    << attr("id", id)
     << mid_elem();
 }
 
@@ -471,11 +473,11 @@ void Defs::set_tail (ofstream& f) const {
 
 void FilterSVG::set_head (ofstream& f) const {
   f << begin_elem("filter")
-    << attrib("id", id)
-    << attrib("x", x)
-    << attrib("y", y)
-    << attrib("width", width)
-    << attrib("height", height)
+    << attr("id", id)
+    << attr("x", x)
+    << attr("y", y)
+    << attr("width", width)
+    << attr("height", height)
     << mid_elem();
 }
 
@@ -485,15 +487,15 @@ void FilterSVG::set_tail (ofstream& f) const {
 
 void FeGaussianBlur::plot (ofstream& f) const {
   f << begin_elem("feGaussianBlur")
-    << attrib("stdDeviation", stdDeviation)
-    << attrib("result", result)
+    << attr("stdDeviation", stdDeviation)
+    << attr("result", result)
     << end_empty_elem();
 }
 
 void FeOffset::plot (ofstream& f) const {
   f << begin_elem("feOffset")
-    << attrib("dx", dx, true)
-    << attrib("dy", dy, true)
+    << attr("dx", dx, true)
+    << attr("dy", dy, true)
     << end_empty_elem();
 }
 
@@ -508,6 +510,6 @@ void FeMerge::set_tail (ofstream& f) const {
 
 void FeMergeNode::plot (ofstream& f) const {
   f << begin_elem("feMergeNode")
-    << attrib("in", in)
+    << attr("in", in)
     << end_empty_elem();
 }

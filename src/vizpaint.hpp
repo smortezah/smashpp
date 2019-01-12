@@ -52,34 +52,44 @@ struct LegendPlot {
 
 class VizPaint {
  public:
-  float  x, y;
-  string backColor;
-  float  seqWidth, periphWidth, innerSpace;
-  float  refSize, tarSize, maxSize;
+  float x, y;
+  float seqWidth, periphWidth, innerSpace;
+  float refSize, tarSize, maxSize;
   unique_ptr<SVG> svg;
 
-  VizPaint() : backColor("white"), svg(make_unique<SVG>()), ratio(1), 
-    plottable(true), ry(2.0f) {}
+  VizPaint() : svg(make_unique<SVG>()), ratio(1), plottable(true), ry(2.0f) {}
   void plot (VizParam&);
 
  private:
-  u32   ratio;
-  u32   mult;
-  bool  plottable;
-  float ry;
+  string ref, tar;
+  u32    ratio, mult;
+  u64    n_refBases, n_tarBases;
+  bool   plottable;
+  float  ry;
   vector<i64>     lastPos;
   vector<PosNode> nodes;
 
-  void show_info (VizParam&, const string&, const string&, u64, u64) const;
-  void config (double, double, u32, u64, u64);
+  void read_matadata (ifstream&);
+  void show_info (VizParam&) const;
+  void config (double, double, u32);
+  void set_page (bool);
   auto rgb_color (u32) const -> string;
   auto nrc_color (double, u32) const -> string;
   auto redun_color (double, u32) const -> string;
+  auto seq_gradient (ofstream&, const string&, const string&) const -> string;
+  auto periph_gradient (ofstream&, const string&, const string&) const 
+    -> string;
   template <typename Value>
   auto get_point (Value) const -> double;
   auto get_index (double point) const -> u64;
-  template <typename VecIter>
-  void plot_connector (ofstream&, const VecIter&, VizParam&, bool);
+  void plot_background (ofstream&) const;
+  void plot_seq_ref (ofstream&, const vector<Position>::iterator&, 
+    const VizParam&) const;
+  void plot_seq_tar (ofstream&, const vector<Position>::iterator&, 
+    const VizParam&, bool) const;
+  void plot_periph (ofstream&, unique_ptr<Cylinder>&, bool, char, u8) const;
+  void plot_connector (ofstream&, const vector<Position>::iterator&, VizParam&,
+    bool);
   void plot_title (ofstream&, const string&, const string&, bool) const;
   void plot_legend (ofstream&, const VizParam&, i64) const;
   void set_legend_rect (ofstream&, unique_ptr<LegendPlot>&, char) const;
@@ -94,8 +104,12 @@ class VizPaint {
   void save_n_pos (const string&) const;
   void read_pos (ifstream&, vector<Position>&, VizParam&);
   void make_posNode (const vector<Position>&, const VizParam&, string&&);
+  void plot_pos (ofstream&, ifstream&, vector<Position>&, VizParam&);
   void plot_pos_horizontal (ofstream&, unique_ptr<PosPlot>&) const;
   void plot_pos_vertical (ofstream&, unique_ptr<PosPlot>&) const;
+  void plot_Ns (ofstream&, float, bool);
+  void plot_seq_borders (ofstream&, bool);
+  void print_log (u64, u64, u64, u64, u64) const;
   // void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
 };
 }

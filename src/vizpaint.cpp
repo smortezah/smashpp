@@ -6,256 +6,50 @@ using namespace smashpp;
 
 void VizPaint::plot (VizParam& p) {
   check_file(p.posFile);
-  ifstream fPos (p.posFile);
+  ifstream fPos(p.posFile);
   ofstream fPlot(p.image);
 
-  // Read watermark, ref & tar names and sizes from file
-  u64 n_refBases=0, n_tarBases=0;
-  string watermark, ref, tar;
-  fPos >> watermark >> ref >> n_refBases >> tar >> n_tarBases;
-  if (watermark!=POS_HDR)  error("unknown file format for positions.");
-  if (p.verbose)           show_info(p, ref, tar, n_refBases, n_tarBases);
+  read_matadata(fPos);
+  if (p.verbose)  show_info(p);
 
   cerr << "Plotting ...\r";
-  config(p.width, p.space, p.mult, n_refBases, n_tarBases);
 
-  if (p.vertical) {
-    const auto max_n_digits = 
-      max(num_digits(n_refBases), num_digits(n_tarBases));
-    x = 100.0f;
-    if (max_n_digits > 4)   x += 17.0f;
-    if (max_n_digits > 7)   x += 8.5f;
-    if (max_n_digits > 10)  x += 8.5f;
-    y = 30.0f;
-    svg->width = 2*x + 2*seqWidth + innerSpace;
-    svg->height = maxSize + 105;
-  } else {
-    x = 20.0f;
-    y = 100.0f;
-    svg->width = maxSize + 105;
-    svg->height = 2*y + 2*seqWidth + innerSpace;
-  }
+  config(p.width, p.space, p.mult);
+  set_page(p.vertical);
+
   svg->print_header(fPlot);
-
-  auto poly = make_unique<Polygon>();
-  auto text = make_unique<Text>();
-  auto line = make_unique<Line>();
-  line->stroke_width = 2.0;
-  auto rect = make_unique<Rectangle>();
-  rect->fill_opacity = p.opacity;
-
-  // Plot background page
-  rect->fill = rect->stroke = backColor;
-  rect->x = 0;
-  rect->y = 0;
-  rect->width = svg->width;
-  rect->height = svg->height;
-  rect->plot(fPlot);
+  
+  plot_background(fPlot);
 
   // If min is set to default, reset to base max proportion
   if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
 
   // Read positions from file and Print them
   vector<Position> pos;
-  read_pos(fPos, pos, p);
-
-  auto posPlot = make_unique<PosPlot>();
-  posPlot->vertical = p.vertical;
-  posPlot->showNRC = p.showNRC;
-  posPlot->showRedun = p.showRedun;
-  posPlot->refTick = p.refTick;
-  posPlot->tarTick = p.tarTick;
-
-  make_posNode(pos, p, "ref");
-  posPlot->n_bases = n_refBases;
-  posPlot->plotRef = true;
-  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
-                    : plot_pos_horizontal(fPlot, posPlot);
-  // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
-
-  make_posNode(pos, p, "tar");
-  posPlot->n_bases = n_tarBases;
-  posPlot->plotRef = false;
-  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
-                    : plot_pos_horizontal(fPlot, posPlot);
-  // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
-
-  if (!plottable)  error("not plottable positions.");
+  plot_pos(fPlot, fPos, pos, p);
 
   // Plot
-  u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignore=0;
+  u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignored=0;
   std::sort(begin(pos), end(pos),
     [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
 
   for (auto e=begin(pos); e!=end(pos); ++e) {
     if (abs(e->endTar-e->begTar) <= p.min) {
-      ++n_ignore;    continue;
+      ++n_ignored;    
+      continue;
     }
     else if (e->begRef!=DBLANK && e->endRef-e->begRef<=p.min) {
-      ++n_ignore;    continue;
+      ++n_ignored;    
+      continue;
     }
 
     if (e->begRef == DBLANK)
       e->endTar > e->begTar ? ++n_regularSolo : ++n_inverseSolo;
-
-    const auto make_gradient = 
-      [&](const string& color, char c, const string& inId) {
-      auto grad = make_unique<LinearGradient>();
-      grad->id = "grad"+inId;
-      grad->add_stop("30%", shade(color, 0.25));
-      grad->add_stop("100%", color);
-      // c=='r' ? grad->add_stop("30%", shade(color, 0.25)) 
-      //        : grad->add_stop("30%", color);
-      // c=='r' ? grad->add_stop("100%", color)
-      //        : grad->add_stop("100%", shade(color, 0.25));
-      grad->plot(fPlot);
-      return "url(#"+grad->id+")";
-    };
     
-    const auto make_gradient_periph = 
-      [&](const string& color, char c, const string& inId) {
-      auto grad = make_unique<LinearGradient>();
-      grad->id = "grad"+inId;
-      grad->add_stop("30%", tone(color, 0.4));
-      grad->add_stop("100%", color);
-      // c=='r' ? grad->add_stop("30%", tone(color, 0.4)) 
-      //        : grad->add_stop("30%", color);
-      // c=='r' ? grad->add_stop("100%", color)
-      //        : grad->add_stop("100%", tone(color, 0.4));
-      grad->plot(fPlot);
-      return "url(#"+grad->id+")";
-    };
-
-    const auto plot_main = [&](auto& cylinder) {
-      cylinder->width = seqWidth;
-      cylinder->stroke_width = 0.75;
-      cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
-    };
-
-    const auto plot_periph = [&](ofstream& f, unique_ptr<Cylinder>& cylinder,
-    bool vertical, char refTar, u8 showNRC) {
-      const auto mainOriginX = cylinder->x;
-      const auto mainWidth = cylinder->width;
-      const auto mainStrokeWidth = cylinder->stroke_width;
-      const auto mainRy = cylinder->ry;
-
-      if (refTar=='r') {
-        if (vertical)
-          cylinder->x = 
-            cylinder->x - TITLE_SPACE/2 - (1+showNRC)*(periphWidth+SPACE_TUNE);
-        else
-          cylinder->x = cylinder->x + cylinder->width + TITLE_SPACE +
-                        SPACE_TUNE + showNRC*(periphWidth + SPACE_TUNE);
-      }
-      else {
-        if (vertical)
-          cylinder->x = cylinder->x + cylinder->width + TITLE_SPACE/2 + 
-                        SPACE_TUNE + showNRC*(SPACE_TUNE + periphWidth);
-        else
-          cylinder->x = cylinder->x - (periphWidth + TITLE_SPACE + SPACE_TUNE +
-                        showNRC*(SPACE_TUNE + periphWidth));
-      }
-
-      cylinder->width = periphWidth;
-      cylinder->stroke_width *= 2;
-      cylinder->ry /= 2;
-      cylinder->plot(f);
-
-      cylinder->x = mainOriginX;
-      cylinder->width = mainWidth;
-      cylinder->stroke_width = mainStrokeWidth;
-      cylinder->ry = mainRy;
-    };
-
-    const auto plot_main_ref = [&]() {
-      if (e->begRef != DBLANK) {
-        auto cylinder = make_unique<Cylinder>();
-        plot_main(cylinder);
-        cylinder->height = get_point(e->endRef-e->begRef);
-        cylinder->stroke = shade(rgb_color(e->start));
-        if (p.vertical) {
-          cylinder->x = x;
-          cylinder->y = y + get_point(e->begRef);
-        } else {
-          cylinder->x = x + get_point(e->begRef);
-          cylinder->y = y + seqWidth;
-          cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                                to_string(cylinder->y) + ")";
-        }
-        cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
-        cylinder->fill = make_gradient(rgb_color(e->start), 'r', cylinder->id);
-        cylinder->plot(fPlot);
-
-        cylinder->stroke_width = 0.7;
-        if (p.showNRC) {
-          cylinder->id += "NRC";
-          cylinder->fill = make_gradient_periph(
-            nrc_color(e->entRef, p.colorMode), 'r', cylinder->id);
-          cylinder->stroke = shade(nrc_color(e->entRef, p.colorMode), 0.96);
-          plot_periph(fPlot, cylinder, p.vertical, 'r', 0);
-        }
-        if (p.showRedun) {
-          cylinder->id += "Redun";
-          cylinder->fill = make_gradient_periph(
-            redun_color(e->selfRef, p.colorMode), 'r', cylinder->id);
-          cylinder->stroke = shade(redun_color(e->selfRef, p.colorMode), 0.95);
-          plot_periph(fPlot, cylinder, p.vertical, 'r', u8(p.showNRC));
-        }
-      }
-    };
-
-    const auto plot_main_tar = [&](bool inverted) {
-      auto cylinder = make_unique<Cylinder>();
-      plot_main(cylinder);
-      cylinder->height = get_point(abs(e->begTar-e->endTar));
-      if (p.vertical) {
-        cylinder->x = x + seqWidth + innerSpace;
-        cylinder->y = !inverted ? y+get_point(e->begTar) 
-                                : y+get_point(e->endTar);
-      } else {
-        cylinder->x = !inverted ? x+get_point(e->begTar) 
-                                : x+get_point(e->endTar);
-        cylinder->y = y + 2*seqWidth + innerSpace;
-        cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                              to_string(cylinder->y) + ")";
-      }
-      cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
-      if (e->begRef == DBLANK) {
-        cylinder->fill = "black";
-        cylinder->stroke = "white";
-      } else {
-        cylinder->fill = make_gradient(rgb_color(e->start), 't', cylinder->id);
-        cylinder->stroke = shade(rgb_color(e->start));
-      }
-
-      if (!inverted) {
-        cylinder->plot(fPlot);
-      } else {
-        if (e->begRef==DBLANK)  cylinder->plot_ir(fPlot, "#WavyWhite");
-        else                    cylinder->plot_ir(fPlot);
-      }
-
-      cylinder->stroke_width = 0.7;
-      if (p.showNRC) {
-        cylinder->id += "NRC";
-        cylinder->fill = make_gradient_periph(
-          nrc_color(e->entTar, p.colorMode), 'r', cylinder->id);
-        cylinder->stroke = shade(nrc_color(e->entTar, p.colorMode), 0.96);
-        plot_periph(fPlot, cylinder, p.vertical, 't', 0);
-      }
-      if (p.showRedun) {
-        cylinder->id += "Redun";
-        cylinder->fill = make_gradient_periph(
-          redun_color(e->selfTar, p.colorMode), 'r', cylinder->id);
-        cylinder->stroke = shade(redun_color(e->selfTar, p.colorMode), 0.95);
-        plot_periph(fPlot, cylinder, p.vertical, 't', u8(p.showNRC));
-      }
-    };
-
     if (e->endTar > e->begTar) {
       if (p.regular) {
-        plot_main_ref();
-        plot_main_tar(false);
+        plot_seq_ref (fPlot, e, p);
+        plot_seq_tar (fPlot, e, p, false /*ir*/);
 
         if (e->begRef != DBLANK) {
           plot_connector(fPlot, e, p, false /*ir*/);
@@ -265,8 +59,8 @@ void VizPaint::plot (VizParam& p) {
     }
     else {
       if (p.inverse) {
-        plot_main_ref();
-        plot_main_tar(true);
+        plot_seq_ref (fPlot, e, p);
+        plot_seq_tar (fPlot, e, p, true /*ir*/);
 
         if (e->begRef != DBLANK) {
           plot_connector(fPlot, e, p, true /*ir*/);
@@ -277,120 +71,26 @@ void VizPaint::plot (VizParam& p) {
   }
   fPos.seekg(ios::beg);
 
-  // Plot Ns
-  save_n_pos(ref);
-  ifstream refFile(file_name(ref)+"."+FMT_N);
-  for (i64 beg,end; refFile>>beg>>end;) {
-    auto cylinder = make_unique<Cylinder>();
-    cylinder->stroke_width = 0.75;
-    cylinder->fill = cylinder->stroke = "grey";
-    cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
-    cylinder->width = seqWidth;
-    cylinder->height = get_point(end-beg+1);
-    if (p.vertical) {
-      cylinder->x = x;
-      cylinder->y = y + get_point(beg);
-    } else {
-      cylinder->x = x + get_point(beg);
-      cylinder->y = y + seqWidth;
-      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                            to_string(cylinder->y) + ")";
-    }
-    cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
-    cylinder->plot(fPlot);
-  }
-  refFile.close();
-  remove((file_name(ref)+"."+FMT_N).c_str());
-
-  save_n_pos(tar);
-  ifstream tarFile(file_name(tar)+"."+FMT_N);
-  for (i64 beg,end; tarFile>>beg>>end;) {
-    auto cylinder = make_unique<Cylinder>();
-    cylinder->stroke_width = 0.75;
-    cylinder->fill = cylinder->stroke = "grey";
-    cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
-    cylinder->width = seqWidth;
-    cylinder->height = get_point(end-beg+1);
-    if (p.vertical) {
-      cylinder->x = x + seqWidth + innerSpace;
-      cylinder->y = y + get_point(beg);
-    } else {
-      cylinder->x = x + get_point(beg);
-      cylinder->y = y + 2*seqWidth + innerSpace;
-      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                            to_string(cylinder->y) + ")";
-    }
-    cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
-    cylinder->plot(fPlot);
-  }
-  tarFile.close();
-  remove((file_name(tar)+"."+FMT_N).c_str());
-  
-  // Plot chromosomes
-  auto cylinder = make_unique<Cylinder>();
-  cylinder->width = seqWidth;
-  cylinder->height = refSize;
-  cylinder->stroke_width = 1.25;
-  if (p.vertical) {
-    cylinder->x = x;
-    cylinder->y = y;
-  } else {
-    cylinder->x = x;
-    cylinder->y = y + seqWidth;
-    cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                          to_string(cylinder->y) + ")";
-  }
-  cylinder->plot(fPlot);
-
-  cylinder->height = tarSize;
-  if (p.vertical) {
-    cylinder->x = x + seqWidth + innerSpace;
-    cylinder->y = y;
-  } else {
-    cylinder->x = x;
-    cylinder->y = y + 2*seqWidth + innerSpace;
-    cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-                          to_string(cylinder->y) + ")";
-  }
-  cylinder->plot(fPlot);
-
-  // Plot title and legend
+  plot_Ns(fPlot, p.opacity, p.vertical);
+  plot_seq_borders(fPlot, p.vertical);
   plot_title(fPlot, ref, tar, p.vertical);
   plot_legend(fPlot, p, max(n_refBases,n_tarBases));
+  print_log (n_regular, n_regularSolo, n_inverse, n_inverseSolo, n_ignored);
 
   svg->print_tailer(fPlot);
-
-  // Log
-  cerr << "Plotting finished.\n";
-  cerr << "Found ";
-  u8 n_pluses = 0;
-  if (p.regular)         ++n_pluses;
-  if (n_regularSolo!=0)  ++n_pluses;
-  if (p.inverse)         ++n_pluses;
-  if (n_inverseSolo!=0)  ++n_pluses;
-  --n_pluses;
-  
-  if (p.regular)         cerr << n_regular     << " regular";
-  if (n_pluses!=0) {     cerr << " + ";  --n_pluses; }
-  if (n_regularSolo!=0)  cerr << n_regularSolo << " solo regular";
-  if (n_pluses!=0) {     cerr << " + ";  --n_pluses; }
-  if (p.inverse)         cerr << n_inverse     << " inverted";
-  if (n_pluses!=0) {     cerr << " + ";  --n_pluses; }
-  if (n_inverseSolo!=0)  cerr << n_inverseSolo << " solo inverted";
-
-  cerr << " region" <<
-    (n_regular+n_regularSolo+n_inverse+n_inverseSolo>1 ? "s" : "") << ".\n";
-
-  if (n_ignore!=0)
-    cerr << "Ignored " << n_ignore << " region" << (n_ignore>1 ? "s" : "")
-         << ".\n";
-  cerr << '\n';
 
   fPos.close();  fPlot.close();
 }
 
-inline void VizPaint::show_info (VizParam& p, const string& ref, 
-const string& tar, u64 n_refBases, u64 n_tarBases) const {
+inline void VizPaint::read_matadata (ifstream& fPos) {
+  string watermark;
+  fPos >> watermark >> ref >> n_refBases >> tar >> n_tarBases;
+  
+  if (watermark != POS_HDR)
+    error("unknown file format for positions.");
+}
+
+inline void VizPaint::show_info (VizParam& p) const {
   const u8 lblWidth=18, colWidth=8;
   u8 tblWidth=58;
   if (max(n_refBases,n_tarBases) > 999999)
@@ -416,7 +116,7 @@ const string& tar, u64 n_refBases, u64 n_tarBases) const {
     case 'm':  cerr<<p.min;                       break;
     case 'r':  cerr<<(p.regular ? "yes" : "no");  break;
     case 'i':  cerr<<(p.inverse ? "yes" : "no");  break;
-    case 'l':  cerr<<p.link;                      break;
+    case 'l':  cerr<<u16(p.link);                 break;
     default:                                      break;
     }
     cerr << '\n';
@@ -436,7 +136,7 @@ const string& tar, u64 n_refBases, u64 n_tarBases) const {
   };
 
   toprule();
-  label("Chromosomes design");              cerr<<'\n';
+  label("Sequence image");                  cerr<<'\n';
   midrule();
   label("Width");                           design_vals('w');
   label("Space");                           design_vals('s');
@@ -457,16 +157,35 @@ const string& tar, u64 n_refBases, u64 n_tarBases) const {
   botrule();
 }
 
-inline void VizPaint::config (double width_, double space_, u32 mult_,
-u64 refSize_, u64 tarSize_) {
-  ratio = static_cast<u32>(max(refSize_,tarSize_) / PAINT_SCALE);
+inline void VizPaint::config (double width_, double space_, u32 mult_) {
+  ratio = static_cast<u32>(max(n_refBases,n_tarBases) / PAINT_SCALE);
   seqWidth = width_;
   periphWidth = seqWidth / 3;
   innerSpace = space_;
   mult = mult_;
-  refSize = get_point(refSize_);
-  tarSize = get_point(tarSize_);
+  refSize = get_point(n_refBases);
+  tarSize = get_point(n_tarBases);
   maxSize = max(refSize, tarSize);
+}
+
+inline void VizPaint::set_page (bool vertical) {
+  if (vertical) {
+    const auto max_n_digits = 
+      max(num_digits(n_refBases), num_digits(n_tarBases));
+    x = 100.0f;
+    if (max_n_digits > 4)   x += 17.0f;
+    if (max_n_digits > 7)   x += 8.5f;
+    if (max_n_digits > 10)  x += 8.5f;
+    y = 30.0f;
+    svg->width = 2*x + 2*seqWidth + innerSpace;
+    svg->height = maxSize + 105;
+  } 
+  else {
+    x = 20.0f;
+    y = 100.0f;
+    svg->width = maxSize + 105;
+    svg->height = 2*y + 2*seqWidth + innerSpace;
+  }
 }
 
 string VizPaint::rgb_color (u32 start) const {
@@ -498,6 +217,28 @@ inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
   return nrc_color(entropy, colorMode);
 }
 
+inline string VizPaint::seq_gradient (ofstream& fPlot, const string& color,
+const string& id) const {
+  auto grad = make_unique<LinearGradient>();
+  grad->id = "grad" + id;
+  grad->add_stop("30%", shade(color, 0.25));
+  grad->add_stop("100%", color);
+  grad->plot(fPlot);
+
+  return "url(#" + grad->id + ")";
+};
+
+inline string VizPaint::periph_gradient (ofstream& fPlot, const string& color, 
+const string& id) const {
+  auto grad = make_unique<LinearGradient>();
+  grad->id = "grad" + id;
+  grad->add_stop("30%", tone(color, 0.4));
+  grad->add_stop("100%", color);
+  grad->plot(fPlot);
+
+  return "url(#" + grad->id + ")";
+};
+
 template <typename Value>
 inline double VizPaint::get_point (Value index) const {
   return 5.0 * index / ratio;
@@ -507,9 +248,141 @@ inline u64 VizPaint::get_index (double point) const {
   return static_cast<u64>(point * ratio / 5.0);
 }
 
-template <typename VecIter>
-inline void VizPaint::plot_connector (ofstream& fPlot, const VecIter& e,
-VizParam& par, bool ir) {
+inline void VizPaint::plot_background (ofstream& f) const {
+  auto rect = make_unique<Rectangle>();
+  rect->fill = rect->stroke = "white";
+  rect->x = 0;
+  rect->y = 0;
+  rect->width = svg->width;
+  rect->height = svg->height;
+  rect->plot(f);
+}
+
+inline void VizPaint::plot_seq_ref (ofstream& fPlot, 
+const vector<Position>::iterator& e, const VizParam& p) const {
+  if (e->begRef != DBLANK) {
+    auto cylinder = make_unique<Cylinder>();
+    cylinder->width = seqWidth;
+    cylinder->stroke_width = 0.75;
+    cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
+    cylinder->height = get_point(e->endRef - e->begRef);
+    cylinder->stroke = shade(rgb_color(e->start));
+    if (p.vertical) {
+      cylinder->x = x;
+      cylinder->y = y + get_point(e->begRef);
+    } else {
+      cylinder->x = x + get_point(e->begRef);
+      cylinder->y = y + seqWidth;
+      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+        to_string(cylinder->y) + ")";
+    }
+    cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
+    cylinder->fill = seq_gradient(fPlot, rgb_color(e->start), cylinder->id);
+    cylinder->plot(fPlot);
+
+    cylinder->stroke_width = 0.7;
+    if (p.showNRC) {
+      cylinder->id += "NRC";
+      cylinder->fill = periph_gradient(fPlot, nrc_color(e->entRef, p.colorMode),
+        cylinder->id);
+      cylinder->stroke = shade(nrc_color(e->entRef, p.colorMode), 0.96);
+      plot_periph(fPlot, cylinder, p.vertical, 'r', 0);
+    }
+    if (p.showRedun) {
+      cylinder->id += "Redun";
+      cylinder->fill = periph_gradient(fPlot,
+        redun_color(e->selfRef, p.colorMode), cylinder->id);
+      cylinder->stroke = shade(redun_color(e->selfRef, p.colorMode), 0.95);
+      plot_periph(fPlot, cylinder, p.vertical, 'r', u8(p.showNRC));
+    }
+  }
+}
+
+inline void VizPaint::plot_seq_tar (ofstream& fPlot, 
+const vector<Position>::iterator& e, const VizParam& p, bool inverted) const {
+  auto cylinder = make_unique<Cylinder>();
+  cylinder->width = seqWidth;
+  cylinder->stroke_width = 0.75;
+  cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
+  cylinder->height = get_point(abs(e->begTar-e->endTar));
+  if (p.vertical) {
+    cylinder->x = x + seqWidth + innerSpace;
+    cylinder->y = !inverted ? y+get_point(e->begTar) : y+get_point(e->endTar);
+  } else {
+    cylinder->x = !inverted ? x+get_point(e->begTar) : x+get_point(e->endTar);
+    cylinder->y = y + 2*seqWidth + innerSpace;
+    cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+      to_string(cylinder->y) + ")";
+  }
+  cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
+  if (e->begRef == DBLANK) {
+    cylinder->fill = "black";
+    cylinder->stroke = "white";
+  } else {
+    cylinder->fill = seq_gradient(fPlot, rgb_color(e->start), cylinder->id);
+    cylinder->stroke = shade(rgb_color(e->start));
+  }
+
+  if (!inverted) {
+    cylinder->plot(fPlot);
+  } else {
+    if (e->begRef==DBLANK)  cylinder->plot_ir(fPlot, "#WavyWhite");
+    else                    cylinder->plot_ir(fPlot);
+  }
+
+  cylinder->stroke_width = 0.7;
+  if (p.showNRC) {
+    cylinder->id += "NRC";
+    cylinder->fill = periph_gradient(fPlot, nrc_color(e->entTar, p.colorMode),
+      cylinder->id);
+    cylinder->stroke = shade(nrc_color(e->entTar, p.colorMode), 0.96);
+    plot_periph(fPlot, cylinder, p.vertical, 't', 0);
+  }
+  if (p.showRedun) {
+    cylinder->id += "Redun";
+    cylinder->fill = periph_gradient(fPlot, 
+      redun_color(e->selfTar, p.colorMode), cylinder->id);
+    cylinder->stroke = shade(redun_color(e->selfTar, p.colorMode), 0.95);
+    plot_periph(fPlot, cylinder, p.vertical, 't', u8(p.showNRC));
+  }
+}
+
+inline void VizPaint::plot_periph (ofstream& f, unique_ptr<Cylinder>& cylinder,
+bool vertical, char RefTar, u8 showNRC) const {
+  const auto mainOriginX = cylinder->x,
+             mainWidth = cylinder->width,
+             mainStrokeWidth = cylinder->stroke_width,
+             mainRy = cylinder->ry;
+
+  if (RefTar=='r') {
+    if (vertical)
+      cylinder->x = cylinder->x - TITLE_SPACE/2 - 
+        (1+showNRC)*(periphWidth+SPACE_TUNE);
+    else
+      cylinder->x = cylinder->x + cylinder->width + TITLE_SPACE +
+        SPACE_TUNE + showNRC*(periphWidth + SPACE_TUNE);
+  }
+  else {
+    if (vertical)
+      cylinder->x = cylinder->x + cylinder->width + TITLE_SPACE/2 + 
+        SPACE_TUNE + showNRC*(SPACE_TUNE + periphWidth);
+    else
+      cylinder->x = cylinder->x - (periphWidth + TITLE_SPACE + SPACE_TUNE +
+        showNRC*(SPACE_TUNE + periphWidth));
+  }
+  cylinder->width = periphWidth;
+  cylinder->stroke_width *= 2;
+  cylinder->ry /= 2;
+  cylinder->plot(f);
+
+  cylinder->x = mainOriginX;
+  cylinder->width = mainWidth;
+  cylinder->stroke_width = mainStrokeWidth;
+  cylinder->ry = mainRy;
+}
+
+inline void VizPaint::plot_connector (ofstream& fPlot, 
+const vector<Position>::iterator& e, VizParam& par, bool ir) {
   auto poly = make_unique<Polygon>();
   auto line = make_unique<Line>();
   line->stroke_width = 1.5;
@@ -669,7 +542,7 @@ const {
   else if (!legend->showNRC && legend->showRedun)
     legend->text.emplace_back(make_unique<Text>());    // Redun
   else if (legend->showNRC && legend->showRedun)
-    for(u8 i=0; i != 2; ++i)                         
+    for(u8 i=0; i!=2; ++i)                         
       legend->text.emplace_back(make_unique<Text>());  // NRC + Redun
 
   if (legend->vertical) {
@@ -1417,6 +1290,35 @@ const VizParam& par, string&& type) {
 //   } // for
 // }
 
+inline void VizPaint::plot_pos (ofstream& fPlot, ifstream& fPos,
+vector<Position>& pos, VizParam& p) {
+  read_pos(fPos, pos, p);
+
+  auto posPlot = make_unique<PosPlot>();
+  posPlot->vertical  = p.vertical;
+  posPlot->showNRC   = p.showNRC;
+  posPlot->showRedun = p.showRedun;
+  posPlot->refTick   = p.refTick;
+  posPlot->tarTick   = p.tarTick;
+
+  make_posNode(pos, p, "ref");
+  posPlot->n_bases = n_refBases;
+  posPlot->plotRef = true;
+  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
+                    : plot_pos_horizontal(fPlot, posPlot);
+  // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
+
+  make_posNode(pos, p, "tar");
+  posPlot->n_bases = n_tarBases;
+  posPlot->plotRef = false;
+  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
+                    : plot_pos_horizontal(fPlot, posPlot);
+  // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
+
+  if (!plottable)
+    error("not plottable positions.");
+}
+
 inline void VizPaint::plot_pos_horizontal (ofstream& f, 
 unique_ptr<PosPlot>& posPlot) const {
   posPlot->tickLabelSkip = 7;
@@ -1576,4 +1478,118 @@ unique_ptr<PosPlot>& posPlot) const {
       line->plot(f);
     }
   }
+}
+
+inline void VizPaint::plot_Ns (ofstream& fPlot, float opacity, bool vertical) {
+  save_n_pos(ref);
+  ifstream refFile(file_name(ref)+"."+FMT_N);
+
+  for (i64 beg,end; refFile>>beg>>end;) {
+    auto cylinder = make_unique<Cylinder>();
+    cylinder->stroke_width = 0.75;
+    cylinder->fill = cylinder->stroke = "grey";
+    cylinder->fill_opacity = cylinder->stroke_opacity = opacity;
+    cylinder->width = seqWidth;
+    cylinder->height = get_point(end-beg+1);
+    if (vertical) {
+      cylinder->x = x;
+      cylinder->y = y + get_point(beg);
+    } else {
+      cylinder->x = x + get_point(beg);
+      cylinder->y = y + seqWidth;
+      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+        to_string(cylinder->y) + ")";
+    }
+    cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
+    cylinder->plot(fPlot);
+  }
+
+  refFile.close();
+  remove((file_name(ref)+"."+FMT_N).c_str());
+
+  save_n_pos(tar);
+  ifstream tarFile(file_name(tar)+"."+FMT_N);
+
+  for (i64 beg,end; tarFile>>beg>>end;) {
+    auto cylinder = make_unique<Cylinder>();
+    cylinder->stroke_width = 0.75;
+    cylinder->fill = cylinder->stroke = "grey";
+    cylinder->fill_opacity = cylinder->stroke_opacity = opacity;
+    cylinder->width = seqWidth;
+    cylinder->height = get_point(end-beg+1);
+    if (vertical) {
+      cylinder->x = x + seqWidth + innerSpace;
+      cylinder->y = y + get_point(beg);
+    } else {
+      cylinder->x = x + get_point(beg);
+      cylinder->y = y + 2*seqWidth + innerSpace;
+      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+        to_string(cylinder->y) + ")";
+    }
+    cylinder->id = to_string(cylinder->x)+to_string(cylinder->y);
+    cylinder->plot(fPlot);
+  }
+
+  tarFile.close();
+  remove((file_name(tar)+"."+FMT_N).c_str());
+}
+
+inline void VizPaint::plot_seq_borders (ofstream& f, bool vertical) {
+  auto cylinder = make_unique<Cylinder>();
+  cylinder->width = seqWidth;
+  cylinder->height = refSize;
+  cylinder->stroke_width = 1;
+  if (vertical) {
+    cylinder->x = x;
+    cylinder->y = y;
+  } else {
+    cylinder->x = x;
+    cylinder->y = y + seqWidth;
+    cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+      to_string(cylinder->y) + ")";
+  }
+  // cylinder->stroke_dasharray = "8 3";
+  cylinder->plot(f);
+
+  cylinder->height = tarSize;
+  if (vertical) {
+    cylinder->x = x + seqWidth + innerSpace;
+    cylinder->y = y;
+  } else {
+    cylinder->x = x;
+    cylinder->y = y + 2*seqWidth + innerSpace;
+    cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
+      to_string(cylinder->y) + ")";
+  }
+  cylinder->plot(f);
+}
+
+inline void VizPaint::print_log (u64 n_regular, u64 n_regularSolo, 
+u64 n_inverse, u64 n_inverseSolo, u64 n_ignored) const {
+  cerr << "Plotting finished.\n";
+  cerr << "Found ";
+
+  // Count '+' signs needed
+  u8 n_pluses = 0;
+  if (n_regular!=0)      ++n_pluses;
+  if (n_regularSolo!=0)  ++n_pluses;
+  if (n_inverse!=0)      ++n_pluses;
+  if (n_inverseSolo!=0)  ++n_pluses;
+  --n_pluses;
+  
+  if (n_regular!=0)       cerr << n_regular << " regular";
+  if (n_pluses!=0)      { cerr << " + ";  --n_pluses; }
+  if (n_regularSolo!=0)   cerr << n_regularSolo << " solo regular";
+  if (n_pluses!=0)      { cerr << " + ";  --n_pluses; }
+  if (n_inverse!=0)       cerr << n_inverse << " inverted";
+  if (n_pluses!=0)      { cerr << " + ";  --n_pluses; }
+  if (n_inverseSolo!=0)   cerr << n_inverseSolo << " solo inverted";
+
+  cerr << " region" <<
+    (n_regular+n_regularSolo+n_inverse+n_inverseSolo>1 ? "s" : "") << ".\n";
+
+  if (n_ignored != 0)
+    cerr << "Ignored " << n_ignored << " region" << (n_ignored>1 ? "s" : "")
+         << ".\n";
+  cerr << '\n';
 }
