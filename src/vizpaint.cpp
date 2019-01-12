@@ -1383,8 +1383,8 @@ unique_ptr<PosPlot>& posPlot) const {
       text->font_weight = "normal";
       text->text_anchor = "middle";
       text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
-      // text->Label = human_readable_non_cs(u64(round(pos)));
-      text->Label = thousands_sep(u64(round(pos)));
+      text->Label = human_readable_non_cs(u64(round(pos)));
+      // text->Label = thousands_sep(u64(round(pos)));
       if (pos!=0.0f)
         text->plot(f);
     }
@@ -1578,19 +1578,18 @@ u64 n_inverse, u64 n_inverseSolo, u64 n_ignored) const {
   if (n_inverseSolo!=0)  ++n_pluses;
   --n_pluses;
   
-  if (n_regular!=0)       cerr << n_regular << " regular";
-  if (n_pluses!=0)      { cerr << " + ";  --n_pluses; }
-  if (n_regularSolo!=0)   cerr << n_regularSolo << " solo regular";
-  if (n_pluses!=0)      { cerr << " + ";  --n_pluses; }
-  if (n_inverse!=0)       cerr << n_inverse << " inverted";
-  if (n_pluses!=0)      { cerr << " + ";  --n_pluses; }
-  if (n_inverseSolo!=0)   cerr << n_inverseSolo << " solo inverted";
+  if (n_regular!=0)      cerr << n_regular << " regular";
+  if (n_pluses!=0)       { cerr << " + ";    --n_pluses; }
+  if (n_regularSolo!=0)  cerr << n_regularSolo << " solo regular";
+  if (n_pluses!=0)       { cerr << " + ";    --n_pluses; }
+  if (n_inverse!=0)      cerr << n_inverse << " inverted";
+  if (n_pluses!=0)       { cerr << " + ";    --n_pluses; }
+  if (n_inverseSolo!=0)  cerr << n_inverseSolo << " solo inverted";
 
   cerr << " region" <<
     (n_regular+n_regularSolo+n_inverse+n_inverseSolo>1 ? "s" : "") << ".\n";
 
-  if (n_ignored != 0)
-    cerr << "Ignored " << n_ignored << " region" << (n_ignored>1 ? "s" : "")
-         << ".\n";
+  if (n_ignored!=0)  cerr << "Ignored " << n_ignored 
+                          << " region" << (n_ignored>1 ? "s" : "") << ".\n";
   cerr << '\n';
 }

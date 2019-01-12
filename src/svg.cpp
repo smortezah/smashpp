@@ -41,10 +41,14 @@ void SVG::print_header (ofstream& f) const {
     << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
     << begin_elem("svg")
     << attr("xmlns", "http://www.w3.org/2000/svg")
-    << attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
-    << attr("width", width, true)
-    << attr("height", height, true)
-    << mid_elem();
+    << attr("xmlns:xlink", "http://www.w3.org/1999/xlink");
+  if (width!=0.0f && height!=0.0f)
+    f << attr("viewBox", "0 0 "+to_string(width)+" "+to_string(height));
+  else
+    f << attr("viewBox", viewBox);
+    // << attr("width", width, true)
+    // << attr("height", height, true)
+  f << mid_elem();
 }
 
 void SVG::print_tailer (ofstream& f) const {

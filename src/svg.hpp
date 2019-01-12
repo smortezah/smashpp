@@ -10,8 +10,9 @@ class SVG {
  public:
   string id, filter;
   float  width, height;
+  string viewBox;
 
-  SVG () = default;
+  SVG () : width(0.0f), height(0.0f), viewBox("0 0 100% 100%") {}
   auto attr (const string&, float, bool=false, const string& ="") const
     -> string;
   auto attr (const string&, const string&, bool=false, const string& ="") const
