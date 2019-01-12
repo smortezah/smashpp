@@ -170,12 +170,12 @@ inline void VizPaint::config (double width_, double space_, u32 mult_) {
 
 inline void VizPaint::set_page (bool vertical) {
   if (vertical) {
-    const auto max_n_digits = 
-      max(num_digits(n_refBases), num_digits(n_tarBases));
     x = 100.0f;
-    if (max_n_digits > 4)   x += 17.0f;
-    if (max_n_digits > 7)   x += 8.5f;
-    if (max_n_digits > 10)  x += 8.5f;
+    // const auto max_n_digits = 
+    //   max(num_digits(n_refBases), num_digits(n_tarBases));
+    // if (max_n_digits > 4)   x += 17.0f;
+    // if (max_n_digits > 7)   x += 8.5f;
+    // if (max_n_digits > 10)  x += 8.5f;
     y = 30.0f;
     svg->width = 2*x + 2*seqWidth + innerSpace;
     svg->height = maxSize + 105;
@@ -1379,11 +1379,12 @@ unique_ptr<PosPlot>& posPlot) const {
       text->x = line->x1;
       text->y = posPlot->plotRef ? line->y1 - posPlot->tickLabelSkip 
                                  : line->y1 + posPlot->tickLabelSkip;
-      text->font_size = (posPlot->n_bases < POW10[7]) ? 9 : 8.5;
+      // text->font_size = (posPlot->n_bases < POW10[7]) ? 9 : 8.5;
+      text->font_size = 9;
       text->font_weight = "normal";
       text->text_anchor = "middle";
       text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
-      text->Label = human_readable_non_cs(u64(round(pos)));
+      text->Label = human_readable_non_cs(u64(round(pos)), 1);
       // text->Label = thousands_sep(u64(round(pos)));
       if (pos!=0.0f)
         text->plot(f);
@@ -1466,8 +1467,8 @@ unique_ptr<PosPlot>& posPlot) const {
       text->font_weight = "normal";
       text->text_anchor = posPlot->plotRef ? "end" : "start";
       text->dominant_baseline = "middle";
-      // text->Label = human_readable_non_cs(pos);
-      text->Label = thousands_sep(u64(round(pos)));
+      text->Label = human_readable_non_cs(u64(round(pos)), 1);
+      // text->Label = thousands_sep(u64(round(pos)));
       if (pos!=0.0f)
         text->plot(f);
     }
