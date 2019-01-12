@@ -454,25 +454,25 @@ inline void VizParam::parse (int argc, char**& argv) {
   for (auto i=begin(vArgs); i!=end(vArgs); ++i) {
     if ((*i=="-o" || *i=="--out") && i+1!=end(vArgs))
       image = *++i;
-    else if ((*i=="-p" || *i=="--opacity")  && i+1!=end(vArgs)) {
+    else if ((*i=="-p" || *i=="--opacity") && i+1!=end(vArgs)) {
       opacity = stof(*++i);
       auto range = make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, 
         "Opacity", "[]", "default", Problem::WARNING);
       range->assert(opacity);
     }
-    else if ((*i=="-l" || *i=="--link")  && i+1!=end(vArgs)) {
+    else if ((*i=="-l" || *i=="--link") && i+1!=end(vArgs)) {
       link = static_cast<u8>(stoul(*++i));
       auto range = make_unique<ValRange<u8>>(MIN_LINK, MAX_LINK, LINK, 
         "Link", "[]", "default", Problem::WARNING);
       range->assert(link);
     }
-    else if ((*i=="-m" || *i=="--min")   && i+1!=end(vArgs)) {
+    else if ((*i=="-m" || *i=="--min") && i+1!=end(vArgs)) {
       min = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, MINP,
         "Min", "[]", "default", Problem::WARNING);
       range->assert(min);
     }
-    else if ((*i=="-f" || *i=="--mult")  && i+1!=end(vArgs)) {
+    else if ((*i=="-f" || *i=="--mult") && i+1!=end(vArgs)) {
       manMult = true;
       mult = static_cast<u32>(stoul(*++i));
       auto range = make_unique<ValRange<u32>>(MIN_MULT, MAX_MULT, MULT,

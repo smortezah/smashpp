@@ -89,7 +89,7 @@ class VizPaint {
     const VizParam&, bool) const;
   void plot_periph (ofstream&, unique_ptr<Cylinder>&, bool, char, u8) const;
   void plot_connector (ofstream&, const vector<Position>::iterator&, VizParam&,
-    bool);
+    bool) const;
   void plot_title (ofstream&, const string&, const string&, bool) const;
   void plot_legend (ofstream&, const VizParam&, i64) const;
   void set_legend_rect (ofstream&, unique_ptr<LegendPlot>&, char) const;
@@ -102,13 +102,13 @@ class VizPaint {
   auto tspan (u32, const string&) const -> string;
   void sort_merge (string&) const;
   void save_n_pos (const string&) const;
-  void read_pos (ifstream&, vector<Position>&, VizParam&);
+  void read_pos (ifstream&, vector<Position>&, VizParam&) const;
   void make_posNode (const vector<Position>&, const VizParam&, string&&);
   void plot_pos (ofstream&, ifstream&, vector<Position>&, VizParam&);
   void plot_pos_horizontal (ofstream&, unique_ptr<PosPlot>&) const;
   void plot_pos_vertical (ofstream&, unique_ptr<PosPlot>&) const;
-  void plot_Ns (ofstream&, float, bool);
-  void plot_seq_borders (ofstream&, bool);
+  void plot_Ns (ofstream&, float, bool) const;
+  void plot_seq_borders (ofstream&, bool) const;
   void print_log (u64, u64, u64, u64, u64) const;
   // void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
 };
