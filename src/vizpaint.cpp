@@ -18,7 +18,7 @@ void VizPaint::plot (VizParam& p) {
   set_page(p.vertical);
 
   svg->print_header(fPlot);
-  
+
   plot_background(fPlot);
 
   // If min is set to default, reset to base max proportion
@@ -382,7 +382,7 @@ bool vertical, char RefTar, u8 showNRC) const {
 }
 
 inline void VizPaint::plot_connector (ofstream& fPlot, 
-const vector<Position>::iterator& e, VizParam& par, bool ir) {
+const vector<Position>::iterator& e, VizParam& par, bool ir) const {
   auto poly = make_unique<Polygon>();
   auto line = make_unique<Line>();
   line->stroke_width = 1.5;
@@ -1083,7 +1083,7 @@ inline void VizPaint::save_n_pos (const string& filePath) const {
 }
 
 inline void VizPaint::read_pos (ifstream& fPos, vector<Position>& pos, 
-VizParam& par) {
+VizParam& par) const {
   double nr,nt,sr,st;
   for (i64 br, er, bt, et; fPos >> br>>er>>nr>>sr >> bt>>et>>nt>>st; 
        ++par.start)
@@ -1480,7 +1480,8 @@ unique_ptr<PosPlot>& posPlot) const {
   }
 }
 
-inline void VizPaint::plot_Ns (ofstream& fPlot, float opacity, bool vertical) {
+inline void VizPaint::plot_Ns (ofstream& fPlot, float opacity, bool vertical)
+const {
   save_n_pos(ref);
   ifstream refFile(file_name(ref)+"."+FMT_N);
 
@@ -1534,7 +1535,7 @@ inline void VizPaint::plot_Ns (ofstream& fPlot, float opacity, bool vertical) {
   remove((file_name(tar)+"."+FMT_N).c_str());
 }
 
-inline void VizPaint::plot_seq_borders (ofstream& f, bool vertical) {
+inline void VizPaint::plot_seq_borders (ofstream& f, bool vertical) const {
   auto cylinder = make_unique<Cylinder>();
   cylinder->width = seqWidth;
   cylinder->height = refSize;
