@@ -112,7 +112,11 @@ void Text::plot (ofstream& f) const {
     << attr("y", y, true);
   if (dx!=0.0f)  f << attr("dx", dx, true);
   if (dy!=0.0f)  f << attr("dy", dy, true);
-  f << attr("dominant-baseline", dominant_baseline);
+
+  // f << attr("dominant-baseline", dominant_baseline);
+  // f<<attr("baseline-shift", "-100%");
+  // f<<attr("alignment-baseline", "hanging");
+
   if (!transform.empty())    f << attr("transform", transform);
   f << attr("font-size", to_string(font_size), false, "px");
   if (!font_weight.empty())  f << attr("font-weight", font_weight);
@@ -370,16 +374,15 @@ void Cylinder::plot (ofstream& f) const {
   ellipse->stroke_dasharray = stroke_dasharray;
   ellipse->fill = fill;
   ellipse->fill_opacity = fill_opacity;
-  ellipse->cx = x + width/2;
-  ellipse->cy = y;
   ellipse->rx = width/2 + 0.4*(stroke_width-ellipse->stroke_width);
   ellipse->ry = ry;
   ellipse->transform = transform;
+  ellipse->cx = x + width/2;
+  ellipse->cy = y;
   ellipse->plot(f);
 
-  ellipse->cy = y + height;
-  ellipse->fill = "transparent";
   ellipse->transform = transform;
+  ellipse->cy = y + height;
   ellipse->plot(f);
 }
 
@@ -396,7 +399,6 @@ void Cylinder::plot_ir (ofstream& f, const string& wave) {
   pattern->height = 14;
 
   auto path = make_unique<Path>();
-  path->fill = "transparent";
   path->stroke_width = 0.3 * pattern->height;
   path->d = 
     path->m(-path->stroke_width/2, pattern->height - path->stroke_width/2) +
