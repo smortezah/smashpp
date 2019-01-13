@@ -52,12 +52,14 @@ class Text : public SVG {
  public:
   float  x, y, dx, dy;
   string dominant_baseline, baseline_shift, alignment_baseline, transform,
-         font_weight, font_family, fill, text_anchor, text_align, line_height;
+         font_weight, font_family, font_variant, fill, text_anchor, text_align,
+         line_height;
   u8     font_size;
   string Label;       // Not in standard
 
-  Text () : dx(0), dy(0), font_family("Arial"), text_anchor("middle"),
-    text_align("start"), line_height("125%%"), font_size(13) {}
+  Text () : dx(0), dy(0), font_family("Arial"), font_variant("normal"),
+    text_anchor("middle"), text_align("start"), line_height("125%%"), 
+    font_size(13) {}
   void plot (ofstream&) const;
   void plot_shadow (ofstream&, const string& ="grey");
 };

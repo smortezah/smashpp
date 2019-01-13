@@ -119,6 +119,7 @@ void Text::plot (ofstream& f) const {
   f << attr("font-size", to_string(font_size), false, "px");
   if (!font_weight.empty())  f << attr("font-weight", font_weight);
   f << attr("font-family", font_family);
+  if (!font_variant.empty())  f << attr("font-variant", font_variant);
   if (!fill.empty() && fill!="black")  f << attr("fill", fill);
   f << attr("text-anchor", text_anchor)
     << attr("text-align", text_align)
