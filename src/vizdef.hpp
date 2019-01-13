@@ -45,6 +45,8 @@ static constexpr auto HEAT_START      {0.35};
 static constexpr auto HEAT_ROT        {1.5};
 static constexpr auto HEAT_HUE        {1.92};
 static constexpr auto HEAT_GAMMA      {0.5};
+static constexpr auto VERT_MIDDLE     {0.35f};
+static constexpr auto VERT_BOTTOM     {0.7f};
 
 static const vector<vector<string>> COLORSET {
   {"#0000ff", "#0055ff", "#00aaff", "#00ffff", "#00ffaa", "#00ff55", "#00ff00",

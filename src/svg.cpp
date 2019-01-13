@@ -112,11 +112,9 @@ void Text::plot (ofstream& f) const {
     << attr("y", y, true);
   if (dx!=0.0f)  f << attr("dx", dx, true);
   if (dy!=0.0f)  f << attr("dy", dy, true);
-
-  // f << attr("dominant-baseline", dominant_baseline);
-  // f<<attr("baseline-shift", "-100%");
-  // f<<attr("alignment-baseline", "hanging");
-
+  f << attr("dominant-baseline", dominant_baseline)
+    << attr("baseline-shift", baseline_shift)
+    << attr("alignment-baseline", alignment_baseline);
   if (!transform.empty())    f << attr("transform", transform);
   f << attr("font-size", to_string(font_size), false, "px");
   if (!font_weight.empty())  f << attr("font-weight", font_weight);

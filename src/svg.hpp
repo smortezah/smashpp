@@ -51,8 +51,8 @@ class LinearGradient : public SVG {
 class Text : public SVG {
  public:
   float  x, y, dx, dy;
-  string dominant_baseline, transform, font_weight, font_family, fill, 
-         text_anchor, text_align, line_height;
+  string dominant_baseline, baseline_shift, alignment_baseline, transform,
+         font_weight, font_family, fill, text_anchor, text_align, line_height;
   u8     font_size;
   string Label;       // Not in standard
 

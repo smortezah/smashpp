@@ -512,18 +512,10 @@ const string& tar, bool vertical) const {
   else {
     text->text_anchor = "start";
     text->x = x;
-    text->y = y - TITLE_SPACE;
-    // text->y = y - TITLE_SPACE + text->font_size;
+    text->y = y - TITLE_SPACE + VERT_BOTTOM * text->font_size;
     // text->dominant_baseline = "text-before-edge";
     text->Label = ref;
     text->plot(f);
-//todo
-    text->x = x+20;
-    // text->y = y - TITLE_SPACE;
-    text->Label = ref;
-    text->transform="rotate(180 "+to_string(text->x)+","+to_string(text->y)+")";
-    text->plot(f);
-    // text->transform.clear();
 
     text->y = y + 2*seqWidth + innerSpace + TITLE_SPACE;
     // text->dominant_baseline = "text-after-edge";
@@ -844,7 +836,8 @@ unique_ptr<LegendPlot>& legend) const {
   }
   
   if (legend->showNRC && !legend->showRedun) {
-    legend->text[1]->x = legend->rect->x - legend->labelShift;
+    legend->text[1]->x = legend->rect->x - legend->labelShift -
+      VERT_MIDDLE*legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height/2;
     legend->text[1]->transform = "rotate(90 " + to_string(legend->text[1]->x) +
       " " + to_string(legend->text[1]->y) + ")";
@@ -853,7 +846,8 @@ unique_ptr<LegendPlot>& legend) const {
     legend->text[1]->plot(f);
   }
   else if (!legend->showNRC && legend->showRedun) {
-    legend->text[1]->x = legend->rect->x - legend->labelShift;
+    legend->text[1]->x = legend->rect->x - legend->labelShift -
+      VERT_MIDDLE*legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height/2;
     legend->text[1]->transform = "rotate(90 " + to_string(legend->text[1]->x) +
       " " + to_string(legend->text[1]->y) + ")";
@@ -862,7 +856,8 @@ unique_ptr<LegendPlot>& legend) const {
     legend->text[1]->plot(f);
   }
   else if (legend->showNRC && legend->showRedun) {
-    legend->text[1]->x = legend->rect->x - legend->labelShift;
+    legend->text[1]->x = legend->rect->x - legend->labelShift -
+      VERT_MIDDLE*legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height/2;
     legend->text[1]->transform = "rotate(90 " + to_string(legend->text[1]->x) +
       " " + to_string(legend->text[1]->y) + ")";
@@ -872,7 +867,7 @@ unique_ptr<LegendPlot>& legend) const {
 
     // Redundancy
     legend->text[2]->x = legend->rect->x + legend->rect->width + 
-      legend->labelShift;
+      legend->labelShift - VERT_MIDDLE*legend->text[1]->font_size;
     legend->text[2]->y = legend->rect->y + legend->rect->height/2;
     legend->text[2]->transform = "rotate(90 " + to_string(legend->text[2]->x) +
       " " + to_string(legend->text[2]->y) + ")";
@@ -886,10 +881,11 @@ unique_ptr<LegendPlot>& legend) const {
   legend->text[0]->font_weight = "bold";
   legend->text[0]->font_size = 8;
   legend->text[0]->fill = "black";
-  legend->text[0]->dominant_baseline = "middle";
   legend->text[0]->text_anchor = "middle";
+  // legend->text[0]->dominant_baseline = "middle";
+  legend->text[0]->dy = VERT_MIDDLE * legend->text[0]->font_size;
   legend->text[0]->x = legend->rect->x + legend->rect->width/2;
-  legend->text[0]->y = legend->rect->y + legend->rect->height + 6;  
+  legend->text[0]->y = legend->rect->y + legend->rect->height + 6;
   legend->text[0]->Label = "0.0";
   legend->text[0]->plot(f);
   // 2.0
@@ -927,14 +923,16 @@ unique_ptr<LegendPlot>& legend) const {
     // Top wing
     if (lastPos.size() == 2) {
       legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1RelRedun) + 
-                        legend->path->H(legend->text[1]->x) + 
+                        legend->path->H(legend->text[1]->x +
+                          VERT_MIDDLE*legend->text[1]->font_size) + 
                         legend->path->V((Y1RelRedun+Y2RelRedun)/2 - 47);
     // legend->path->plot_shadow(f);
       legend->path->plot(f);
     }
     // Bottom wing
     legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2RelRedun) +
-                      legend->path->H(legend->text[1]->x) + 
+                      legend->path->H(legend->text[1]->x +
+                        VERT_MIDDLE*legend->text[1]->font_size) + 
                       legend->path->V((Y1RelRedun+Y2RelRedun)/2 + 47);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
@@ -946,14 +944,16 @@ unique_ptr<LegendPlot>& legend) const {
     // Top wing
     if (lastPos.size() == 2) {
       legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1Redun) + 
-                        legend->path->H(legend->text[1]->x) + 
+                        legend->path->H(legend->text[1]->x +
+                          VERT_MIDDLE*legend->text[1]->font_size) + 
                         legend->path->V((Y1Redun+Y2Redun)/2 - 30);
     // legend->path->plot_shadow(f);
       legend->path->plot(f);
     }
     // Bottom wing
     legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2Redun) +
-                      legend->path->H(legend->text[1]->x) + 
+                      legend->path->H(legend->text[1]->x +
+                        VERT_MIDDLE*legend->text[1]->font_size) + 
                       legend->path->V((Y1Redun+Y2Redun)/2 + 30);
   // legend->path->plot_shadow(f);
     legend->path->plot(f);
@@ -965,14 +965,16 @@ unique_ptr<LegendPlot>& legend) const {
     // Top wing
     if (lastPos.size() == 2) {
       legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1RelRedun) + 
-                        legend->path->H(legend->text[1]->x) + 
+                        legend->path->H(legend->text[1]->x +
+                          VERT_MIDDLE*legend->text[1]->font_size) + 
                         legend->path->V((Y1RelRedun+Y2RelRedun)/2 - 47);
     // legend->path->plot_shadow(f);
       legend->path->plot(f);
     }
     // Bottom wing
     legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2RelRedun) +
-                      legend->path->H(legend->text[1]->x) + 
+                      legend->path->H(legend->text[1]->x +
+                        VERT_MIDDLE*legend->text[1]->font_size) + 
                       legend->path->V((Y1RelRedun+Y2RelRedun)/2 + 47);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
@@ -984,14 +986,16 @@ unique_ptr<LegendPlot>& legend) const {
     // Top wing
     if (lastPos.size() == 2) {
       legend->path->d = legend->path->M(x+get_point(lastPos[0]), Y1Redun) + 
-                        legend->path->H(legend->text[2]->x) + 
+                        legend->path->H(legend->text[2]->x +
+                          VERT_MIDDLE*legend->text[2]->font_size) + 
                         legend->path->V((Y1Redun+Y2Redun)/2 - 30);
       // legend->path->plot_shadow(f);
       legend->path->plot(f);
     }
     // Bottom wing
     legend->path->d = legend->path->M(x+get_point(lastPos[1]), Y2Redun) +
-                      legend->path->H(legend->text[2]->x) + 
+                      legend->path->H(legend->text[2]->x +
+                        VERT_MIDDLE*legend->text[2]->font_size) + 
                       legend->path->V((Y1Redun+Y2Redun)/2 + 30);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
@@ -1351,10 +1355,12 @@ unique_ptr<PosPlot>& posPlot) const {
   text->font_weight = "bold";
   text->font_size = 10;
   text->text_anchor = "start";
-  text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
+  // text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
   text->x = line->x1;
-  text->y = posPlot->plotRef ? line->y1 - posPlot->tickLabelSkip 
-                             : line->y1 + posPlot->tickLabelSkip;
+  if (posPlot->plotRef)
+    text->y = line->y1 - posPlot->tickLabelSkip;
+  else
+    text->y = line->y1 + posPlot->tickLabelSkip + VERT_BOTTOM * 9 /*font-size of rest*/;
   text->Label = "bp";
   text->plot(f);
 
@@ -1385,13 +1391,16 @@ unique_ptr<PosPlot>& posPlot) const {
 
       // Text
       text->x = line->x1;
-      text->y = posPlot->plotRef ? line->y1 - posPlot->tickLabelSkip 
-                                 : line->y1 + posPlot->tickLabelSkip;
+      if (posPlot->plotRef)
+        text->y = line->y1 - posPlot->tickLabelSkip;
+      else
+        text->y = 
+          line->y1 + posPlot->tickLabelSkip + VERT_BOTTOM * text->font_size;
       // text->font_size = (posPlot->n_bases < POW10[7]) ? 9 : 8.5;
       text->font_size = 9;
       text->font_weight = "normal";
       text->text_anchor = "middle";
-      text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
+      // text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
       text->Label = human_readable_non_cs(u64(round(pos)), 1);
       // text->Label = thousands_sep(u64(round(pos)));
       if (pos!=0.0f)
