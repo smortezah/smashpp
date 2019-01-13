@@ -486,8 +486,8 @@ const string& tar, bool vertical) const {
 
   if (vertical) {
     text->text_anchor = "middle";
-    text->dominant_baseline = "middle";
-    text->y = y - 0.75*TITLE_SPACE;
+    // text->dominant_baseline = "middle";
+    text->y = y - 0.6*TITLE_SPACE;
 
     const auto charSpace = 5;
     const bool tooClose = (innerSpace - abs(ref.size()*charSpace - seqWidth)/2 -
@@ -623,24 +623,27 @@ inline void VizPaint::plot_legend_text_horiz (ofstream& f,
 unique_ptr<LegendPlot>& legend) const {
   for (auto& e : legend->text) {
     e->text_anchor = "middle";
-    e->dominant_baseline = "middle";
+    // e->dominant_baseline = "middle";
     e->font_size = 9;
   }
   
   if (legend->showNRC && !legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width/2;
     if (legend->rect->width > 64) {
-      legend->text[1]->y = legend->rect->y - legend->labelShift;
+      legend->text[1]->y = legend->rect->y - legend->labelShift + 
+        VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative Redundancy";
       // legend->text[1]->plot_shadow(f);
       legend->text[1]->plot(f);
     }
     else {
-      legend->text[1]->y = legend->rect->y - legend->labelShift - 8;
+      legend->text[1]->y = legend->rect->y - legend->labelShift - 10 + 
+        VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative";
       // legend->text[1]->plot_shadow(f);
       legend->text[1]->plot(f);
-      legend->text[1]->y = legend->rect->y - legend->labelShift + 2;
+      legend->text[1]->y = legend->rect->y - legend->labelShift + 
+        VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Redundancy";
       // legend->text[1]->plot_shadow(f);
       legend->text[1]->plot(f);
@@ -648,7 +651,8 @@ unique_ptr<LegendPlot>& legend) const {
   }
   else if (!legend->showNRC && legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width/2;
-    legend->text[1]->y = legend->rect->y - legend->labelShift;
+    legend->text[1]->y = legend->rect->y - legend->labelShift + 
+      VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->Label = "Redundancy";
     // legend->text[1]->plot_shadow(f);
     legend->text[1]->plot(f);
@@ -656,17 +660,20 @@ unique_ptr<LegendPlot>& legend) const {
   else if (legend->showNRC && legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width/2;
     if (legend->rect->width > 64) {
-      legend->text[1]->y = legend->rect->y - legend->labelShift;
+      legend->text[1]->y = legend->rect->y - legend->labelShift + 
+        VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative Redundancy";
       // legend->text[1]->plot_shadow(f);
       legend->text[1]->plot(f);
     }
     else {
-      legend->text[1]->y = legend->rect->y - legend->labelShift - 8;
+      legend->text[1]->y = legend->rect->y - legend->labelShift - 10 +
+        VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative";
       // legend->text[1]->plot_shadow(f);
       legend->text[1]->plot(f);
-      legend->text[1]->y = legend->rect->y - legend->labelShift + 2;
+      legend->text[1]->y = legend->rect->y - legend->labelShift +
+        VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Redundancy";
       // legend->text[1]->plot_shadow(f);
       legend->text[1]->plot(f);
@@ -674,8 +681,8 @@ unique_ptr<LegendPlot>& legend) const {
     
     // Redundancy
     legend->text[2]->x = legend->rect->x + legend->rect->width/2;
-    legend->text[2]->y = 
-      legend->rect->y + legend->rect->height + legend->labelShift;
+    legend->text[2]->y = legend->rect->y + legend->rect->height +
+      legend->labelShift + VERT_MIDDLE*legend->text[2]->font_size;
     legend->text[2]->Label = "Redundancy";
     // legend->text[2]->plot_shadow(f);
     legend->text[2]->plot(f);
@@ -686,6 +693,7 @@ unique_ptr<LegendPlot>& legend) const {
   legend->text[0]->font_weight = "bold";
   legend->text[0]->font_size = 8;
   legend->text[0]->fill = "black";
+  legend->text[0]->dy = VERT_MIDDLE*legend->text[0]->font_size;
   legend->text[0]->x = legend->rect->x - 4;
   legend->text[0]->y = legend->rect->y + legend->rect->height/2;
   legend->text[0]->text_anchor = "end";
@@ -727,12 +735,14 @@ unique_ptr<LegendPlot>& legend) const {
       if (legend->rect->width > 64)
         legend->path->d = 
           legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
-          legend->path->V(legend->text[1]->y) + 
+          legend->path->V(legend->text[1]->y - 
+            VERT_MIDDLE*legend->text[1]->font_size) + 
           legend->path->H((X1RelRedun+X2RelRedun)/2 - 50);
       else
         legend->path->d = 
           legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
-          legend->path->V(legend->text[1]->y-5) + 
+          legend->path->V(legend->text[1]->y - 5 - 
+            VERT_MIDDLE*legend->text[1]->font_size) + 
           legend->path->H((X1RelRedun+X2RelRedun)/2 - 32);
       // legend->path->plot_shadow(f);
       legend->path->plot(f);
@@ -741,12 +751,14 @@ unique_ptr<LegendPlot>& legend) const {
     if (legend->rect->width > 64)
       legend->path->d = 
         legend->path->M(X2RelRedun, y+get_point(lastPos[1])) +
-        legend->path->V(legend->text[1]->y) + 
+        legend->path->V(legend->text[1]->y - 
+          VERT_MIDDLE*legend->text[1]->font_size) + 
         legend->path->H((X1RelRedun+X2RelRedun)/2 + 50);
     else
       legend->path->d = 
         legend->path->M(X2RelRedun, y+get_point(lastPos[1])) + 
-        legend->path->V(legend->text[1]->y-5) + 
+        legend->path->V(legend->text[1]->y - 5 - 
+          VERT_MIDDLE*legend->text[1]->font_size) + 
         legend->path->H((X1RelRedun+X2RelRedun)/2 + 32);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
@@ -759,7 +771,8 @@ unique_ptr<LegendPlot>& legend) const {
     if (lastPos.size() == 2) {
       legend->path->d = 
         legend->path->M(X1Redun, y+get_point(lastPos[0])) + 
-        legend->path->V(legend->text[1]->y) + 
+        legend->path->V(legend->text[1]->y - 
+          VERT_MIDDLE*legend->text[1]->font_size) + 
         legend->path->H((X1Redun+X2Redun)/2 - 32);
       // legend->path->plot_shadow(f);
       legend->path->plot(f);
@@ -767,7 +780,8 @@ unique_ptr<LegendPlot>& legend) const {
     // Right wing
     legend->path->d = 
       legend->path->M(X2Redun, y+get_point(lastPos[1])) +
-      legend->path->V(legend->text[1]->y) + 
+      legend->path->V(legend->text[1]->y - 
+        VERT_MIDDLE*legend->text[1]->font_size) + 
       legend->path->H((X1Redun+X2Redun)/2 + 32);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
@@ -781,12 +795,14 @@ unique_ptr<LegendPlot>& legend) const {
       if (legend->rect->width > 64)
         legend->path->d = 
           legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
-          legend->path->V(legend->text[1]->y) + 
+          legend->path->V(legend->text[1]->y - 
+            VERT_MIDDLE*legend->text[1]->font_size) + 
           legend->path->H((X1RelRedun+X2RelRedun)/2 - 50);
       else
         legend->path->d = 
           legend->path->M(X1RelRedun, y+get_point(lastPos[0])) + 
-          legend->path->V(legend->text[1]->y-5) + 
+          legend->path->V(legend->text[1]->y - 5 - 
+            VERT_MIDDLE*legend->text[1]->font_size) + 
           legend->path->H((X1RelRedun+X2RelRedun)/2 - 32);
       // legend->path->plot_shadow(f);
       legend->path->plot(f);
@@ -795,12 +811,14 @@ unique_ptr<LegendPlot>& legend) const {
     if (legend->rect->width > 64)
       legend->path->d = 
         legend->path->M(X2RelRedun, y+get_point(lastPos[1])) +
-        legend->path->V(legend->text[1]->y) + 
+        legend->path->V(legend->text[1]->y - 
+          VERT_MIDDLE*legend->text[1]->font_size) + 
         legend->path->H((X1RelRedun+X2RelRedun)/2 + 50);
     else
       legend->path->d = 
         legend->path->M(X2RelRedun, y+get_point(lastPos[1])) + 
-        legend->path->V(legend->text[1]->y-5) + 
+        legend->path->V(legend->text[1]->y - 5 - 
+          VERT_MIDDLE*legend->text[1]->font_size) + 
         legend->path->H((X1RelRedun+X2RelRedun)/2 + 32);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
@@ -813,7 +831,8 @@ unique_ptr<LegendPlot>& legend) const {
     if (lastPos.size() == 2) {
       legend->path->d = 
         legend->path->M(X1Redun, y+get_point(lastPos[0])) + 
-        legend->path->V(legend->text[2]->y) + 
+        legend->path->V(legend->text[2]->y - 
+          VERT_MIDDLE*legend->text[2]->font_size) + 
         legend->path->H((X1Redun+X2Redun)/2 - 32);
       // legend->path->plot_shadow(f);
       legend->path->plot(f);
@@ -821,7 +840,8 @@ unique_ptr<LegendPlot>& legend) const {
     // Right wing
     legend->path->d = 
       legend->path->M(X2Redun, y+get_point(lastPos[1])) +
-      legend->path->V(legend->text[2]->y) + 
+      legend->path->V(legend->text[2]->y - 
+        VERT_MIDDLE*legend->text[2]->font_size) + 
       legend->path->H((X1Redun+X2Redun)/2 + 32);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
@@ -1446,8 +1466,8 @@ unique_ptr<PosPlot>& posPlot) const {
     text->text_anchor = "start";
     text->x = line->x1 + posPlot->tickLabelSkip;
   }
-  text->y = line->y1;
-  text->dominant_baseline = "middle";
+  text->y = line->y1 + VERT_BOTTOM * 9 /*font size of pos labels*/;
+  // text->dominant_baseline = "middle";
   text->Label = "bp";
   text->plot(f);
 
@@ -1479,11 +1499,11 @@ unique_ptr<PosPlot>& posPlot) const {
       // Text
       text->x = posPlot->plotRef ? line->x1 - posPlot->tickLabelSkip 
                                  : line->x1 + posPlot->tickLabelSkip;
-      text->y = line->y1;
+      text->y = line->y1 + VERT_MIDDLE * text->font_size;
       text->font_size = 9;
       text->font_weight = "normal";
       text->text_anchor = posPlot->plotRef ? "end" : "start";
-      text->dominant_baseline = "middle";
+      // text->dominant_baseline = "middle";
       text->Label = human_readable_non_cs(u64(round(pos)), 1);
       // text->Label = thousands_sep(u64(round(pos)));
       if (pos!=0.0f)
