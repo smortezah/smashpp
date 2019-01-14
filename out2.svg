@@ -1,469 +1,449 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Morteza Hosseini, IEETA 2018-2019 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="605" height="294" >
-<rect x="0" y="0" width="605" height="294" rx="1" ry="1" fill="white" fill-opacity="0.9" stroke="white" stroke-width="0" />
-<line id="20.00000038.333332520.64001538.333332" x1="20" y1="38.3333" x2="520.64" y2="38.3333" stroke-width="1.28" stroke="black" />
-<text id="20.00000031.333332" x="20" y="31.3333" dominant-baseline="baseline" font-size="10px" font-weight="bold" font-family="Arial" text-anchor="start" text-align="start" line-height="125%%" >
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 294.000000 605.000000" >
+<rect x="0" y="0" width="294" height="605" rx="1" ry="1" fill="white" fill-opacity="0.9" stroke="white" stroke-width="6.26823e-39" />
+<line id="46.33332830.00000046.333328530.640015" x1="46.3333" y1="30" x2="46.3333" y2="530.64" stroke-width="1.28" stroke="black" />
+<text id="41.33332836.299999" x="41.3333" y="36.3" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 bp</text>
-<line id="20.63999938.33333220.63999948.333332" x1="20.64" y1="38.3333" x2="20.64" y2="48.3333" stroke-width="1.28" stroke="black" />
-<line id="32.50000038.33333232.50000044.333332" x1="32.5" y1="38.3333" x2="32.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="45.00000038.33333245.00000044.333332" x1="45" y1="38.3333" x2="45" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="57.50000038.33333257.50000044.333332" x1="57.5" y1="38.3333" x2="57.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="70.00000038.33333270.00000048.333332" x1="70" y1="38.3333" x2="70" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="70.00000031.333332" x="70" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-10,000</text>
-<line id="82.50000038.33333282.50000044.333332" x1="82.5" y1="38.3333" x2="82.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="95.00000038.33333295.00000044.333332" x1="95" y1="38.3333" x2="95" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="107.50000038.333332107.50000044.333332" x1="107.5" y1="38.3333" x2="107.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="120.00000038.333332120.00000048.333332" x1="120" y1="38.3333" x2="120" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="120.00000031.333332" x="120" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-20,000</text>
-<line id="132.50000038.333332132.50000044.333332" x1="132.5" y1="38.3333" x2="132.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="145.00000038.333332145.00000044.333332" x1="145" y1="38.3333" x2="145" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="157.50000038.333332157.50000044.333332" x1="157.5" y1="38.3333" x2="157.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="170.00000038.333332170.00000048.333332" x1="170" y1="38.3333" x2="170" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="170.00000031.333332" x="170" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-30,000</text>
-<line id="182.50000038.333332182.50000044.333332" x1="182.5" y1="38.3333" x2="182.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="195.00000038.333332195.00000044.333332" x1="195" y1="38.3333" x2="195" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="207.50000038.333332207.50000044.333332" x1="207.5" y1="38.3333" x2="207.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="220.00000038.333332220.00000048.333332" x1="220" y1="38.3333" x2="220" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="220.00000031.333332" x="220" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-40,000</text>
-<line id="232.50000038.333332232.50000044.333332" x1="232.5" y1="38.3333" x2="232.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="245.00000038.333332245.00000044.333332" x1="245" y1="38.3333" x2="245" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="257.50000038.333332257.50000044.333332" x1="257.5" y1="38.3333" x2="257.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="270.00000038.333332270.00000048.333332" x1="270" y1="38.3333" x2="270" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="270.00000031.333332" x="270" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-50,000</text>
-<line id="282.50000038.333332282.50000044.333332" x1="282.5" y1="38.3333" x2="282.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="295.00000038.333332295.00000044.333332" x1="295" y1="38.3333" x2="295" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="307.50000038.333332307.50000044.333332" x1="307.5" y1="38.3333" x2="307.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="320.00000038.333332320.00000048.333332" x1="320" y1="38.3333" x2="320" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="320.00000031.333332" x="320" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-60,000</text>
-<line id="332.50000038.333332332.50000044.333332" x1="332.5" y1="38.3333" x2="332.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="345.00000038.333332345.00000044.333332" x1="345" y1="38.3333" x2="345" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="357.50000038.333332357.50000044.333332" x1="357.5" y1="38.3333" x2="357.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="370.00000038.333332370.00000048.333332" x1="370" y1="38.3333" x2="370" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="370.00000031.333332" x="370" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-70,000</text>
-<line id="382.50000038.333332382.50000044.333332" x1="382.5" y1="38.3333" x2="382.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="395.00000038.333332395.00000044.333332" x1="395" y1="38.3333" x2="395" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="407.50000038.333332407.50000044.333332" x1="407.5" y1="38.3333" x2="407.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="420.00000038.333332420.00000048.333332" x1="420" y1="38.3333" x2="420" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="420.00000031.333332" x="420" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-80,000</text>
-<line id="432.50000038.333332432.50000044.333332" x1="432.5" y1="38.3333" x2="432.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="445.00000038.333332445.00000044.333332" x1="445" y1="38.3333" x2="445" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="457.50000038.333332457.50000044.333332" x1="457.5" y1="38.3333" x2="457.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="470.00000038.333332470.00000048.333332" x1="470" y1="38.3333" x2="470" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="470.00000031.333332" x="470" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-90,000</text>
-<line id="482.50000038.333332482.50000044.333332" x1="482.5" y1="38.3333" x2="482.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="495.00000038.333332495.00000044.333332" x1="495" y1="38.3333" x2="495" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="507.50000038.333332507.50000044.333332" x1="507.5" y1="38.3333" x2="507.5" y2="44.3333" stroke-width="0.8" stroke="black" />
-<line id="520.00000038.333332520.00000048.333332" x1="520" y1="38.3333" x2="520" y2="48.3333" stroke-width="1.28" stroke="black" />
-<text id="520.00000031.333332" x="520" y="31.3333" dominant-baseline="baseline" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-100,000</text>
-<line id="20.000000255.666672520.640015255.666672" x1="20" y1="255.667" x2="520.64" y2="255.667" stroke-width="1.28" stroke="black" />
-<text id="20.000000262.666687" x="20" y="262.667" dominant-baseline="hanging" font-size="10px" font-weight="bold" font-family="Arial" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="46.33332830.63999956.33332830.639999" x1="46.3333" y1="30.64" x2="56.3333" y2="30.64" stroke-width="1.28" stroke="black" />
+<line id="46.33332842.50000052.33332842.500000" x1="46.3333" y1="42.5" x2="52.3333" y2="42.5" stroke-width="0.8" stroke="black" />
+<line id="46.33332855.00000052.33332855.000000" x1="46.3333" y1="55" x2="52.3333" y2="55" stroke-width="0.8" stroke="black" />
+<line id="46.33332867.50000052.33332867.500000" x1="46.3333" y1="67.5" x2="52.3333" y2="67.5" stroke-width="0.8" stroke="black" />
+<line id="46.33332880.00000056.33332880.000000" x1="46.3333" y1="80" x2="56.3333" y2="80" stroke-width="1.28" stroke="black" />
+<text id="41.33332883.150002" x="41.3333" y="83.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+10 K</text>
+<line id="46.33332892.50000052.33332892.500000" x1="46.3333" y1="92.5" x2="52.3333" y2="92.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328105.00000052.333328105.000000" x1="46.3333" y1="105" x2="52.3333" y2="105" stroke-width="0.8" stroke="black" />
+<line id="46.333328117.50000052.333328117.500000" x1="46.3333" y1="117.5" x2="52.3333" y2="117.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328130.00000056.333328130.000000" x1="46.3333" y1="130" x2="56.3333" y2="130" stroke-width="1.28" stroke="black" />
+<text id="41.333328133.149994" x="41.3333" y="133.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+20 K</text>
+<line id="46.333328142.50000052.333328142.500000" x1="46.3333" y1="142.5" x2="52.3333" y2="142.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328155.00000052.333328155.000000" x1="46.3333" y1="155" x2="52.3333" y2="155" stroke-width="0.8" stroke="black" />
+<line id="46.333328167.50000052.333328167.500000" x1="46.3333" y1="167.5" x2="52.3333" y2="167.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328180.00000056.333328180.000000" x1="46.3333" y1="180" x2="56.3333" y2="180" stroke-width="1.28" stroke="black" />
+<text id="41.333328183.149994" x="41.3333" y="183.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+30 K</text>
+<line id="46.333328192.50000052.333328192.500000" x1="46.3333" y1="192.5" x2="52.3333" y2="192.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328205.00000052.333328205.000000" x1="46.3333" y1="205" x2="52.3333" y2="205" stroke-width="0.8" stroke="black" />
+<line id="46.333328217.50000052.333328217.500000" x1="46.3333" y1="217.5" x2="52.3333" y2="217.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328230.00000056.333328230.000000" x1="46.3333" y1="230" x2="56.3333" y2="230" stroke-width="1.28" stroke="black" />
+<text id="41.333328233.149994" x="41.3333" y="233.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+40 K</text>
+<line id="46.333328242.50000052.333328242.500000" x1="46.3333" y1="242.5" x2="52.3333" y2="242.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328255.00000052.333328255.000000" x1="46.3333" y1="255" x2="52.3333" y2="255" stroke-width="0.8" stroke="black" />
+<line id="46.333328267.50000052.333328267.500000" x1="46.3333" y1="267.5" x2="52.3333" y2="267.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328280.00000056.333328280.000000" x1="46.3333" y1="280" x2="56.3333" y2="280" stroke-width="1.28" stroke="black" />
+<text id="41.333328283.149994" x="41.3333" y="283.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+50 K</text>
+<line id="46.333328292.50000052.333328292.500000" x1="46.3333" y1="292.5" x2="52.3333" y2="292.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328305.00000052.333328305.000000" x1="46.3333" y1="305" x2="52.3333" y2="305" stroke-width="0.8" stroke="black" />
+<line id="46.333328317.50000052.333328317.500000" x1="46.3333" y1="317.5" x2="52.3333" y2="317.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328330.00000056.333328330.000000" x1="46.3333" y1="330" x2="56.3333" y2="330" stroke-width="1.28" stroke="black" />
+<text id="41.333328333.149994" x="41.3333" y="333.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+60 K</text>
+<line id="46.333328342.50000052.333328342.500000" x1="46.3333" y1="342.5" x2="52.3333" y2="342.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328355.00000052.333328355.000000" x1="46.3333" y1="355" x2="52.3333" y2="355" stroke-width="0.8" stroke="black" />
+<line id="46.333328367.50000052.333328367.500000" x1="46.3333" y1="367.5" x2="52.3333" y2="367.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328380.00000056.333328380.000000" x1="46.3333" y1="380" x2="56.3333" y2="380" stroke-width="1.28" stroke="black" />
+<text id="41.333328383.149994" x="41.3333" y="383.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+70 K</text>
+<line id="46.333328392.50000052.333328392.500000" x1="46.3333" y1="392.5" x2="52.3333" y2="392.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328405.00000052.333328405.000000" x1="46.3333" y1="405" x2="52.3333" y2="405" stroke-width="0.8" stroke="black" />
+<line id="46.333328417.50000052.333328417.500000" x1="46.3333" y1="417.5" x2="52.3333" y2="417.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328430.00000056.333328430.000000" x1="46.3333" y1="430" x2="56.3333" y2="430" stroke-width="1.28" stroke="black" />
+<text id="41.333328433.149994" x="41.3333" y="433.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+80 K</text>
+<line id="46.333328442.50000052.333328442.500000" x1="46.3333" y1="442.5" x2="52.3333" y2="442.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328455.00000052.333328455.000000" x1="46.3333" y1="455" x2="52.3333" y2="455" stroke-width="0.8" stroke="black" />
+<line id="46.333328467.50000052.333328467.500000" x1="46.3333" y1="467.5" x2="52.3333" y2="467.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328480.00000056.333328480.000000" x1="46.3333" y1="480" x2="56.3333" y2="480" stroke-width="1.28" stroke="black" />
+<text id="41.333328483.149994" x="41.3333" y="483.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+90 K</text>
+<line id="46.333328492.50000052.333328492.500000" x1="46.3333" y1="492.5" x2="52.3333" y2="492.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328505.00000052.333328505.000000" x1="46.3333" y1="505" x2="52.3333" y2="505" stroke-width="0.8" stroke="black" />
+<line id="46.333328517.50000052.333328517.500000" x1="46.3333" y1="517.5" x2="52.3333" y2="517.5" stroke-width="0.8" stroke="black" />
+<line id="46.333328530.00000056.333328530.000000" x1="46.3333" y1="530" x2="56.3333" y2="530" stroke-width="1.28" stroke="black" />
+<text id="41.333328533.150024" x="41.3333" y="533.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+100 K</text>
+<line id="247.66667230.000000247.666672530.640015" x1="247.667" y1="30" x2="247.667" y2="530.64" stroke-width="1.28" stroke="black" />
+<text id="252.66667236.299999" x="252.667" y="36.3" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 bp</text>
-<line id="20.639999255.66667220.639999245.666672" x1="20.64" y1="255.667" x2="20.64" y2="245.667" stroke-width="1.28" stroke="black" />
-<line id="32.500000255.66667232.500000249.666672" x1="32.5" y1="255.667" x2="32.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="45.000000255.66667245.000000249.666672" x1="45" y1="255.667" x2="45" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="57.500000255.66667257.500000249.666672" x1="57.5" y1="255.667" x2="57.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="70.000000255.66667270.000000245.666672" x1="70" y1="255.667" x2="70" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="70.000000262.666687" x="70" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-10,000</text>
-<line id="82.500000255.66667282.500000249.666672" x1="82.5" y1="255.667" x2="82.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="95.000000255.66667295.000000249.666672" x1="95" y1="255.667" x2="95" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="107.500000255.666672107.500000249.666672" x1="107.5" y1="255.667" x2="107.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="120.000000255.666672120.000000245.666672" x1="120" y1="255.667" x2="120" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="120.000000262.666687" x="120" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-20,000</text>
-<line id="132.500000255.666672132.500000249.666672" x1="132.5" y1="255.667" x2="132.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="145.000000255.666672145.000000249.666672" x1="145" y1="255.667" x2="145" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="157.500000255.666672157.500000249.666672" x1="157.5" y1="255.667" x2="157.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="170.000000255.666672170.000000245.666672" x1="170" y1="255.667" x2="170" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="170.000000262.666687" x="170" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-30,000</text>
-<line id="182.500000255.666672182.500000249.666672" x1="182.5" y1="255.667" x2="182.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="195.000000255.666672195.000000249.666672" x1="195" y1="255.667" x2="195" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="207.500000255.666672207.500000249.666672" x1="207.5" y1="255.667" x2="207.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="220.000000255.666672220.000000245.666672" x1="220" y1="255.667" x2="220" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="220.000000262.666687" x="220" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-40,000</text>
-<line id="232.500000255.666672232.500000249.666672" x1="232.5" y1="255.667" x2="232.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="245.000000255.666672245.000000249.666672" x1="245" y1="255.667" x2="245" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="257.500000255.666672257.500000249.666672" x1="257.5" y1="255.667" x2="257.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="270.000000255.666672270.000000245.666672" x1="270" y1="255.667" x2="270" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="270.000000262.666687" x="270" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-50,000</text>
-<line id="282.500000255.666672282.500000249.666672" x1="282.5" y1="255.667" x2="282.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="295.000000255.666672295.000000249.666672" x1="295" y1="255.667" x2="295" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="307.500000255.666672307.500000249.666672" x1="307.5" y1="255.667" x2="307.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="320.000000255.666672320.000000245.666672" x1="320" y1="255.667" x2="320" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="320.000000262.666687" x="320" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-60,000</text>
-<line id="332.500000255.666672332.500000249.666672" x1="332.5" y1="255.667" x2="332.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="345.000000255.666672345.000000249.666672" x1="345" y1="255.667" x2="345" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="357.500000255.666672357.500000249.666672" x1="357.5" y1="255.667" x2="357.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="370.000000255.666672370.000000245.666672" x1="370" y1="255.667" x2="370" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="370.000000262.666687" x="370" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-70,000</text>
-<line id="382.500000255.666672382.500000249.666672" x1="382.5" y1="255.667" x2="382.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="395.000000255.666672395.000000249.666672" x1="395" y1="255.667" x2="395" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="407.500000255.666672407.500000249.666672" x1="407.5" y1="255.667" x2="407.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="420.000000255.666672420.000000245.666672" x1="420" y1="255.667" x2="420" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="420.000000262.666687" x="420" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-80,000</text>
-<line id="432.500000255.666672432.500000249.666672" x1="432.5" y1="255.667" x2="432.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="445.000000255.666672445.000000249.666672" x1="445" y1="255.667" x2="445" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="457.500000255.666672457.500000249.666672" x1="457.5" y1="255.667" x2="457.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="470.000000255.666672470.000000245.666672" x1="470" y1="255.667" x2="470" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="470.000000262.666687" x="470" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-90,000</text>
-<line id="482.500000255.666672482.500000249.666672" x1="482.5" y1="255.667" x2="482.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="495.000000255.666672495.000000249.666672" x1="495" y1="255.667" x2="495" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="507.500000255.666672507.500000249.666672" x1="507.5" y1="255.667" x2="507.5" y2="249.667" stroke-width="0.8" stroke="black" />
-<line id="520.000000255.666672520.000000245.666672" x1="520" y1="255.667" x2="520" y2="245.667" stroke-width="1.28" stroke="black" />
-<text id="520.000000262.666687" x="520" y="262.667" dominant-baseline="hanging" font-size="9px" font-weight="normal" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-100,000</text>
+<line id="247.66667230.639999237.66667230.639999" x1="247.667" y1="30.64" x2="237.667" y2="30.64" stroke-width="1.28" stroke="black" />
+<line id="247.66667242.500000241.66667242.500000" x1="247.667" y1="42.5" x2="241.667" y2="42.5" stroke-width="0.8" stroke="black" />
+<line id="247.66667255.000000241.66667255.000000" x1="247.667" y1="55" x2="241.667" y2="55" stroke-width="0.8" stroke="black" />
+<line id="247.66667267.500000241.66667267.500000" x1="247.667" y1="67.5" x2="241.667" y2="67.5" stroke-width="0.8" stroke="black" />
+<line id="247.66667280.000000237.66667280.000000" x1="247.667" y1="80" x2="237.667" y2="80" stroke-width="1.28" stroke="black" />
+<text id="252.66667283.150002" x="252.667" y="83.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+10 K</text>
+<line id="247.66667292.500000241.66667292.500000" x1="247.667" y1="92.5" x2="241.667" y2="92.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672105.000000241.666672105.000000" x1="247.667" y1="105" x2="241.667" y2="105" stroke-width="0.8" stroke="black" />
+<line id="247.666672117.500000241.666672117.500000" x1="247.667" y1="117.5" x2="241.667" y2="117.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672130.000000237.666672130.000000" x1="247.667" y1="130" x2="237.667" y2="130" stroke-width="1.28" stroke="black" />
+<text id="252.666672133.149994" x="252.667" y="133.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+20 K</text>
+<line id="247.666672142.500000241.666672142.500000" x1="247.667" y1="142.5" x2="241.667" y2="142.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672155.000000241.666672155.000000" x1="247.667" y1="155" x2="241.667" y2="155" stroke-width="0.8" stroke="black" />
+<line id="247.666672167.500000241.666672167.500000" x1="247.667" y1="167.5" x2="241.667" y2="167.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672180.000000237.666672180.000000" x1="247.667" y1="180" x2="237.667" y2="180" stroke-width="1.28" stroke="black" />
+<text id="252.666672183.149994" x="252.667" y="183.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+30 K</text>
+<line id="247.666672192.500000241.666672192.500000" x1="247.667" y1="192.5" x2="241.667" y2="192.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672205.000000241.666672205.000000" x1="247.667" y1="205" x2="241.667" y2="205" stroke-width="0.8" stroke="black" />
+<line id="247.666672217.500000241.666672217.500000" x1="247.667" y1="217.5" x2="241.667" y2="217.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672230.000000237.666672230.000000" x1="247.667" y1="230" x2="237.667" y2="230" stroke-width="1.28" stroke="black" />
+<text id="252.666672233.149994" x="252.667" y="233.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+40 K</text>
+<line id="247.666672242.500000241.666672242.500000" x1="247.667" y1="242.5" x2="241.667" y2="242.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672255.000000241.666672255.000000" x1="247.667" y1="255" x2="241.667" y2="255" stroke-width="0.8" stroke="black" />
+<line id="247.666672267.500000241.666672267.500000" x1="247.667" y1="267.5" x2="241.667" y2="267.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672280.000000237.666672280.000000" x1="247.667" y1="280" x2="237.667" y2="280" stroke-width="1.28" stroke="black" />
+<text id="252.666672283.149994" x="252.667" y="283.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+50 K</text>
+<line id="247.666672292.500000241.666672292.500000" x1="247.667" y1="292.5" x2="241.667" y2="292.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672305.000000241.666672305.000000" x1="247.667" y1="305" x2="241.667" y2="305" stroke-width="0.8" stroke="black" />
+<line id="247.666672317.500000241.666672317.500000" x1="247.667" y1="317.5" x2="241.667" y2="317.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672330.000000237.666672330.000000" x1="247.667" y1="330" x2="237.667" y2="330" stroke-width="1.28" stroke="black" />
+<text id="252.666672333.149994" x="252.667" y="333.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+60 K</text>
+<line id="247.666672342.500000241.666672342.500000" x1="247.667" y1="342.5" x2="241.667" y2="342.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672355.000000241.666672355.000000" x1="247.667" y1="355" x2="241.667" y2="355" stroke-width="0.8" stroke="black" />
+<line id="247.666672367.500000241.666672367.500000" x1="247.667" y1="367.5" x2="241.667" y2="367.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672380.000000237.666672380.000000" x1="247.667" y1="380" x2="237.667" y2="380" stroke-width="1.28" stroke="black" />
+<text id="252.666672383.149994" x="252.667" y="383.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+70 K</text>
+<line id="247.666672392.500000241.666672392.500000" x1="247.667" y1="392.5" x2="241.667" y2="392.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672405.000000241.666672405.000000" x1="247.667" y1="405" x2="241.667" y2="405" stroke-width="0.8" stroke="black" />
+<line id="247.666672417.500000241.666672417.500000" x1="247.667" y1="417.5" x2="241.667" y2="417.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672430.000000237.666672430.000000" x1="247.667" y1="430" x2="237.667" y2="430" stroke-width="1.28" stroke="black" />
+<text id="252.666672433.149994" x="252.667" y="433.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+80 K</text>
+<line id="247.666672442.500000241.666672442.500000" x1="247.667" y1="442.5" x2="241.667" y2="442.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672455.000000241.666672455.000000" x1="247.667" y1="455" x2="241.667" y2="455" stroke-width="0.8" stroke="black" />
+<line id="247.666672467.500000241.666672467.500000" x1="247.667" y1="467.5" x2="241.667" y2="467.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672480.000000237.666672480.000000" x1="247.667" y1="480" x2="237.667" y2="480" stroke-width="1.28" stroke="black" />
+<text id="252.666672483.149994" x="252.667" y="483.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+90 K</text>
+<line id="247.666672492.500000241.666672492.500000" x1="247.667" y1="492.5" x2="241.667" y2="492.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672505.000000241.666672505.000000" x1="247.667" y1="505" x2="241.667" y2="505" stroke-width="0.8" stroke="black" />
+<line id="247.666672517.500000241.666672517.500000" x1="247.667" y1="517.5" x2="241.667" y2="517.5" stroke-width="0.8" stroke="black" />
+<line id="247.666672530.000000237.666672530.000000" x1="247.667" y1="530" x2="237.667" y2="530" stroke-width="1.28" stroke="black" />
+<text id="252.666672533.150024" x="252.667" y="533.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+100 K</text>
 <defs id="" >
-<linearGradient id="grad270.204987116.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad100.000000280.204987" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#782D2C" stop-opacity="1" />
 <stop offset="100%" stop-color="#A03C3B" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="270.204987116.000000" d="M 270.205,116
+<path id="100.000000280.204987" d="M 100,280.205
 v 249.79
 a 8,2 0 0,0 16,0
 v -249.79
 a 8,2 0 0,0 -16,0
 z
-" fill="url(#grad270.204987116.000000)" fill-opacity="0.9" stroke="#501E1D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" transform="rotate(-90 270.204987 116.000000)" />
-<ellipse cx="278.205" cy="116" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad270.204987116.000000)" transform="rotate(-90 270.204987 116.000000)" />
-<ellipse cx="278.205" cy="365.79" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="transparent" transform="rotate(-90 270.204987 116.000000)" />
+" fill="url(#grad100.000000280.204987)" fill-opacity="0.9" stroke="#501E1D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="280.205" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad100.000000280.204987)" />
+<ellipse cx="108" cy="529.995" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad100.000000280.204987)" />
 <defs id="" >
-<linearGradient id="grad270.204987116.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad100.000000280.204987NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
 <stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="308.204987116.000000" d="M 308.205,116
+<path id="80.666664280.204987" d="M 80.6667,280.205
 v 249.79
 a 2.66667,1 0 0,0 5.33333,0
 v -249.79
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad270.204987116.000000NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 270.204987 116.000000)" />
-<ellipse cx="310.872" cy="116" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad270.204987116.000000NRC)" transform="rotate(-90 270.204987 116.000000)" />
-<ellipse cx="310.872" cy="365.79" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="transparent" transform="rotate(-90 270.204987 116.000000)" />
+" fill="url(#grad100.000000280.204987NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="280.205" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad100.000000280.204987NRC)" />
+<ellipse cx="83.3333" cy="529.995" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad100.000000280.204987NRC)" />
 <defs id="" >
-<linearGradient id="grad270.204987116.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad100.000000280.204987NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
 <stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="319.538330116.000000" d="M 319.538,116
+<path id="69.333328280.204987" d="M 69.3333,280.205
 v 249.79
 a 2.66667,1 0 0,0 5.33333,0
 v -249.79
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad270.204987116.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 270.204987 116.000000)" />
-<ellipse cx="322.205" cy="116" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad270.204987116.000000NRCRedun)" transform="rotate(-90 270.204987 116.000000)" />
-<ellipse cx="322.205" cy="365.79" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="transparent" transform="rotate(-90 270.204987 116.000000)" />
+" fill="url(#grad100.000000280.204987NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="280.205" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000280.204987NRCRedun)" />
+<ellipse cx="72" cy="529.995" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000280.204987NRCRedun)" />
 <defs id="" >
-<linearGradient id="grad145.134995194.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad178.000000155.134995" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#782D2C" stop-opacity="1" />
 <stop offset="100%" stop-color="#A03C3B" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="145.134995194.000000" d="M 145.135,194
+<path id="178.000000155.134995" d="M 178,155.135
 v 249.845
 a 8,2 0 0,0 16,0
 v -249.845
 a 8,2 0 0,0 -16,0
 z
-" fill="url(#grad145.134995194.000000)" fill-opacity="0.9" stroke="#501E1D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" transform="rotate(-90 145.134995 194.000000)" />
-<ellipse cx="153.135" cy="194" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad145.134995194.000000)" transform="rotate(-90 145.134995 194.000000)" />
-<ellipse cx="153.135" cy="443.845" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="transparent" transform="rotate(-90 145.134995 194.000000)" />
+" fill="url(#grad178.000000155.134995)" fill-opacity="0.9" stroke="#501E1D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="155.135" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad178.000000155.134995)" />
+<ellipse cx="186" cy="404.98" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad178.000000155.134995)" />
 <defs id="" >
-<linearGradient id="grad145.134995194.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad178.000000155.134995NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
 <stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="117.801659194.000000" d="M 117.802,194
+<path id="208.000000155.134995" d="M 208,155.135
 v 249.845
 a 2.66667,1 0 0,0 5.33333,0
 v -249.845
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad145.134995194.000000NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 145.134995 194.000000)" />
-<ellipse cx="120.468" cy="194" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad145.134995194.000000NRC)" transform="rotate(-90 145.134995 194.000000)" />
-<ellipse cx="120.468" cy="443.845" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="transparent" transform="rotate(-90 145.134995 194.000000)" />
+" fill="url(#grad178.000000155.134995NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="155.135" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad178.000000155.134995NRC)" />
+<ellipse cx="210.667" cy="404.98" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad178.000000155.134995NRC)" />
 <defs id="" >
-<linearGradient id="grad145.134995194.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad178.000000155.134995NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
 <stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="106.468323194.000000" d="M 106.468,194
+<path id="219.333328155.134995" d="M 219.333,155.135
 v 249.845
 a 2.66667,1 0 0,0 5.33333,0
 v -249.845
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad145.134995194.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 145.134995 194.000000)" />
-<ellipse cx="109.135" cy="194" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad145.134995194.000000NRCRedun)" transform="rotate(-90 145.134995 194.000000)" />
-<ellipse cx="109.135" cy="443.845" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="transparent" transform="rotate(-90 145.134995 194.000000)" />
-<polygon points="270.205,116 519.995,116 394.98,178 145.135,178 " fill="#A03C3B" stroke="#A03C3B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+" fill="url(#grad178.000000155.134995NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="155.135" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000155.134995NRCRedun)" />
+<ellipse cx="222" cy="404.98" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000155.134995NRCRedun)" />
+<polygon points="116,280.205 116,529.995 178,404.98 178,155.135 " fill="#A03C3B" stroke="#A03C3B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
 <defs id="" >
-<linearGradient id="grad145.000000116.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad100.000000155.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#2C782D" stop-opacity="1" />
 <stop offset="100%" stop-color="#3BA03C" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="145.000000116.000000" d="M 145,116
+<path id="100.000000155.000000" d="M 100,155
 v 125.045
 a 8,2 0 0,0 16,0
 v -125.045
 a 8,2 0 0,0 -16,0
 z
-" fill="url(#grad145.000000116.000000)" fill-opacity="0.9" stroke="#1D501E" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" transform="rotate(-90 145.000000 116.000000)" />
-<ellipse cx="153" cy="116" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad145.000000116.000000)" transform="rotate(-90 145.000000 116.000000)" />
-<ellipse cx="153" cy="241.045" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="transparent" transform="rotate(-90 145.000000 116.000000)" />
+" fill="url(#grad100.000000155.000000)" fill-opacity="0.9" stroke="#1D501E" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="155" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad100.000000155.000000)" />
+<ellipse cx="108" cy="280.045" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad100.000000155.000000)" />
 <defs id="" >
-<linearGradient id="grad145.000000116.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad100.000000155.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
 <stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="183.000000116.000000" d="M 183,116
+<path id="80.666664155.000000" d="M 80.6667,155
 v 125.045
 a 2.66667,1 0 0,0 5.33333,0
 v -125.045
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad145.000000116.000000NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 145.000000 116.000000)" />
-<ellipse cx="185.667" cy="116" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad145.000000116.000000NRC)" transform="rotate(-90 145.000000 116.000000)" />
-<ellipse cx="185.667" cy="241.045" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="transparent" transform="rotate(-90 145.000000 116.000000)" />
+" fill="url(#grad100.000000155.000000NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="155" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad100.000000155.000000NRC)" />
+<ellipse cx="83.3333" cy="280.045" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad100.000000155.000000NRC)" />
 <defs id="" >
-<linearGradient id="grad145.000000116.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad100.000000155.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
 <stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="194.333328116.000000" d="M 194.333,116
+<path id="69.333328155.000000" d="M 69.3333,155
 v 125.045
 a 2.66667,1 0 0,0 5.33333,0
 v -125.045
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad145.000000116.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 145.000000 116.000000)" />
-<ellipse cx="197" cy="116" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad145.000000116.000000NRCRedun)" transform="rotate(-90 145.000000 116.000000)" />
-<ellipse cx="197" cy="241.045" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="transparent" transform="rotate(-90 145.000000 116.000000)" />
+" fill="url(#grad100.000000155.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="155" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000155.000000NRCRedun)" />
+<ellipse cx="72" cy="280.045" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000155.000000NRCRedun)" />
 <defs id="" >
-<linearGradient id="grad20.000000194.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad178.00000030.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#2C782D" stop-opacity="1" />
 <stop offset="100%" stop-color="#3BA03C" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="20.000000194.000000" d="M 20,194
+<path id="178.00000030.000000" d="M 178,30
 v 125.045
 a 8,2 0 0,0 16,0
 v -125.045
 a 8,2 0 0,0 -16,0
 z
-" fill="url(#grad20.000000194.000000)" fill-opacity="0.9" stroke="#1D501E" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="28" cy="194" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad20.000000194.000000)" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="28" cy="319.045" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="transparent" transform="rotate(-90 20.000000 194.000000)" />
+" fill="url(#grad178.00000030.000000)" fill-opacity="0.9" stroke="#1D501E" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="30" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad178.00000030.000000)" />
+<ellipse cx="186" cy="155.045" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad178.00000030.000000)" />
 <defs id="" >
-<pattern id="Wavy20.000000194.000000" x="20" y="194" width="16" height="14" patternUnits="userSpaceOnUse" >
+<pattern id="Wavy178.00000030.000000" x="178" y="30" width="16" height="14" patternUnits="userSpaceOnUse" >
 <path id="" d="m -2.1,11.9
 l 10.1,-9.8
 l 10.1,9.8
-" fill="transparent" fill-opacity="0.9" stroke="#141" stroke-opacity="1" stroke-linejoin="round" stroke-width="4.2" />
+" fill="none" fill-opacity="0.9" stroke="#141" stroke-opacity="1" stroke-linejoin="round" stroke-width="4.2" />
 </pattern>
 </defs>
-<path id="20.000000194.000000" d="M 20,194
+<path id="178.00000030.000000" d="M 178,30
 v 125.045
 a 8,2 0 0,0 16,0
 v -125.045
 a 8,2 0 0,0 -16,0
 z
-" fill="url(#Wavy20.000000194.000000)" fill-opacity="0.9" stroke="#1D501E" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="28" cy="194" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#Wavy20.000000194.000000)" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="28" cy="319.045" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="transparent" transform="rotate(-90 20.000000 194.000000)" />
+" fill="url(#Wavy178.00000030.000000)" fill-opacity="0.9" stroke="#1D501E" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="30" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#Wavy178.00000030.000000)" />
+<ellipse cx="186" cy="155.045" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#Wavy178.00000030.000000)" />
 <defs id="" >
-<linearGradient id="grad20.000000194.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad178.00000030.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
 <stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="-7.333334194.000000" d="M -7.33333,194
+<path id="208.00000030.000000" d="M 208,30
 v 125.045
 a 2.66667,1 0 0,0 5.33333,0
 v -125.045
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad20.000000194.000000NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="-4.66667" cy="194" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad20.000000194.000000NRC)" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="-4.66667" cy="319.045" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="transparent" transform="rotate(-90 20.000000 194.000000)" />
+" fill="url(#grad178.00000030.000000NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="30" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad178.00000030.000000NRC)" />
+<ellipse cx="210.667" cy="155.045" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad178.00000030.000000NRC)" />
 <defs id="" >
-<linearGradient id="grad20.000000194.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad178.00000030.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
 <stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="-18.666668194.000000" d="M -18.6667,194
+<path id="219.33332830.000000" d="M 219.333,30
 v 125.045
 a 2.66667,1 0 0,0 5.33333,0
 v -125.045
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad20.000000194.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="-16" cy="194" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad20.000000194.000000NRCRedun)" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="-16" cy="319.045" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="transparent" transform="rotate(-90 20.000000 194.000000)" />
-<polygon points="145,116 270.045,116 20,178 145.045,178 " fill="#3BA03C" stroke="#3BA03C" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+" fill="url(#grad178.00000030.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="30" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000030.000000NRCRedun)" />
+<ellipse cx="222" cy="155.045" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000030.000000NRCRedun)" />
+<polygon points="116,155 116,280.045 178,30 178,155.045 " fill="#3BA03C" stroke="#3BA03C" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
 <defs id="" >
-<linearGradient id="grad20.080000116.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad100.00000030.080000" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#77782C" stop-opacity="1" />
 <stop offset="100%" stop-color="#9FA03B" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="20.080000116.000000" d="M 20.08,116
+<path id="100.00000030.080000" d="M 100,30.08
 v 124.98
 a 8,2 0 0,0 16,0
 v -124.98
 a 8,2 0 0,0 -16,0
 z
-" fill="url(#grad20.080000116.000000)" fill-opacity="0.9" stroke="#4F501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" transform="rotate(-90 20.080000 116.000000)" />
-<ellipse cx="28.08" cy="116" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad20.080000116.000000)" transform="rotate(-90 20.080000 116.000000)" />
-<ellipse cx="28.08" cy="240.98" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="transparent" transform="rotate(-90 20.080000 116.000000)" />
+" fill="url(#grad100.00000030.080000)" fill-opacity="0.9" stroke="#4F501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="30.08" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad100.00000030.080000)" />
+<ellipse cx="108" cy="155.06" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad100.00000030.080000)" />
 <defs id="" >
-<linearGradient id="grad20.080000116.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad100.00000030.080000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
 <stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="58.080002116.000000" d="M 58.08,116
+<path id="80.66666430.080000" d="M 80.6667,30.08
 v 124.98
 a 2.66667,1 0 0,0 5.33333,0
 v -124.98
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad20.080000116.000000NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 20.080000 116.000000)" />
-<ellipse cx="60.7467" cy="116" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad20.080000116.000000NRC)" transform="rotate(-90 20.080000 116.000000)" />
-<ellipse cx="60.7467" cy="240.98" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="transparent" transform="rotate(-90 20.080000 116.000000)" />
+" fill="url(#grad100.00000030.080000NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="30.08" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad100.00000030.080000NRC)" />
+<ellipse cx="83.3333" cy="155.06" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad100.00000030.080000NRC)" />
 <defs id="" >
-<linearGradient id="grad20.080000116.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad100.00000030.080000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
 <stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="69.413338116.000000" d="M 69.4133,116
+<path id="69.33332830.080000" d="M 69.3333,30.08
 v 124.98
 a 2.66667,1 0 0,0 5.33333,0
 v -124.98
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad20.080000116.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 20.080000 116.000000)" />
-<ellipse cx="72.08" cy="116" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad20.080000116.000000NRCRedun)" transform="rotate(-90 20.080000 116.000000)" />
-<ellipse cx="72.08" cy="240.98" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="transparent" transform="rotate(-90 20.080000 116.000000)" />
+" fill="url(#grad100.00000030.080000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="30.08" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000030.080000NRCRedun)" />
+<ellipse cx="72" cy="155.06" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000030.080000NRCRedun)" />
 <defs id="" >
-<linearGradient id="grad395.084991194.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad178.000000405.084991" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#77782C" stop-opacity="1" />
 <stop offset="100%" stop-color="#9FA03B" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="395.084991194.000000" d="M 395.085,194
+<path id="178.000000405.084991" d="M 178,405.085
 v 124.91
 a 8,2 0 0,0 16,0
 v -124.91
 a 8,2 0 0,0 -16,0
 z
-" fill="url(#grad395.084991194.000000)" fill-opacity="0.9" stroke="#4F501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" transform="rotate(-90 395.084991 194.000000)" />
-<ellipse cx="403.085" cy="194" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad395.084991194.000000)" transform="rotate(-90 395.084991 194.000000)" />
-<ellipse cx="403.085" cy="318.91" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="transparent" transform="rotate(-90 395.084991 194.000000)" />
+" fill="url(#grad178.000000405.084991)" fill-opacity="0.9" stroke="#4F501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="405.085" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad178.000000405.084991)" />
+<ellipse cx="186" cy="529.995" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad178.000000405.084991)" />
 <defs id="" >
-<linearGradient id="grad395.084991194.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad178.000000405.084991NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
 <stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="367.751648194.000000" d="M 367.752,194
+<path id="208.000000405.084991" d="M 208,405.085
 v 124.91
 a 2.66667,1 0 0,0 5.33333,0
 v -124.91
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad395.084991194.000000NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 395.084991 194.000000)" />
-<ellipse cx="370.418" cy="194" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad395.084991194.000000NRC)" transform="rotate(-90 395.084991 194.000000)" />
-<ellipse cx="370.418" cy="318.91" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="transparent" transform="rotate(-90 395.084991 194.000000)" />
+" fill="url(#grad178.000000405.084991NRC)" fill-opacity="0.9" stroke="#00A" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="405.085" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad178.000000405.084991NRC)" />
+<ellipse cx="210.667" cy="529.995" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#00A" fill="url(#grad178.000000405.084991NRC)" />
 <defs id="" >
-<linearGradient id="grad395.084991194.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad178.000000405.084991NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
 <stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="356.418335194.000000" d="M 356.418,194
+<path id="219.333328405.084991" d="M 219.333,405.085
 v 124.91
 a 2.66667,1 0 0,0 5.33333,0
 v -124.91
 a 2.66667,1 0 0,0 -5.33333,0
 z
-" fill="url(#grad395.084991194.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" transform="rotate(-90 395.084991 194.000000)" />
-<ellipse cx="359.085" cy="194" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad395.084991194.000000NRCRedun)" transform="rotate(-90 395.084991 194.000000)" />
-<ellipse cx="359.085" cy="318.91" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="transparent" transform="rotate(-90 395.084991 194.000000)" />
-<polygon points="20.08,116 145.06,116 519.995,178 395.085,178 " fill="#9FA03B" stroke="#9FA03B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
-<path id="20.000000116.000000" d="M 20,116
+" fill="url(#grad178.000000405.084991NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="405.085" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000405.084991NRCRedun)" />
+<ellipse cx="222" cy="529.995" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000405.084991NRCRedun)" />
+<polygon points="116,30.08 116,155.06 178,529.995 178,405.085 " fill="#9FA03B" stroke="#9FA03B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<path id="100.00000030.000000" d="M 100,30
 v 500
 a 8,2 0 0,0 16,0
 v -500
 a 8,2 0 0,0 -16,0
 z
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1.25" transform="rotate(-90 20.000000 116.000000)" />
-<ellipse cx="28" cy="116" rx="8.3" ry="2" stroke-width="0.5" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="transparent" transform="rotate(-90 20.000000 116.000000)" />
-<ellipse cx="28" cy="616" rx="8.3" ry="2" stroke-width="0.5" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="transparent" transform="rotate(-90 20.000000 116.000000)" />
-<path id="20.000000194.000000" d="M 20,194
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" />
+<ellipse cx="108" cy="30" rx="8.24" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
+<ellipse cx="108" cy="530" rx="8.24" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
+<path id="178.00000030.000000" d="M 178,30
 v 500
 a 8,2 0 0,0 16,0
 v -500
 a 8,2 0 0,0 -16,0
 z
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1.25" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="28" cy="194" rx="8.3" ry="2" stroke-width="0.5" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="transparent" transform="rotate(-90 20.000000 194.000000)" />
-<ellipse cx="28" cy="694" rx="8.3" ry="2" stroke-width="0.5" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="transparent" transform="rotate(-90 20.000000 194.000000)" />
-<text id="20.00000084.000000" x="20" y="84" dominant-baseline="text-before-edge" font-size="10px" font-weight="bold" font-family="Arial" text-anchor="start" text-align="start" line-height="125%%" >
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" />
+<ellipse cx="186" cy="30" rx="8.24" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
+<ellipse cx="186" cy="530" rx="8.24" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
+<text id="108.00000020.400000" x="108" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
 RefM</text>
-<text id="20.000000210.000000" x="20" y="210" dominant-baseline="text-after-edge" font-size="10px" font-weight="bold" font-family="Arial" text-anchor="start" text-align="start" line-height="125%%" >
+<text id="186.00000020.400000" x="186" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
 TarM</text>
-<text id="550.000000147.000000" x="550" y="147" dominant-baseline="middle" transform="rotate(90 550.000000 147.000000)" font-size="9px" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-Relative Redundancy</text>
-<path id="" d="M 519.995,75.3333
-H 550
-V 100
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
-<path id="" d="M 519.995,218.667
-H 550
-V 194
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
-<text id="585.000000147.000000" x="585" y="147" dominant-baseline="middle" transform="rotate(90 585.000000 147.000000)" font-size="9px" font-family="Arial" text-anchor="middle" text-align="start" line-height="125%%" >
-Redundancy</text>
-<path id="" d="M 519.995,64
-H 585
-V 115
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
-<path id="" d="M 519.995,230
-H 585
-V 179
-" fill="transparent" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
 <defs id="" >
-<linearGradient id="grad560.00000078.000000" x1="0%" y1="100%" x2="0%" y2="0%" >
+<linearGradient id="grad92.000000570.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
 <stop offset="8%" stop-color="#0055ff" stop-opacity="1" />
 <stop offset="16%" stop-color="#00aaff" stop-opacity="1" />
@@ -479,15 +459,35 @@ V 179
 <stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
 </linearGradient>
 </defs>
-<rect x="560" y="78" width="15" height="138" rx="2" ry="2" fill="url(#grad560.00000078.000000)" fill-opacity="0.9" stroke="black" stroke-width="0.5" />
-<text id="567.500000222.000000" x="567.5" y="222" dominant-baseline="middle" font-size="8px" font-weight="bold" font-family="Arial" text-anchor="middle" text-align="middle" line-height="125%%" >
+<rect x="92" y="570" width="110" height="11" rx="2" ry="2" fill="url(#grad92.000000570.000000)" fill-opacity="0.9" stroke="black" stroke-width="0.5" />
+<text id="147.000000563.150024" x="147" y="563.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-family="Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+Relative Redundancy</text>
+<text id="147.000000594.150024" x="147" y="594.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-family="Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+Redundancy</text>
+<text id="88.000000575.500000" x="88" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 0.0</text>
-<text id="567.500000181.500000" x="567.5" y="181.5" dominant-baseline="middle" font-size="8px" font-weight="bold" font-family="Arial" text-anchor="middle" text-align="middle" line-height="125%%" >
-0.5</text>
-<text id="567.500000147.000000" x="567.5" y="147" dominant-baseline="middle" font-size="8px" font-weight="bold" font-family="Arial" text-anchor="middle" text-align="middle" line-height="125%%" >
-1.0</text>
-<text id="567.500000112.500000" x="567.5" y="112.5" dominant-baseline="middle" font-size="8px" font-weight="bold" font-family="Arial" text-anchor="middle" text-align="middle" line-height="125%%" >
-1.5</text>
-<text id="567.50000072.000000" x="567.5" y="72" dominant-baseline="middle" font-size="8px" font-weight="bold" font-family="Arial" text-anchor="middle" text-align="middle" line-height="125%%" >
+<text id="206.000000575.500000" x="206" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 2.0</text>
+<text id="119.500000575.500000" x="119.5" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+0.5</text>
+<text id="147.000000575.500000" x="147" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+1.0</text>
+<text id="174.500000575.500000" x="174.5" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+1.5</text>
+<path id="" d="M 83.3333,529.995
+V 560
+H 97
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+<path id="" d="M 210.667,529.995
+V 560
+H 197
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+<path id="" d="M 72,529.995
+V 591
+H 115
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+<path id="" d="M 222,529.995
+V 591
+H 179
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
 </svg>
