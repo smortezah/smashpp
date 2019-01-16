@@ -57,9 +57,9 @@ class Text : public SVG {
   u8     font_size;
   string Label;       // Not in standard
 
-  Text () : dx(0), dy(0), font_family("Arial"), font_variant("normal"),
-    text_anchor("middle"), text_align("start"), line_height("125%%"), 
-    font_size(13) {}
+  Text () : dx(0), dy(0), font_family("Helvetica,Arial"), 
+    font_variant("normal"), text_anchor("middle"), text_align("start"),
+    line_height("125%%"), font_size(13) {}
   void plot (ofstream&) const;
   void plot_shadow (ofstream&, const string& ="grey");
 };
