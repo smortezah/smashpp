@@ -31,45 +31,47 @@ SYNOPSIS
 SAMPLE
 
 DESCRIPTION
-  Mandatory arguments:
+  Mandatory arguments
   -r,  --ref FILE            reference file (Seq/Fasta/Fastq)
   -t,  --tar FILE            target file    (Seq/Fasta/Fastq)
-
-  Options:
+  
+  Options
   -v,  --verbose             more information
-  -l,  --level INT           level of compression [0;4]     COMPRESS
-  -e,  --ent-n FLOAT         Entropy of 'N's [0.0;100.0]    COMPRESS
-  -n,  --nthr  INT           number of threads [1;8]
-  -fs, --filter-scale S|M|L  scale of the filter {S|small,    FILTER
-                             M|medium, L|large}
-  -w,  --wsize INT           window size [1;100000]           FILTER
-  -wt, --wtype [0;7]         type of windowing function       FILTER
+  -l,  --level INT           level of compression: [0, 5]
+  -m,  --min   INT           min segment size: [1, 4294967295]
+  -nr, --no-redun            do NOT compute self complexity
+  -e,  --ent-n FLOAT         Entropy of 'N's: [0.0, 100.0]
+  -n,  --nthr  INT           number of threads: [1, 8]
+  -fs, --filter-scale S|M|L  scale of the filter:
+                             {S|small, M|medium, L|large}
+  -w,  --wsize INT           window size: [1, 4294967295]
+  -wt, --wtype INT/STRING    type of windowing function:
                              {0|rectangular, 1|hamming, 2|hann,
                              3|blackman, 4|triangular, 5|welch,
                              6|sine, 7|nuttall}
-  -d,  --step   INT          sampling steps                   FILTER
-  -th, --thresh FLOAT        threshold [0.0;20.0]             FILTER
-  -sp, --save-profile        save profile (*.prf)               SAVE
-  -sf, --save-filter         save filtered file (*.fil)         SAVE
-  -sb, --save-seq            save sequence (input: Fasta/Fastq) SAVE
-  -ss, --save-segment        save segmented files (*-sₙ)        SAVE
-  -sa, --save-all            save profile, filetered and        SAVE
+  -d,  --step   INT          sampling steps
+  -th, --thresh FLOAT        threshold: [0.0, 20.0]
+  -sp, --save-profile        save profile (*.prf)
+  -sf, --save-filter         save filtered file (*.fil)
+  -sb, --save-seq            save sequence (input: Fasta/Fastq)
+  -ss, --save-segment        save segmented files (*-s_i)
+  -sa, --save-all            save profile, filetered and
                              segmented files
-  -h,  --help                usage guide 
-  -rm, --ref-model [𝜅,[𝑤,𝑑,]ir,$\alpha$,𝛾/𝜏,ir,𝛼,𝛾:...]               MODEL
-  -tm, --tar-model [𝜅,[𝑤,𝑑,]ir,𝛼,𝛾/𝜏,ir,𝛼,𝛾:...]               MODEL
+  -h,  --help                usage guide
+  -rm, --ref-model  k,[w,d,]ir,a,g/t,ir,a,g:...
+  -tm, --tar-model  k,[w,d,]ir,a,g/t,ir,a,g:...
                              parameters of models
-                       (INT) 𝜅:  context size 
-                       (INT) 𝑤:  width of sketch in log2 form, 
+                       (INT) k:  context size
+                       (INT) w:  width of sketch in log2 form,
                                  e.g., set 10 for w=2^10=1024
-                       (INT) 𝑑:  depth of sketch
-                             ir: inverted repeat {0, 1, 2}
+                       (INT) d:  depth of sketch
+                       (INT) ir: inverted repeat: {0, 1, 2}
                                  0: regular (not inverted)
                                  1: inverted, solely
                                  2: both regular and inverted
-                     (FLOAT) 𝛼:  estimator
-                     (FLOAT) 𝛾:  forgetting factor [0.0;1.0)
-                       (INT) 𝜏:  threshold (no. substitutions)
+                     (FLOAT) a:  estimator
+                     (FLOAT) g:  forgetting factor: [0.0, 1.0)
+                       (INT) t:  threshold (no. substitutions)
 \end{code}
 
 The arguments ``-r'' and ``-t'' are used to specify the reference and the target files. It is highly recommended to choose short names for these files.
