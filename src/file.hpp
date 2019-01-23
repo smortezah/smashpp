@@ -3,7 +3,6 @@
 
 #include <iterator>
 #include "def.hpp"
-#include "file.hpp"
 #include "exception.hpp"
 
 namespace smashpp {

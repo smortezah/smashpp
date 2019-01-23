@@ -11,6 +11,7 @@ class HSV;
 auto is_hex (const string&) -> bool;
 auto to_hex (const RGB&) -> string;
 auto to_rgb (const string&) -> RGB;
+auto to_rgb (const HSV&) -> RGB;
 auto to_hsv (const RGB&) -> HSV;
 auto alpha_blend (const RGB&, const RGB&, float) -> RGB;
 auto alpha_blend (const string&, const RGB&, float) -> string;
