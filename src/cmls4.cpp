@@ -9,7 +9,7 @@ using namespace smashpp;
 CMLS4::CMLS4 (u64 w_, u8 d_) : w(w_), d(d_), tot(0) {
   try { sk.resize((d*w+1)>>1u); }
   catch (std::bad_alloc& b) { error("failed memory allocation."); }
-  uhashShift = static_cast<u8>(G - ceil(log2(w)));
+  uhashShift = static_cast<u8>(G - floor(log2(w)));
   ab.resize(d<<1u);
   set_a_b();
 }
