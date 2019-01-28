@@ -5,3 +5,13 @@ time: 1:9:54 hour:min:sec
 ./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t G.gorilla
 ./smashpp -viz -vv -m 200 -o B.taurus-G.gorilla.svg B.taurus-G.gorilla.pos
 time: 1:10:24 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t M.fuscata
+./smashpp -viz -vv -m 185 -o B.taurus-M.fuscata.svg B.taurus-M.fuscata.pos
+time: 1:13:53 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t O.cuniculus
+./smashpp -viz -m 200 -vv -o B.taurus-O.cuniculus.svg B.taurus-O.cuniculus.pos
+time: 1:11:55 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.abelii
