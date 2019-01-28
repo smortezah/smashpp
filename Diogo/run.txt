@@ -15,3 +15,15 @@ time: 1:13:53 hour:min:sec
 time: 1:11:55 hour:min:sec
 
 ./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.abelii
+./smashpp -viz -m 175 -vv -o B.taurus-P.abelii.svg B.taurus-P.abelii.pos
+time: 1:7:17 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.paniscus
+./smashpp -viz -m 150 -vv -o B.taurus-P.paniscus.svg B.taurus-P.paniscus.pos
+time: 1:20:17 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.pygmaeus
+./smashpp -viz -m 145 -vv -o B.taurus-P.pygmaeus.svg B.taurus-P.pygmaeus.pos
+time: 1:13:36 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.troglodytes
