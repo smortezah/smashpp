@@ -1,0 +1,7 @@
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t C.lupus
+./smashpp -viz -vv -m 300 -o B.taurus-C.lupus.svg B.taurus-C.lupus.pos
+time: 1:9:54 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t G.gorilla
+./smashpp -viz -vv -m 200 -o B.taurus-G.gorilla.svg B.taurus-G.gorilla.pos
+time: 1:10:24 hour:min:sec
