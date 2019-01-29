@@ -1,0 +1,2677 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Morteza Hosseini, IEETA 2018-2019 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 294.000000 605.175415" >
+<rect x="0" y="0" width="294" height="605.175" rx="1" ry="1" fill="white" fill-opacity="0.9" stroke="white" stroke-width="0" />
+<line id="46.33332830.00000046.333328513.066895" x1="46.3333" y1="30" x2="46.3333" y2="513.067" stroke-width="1.28" stroke="black" />
+<text id="41.33332836.299999" x="41.3333" y="36.3" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+bp</text>
+<line id="46.33332830.63999956.33332830.639999" x1="46.3333" y1="30.64" x2="56.3333" y2="30.64" stroke-width="1.28" stroke="black" />
+<line id="46.33332844.61988452.33332844.619884" x1="46.3333" y1="44.6199" x2="52.3333" y2="44.6199" stroke-width="0.8" stroke="black" />
+<line id="46.33332859.23976552.33332859.239765" x1="46.3333" y1="59.2398" x2="52.3333" y2="59.2398" stroke-width="0.8" stroke="black" />
+<line id="46.33332873.85965052.33332873.859650" x1="46.3333" y1="73.8596" x2="52.3333" y2="73.8596" stroke-width="0.8" stroke="black" />
+<line id="46.33332888.47953056.33332888.479530" x1="46.3333" y1="88.4795" x2="56.3333" y2="88.4795" stroke-width="1.28" stroke="black" />
+<text id="41.33332891.629532" x="41.3333" y="91.6295" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+2 K</text>
+<line id="46.333328103.09941952.333328103.099419" x1="46.3333" y1="103.099" x2="52.3333" y2="103.099" stroke-width="0.8" stroke="black" />
+<line id="46.333328117.71929952.333328117.719299" x1="46.3333" y1="117.719" x2="52.3333" y2="117.719" stroke-width="0.8" stroke="black" />
+<line id="46.333328132.33918852.333328132.339188" x1="46.3333" y1="132.339" x2="52.3333" y2="132.339" stroke-width="0.8" stroke="black" />
+<line id="46.333328146.95906156.333328146.959061" x1="46.3333" y1="146.959" x2="56.3333" y2="146.959" stroke-width="1.28" stroke="black" />
+<text id="41.333328150.109055" x="41.3333" y="150.109" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+4 K</text>
+<line id="46.333328161.57894952.333328161.578949" x1="46.3333" y1="161.579" x2="52.3333" y2="161.579" stroke-width="0.8" stroke="black" />
+<line id="46.333328176.19883752.333328176.198837" x1="46.3333" y1="176.199" x2="52.3333" y2="176.199" stroke-width="0.8" stroke="black" />
+<line id="46.333328190.81871052.333328190.818710" x1="46.3333" y1="190.819" x2="52.3333" y2="190.819" stroke-width="0.8" stroke="black" />
+<line id="46.333328205.43859956.333328205.438599" x1="46.3333" y1="205.439" x2="56.3333" y2="205.439" stroke-width="1.28" stroke="black" />
+<text id="41.333328208.588593" x="41.3333" y="208.589" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+6 K</text>
+<line id="46.333328220.05848752.333328220.058487" x1="46.3333" y1="220.058" x2="52.3333" y2="220.058" stroke-width="0.8" stroke="black" />
+<line id="46.333328234.67836052.333328234.678360" x1="46.3333" y1="234.678" x2="52.3333" y2="234.678" stroke-width="0.8" stroke="black" />
+<line id="46.333328249.29824852.333328249.298248" x1="46.3333" y1="249.298" x2="52.3333" y2="249.298" stroke-width="0.8" stroke="black" />
+<line id="46.333328263.91812156.333328263.918121" x1="46.3333" y1="263.918" x2="56.3333" y2="263.918" stroke-width="1.28" stroke="black" />
+<text id="41.333328267.068115" x="41.3333" y="267.068" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+8 K</text>
+<line id="46.333328278.53802552.333328278.538025" x1="46.3333" y1="278.538" x2="52.3333" y2="278.538" stroke-width="0.8" stroke="black" />
+<line id="46.333328293.15789852.333328293.157898" x1="46.3333" y1="293.158" x2="52.3333" y2="293.158" stroke-width="0.8" stroke="black" />
+<line id="46.333328307.77777152.333328307.777771" x1="46.3333" y1="307.778" x2="52.3333" y2="307.778" stroke-width="0.8" stroke="black" />
+<line id="46.333328322.39767556.333328322.397675" x1="46.3333" y1="322.398" x2="56.3333" y2="322.398" stroke-width="1.28" stroke="black" />
+<text id="41.333328325.547668" x="41.3333" y="325.548" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+10 K</text>
+<line id="46.333328337.01754852.333328337.017548" x1="46.3333" y1="337.018" x2="52.3333" y2="337.018" stroke-width="0.8" stroke="black" />
+<line id="46.333328351.63742152.333328351.637421" x1="46.3333" y1="351.637" x2="52.3333" y2="351.637" stroke-width="0.8" stroke="black" />
+<line id="46.333328366.25732452.333328366.257324" x1="46.3333" y1="366.257" x2="52.3333" y2="366.257" stroke-width="0.8" stroke="black" />
+<line id="46.333328380.87719756.333328380.877197" x1="46.3333" y1="380.877" x2="56.3333" y2="380.877" stroke-width="1.28" stroke="black" />
+<text id="41.333328384.027191" x="41.3333" y="384.027" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+12 K</text>
+<line id="46.333328395.49707052.333328395.497070" x1="46.3333" y1="395.497" x2="52.3333" y2="395.497" stroke-width="0.8" stroke="black" />
+<line id="46.333328410.11697452.333328410.116974" x1="46.3333" y1="410.117" x2="52.3333" y2="410.117" stroke-width="0.8" stroke="black" />
+<line id="46.333328424.73684752.333328424.736847" x1="46.3333" y1="424.737" x2="52.3333" y2="424.737" stroke-width="0.8" stroke="black" />
+<line id="46.333328439.35672056.333328439.356720" x1="46.3333" y1="439.357" x2="56.3333" y2="439.357" stroke-width="1.28" stroke="black" />
+<text id="41.333328442.506714" x="41.3333" y="442.507" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+14 K</text>
+<line id="46.333328453.97659352.333328453.976593" x1="46.3333" y1="453.977" x2="52.3333" y2="453.977" stroke-width="0.8" stroke="black" />
+<line id="46.333328468.59649752.333328468.596497" x1="46.3333" y1="468.596" x2="52.3333" y2="468.596" stroke-width="0.8" stroke="black" />
+<line id="46.333328483.21637052.333328483.216370" x1="46.3333" y1="483.216" x2="52.3333" y2="483.216" stroke-width="0.8" stroke="black" />
+<line id="46.333328497.83624356.333328497.836243" x1="46.3333" y1="497.836" x2="56.3333" y2="497.836" stroke-width="1.28" stroke="black" />
+<text id="41.333328500.986237" x="41.3333" y="500.986" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+16 K</text>
+<line id="247.66667230.000000247.666672530.815430" x1="247.667" y1="30" x2="247.667" y2="530.815" stroke-width="1.28" stroke="black" />
+<text id="252.66667236.299999" x="252.667" y="36.3" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+bp</text>
+<line id="247.66667230.639999237.66667230.639999" x1="247.667" y1="30.64" x2="237.667" y2="30.64" stroke-width="1.28" stroke="black" />
+<line id="247.66667244.619884241.66667244.619884" x1="247.667" y1="44.6199" x2="241.667" y2="44.6199" stroke-width="0.8" stroke="black" />
+<line id="247.66667259.239765241.66667259.239765" x1="247.667" y1="59.2398" x2="241.667" y2="59.2398" stroke-width="0.8" stroke="black" />
+<line id="247.66667273.859650241.66667273.859650" x1="247.667" y1="73.8596" x2="241.667" y2="73.8596" stroke-width="0.8" stroke="black" />
+<line id="247.66667288.479530237.66667288.479530" x1="247.667" y1="88.4795" x2="237.667" y2="88.4795" stroke-width="1.28" stroke="black" />
+<text id="252.66667291.629532" x="252.667" y="91.6295" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+2 K</text>
+<line id="247.666672103.099419241.666672103.099419" x1="247.667" y1="103.099" x2="241.667" y2="103.099" stroke-width="0.8" stroke="black" />
+<line id="247.666672117.719299241.666672117.719299" x1="247.667" y1="117.719" x2="241.667" y2="117.719" stroke-width="0.8" stroke="black" />
+<line id="247.666672132.339188241.666672132.339188" x1="247.667" y1="132.339" x2="241.667" y2="132.339" stroke-width="0.8" stroke="black" />
+<line id="247.666672146.959061237.666672146.959061" x1="247.667" y1="146.959" x2="237.667" y2="146.959" stroke-width="1.28" stroke="black" />
+<text id="252.666672150.109055" x="252.667" y="150.109" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+4 K</text>
+<line id="247.666672161.578949241.666672161.578949" x1="247.667" y1="161.579" x2="241.667" y2="161.579" stroke-width="0.8" stroke="black" />
+<line id="247.666672176.198837241.666672176.198837" x1="247.667" y1="176.199" x2="241.667" y2="176.199" stroke-width="0.8" stroke="black" />
+<line id="247.666672190.818710241.666672190.818710" x1="247.667" y1="190.819" x2="241.667" y2="190.819" stroke-width="0.8" stroke="black" />
+<line id="247.666672205.438599237.666672205.438599" x1="247.667" y1="205.439" x2="237.667" y2="205.439" stroke-width="1.28" stroke="black" />
+<text id="252.666672208.588593" x="252.667" y="208.589" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+6 K</text>
+<line id="247.666672220.058487241.666672220.058487" x1="247.667" y1="220.058" x2="241.667" y2="220.058" stroke-width="0.8" stroke="black" />
+<line id="247.666672234.678360241.666672234.678360" x1="247.667" y1="234.678" x2="241.667" y2="234.678" stroke-width="0.8" stroke="black" />
+<line id="247.666672249.298248241.666672249.298248" x1="247.667" y1="249.298" x2="241.667" y2="249.298" stroke-width="0.8" stroke="black" />
+<line id="247.666672263.918121237.666672263.918121" x1="247.667" y1="263.918" x2="237.667" y2="263.918" stroke-width="1.28" stroke="black" />
+<text id="252.666672267.068115" x="252.667" y="267.068" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+8 K</text>
+<line id="247.666672278.538025241.666672278.538025" x1="247.667" y1="278.538" x2="241.667" y2="278.538" stroke-width="0.8" stroke="black" />
+<line id="247.666672293.157898241.666672293.157898" x1="247.667" y1="293.158" x2="241.667" y2="293.158" stroke-width="0.8" stroke="black" />
+<line id="247.666672307.777771241.666672307.777771" x1="247.667" y1="307.778" x2="241.667" y2="307.778" stroke-width="0.8" stroke="black" />
+<line id="247.666672322.397675237.666672322.397675" x1="247.667" y1="322.398" x2="237.667" y2="322.398" stroke-width="1.28" stroke="black" />
+<text id="252.666672325.547668" x="252.667" y="325.548" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+10 K</text>
+<line id="247.666672337.017548241.666672337.017548" x1="247.667" y1="337.018" x2="241.667" y2="337.018" stroke-width="0.8" stroke="black" />
+<line id="247.666672351.637421241.666672351.637421" x1="247.667" y1="351.637" x2="241.667" y2="351.637" stroke-width="0.8" stroke="black" />
+<line id="247.666672366.257324241.666672366.257324" x1="247.667" y1="366.257" x2="241.667" y2="366.257" stroke-width="0.8" stroke="black" />
+<line id="247.666672380.877197237.666672380.877197" x1="247.667" y1="380.877" x2="237.667" y2="380.877" stroke-width="1.28" stroke="black" />
+<text id="252.666672384.027191" x="252.667" y="384.027" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+12 K</text>
+<line id="247.666672395.497070241.666672395.497070" x1="247.667" y1="395.497" x2="241.667" y2="395.497" stroke-width="0.8" stroke="black" />
+<line id="247.666672410.116974241.666672410.116974" x1="247.667" y1="410.117" x2="241.667" y2="410.117" stroke-width="0.8" stroke="black" />
+<line id="247.666672424.736847241.666672424.736847" x1="247.667" y1="424.737" x2="241.667" y2="424.737" stroke-width="0.8" stroke="black" />
+<line id="247.666672439.356720237.666672439.356720" x1="247.667" y1="439.357" x2="237.667" y2="439.357" stroke-width="1.28" stroke="black" />
+<text id="252.666672442.506714" x="252.667" y="442.507" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+14 K</text>
+<line id="247.666672453.976593241.666672453.976593" x1="247.667" y1="453.977" x2="241.667" y2="453.977" stroke-width="0.8" stroke="black" />
+<line id="247.666672468.596497241.666672468.596497" x1="247.667" y1="468.596" x2="241.667" y2="468.596" stroke-width="0.8" stroke="black" />
+<line id="247.666672483.216370241.666672483.216370" x1="247.667" y1="483.216" x2="241.667" y2="483.216" stroke-width="0.8" stroke="black" />
+<line id="247.666672497.836243237.666672497.836243" x1="247.667" y1="497.836" x2="237.667" y2="497.836" stroke-width="1.28" stroke="black" />
+<text id="252.666672500.986237" x="252.667" y="500.986" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+16 K</text>
+<line id="247.666672512.456116241.666672512.456116" x1="247.667" y1="512.456" x2="241.667" y2="512.456" stroke-width="0.8" stroke="black" />
+<line id="247.666672527.076050241.666672527.076050" x1="247.667" y1="527.076" x2="241.667" y2="527.076" stroke-width="0.8" stroke="black" />
+<defs id="" >
+<linearGradient id="grad100.000000494.444458" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C6978" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B8CA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000494.444458" d="M 100,494.444
+v 4.15205
+a 8,2 0 0,0 16,0
+v -4.15205
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000494.444458)" fill-opacity="0.9" stroke="#1D4650" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="494.444" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4650" fill="url(#grad100.000000494.444458)" />
+<ellipse cx="108" cy="498.596" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4650" fill="url(#grad100.000000494.444458)" />
+<defs id="" >
+<linearGradient id="grad100.000000494.444458NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664494.444458" d="M 80.6667,494.444
+v 4.15205
+a 2.66667,1 0 0,0 5.33333,0
+v -4.15205
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000494.444458NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="494.444" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000494.444458NRC)" />
+<ellipse cx="83.3333" cy="498.596" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000494.444458NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000494.444458NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328494.444458" d="M 69.3333,494.444
+v 4.15205
+a 2.66667,1 0 0,0 5.33333,0
+v -4.15205
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000494.444458NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="494.444" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000494.444458NRCRedun)" />
+<ellipse cx="72" cy="498.596" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000494.444458NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000494.532166" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C6978" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B8CA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000494.532166" d="M 178,494.532
+v 4.94152
+a 8,2 0 0,0 16,0
+v -4.94152
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000494.532166)" fill-opacity="0.9" stroke="#1D4650" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="494.532" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4650" fill="url(#grad178.000000494.532166)" />
+<ellipse cx="186" cy="499.474" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4650" fill="url(#grad178.000000494.532166)" />
+<defs id="" >
+<linearGradient id="grad178.000000494.532166NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000494.532166" d="M 208,494.532
+v 4.94152
+a 2.66667,1 0 0,0 5.33333,0
+v -4.94152
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000494.532166NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="494.532" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000494.532166NRC)" />
+<ellipse cx="210.667" cy="499.474" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000494.532166NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000494.532166NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328494.532166" d="M 219.333,494.532
+v 4.94152
+a 2.66667,1 0 0,0 5.33333,0
+v -4.94152
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000494.532166NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="494.532" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000494.532166NRCRedun)" />
+<ellipse cx="222" cy="499.474" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000494.532166NRCRedun)" />
+<polygon points="116,494.444 116,498.596 178,499.474 178,494.532 " fill="#3B8CA0" stroke="#3B8CA0" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000435.438599" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C783A" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA04E" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000435.438599" d="M 100,435.439
+v 37.193
+a 8,2 0 0,0 16,0
+v -37.193
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000435.438599)" fill-opacity="0.9" stroke="#1D5027" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="435.439" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5027" fill="url(#grad100.000000435.438599)" />
+<ellipse cx="108" cy="472.632" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5027" fill="url(#grad100.000000435.438599)" />
+<defs id="" >
+<linearGradient id="grad100.000000435.438599NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664435.438599" d="M 80.6667,435.439
+v 37.193
+a 2.66667,1 0 0,0 5.33333,0
+v -37.193
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000435.438599NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="435.439" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000435.438599NRC)" />
+<ellipse cx="83.3333" cy="472.632" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000435.438599NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000435.438599NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328435.438599" d="M 69.3333,435.439
+v 37.193
+a 2.66667,1 0 0,0 5.33333,0
+v -37.193
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000435.438599NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="435.439" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000435.438599NRCRedun)" />
+<ellipse cx="72" cy="472.632" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000435.438599NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000435.380127" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C783A" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA04E" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000435.380127" d="M 178,435.38
+v 35.9357
+a 8,2 0 0,0 16,0
+v -35.9357
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000435.380127)" fill-opacity="0.9" stroke="#1D5027" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="435.38" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5027" fill="url(#grad178.000000435.380127)" />
+<ellipse cx="186" cy="471.316" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5027" fill="url(#grad178.000000435.380127)" />
+<defs id="" >
+<linearGradient id="grad178.000000435.380127NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000435.380127" d="M 208,435.38
+v 35.9357
+a 2.66667,1 0 0,0 5.33333,0
+v -35.9357
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000435.380127NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="435.38" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000435.380127NRC)" />
+<ellipse cx="210.667" cy="471.316" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000435.380127NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000435.380127NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328435.380127" d="M 219.333,435.38
+v 35.9357
+a 2.66667,1 0 0,0 5.33333,0
+v -35.9357
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000435.380127NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="435.38" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000435.380127NRCRedun)" />
+<ellipse cx="222" cy="471.316" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000435.380127NRCRedun)" />
+<polygon points="116,435.439 116,472.632 178,471.316 178,435.38 " fill="#3BA04E" stroke="#3BA04E" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000399.678375" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#69782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#8CA03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000399.678375" d="M 100,399.678
+v 17.6023
+a 8,2 0 0,0 16,0
+v -17.6023
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000399.678375)" fill-opacity="0.9" stroke="#46501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="399.678" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#46501D" fill="url(#grad100.000000399.678375)" />
+<ellipse cx="108" cy="417.281" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#46501D" fill="url(#grad100.000000399.678375)" />
+<defs id="" >
+<linearGradient id="grad100.000000399.678375NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664399.678375" d="M 80.6667,399.678
+v 17.6023
+a 2.66667,1 0 0,0 5.33333,0
+v -17.6023
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000399.678375NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="399.678" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000399.678375NRC)" />
+<ellipse cx="83.3333" cy="417.281" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000399.678375NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000399.678375NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328399.678375" d="M 69.3333,399.678
+v 17.6023
+a 2.66667,1 0 0,0 5.33333,0
+v -17.6023
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000399.678375NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="399.678" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000399.678375NRCRedun)" />
+<ellipse cx="72" cy="417.281" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000399.678375NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000399.005859" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#69782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#8CA03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000399.005859" d="M 178,399.006
+v 16.9298
+a 8,2 0 0,0 16,0
+v -16.9298
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000399.005859)" fill-opacity="0.9" stroke="#46501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="399.006" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#46501D" fill="url(#grad178.000000399.005859)" />
+<ellipse cx="186" cy="415.936" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#46501D" fill="url(#grad178.000000399.005859)" />
+<defs id="" >
+<linearGradient id="grad178.000000399.005859NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000399.005859" d="M 208,399.006
+v 16.9298
+a 2.66667,1 0 0,0 5.33333,0
+v -16.9298
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000399.005859NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="399.006" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000399.005859NRC)" />
+<ellipse cx="210.667" cy="415.936" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000399.005859NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000399.005859NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328399.005859" d="M 219.333,399.006
+v 16.9298
+a 2.66667,1 0 0,0 5.33333,0
+v -16.9298
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000399.005859NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="399.006" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000399.005859NRCRedun)" />
+<ellipse cx="222" cy="415.936" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000399.005859NRCRedun)" />
+<polygon points="116,399.678 116,417.281 178,415.936 178,399.006 " fill="#8CA03B" stroke="#8CA03B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000386.637421" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#783A2C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A04E3B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000386.637421" d="M 100,386.637
+v 11.5789
+a 8,2 0 0,0 16,0
+v -11.5789
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000386.637421)" fill-opacity="0.9" stroke="#50271D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="386.637" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50271D" fill="url(#grad100.000000386.637421)" />
+<ellipse cx="108" cy="398.216" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50271D" fill="url(#grad100.000000386.637421)" />
+<defs id="" >
+<linearGradient id="grad100.000000386.637421NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664386.637421" d="M 80.6667,386.637
+v 11.5789
+a 2.66667,1 0 0,0 5.33333,0
+v -11.5789
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000386.637421NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="386.637" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000386.637421NRC)" />
+<ellipse cx="83.3333" cy="398.216" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000386.637421NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000386.637421NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328386.637421" d="M 69.3333,386.637
+v 11.5789
+a 2.66667,1 0 0,0 5.33333,0
+v -11.5789
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000386.637421NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="386.637" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000386.637421NRCRedun)" />
+<ellipse cx="72" cy="398.216" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000386.637421NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000386.228058" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#783A2C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A04E3B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000386.228058" d="M 178,386.228
+v 10.5263
+a 8,2 0 0,0 16,0
+v -10.5263
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000386.228058)" fill-opacity="0.9" stroke="#50271D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="386.228" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50271D" fill="url(#grad178.000000386.228058)" />
+<ellipse cx="186" cy="396.754" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50271D" fill="url(#grad178.000000386.228058)" />
+<defs id="" >
+<linearGradient id="grad178.000000386.228058NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000386.228058" d="M 208,386.228
+v 10.5263
+a 2.66667,1 0 0,0 5.33333,0
+v -10.5263
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000386.228058NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="386.228" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000386.228058NRC)" />
+<ellipse cx="210.667" cy="396.754" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000386.228058NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000386.228058NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328386.228058" d="M 219.333,386.228
+v 10.5263
+a 2.66667,1 0 0,0 5.33333,0
+v -10.5263
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000386.228058NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="386.228" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000386.228058NRCRedun)" />
+<ellipse cx="222" cy="396.754" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000386.228058NRCRedun)" />
+<polygon points="116,386.637 116,398.216 178,396.754 178,386.228 " fill="#A04E3B" stroke="#A04E3B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000371.871338" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782C6C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B91" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000371.871338" d="M 100,371.871
+v 3.47953
+a 8,2 0 0,0 16,0
+v -3.47953
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000371.871338)" fill-opacity="0.9" stroke="#501D48" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="371.871" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D48" fill="url(#grad100.000000371.871338)" />
+<ellipse cx="108" cy="375.351" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D48" fill="url(#grad100.000000371.871338)" />
+<defs id="" >
+<linearGradient id="grad100.000000371.871338NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664371.871338" d="M 80.6667,371.871
+v 3.47953
+a 2.66667,1 0 0,0 5.33333,0
+v -3.47953
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000371.871338NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="371.871" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000371.871338NRC)" />
+<ellipse cx="83.3333" cy="375.351" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000371.871338NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000371.871338NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328371.871338" d="M 69.3333,371.871
+v 3.47953
+a 2.66667,1 0 0,0 5.33333,0
+v -3.47953
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000371.871338NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="371.871" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000371.871338NRCRedun)" />
+<ellipse cx="72" cy="375.351" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000371.871338NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000371.812866" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782C6C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B91" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000371.812866" d="M 178,371.813
+v 2.60234
+a 8,2 0 0,0 16,0
+v -2.60234
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000371.812866)" fill-opacity="0.9" stroke="#501D48" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="371.813" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D48" fill="url(#grad178.000000371.812866)" />
+<ellipse cx="186" cy="374.415" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D48" fill="url(#grad178.000000371.812866)" />
+<defs id="" >
+<linearGradient id="grad178.000000371.812866NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000371.812866" d="M 208,371.813
+v 2.60234
+a 2.66667,1 0 0,0 5.33333,0
+v -2.60234
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000371.812866NRC)" fill-opacity="0.9" stroke="#A30" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="371.813" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.000000371.812866NRC)" />
+<ellipse cx="210.667" cy="374.415" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.000000371.812866NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000371.812866NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328371.812866" d="M 219.333,371.813
+v 2.60234
+a 2.66667,1 0 0,0 5.33333,0
+v -2.60234
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000371.812866NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="371.813" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000371.812866NRCRedun)" />
+<ellipse cx="222" cy="374.415" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000371.812866NRCRedun)" />
+<polygon points="116,371.871 116,375.351 178,374.415 178,371.813 " fill="#A03B91" stroke="#A03B91" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000347.076019" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#372C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#4A3BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000347.076019" d="M 100,347.076
+v 13.7135
+a 8,2 0 0,0 16,0
+v -13.7135
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000347.076019)" fill-opacity="0.9" stroke="#251D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="347.076" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#251D50" fill="url(#grad100.000000347.076019)" />
+<ellipse cx="108" cy="360.789" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#251D50" fill="url(#grad100.000000347.076019)" />
+<defs id="" >
+<linearGradient id="grad100.000000347.076019NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664347.076019" d="M 80.6667,347.076
+v 13.7135
+a 2.66667,1 0 0,0 5.33333,0
+v -13.7135
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000347.076019NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="347.076" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000347.076019NRC)" />
+<ellipse cx="83.3333" cy="360.789" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000347.076019NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000347.076019NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328347.076019" d="M 69.3333,347.076
+v 13.7135
+a 2.66667,1 0 0,0 5.33333,0
+v -13.7135
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000347.076019NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="347.076" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000347.076019NRCRedun)" />
+<ellipse cx="72" cy="360.789" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000347.076019NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000346.461975" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#372C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#4A3BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000346.461975" d="M 178,346.462
+v 12.9532
+a 8,2 0 0,0 16,0
+v -12.9532
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000346.461975)" fill-opacity="0.9" stroke="#251D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="346.462" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#251D50" fill="url(#grad178.000000346.461975)" />
+<ellipse cx="186" cy="359.415" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#251D50" fill="url(#grad178.000000346.461975)" />
+<defs id="" >
+<linearGradient id="grad178.000000346.461975NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000346.461975" d="M 208,346.462
+v 12.9532
+a 2.66667,1 0 0,0 5.33333,0
+v -12.9532
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000346.461975NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="346.462" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000346.461975NRC)" />
+<ellipse cx="210.667" cy="359.415" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000346.461975NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000346.461975NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328346.461975" d="M 219.333,346.462
+v 12.9532
+a 2.66667,1 0 0,0 5.33333,0
+v -12.9532
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000346.461975NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="346.462" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000346.461975NRCRedun)" />
+<ellipse cx="222" cy="359.415" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000346.461975NRCRedun)" />
+<polygon points="116,347.076 116,360.789 178,359.415 178,346.462 " fill="#4A3BA0" stroke="#4A3BA0" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000335.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C6C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B91A0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000335.000000" d="M 100,335
+v 6.37427
+a 8,2 0 0,0 16,0
+v -6.37427
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000335.000000)" fill-opacity="0.9" stroke="#1D4850" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="335" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4850" fill="url(#grad100.000000335.000000)" />
+<ellipse cx="108" cy="341.374" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4850" fill="url(#grad100.000000335.000000)" />
+<defs id="" >
+<linearGradient id="grad100.000000335.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664335.000000" d="M 80.6667,335
+v 6.37427
+a 2.66667,1 0 0,0 5.33333,0
+v -6.37427
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000335.000000NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="335" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000335.000000NRC)" />
+<ellipse cx="83.3333" cy="341.374" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000335.000000NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000335.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328335.000000" d="M 69.3333,335
+v 6.37427
+a 2.66667,1 0 0,0 5.33333,0
+v -6.37427
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000335.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="335" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000335.000000NRCRedun)" />
+<ellipse cx="72" cy="341.374" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000335.000000NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000334.590637" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C6C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B91A0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000334.590637" d="M 178,334.591
+v 5.38012
+a 8,2 0 0,0 16,0
+v -5.38012
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000334.590637)" fill-opacity="0.9" stroke="#1D4850" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="334.591" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4850" fill="url(#grad178.000000334.590637)" />
+<ellipse cx="186" cy="339.971" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4850" fill="url(#grad178.000000334.590637)" />
+<defs id="" >
+<linearGradient id="grad178.000000334.590637NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000334.590637" d="M 208,334.591
+v 5.38012
+a 2.66667,1 0 0,0 5.33333,0
+v -5.38012
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000334.590637NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="334.591" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000334.590637NRC)" />
+<ellipse cx="210.667" cy="339.971" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000334.590637NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000334.590637NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328334.590637" d="M 219.333,334.591
+v 5.38012
+a 2.66667,1 0 0,0 5.33333,0
+v -5.38012
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000334.590637NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="334.591" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000334.590637NRCRedun)" />
+<ellipse cx="222" cy="339.971" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000334.590637NRCRedun)" />
+<polygon points="116,335 116,341.374 178,339.971 178,334.591 " fill="#3B91A0" stroke="#3B91A0" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000321.900574" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7837" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA04A" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000321.900574" d="M 100,321.901
+v 11.3158
+a 8,2 0 0,0 16,0
+v -11.3158
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000321.900574)" fill-opacity="0.9" stroke="#1D5025" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="321.901" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5025" fill="url(#grad100.000000321.900574)" />
+<ellipse cx="108" cy="333.216" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5025" fill="url(#grad100.000000321.900574)" />
+<defs id="" >
+<linearGradient id="grad100.000000321.900574NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664321.900574" d="M 80.6667,321.901
+v 11.3158
+a 2.66667,1 0 0,0 5.33333,0
+v -11.3158
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000321.900574NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="321.901" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000321.900574NRC)" />
+<ellipse cx="83.3333" cy="333.216" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000321.900574NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000321.900574NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328321.900574" d="M 69.3333,321.901
+v 11.3158
+a 2.66667,1 0 0,0 5.33333,0
+v -11.3158
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000321.900574NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="321.901" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000321.900574NRCRedun)" />
+<ellipse cx="72" cy="333.216" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000321.900574NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000321.286560" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7837" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA04A" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000321.286560" d="M 178,321.287
+v 10.7602
+a 8,2 0 0,0 16,0
+v -10.7602
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000321.286560)" fill-opacity="0.9" stroke="#1D5025" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="321.287" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5025" fill="url(#grad178.000000321.286560)" />
+<ellipse cx="186" cy="332.047" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5025" fill="url(#grad178.000000321.286560)" />
+<defs id="" >
+<linearGradient id="grad178.000000321.286560NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000321.286560" d="M 208,321.287
+v 10.7602
+a 2.66667,1 0 0,0 5.33333,0
+v -10.7602
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000321.286560NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="321.287" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000321.286560NRC)" />
+<ellipse cx="210.667" cy="332.047" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000321.286560NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000321.286560NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328321.286560" d="M 219.333,321.287
+v 10.7602
+a 2.66667,1 0 0,0 5.33333,0
+v -10.7602
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000321.286560NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="321.287" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000321.286560NRCRedun)" />
+<ellipse cx="222" cy="332.047" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000321.286560NRCRedun)" />
+<polygon points="116,321.901 116,333.216 178,332.047 178,321.287 " fill="#3BA04A" stroke="#3BA04A" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000313.216370" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#6C782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#91A03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000313.216370" d="M 100,313.216
+v 3.33333
+a 8,2 0 0,0 16,0
+v -3.33333
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000313.216370)" fill-opacity="0.9" stroke="#48501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="313.216" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#48501D" fill="url(#grad100.000000313.216370)" />
+<ellipse cx="108" cy="316.55" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#48501D" fill="url(#grad100.000000313.216370)" />
+<defs id="" >
+<linearGradient id="grad100.000000313.216370NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664313.216370" d="M 80.6667,313.216
+v 3.33333
+a 2.66667,1 0 0,0 5.33333,0
+v -3.33333
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000313.216370NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="313.216" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000313.216370NRC)" />
+<ellipse cx="83.3333" cy="316.55" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000313.216370NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000313.216370NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328313.216370" d="M 69.3333,313.216
+v 3.33333
+a 2.66667,1 0 0,0 5.33333,0
+v -3.33333
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000313.216370NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="313.216" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000313.216370NRCRedun)" />
+<ellipse cx="72" cy="316.55" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000313.216370NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000312.368408" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#6C782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#91A03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000312.368408" d="M 178,312.368
+v 3.0117
+a 8,2 0 0,0 16,0
+v -3.0117
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000312.368408)" fill-opacity="0.9" stroke="#48501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="312.368" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#48501D" fill="url(#grad178.000000312.368408)" />
+<ellipse cx="186" cy="315.38" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#48501D" fill="url(#grad178.000000312.368408)" />
+<defs id="" >
+<linearGradient id="grad178.000000312.368408NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000312.368408" d="M 208,312.368
+v 3.0117
+a 2.66667,1 0 0,0 5.33333,0
+v -3.0117
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000312.368408NRC)" fill-opacity="0.9" stroke="#A30" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="312.368" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.000000312.368408NRC)" />
+<ellipse cx="210.667" cy="315.38" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.000000312.368408NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000312.368408NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328312.368408" d="M 219.333,312.368
+v 3.0117
+a 2.66667,1 0 0,0 5.33333,0
+v -3.0117
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000312.368408NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="312.368" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000312.368408NRCRedun)" />
+<ellipse cx="222" cy="315.38" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000312.368408NRCRedun)" />
+<polygon points="116,313.216 116,316.55 178,315.38 178,312.368 " fill="#91A03B" stroke="#91A03B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000276.023407" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#78372C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A04A3B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000276.023407" d="M 100,276.023
+v 23.5088
+a 8,2 0 0,0 16,0
+v -23.5088
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000276.023407)" fill-opacity="0.9" stroke="#50251D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="276.023" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50251D" fill="url(#grad100.000000276.023407)" />
+<ellipse cx="108" cy="299.532" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50251D" fill="url(#grad100.000000276.023407)" />
+<defs id="" >
+<linearGradient id="grad100.000000276.023407NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664276.023407" d="M 80.6667,276.023
+v 23.5088
+a 2.66667,1 0 0,0 5.33333,0
+v -23.5088
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000276.023407NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="276.023" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000276.023407NRC)" />
+<ellipse cx="83.3333" cy="299.532" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000276.023407NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000276.023407NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328276.023407" d="M 69.3333,276.023
+v 23.5088
+a 2.66667,1 0 0,0 5.33333,0
+v -23.5088
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000276.023407NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="276.023" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000276.023407NRCRedun)" />
+<ellipse cx="72" cy="299.532" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000276.023407NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000275.116974" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#78372C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A04A3B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000275.116974" d="M 178,275.117
+v 22.6023
+a 8,2 0 0,0 16,0
+v -22.6023
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000275.116974)" fill-opacity="0.9" stroke="#50251D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="275.117" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50251D" fill="url(#grad178.000000275.116974)" />
+<ellipse cx="186" cy="297.719" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50251D" fill="url(#grad178.000000275.116974)" />
+<defs id="" >
+<linearGradient id="grad178.000000275.116974NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000275.116974" d="M 208,275.117
+v 22.6023
+a 2.66667,1 0 0,0 5.33333,0
+v -22.6023
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000275.116974NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="275.117" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000275.116974NRC)" />
+<ellipse cx="210.667" cy="297.719" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000275.116974NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000275.116974NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328275.116974" d="M 219.333,275.117
+v 22.6023
+a 2.66667,1 0 0,0 5.33333,0
+v -22.6023
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000275.116974NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="275.117" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000275.116974NRCRedun)" />
+<ellipse cx="222" cy="297.719" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000275.116974NRCRedun)" />
+<polygon points="116,276.023 116,299.532 178,297.719 178,275.117 " fill="#A04A3B" stroke="#A04A3B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000262.777771" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782C70" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B96" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000262.777771" d="M 100,262.778
+v 2.92398
+a 8,2 0 0,0 16,0
+v -2.92398
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000262.777771)" fill-opacity="0.9" stroke="#501D4B" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="262.778" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4B" fill="url(#grad100.000000262.777771)" />
+<ellipse cx="108" cy="265.702" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4B" fill="url(#grad100.000000262.777771)" />
+<defs id="" >
+<linearGradient id="grad100.000000262.777771NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664262.777771" d="M 80.6667,262.778
+v 2.92398
+a 2.66667,1 0 0,0 5.33333,0
+v -2.92398
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000262.777771NRC)" fill-opacity="0.9" stroke="#A30" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="262.778" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad100.000000262.777771NRC)" />
+<ellipse cx="83.3333" cy="265.702" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad100.000000262.777771NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000262.777771NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328262.777771" d="M 69.3333,262.778
+v 2.92398
+a 2.66667,1 0 0,0 5.33333,0
+v -2.92398
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000262.777771NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="262.778" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000262.777771NRCRedun)" />
+<ellipse cx="72" cy="265.702" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000262.777771NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000261.959076" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782C70" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B96" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000261.959076" d="M 178,261.959
+v 2.39766
+a 8,2 0 0,0 16,0
+v -2.39766
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000261.959076)" fill-opacity="0.9" stroke="#501D4B" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="261.959" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4B" fill="url(#grad178.000000261.959076)" />
+<ellipse cx="186" cy="264.357" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4B" fill="url(#grad178.000000261.959076)" />
+<defs id="" >
+<linearGradient id="grad178.000000261.959076NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000261.959076" d="M 208,261.959
+v 2.39766
+a 2.66667,1 0 0,0 5.33333,0
+v -2.39766
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000261.959076NRC)" fill-opacity="0.9" stroke="#A30" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="261.959" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.000000261.959076NRC)" />
+<ellipse cx="210.667" cy="264.357" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.000000261.959076NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000261.959076NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328261.959076" d="M 219.333,261.959
+v 2.39766
+a 2.66667,1 0 0,0 5.33333,0
+v -2.39766
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000261.959076NRCRedun)" fill-opacity="0.9" stroke="#C40" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="261.959" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C40" fill="url(#grad178.000000261.959076NRCRedun)" />
+<ellipse cx="222" cy="264.357" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C40" fill="url(#grad178.000000261.959076NRCRedun)" />
+<polygon points="116,262.778 116,265.702 178,264.357 178,261.959 " fill="#A03B96" stroke="#A03B96" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000240.292404" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#332C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#453BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000240.292404" d="M 100,240.292
+v 18.0117
+a 8,2 0 0,0 16,0
+v -18.0117
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000240.292404)" fill-opacity="0.9" stroke="#221D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="240.292" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#221D50" fill="url(#grad100.000000240.292404)" />
+<ellipse cx="108" cy="258.304" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#221D50" fill="url(#grad100.000000240.292404)" />
+<defs id="" >
+<linearGradient id="grad100.000000240.292404NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664240.292404" d="M 80.6667,240.292
+v 18.0117
+a 2.66667,1 0 0,0 5.33333,0
+v -18.0117
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000240.292404NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="240.292" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000240.292404NRC)" />
+<ellipse cx="83.3333" cy="258.304" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000240.292404NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000240.292404NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328240.292404" d="M 69.3333,240.292
+v 18.0117
+a 2.66667,1 0 0,0 5.33333,0
+v -18.0117
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000240.292404NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="240.292" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000240.292404NRCRedun)" />
+<ellipse cx="72" cy="258.304" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000240.292404NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000240.672516" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#332C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#453BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000240.672516" d="M 178,240.673
+v 16.8421
+a 8,2 0 0,0 16,0
+v -16.8421
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000240.672516)" fill-opacity="0.9" stroke="#221D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="240.673" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#221D50" fill="url(#grad178.000000240.672516)" />
+<ellipse cx="186" cy="257.515" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#221D50" fill="url(#grad178.000000240.672516)" />
+<defs id="" >
+<linearGradient id="grad178.000000240.672516NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000240.672516" d="M 208,240.673
+v 16.8421
+a 2.66667,1 0 0,0 5.33333,0
+v -16.8421
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000240.672516NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="240.673" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000240.672516NRC)" />
+<ellipse cx="210.667" cy="257.515" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000240.672516NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000240.672516NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328240.672516" d="M 219.333,240.673
+v 16.8421
+a 2.66667,1 0 0,0 5.33333,0
+v -16.8421
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000240.672516NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="240.673" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000240.672516NRCRedun)" />
+<ellipse cx="222" cy="257.515" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000240.672516NRCRedun)" />
+<polygon points="116,240.292 116,258.304 178,257.515 178,240.673 " fill="#453BA0" stroke="#453BA0" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000229.649124" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7078" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B96A0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000229.649124" d="M 100,229.649
+v 5.49708
+a 8,2 0 0,0 16,0
+v -5.49708
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000229.649124)" fill-opacity="0.9" stroke="#1D4B50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="229.649" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4B50" fill="url(#grad100.000000229.649124)" />
+<ellipse cx="108" cy="235.146" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4B50" fill="url(#grad100.000000229.649124)" />
+<defs id="" >
+<linearGradient id="grad100.000000229.649124NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664229.649124" d="M 80.6667,229.649
+v 5.49708
+a 2.66667,1 0 0,0 5.33333,0
+v -5.49708
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000229.649124NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="229.649" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000229.649124NRC)" />
+<ellipse cx="83.3333" cy="235.146" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000229.649124NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000229.649124NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328229.649124" d="M 69.3333,229.649
+v 5.49708
+a 2.66667,1 0 0,0 5.33333,0
+v -5.49708
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000229.649124NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="229.649" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000229.649124NRCRedun)" />
+<ellipse cx="72" cy="235.146" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000229.649124NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000229.941513" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7078" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B96A0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000229.941513" d="M 178,229.942
+v 5.40936
+a 8,2 0 0,0 16,0
+v -5.40936
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000229.941513)" fill-opacity="0.9" stroke="#1D4B50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="229.942" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4B50" fill="url(#grad178.000000229.941513)" />
+<ellipse cx="186" cy="235.351" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4B50" fill="url(#grad178.000000229.941513)" />
+<defs id="" >
+<linearGradient id="grad178.000000229.941513NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000229.941513" d="M 208,229.942
+v 5.40936
+a 2.66667,1 0 0,0 5.33333,0
+v -5.40936
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000229.941513NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="229.942" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000229.941513NRC)" />
+<ellipse cx="210.667" cy="235.351" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000229.941513NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000229.941513NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328229.941513" d="M 219.333,229.942
+v 5.40936
+a 2.66667,1 0 0,0 5.33333,0
+v -5.40936
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000229.941513NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="229.942" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000229.941513NRCRedun)" />
+<ellipse cx="222" cy="235.351" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000229.941513NRCRedun)" />
+<polygon points="116,229.649 116,235.146 178,235.351 178,229.942 " fill="#3B96A0" stroke="#3B96A0" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000219.064331" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7833" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA045" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000219.064331" d="M 100,219.064
+v 5.05848
+a 8,2 0 0,0 16,0
+v -5.05848
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000219.064331)" fill-opacity="0.9" stroke="#1D5022" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="219.064" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5022" fill="url(#grad100.000000219.064331)" />
+<ellipse cx="108" cy="224.123" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5022" fill="url(#grad100.000000219.064331)" />
+<defs id="" >
+<linearGradient id="grad100.000000219.064331NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664219.064331" d="M 80.6667,219.064
+v 5.05848
+a 2.66667,1 0 0,0 5.33333,0
+v -5.05848
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000219.064331NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="219.064" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000219.064331NRC)" />
+<ellipse cx="83.3333" cy="224.123" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000219.064331NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000219.064331NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328219.064331" d="M 69.3333,219.064
+v 5.05848
+a 2.66667,1 0 0,0 5.33333,0
+v -5.05848
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000219.064331NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="219.064" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000219.064331NRCRedun)" />
+<ellipse cx="72" cy="224.123" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000219.064331NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000219.327484" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7833" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA045" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000219.327484" d="M 178,219.327
+v 4.23977
+a 8,2 0 0,0 16,0
+v -4.23977
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000219.327484)" fill-opacity="0.9" stroke="#1D5022" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="219.327" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5022" fill="url(#grad178.000000219.327484)" />
+<ellipse cx="186" cy="223.567" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5022" fill="url(#grad178.000000219.327484)" />
+<defs id="" >
+<linearGradient id="grad178.000000219.327484NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000219.327484" d="M 208,219.327
+v 4.23977
+a 2.66667,1 0 0,0 5.33333,0
+v -4.23977
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000219.327484NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="219.327" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000219.327484NRC)" />
+<ellipse cx="210.667" cy="223.567" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000219.327484NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000219.327484NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328219.327484" d="M 219.333,219.327
+v 4.23977
+a 2.66667,1 0 0,0 5.33333,0
+v -4.23977
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000219.327484NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="219.327" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000219.327484NRCRedun)" />
+<ellipse cx="222" cy="223.567" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000219.327484NRCRedun)" />
+<polygon points="116,219.064 116,224.123 178,223.567 178,219.327 " fill="#3BA045" stroke="#3BA045" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000204.181290" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#70782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#96A03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000204.181290" d="M 100,204.181
+v 10.5263
+a 8,2 0 0,0 16,0
+v -10.5263
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000204.181290)" fill-opacity="0.9" stroke="#4B501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="204.181" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4B501D" fill="url(#grad100.000000204.181290)" />
+<ellipse cx="108" cy="214.708" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4B501D" fill="url(#grad100.000000204.181290)" />
+<defs id="" >
+<linearGradient id="grad100.000000204.181290NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664204.181290" d="M 80.6667,204.181
+v 10.5263
+a 2.66667,1 0 0,0 5.33333,0
+v -10.5263
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000204.181290NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="204.181" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000204.181290NRC)" />
+<ellipse cx="83.3333" cy="214.708" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000204.181290NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000204.181290NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328204.181290" d="M 69.3333,204.181
+v 10.5263
+a 2.66667,1 0 0,0 5.33333,0
+v -10.5263
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000204.181290NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="204.181" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000204.181290NRCRedun)" />
+<ellipse cx="72" cy="214.708" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000204.181290NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000203.918121" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#70782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#96A03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000203.918121" d="M 178,203.918
+v 10.0585
+a 8,2 0 0,0 16,0
+v -10.0585
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000203.918121)" fill-opacity="0.9" stroke="#4B501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="203.918" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4B501D" fill="url(#grad178.000000203.918121)" />
+<ellipse cx="186" cy="213.977" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4B501D" fill="url(#grad178.000000203.918121)" />
+<defs id="" >
+<linearGradient id="grad178.000000203.918121NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000203.918121" d="M 208,203.918
+v 10.0585
+a 2.66667,1 0 0,0 5.33333,0
+v -10.0585
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000203.918121NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="203.918" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000203.918121NRC)" />
+<ellipse cx="210.667" cy="213.977" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000203.918121NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000203.918121NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328203.918121" d="M 219.333,203.918
+v 10.0585
+a 2.66667,1 0 0,0 5.33333,0
+v -10.0585
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000203.918121NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="203.918" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000203.918121NRCRedun)" />
+<ellipse cx="222" cy="213.977" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000203.918121NRCRedun)" />
+<polygon points="116,204.181 116,214.708 178,213.977 178,203.918 " fill="#96A03B" stroke="#96A03B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000191.169586" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#78332C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A0453B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000191.169586" d="M 100,191.17
+v 11.9883
+a 8,2 0 0,0 16,0
+v -11.9883
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000191.169586)" fill-opacity="0.9" stroke="#50221D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="191.17" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50221D" fill="url(#grad100.000000191.169586)" />
+<ellipse cx="108" cy="203.158" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50221D" fill="url(#grad100.000000191.169586)" />
+<defs id="" >
+<linearGradient id="grad100.000000191.169586NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664191.169586" d="M 80.6667,191.17
+v 11.9883
+a 2.66667,1 0 0,0 5.33333,0
+v -11.9883
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000191.169586NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="191.17" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000191.169586NRC)" />
+<ellipse cx="83.3333" cy="203.158" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000191.169586NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000191.169586NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328191.169586" d="M 69.3333,191.17
+v 11.9883
+a 2.66667,1 0 0,0 5.33333,0
+v -11.9883
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000191.169586NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="191.17" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000191.169586NRCRedun)" />
+<ellipse cx="72" cy="203.158" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000191.169586NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000191.432755" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#78332C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A0453B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000191.432755" d="M 178,191.433
+v 11.0234
+a 8,2 0 0,0 16,0
+v -11.0234
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000191.432755)" fill-opacity="0.9" stroke="#50221D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="191.433" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50221D" fill="url(#grad178.000000191.432755)" />
+<ellipse cx="186" cy="202.456" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50221D" fill="url(#grad178.000000191.432755)" />
+<defs id="" >
+<linearGradient id="grad178.000000191.432755NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000191.432755" d="M 208,191.433
+v 11.0234
+a 2.66667,1 0 0,0 5.33333,0
+v -11.0234
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000191.432755NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="191.433" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000191.432755NRC)" />
+<ellipse cx="210.667" cy="202.456" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000191.432755NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000191.432755NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328191.432755" d="M 219.333,191.433
+v 11.0234
+a 2.66667,1 0 0,0 5.33333,0
+v -11.0234
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000191.432755NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="191.433" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000191.432755NRCRedun)" />
+<ellipse cx="222" cy="202.456" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000191.432755NRCRedun)" />
+<polygon points="116,191.17 116,203.158 178,202.456 178,191.433 " fill="#A0453B" stroke="#A0453B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000180.994156" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782C74" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B9B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000180.994156" d="M 100,180.994
+v 4.7076
+a 8,2 0 0,0 16,0
+v -4.7076
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000180.994156)" fill-opacity="0.9" stroke="#501D4D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="180.994" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4D" fill="url(#grad100.000000180.994156)" />
+<ellipse cx="108" cy="185.702" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4D" fill="url(#grad100.000000180.994156)" />
+<defs id="" >
+<linearGradient id="grad100.000000180.994156NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664180.994156" d="M 80.6667,180.994
+v 4.7076
+a 2.66667,1 0 0,0 5.33333,0
+v -4.7076
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000180.994156NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="180.994" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000180.994156NRC)" />
+<ellipse cx="83.3333" cy="185.702" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000180.994156NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000180.994156NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328180.994156" d="M 69.3333,180.994
+v 4.7076
+a 2.66667,1 0 0,0 5.33333,0
+v -4.7076
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000180.994156NRCRedun)" fill-opacity="0.9" stroke="#C40" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="180.994" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C40" fill="url(#grad100.000000180.994156NRCRedun)" />
+<ellipse cx="72" cy="185.702" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C40" fill="url(#grad100.000000180.994156NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000181.520462" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782C74" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B9B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000181.520462" d="M 178,181.52
+v 4.73684
+a 8,2 0 0,0 16,0
+v -4.73684
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000181.520462)" fill-opacity="0.9" stroke="#501D4D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="181.52" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4D" fill="url(#grad178.000000181.520462)" />
+<ellipse cx="186" cy="186.257" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4D" fill="url(#grad178.000000181.520462)" />
+<defs id="" >
+<linearGradient id="grad178.000000181.520462NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000181.520462" d="M 208,181.52
+v 4.73684
+a 2.66667,1 0 0,0 5.33333,0
+v -4.73684
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000181.520462NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="181.52" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000181.520462NRC)" />
+<ellipse cx="210.667" cy="186.257" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000181.520462NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000181.520462NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328181.520462" d="M 219.333,181.52
+v 4.73684
+a 2.66667,1 0 0,0 5.33333,0
+v -4.73684
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000181.520462NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="181.52" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000181.520462NRCRedun)" />
+<ellipse cx="222" cy="186.257" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000181.520462NRCRedun)" />
+<polygon points="116,180.994 116,185.702 178,186.257 178,181.52 " fill="#A03B9B" stroke="#A03B9B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000153.801163" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#302C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#413BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000153.801163" d="M 100,153.801
+v 9.94152
+a 8,2 0 0,0 16,0
+v -9.94152
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000153.801163)" fill-opacity="0.9" stroke="#201D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="153.801" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#201D50" fill="url(#grad100.000000153.801163)" />
+<ellipse cx="108" cy="163.743" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#201D50" fill="url(#grad100.000000153.801163)" />
+<defs id="" >
+<linearGradient id="grad100.000000153.801163NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664153.801163" d="M 80.6667,153.801
+v 9.94152
+a 2.66667,1 0 0,0 5.33333,0
+v -9.94152
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000153.801163NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="153.801" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000153.801163NRC)" />
+<ellipse cx="83.3333" cy="163.743" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000153.801163NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000153.801163NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328153.801163" d="M 69.3333,153.801
+v 9.94152
+a 2.66667,1 0 0,0 5.33333,0
+v -9.94152
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000153.801163NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="153.801" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000153.801163NRCRedun)" />
+<ellipse cx="72" cy="163.743" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000153.801163NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000154.473679" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#302C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#413BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000154.473679" d="M 178,154.474
+v 9.50292
+a 8,2 0 0,0 16,0
+v -9.50292
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000154.473679)" fill-opacity="0.9" stroke="#201D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="154.474" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#201D50" fill="url(#grad178.000000154.473679)" />
+<ellipse cx="186" cy="163.977" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#201D50" fill="url(#grad178.000000154.473679)" />
+<defs id="" >
+<linearGradient id="grad178.000000154.473679NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000154.473679" d="M 208,154.474
+v 9.50292
+a 2.66667,1 0 0,0 5.33333,0
+v -9.50292
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000154.473679NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="154.474" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000154.473679NRC)" />
+<ellipse cx="210.667" cy="163.977" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000154.473679NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000154.473679NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328154.473679" d="M 219.333,154.474
+v 9.50292
+a 2.66667,1 0 0,0 5.33333,0
+v -9.50292
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000154.473679NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="154.474" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000154.473679NRCRedun)" />
+<ellipse cx="222" cy="163.977" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000154.473679NRCRedun)" />
+<polygon points="116,153.801 116,163.743 178,163.977 178,154.474 " fill="#413BA0" stroke="#413BA0" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000146.052628" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7478" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B9BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000146.052628" d="M 100,146.053
+v 6.63743
+a 8,2 0 0,0 16,0
+v -6.63743
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000146.052628)" fill-opacity="0.9" stroke="#1D4D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="146.053" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4D50" fill="url(#grad100.000000146.052628)" />
+<ellipse cx="108" cy="152.69" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4D50" fill="url(#grad100.000000146.052628)" />
+<defs id="" >
+<linearGradient id="grad100.000000146.052628NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664146.052628" d="M 80.6667,146.053
+v 6.63743
+a 2.66667,1 0 0,0 5.33333,0
+v -6.63743
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000146.052628NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="146.053" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000146.052628NRC)" />
+<ellipse cx="83.3333" cy="152.69" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.000000146.052628NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000146.052628NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328146.052628" d="M 69.3333,146.053
+v 6.63743
+a 2.66667,1 0 0,0 5.33333,0
+v -6.63743
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000146.052628NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="146.053" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000146.052628NRCRedun)" />
+<ellipse cx="72" cy="152.69" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000146.052628NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000147.222229" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7478" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B9BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000147.222229" d="M 178,147.222
+v 5.96491
+a 8,2 0 0,0 16,0
+v -5.96491
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000147.222229)" fill-opacity="0.9" stroke="#1D4D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="147.222" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4D50" fill="url(#grad178.000000147.222229)" />
+<ellipse cx="186" cy="153.187" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D4D50" fill="url(#grad178.000000147.222229)" />
+<defs id="" >
+<linearGradient id="grad178.000000147.222229NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000147.222229" d="M 208,147.222
+v 5.96491
+a 2.66667,1 0 0,0 5.33333,0
+v -5.96491
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000147.222229NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="147.222" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000147.222229NRC)" />
+<ellipse cx="210.667" cy="153.187" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000147.222229NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000147.222229NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328147.222229" d="M 219.333,147.222
+v 5.96491
+a 2.66667,1 0 0,0 5.33333,0
+v -5.96491
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000147.222229NRCRedun)" fill-opacity="0.9" stroke="#C40" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="147.222" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C40" fill="url(#grad178.000000147.222229NRCRedun)" />
+<ellipse cx="222" cy="153.187" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C40" fill="url(#grad178.000000147.222229NRCRedun)" />
+<polygon points="116,146.053 116,152.69 178,153.187 178,147.222 " fill="#3B9BA0" stroke="#3B9BA0" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000134.561401" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7830" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA041" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000134.561401" d="M 100,134.561
+v 10.5556
+a 8,2 0 0,0 16,0
+v -10.5556
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000134.561401)" fill-opacity="0.9" stroke="#1D5020" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="134.561" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5020" fill="url(#grad100.000000134.561401)" />
+<ellipse cx="108" cy="145.117" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5020" fill="url(#grad100.000000134.561401)" />
+<defs id="" >
+<linearGradient id="grad100.000000134.561401NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664134.561401" d="M 80.6667,134.561
+v 10.5556
+a 2.66667,1 0 0,0 5.33333,0
+v -10.5556
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000134.561401NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="134.561" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000134.561401NRC)" />
+<ellipse cx="83.3333" cy="145.117" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000134.561401NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000134.561401NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328134.561401" d="M 69.3333,134.561
+v 10.5556
+a 2.66667,1 0 0,0 5.33333,0
+v -10.5556
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000134.561401NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="134.561" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000134.561401NRCRedun)" />
+<ellipse cx="72" cy="145.117" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000134.561401NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000135.292404" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C7830" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA041" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000135.292404" d="M 178,135.292
+v 10.7602
+a 8,2 0 0,0 16,0
+v -10.7602
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000135.292404)" fill-opacity="0.9" stroke="#1D5020" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="135.292" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5020" fill="url(#grad178.000000135.292404)" />
+<ellipse cx="186" cy="146.053" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D5020" fill="url(#grad178.000000135.292404)" />
+<defs id="" >
+<linearGradient id="grad178.000000135.292404NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000135.292404" d="M 208,135.292
+v 10.7602
+a 2.66667,1 0 0,0 5.33333,0
+v -10.7602
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000135.292404NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="135.292" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000135.292404NRC)" />
+<ellipse cx="210.667" cy="146.053" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.000000135.292404NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000135.292404NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328135.292404" d="M 219.333,135.292
+v 10.7602
+a 2.66667,1 0 0,0 5.33333,0
+v -10.7602
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000135.292404NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="135.292" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000135.292404NRCRedun)" />
+<ellipse cx="222" cy="146.053" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000135.292404NRCRedun)" />
+<polygon points="116,134.561 116,145.117 178,146.053 178,135.292 " fill="#3BA041" stroke="#3BA041" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000119.649124" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#74782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#9BA03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000119.649124" d="M 100,119.649
+v 13.6842
+a 8,2 0 0,0 16,0
+v -13.6842
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000119.649124)" fill-opacity="0.9" stroke="#4D501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="119.649" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4D501D" fill="url(#grad100.000000119.649124)" />
+<ellipse cx="108" cy="133.333" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4D501D" fill="url(#grad100.000000119.649124)" />
+<defs id="" >
+<linearGradient id="grad100.000000119.649124NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664119.649124" d="M 80.6667,119.649
+v 13.6842
+a 2.66667,1 0 0,0 5.33333,0
+v -13.6842
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000119.649124NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="119.649" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000119.649124NRC)" />
+<ellipse cx="83.3333" cy="133.333" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.000000119.649124NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000119.649124NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328119.649124" d="M 69.3333,119.649
+v 13.6842
+a 2.66667,1 0 0,0 5.33333,0
+v -13.6842
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000119.649124NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="119.649" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000119.649124NRCRedun)" />
+<ellipse cx="72" cy="133.333" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000119.649124NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000120.321640" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#74782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#9BA03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000120.321640" d="M 178,120.322
+v 13.2749
+a 8,2 0 0,0 16,0
+v -13.2749
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000120.321640)" fill-opacity="0.9" stroke="#4D501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="120.322" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4D501D" fill="url(#grad178.000000120.321640)" />
+<ellipse cx="186" cy="133.596" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4D501D" fill="url(#grad178.000000120.321640)" />
+<defs id="" >
+<linearGradient id="grad178.000000120.321640NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000120.321640" d="M 208,120.322
+v 13.2749
+a 2.66667,1 0 0,0 5.33333,0
+v -13.2749
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000120.321640NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="120.322" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000120.321640NRC)" />
+<ellipse cx="210.667" cy="133.596" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad178.000000120.321640NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000120.321640NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328120.321640" d="M 219.333,120.322
+v 13.2749
+a 2.66667,1 0 0,0 5.33333,0
+v -13.2749
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000120.321640NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="120.322" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000120.321640NRCRedun)" />
+<ellipse cx="222" cy="133.596" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000120.321640NRCRedun)" />
+<polygon points="116,119.649 116,133.333 178,133.596 178,120.322 " fill="#9BA03B" stroke="#9BA03B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.000000107.017548" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#78302C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A0413B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.000000107.017548" d="M 100,107.018
+v 2.83626
+a 8,2 0 0,0 16,0
+v -2.83626
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.000000107.017548)" fill-opacity="0.9" stroke="#50201D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="107.018" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50201D" fill="url(#grad100.000000107.017548)" />
+<ellipse cx="108" cy="109.854" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50201D" fill="url(#grad100.000000107.017548)" />
+<defs id="" >
+<linearGradient id="grad100.000000107.017548NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.666664107.017548" d="M 80.6667,107.018
+v 2.83626
+a 2.66667,1 0 0,0 5.33333,0
+v -2.83626
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000107.017548NRC)" fill-opacity="0.9" stroke="#A30" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="107.018" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad100.000000107.017548NRC)" />
+<ellipse cx="83.3333" cy="109.854" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad100.000000107.017548NRC)" />
+<defs id="" >
+<linearGradient id="grad100.000000107.017548NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.333328107.017548" d="M 69.3333,107.018
+v 2.83626
+a 2.66667,1 0 0,0 5.33333,0
+v -2.83626
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.000000107.017548NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="107.018" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000107.017548NRCRedun)" />
+<ellipse cx="72" cy="109.854" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.000000107.017548NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.000000107.573097" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#78302C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A0413B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.000000107.573097" d="M 178,107.573
+v 2.98246
+a 8,2 0 0,0 16,0
+v -2.98246
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.000000107.573097)" fill-opacity="0.9" stroke="#50201D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="107.573" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50201D" fill="url(#grad178.000000107.573097)" />
+<ellipse cx="186" cy="110.556" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#50201D" fill="url(#grad178.000000107.573097)" />
+<defs id="" >
+<linearGradient id="grad178.000000107.573097NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.000000107.573097" d="M 208,107.573
+v 2.98246
+a 2.66667,1 0 0,0 5.33333,0
+v -2.98246
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000107.573097NRC)" fill-opacity="0.9" stroke="#A30" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="107.573" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.000000107.573097NRC)" />
+<ellipse cx="210.667" cy="110.556" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.000000107.573097NRC)" />
+<defs id="" >
+<linearGradient id="grad178.000000107.573097NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.333328107.573097" d="M 219.333,107.573
+v 2.98246
+a 2.66667,1 0 0,0 5.33333,0
+v -2.98246
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.000000107.573097NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="107.573" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000107.573097NRCRedun)" />
+<ellipse cx="222" cy="110.556" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.000000107.573097NRCRedun)" />
+<polygon points="116,107.018 116,109.854 178,110.556 178,107.573 " fill="#A0413B" stroke="#A0413B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.00000084.502922" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782C77" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B9F" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.00000084.502922" d="M 100,84.5029
+v 20.8772
+a 8,2 0 0,0 16,0
+v -20.8772
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.00000084.502922)" fill-opacity="0.9" stroke="#501D4F" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="84.5029" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4F" fill="url(#grad100.00000084.502922)" />
+<ellipse cx="108" cy="105.38" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4F" fill="url(#grad100.00000084.502922)" />
+<defs id="" >
+<linearGradient id="grad100.00000084.502922NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CCCC33" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffff00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.66666484.502922" d="M 80.6667,84.5029
+v 20.8772
+a 2.66667,1 0 0,0 5.33333,0
+v -20.8772
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000084.502922NRC)" fill-opacity="0.9" stroke="#AA0" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="84.5029" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.00000084.502922NRC)" />
+<ellipse cx="83.3333" cy="105.38" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#AA0" fill="url(#grad100.00000084.502922NRC)" />
+<defs id="" >
+<linearGradient id="grad100.00000084.502922NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.33332884.502922" d="M 69.3333,84.5029
+v 20.8772
+a 2.66667,1 0 0,0 5.33333,0
+v -20.8772
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000084.502922NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="84.5029" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000084.502922NRCRedun)" />
+<ellipse cx="72" cy="105.38" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000084.502922NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.00000084.824562" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782C77" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B9F" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.00000084.824562" d="M 178,84.8246
+v 21.1111
+a 8,2 0 0,0 16,0
+v -21.1111
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.00000084.824562)" fill-opacity="0.9" stroke="#501D4F" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="84.8246" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4F" fill="url(#grad178.00000084.824562)" />
+<ellipse cx="186" cy="105.936" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501D4F" fill="url(#grad178.00000084.824562)" />
+<defs id="" >
+<linearGradient id="grad178.00000084.824562NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.00000084.824562" d="M 208,84.8246
+v 21.1111
+a 2.66667,1 0 0,0 5.33333,0
+v -21.1111
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000084.824562NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="84.8246" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000084.824562NRC)" />
+<ellipse cx="210.667" cy="105.936" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000084.824562NRC)" />
+<defs id="" >
+<linearGradient id="grad178.00000084.824562NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.33332884.824562" d="M 219.333,84.8246
+v 21.1111
+a 2.66667,1 0 0,0 5.33333,0
+v -21.1111
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000084.824562NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="84.8246" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000084.824562NRCRedun)" />
+<ellipse cx="222" cy="105.936" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000084.824562NRCRedun)" />
+<polygon points="116,84.5029 116,105.38 178,105.936 178,84.8246 " fill="#A03B9F" stroke="#A03B9F" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.00000069.619881" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2D2C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#3C3BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.00000069.619881" d="M 100,69.6199
+v 4.79532
+a 8,2 0 0,0 16,0
+v -4.79532
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.00000069.619881)" fill-opacity="0.9" stroke="#1E1D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="69.6199" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1E1D50" fill="url(#grad100.00000069.619881)" />
+<ellipse cx="108" cy="74.4152" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1E1D50" fill="url(#grad100.00000069.619881)" />
+<defs id="" >
+<linearGradient id="grad100.00000069.619881NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.66666469.619881" d="M 80.6667,69.6199
+v 4.79532
+a 2.66667,1 0 0,0 5.33333,0
+v -4.79532
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000069.619881NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="69.6199" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.00000069.619881NRC)" />
+<ellipse cx="83.3333" cy="74.4152" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.00000069.619881NRC)" />
+<defs id="" >
+<linearGradient id="grad100.00000069.619881NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.33332869.619881" d="M 69.3333,69.6199
+v 4.79532
+a 2.66667,1 0 0,0 5.33333,0
+v -4.79532
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000069.619881NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="69.6199" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000069.619881NRCRedun)" />
+<ellipse cx="72" cy="74.4152" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000069.619881NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.00000070.263161" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2D2C78" stop-opacity="1" />
+<stop offset="100%" stop-color="#3C3BA0" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.00000070.263161" d="M 178,70.2632
+v 4.82456
+a 8,2 0 0,0 16,0
+v -4.82456
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.00000070.263161)" fill-opacity="0.9" stroke="#1E1D50" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="70.2632" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1E1D50" fill="url(#grad178.00000070.263161)" />
+<ellipse cx="186" cy="75.0877" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1E1D50" fill="url(#grad178.00000070.263161)" />
+<defs id="" >
+<linearGradient id="grad178.00000070.263161NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.00000070.263161" d="M 208,70.2632
+v 4.82456
+a 2.66667,1 0 0,0 5.33333,0
+v -4.82456
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000070.263161NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="70.2632" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000070.263161NRC)" />
+<ellipse cx="210.667" cy="75.0877" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000070.263161NRC)" />
+<defs id="" >
+<linearGradient id="grad178.00000070.263161NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.33332870.263161" d="M 219.333,70.2632
+v 4.82456
+a 2.66667,1 0 0,0 5.33333,0
+v -4.82456
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000070.263161NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="70.2632" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000070.263161NRCRedun)" />
+<ellipse cx="222" cy="75.0877" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000070.263161NRCRedun)" />
+<polygon points="116,69.6199 116,74.4152 178,75.0877 178,70.2632 " fill="#3C3BA0" stroke="#3C3BA0" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.00000058.070175" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C782D" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA03C" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.00000058.070175" d="M 100,58.0702
+v 3.47953
+a 8,2 0 0,0 16,0
+v -3.47953
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.00000058.070175)" fill-opacity="0.9" stroke="#1D501E" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="58.0702" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad100.00000058.070175)" />
+<ellipse cx="108" cy="61.5497" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad100.00000058.070175)" />
+<defs id="" >
+<linearGradient id="grad100.00000058.070175NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.66666458.070175" d="M 80.6667,58.0702
+v 3.47953
+a 2.66667,1 0 0,0 5.33333,0
+v -3.47953
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000058.070175NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="58.0702" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.00000058.070175NRC)" />
+<ellipse cx="83.3333" cy="61.5497" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.00000058.070175NRC)" />
+<defs id="" >
+<linearGradient id="grad100.00000058.070175NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.33332858.070175" d="M 69.3333,58.0702
+v 3.47953
+a 2.66667,1 0 0,0 5.33333,0
+v -3.47953
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000058.070175NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="58.0702" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000058.070175NRCRedun)" />
+<ellipse cx="72" cy="61.5497" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000058.070175NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.00000057.631580" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#2C782D" stop-opacity="1" />
+<stop offset="100%" stop-color="#3BA03C" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.00000057.631580" d="M 178,57.6316
+v 3.88889
+a 8,2 0 0,0 16,0
+v -3.88889
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.00000057.631580)" fill-opacity="0.9" stroke="#1D501E" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="57.6316" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad178.00000057.631580)" />
+<ellipse cx="186" cy="61.5205" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#1D501E" fill="url(#grad178.00000057.631580)" />
+<defs id="" >
+<linearGradient id="grad178.00000057.631580NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.00000057.631580" d="M 208,57.6316
+v 3.88889
+a 2.66667,1 0 0,0 5.33333,0
+v -3.88889
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000057.631580NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="57.6316" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000057.631580NRC)" />
+<ellipse cx="210.667" cy="61.5205" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000057.631580NRC)" />
+<defs id="" >
+<linearGradient id="grad178.00000057.631580NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.33332857.631580" d="M 219.333,57.6316
+v 3.88889
+a 2.66667,1 0 0,0 5.33333,0
+v -3.88889
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000057.631580NRCRedun)" fill-opacity="0.9" stroke="#C40" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="57.6316" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C40" fill="url(#grad178.00000057.631580NRCRedun)" />
+<ellipse cx="222" cy="61.5205" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C40" fill="url(#grad178.00000057.631580NRCRedun)" />
+<polygon points="116,58.0702 116,61.5497 178,61.5205 178,57.6316 " fill="#3BA03C" stroke="#3BA03C" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.00000043.479530" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#77782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#9FA03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.00000043.479530" d="M 100,43.4795
+v 9.64912
+a 8,2 0 0,0 16,0
+v -9.64912
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.00000043.479530)" fill-opacity="0.9" stroke="#4F501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="43.4795" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad100.00000043.479530)" />
+<ellipse cx="108" cy="53.1287" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad100.00000043.479530)" />
+<defs id="" >
+<linearGradient id="grad100.00000043.479530NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.66666443.479530" d="M 80.6667,43.4795
+v 9.64912
+a 2.66667,1 0 0,0 5.33333,0
+v -9.64912
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000043.479530NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="43.4795" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.00000043.479530NRC)" />
+<ellipse cx="83.3333" cy="53.1287" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.00000043.479530NRC)" />
+<defs id="" >
+<linearGradient id="grad100.00000043.479530NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.33332843.479530" d="M 69.3333,43.4795
+v 9.64912
+a 2.66667,1 0 0,0 5.33333,0
+v -9.64912
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000043.479530NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="43.4795" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000043.479530NRCRedun)" />
+<ellipse cx="72" cy="53.1287" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000043.479530NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.00000043.011696" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#77782C" stop-opacity="1" />
+<stop offset="100%" stop-color="#9FA03B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.00000043.011696" d="M 178,43.0117
+v 11.2281
+a 8,2 0 0,0 16,0
+v -11.2281
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.00000043.011696)" fill-opacity="0.9" stroke="#4F501D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="43.0117" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad178.00000043.011696)" />
+<ellipse cx="186" cy="54.2398" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#4F501D" fill="url(#grad178.00000043.011696)" />
+<defs id="" >
+<linearGradient id="grad178.00000043.011696NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.00000043.011696" d="M 208,43.0117
+v 11.2281
+a 2.66667,1 0 0,0 5.33333,0
+v -11.2281
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000043.011696NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="43.0117" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000043.011696NRC)" />
+<ellipse cx="210.667" cy="54.2398" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000043.011696NRC)" />
+<defs id="" >
+<linearGradient id="grad178.00000043.011696NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.33332843.011696" d="M 219.333,43.0117
+v 11.2281
+a 2.66667,1 0 0,0 5.33333,0
+v -11.2281
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000043.011696NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="43.0117" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000043.011696NRCRedun)" />
+<ellipse cx="222" cy="54.2398" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000043.011696NRCRedun)" />
+<polygon points="116,43.4795 116,53.1287 178,54.2398 178,43.0117 " fill="#9FA03B" stroke="#9FA03B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<defs id="" >
+<linearGradient id="grad100.00000030.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782D2C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03C3B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="100.00000030.000000" d="M 100,30
+v 9.76608
+a 8,2 0 0,0 16,0
+v -9.76608
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad100.00000030.000000)" fill-opacity="0.9" stroke="#501E1D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="108" cy="30" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad100.00000030.000000)" />
+<ellipse cx="108" cy="39.7661" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad100.00000030.000000)" />
+<defs id="" >
+<linearGradient id="grad100.00000030.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="80.66666430.000000" d="M 80.6667,30
+v 9.76608
+a 2.66667,1 0 0,0 5.33333,0
+v -9.76608
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000030.000000NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="83.3333" cy="30" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.00000030.000000NRC)" />
+<ellipse cx="83.3333" cy="39.7661" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad100.00000030.000000NRC)" />
+<defs id="" >
+<linearGradient id="grad100.00000030.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="69.33332830.000000" d="M 69.3333,30
+v 9.76608
+a 2.66667,1 0 0,0 5.33333,0
+v -9.76608
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad100.00000030.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="72" cy="30" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000030.000000NRCRedun)" />
+<ellipse cx="72" cy="39.7661" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad100.00000030.000000NRCRedun)" />
+<defs id="" >
+<linearGradient id="grad178.00000030.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#782D2C" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03C3B" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="178.00000030.000000" d="M 178,30
+v 9.7076
+a 8,2 0 0,0 16,0
+v -9.7076
+a 8,2 0 0,0 -16,0
+z
+" fill="url(#grad178.00000030.000000)" fill-opacity="0.9" stroke="#501E1D" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="30" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad178.00000030.000000)" />
+<ellipse cx="186" cy="39.7076" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="#501E1D" fill="url(#grad178.00000030.000000)" />
+<defs id="" >
+<linearGradient id="grad178.00000030.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
+<stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.00000030.000000" d="M 208,30
+v 9.7076
+a 2.66667,1 0 0,0 5.33333,0
+v -9.7076
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000030.000000NRC)" fill-opacity="0.9" stroke="#A60" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="30" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000030.000000NRC)" />
+<ellipse cx="210.667" cy="39.7076" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A60" fill="url(#grad178.00000030.000000NRC)" />
+<defs id="" >
+<linearGradient id="grad178.00000030.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.33332830.000000" d="M 219.333,30
+v 9.7076
+a 2.66667,1 0 0,0 5.33333,0
+v -9.7076
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000030.000000NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="30" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000030.000000NRCRedun)" />
+<ellipse cx="222" cy="39.7076" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000030.000000NRCRedun)" />
+<polygon points="116,30 116,39.7661 178,39.7076 178,30 " fill="#A03C3B" stroke="#A03C3B" stroke-width="1" stroke-opacity="0.45" fill-opacity="0.45" />
+<path id="178.00000065.789474" d="M 178,65.7895
+v 1.14035
+a 8,2 0 0,0 16,0
+v -1.14035
+a 8,2 0 0,0 -16,0
+z
+" fill="black" fill-opacity="0.9" stroke="white" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="0.75" />
+<ellipse cx="186" cy="65.7895" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="white" fill="black" />
+<ellipse cx="186" cy="66.9298" rx="8.18" ry="2" stroke-width="0.3" fill-opacity="0.9" stroke-opacity="0.9" stroke="white" fill="black" />
+<defs id="" >
+<linearGradient id="grad178.00000065.789474NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC6633" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff5500" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="208.00000065.789474" d="M 208,65.7895
+v 1.14035
+a 2.66667,1 0 0,0 5.33333,0
+v -1.14035
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000065.789474NRC)" fill-opacity="0.9" stroke="#A30" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="210.667" cy="65.7895" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.00000065.789474NRC)" />
+<ellipse cx="210.667" cy="66.9298" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#A30" fill="url(#grad178.00000065.789474NRC)" />
+<defs id="" >
+<linearGradient id="grad178.00000065.789474NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="30%" stop-color="#CC3333" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<path id="219.33332865.789474" d="M 219.333,65.7895
+v 1.14035
+a 2.66667,1 0 0,0 5.33333,0
+v -1.14035
+a 2.66667,1 0 0,0 -5.33333,0
+z
+" fill="url(#grad178.00000065.789474NRCRedun)" fill-opacity="0.9" stroke="#C00" stroke-opacity="0.9" stroke-linejoin="round" stroke-width="1.4" />
+<ellipse cx="222" cy="65.7895" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000065.789474NRCRedun)" />
+<ellipse cx="222" cy="66.9298" rx="3.00267" ry="1" stroke-width="0.56" fill-opacity="0.9" stroke-opacity="0.9" stroke="#C00" fill="url(#grad178.00000065.789474NRCRedun)" />
+<path id="100.00000030.000000" d="M 100,30
+v 482.427
+a 8,2 0 0,0 16,0
+v -482.427
+a 8,2 0 0,0 -16,0
+z
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" />
+<ellipse cx="108" cy="30" rx="8.24" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
+<ellipse cx="108" cy="512.427" rx="8.24" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
+<path id="178.00000030.000000" d="M 178,30
+v 500.175
+a 8,2 0 0,0 16,0
+v -500.175
+a 8,2 0 0,0 -16,0
+z
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" />
+<ellipse cx="186" cy="30" rx="8.24" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
+<ellipse cx="186" cy="530.175" rx="8.24" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
+<text id="108.00000020.400000" x="108" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+P.abelii</text>
+<text id="186.00000020.400000" x="186" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+P.verreauxi</text>
+<defs id="" >
+<linearGradient id="grad92.000000570.175415" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
+<stop offset="8%" stop-color="#0055ff" stop-opacity="1" />
+<stop offset="16%" stop-color="#00aaff" stop-opacity="1" />
+<stop offset="25%" stop-color="#00ffff" stop-opacity="1" />
+<stop offset="33%" stop-color="#00ffaa" stop-opacity="1" />
+<stop offset="41%" stop-color="#00ff55" stop-opacity="1" />
+<stop offset="50%" stop-color="#00ff00" stop-opacity="1" />
+<stop offset="58%" stop-color="#55ff00" stop-opacity="1" />
+<stop offset="66%" stop-color="#aaff00" stop-opacity="1" />
+<stop offset="75%" stop-color="#ffff00" stop-opacity="1" />
+<stop offset="83%" stop-color="#ffaa00" stop-opacity="1" />
+<stop offset="91%" stop-color="#ff5500" stop-opacity="1" />
+<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+</linearGradient>
+</defs>
+<rect x="92" y="570.175" width="110" height="11" rx="2" ry="2" fill="url(#grad92.000000570.175415)" fill-opacity="0.9" stroke="black" stroke-width="0.5" />
+<text id="147.000000563.325439" x="147" y="563.325" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+Relative Redundancy</text>
+<text id="147.000000594.325439" x="147" y="594.325" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+Redundancy</text>
+<text id="88.000000575.675415" x="88" y="575.675" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+0.0</text>
+<text id="206.000000575.675415" x="206" y="575.675" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+2.0</text>
+<text id="119.500000575.675415" x="119.5" y="575.675" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+0.5</text>
+<text id="147.000000575.675415" x="147" y="575.675" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+1.0</text>
+<text id="174.500000575.675415" x="174.5" y="575.675" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+1.5</text>
+<path id="" d="M 83.3333,498.596
+V 560.175
+H 97
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+<path id="" d="M 210.667,499.474
+V 560.175
+H 197
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+<path id="" d="M 72,498.596
+V 591.175
+H 115
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+<path id="" d="M 222,499.474
+V 591.175
+H 179
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
+</svg>
