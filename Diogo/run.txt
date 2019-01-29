@@ -1,40 +1,94 @@
-./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t C.lupus
-./smashpp -viz -vv -m 300 -o B.taurus-C.lupus.svg B.taurus-C.lupus.pos
-time: 1:9:54 hour:min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t C.lupus -th 1.8
+./smashpp -viz -vv -o B.taurus-C.lupus.svg B.taurus-C.lupus.pos
 
-./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t G.gorilla
-./smashpp -viz -vv -m 200 -o B.taurus-G.gorilla.svg B.taurus-G.gorilla.pos
-time: 1:10:24 hour:min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t G.gorilla -th 1.85
+./smashpp -viz -vv -o B.taurus-G.gorilla.svg B.taurus-G.gorilla.pos
 
-./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t M.fuscata
-./smashpp -viz -vv -m 185 -o B.taurus-M.fuscata.svg B.taurus-M.fuscata.pos
-time: 1:13:53 hour:min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t M.fuscata -th 1.9
+./smashpp -viz -vv -o B.taurus-M.fuscata.svg B.taurus-M.fuscata.pos
 
-./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t O.cuniculus
-./smashpp -viz -m 200 -vv -o B.taurus-O.cuniculus.svg B.taurus-O.cuniculus.pos
-time: 1:11:55 hour:min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t O.cuniculus -th 1.87
+./smashpp -viz -vv -o B.taurus-O.cuniculus.svg B.taurus-O.cuniculus.pos
 
-./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.abelii
-./smashpp -viz -m 175 -vv -o B.taurus-P.abelii.svg B.taurus-P.abelii.pos
-time: 1:7:17 hour:min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t P.abelii -th 1.9
+./smashpp -viz -vv -o B.taurus-P.abelii.svg B.taurus-P.abelii.pos
 
-./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.paniscus
-./smashpp -viz -m 150 -vv -o B.taurus-P.paniscus.svg B.taurus-P.paniscus.pos
-time: 1:20:17 hour:min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t P.paniscus -th 1.87
+./smashpp -viz -vv -o B.taurus-P.paniscus.svg B.taurus-P.paniscus.pos
 
-./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.pygmaeus
-./smashpp -viz -m 145 -vv -o B.taurus-P.pygmaeus.svg B.taurus-P.pygmaeus.pos
-time: 1:13:36 hour:min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t P.pygmaeus -th 1.9
+./smashpp -viz -vv -o B.taurus-P.pygmaeus.svg B.taurus-P.pygmaeus.pos
 
-./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.troglodytes
-./smashpp -viz -m 195 -vv -o B.taurus-P.troglodytes.svg B.taurus-P.troglodytes.pos
-time: 1:13:35 hour:min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t P.troglodytes -th 1.8
+./smashpp -viz -vv -o B.taurus-P.troglodytes.svg B.taurus-P.troglodytes.pos
 
-./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.verreauxi
-./smashpp -viz -m 250 -vv -o B.taurus-P.verreauxi.svg B.taurus-P.verreauxi.pos
-time: 1:14:10 hour:min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t P.verreauxi -th 1.85
+./smashpp -viz -vv -o B.taurus-P.verreauxi.svg B.taurus-P.verreauxi.pos
 
-**********************************************************************************
-./smashpp -w 9000 -rm 20,0,0.01,0.95/5,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r G.gorilla -t P.troglodytes
-./smashpp -viz -m 300 -vv -i G.gorilla-P.troglodytes.pos
-Total time: 4:21 min:sec
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r B.taurus -t S.scrofa -th 1.8
+./smashpp -viz -vv -o B.taurus-S.scrofa.svg B.taurus-S.scrofa.pos
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t B.taurus -th 1.8
+./smashpp -viz -vv -o C.lupus-B.taurus.svg C.lupus-C.lupus.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t G.gorilla -th 1.85
+./smashpp -viz -vv -o C.lupus-G.gorilla.svg C.lupus-G.gorilla.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t M.fuscata -th 1.9
+./smashpp -viz -vv -o C.lupus-M.fuscata.svg C.lupus-M.fuscata.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t O.cuniculus -th 1.87
+./smashpp -viz -vv -o C.lupus-O.cuniculus.svg C.lupus-O.cuniculus.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t P.abelii -th 1.9
+./smashpp -viz -vv -o C.lupus-P.abelii.svg C.lupus-P.abelii.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t P.paniscus -th 1.87
+./smashpp -viz -vv -o C.lupus-P.paniscus.svg C.lupus-P.paniscus.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t P.pygmaeus -th 1.9
+./smashpp -viz -vv -o C.lupus-P.pygmaeus.svg C.lupus-P.pygmaeus.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t P.troglodytes -th 1.8
+./smashpp -viz -vv -o C.lupus-P.troglodytes.svg C.lupus-P.troglodytes.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t P.verreauxi -th 1.85
+./smashpp -viz -vv -o C.lupus-P.verreauxi.svg C.lupus-P.verreauxi.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r C.lupus -t S.scrofa -th 1.8
+./smashpp -viz -vv -o C.lupus-S.scrofa.svg C.lupus-S.scrofa.pos
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t B.taurus -th 1.85
+./smashpp -viz -vv -o G.gorilla-B.taurus.svg G.gorilla-B.taurus.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t C.lupus -th 1.92
+./smashpp -viz -vv -o G.gorilla-C.lupus.svg G.gorilla-C.lupus.pos
+
+
+****
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t M.fuscata -th 1.9
+./smashpp -viz -vv -o G.gorilla-M.fuscata.svg G.gorilla-M.fuscata.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t O.cuniculus -th 1.87
+./smashpp -viz -vv -o G.gorilla-O.cuniculus.svg G.gorilla-O.cuniculus.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t P.abelii -th 1.9
+./smashpp -viz -vv -o G.gorilla-P.abelii.svg G.gorilla-P.abelii.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t P.paniscus -th 1.87
+./smashpp -viz -vv -o G.gorilla-P.paniscus.svg G.gorilla-P.paniscus.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t P.pygmaeus -th 1.9
+./smashpp -viz -vv -o G.gorilla-P.pygmaeus.svg G.gorilla-P.pygmaeus.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t P.troglodytes -th 1.8
+./smashpp -viz -vv -o G.gorilla-P.troglodytes.svg G.gorilla-P.troglodytes.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t P.verreauxi -th 1.85
+./smashpp -viz -vv -o G.gorilla-P.verreauxi.svg G.gorilla-P.verreauxi.pos
+
+./smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r G.gorilla -t S.scrofa -th 1.8
+./smashpp -viz -vv -o G.gorilla-S.scrofa.svg G.gorilla-S.scrofa.pos
