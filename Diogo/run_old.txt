@@ -1,0 +1,40 @@
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t C.lupus
+./smashpp -viz -vv -m 300 -o B.taurus-C.lupus.svg B.taurus-C.lupus.pos
+time: 1:9:54 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t G.gorilla
+./smashpp -viz -vv -m 200 -o B.taurus-G.gorilla.svg B.taurus-G.gorilla.pos
+time: 1:10:24 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t M.fuscata
+./smashpp -viz -vv -m 185 -o B.taurus-M.fuscata.svg B.taurus-M.fuscata.pos
+time: 1:13:53 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t O.cuniculus
+./smashpp -viz -m 200 -vv -o B.taurus-O.cuniculus.svg B.taurus-O.cuniculus.pos
+time: 1:11:55 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.abelii
+./smashpp -viz -m 175 -vv -o B.taurus-P.abelii.svg B.taurus-P.abelii.pos
+time: 1:7:17 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.paniscus
+./smashpp -viz -m 150 -vv -o B.taurus-P.paniscus.svg B.taurus-P.paniscus.pos
+time: 1:20:17 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.pygmaeus
+./smashpp -viz -m 145 -vv -o B.taurus-P.pygmaeus.svg B.taurus-P.pygmaeus.pos
+time: 1:13:36 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.troglodytes
+./smashpp -viz -m 195 -vv -o B.taurus-P.troglodytes.svg B.taurus-P.troglodytes.pos
+time: 1:13:35 hour:min:sec
+
+./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.verreauxi
+./smashpp -viz -m 250 -vv -o B.taurus-P.verreauxi.svg B.taurus-P.verreauxi.pos
+time: 1:14:10 hour:min:sec
+
+**********************************************************************************
+./smashpp -w 200 -rm 20,0,0.01,0.95/5,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r G.gorilla -t P.troglodytes
+./smashpp -viz -m 20 -vv -i G.gorilla-P.troglodytes.pos
+Total time: 4:21 min:sec
