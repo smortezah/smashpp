@@ -33,3 +33,8 @@ time: 1:13:35 hour:min:sec
 ./smashpp -w 75 -rm 13,0,0.05,0.95/3,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r B.taurus -t P.verreauxi
 ./smashpp -viz -m 250 -vv -o B.taurus-P.verreauxi.svg B.taurus-P.verreauxi.pos
 time: 1:14:10 hour:min:sec
+
+**********************************************************************************
+./smashpp -w 9000 -rm 20,0,0.01,0.95/5,0,1,0.95:9,0,0.1,0.95:6,0,0.1,0.95 -r G.gorilla -t P.troglodytes
+./smashpp -viz -m 300 -vv -i G.gorilla-P.troglodytes.pos
+Total time: 4:21 min:sec
