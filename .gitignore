@@ -5,7 +5,7 @@
 *.iae
 *.slf
 *.cbp
-# *.svg
+*.svg
 *.png
 **/*.blg
 **/*.bbl
