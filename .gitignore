@@ -26,7 +26,6 @@ final-*
 0-ref*
 1-ref*
 
-smashpp
 GeCo
 gmon.out
 callgrind.out*
@@ -73,5 +72,4 @@ r-t.pos
 models
 out.svg
 smash
-smashpp
 smash_paper.pdf
