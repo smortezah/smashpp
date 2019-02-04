@@ -398,29 +398,30 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   if (file_is_empty(positionName))  remove(positionName.c_str());
   filF.close();
   if (!SaveFilter)  remove(filterName.c_str());
-  
   nSegs = seg->nSegs;
 }
 
-void Filter::extract_seg (u32 ID, const string& ref, const string& tar) const {
+void Filter::merge_extract_seg (u32 ID, const string& ref, const string& tar) 
+const {
   check_file(gen_name(ID, ref, tar, Format::POSITION));
-  ifstream ff(gen_name(ID, ref, tar, Format::POSITION));
+  ifstream posF(gen_name(ID, ref, tar, Format::POSITION));
   const auto segName = gen_name(ID, ref, tar, Format::SEGMENT);
   auto subseq = make_unique<SubSeq>();
-  const u64 maxTarPos = file_size(tar) - 1;
   subseq->inName = tar;
   u64 i = 0;
+  const u64 maxTarPos = file_size(tar) - 1;
 
-  for (string beg,end,ent; ff>>beg>>end>>ent; ++i) {
+  for (string beg,end,ent; posF>>beg>>end>>ent; ++i) {
     subseq->outName = segName+to_string(i);
     subseq->begPos = stoull(beg);
     if (stoull(end) > maxTarPos)
-      end = to_string(maxTarPos);
-    subseq->size = static_cast<streamsize>(stoull(end)-subseq->begPos+1);
+      subseq->size = static_cast<streamsize>(maxTarPos-subseq->begPos+1);
+    else
+      subseq->size = static_cast<streamsize>(stoull(end)-subseq->begPos+1);
     extract_subseq(subseq);
   }
 
-  ff.close();
+  posF.close();
 }
 
 void Filter::aggregate_mid_pos (u32 ID, const string& origin, 

@@ -127,7 +127,7 @@ int main (int argc, char* argv[]) {
       else if (par.segment) {
         auto filter = make_unique<Filter>(par);
         filter->smooth_seg(par);
-        filter->extract_seg(par.ID, par.ref, par.tar);
+        filter->merge_extract_seg(par.ID, par.ref, par.tar);
       }
       else {
         const auto origRef=par.ref, origTar=par.tar;
@@ -161,7 +161,7 @@ int main (int argc, char* argv[]) {
           auto filter = make_unique<Filter>(par);
           filter->smooth_seg(par);
           if (filter->nSegs==0) { cerr<<'\n';  continue; }
-          filter->extract_seg(par.ID, par.ref, par.tar);
+          filter->merge_extract_seg(par.ID, par.ref, par.tar);
           const auto segName=gen_name(par.ID, par.ref, par.tar,Format::SEGMENT);
 
           // Ref-free compress
@@ -211,7 +211,7 @@ int main (int argc, char* argv[]) {
 
             // Ref-free compress
             if (!par.noRedun) {
-              filter->extract_seg(par.ID, par.ref, par.tar);
+              filter->merge_extract_seg(par.ID, par.ref, par.tar);
               cerr << TERM_SEP;
               cerr << ">>> " << italic("Reference-free compression of the "
                 "segment") << italic(filter->nSegs==1 ? "" : "s") << '\n';
