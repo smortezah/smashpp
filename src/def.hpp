@@ -67,6 +67,7 @@ static constexpr prc_t  ENTR_N       {2.0};       // Entropy of Ns
 static constexpr prc_t  MIN_ENTR_N   {0.0};
 static constexpr prc_t  MAX_ENTR_N   {100.0};
 static constexpr char   TAR_ALT_N    {'T'};       // Alter. to Ns in target file
+static constexpr u8     BEGPOS_SHIFT {31};   // Shift beg pos backward -- filter
 static constexpr u32    WS           {256};             // Window size -- filter
 static constexpr u32    MIN_WS       {1};
 static constexpr u32    MAX_WS       {0xffffffff};// 2^32 - 1
