@@ -226,6 +226,13 @@ inline void Filter::smooth_seg_rect (const Param& p) {
   seg->thresh = p.thresh;
   if (p.manSegSize)
     seg->minSize=p.segSize;
+  {
+  u8 maxCtx = p.refMs[0].k;
+  for (const auto& e : p.refMs)
+    if (e.k > maxCtx)
+      maxCtx = e.k;
+  seg->maxCtx = maxCtx;
+  }
   string num;
   auto sum = 0.f;
   auto filtered = 0.f;
@@ -309,7 +316,14 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   auto seg = make_shared<Segment>();
   seg->thresh = p.thresh;
   if (p.manSegSize)
-    seg->minSize=p.segSize;
+    seg->minSize = p.segSize;
+  {
+  u8 maxCtx = p.refMs[0].k;
+  for (const auto& e : p.refMs)
+    if (e.k > maxCtx)
+      maxCtx = e.k;
+  seg->maxCtx = maxCtx;
+  }
   const auto winBeg=begin(window), winEnd=end(window);
   auto sWeight = accumulate(winBeg+(wsize>>1u), winEnd, 0.f);
   string num;
@@ -393,13 +407,16 @@ void Filter::extract_seg (u32 ID, const string& ref, const string& tar) const {
   ifstream ff(gen_name(ID, ref, tar, Format::POSITION));
   const auto segName = gen_name(ID, ref, tar, Format::SEGMENT);
   auto subseq = make_unique<SubSeq>();
+  const u64 maxTarPos = file_size(tar) - 1;
   subseq->inName = tar;
   u64 i = 0;
 
   for (string beg,end,ent; ff>>beg>>end>>ent; ++i) {
     subseq->outName = segName+to_string(i);
-    subseq->begPos  = stoull(beg);
-    subseq->size    = static_cast<streamsize>(stoull(end)-subseq->begPos+1);
+    subseq->begPos = stoull(beg);
+    if (stoull(end) > maxTarPos)
+      end = to_string(maxTarPos);
+    subseq->size = static_cast<streamsize>(stoull(end)-subseq->begPos+1);
     extract_subseq(subseq);
   }
 
