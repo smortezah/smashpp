@@ -15,6 +15,7 @@ class Segment {
   prc_t sumEnt;
   u64   numEnt;
   u32   minSize;
+  u8    maxCtx;
 
   Segment () : begun(false), pos(0), begPos(0), endPos(0), nSegs(0), thresh(0),
     sumEnt(0), numEnt(0), minSize(MIN_SSIZE) {}

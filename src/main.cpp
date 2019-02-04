@@ -159,7 +159,7 @@ int main (int argc, char* argv[]) {
           // Filter and segment
           if (!par.manThresh)  par.thresh=static_cast<float>(models->aveEnt);
           auto filter = make_unique<Filter>(par);
-          filter->smooth_seg(par);             
+          filter->smooth_seg(par);
           if (filter->nSegs==0) { cerr<<'\n';  continue; }
           filter->extract_seg(par.ID, par.ref, par.tar);
           const auto segName=gen_name(par.ID, par.ref, par.tar,Format::SEGMENT);
