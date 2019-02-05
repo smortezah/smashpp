@@ -401,6 +401,15 @@ inline void Filter::smooth_seg_non_rect (const Param& p) {
   nSegs = seg->nSegs;
 }
 
+// bool Filter::is_mergable (const Position& pos1, const Position& pos2) const {
+//   const auto minBeg = std::min(pos1.beg, pos2.beg);
+//   const auto maxBeg = std::max(pos1.beg, pos2.beg);
+//   const auto minEnd = std::min(pos1.end, pos2.end);
+//   const auto maxEnd = std::max(pos1.end, pos2.end);
+
+//   return static_cast<double>(minEnd-maxBeg) > 0.8 * (maxEnd-minBeg);
+// }
+
 void Filter::merge_extract_seg (u32 ID, const string& ref, const string& tar) 
 const {
   check_file(gen_name(ID, ref, tar, Format::POSITION));
@@ -411,6 +420,13 @@ const {
   u64 i = 0;
   const u64 maxTarPos = file_size(tar) - 1;
 
+  // vector<Position> pos;
+  // for (u64 beg,end,ent; posF >> beg >> end >> ent;) {
+  //   pos.emplace_back(Position(beg, end));
+  // }
+  // std::sort(std::begin(pos), std::end(pos), 
+  //   [] (const Position& a, const Position& b) { return a.beg < b.beg; });
+  
   for (string beg,end,ent; posF>>beg>>end>>ent; ++i) {
     subseq->outName = segName+to_string(i);
     subseq->begPos = stoull(beg);

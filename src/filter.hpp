@@ -20,6 +20,10 @@ class Filter {
   u32    wsize;
   string message;
   vector<float> window;
+  struct Position {
+    u64 beg, end;
+    Position (u64 b, u64 e) : beg(b), end(e) {}
+  };
 
   void set_wsize (const Param&);
   void show_info (const Param&) const;
@@ -35,6 +39,7 @@ class Filter {
   void smooth_seg_rect (const Param&);
   template <bool SaveFilter>
   void smooth_seg_non_rect (const Param&);
+  // bool is_mergable (const Position&, const Position&) const;
 #ifdef BENCH
   template <typename Iter, typename Value>
   void shift_left_insert (Iter, Value);
