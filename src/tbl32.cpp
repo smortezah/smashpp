@@ -4,12 +4,15 @@
 #include "exception.hpp"
 using namespace smashpp;
 
-Table32::Table32 (u8 k_) : k(k_), nRenorm(0), tot(0) {
-  try { tbl.resize(4ull<<(k<<1u)); }    // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
-  catch (std::bad_alloc& b) { error("failed memory allocation."); }
+Table32::Table32 (uint8_t k_) : k(k_), nRenorm(0), tot(0) {
+  try {  // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
+    tbl.resize(4ull << (k<<1u));
+  } catch (std::bad_alloc& b) {
+    error("failed memory allocation.");
+  }
 }
 
-void Table32::update (u32 ctx) {
+void Table32::update (uint32_t ctx) {
   if (tbl[ctx] == 0xFFFFFFFF)    // 2^32-1
     renormalize();
   ++tbl[ctx];
@@ -22,41 +25,43 @@ inline void Table32::renormalize () {
   ++nRenorm;
 }
 
-u32 Table32::query (u32 ctx) const {
+uint32_t Table32::query (uint32_t ctx) const {
   return tbl[ctx];
 }
 
-void Table32::dump (ofstream& ofs) const {
+void Table32::dump (std::ofstream& ofs) const {
   ofs.write((const char*) &tbl[0], tbl.size());
 //  ofs.close();
 }
 
-void Table32::load (ifstream& ifs) const {
+void Table32::load (std::ifstream& ifs) const {
   ifs.read((char*) &tbl[0], tbl.size());
 }
 
 #ifdef DEBUG
-u64 Table32::get_total () const {
+uint64_t Table32::get_total () const {
   return tot;
 }
 
-u64 Table32::count_empty () const {
-  return static_cast<u64>(std::count(begin(tbl), end(tbl), 0));
+uint64_t Table32::count_empty () const {
+  return static_cast<uint64_t>(std::count(begin(tbl), end(tbl), 0));
 }
 
-u32 Table32::max_tbl_val () const {
-  return *std::max_element(begin(tbl), end(tbl));
+uint32_t Table32::max_tbl_val () const {
+  return *std::max_element(std::begin(tbl), std::end(tbl));
 }
 
 void Table32::print () const {
-  constexpr u8 context_width {12};
-  cerr.width(context_width);  cerr<<std::left<<"Context";
-  cerr << "Count\n";
-  cerr << "-------------------\n";
-  u32 i {0};
+  constexpr uint8_t context_width {12};
+  std::cerr.width(context_width);  
+  std::cerr << std::left << "Context";
+  std::cerr << "Count\n";
+  std::cerr << "-------------------\n";
+  uint32_t i {0};
   for (const auto& c : tbl) {
-    cerr.width(context_width);  cerr<<std::left<<i++;
-    cerr << c << '\n';
+    std::cerr.width(context_width);  
+    std::cerr << std::left << i++;
+    std::cerr << c << '\n';
   }
 }
 #endif
