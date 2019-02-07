@@ -8,19 +8,18 @@ class RGB;
 class HSV;
 
 // Global functions
-auto is_hex (const string&) -> bool;
-auto to_hex (const RGB&) -> string;
-auto to_rgb (const string&) -> RGB;
+bool is_hex (std::string);
+auto to_hex (const RGB&) -> std::string;
+auto to_rgb (std::string) -> RGB;
 auto to_rgb (const HSV&) -> RGB;
 auto to_hsv (const RGB&) -> HSV;
 auto alpha_blend (const RGB&, const RGB&, float) -> RGB;
-auto alpha_blend (const string&, const RGB&, float) -> string;
 auto shade (const RGB&, float=0.5) -> RGB;        // Mix whith black
-auto shade (const string&, float=0.5) -> string;
+auto shade (std::string, float=0.5) -> std::string;
 auto tint (const RGB&, float=0.5) -> RGB;         // Mix with white
-auto tint (const string&, float=0.5) -> string;
+auto tint (std::string, float=0.5) -> std::string;
 auto tone (const RGB&, float=0.5) -> RGB;         // Mix with grey
-auto tone (const string&, float=0.5) -> string;
+auto tone (std::string, float=0.5) -> std::string;
 
 class Color {
  public:
@@ -29,20 +28,24 @@ class Color {
 
 class RGB : public Color {
  public:
-  u8 r, g, b;
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
 
   RGB () = default;
-  RGB (u8 r_, u8 g_, u8 b_) : r(r_), g(g_), b(b_) {}
-  RGB (const string& color) : r(to_rgb(color).r), g(to_rgb(color).g), 
-    b(to_rgb(color).b) {}
+  RGB (uint8_t r_, uint8_t g_, uint8_t b_) : r(r_), g(g_), b(b_) {}
+  RGB (std::string color) 
+    : r(to_rgb(color).r), g(to_rgb(color).g), b(to_rgb(color).b) {}
 };
 
 class HSV : public Color {
  public:
-  u8 h, s, v;
+  uint8_t h;
+  uint8_t s;
+  uint8_t v;
 
   HSV () = default;
-  explicit HSV (u8 hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
+  explicit HSV (uint8_t hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
 };
 }
 

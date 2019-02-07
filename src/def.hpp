@@ -12,9 +12,9 @@ using namespace std;
 
 namespace smashpp {
 // Version
-static const string SMASHPP   {"SMASHPP"};
-static const string VERSION   {"19.01"};
-static const string DEV_YEARS {"2018-2019"};
+static const std::string SMASHPP   {"SMASHPP"};
+static const std::string VERSION   {"19.01"};
+static const std::string DEV_YEARS {"2018-2019"};
 
 // Typedef
 using i8    = signed char;   // === typedef signed char  i8;
@@ -37,75 +37,76 @@ enum class FileType {SEQ, FASTA, FASTQ};
 enum class FilterScale {S, M, L};
 enum class Problem {WARNING, ERROR};
 
-const vector<WType> SET_WTYPE {WType::RECTANGULAR, WType::HAMMING, WType::HANN,
-  WType::BLACKMAN, WType::TRIANGULAR, WType::WELCH, WType::SINE,WType::NUTTALL};
-const vector<FilterScale> SET_FSCALE {FilterScale::S, FilterScale::M,
+const std::vector<WType> SET_WTYPE {WType::RECTANGULAR, WType::HAMMING,
+  WType::HANN, WType::BLACKMAN, WType::TRIANGULAR, WType::WELCH, WType::SINE,
+  WType::NUTTALL};
+const std::vector<FilterScale> SET_FSCALE {FilterScale::S, FilterScale::M,
   FilterScale::L};
 
 // Metaprogram
 // Power a^n
-constexpr u64 sqr (u64 a) { return a * a; }
-constexpr u64 power (u64 a, u64 n) {
+constexpr uint64_t sqr (uint64_t a) { return a * a; }
+constexpr uint64_t power (uint64_t a, uint64_t n) {
   return n==0 ? 1 : sqr(power(a, n>>1u)) * ((n&1ull) ? a : 1);
 }
 
-constexpr u64 pow2 (u64 n) noexcept {
+constexpr uint64_t pow2 (uint64_t n) noexcept {
   return 1ull<<n;  // ull is MANDATORY
 }
 
 // Constant
-static constexpr u8     THRD         {4};         // No. threads
-static constexpr u8     MIN_THRD     {1};
-static constexpr u8     MAX_THRD     {8};
-static constexpr u8     LVL          {0};         // Level
-static constexpr u8     MIN_LVL      {0};
-static constexpr u8     MAX_LVL      {5};
-static constexpr u32    SSIZE        {1};         // Min segment size
-static constexpr u32    MIN_SSIZE    {1};
-static constexpr u32    MAX_SSIZE    {0xffffffff};// 2^32 - 1
-static constexpr prc_t  ENTR_N       {2.0};       // Entropy of Ns
-static constexpr prc_t  MIN_ENTR_N   {0.0};
-static constexpr prc_t  MAX_ENTR_N   {100.0};
-static constexpr char   TAR_ALT_N    {'T'};       // Alter. to Ns in target file
-static constexpr u8     PART_GUARD   {10};     // Expand beg & end pos -- filter
-static constexpr u32    WS           {256};             // Window size -- filter
-static constexpr u32    MIN_WS       {1};
-static constexpr u32    MAX_WS       {0xffffffff};// 2^32 - 1
-static constexpr auto   WT           {WType::HANN};     // Window type -- filter
-static constexpr auto   FS           {FilterScale::L};  // Filt. scale -- filter
-static constexpr float  THRSH        {1.5};             // Threshold   -- filter
-static constexpr float  MIN_THRSH    {0};
-static constexpr float  MAX_THRSH    {20};
-static constexpr u8     CARDIN       {4};   // CARDINALITY = Alphabet size
-static constexpr u8     K_MAX_TBL64  {11};  // Max ctx table 64     (128 MB mem)
-static constexpr u8     K_MAX_TBL32  {13};  // Max ctx table 32     (1   GB mem)
-static constexpr u8     K_MAX_LGTBL8 {14};  // Max ctx log table 8  (1   GB mem)
-static constexpr u32    BLK_SZ       {8192};// 8K
-static constexpr u64    W            {pow2(29ull)};     // Width of CML sketch
-static constexpr u8     D            {5};               // Depth of CML sketch
-static constexpr u32    G            {64};  // Machine word size-univers hash fn
-static constexpr u8     LOG_BASE     {2};   // Logarithmic counting
-static constexpr u8     PREC_PRF     {3};   // Precisions - floats in Inf. prof
-static constexpr u8     PREC_FIL     {3};   // Precisions - floats in filt. file
-static const     string FMT_PRF      {"prf"};   // Format - inf. profile
-static const     string FMT_POS      {"pos"};   // Format - positions file
-static const     string FMT_FIL      {"fil"};   // Format - filtered files
-static const     string FMT_N        {"n"};     // Format - position of N files
-static const     string LBL_SEG      {"s"};     // Label  - segment files
-static const     string LBL_BAK      {"_bk"};   // Label  - backup files
-static const     string LBL_MID      {"mid"};   // Label  - mid position files
-static const     string POS_HDR      {"#"+SMASHPP};   // Hdr of pos file
-static const     string POS_NRC      {"N"};     // Hdr of pos file
-static const     string POS_REDUN    {"R"};     // Hdr of pos file
-static constexpr auto   PI           {3.14159265f};
-static constexpr int    FILE_BUF     {8*1024};  // 8K
-static constexpr u8     TEXTWIDTH    {65};
-static constexpr double DBLANK       {-2.0};
-static const     string TERM_SEP     {". . . . . . . . . . . . . . . . . . . . "
-                                      ". . . . . . . . .\n"};
+static constexpr uint8_t  THRD       {4};      // No. threads
+static constexpr uint8_t  MIN_THRD   {1};
+static constexpr uint8_t  MAX_THRD   {8};
+static constexpr uint8_t  LVL        {0};      // Level
+static constexpr uint8_t  MIN_LVL    {0};
+static constexpr uint8_t  MAX_LVL    {5};
+static constexpr uint32_t SSIZE      {1};      // Min segment size
+static constexpr uint32_t MIN_SSIZE  {1};
+static constexpr uint32_t MAX_SSIZE  {0xffffffff};  // 2^32 - 1
+static constexpr prc_t    ENTR_N     {2.0};    // Entropy of Ns
+static constexpr prc_t    MIN_ENTR_N {0.0};
+static constexpr prc_t    MAX_ENTR_N {100.0};
+static constexpr char     TAR_ALT_N  {'T'};    // Alter. to Ns in target file
+static constexpr uint8_t  PART_GUARD {10};     // Expand beg & end pos -- filter
+static constexpr uint32_t WS         {256};    // Window size -- filter
+static constexpr uint32_t MIN_WS     {1};
+static constexpr uint32_t MAX_WS     {0xffffffff};  // 2^32 - 1
+static constexpr auto     WT         {WType::HANN};     // Window type -- filter
+static constexpr auto     FS         {FilterScale::L};  // Filt. scale -- filter
+static constexpr float    THRSH      {1.5};             // Threshold   -- filter
+static constexpr float    MIN_THRSH  {0};
+static constexpr float    MAX_THRSH  {20};
+static constexpr uint8_t  CARDIN     {4};   // CARDINALITY = Alphabet size
+static constexpr uint8_t  K_MAX_TBL64  {11};// Max ctx table 64     (128 MB mem)
+static constexpr uint8_t  K_MAX_TBL32  {13};// Max ctx table 32     (1   GB mem)
+static constexpr uint8_t  K_MAX_LGTBL8 {14};// Max ctx log table 8  (1   GB mem)
+static constexpr uint32_t BLK_SZ     {8192};// 8K
+static constexpr uint64_t W          {pow2(29ull)};     // Width of CML sketch
+static constexpr uint8_t  D          {5};               // Depth of CML sketch
+static constexpr uint32_t G          {64};  // Machine word size-univers hash fn
+static constexpr uint8_t  LOG_BASE   {2};   // Logarithmic counting
+static constexpr uint8_t  PREC_PRF   {3};   // Precisions - floats in Inf. prof
+static constexpr uint8_t  PREC_FIL   {3};   // Precisions - floats in filt. file
+static const std::string  FMT_PRF    {"prf"};   // Format - inf. profile
+static const std::string  FMT_POS    {"pos"};   // Format - positions file
+static const std::string  FMT_FIL    {"fil"};   // Format - filtered files
+static const std::string  FMT_N      {"n"};     // Format - position of N files
+static const std::string  LBL_SEG    {"s"};     // Label  - segment files
+static const std::string  LBL_BAK    {"_bk"};   // Label  - backup files
+static const std::string  LBL_MID    {"mid"};   // Label  - mid position files
+static const std::string  POS_HDR    {"#"+SMASHPP};   // Hdr of pos file
+static const std::string  POS_NRC    {"N"};     // Hdr of pos file
+static const std::string  POS_REDUN  {"R"};     // Hdr of pos file
+static constexpr float    PI         {3.14159265f};
+static constexpr int      FILE_BUF   {8*1024};  // 8K
+static constexpr uint8_t  TEXTWIDTH  {65};
+static constexpr double   DBLANK     {-2.0};
+static const std::string  TERM_SEP   {". . . . . . . . . . . . . . . . . . . "
+                                      ". . . . . . . . . .\n"};
 
 // Lookup table
-static constexpr u64 POW2[44] {
+static constexpr uint64_t POW2[44] {
   0x00000000001, 0x00000000002, 0x00000000004, 0x00000000008,
   0x00000000010, 0x00000000020, 0x00000000040, 0x00000000080,
   0x00000000100, 0x00000000200, 0x00000000400, 0x00000000800,
@@ -118,7 +119,7 @@ static constexpr u64 POW2[44] {
   0x01000000000, 0x02000000000, 0x04000000000, 0x08000000000,
   0x10000000000, 0x20000000000, 0x40000000000, 0x80000000000
 };
-static constexpr u64 POW2minus1[44]{
+static constexpr uint64_t POW2minus1[44]{
   0x0000000000, 0x00000000001, 0x00000000003, 0x00000000007,
   0x000000000F, 0x0000000001F, 0x0000000003F, 0x0000000007F,
   0x00000000FF, 0x000000001FF, 0x000000003FF, 0x000000007FF,
@@ -166,16 +167,16 @@ static constexpr u64 POW2minus1[44]{
 //     18014398509481984,   72057594037927936, 288230376151711744,
 //   1152921504606846976, 4611686018427387904
 // };
-static constexpr u16 FREQ2[16] { // 2^n - 1
+static constexpr uint16_t FREQ2[16] { // 2^n - 1
     0,    1,     3,     7,   15,   31,    63,   127,
   255,  511,  1023,  2047, 4095, 8191, 16383, 32767
 };
-static constexpr u32 POW3[17] {
+static constexpr uint32_t POW3[17] {
          1,     3,     9,     27,     81,     243,     729,     2187,      // #8
       6561, 19683, 59049, 177147, 531441, 1594323, 4782969, 14348907,
   43046721
 };
-static constexpr u64 POW5[23] {
+static constexpr uint64_t POW5[23] {
                1,               5,               25,            125,
              625,            3125,            15625,          78125,
           390625,         1953125,          9765625,       48828125,
@@ -183,12 +184,12 @@ static constexpr u64 POW5[23] {
     152587890625,    762939453125,    3814697265625, 19073486328125,
   95367431640625, 476837158203125, 2384185791015625
 };
-static constexpr u64 POW10[13] {
+static constexpr uint64_t POW10[13] {
               1,       10,       100,       1000,       10000,       100000,//#6
         1000000, 10000000, 100000000, 1000000000, 10000000000, 100000000000, 
   1000000000000
 };
-static constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3  n,N=0
+static constexpr uint8_t NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3  n,N=0
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,             // #20
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -215,7 +216,9 @@ static constexpr u8 NUM[123] {    // a,A=0  c,C=1  g,G=2  t,T=3  n,N=0
 //  0, 0, 0, 67,  0,  0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 0, 65,  0, 0,  0,
 //  0, 0, 0
 //};
-static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
+
+// k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
+static const std::vector<std::string> LEVEL {
   "14,0,0.005,0.95",                                                  // Level 0
   "20,0,0.002,0.95",                                                  // Level 1
   "14,0,0.005,0.95:6,0,0.1,0.95",                                     // Level 2
@@ -225,7 +228,7 @@ static const vector<string> LEVEL { // k,[w,d,]ir,alpha,gamma/thr,ir,alpha,gamma
   "16,0,0.002,0.95/8,0,0.1,0.95:14,0,0.005,0.95/5,0,1,0.95:"
   "8,0,0.1,0.95:4,0,1,0.95"                                           // Level 5
 };
-static const vector<string> REFFREE_LEVEL {
+static const std::vector<std::string> REFFREE_LEVEL {
   "14,0,0.05,0.95",                                                   // Level 0
   "20,0,0.02,0.95",                                                   // Level 1
   "14,0,0.05,0.95:6,0,1,0.95",                                        // Level 2
