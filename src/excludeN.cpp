@@ -4,7 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include "def.hpp"
-using namespace std;
 
 int main (int argc, char* argv[])
 {
@@ -17,6 +16,6 @@ int main (int argc, char* argv[])
     }
     cout.write(out.data(), out.size());
   }
-  
+
   return 0;
 }

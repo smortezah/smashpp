@@ -938,7 +938,7 @@ FreqIter fFirst) const {
   const auto best_id = [=](FreqIter fFirst) {
 //  if (are_all(fFirst, 0) || are_all(fFirst, 1)) {
 //  if (are_all(fFirst, 0)) { // The same as GeCo
-    if (std::are_all(fFirst, 1)) { // Seems to be the best
+    if (are_all(fFirst, 1)) { // Seems to be the best
       return static_cast<uint8_t>(255);
     }
     const auto maxPos = std::max_element(fFirst, fFirst+CARDIN);
