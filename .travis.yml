@@ -9,11 +9,11 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-7
+            - g++-8
       env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
 before_install:
     - eval "${MATRIX_EVAL}"
 
-script: cmake . && make -j4
+script: cmake . && make -j8

@@ -62,8 +62,8 @@ inline RGB to_rgb (const HSV& hsv) {
 }
 
 inline HSV to_hsv (const RGB& rgb) {
-  const uint8_t rgbMin { min({rgb.r, rgb.g, rgb.b}) };
-  const uint8_t rgbMax { max({rgb.r, rgb.g, rgb.b}) };
+  const uint8_t rgbMin { std::min({rgb.r, rgb.g, rgb.b}) };
+  const uint8_t rgbMax { std::max({rgb.r, rgb.g, rgb.b}) };
 
   HSV hsv {};
   hsv.v = rgbMax;

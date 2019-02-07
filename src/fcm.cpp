@@ -57,15 +57,15 @@ inline void FCM::show_info (const Param& p) const {
   const auto midrule = [=]() { rule(tblWidth, "~"); };
   const auto botrule = [=]() { rule(tblWidth, " "); };
   const auto label = [=](std::string s) { 
-    std::cerr << std::setw(lblWidth) << left << s; 
+    std::cerr << std::setw(lblWidth) << std::left << s; 
   };
   const auto header = [=](std::string s) { 
-    std::cerr << std::setw(2*colWidth) << left << s; 
+    std::cerr << std::setw(2*colWidth) << std::left << s; 
   };
   const auto info_MM = [&](const std::vector<MMPar>& Ms, char c) {
     int i = 0;
     for (const auto& e : Ms) {
-      std::cerr << std::setw(colWidth) << left;
+      std::cerr << std::setw(colWidth) << std::left;
       switch (c) {
       case 'm':  std::cerr << ++i;  break;
       case 'k':  std::cerr << static_cast<int>(e.k);  break;
@@ -84,7 +84,7 @@ inline void FCM::show_info (const Param& p) const {
   };
   const auto info_STMM = [&](const std::vector<MMPar>& Ms, char c) {
     for (const auto& e : Ms) {
-      std::cerr << std::setw(colWidth) << left;
+      std::cerr << std::setw(colWidth) << std::left;
       if (e.child)
         switch (c) {
         case 't':  std::cerr << static_cast<int>(e.child->thresh);  break;
@@ -99,7 +99,7 @@ inline void FCM::show_info (const Param& p) const {
     }
   };
   const auto info_filter = [&](char c) {
-    std::cerr << std::setw(colWidth) << left;
+    std::cerr << std::setw(colWidth) << std::left;
     switch (c) {
     case 'f':  std::cerr << p.print_win_type();  break;
     case 's':  std::cerr << p.print_filter_scale();  break;
@@ -109,16 +109,16 @@ inline void FCM::show_info (const Param& p) const {
     }
   };
   const auto info_file = [&](char c) {
-    std::cerr << std::setw(2*colWidth) << left;
+    std::cerr << std::setw(2*colWidth) << std::left;
     switch (c) {
     case '1':
-      std::cerr.imbue(locale("en_US.UTF8"));
+      std::cerr.imbue(std::locale("en_US.UTF8"));
       std::cerr << file_size(p.ref);
       break;
     // case 'r':  cerr<<p.ref;  break;
     case 'r':  std::cerr << p.refName;  break;
     case '2':
-      std::cerr.imbue(locale("en_US.UTF8"));
+      std::cerr.imbue(std::locale("en_US.UTF8"));
       std::cerr << file_size(p.tar);
       break;
     // case 't':  cerr<<p.tar;  break;
@@ -620,7 +620,7 @@ ContIter cont, uint8_t n) const {
 }
 
 void FCM::self_compress (const Param& p, uint64_t ID) {
-  message = "Compressing segment " + to_string(ID+1) + " ";
+  message = "Compressing segment " + std::to_string(ID+1) + " ";
 
   self_compress_alloc();
 
@@ -667,7 +667,7 @@ uint64_t ID) {
   uint64_t symsNo {0};
   prc_t sumEnt {0};
   std::ifstream seqF(par.seq);
-  std::ProbPar pp {tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, 
+  ProbPar pp {tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, 
     static_cast<uint8_t>(tMs[0].k<<1u)};
   const auto totalSize = file_size(par.seq);
   prc_t entr;

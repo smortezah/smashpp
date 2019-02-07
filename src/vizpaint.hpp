@@ -80,7 +80,7 @@ class VizPaint {
   float refSize;
   float tarSize;
   float maxSize;
-  uniqstd::ue_ptr<SVG> svg;
+  std::unique_ptr<SVG> svg;
 
   VizPaint() : svg(std::make_unique<SVG>()), ratio(1), plottable(true), 
     ry(2.0f) {}
@@ -108,7 +108,7 @@ class VizPaint {
   auto seq_gradient (std::ofstream&, std::string, std::string) const 
     -> std::string;
   auto periph_gradient (std::ofstream&, std::string, std::string) const 
-    -> string;
+    -> std::string;
   template <typename Value>
   auto get_point (Value) const -> double;
   auto get_index (double point) const -> uint64_t;
