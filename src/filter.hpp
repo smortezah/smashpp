@@ -7,22 +7,23 @@
 namespace smashpp {
 class Filter {
  public:
-  u64 nSegs;
+  uint64_t nSegs;
 
   explicit Filter (const Param&);
   void smooth_seg (const Param&);
-  void merge_extract_seg (u32, const string&, const string&) const;
-  void aggregate_mid_pos (u32, const string&, const string&) const;
-  void aggregate_final_pos (const string&, const string&) const;
+  void merge_extract_seg (uint32_t, std::string, std::string) const;
+  void aggregate_mid_pos (uint32_t, std::string, std::string) const;
+  void aggregate_final_pos (std::string, std::string) const;
 
  private:
-  WType  wtype;
-  u32    wsize;
-  string message;
-  vector<float> window;
+  WType wtype;
+  uint32_t wsize;
+  std::string message;
+  std::vector<float> window;
   struct Position {
-    u64 beg, end;
-    Position (u64 b, u64 e) : beg(b), end(e) {}
+    uint64_t beg;
+    uint64_t end;
+    Position (uint64_t b, uint64_t e) : beg(b), end(e) {}
   };
 
   void set_wsize (const Param&);

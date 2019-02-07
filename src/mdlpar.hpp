@@ -7,36 +7,40 @@ namespace smashpp {
 struct STMMPar;
 
 struct MMPar {
-  u8    k;                    // Context size
-  u64   w;                    // Width of count-min-log sketch
-  u8    d;                    // Depth ...
-  u8    ir;                   // Inverted repeat
-  prc_t alpha, gamma;
-  Container           cont;   // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
-  shared_ptr<STMMPar> child;
+  uint8_t k;       // Context size
+  uint64_t w;      // Width of count-min-log sketch
+  uint8_t d;       // Depth ...
+  uint8_t ir;      // Inverted repeat
+  prc_t alpha;
+  prc_t gamma;
+  Container cont;  // Tbl 64, Tbl 32, LogTbl 8, Sketch 4
+  std::shared_ptr<STMMPar> child;
 
   MMPar () = default;         // Essential
-  MMPar (u8 k_, u64 w_, u8 d_, u8 ir_, prc_t a_, prc_t g_) : k(k_), w(w_),
-    d(d_), ir(ir_), alpha(a_), gamma(g_), cont(Container::TABLE_64), 
-    child(nullptr) {}
-  MMPar (u8 k_, u8 ir_, prc_t a_, prc_t g_) : MMPar(k_, 0, 0, ir_, a_, g_) {}
+  MMPar (uint8_t k_, uint64_t w_, uint8_t d_, uint8_t ir_, prc_t a_, prc_t g_) 
+    : k(k_), w(w_), d(d_), ir(ir_), alpha(a_), gamma(g_), 
+    cont(Container::TABLE_64), child(nullptr) {}
+  MMPar (uint8_t k_, uint8_t ir_, prc_t a_, prc_t g_) 
+    : MMPar(k_, 0, 0, ir_, a_, g_) {}
 };
 
 struct STMMPar {
-  u8    k;
-  u8    thresh;
-  u8    ir;
-  prc_t alpha, gamma;
-  bool  enabled;
+  uint8_t k;
+  uint8_t thresh;
+  uint8_t ir;
+  prc_t alpha;
+  prc_t gamma;
+  bool enabled;
 #ifdef ARRAY_HISTORY
-  vector<bool> history;
+  std::vector<bool> history;
 #else
-  u32   history;              // k > 32 => change to u64
+  uint32_t history;              // k > 32 => change to u64
 #endif
-  u32   mask;                 // For updating the history
+  uint32_t mask;                 // For updating the history
 
-  STMMPar (u8 k_, u8 t_, u8 ir_, prc_t a_, prc_t g_) : k(k_), thresh(t_), 
-    ir(ir_), alpha(a_), gamma(g_), enabled(true), mask((1u<<k)-1u) {
+  STMMPar (uint8_t k_, uint8_t t_, uint8_t ir_, prc_t a_, prc_t g_) 
+    : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), enabled(true), 
+    mask((1u<<k)-1u) {
   #ifdef ARRAY_HISTORY
     history.resize(k);
   #else
@@ -46,71 +50,76 @@ struct STMMPar {
 };
 
 struct ProbPar {
-  prc_t alpha, sAlpha;
-  u64   mask;
-  u8    shl;
-  u64   l;
-  u8    numSym;
-  u64   r;
-  u8    revNumSym;
+  prc_t alpha;
+  prc_t sAlpha;
+  uint64_t mask;
+  uint8_t shl;
+  uint64_t l;
+  uint8_t numSym;
+  uint64_t r;
+  uint8_t revNumSym;
 
   ProbPar () = default;
-  ProbPar (prc_t alpha_, u64 mask_, u8 shiftLeft_) : alpha(alpha_), 
-    sAlpha(CARDIN*alpha), mask(mask_), shl(shiftLeft_) {}
-  void config_ir0 (u64);
-  void config_ir0 (u8);
-  void config_ir0 (char, u64);
-  void config_ir1 (u8);
-  void config_ir1 (char, u64);
-  void config_ir2 (u8);
-  void config_ir2 (char, u64, u64);
+  ProbPar (prc_t alpha_, uint64_t mask_, uint8_t shiftLeft_) 
+    : alpha(alpha_), sAlpha(CARDIN*alpha), mask(mask_), shl(shiftLeft_) {}
+  void config_ir0 (uint64_t);
+  void config_ir0 (uint8_t);
+  void config_ir0 (char, uint64_t);
+  void config_ir1 (uint8_t);
+  void config_ir1 (char, uint64_t);
+  void config_ir2 (uint8_t);
+  void config_ir2 (char, uint64_t, uint64_t);
 };
 
-inline void ProbPar::config_ir0 (u64 ctx) {
+inline void ProbPar::config_ir0 (uint64_t ctx) {
   l = ctx<<2u;
 }
 
-inline void ProbPar::config_ir0 (u8 nsym) {
+inline void ProbPar::config_ir0 (uint8_t nsym) {
   numSym = nsym;
 }
 
-inline void ProbPar::config_ir0 (char c, u64 ctx) {
+inline void ProbPar::config_ir0 (char c, uint64_t ctx) {
   numSym = NUM[static_cast<u8>(c)];
   l      = ctx<<2u;
 }
 
-inline void ProbPar::config_ir1 (u8 nsym) {
+inline void ProbPar::config_ir1 (uint8_t nsym) {
   numSym    = nsym;
-  revNumSym = static_cast<u8>(3 - nsym);
+  revNumSym = static_cast<uint8_t>(3 - nsym);
 }
 
-inline void ProbPar::config_ir1 (char c, u64 ctxIr) {
-  numSym    = NUM[static_cast<u8>(c)];
-  revNumSym = static_cast<u8>(3 - numSym);
+inline void ProbPar::config_ir1 (char c, uint64_t ctxIr) {
+  numSym    = NUM[static_cast<uint8_t>(c)];
+  revNumSym = static_cast<uint8_t>(3 - numSym);
   r         = ctxIr>>2u;
 }
 
-inline void ProbPar::config_ir2 (u8 nsym) {
+inline void ProbPar::config_ir2 (uint8_t nsym) {
   numSym    = nsym;
-  revNumSym = static_cast<u8>(3 - nsym);
+  revNumSym = static_cast<uint8_t>(3 - nsym);
 }
 
-inline void ProbPar::config_ir2 (char c, u64 ctx, u64 ctxIr) {
-  numSym    = NUM[static_cast<u8>(c)];
+inline void ProbPar::config_ir2 (char c, uint64_t ctx, uint64_t ctxIr) {
+  numSym    = NUM[static_cast<uint8_t>(c)];
   l         = ctx<<2u;
-  revNumSym = static_cast<u8>(3 - numSym);
+  revNumSym = static_cast<uint8_t>(3 - numSym);
   r         = ctxIr>>2u;
 }
 
 struct CompressPar {
-  vector<u64>     ctx, ctxIr;
-  vector<prc_t>   w, wNext, probs;
-  vector<ProbPar> pp;
-  vector<ProbPar>::iterator ppIt;
-  vector<u64>::iterator     ctxIt, ctxIrIt;
-  u8    nMdl;
-  u8    nSym;
-  char  c;
+  std::vector<uint64_t> ctx;
+  std::vector<uint64_t> ctxIr;
+  std::vector<prc_t> w;
+  std::vector<prc_t> wNext;
+  std::vector<prc_t> probs;
+  std::vector<ProbPar> pp;
+  std::vector<ProbPar>::iterator ppIt;
+  std::vector<uint64_t>::iterator ctxIt;
+  std::vector<uint64_t>::iterator ctxIrIt;
+  uint8_t nMdl;
+  uint8_t nSym;
+  char c;
   MMPar mm;
 
   CompressPar () = default;

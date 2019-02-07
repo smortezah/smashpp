@@ -14,7 +14,7 @@ inline static bool is_u8 (const Input& in) {
 template <typename Value>
 inline static bool is_odd (Value val) {
   if (val < 0)
-    error("\"" + to_string(val) + "\" is a negative number.");
+    error("\"" + std::to_string(val) + "\" is a negative number.");
   return (val & 1ull);
 }
 
@@ -30,10 +30,11 @@ inline static double Power (double base, double exponent) {
     double d;
     int x[2];
   } u = { base };
-  u.x[1] = int(exponent * (u.x[1]-1072632447) + 1072632447);
+  u.x[1] = static_cast<int>(exponent * (u.x[1]-1072632447) + 1072632447);
   u.x[0] = 0;
   return u.d;
 }
+
 // inline static auto Power (double base, double exponent) {
 //   int tmp  = (*(1 + (int*) &base)),
 //       tmp2 = int(exponent * (tmp-1072632447) + 1072632447);
@@ -56,38 +57,40 @@ inline static double Power (double base, double exponent) {
 
 template <typename Val, typename MinVal, typename MaxVal>
 inline static void keep_in_range (MinVal min, Val& val, MaxVal max) {
-  if      (val < min)    val = min;
-  else if (val > max)    val = max;
+  if (val < min)
+    val = min;
+  else if (val > max)
+    val = max;
 }
 
 template <typename T>
-inline static string precision (T value) {
-  ostringstream oss;
+inline static std::string precision (T value) {
+  std::ostringstream oss;
   oss << std::setprecision(value);
   return oss.str();
 }
 
 template <typename T>
-inline static string fixed_precision (T value) {
-  ostringstream oss;
+inline static std::string fixed_precision (T value) {
+  std::ostringstream oss;
   oss << std::fixed << std::setprecision(value);
   return oss.str();
 }
 
-inline static u8 num_digits (u64 number) {
-  return number==0 ? 1 : log10(static_cast<double>(number)) + 1;
+inline static uint8_t num_digits (uint64_t number) {
+  return number==0 ? 1 : std::log10(static_cast<double>(number)) + 1;
 }
 
 template <typename T>
-inline static string thousands_sep (T number) {
-  ostringstream ss;
+inline static std::string thousands_sep (T number) {
+  std::ostringstream ss;
   ss.imbue(std::locale("en_US.UTF-8"));
   ss << number;
   return ss.str();
 }
 
 inline static float tick_round (float lowerBound, float upperBound, 
-u8 n_ranges) {
+uint8_t n_ranges) {
   // Round fraction in range [0.1, 1)
   const auto round_frac = [=](float value) -> float {
     if (value >= 0.100 && value <= 0.125)  return 0.1;
@@ -112,9 +115,9 @@ u8 n_ranges) {
     return 1.0;
   };
 
-  float tick = (upperBound - lowerBound) / n_ranges;
-  auto  div = POW10[num_digits(tick)];
-  float frac = tick / div;
+  float tick {(upperBound - lowerBound) / n_ranges};
+  auto  div {POW10[num_digits(tick)]};
+  float frac {tick / div};
   return round_frac(frac) * div;
 }
 }

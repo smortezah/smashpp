@@ -23,27 +23,41 @@ namespace smashpp {
 
 class Param {  // Parameters
  public:
-  string      ref, tar, seq;
-  string      refName, tarName;
-  bool        verbose;
-  u8          level;
-  u32         segSize;
-  prc_t       entropyN;
-  u8          nthr;
-  u32         wsize;
-  WType       wtype;
-  u64         sampleStep;
-  float       thresh;
-  bool        manSegSize, manWSize, manThresh, manFilterScale;
+  std::string ref;
+  std::string tar;
+  std::string seq;
+  std::string refName;
+  std::string tarName;
+  bool verbose;
+  uint8_t level;
+  uint32_t segSize;
+  prc_t entropyN;
+  uint8_t nthr;
+  uint32_t wsize;
+  WType wtype;
+  uint64_t sampleStep;
+  float thresh;
+  bool manSegSize;
+  bool manWSize;
+  bool manThresh;
+  bool manFilterScale;
   FilterScale filterScale;
-  bool        saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
-  FileType    refType, tarType;
-  bool        showInfo;
-  string      report;
-  bool        compress, filter, segment;
-  u32         ID;
-  bool        noRedun;
-  vector<MMPar> refMs, tarMs;
+  bool saveSeq;
+  bool saveProfile;
+  bool saveFilter;
+  bool saveSegment;
+  bool saveAll;
+  FileType refType;
+  FileType tarType;
+  bool showInfo;
+  std::string report;
+  bool compress;
+  bool filter;
+  bool segment;
+  uint32_t ID;
+  bool noRedun;
+  std::vector<MMPar> refMs;
+  std::vector<MMPar> tarMs;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param () : verbose(false), level(LVL), segSize(SSIZE), entropyN(ENTR_N), 
@@ -55,28 +69,38 @@ class Param {  // Parameters
     segment(false), ID(0), noRedun(false) {}
 
   void parse (int, char**&);
-  auto win_type (const string&) const -> WType;
-  auto print_win_type () const -> string;
-  auto filter_scale (const string&) const -> FilterScale;
-  auto print_filter_scale () const -> string;
+  auto win_type (std::string) const -> WType;
+  auto print_win_type () const -> std::string;
+  auto filter_scale (std::string) const -> FilterScale;
+  auto print_filter_scale () const -> std::string;
 
  private:
   template <typename Iter>
-  void parseModelsPars (Iter, Iter, vector<MMPar>&);
+  void parseModelsPars (Iter, Iter, std::vector<MMPar>&);
   void help () const;
 };
 
 class VizParam {
  public:
-  bool   verbose, inverse, regular, showNRC, showRedun;
-  string image;
-  u8     link, colorMode;
-  float  opacity;
-  u32    width, space, mult, start, min;
-  bool   manMult;
-  string posFile;
-  u64    refTick, tarTick;
-  bool   vertical;
+  bool verbose;
+  bool inverse;
+  bool regular;
+  bool showNRC;
+  bool showRedun;
+  std::string image;
+  uint8_t link;
+  uint8_t colorMode;
+  float opacity;
+  uint32_t width;
+  uint32_t space;
+  uint32_t mult;
+  uint32_t start;
+  uint32_t min;
+  bool manMult;
+  std::string posFile;
+  uint64_t refTick;
+  uint64_t tarTick;
+  bool vertical;
 
   VizParam () : verbose(false), inverse(true), regular(true), showNRC(true),
     showRedun(true), image(IMAGE), link(LINK), colorMode(COLOR), opacity(OPAC),
@@ -93,111 +117,116 @@ class VizParam {
 inline void Param::parse (int argc, char**& argv) {
   if (argc < 2) { help();  throw EXIT_SUCCESS; }
 
-  vector<string> vArgs;    vArgs.reserve(static_cast<u64>(argc));
+  std::vector<std::string> vArgs;    
+  vArgs.reserve(static_cast<uint64_t>(argc));
   for (int i=0; i!=argc; ++i)
-    vArgs.emplace_back(static_cast<string>(argv[i]));
+    vArgs.emplace_back(static_cast<std::string>(argv[i]));
 
-  bool man_rm=false, man_tm=false;
-  string rModelsPars, tModelsPars;
+  bool man_rm {false};
+  bool man_tm {false};
+  std::string rModelsPars;
+  std::string tModelsPars;
 
-  for (auto i=begin(vArgs); i!=end(vArgs); ++i) {
+  for (auto i=std::begin(vArgs); i!=std::end(vArgs); ++i) {
     if (*i=="-r"  || *i=="--ref") {
-      if (i+1 != end(vArgs)) {
+      if (i+1 != std::end(vArgs)) {
         ref = *++i;
         check_file(ref);
         refName = file_name(ref);
-      } else error("reference file not specified. Use \"-r <fileName>\".");
+      } else {
+        error("reference file not specified. Use \"-r <fileName>\".");
+      }
     }
     else if (*i=="-t"  || *i=="--tar") {
-      if (i+1 != end(vArgs)) {
+      if (i+1 != std::end(vArgs)) {
         tar = *++i;
         check_file(tar);
         tarName = file_name(tar);
-      } else error("target file not specified. Use \"-t <fileName>\".");
+      } else {
+        error("target file not specified. Use \"-t <fileName>\".");
+      }
     }
-    else if ((*i=="-l" || *i=="--level") && i+1!=end(vArgs)) {
-      level = static_cast<u8>(stoi(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_LVL, MAX_LVL, LVL, 
+    else if ((*i=="-l" || *i=="--level") && i+1!=std::end(vArgs)) {
+      level = static_cast<uint8_t>(std::stoi(*++i));
+      auto range = std::make_unique<ValRange<uint8_t>>(MIN_LVL, MAX_LVL, LVL, 
         "Level", "[]", "default", Problem::WARNING);
       range->assert(level);
     }
     else if ((*i=="-m" || *i=="--min") && i+1!=end(vArgs)) {
       manSegSize = true;
-      segSize = stoul(*++i);
-      auto range = make_unique<ValRange<u32>>(MIN_SSIZE, MAX_SSIZE, SSIZE, 
-        "Minimum segment size", "[]", "default", Problem::WARNING);
+      segSize = std::stoul(*++i);
+      auto range = std::make_unique<ValRange<uint32_t>>(MIN_SSIZE, 
+        MAX_SSIZE, SSIZE, "Minimum segment size", "[]", "default",
+        Problem::WARNING);
       range->assert(segSize);
     }
-    else if ((*i=="-rm" || *i=="--ref-model") && i+1!=end(vArgs)) {
+    else if ((*i=="-rm" || *i=="--ref-model") && i+1!=std::end(vArgs)) {
       man_rm = true;
       rModelsPars = *++i;
       if (rModelsPars.front()=='-' || rModelsPars.empty())
         error("incorrect reference model parameters.");
       else
-        parseModelsPars(begin(rModelsPars), end(rModelsPars), refMs);
+        parseModelsPars(std::begin(rModelsPars), std::end(rModelsPars), refMs);
     }
-    else if ((*i=="-tm" || *i=="--tar-model") && i+1!=end(vArgs)) {
+    else if ((*i=="-tm" || *i=="--tar-model") && i+1!=std::end(vArgs)) {
       man_tm = true;
       tModelsPars = *++i;
       if (tModelsPars.front()=='-' || tModelsPars.empty())
         error("incorrect target model parameters.");
       else
-        parseModelsPars(begin(tModelsPars), end(tModelsPars), tarMs);
+        parseModelsPars(std::begin(tModelsPars), std::end(tModelsPars), tarMs);
     }
-    else if ((*i=="-w" || *i=="--wsize") && i+1!=end(vArgs)) {
+    else if ((*i=="-w" || *i=="--wsize") && i+1!=std::end(vArgs)) {
       manWSize = true;
-      wsize = static_cast<u32>(stoi(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_WS, MAX_WS, WS, 
+      wsize = static_cast<uint32_t>(std::stoi(*++i));
+      auto range = std::make_unique<ValRange<uint32_t>>(MIN_WS, MAX_WS, WS, 
         "Window size", "[]", "default", Problem::WARNING);
       range->assert(wsize);
     }
-    else if ((*i=="-th"|| *i=="--thresh") && i+1!=end(vArgs)) {
+    else if ((*i=="-th"|| *i=="--thresh") && i+1!=std::end(vArgs)) {
       manThresh = true;
-      thresh = stof(*++i);
-      auto range = make_unique<ValRange<float>>(MIN_THRSH, MAX_THRSH, THRSH,
-        "Threshold", "(]", "default", Problem::WARNING);
+      thresh = std::stof(*++i);
+      auto range = std::make_unique<ValRange<float>>(MIN_THRSH, MAX_THRSH,
+        THRSH, "Threshold", "(]", "default", Problem::WARNING);
       range->assert(thresh);
     }
-    else if ((*i=="-wt"|| *i=="--wtype") && i+1!=end(vArgs)) {
-      const auto is_win_type = [] (const string& t) {
-        if (t=="0" || t=="rectangular" || t=="1" || t=="hamming"  ||
-            t=="2" || t=="hann"        || t=="3" || t=="blackman" ||
-            t=="4" || t=="triangular"  || t=="5" || t=="welch"    ||
-            t=="6" || t=="sine"        || t=="7" || t=="nuttall")
-          return true;
-        return false;
+    else if ((*i=="-wt"|| *i=="--wtype") && i+1!=std::end(vArgs)) {
+      const auto is_win_type = [] (std::string t) {
+        return (t=="0" || t=="rectangular" || t=="1" || t=="hamming"  ||
+                t=="2" || t=="hann"        || t=="3" || t=="blackman" ||
+                t=="4" || t=="triangular"  || t=="5" || t=="welch"    ||
+                t=="6" || t=="sine"        || t=="7" || t=="nuttall");
       };
-      const string cmd {*++i};
-      auto set = make_unique<ValSet<WType>>(SET_WTYPE, WT, "Window type",
+      const std::string cmd {*++i};
+      auto set = std::make_unique<ValSet<WType>>(SET_WTYPE, WT, "Window type",
         "default", Problem::WARNING, win_type(cmd), is_win_type(cmd));
       set->assert(wtype);
     }
-    else if ((*i=="-e" || *i=="--ent-n") && i+1!=end(vArgs)) {
-      entropyN = static_cast<prc_t>(stod(*++i));
-      auto range = make_unique<ValRange<prc_t>>(MIN_ENTR_N, MAX_ENTR_N, ENTR_N, 
-        "Entropy of N bases", "[]", "default", Problem::WARNING);
+    else if ((*i=="-e" || *i=="--ent-n") && i+1!=std::end(vArgs)) {
+      entropyN = static_cast<prc_t>(std::stod(*++i));
+      auto range = std::make_unique<ValRange<prc_t>>(MIN_ENTR_N, MAX_ENTR_N,
+        ENTR_N, "Entropy of N bases", "[]", "default", Problem::WARNING);
       range->assert(entropyN);
     }
-    else if ((*i=="-n" || *i=="--nthr") && i+1!=end(vArgs)) {
-      nthr = static_cast<u8>(stoi(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_THRD, MAX_THRD, THRD, 
+    else if ((*i=="-n" || *i=="--nthr") && i+1!=std::end(vArgs)) {
+      nthr = static_cast<uint8_t>(std::stoi(*++i));
+      auto range = std::make_unique<ValRange<uint8_t>>(MIN_THRD, MAX_THRD, THRD,
         "Number of threads", "[]", "default", Problem::WARNING);
       range->assert(nthr);
     }
-    else if ((*i=="-d" || *i=="--step") && i+1!=end(vArgs)) {
-      sampleStep = stoull(*++i);
-      if (sampleStep==0)  sampleStep=1ull;
+    else if ((*i=="-d" || *i=="--step") && i+1!=std::end(vArgs)) {
+      sampleStep = std::stoull(*++i);
+      if (sampleStep == 0)  
+        sampleStep = 1ull;
     }
-    else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=end(vArgs)) {
+    else if ((*i=="-fs"|| *i=="--filter-scale") && i+1!=std::end(vArgs)) {
       manFilterScale = true;
-      const auto is_filter_scale = [] (const string& s) {
-        if (s=="S" || s=="small" || s=="M" || s=="medium" || 
-            s=="L" || s=="large")
-          return true;
-        return false;
+      const auto is_filter_scale = [] (std::string s) {
+        return (s=="S" || s=="small" || s=="M" || s=="medium" || 
+                s=="L" || s=="large");
       };
-      const string cmd {*++i};
-      auto set = make_unique<ValSet<FilterScale>>(SET_FSCALE, FS,
+      const std::string cmd {*++i};
+      auto set = std::make_unique<ValSet<FilterScale>>(SET_FSCALE, FS,
         "Filter scale", "default", Problem::WARNING, filter_scale(cmd),
         is_filter_scale(cmd));
       set->assert(filterScale);
@@ -212,100 +241,126 @@ inline void Param::parse (int argc, char**& argv) {
     else if (*i=="-filter")                        filter     =true;
     else if (*i=="-segment")                       segment    =true;
     else if (*i=="-R"  || *i=="--report")
-      report = (i+1!=end(vArgs)) ? *++i : "report.txt";
+      report = (i+1!=std::end(vArgs)) ? *++i : "report.txt";
     else if (*i=="-h"  || *i=="--help") { help();  throw EXIT_SUCCESS; }
     else if (*i=="-v"  || *i=="--verbose")         verbose    =true;
   }
 
   // Mandatory args
-  const bool has_t   {has(begin(vArgs), end(vArgs), "-t")   };
-  const bool has_tar {has(begin(vArgs), end(vArgs), "--tar")};
-  const bool has_r   {has(begin(vArgs), end(vArgs), "-r")   };
-  const bool has_ref {has(begin(vArgs), end(vArgs), "--ref")};
+  const bool has_t   {has(std::begin(vArgs), std::end(vArgs), "-t")   };
+  const bool has_tar {has(std::begin(vArgs), std::end(vArgs), "--tar")};
+  const bool has_r   {has(std::begin(vArgs), std::end(vArgs), "-r")   };
+  const bool has_ref {has(std::begin(vArgs), std::end(vArgs), "--ref")};
   if (!has_t && !has_tar)
     error("target file not specified. Use \"-t <fileName>\".");
   else if (!has_r && !has_ref)
     error("reference file not specified. Use \"-r <fileName>\".");
   
   if (!man_rm && !man_tm) {
-    parseModelsPars(begin(LEVEL[level]), end(LEVEL[level]), refMs);
-    parseModelsPars(begin(REFFREE_LEVEL[level]), end(REFFREE_LEVEL[level]),
-      tarMs);
+    parseModelsPars(std::begin(LEVEL[level]), std::end(LEVEL[level]), refMs);
+    parseModelsPars(
+      std::begin(REFFREE_LEVEL[level]), std::end(REFFREE_LEVEL[level]), tarMs);
+  } 
+  else if (!man_rm && man_tm) {
+    refMs = tarMs;
+  } 
+  else if (man_rm && !man_tm) {
+    tarMs = refMs;
   }
-  else if (!man_rm && man_tm)  { refMs = tarMs; }
-  else if (man_rm  && !man_tm) { tarMs = refMs; }
 
   manFilterScale = !manThresh;
   manFilterScale = !manWSize;
   
-  keep_in_range(1ull, wsize, min(file_size(ref),file_size(tar))/sampleStep);
+  keep_in_range(1ull, wsize, 
+    std::min(file_size(ref), file_size(tar))/sampleStep);
 
   // Fasta/Fastq to Seq
-  auto convert_to_seq = [&](const string& f, const FileType& type) {
+  auto convert_to_seq = [&](std::string f, const FileType& type) {
     rename(f.c_str(), (f+LBL_BAK).c_str());
     to_seq(f+LBL_BAK, f, type);
   };
   refType = file_type(ref);
-  if      (refType==FileType::FASTA)  convert_to_seq(ref, FileType::FASTA);
-  else if (refType==FileType::FASTQ)  convert_to_seq(ref, FileType::FASTQ);
-  else if (refType!=FileType::SEQ) error("\""+refName+"\" has unknown format.");
+  if (refType == FileType::FASTA)
+    convert_to_seq(ref, FileType::FASTA);
+  else if (refType == FileType::FASTQ)
+    convert_to_seq(ref, FileType::FASTQ);
+  else if (refType != FileType::SEQ)
+    error("\"" + refName + "\" has unknown format.");
 
   tarType = file_type(tar);
-  if      (tarType==FileType::FASTA)  convert_to_seq(tar, FileType::FASTA);
-  else if (tarType==FileType::FASTQ)  convert_to_seq(tar, FileType::FASTQ);
-  else if (tarType!=FileType::SEQ) error("\""+tarName+"\" has unknown format.");
+  if (tarType == FileType::FASTA)
+    convert_to_seq(tar, FileType::FASTA);
+  else if (tarType == FileType::FASTQ)
+    convert_to_seq(tar, FileType::FASTQ);
+  else if (tarType != FileType::SEQ)
+    error("\"" + tarName + "\" has unknown format.");
 }
 
 template <typename Iter>
-inline void Param::parseModelsPars (Iter begin, Iter end, vector<MMPar>& Ms) {
-  vector<string> mdls;      split(begin, end, ':', mdls);
+inline void Param::parseModelsPars (Iter begin, Iter end, 
+std::vector<MMPar>& Ms) {
+  std::vector<std::string> mdls;
+  split(begin, end, ':', mdls);
   for (const auto& e : mdls) {
     // Markov and tolerant models
-    vector<string> m_tm;    
+    std::vector<std::string> m_tm;    
     split(std::begin(e), std::end(e), '/', m_tm);
-    vector<string> m;       
+    std::vector<std::string> m;       
     split(std::begin(m_tm[0]), std::end(m_tm[0]), ',', m);
 
     if (m.size() == 4) {
-      if (stoi(m[0]) > K_MAX_LGTBL8)
+      if (std::stoi(m[0]) > K_MAX_LGTBL8)
         Ms.emplace_back(
-          MMPar(u8(stoi(m[0])), W, D, u8(stoi(m[1])), stof(m[2]), stof(m[3])));
+          MMPar(static_cast<uint8_t>(std::stoi(m[0])), W, D, 
+          static_cast<uint8_t>(std::stoi(m[1])), std::stof(m[2]), 
+          std::stof(m[3])));
       else
         Ms.emplace_back(
-          MMPar(u8(stoi(m[0])), u8(stoi(m[1])), stof(m[2]), stof(m[3])));
+          MMPar(static_cast<uint8_t>(std::stoi(m[0])), 
+          static_cast<uint8_t>(std::stoi(m[1])), std::stof(m[2]), 
+          std::stof(m[3])));
     }
     else if (m.size() == 6) {
       Ms.emplace_back(
-        MMPar(u8(stoi(m[0])), pow2(stoull(m[1])), u8(stoi(m[2])), 
-          u8(stoi(m[3])), stof(m[4]), stof(m[5])));
+        MMPar(static_cast<uint8_t>(std::stoi(m[0])), pow2(std::stoull(m[1])), 
+        static_cast<uint8_t>(std::stoi(m[2])), 
+        static_cast<uint8_t>(std::stoi(m[3])), std::stof(m[4]), 
+        std::stof(m[5])));
     }
     
     // Tolerant models
     if (m_tm.size() == 2) {
-      vector<string> tm;    
+      std::vector<std::string> tm;    
       split(std::begin(m_tm[1]), std::end(m_tm[1]), ',', tm);
-      Ms.back().child = make_shared<STMMPar>(
-        STMMPar(u8(stoi(m[0])), u8(stoi(tm[0])), u8(stoi(tm[1])), stof(tm[2]),
-          stof(tm[3])));
+      Ms.back().child = std::make_shared<STMMPar>(
+        STMMPar(static_cast<uint8_t>(std::stoi(m[0])), 
+        static_cast<uint8_t>(std::stoi(tm[0])), 
+        static_cast<uint8_t>(std::stoi(tm[1])), std::stof(tm[2]),
+        std::stof(tm[3])));
     }
   }
 }
 
 inline void Param::help () const {
-  // Print title
-  const auto t = [&](string&& str) { cerr << bold(std::move(str)) << '\n'; };
-  const auto l = [&](const string& str) { cerr << "  " << str << '\n'; }; //Line
+  const auto t = [=](std::string&& str) {  // Print title
+    std::cerr << bold(std::move(str)) << '\n'; 
+  };
+  const auto l = [&](const std::string& str) {  // Line
+    std::cerr << "  " << str << '\n'; 
+  };
   // Print column 1: left-aligned + column 2: left-aligned
-  const auto ll = [&](const string& strL, u8 n, const string& strR) {
-    cerr << "  " << std::left << std::setw(27+n*8) << strL;
-    cerr.clear();
-    cerr << strR << '\n';
+  const auto ll = 
+    [&](const std::string& strL, uint8_t n, const std::string& strR) {
+    std::cerr << "  " << std::left << std::setw(27+n*8) << strL;
+    std::cerr.clear();
+    std::cerr << strR << '\n';
   };
   // Print column 1: right-aligned + column 2: left-aligned
-  const auto rl = [&](const string& strL, u8 n, const string& strR) {
-    cerr << "  " << std::right << std::setw(27+n*8) << strL;
-    cerr.clear();
-    cerr << strR << '\n';
+  const auto rl = 
+    [&](const std::string& strL, uint8_t n, const std::string& strR) {
+    std::cerr << "  " << std::right << std::setw(27+n*8) << strL;
+    std::cerr.clear();
+    std::cerr << strR << '\n';
   };
 
   t("NAME");
@@ -402,7 +457,7 @@ inline void Param::help () const {
   l("There is NO WARRANTY, to the extent permitted by law.");
 }
 
-inline WType Param::win_type (const string& t) const {
+inline WType Param::win_type (std::string t) const {
   if      (t=="0" || t=="rectangular")   return WType::RECTANGULAR;
   else if (t=="1" || t=="hamming")       return WType::HAMMING;
   else if (t=="2" || t=="hann")          return WType::HANN;
@@ -414,7 +469,7 @@ inline WType Param::win_type (const string& t) const {
   else                                   return WType::HANN;
 }
 
-inline string Param::print_win_type () const {
+inline std::string Param::print_win_type () const {
   switch (wtype) {
   case WType::RECTANGULAR:  return "Rectangular";  break;
   case WType::HAMMING:      return "Hamming";      break;
@@ -428,14 +483,14 @@ inline string Param::print_win_type () const {
   }
 }
 
-inline FilterScale Param::filter_scale (const string& s) const {
+inline FilterScale Param::filter_scale (std::string s) const {
   if      (s=="S" || s=="small")   return FilterScale::S;
   else if (s=="M" || s=="medium")  return FilterScale::M;
   else if (s=="L" || s=="large")   return FilterScale::L;
   else                             return FilterScale::L;
 }
 
-inline string Param::print_filter_scale () const {
+inline std::string Param::print_filter_scale () const {
   switch (filterScale) {
   case FilterScale::S:  return "Small";   break;
   case FilterScale::M:  return "Medium";  break;
@@ -447,71 +502,72 @@ inline string Param::print_filter_scale () const {
 inline void VizParam::parse (int argc, char**& argv) {
   if (argc < 3) { help();  throw EXIT_SUCCESS; }
 
-  vector<string> vArgs;    vArgs.reserve(static_cast<u64>(argc));
+  std::vector<std::string> vArgs;    
+  vArgs.reserve(static_cast<uint64_t>(argc));
   for (int i=0; i!=argc; ++i)
-    vArgs.emplace_back(static_cast<string>(argv[i]));
+    vArgs.emplace_back(static_cast<std::string>(argv[i]));
 
-  for (auto i=begin(vArgs); i!=end(vArgs); ++i) {
-    if ((*i=="-o" || *i=="--out") && i+1!=end(vArgs))
+  for (auto i=std::begin(vArgs); i!=std::end(vArgs); ++i) {
+    if ((*i=="-o" || *i=="--out") && i+1!=std::end(vArgs))
       image = *++i;
-    else if ((*i=="-p" || *i=="--opacity") && i+1!=end(vArgs)) {
-      opacity = stof(*++i);
-      auto range = make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, 
+    else if ((*i=="-p" || *i=="--opacity") && i+1!=std::end(vArgs)) {
+      opacity = std::stof(*++i);
+      auto range = std::make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, 
         "Opacity", "[]", "default", Problem::WARNING);
       range->assert(opacity);
     }
-    else if ((*i=="-l" || *i=="--link") && i+1!=end(vArgs)) {
-      link = static_cast<u8>(stoul(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_LINK, MAX_LINK, LINK, 
+    else if ((*i=="-l" || *i=="--link") && i+1!=std::end(vArgs)) {
+      link = static_cast<uint8_t>(std::stoul(*++i));
+      auto range = std::make_unique<ValRange<uint8_t>>(MIN_LINK, MAX_LINK, LINK,
         "Link", "[]", "default", Problem::WARNING);
       range->assert(link);
     }
-    else if ((*i=="-m" || *i=="--min") && i+1!=end(vArgs)) {
-      min = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_MINP, MAX_MINP, MINP,
-        "Min", "[]", "default", Problem::WARNING);
+    else if ((*i=="-m" || *i=="--min") && i+1!=std::end(vArgs)) {
+      min = static_cast<uint32_t>(std::stoul(*++i));
+      auto range = std::make_unique<ValRange<uint32_t>>(MIN_MINP, MAX_MINP,
+        MINP, "Min", "[]", "default", Problem::WARNING);
       range->assert(min);
     }
-    else if ((*i=="-f" || *i=="--mult") && i+1!=end(vArgs)) {
+    else if ((*i=="-f" || *i=="--mult") && i+1!=std::end(vArgs)) {
       manMult = true;
-      mult = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_MULT, MAX_MULT, MULT,
-        "Mult", "[]", "default", Problem::WARNING);
+      mult = static_cast<uint32_t>(std::stoul(*++i));
+      auto range = std::make_unique<ValRange<uint32_t>>(MIN_MULT, MAX_MULT, 
+        MULT, "Mult", "[]", "default", Problem::WARNING);
       range->assert(mult);
     }
-    else if ((*i=="-b" || *i=="--begin") && i+1!=end(vArgs)) {
-      start = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_BEGN, MAX_BEGN, BEGN,
-        "Begin", "[]", "default", Problem::WARNING);
+    else if ((*i=="-b" || *i=="--begin") && i+1!=std::end(vArgs)) {
+      start = static_cast<uint32_t>(std::stoul(*++i));
+      auto range = std::make_unique<ValRange<uint32_t>>(MIN_BEGN, MAX_BEGN,
+        BEGN, "Begin", "[]", "default", Problem::WARNING);
       range->assert(start);
     }
-    else if ((*i=="-rt" || *i=="--ref-tick") && i+1!=end(vArgs)) {
-      refTick = stoull(*++i);
-      auto range = make_unique<ValRange<u64>>(MIN_TICK, MAX_TICK, TICK,
-        "Tick hop for reference", "[]", "default", Problem::WARNING);
+    else if ((*i=="-rt" || *i=="--ref-tick") && i+1!=std::end(vArgs)) {
+      refTick = std::stoull(*++i);
+      auto range = std::make_unique<ValRange<uint64_t>>(MIN_TICK, MAX_TICK,
+        TICK, "Tick hop for reference", "[]", "default", Problem::WARNING);
       range->assert(refTick);
     }
-    else if ((*i=="-tt" || *i=="--tar-tick") && i+1!=end(vArgs)) {
-      tarTick = stoull(*++i);
-      auto range = make_unique<ValRange<u64>>(MIN_TICK, MAX_TICK, TICK,
-        "Tick hop for target", "[]", "default", Problem::WARNING);
+    else if ((*i=="-tt" || *i=="--tar-tick") && i+1!=std::end(vArgs)) {
+      tarTick = std::stoull(*++i);
+      auto range = std::make_unique<ValRange<uint64_t>>(MIN_TICK, MAX_TICK,
+        TICK, "Tick hop for target", "[]", "default", Problem::WARNING);
       range->assert(tarTick);
     }
-    else if ((*i=="-c" || *i=="--color") && i+1!=end(vArgs)) {
-      colorMode = static_cast<u8>(stoi(*++i));
-      auto range = make_unique<ValRange<u8>>(MIN_COLOR, MAX_COLOR, COLOR, 
-        "Color", "[]", "default", Problem::WARNING);
+    else if ((*i=="-c" || *i=="--color") && i+1!=std::end(vArgs)) {
+      colorMode = static_cast<uint8_t>(std::stoi(*++i));
+      auto range = std::make_unique<ValRange<uint8_t>>(MIN_COLOR, MAX_COLOR, 
+        COLOR, "Color", "[]", "default", Problem::WARNING);
       range->assert(colorMode);
     }
-    else if ((*i=="-w" || *i=="--width") && i+1!=end(vArgs)) {
-      width = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_WDTH, MAX_WDTH, WDTH,
-        "Width", "[]", "default", Problem::WARNING);
+    else if ((*i=="-w" || *i=="--width") && i+1!=std::end(vArgs)) {
+      width = static_cast<uint32_t>(std::stoul(*++i));
+      auto range = std::make_unique<ValRange<uint32_t>>(MIN_WDTH, MAX_WDTH,
+        WDTH, "Width", "[]", "default", Problem::WARNING);
       range->assert(width);
     }
-    else if ((*i=="-s" || *i=="--space") && i+1!=end(vArgs)) {
-      space = static_cast<u32>(stoul(*++i));
-      auto range = make_unique<ValRange<u32>>(MIN_SPC, MAX_SPC, SPC,
+    else if ((*i=="-s" || *i=="--space") && i+1!=std::end(vArgs)) {
+      space = static_cast<uint32_t>(std::stoul(*++i));
+      auto range = std::make_unique<ValRange<uint32_t>>(MIN_SPC, MAX_SPC, SPC,
         "Space", "[]", "default", Problem::WARNING);
       range->assert(space);
     }
@@ -528,13 +584,18 @@ inline void VizParam::parse (int argc, char**& argv) {
 
 inline void VizParam::help () const {
   // Print title
-  const auto t = [&](string&& str) { cerr << bold(std::move(str)) << '\n'; };
-  const auto l = [&](const string& str) { cerr << "  " << str << '\n'; }; //Line
+  const auto t = [=](std::string&& str) { 
+    std::cerr << bold(std::move(str)) << '\n'; 
+  };
+  const auto l = [&](const std::string& str) { 
+    std::cerr << "  " << str << '\n'; 
+  }; //Line
   // Print column 1: left-aligned + column 2: left-aligned
-  const auto ll = [&](const string& strL, u8 n, const string& strR) {
-    cerr << "  " << std::left << std::setw(27+n*8) << strL;
-    cerr.clear();
-    cerr << strR << '\n';
+  const auto ll =
+    [&](const std::string& strL, uint8_t n, const std::string& strR) {
+    std::cerr << "  " << std::left << std::setw(27+n*8) << strL;
+    std::cerr.clear();
+    std::cerr << strR << '\n';
   };
 
   t("NAME");
