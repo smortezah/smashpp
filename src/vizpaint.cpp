@@ -6,13 +6,14 @@ using namespace smashpp;
 
 void VizPaint::plot (VizParam& p) {
   check_file(p.posFile);
-  ifstream fPos(p.posFile);
-  ofstream fPlot(p.image);
+  std::ifstream fPos(p.posFile);
+  std::ofstream fPlot(p.image);
 
   read_matadata(fPos);
-  if (p.verbose)  show_info(p);
+  if (p.verbose) 
+    show_info(p);
 
-  cerr << "Plotting ...\r";
+  std::cerr << "Plotting ...\r";
 
   config(p.width, p.space, p.mult);
   set_page(p.vertical);
@@ -22,18 +23,23 @@ void VizPaint::plot (VizParam& p) {
   plot_background(fPlot);
 
   // If min is set to default, reset to base max proportion
-  if (p.min==0)  p.min=static_cast<u32>(maxSize / 100);
+  if (p.min == 0)  
+    p.min = static_cast<uint32_t>(maxSize / 100);
 
   // Read positions from file and Print them
-  vector<Position> pos;
+  std::vector<Position> pos;
   plot_pos(fPlot, fPos, pos, p);
 
   // Plot
-  u64 n_regular=0, n_regularSolo=0, n_inverse=0, n_inverseSolo=0, n_ignored=0;
-  std::sort(begin(pos), end(pos),
+  uint64_t n_regular {0};
+  uint64_t n_regularSolo {0};
+  uint64_t n_inverse {0};
+  uint64_t n_inverseSolo {0};
+  uint64_t n_ignored {0};
+  std::sort(std::begin(pos), std::end(pos),
     [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
 
-  for (auto e=begin(pos); e!=end(pos); ++e) {
+  for (auto e=std::begin(pos); e!=std::end(pos); ++e) {
     if (abs(e->endTar-e->begTar) <= p.min) {
       ++n_ignored;    
       continue;
@@ -69,12 +75,12 @@ void VizPaint::plot (VizParam& p) {
       }
     }
   }
-  fPos.seekg(ios::beg);
+  fPos.seekg(std::ios::beg);
 
   plot_Ns(fPlot, p.opacity, p.vertical);
   plot_seq_borders(fPlot, p.vertical);
   plot_title(fPlot, ref, tar, p.vertical);
-  plot_legend(fPlot, p, max(n_refBases,n_tarBases));
+  plot_legend(fPlot, p, std::max(n_refBases,n_tarBases));
   print_log (n_regular, n_regularSolo, n_inverse, n_inverseSolo, n_ignored);
 
   svg->print_tailer(fPlot);
@@ -82,8 +88,8 @@ void VizPaint::plot (VizParam& p) {
   fPos.close();  fPlot.close();
 }
 
-inline void VizPaint::read_matadata (ifstream& fPos) {
-  string watermark;
+inline void VizPaint::read_matadata (std::ifstream& fPos) {
+  std::string watermark;
   fPos >> watermark >> ref >> n_refBases >> tar >> n_tarBases;
   
   if (watermark != POS_HDR)
@@ -91,52 +97,65 @@ inline void VizPaint::read_matadata (ifstream& fPos) {
 }
 
 inline void VizPaint::show_info (VizParam& p) const {
-  const u8 lblWidth=18, colWidth=8;
-  u8 tblWidth=58;
-  if (max(n_refBases,n_tarBases) > 999999)
-    tblWidth = static_cast<u8>(lblWidth+4*colWidth);
+  const uint8_t lblWidth {18};
+  const uint8_t colWidth {8};
+  uint8_t tblWidth {58};
+  if (std::max(n_refBases,n_tarBases) > 999999)
+    tblWidth = static_cast<uint8_t>(lblWidth+4*colWidth);
   else
-    tblWidth = static_cast<u8>(lblWidth+3*colWidth);
+    tblWidth = static_cast<uint8_t>(lblWidth+3*colWidth);
 
-  const auto rule = [](u8 n, const string& s) {
-    for (auto i=n/s.size(); i--;) { cerr<<s; }    cerr<<'\n';
+  const auto rule = [](uint8_t n, std::string s) {
+    for (auto i=n/s.size(); i--;)
+      std::cerr << s;
+    std::cerr << '\n';
   };
   const auto toprule = [&]() { rule(tblWidth, "~"); };
   const auto midrule = [&]() { rule(tblWidth, "~"); };
   const auto botrule = [&]() { rule(tblWidth, " "); };
-  const auto label   = [&](const string& s){ cerr<<setw(lblWidth)<<left<<s;   };
-  const auto header  = [&](const string& s){ cerr<<setw(2*colWidth)<<left<<s; };
+  const auto label   = [=](std::string s){ 
+    std::cerr << std::setw(lblWidth) << std::left << s;
+  };
+  const auto header  = [=](std::string s){ 
+    std::cerr << std::setw(2*colWidth) << std::left << s;
+  };
   const auto design_vals = [&](char c) {
-    cerr << setw(colWidth) << left;
+    std::cerr << std::setw(colWidth) << std::left;
     switch (c) {
-    case 'w':  cerr<<p.width;                     break;
-    case 's':  cerr<<p.space;                     break;
-    case 'f':  cerr<<p.mult;                      break;
-    case 'b':  cerr<<p.start;                     break;
-    case 'm':  cerr<<p.min;                       break;
-    case 'r':  cerr<<(p.regular ? "yes" : "no");  break;
-    case 'i':  cerr<<(p.inverse ? "yes" : "no");  break;
-    case 'l':  cerr<<u16(p.link);                 break;
-    default:                                      break;
+    case 'w':  std::cerr << p.width;  break;
+    case 's':  std::cerr << p.space;  break;
+    case 'f':  std::cerr << p.mult;   break;
+    case 'b':  std::cerr << p.start;  break;
+    case 'm':  std::cerr << p.min;    break;
+    case 'r':  std::cerr << (p.regular ? "yes" : "no");  break;
+    case 'i':  std::cerr << (p.inverse ? "yes" : "no");  break;
+    case 'l':  std::cerr << static_cast<uint16_t>(p.link);  break;
+    default:   break;
     }
-    cerr << '\n';
+    std::cerr << '\n';
   };
   const auto file_vals = [&](char c) {
-    cerr << setw(2*colWidth) << left;
+    std::cerr << std::setw(2*colWidth) << std::left;
     switch (c) {
-    case '1':  cerr.imbue(locale("en_US.UTF8"));  cerr<<n_refBases;  break;
-    // case 'r':  cerr<<ref;                                            break;
-    case 'r':  cerr<<file_name(ref);                                 break;
-    case '2':  cerr.imbue(locale("en_US.UTF8"));  cerr<<n_tarBases;  break;
-    // case 't':  cerr<<tar;                                            break;
-    case 't':  cerr<<file_name(tar);                                 break;
-    case 'i':  cerr<<p.image;                                        break;
-    default:   cerr<<'-';                                            break;
+    case '1':  
+      std::cerr.imbue(std::locale("en_US.UTF8"));
+      std::cerr << n_refBases;  
+      break;
+    // case 'r':  cerr<<ref;  break;
+    case 'r':  std::cerr << file_name(ref);  break;
+    case '2':  
+      std::cerr.imbue(std::locale("en_US.UTF8"));  
+      std::cerr << n_tarBases;  
+      break;
+    // case 't':  cerr<<tar;  break;
+    case 't':  std::cerr << file_name(tar);  break;
+    case 'i':  std::cerr << p.image;         break;
+    default:   std::cerr << '-';             break;
     }
   };
 
   toprule();
-  label("Sequence image");                  cerr<<'\n';
+  label("Sequence image");                  std::cerr<<'\n';
   midrule();
   label("Width");                           design_vals('w');
   label("Space");                           design_vals('s');
@@ -149,23 +168,23 @@ inline void VizPaint::show_info (VizParam& p) const {
   botrule();  //cerr << '\n';
 
   toprule();
-  label("Files");        header("Name");    header("Size (B)");      cerr<<'\n';
+  label("Files");       header("Name");   header("Size (B)");   std::cerr<<'\n';
   midrule();                                
-  label("Reference");    file_vals('r');    file_vals('1');          cerr<<'\n';
-  label("Target");       file_vals('t');    file_vals('2');          cerr<<'\n';
-  label("Image");        file_vals('i');    file_vals('-');          cerr<<'\n';
+  label("Reference");   file_vals('r');   file_vals('1');       std::cerr<<'\n';
+  label("Target");      file_vals('t');   file_vals('2');       std::cerr<<'\n';
+  label("Image");       file_vals('i');   file_vals('-');       std::cerr<<'\n';
   botrule();
 }
 
-inline void VizPaint::config (double width_, double space_, u32 mult_) {
-  ratio = static_cast<u32>(max(n_refBases,n_tarBases) / PAINT_SCALE);
+inline void VizPaint::config (double width_, double space_, uint32_t mult_) {
+  ratio = static_cast<uint32_t>(std::max(n_refBases,n_tarBases) / PAINT_SCALE);
   seqWidth = width_;
   periphWidth = seqWidth / 3;
   innerSpace = space_;
   mult = mult_;
   refSize = get_point(n_refBases);
   tarSize = get_point(n_tarBases);
-  maxSize = max(refSize, tarSize);
+  maxSize = std::max(refSize, tarSize);
 }
 
 inline void VizPaint::set_page (bool vertical) {
@@ -188,14 +207,15 @@ inline void VizPaint::set_page (bool vertical) {
   }
 }
 
-string VizPaint::rgb_color (u32 start) const {
-  const auto hue = static_cast<u8>(start * mult);
+std::string VizPaint::rgb_color (uint32_t start) const {
+  const auto hue {static_cast<uint8_t>(start * mult)};
   HSV hsv (hue);
   RGB rgb {to_rgb(hsv)};
   return to_hex(rgb);
 }
 
-inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
+inline std::string VizPaint::nrc_color (double entropy, uint32_t colorMode) 
+const {
   keep_in_range(0.0, entropy, 2.0);
 #ifdef EXTEND
   // return heatmap_color(entropy/2 * (width+space+width));
@@ -209,7 +229,8 @@ inline string VizPaint::nrc_color (double entropy, u32 colorMode) const {
   return "";
 }
 
-inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
+inline std::string VizPaint::redun_color (double entropy, uint32_t colorMode) 
+const {
   keep_in_range(0.0, entropy, 2.0);
 #ifdef EXTEND
   // return heatmap_color(entropy/2 * (width+space+width));
@@ -217,9 +238,9 @@ inline string VizPaint::redun_color (double entropy, u32 colorMode) const {
   return nrc_color(entropy, colorMode);
 }
 
-inline string VizPaint::seq_gradient (ofstream& fPlot, const string& color,
-const string& id) const {
-  auto grad = make_unique<LinearGradient>();
+inline std::string VizPaint::seq_gradient (std::ofstream& fPlot, 
+std::string color, std::string id) const {
+  auto grad = std::make_unique<LinearGradient>();
   grad->id = "grad" + id;
   grad->add_stop("30%", shade(color, 0.25));
   grad->add_stop("100%", color);
@@ -228,9 +249,9 @@ const string& id) const {
   return "url(#" + grad->id + ")";
 };
 
-inline string VizPaint::periph_gradient (ofstream& fPlot, const string& color, 
-const string& id) const {
-  auto grad = make_unique<LinearGradient>();
+inline std::string VizPaint::periph_gradient (std::ofstream& fPlot, 
+std::string color, std::string id) const {
+  auto grad = std::make_unique<LinearGradient>();
   grad->id = "grad" + id;
   grad->add_stop("30%", tone(color, 0.4));
   grad->add_stop("100%", color);
@@ -244,12 +265,12 @@ inline double VizPaint::get_point (Value index) const {
   return 5.0 * index / ratio;
 }
 
-inline u64 VizPaint::get_index (double point) const {
-  return static_cast<u64>(point * ratio / 5.0);
+inline uint64_t VizPaint::get_index (double point) const {
+  return static_cast<uint64_t>(point * ratio / 5.0);
 }
 
-inline void VizPaint::plot_background (ofstream& f) const {
-  auto rect = make_unique<Rectangle>();
+inline void VizPaint::plot_background (std::ofstream& f) const {
+  auto rect = std::make_unique<Rectangle>();
   rect->fill = rect->stroke = "white";
   rect->x = 0;
   rect->y = 0;
@@ -258,10 +279,10 @@ inline void VizPaint::plot_background (ofstream& f) const {
   rect->plot(f);
 }
 
-inline void VizPaint::plot_seq_ref (ofstream& fPlot, 
-const vector<Position>::iterator& e, const VizParam& p) const {
+inline void VizPaint::plot_seq_ref (std::ofstream& fPlot, 
+const std::vector<Position>::iterator& e, const VizParam& p) const {
   if (e->begRef != DBLANK) {
-    auto cylinder = make_unique<Cylinder>();
+    auto cylinder = std::make_unique<Cylinder>();
     cylinder->width = seqWidth;
     cylinder->stroke_width = 0.75;
     cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
@@ -273,10 +294,10 @@ const vector<Position>::iterator& e, const VizParam& p) const {
     } else {
       cylinder->x = x + get_point(e->begRef);
       cylinder->y = y + seqWidth;
-      cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-        to_string(cylinder->y) + ")";
+      cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " + 
+        std::to_string(cylinder->y) + ")";
     }
-    cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
+    cylinder->id = std::to_string(cylinder->x) + std::to_string(cylinder->y);
     cylinder->fill = seq_gradient(fPlot, rgb_color(e->start), cylinder->id);
     cylinder->plot(fPlot);
 
@@ -298,9 +319,10 @@ const vector<Position>::iterator& e, const VizParam& p) const {
   }
 }
 
-inline void VizPaint::plot_seq_tar (ofstream& fPlot, 
-const vector<Position>::iterator& e, const VizParam& p, bool inverted) const {
-  auto cylinder = make_unique<Cylinder>();
+inline void VizPaint::plot_seq_tar (std::ofstream& fPlot, 
+const std::vector<Position>::iterator& e, 
+const VizParam& p, bool inverted) const {
+  auto cylinder = std::make_unique<Cylinder>();
   cylinder->width = seqWidth;
   cylinder->stroke_width = 0.75;
   cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
@@ -311,10 +333,10 @@ const vector<Position>::iterator& e, const VizParam& p, bool inverted) const {
   } else {
     cylinder->x = !inverted ? x+get_point(e->begTar) : x+get_point(e->endTar);
     cylinder->y = y + 2*seqWidth + innerSpace;
-    cylinder->transform = "rotate(-90 " + to_string(cylinder->x) + " " + 
-      to_string(cylinder->y) + ")";
+    cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " + 
+      std::to_string(cylinder->y) + ")";
   }
-  cylinder->id = to_string(cylinder->x) + to_string(cylinder->y);
+  cylinder->id = std::to_string(cylinder->x) + std::to_string(cylinder->y);
   if (e->begRef == DBLANK) {
     cylinder->fill = "black";
     cylinder->stroke = "white";
@@ -347,12 +369,13 @@ const vector<Position>::iterator& e, const VizParam& p, bool inverted) const {
   }
 }
 
-inline void VizPaint::plot_periph (ofstream& f, unique_ptr<Cylinder>& cylinder,
-bool vertical, char RefTar, u8 showNRC) const {
-  const auto mainOriginX = cylinder->x,
-             mainWidth = cylinder->width,
-             mainStrokeWidth = cylinder->stroke_width,
-             mainRy = cylinder->ry;
+inline void VizPaint::plot_periph (std::ofstream& f, 
+std::unique_ptr<Cylinder>& cylinder, bool vertical, char RefTar, 
+uint8_t showNRC) const {
+  const auto mainOriginX {cylinder->x};
+  const auto mainWidth {cylinder->width};
+  const auto mainStrokeWidth {cylinder->stroke_width};
+  const auto mainRy {cylinder->ry};
 
   if (RefTar=='r') {
     if (vertical)
@@ -381,10 +404,10 @@ bool vertical, char RefTar, u8 showNRC) const {
   cylinder->ry = mainRy;
 }
 
-inline void VizPaint::plot_connector (ofstream& fPlot, 
-const vector<Position>::iterator& e, VizParam& par, bool ir) const {
-  auto poly = make_unique<Polygon>();
-  auto line = make_unique<Line>();
+inline void VizPaint::plot_connector (std::ofstream& fPlot, 
+const std::vector<Position>::iterator& e, VizParam& par, bool ir) const {
+  auto poly = std::make_unique<Polygon>();
+  auto line = std::make_unique<Line>();
   line->stroke_width = 1.5;
 
   switch (par.link) {
@@ -478,9 +501,9 @@ const vector<Position>::iterator& e, VizParam& par, bool ir) const {
   }
 }
 
-inline void VizPaint::plot_title (ofstream& f, const string& ref, 
-const string& tar, bool vertical) const {
-  auto text = make_unique<Text>();
+inline void VizPaint::plot_title (std::ofstream& f, std::string ref,
+std::string tar, bool vertical) const {
+  auto text = std::make_unique<Text>();
   text->font_weight = "bold";
   text->font_size = 10;
 
@@ -489,9 +512,9 @@ const string& tar, bool vertical) const {
     // text->dominant_baseline = "middle";
     text->y = y - 0.6*TITLE_SPACE;
 
-    const auto charSpace = 5;
-    const bool tooClose = (innerSpace - abs(ref.size()*charSpace - seqWidth)/2 -
-      abs(tar.size()*charSpace - seqWidth)/2 < 15);
+    const auto charSpace {5};
+    const bool tooClose {(innerSpace - abs(ref.size()*charSpace - seqWidth)/2 -
+      abs(tar.size()*charSpace - seqWidth)/2 < 15)};
 
     text->x = x + seqWidth/2;
     if (tooClose) {
@@ -524,26 +547,26 @@ const string& tar, bool vertical) const {
   }
 }
 
-inline void VizPaint::plot_legend (ofstream& f, const VizParam& p, i64 maxWidth)
-const {
+inline void VizPaint::plot_legend (std::ofstream& f, const VizParam& p, 
+int64_t maxWidth) const {
   if (!p.showNRC && !p.showRedun)
     return;
 
-  auto legend = make_unique<LegendPlot>();
+  auto legend = std::make_unique<LegendPlot>();
   legend->maxWidth  = maxWidth;
   legend->showNRC   = p.showNRC;
   legend->showRedun = p.showRedun;
   legend->vertical  = p.vertical;
   legend->colorMode = p.colorMode;
 
-  legend->text.emplace_back(make_unique<Text>());      // Numbers
+  legend->text.emplace_back(std::make_unique<Text>());      // Numbers
   if (legend->showNRC && !legend->showRedun)
-    legend->text.emplace_back(make_unique<Text>());    // NRC
+    legend->text.emplace_back(std::make_unique<Text>());    // NRC
   else if (!legend->showNRC && legend->showRedun)
-    legend->text.emplace_back(make_unique<Text>());    // Redun
+    legend->text.emplace_back(std::make_unique<Text>());    // Redun
   else if (legend->showNRC && legend->showRedun)
     for(u8 i=0; i!=2; ++i)                         
-      legend->text.emplace_back(make_unique<Text>());  // NRC + Redun
+      legend->text.emplace_back(std::make_unique<Text>());  // NRC + Redun
 
   if (legend->vertical) {
     set_legend_rect(f, legend, 'h');
@@ -558,8 +581,8 @@ const {
   }
 }
 
-inline void VizPaint::set_legend_rect (ofstream& f,
-unique_ptr<LegendPlot>& legend, char direction) const {
+inline void VizPaint::set_legend_rect (std::ofstream& f,
+std::unique_ptr<LegendPlot>& legend, char direction) const {
   if (direction=='h' || direction=='H') {
     legend->rect->height = 11;
     legend->rect->x = x - TITLE_SPACE/2;
@@ -575,18 +598,18 @@ unique_ptr<LegendPlot>& legend, char direction) const {
   }
 }
 
-inline void VizPaint::plot_legend_gradient (ofstream& f, 
-unique_ptr<LegendPlot>& legend) const {
-  vector<string> colorset;
+inline void VizPaint::plot_legend_gradient (std::ofstream& f, 
+std::unique_ptr<LegendPlot>& legend) const {
+  std::vector<std::string> colorset;
   switch (legend->colorMode) {
   case 0:   colorset = COLORSET[0];  break;
   case 1:   colorset = COLORSET[1];  break;
   case 2:   colorset = COLORSET[2];  break;
   default:  error("undefined color mode.");
   }
-  auto id = to_string(legend->rect->x) + to_string(legend->rect->y);
+  auto id {std::to_string(legend->rect->x) + std::to_string(legend->rect->y)};
 
-  auto grad = make_unique<LinearGradient>();
+  auto grad = std::make_unique<LinearGradient>();
   if (legend->vertical) {
     grad->x1="0%";    grad->y1="0%";
     grad->x2="100%";  grad->y2="0%";
@@ -1026,7 +1049,8 @@ inline string VizPaint::tspan (u32 start, i64 pos) const {
   return "<tspan id=\"" + to_string(start) + "\" style=\"fill:" + 
     rgb_color(start) + "\">" + to_string(pos) + ", </tspan>\n";
 }
-inline string VizPaint::tspan (u32 start, const string& pos) const {
+
+inline string VizPaint::tspan (u32 start, std::string pos) const {
   return "<tspan id=\"" + to_string(start) + "\" style=\"fill:" + 
     rgb_color(start) + "\">" + pos + ", </tspan>\n";
 }
@@ -1088,7 +1112,7 @@ inline void VizPaint::sort_merge (string& s) const {
   s.erase(s.find_last_of(", <")-2, 2);
 }
 
-inline void VizPaint::save_n_pos (const string& filePath) const {
+inline void VizPaint::save_n_pos (std::string filePath) const {
   ifstream inFile(filePath);
   ofstream NFile(file_name(filePath)+"."+FMT_N);
   u64 pos=0, beg=0, num=0;

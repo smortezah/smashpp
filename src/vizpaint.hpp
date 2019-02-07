@@ -9,28 +9,45 @@
 
 namespace smashpp {
 struct Position {
-  i64   begRef, endRef,  begTar, endTar;
-  prc_t entRef, selfRef, entTar, selfTar;
-  u64   start;
+  int64_t begRef;
+  int64_t endRef;
+  int64_t begTar;
+  int64_t endTar;
+  prc_t entRef;
+  prc_t selfRef;
+  prc_t entTar;
+  prc_t selfTar;
+  uint64_t start;
 
-  Position (i64 br, i64 er, prc_t nr, prc_t sr, i64 bt, i64 et, prc_t nt, 
-    prc_t st, u64 s) : begRef(br), endRef(er), begTar(bt), endTar(et), 
-    entRef(nr), selfRef(sr), entTar(nt), selfTar(st), start(s) {}
+  Position (int64_t br, int64_t er, prc_t nr, prc_t sr, int64_t bt, int64_t et,
+    prc_t nt, prc_t st, uint64_t s) 
+    : begRef(br), endRef(er), begTar(bt), endTar(et), entRef(nr), selfRef(sr),
+    entTar(nt), selfTar(st), start(s) {}
 };
 
 struct PosNode {
-  i64  position;
+  int64_t position;
   char type;
-  u64  start;
+  uint64_t start;
 
-  PosNode (i64 p, char t, u64 s) : position(p), type(t), start(s) {}
+  PosNode (int64_t p, char t, uint64_t s) : position(p), type(t), start(s) {}
 };
 
 struct PosPlot {
-  u8     n_ranges, n_subranges;
-  u16    minorTickSize, majorTickSize, vertSkip, tickLabelSkip;
-  bool   vertical, showNRC, showRedun, plotRef, refTick, tarTick;
-  float  minorStrokeWidth, majorStrokeWidth;
+  uint8_t n_ranges;
+  uint8_t n_subranges;
+  uint16_t minorTickSize;
+  uint16_t majorTickSize;
+  uint16_t vertSkip;
+  uint16_t tickLabelSkip;
+  bool vertical;
+  bool showNRC;
+  bool showRedun;
+  bool plotRef;
+  bool refTick;
+  bool tarTick;
+  float minorStrokeWidth;
+  float majorStrokeWidth;
   double n_bases;
 
   PosPlot () : n_ranges(10), n_subranges(4), minorTickSize(6),
@@ -39,77 +56,99 @@ struct PosPlot {
 };
 
 struct LegendPlot {
-  bool showNRC, showRedun, vertical;
-  i64  maxWidth;
-  u8   labelShift, colorMode;
-  unique_ptr<Rectangle>    rect;
-  unique_ptr<Path>         path;
-  vector<unique_ptr<Text>> text;
+  bool showNRC;
+  bool showRedun;
+  bool vertical;
+  int64_t maxWidth;
+  uint8_t labelShift;
+  uint8_t colorMode;
+  std::unique_ptr<Rectangle> rect;
+  std::unique_ptr<Path> path;
+  std::vector<std::unique_ptr<Text>> text;
 
-  LegendPlot () : labelShift(10), rect(make_unique<Rectangle>()), 
-    path(make_unique<Path>()) {}
+  LegendPlot () : labelShift(10), rect(std::make_unique<Rectangle>()), 
+    path(std::make_unique<Path>()) {}
 };
 
 class VizPaint {
  public:
-  float x, y;
-  float seqWidth, periphWidth, innerSpace;
-  float refSize, tarSize, maxSize;
-  unique_ptr<SVG> svg;
+  float x;
+  float y;
+  float seqWidth;
+  float periphWidth;
+  float innerSpace;
+  float refSize;
+  float tarSize;
+  float maxSize;
+  uniqstd::ue_ptr<SVG> svg;
 
-  VizPaint() : svg(make_unique<SVG>()), ratio(1), plottable(true), ry(2.0f) {}
+  VizPaint() : svg(std::make_unique<SVG>()), ratio(1), plottable(true), 
+    ry(2.0f) {}
   void plot (VizParam&);
 
  private:
-  string ref, tar;
-  u32    ratio, mult;
-  u64    n_refBases, n_tarBases;
-  bool   plottable;
-  float  ry;
-  vector<i64>     lastPos;
-  vector<PosNode> nodes;
+  std::string ref;
+  std::string tar;
+  uint32_t ratio;
+  uint32_t mult;
+  uint64_t n_refBases;
+  uint64_t n_tarBases;
+  bool plottable;
+  float ry;
+  std::vector<int64_t> lastPos;
+  std::vector<PosNode> nodes;
 
-  void read_matadata (ifstream&);
+  void read_matadata (std::ifstream&);
   void show_info (VizParam&) const;
-  void config (double, double, u32);
+  void config (double, double, uint32_t);
   void set_page (bool);
-  auto rgb_color (u32) const -> string;
-  auto nrc_color (double, u32) const -> string;
-  auto redun_color (double, u32) const -> string;
-  auto seq_gradient (ofstream&, const string&, const string&) const -> string;
-  auto periph_gradient (ofstream&, const string&, const string&) const 
+  auto rgb_color (uint32_t) const -> std::string;
+  auto nrc_color (double, uint32_t) const -> std::string;
+  auto redun_color (double, uint32_t) const -> std::string;
+  auto seq_gradient (std::ofstream&, std::string, std::string) const 
+    -> std::string;
+  auto periph_gradient (std::ofstream&, std::string, std::string) const 
     -> string;
   template <typename Value>
   auto get_point (Value) const -> double;
-  auto get_index (double point) const -> u64;
-  void plot_background (ofstream&) const;
-  void plot_seq_ref (ofstream&, const vector<Position>::iterator&, 
+  auto get_index (double point) const -> uint64_t;
+  void plot_background (std::ofstream&) const;
+  void plot_seq_ref (std::ofstream&, const std::vector<Position>::iterator&, 
     const VizParam&) const;
-  void plot_seq_tar (ofstream&, const vector<Position>::iterator&, 
+  void plot_seq_tar (std::ofstream&, const std::vector<Position>::iterator&, 
     const VizParam&, bool) const;
-  void plot_periph (ofstream&, unique_ptr<Cylinder>&, bool, char, u8) const;
-  void plot_connector (ofstream&, const vector<Position>::iterator&, VizParam&,
-    bool) const;
-  void plot_title (ofstream&, const string&, const string&, bool) const;
-  void plot_legend (ofstream&, const VizParam&, i64) const;
-  void set_legend_rect (ofstream&, unique_ptr<LegendPlot>&, char) const;
-  void plot_legend_gradient (ofstream&, unique_ptr<LegendPlot>&) const;
-  void plot_legend_text_horiz (ofstream&, unique_ptr<LegendPlot>&) const;
-  void plot_legend_path_horiz (ofstream&, unique_ptr<LegendPlot>&) const;
-  void plot_legend_text_vert (ofstream&, unique_ptr<LegendPlot>&) const;
-  void plot_legend_path_vert (ofstream&, unique_ptr<LegendPlot>&) const;
-  auto tspan (u32, i64) const -> string;
-  auto tspan (u32, const string&) const -> string;
-  void sort_merge (string&) const;
-  void save_n_pos (const string&) const;
-  void read_pos (ifstream&, vector<Position>&, VizParam&) const;
-  void make_posNode (const vector<Position>&, const VizParam&, string&&);
-  void plot_pos (ofstream&, ifstream&, vector<Position>&, VizParam&);
-  void plot_pos_horizontal (ofstream&, unique_ptr<PosPlot>&) const;
-  void plot_pos_vertical (ofstream&, unique_ptr<PosPlot>&) const;
-  void plot_Ns (ofstream&, float, bool) const;
-  void plot_seq_borders (ofstream&, bool) const;
-  void print_log (u64, u64, u64, u64, u64) const;
+  void plot_periph (std::ofstream&, std::unique_ptr<Cylinder>&, bool, char,
+    uint8_t) const;
+  void plot_connector (std::ofstream&, const std::vector<Position>::iterator&,
+    VizParam&, bool) const;
+  void plot_title (std::ofstream&, std::string, std::string, bool) const;
+  void plot_legend (std::ofstream&, const VizParam&, int64_t) const;
+  void set_legend_rect (std::ofstream&, std::unique_ptr<LegendPlot>&, char)
+    const;
+  void plot_legend_gradient (std::ofstream&, std::unique_ptr<LegendPlot>&) 
+    const;
+  void plot_legend_text_horiz (std::ofstream&, std::unique_ptr<LegendPlot>&) 
+    const;
+  void plot_legend_path_horiz (std::ofstream&, std::unique_ptr<LegendPlot>&) 
+    const;
+  void plot_legend_text_vert (std::ofstream&, std::unique_ptr<LegendPlot>&) 
+    const;
+  void plot_legend_path_vert (std::ofstream&, std::unique_ptr<LegendPlot>&) 
+    const;
+  auto tspan (uint32_t, int64_t) const -> std::string;
+  auto tspan (uint32_t, std::string) const -> std::string;
+  void sort_merge (std::string&) const;
+  void save_n_pos (std::string) const;
+  void read_pos (std::ifstream&, std::vector<Position>&, VizParam&) const;
+  void make_posNode (const std::vector<Position>&, const VizParam&, 
+    std::string&&);
+  void plot_pos (std::ofstream&, std::ifstream&, std::vector<Position>&,
+    VizParam&);
+  void plot_pos_horizontal (std::ofstream&, std::unique_ptr<PosPlot>&) const;
+  void plot_pos_vertical (std::ofstream&, std::unique_ptr<PosPlot>&) const;
+  void plot_Ns (std::ofstream&, float, bool) const;
+  void plot_seq_borders (std::ofstream&, bool) const;
+  void print_log (uint64_t, uint64_t, uint64_t, uint64_t, uint64_t) const;
   // void print_pos (ofstream&, VizParam&, const vector<Position>&, u64, string&&);
 };
 }

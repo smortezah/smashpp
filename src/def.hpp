@@ -8,7 +8,6 @@
 #include <chrono>
 #include <iomanip>      // setw, setprecision
 #include <vector>
-using namespace std;
 
 namespace smashpp {
 // Version
