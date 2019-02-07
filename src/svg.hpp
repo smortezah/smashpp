@@ -211,7 +211,7 @@ class Polygon : public SVG {
  
   Polygon () : stroke_width(1.0f), stroke_opacity(0.5f), fill_opacity(0.5f) {}
   auto point (float, float) const -> std::string;
-  void plot (ofstream&);
+  void plot (std::ofstream&);
 };
 
 class Pattern : public SVG {

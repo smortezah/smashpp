@@ -383,24 +383,25 @@ inline void Param::help () const {
   l(italic("Options"));
   ll(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
   ll(bold("-l") + ",  " + bold("--level") + " " + underline("INT"), 3,
-    "level of compression: [" + to_string(MIN_LVL) + ", " + 
-    to_string(MAX_LVL) + "]");
+    "level of compression: [" + std::to_string(MIN_LVL) + ", " + 
+    std::to_string(MAX_LVL) + "]");
   ll(bold("-m") + ",  " + bold("--min") + "   " + underline("INT"), 3,
-    "min segment size: [" + to_string(MIN_SSIZE) + ", " + 
-    to_string(MAX_SSIZE) + "]");
+    "min segment size: [" + std::to_string(MIN_SSIZE) + ", " + 
+    std::to_string(MAX_SSIZE) + "]");
   ll(bold("-nr") + ", " + bold("--no-redun"), 2,
     "do NOT compute self complexity");
   ll(bold("-e") + ",  " + bold("--ent-n") + " " + underline("FLOAT"), 3,
     "Entropy of 'N's: [" + string_format("%.1f",MIN_ENTR_N) + ", " +
     string_format("%.1f",MAX_ENTR_N) + "]");
   ll(bold("-n") + ",  " + bold("--nthr") + "  " + underline("INT"), 3,
-    "number of threads: [" + to_string(MIN_THRD) + ", " + to_string(MAX_THRD) +
-    "]");
+    "number of threads: [" + std::to_string(MIN_THRD) + ", " + 
+    std::to_string(MAX_THRD) + "]");
   ll(bold("-fs") + ", " + bold("--filter-scale") + " S|M|L", 2,
     "scale of the filter:");
   ll("", 0, "{S|small, M|medium, L|large}");
   ll(bold("-w") + ",  " + bold("--wsize") + " " + underline("INT"), 3,
-    "window size: [" + to_string(MIN_WS) + ", " + to_string(MAX_WS) + "]");
+    "window size: [" + std::to_string(MIN_WS) + ", " + 
+    std::to_string(MAX_WS) + "]");
   ll(bold("-wt") + ", " + bold("--wtype") + " " + underline("INT") + "/" +
     underline("STRING"), 4, "type of windowing function:");
   ll("", 0, "{0|rectangular, 1|hamming, 2|hann,");
@@ -624,34 +625,36 @@ inline void VizParam::help () const {
   ll(bold("-ni") + ", " + bold("--no-inv"), 2, "do NOT show inverse maps");
   ll(bold("-ng") + ", " + bold("--no-reg"), 2, "do NOT show regular maps");
   ll(bold("-l") + ",  " + bold("--link") + "     " + underline("INT"), 3,
-    "type of the link between maps: [" + to_string(MIN_LINK) + ", " +
-    to_string(MAX_LINK) + "]");
+    "type of the link between maps: [" + std::to_string(MIN_LINK) + ", " +
+    std::to_string(MAX_LINK) + "]");
   ll(bold("-c") + ",  " + bold("--color") + "    " + underline("INT"), 3,
-    "color mode: [" + to_string(MIN_COLOR) + ", " + to_string(MAX_COLOR) + "]");
+    "color mode: [" + std::to_string(MIN_COLOR) + ", " + 
+    std::to_string(MAX_COLOR) + "]");
   ll(bold("-p") + ",  " + bold("--opacity") + "  " + underline("FLOAT"), 3,
     "opacity: [" + string_format("%.1f",MIN_OPAC) + ", " + 
     string_format("%.1f",MAX_OPAC) + "]");
   ll(bold("-w") + ",  " + bold("--width") + "    " + underline("INT"), 3, 
-    "width of the sequence: [" + to_string(MIN_WDTH) + ", " + 
-    to_string(MAX_WDTH) + "]");
+    "width of the sequence: [" + std::to_string(MIN_WDTH) + ", " + 
+    std::to_string(MAX_WDTH) + "]");
   ll(bold("-s") + ",  " + bold("--space") + "    " + underline("INT"), 3, 
-    "space between sequences: [" + to_string(MIN_SPC) + ", " + 
-    to_string(MAX_SPC) + "]");
+    "space between sequences: [" + std::to_string(MIN_SPC) + ", " + 
+    std::to_string(MAX_SPC) + "]");
   ll(bold("-f") + ",  " + bold("--mult") + "     " + underline("INT"), 3,
     "multiplication factor for");
-  ll("", 0, "color ID: [" + to_string(MIN_MULT) + ", " + to_string(MAX_MULT) +
-    "]");
+  ll("", 0, "color ID: [" + std::to_string(MIN_MULT) + ", " + 
+  std::to_string(MAX_MULT) + "]");
   ll(bold("-b") + ",  " + bold("--begin") + "    " + underline("INT"), 3,
-    "beginning of color ID: [" + to_string(MIN_BEGN) + ", " + 
-    to_string(MAX_BEGN) + "]");
+    "beginning of color ID: [" + std::to_string(MIN_BEGN) + ", " + 
+    std::to_string(MAX_BEGN) + "]");
   ll(bold("-rt") + ", " + bold("--ref-tick") + " " + underline("INT"), 3,
-    "reference tick: [" + to_string(MIN_TICK) + ", " + to_string(MAX_TICK) +
-    "]");
+    "reference tick: [" + std::to_string(MIN_TICK) + ", " + 
+    std::to_string(MAX_TICK) + "]");
   ll(bold("-tt") + ", " + bold("--tar-tick") + " " + underline("INT"), 3,
-    "target tick: [" + to_string(MIN_TICK) + ", " + to_string(MAX_TICK) + "]");
+    "target tick: [" + std::to_string(MIN_TICK) + ", " + 
+    std::to_string(MAX_TICK) + "]");
   ll(bold("-m") + ",  " + bold("--min") + "      " + underline("INT"), 3,
-    "minimum block size: [" + to_string(MIN_MINP) + ", " + to_string(MAX_MINP) +
-    "]");
+    "minimum block size: [" + std::to_string(MIN_MINP) + ", " + 
+    std::to_string(MAX_MINP) + "]");
   ll(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
   l("");
   t("AUTHORS");

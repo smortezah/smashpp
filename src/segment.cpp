@@ -2,8 +2,8 @@
 using namespace smashpp;
 
 void Segment::partition (std::ofstream& posF, float filtered) {
-  const uint64_t begGuard {maxCtx + PART_GUARD};
-  const uint64_t endGuard {PART_GUARD};
+  const auto begGuard {static_cast<uint64_t>(maxCtx + PART_GUARD)};
+  const auto endGuard {static_cast<uint64_t>(PART_GUARD)};
 
   if (filtered > thresh) {
     begun = false;
@@ -30,8 +30,8 @@ void Segment::partition (std::ofstream& posF, float filtered) {
 }
 
 void Segment::partition_last (std::ofstream& posF) {
-  const uint64_t begGuard {maxCtx + PART_GUARD};
-  const uint64_t endGuard {PART_GUARD};
+  const auto begGuard {static_cast<uint64_t>(maxCtx + PART_GUARD)};
+  const auto endGuard {static_cast<uint64_t>(PART_GUARD)};
 
   if (begPos != endPos) {
     if (endPos - begPos >= minSize) {

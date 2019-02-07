@@ -47,7 +47,7 @@ inline void ValRange<Value>::assert (Value& val) {
   };
   const auto create_message = [=](char open, char close) {
     inRange = false;
-    string s = std::string(1, open) + 
+    auto s = std::string(1, open) + 
       (isFloat ? (string_format("%.1f", min) + "," + string_format("%.1f", max))
                : (std::to_string(min) + "," + std::to_string(max))) +
       std::string(1, close) + ". ";

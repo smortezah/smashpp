@@ -102,7 +102,7 @@ void LinearGradient::add_stop (std::string offset, std::string stop_color) {
   stop->offset = offset;
   stop->stop_color = stop_color;
   
-  stringstream ss;
+  std::stringstream ss;
   stop->plot(ss);
 
   stops += ss.str();
@@ -180,7 +180,7 @@ void Ellipse::plot (std::ofstream& f) const {
   f << end_empty_elem();
 }
 
-string Path::M (float x, float y) const {
+std::string Path::M (float x, float y) const {
   std::stringstream ss;
   ss << "M " << fixed_precision(PREC_VIZ) << x << "," 
              << fixed_precision(PREC_VIZ) << y << "\n";

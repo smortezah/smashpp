@@ -251,7 +251,7 @@ int main (int argc, char* argv[]) {
           // Remove temporary files
           for (uint64_t i=0; i!=tarSegs; ++i)
             if (!par.saveAll && !par.saveSegment)
-              remove((segName+to_string(i)).c_str());
+              remove((segName+std::to_string(i)).c_str());
           if (!par.saveSeq) {
             if (par.refType==FileType::FASTA || par.refType==FileType::FASTQ) {
               remove(origRef.c_str());

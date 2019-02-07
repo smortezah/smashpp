@@ -44,13 +44,13 @@ inline void Filter::show_info (const Param& p) const {
   const auto midrule = [&]() { rule(tblWidth, "~"); };
   const auto botrule = [&]() { rule(tblWidth, " "); };
   const auto label = [=](std::string s) { 
-    std::cerr << std::setw(lblWidth) << left << s; 
+    std::cerr << std::setw(lblWidth) << std::left << s; 
   };
   const auto header = [=](std::string s) {
-    std::cerr << std::setw(2*colWidth) << left << s; 
+    std::cerr << std::setw(2*colWidth) << std::left << s; 
   };
   const auto filter_vals = [&](char c) {
-    std::cerr << std::setw(colWidth) << left;
+    std::cerr << std::setw(colWidth) << std::left;
     switch (c) {
     case 'f':  std::cerr << p.print_win_type();  break;
     case 's':  std::cerr << p.print_filter_scale();  break;
@@ -58,19 +58,19 @@ inline void Filter::show_info (const Param& p) const {
     case 't':  std::cerr << p.thresh;  break;
     default:   break;
     }
-    cerr << '\n';
+    std::cerr << '\n';
   };
   const auto file_vals = [&](char c) {
-    std::cerr << std::setw(2*colWidth) << left;
+    std::cerr << std::setw(2*colWidth) << std::left;
     switch (c) {
     case '1':
-      std::cerr.imbue(locale("en_US.UTF8")); 
+      std::cerr.imbue(std::locale("en_US.UTF8")); 
       std::cerr << file_size(p.ref);  
       break;
     // case 'r':  cerr<<p.ref;                                            break;
     case 'r':  std::cerr << p.refName;  break;
     case '2':  
-      std::cerr.imbue(locale("en_US.UTF8"));
+      std::cerr.imbue(std::locale("en_US.UTF8"));
       std::cerr << file_size(p.tar);
       break;
     // case 't':  cerr<<p.tar;                                            break;
