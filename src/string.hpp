@@ -6,45 +6,51 @@
 #include "exception.hpp"
 
 namespace smashpp {
-inline static string bold (string&& text) {
-  return "\033[1m"+text+"\033[0m";
-}
-inline static string bold (const string& text) {
+inline static std::string bold (std::string&& text) {
   return "\033[1m"+text+"\033[0m";
 }
 
-inline static string faint (string&& text) {
+inline static std::string bold (const std::string& text) {
+  return "\033[1m"+text+"\033[0m";
+}
+
+inline static std::string faint (std::string&& text) {
   return "\033[2m"+text+"\033[0m";
 }
-inline static string faint (const string& text) {
+
+inline static std::string faint (const std::string& text) {
   return "\033[2m"+text+"\033[0m";
 }
 
-inline static string italic (string&& text) {
-  return "\033[3m"+text+"\033[0m";
-}
-inline static string italic (const string& text) {
+inline static std::string italic (std::string&& text) {
   return "\033[3m"+text+"\033[0m";
 }
 
-inline static string underline (string&& text) {
-  return "\033[4m"+text+"\033[0m";
+inline static std::string italic (const std::string& text) {
+  return "\033[3m"+text+"\033[0m";
 }
-inline static string underline (const string& text) {
+
+inline static std::string underline (std::string&& text) {
   return "\033[4m"+text+"\033[0m";
 }
 
-inline static string highlight (string&& text) {
-  return "\033[7m"+text+"\033[0m";
+inline static std::string underline (const std::string& text) {
+  return "\033[4m"+text+"\033[0m";
 }
-inline static string highlight (const string& text) {
+
+inline static std::string highlight (std::string&& text) {
   return "\033[7m"+text+"\033[0m";
 }
 
-inline static string bold_red (string&& text) {
+inline static std::string highlight (const std::string& text) {
+  return "\033[7m"+text+"\033[0m";
+}
+
+inline static std::string bold_red (std::string&& text) {
   return "\033[1m\033[38;5;1m"+text+"\033[0m";
 }
-inline static string bold_red (const string& text) {
+
+inline static std::string bold_red (const std::string& text) {
   return "\033[1m\033[38;5;1m"+text+"\033[0m";
 }
 
@@ -52,9 +58,9 @@ inline static string bold_red (const string& text) {
 // Print variadic inputs
 // template <class Head, class... Tail>
 // inline static void print (Head const& head, Tail const&... tail) {
-//   cerr << head;
-//   if (std::is_convertible<Head, u8>::value)
-//   (void) initializer_list<int>{((cerr<<", "<<tail), 0)...};
+//   std::cerr << head;
+//   if (std::is_convertible<Head, uint8_t>::value)
+//   (void) initializer_list<int>{((std::cerr<<", "<<tail), 0)...};
 // }
 #endif
 
