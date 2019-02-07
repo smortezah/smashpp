@@ -6,22 +6,23 @@
 
 namespace smashpp {
 // "inline" is a MUST -- not to get "multiple definition of `now()'" error
-inline static void error (string&& msg) {
-  string message = "Error: " + std::move(msg);
+inline static void error (std::string&& msg) {
+  std::string message = "Error: " + std::move(msg);
   wrap_text(message);
-  throw runtime_error (bold_red(message.substr(0,6)) + message.substr(6) +"\n");
+  throw std::runtime_error(
+    bold_red(message.substr(0,6)) + message.substr(6) +"\n");
 }
 
-inline static void err (string&& msg) {
-  string message = "Error: " + std::move(msg);
+inline static void err (std::string&& msg) {
+  std::string message = "Error: " + std::move(msg);
   wrap_text(message);
-  cerr << bold_red(message.substr(0,6)) << message.substr(6) << '\n';
+  std::cerr << bold_red(message.substr(0,6)) << message.substr(6) << '\n';
 }
 
-inline static void warning (string&& msg) {
-  string message = "Warning: " + std::move(msg);
+inline static void warning (std::string&& msg) {
+  std::string message = "Warning: " + std::move(msg);
   wrap_text(message);
-  cerr << bold(message.substr(0,8)) << message.substr(8) << '\n';
+  std::cerr << bold(message.substr(0,8)) << message.substr(8) << '\n';
 }
 }
 

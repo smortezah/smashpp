@@ -7,37 +7,37 @@ namespace smashpp {
 class CMLS4 {   // Count-min-log sketch, 4 bits per counter
  public:
   CMLS4 () : w(W), d(D), uhashShift(0), tot(0) {}
-  CMLS4 (u64, u8);
-	void update (u64);                // Update sketch
-	auto query (u64) const -> u16;    // Query count of ctx
-	void dump (ofstream&) const;
-	void load (ifstream&) const;
+  CMLS4 (uint64_t, uint8_t);
+	void update (uint64_t);                   // Update sketch
+	auto query (uint64_t) const -> uint16_t;  // Query count of ctx
+	void dump (std::ofstream&) const;
+	void load (std::ifstream&) const;
 
 #ifdef DEBUG
-  auto get_total () const -> u64;   // Total count of all items in the sketch
-  auto count_empty () const -> u64; // Number of empty cells in the sketch
-  auto max_sk_val () const -> u8;
+  auto get_total () const -> uint64_t;   // Total no. of all items in the sketch
+  auto count_empty () const -> uint64_t; // Number of empty cells in the sketch
+  auto max_sk_val () const -> uint8_t;
   void print () const;
 #endif
 
  private:
-	u64 w;                        // Width of sketch
-	u8  d;                        // Depth of sketch
-	u8  uhashShift;               // Universal hash shift(G-M). (a*x+b)>>(G-M)
-	vector<u64> ab;               // Coefficients of hash functions
-	vector<u8>  sk;               // Sketch
-	u64 tot;                      // Total # elements, so far
+	uint64_t w;                       // Width of sketch
+	uint8_t d;                        // Depth of sketch
+	uint8_t uhashShift;               // Universal hash shift(G-M). (a*x+b)>>(G-M)
+	std::vector<uint64_t> ab;         // Coefficients of hash functions
+	std::vector<uint8_t> sk;          // Sketch
+	uint64_t tot;                     // Total # elements, so far
 
-	u8   read_cell (u64) const;   // Read each cell of the sketch
-  void set_a_b ();              // Set coeffs a, b of hash fns (a*x+b) %P %w
-	u64  hash (u8, u64) const;    // MUST provide pairwise independence
-	u8   min_log_ctr (u64) const; // Find min log value in the sketch
+	auto read_cell (uint64_t) const -> uint8_t;  // Read each cell of the sketch
+  void set_a_b ();                  // Set coeffs a, b of hash fns (a*x+b) %P %w
+	auto hash (uint8_t, uint64_t) const -> uint64_t;// MUST--pairwise independence
+	auto min_log_ctr (uint64_t) const -> uint8_t;// Find min log val in the sketch
 #ifdef DEBUG
   void printAB () const;
 #endif
 };
 
-static constexpr u8 CTR[512] {
+static constexpr uint8_t CTR[512] {
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
    1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
    2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,
@@ -71,7 +71,7 @@ static constexpr u8 CTR[512] {
    0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
    0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
 };
-static constexpr u8 INC_CTR[512] {
+static constexpr uint8_t INC_CTR[512] {
   16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,
   32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
   48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,
