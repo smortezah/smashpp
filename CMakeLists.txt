@@ -1,4 +1,4 @@
-#cmake_minimum_required(VERSION 3.3.2)
+cmake_minimum_required(VERSION 3.9.2)
 project(smashpp)
 # set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
