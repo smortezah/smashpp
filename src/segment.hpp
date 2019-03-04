@@ -19,12 +19,20 @@ class Segment {
   uint32_t minSize;
   uint8_t maxCtx;
 
-  Segment () : begun(false), pos(0), begPos(0), endPos(0), nSegs(0), thresh(0),
-    sumEnt(0), numEnt(0), minSize(MIN_SSIZE) {}
-    
-  void partition (std::ofstream&, float);
-  void partition_last (std::ofstream&);
-};
-}
+  Segment()
+      : begun(false),
+        pos(0),
+        begPos(0),
+        endPos(0),
+        nSegs(0),
+        thresh(0),
+        sumEnt(0),
+        numEnt(0),
+        minSize(MIN_SSIZE) {}
 
-#endif //PROJECT_SEGMENT_HPP
+  void partition(std::ofstream&, float);
+  void partition_last(std::ofstream&);
+};
+}  // namespace smashpp
+
+#endif  // PROJECT_SEGMENT_HPP

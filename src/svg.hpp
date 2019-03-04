@@ -1,9 +1,9 @@
 #ifndef SVG_H_INCLUDED
 #define SVG_H_INCLUDED
 
-#include "par.hpp"
 #include "exception.hpp"
 #include "number.hpp"
+#include "par.hpp"
 
 namespace smashpp {
 class SVG {
@@ -14,17 +14,17 @@ class SVG {
   float height;
   std::string viewBox;
 
-  SVG () : width(0.0f), height(0.0f), viewBox("0 0 100% 100%") {}
-  auto attr (std::string, float, bool=false, std::string="") const
-    -> std::string;
-  auto attr (std::string, const std::string&, bool=false, std::string="") const
-    -> std::string;
-  auto begin_elem (std::string) const -> std::string;
-  auto mid_elem () const -> std::string;
-  auto end_elem (std::string) const -> std::string;
-  auto end_empty_elem () const -> std::string;
-  void print_header (std::ofstream&) const;
-  void print_tailer (std::ofstream&) const;
+  SVG() : width(0.0f), height(0.0f), viewBox("0 0 100% 100%") {}
+  auto attr(std::string, float, bool = false, std::string = "") const
+      -> std::string;
+  auto attr(std::string, const std::string&, bool = false,
+            std::string = "") const -> std::string;
+  auto begin_elem(std::string) const -> std::string;
+  auto mid_elem() const -> std::string;
+  auto end_elem(std::string) const -> std::string;
+  auto end_empty_elem() const -> std::string;
+  void print_header(std::ofstream&) const;
+  void print_tailer(std::ofstream&) const;
 };
 
 class Stop : public SVG {
@@ -33,9 +33,9 @@ class Stop : public SVG {
   std::string stop_color;
   float stop_opacity;
 
-  Stop () : stop_opacity(1) {}
-  void plot (std::ofstream&) const;
-  void plot (std::stringstream&) const;
+  Stop() : stop_opacity(1) {}
+  void plot(std::ofstream&) const;
+  void plot(std::stringstream&) const;
 };
 
 class LinearGradient : public SVG {
@@ -44,11 +44,11 @@ class LinearGradient : public SVG {
   std::string y1;
   std::string x2;
   std::string y2;
-  
-  LinearGradient () : x1("0%"), y1("0%"), x2("100%"), y2("0%") {}
-  void plot (std::ofstream&) const;
-  void add_stop (std::unique_ptr<Stop>&);
-  void add_stop (std::string, std::string);
+
+  LinearGradient() : x1("0%"), y1("0%"), x2("100%"), y2("0%") {}
+  void plot(std::ofstream&) const;
+  void add_stop(std::unique_ptr<Stop>&);
+  void add_stop(std::string, std::string);
 
  private:
   std::string stops;
@@ -72,13 +72,19 @@ class Text : public SVG {
   std::string text_align;
   std::string line_height;
   uint8_t font_size;
-  std::string Label;       // Not in standard
+  std::string Label;  // Not in standard
 
-  Text () : dx(0), dy(0), font_family("Helvetica,Arial"), 
-    font_variant("normal"), text_anchor("middle"), text_align("start"),
-    line_height("125%%"), font_size(13) {}
-  void plot (std::ofstream&) const;
-  void plot_shadow (std::ofstream&, std::string="grey");
+  Text()
+      : dx(0),
+        dy(0),
+        font_family("Helvetica,Arial"),
+        font_variant("normal"),
+        text_anchor("middle"),
+        text_align("start"),
+        line_height("125%%"),
+        font_size(13) {}
+  void plot(std::ofstream&) const;
+  void plot_shadow(std::ofstream&, std::string = "grey");
 };
 
 class Line : public SVG {
@@ -90,8 +96,8 @@ class Line : public SVG {
   float stroke_width;
   std::string stroke;
 
-  Line () : stroke_width(1.0f), stroke("black") {}
-  void plot (std::ofstream&) const;
+  Line() : stroke_width(1.0f), stroke("black") {}
+  void plot(std::ofstream&) const;
 };
 
 class Ellipse : public SVG {
@@ -107,11 +113,18 @@ class Ellipse : public SVG {
   std::string fill;
   std::string stroke_dasharray;
   std::string transform;
-  
-  Ellipse () : rx(2.0f), ry(2.0f), stroke_width(1.0f), fill_opacity(OPAC),
-    stroke_opacity(1.0f), stroke("black"), fill("none"), stroke_dasharray(""),
-    transform("") {}
-  void plot (std::ofstream&) const;
+
+  Ellipse()
+      : rx(2.0f),
+        ry(2.0f),
+        stroke_width(1.0f),
+        fill_opacity(OPAC),
+        stroke_opacity(1.0f),
+        stroke("black"),
+        fill("none"),
+        stroke_dasharray(""),
+        transform("") {}
+  void plot(std::ofstream&) const;
 };
 
 class Path : public SVG {
@@ -129,33 +142,39 @@ class Path : public SVG {
   float stroke_opacity;
   float stroke_width;
 
-  Path () : fill("none"), stroke_lineJoin("round"), stroke_linecap("butt"),
-    stroke_dasharray(""), filter(""), fill_opacity(OPAC), stroke_opacity(1.0f),
-    stroke_width(1.0f) {}
-  auto M (float, float) const -> std::string;
-  auto m (float, float) const -> std::string;
-  auto L (float, float) const -> std::string;
-  auto l (float, float) const -> std::string;
-  auto H (float) const -> std::string;
-  auto h (float) const -> std::string;
-  auto V (float) const -> std::string;
-  auto v (float) const -> std::string;
-  auto C (float, float, float, float, float, float) const -> std::string;
-  auto c (float, float, float, float, float, float) const -> std::string;
-  auto S (float, float, float, float) const -> std::string;
-  auto s (float, float, float, float) const -> std::string;
-  auto Q (float, float, float, float) const -> std::string;
-  auto q (float, float, float, float) const -> std::string;
-  auto T (float, float) const -> std::string;
-  auto t (float, float) const -> std::string;
-  auto A (float, float, float, uint8_t, uint8_t, float, float) const 
-    -> std::string;
-  auto a (float, float, float, uint8_t, uint8_t, float, float) const 
-    -> std::string;
-  auto Z () const -> std::string;
-  auto z () const -> std::string;
-  void plot (std::ofstream&) const;
-  void plot_shadow (std::ofstream&, std::string ="#d0d0ff");
+  Path()
+      : fill("none"),
+        stroke_lineJoin("round"),
+        stroke_linecap("butt"),
+        stroke_dasharray(""),
+        filter(""),
+        fill_opacity(OPAC),
+        stroke_opacity(1.0f),
+        stroke_width(1.0f) {}
+  auto M(float, float) const -> std::string;
+  auto m(float, float) const -> std::string;
+  auto L(float, float) const -> std::string;
+  auto l(float, float) const -> std::string;
+  auto H(float) const -> std::string;
+  auto h(float) const -> std::string;
+  auto V(float) const -> std::string;
+  auto v(float) const -> std::string;
+  auto C(float, float, float, float, float, float) const -> std::string;
+  auto c(float, float, float, float, float, float) const -> std::string;
+  auto S(float, float, float, float) const -> std::string;
+  auto s(float, float, float, float) const -> std::string;
+  auto Q(float, float, float, float) const -> std::string;
+  auto q(float, float, float, float) const -> std::string;
+  auto T(float, float) const -> std::string;
+  auto t(float, float) const -> std::string;
+  auto A(float, float, float, uint8_t, uint8_t, float, float) const
+      -> std::string;
+  auto a(float, float, float, uint8_t, uint8_t, float, float) const
+      -> std::string;
+  auto Z() const -> std::string;
+  auto z() const -> std::string;
+  void plot(std::ofstream&) const;
+  void plot_shadow(std::ofstream&, std::string = "#d0d0ff");
 };
 
 // Not in standard
@@ -176,11 +195,17 @@ class Cylinder : public SVG {
   std::string stroke_dasharray;
   std::string transform;
 
-  Cylinder () : ry(2.0f), stroke_width(1.0f), fill_opacity(OPAC), 
-    stroke_opacity(1.0f), stroke("black"), fill("none"), 
-    stroke_lineJoin("round"), stroke_dasharray("") {}
-  void plot (std::ofstream&) const;
-  void plot_ir (std::ofstream&, std::string="Wavy");
+  Cylinder()
+      : ry(2.0f),
+        stroke_width(1.0f),
+        fill_opacity(OPAC),
+        stroke_opacity(1.0f),
+        stroke("black"),
+        fill("none"),
+        stroke_lineJoin("round"),
+        stroke_dasharray("") {}
+  void plot(std::ofstream&) const;
+  void plot_ir(std::ofstream&, std::string = "Wavy");
 };
 
 class Rectangle : public SVG {
@@ -196,8 +221,8 @@ class Rectangle : public SVG {
   std::string fill;
   std::string stroke;
 
-  Rectangle () : rx(1.0f), ry(1.0f), fill_opacity(OPAC) {}
-  void plot (std::ofstream&) const;
+  Rectangle() : rx(1.0f), ry(1.0f), fill_opacity(OPAC) {}
+  void plot(std::ofstream&) const;
 };
 
 class Polygon : public SVG {
@@ -208,10 +233,10 @@ class Polygon : public SVG {
   std::string points;
   std::string fill;
   std::string stroke;
- 
-  Polygon () : stroke_width(1.0f), stroke_opacity(0.5f), fill_opacity(0.5f) {}
-  auto point (float, float) const -> std::string;
-  void plot (std::ofstream&);
+
+  Polygon() : stroke_width(1.0f), stroke_opacity(0.5f), fill_opacity(0.5f) {}
+  auto point(float, float) const -> std::string;
+  void plot(std::ofstream&);
 };
 
 class Pattern : public SVG {
@@ -223,16 +248,16 @@ class Pattern : public SVG {
   std::string id;
   std::string patternUnits;
 
-  Pattern () = default;
-  void set_head (std::ofstream&) const;
-  void set_tail (std::ofstream&) const;
+  Pattern() = default;
+  void set_head(std::ofstream&) const;
+  void set_tail(std::ofstream&) const;
 };
 
 class Defs : public SVG {
  public:
-  Defs () = default;
-  void set_head (std::ofstream&) const;
-  void set_tail (std::ofstream&) const;
+  Defs() = default;
+  void set_head(std::ofstream&) const;
+  void set_tail(std::ofstream&) const;
 };
 
 // Standard name of SVG element is filter
@@ -243,9 +268,9 @@ class FilterSVG : public SVG {
   std::string width;
   std::string height;
 
-  FilterSVG () : x("0%"), y("0%"), width("100%"), height("100%") {}
-  void set_head (std::ofstream&) const;
-  void set_tail (std::ofstream&) const;
+  FilterSVG() : x("0%"), y("0%"), width("100%"), height("100%") {}
+  void set_head(std::ofstream&) const;
+  void set_tail(std::ofstream&) const;
 };
 
 class FeGaussianBlur : public SVG {
@@ -254,8 +279,8 @@ class FeGaussianBlur : public SVG {
   std::string stdDeviation;
   std::string result;
 
-  FeGaussianBlur () : in("SourceAlpha"), stdDeviation("3") {}
-  void plot (std::ofstream&) const;
+  FeGaussianBlur() : in("SourceAlpha"), stdDeviation("3") {}
+  void plot(std::ofstream&) const;
 };
 
 class FeOffset : public SVG {
@@ -263,28 +288,28 @@ class FeOffset : public SVG {
   float dx;
   float dy;
 
-  FeOffset () = default;
-  void plot (std::ofstream&) const;
+  FeOffset() = default;
+  void plot(std::ofstream&) const;
 };
 
 class FeMerge : public SVG {
  public:
-  FeMerge () = default;
-  void set_head (std::ofstream&) const;
-  void set_tail (std::ofstream&) const;
+  FeMerge() = default;
+  void set_head(std::ofstream&) const;
+  void set_tail(std::ofstream&) const;
 };
 
 class FeMergeNode : public SVG {
  public:
   std::string in;
 
-  FeMergeNode () : in("SourceGraphic") {}
-  void plot (std::ofstream&) const;
+  FeMergeNode() : in("SourceGraphic") {}
+  void plot(std::ofstream&) const;
 };
 
 template <typename T>
-void make_pattern (std::ofstream& file, std::unique_ptr<Pattern>& pattern, 
-std::unique_ptr<T>& figBase) {
+void make_pattern(std::ofstream& file, std::unique_ptr<Pattern>& pattern,
+                  std::unique_ptr<T>& figBase) {
   auto defs = std::make_unique<Defs>();
   defs->set_head(file);
   pattern->set_head(file);
@@ -293,8 +318,8 @@ std::unique_ptr<T>& figBase) {
   defs->set_tail(file);
 }
 template <typename T, typename... Ts>
-void make_pattern (std::ofstream& file, std::unique_ptr<Pattern>& pattern, 
-std::unique_ptr<T>& figBase, std::unique_ptr<Ts...>& fig) {
+void make_pattern(std::ofstream& file, std::unique_ptr<Pattern>& pattern,
+                  std::unique_ptr<T>& figBase, std::unique_ptr<Ts...>& fig) {
   auto defs = std::make_unique<Defs>();
   defs->set_head(file);
   pattern->set_head(file);
@@ -304,7 +329,7 @@ std::unique_ptr<T>& figBase, std::unique_ptr<Ts...>& fig) {
   defs->set_tail(file);
 }
 
-inline std::string text_shadow (std::ofstream& file) {
+inline std::string text_shadow(std::ofstream& file) {
   auto filter = std::make_unique<FilterSVG>();
   filter->id = "textShadow";
   filter->x = "-20%";
@@ -355,7 +380,7 @@ inline std::string text_shadow (std::ofstream& file) {
   return filter->id;
 }
 
-inline std::string path_shadow (std::ofstream& file) {
+inline std::string path_shadow(std::ofstream& file) {
   auto filter = std::make_unique<FilterSVG>();
   filter->id = "pathShadow";
   filter->x = "-3%";
@@ -378,6 +403,6 @@ inline std::string path_shadow (std::ofstream& file) {
 
   return filter->id;
 }
-}
+}  // namespace smashpp
 
 #endif
