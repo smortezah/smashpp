@@ -13,7 +13,8 @@ inline static bool is_uint8_t(const Input& in) {
 
 template <typename Value>
 inline static bool is_odd(Value val) {
-  if (val < 0) error("\"" + std::to_string(val) + "\" is a negative number.");
+  if (val < 0) smashpp::error("\"" + std::to_string(val) + "\" is a negative number.");
+
   return (val & 1ull);
 }
 
