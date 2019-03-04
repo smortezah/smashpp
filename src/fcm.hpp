@@ -2,29 +2,29 @@
 #define SMASHPP_FCM_HPP
 
 #include <memory>
-#include "par.hpp"
-#include "tbl64.hpp"
-#include "tbl32.hpp"
-#include "logtbl8.hpp"
 #include "cmls4.hpp"
+#include "logtbl8.hpp"
 #include "mdlpar.hpp"
+#include "par.hpp"
+#include "tbl32.hpp"
+#include "tbl64.hpp"
 
 namespace smashpp {
-class FCM {                   // Finite-context models
+class FCM {  // Finite-context models
  public:
   prc_t aveEnt;
   std::vector<prc_t> selfEnt;
-  std::vector<MMPar> rMs;     // Ref Markov models
-  std::vector<MMPar> tMs;     // Tar Markov models
+  std::vector<MMPar> rMs;  // Ref Markov models
+  std::vector<MMPar> tMs;  // Tar Markov models
   uint64_t tarSegID;
   std::string tarSegMsg;
 
-  explicit FCM (Param&);
-  void store (const Param&);  // Build FCM
-  void compress (const Param&);
-  void self_compress (const Param&, uint64_t);
-  void aggregate_slf (const Param&) const;
-////  void report     (const Param&) const;
+  explicit FCM(Param&);
+  void store(const Param&);  // Build FCM
+  void compress(const Param&);
+  void self_compress(const Param&, uint64_t);
+  void aggregate_slf(const Param&) const;
+  ////  void report     (const Param&) const;
 
  private:
   std::vector<std::unique_ptr<Table64>> tbl64;
@@ -35,70 +35,69 @@ class FCM {                   // Finite-context models
   prc_t entropyN;
   uint8_t rTMsSize;
   uint8_t tTMsSize;
-  
-  void set_cont (std::vector<MMPar>&);
-  void show_info (const Param&) const;      // Show inputs info on the screen
-  void alloc_model ();                      // Allocate memory to models
 
-  void store_1 (const Param&);              // Build models one thread
-  void store_n (const Param&);              // Build models multiple threads
+  void set_cont(std::vector<MMPar>&);
+  void show_info(const Param&) const;  // Show inputs info on the screen
+  void alloc_model();                  // Allocate memory to models
+
+  void store_1(const Param&);  // Build models one thread
+  void store_n(const Param&);  // Build models multiple threads
   template <typename Mask, typename ContIter>
-  void store_impl (std::string, Mask, ContIter);  // Fill data struct
+  void store_impl(std::string, Mask, ContIter);  // Fill data struct
 
   template <typename ContIter>
-  void compress_1 (const Param&, ContIter); // Compress with 1 model
-  void compress_n (const Param&);           // Compress with n Models
+  void compress_1(const Param&, ContIter);  // Compress with 1 model
+  void compress_n(const Param&);            // Compress with n Models
   template <typename ContIter>
-  void compress_n_parent (std::unique_ptr<CompressPar>&, ContIter, uint8_t)
-    const;
+  void compress_n_parent(std::unique_ptr<CompressPar>&, ContIter,
+                         uint8_t) const;
   template <typename ContIter>
-  void compress_n_child (std::unique_ptr<CompressPar>&, ContIter, uint8_t)
-    const;
+  void compress_n_child(std::unique_ptr<CompressPar>&, ContIter, uint8_t) const;
 
-  void self_compress_alloc ();
+  void self_compress_alloc();
   template <typename ContIter>
-  void self_compress_1 (const Param&, ContIter, uint64_t);
-  void self_compress_n (const Param&, uint64_t);
+  void self_compress_1(const Param&, ContIter, uint64_t);
+  void self_compress_n(const Param&, uint64_t);
   template <typename ContIter>
-  void self_compress_n_parent (std::unique_ptr<CompressPar>&, ContIter, uint8_t,
-    uint64_t&) const;
+  void self_compress_n_parent(std::unique_ptr<CompressPar>&, ContIter, uint8_t,
+                              uint64_t&) const;
 
   template <typename OutT, typename ContIter>
-  void freqs_ir0 (std::array<OutT,4>&, ContIter, uint64_t) const;
+  void freqs_ir0(std::array<OutT, 4>&, ContIter, uint64_t) const;
   template <typename OutT, typename ContIter>
-  void freqs_ir1 (std::array<OutT,4>&, ContIter, uint64_t, uint64_t) const;
+  void freqs_ir1(std::array<OutT, 4>&, ContIter, uint64_t, uint64_t) const;
   template <typename OutT, typename ContIter, typename ProbParIter>
-  void freqs_ir2 (std::array<OutT,4>&, ContIter, ProbParIter) const;
-  auto weight_next (prc_t, prc_t, prc_t) const -> prc_t;
+  void freqs_ir2(std::array<OutT, 4>&, ContIter, ProbParIter) const;
+  auto weight_next(prc_t, prc_t, prc_t) const -> prc_t;
   template <typename FreqIter>
-  void correct_stmm (std::unique_ptr<CompressPar>&, FreqIter) const;
+  void correct_stmm(std::unique_ptr<CompressPar>&, FreqIter) const;
 #ifdef ARRAY_HISTORY
   template <typename History, typename Value>
-  void update_hist_stmm (History&, Value) const;
+  void update_hist_stmm(History&, Value) const;
   template <typename TmPar>
-  void hit_stmm (const TmPar&) const;
+  void hit_stmm(const TmPar&) const;
   template <typename TmPar>
-  void miss_stmm (TmPar) const;
+  void miss_stmm(TmPar) const;
 #else
   template <typename History, typename Value>
-  void update_hist_stmm (History&, Value, uint32_t) const;
+  void update_hist_stmm(History&, Value, uint32_t) const;
   template <typename TmPar>
-  void hit_stmm (const TmPar&) const;
+  void hit_stmm(const TmPar&) const;
   template <typename Par>
-  void miss_stmm (Par) const;
+  void miss_stmm(Par) const;
 #endif
   template <typename FreqIter, typename ProbParIter>
-  auto prob (FreqIter, ProbParIter) const -> prc_t;
-  auto entropy (prc_t) const -> prc_t;
+  auto prob(FreqIter, ProbParIter) const -> prc_t;
+  auto entropy(prc_t) const -> prc_t;
   template <typename WIter, typename PIter>
-  auto entropy (WIter, PIter, PIter) const -> prc_t;
+  auto entropy(WIter, PIter, PIter) const -> prc_t;
   template <typename ProbParIter>
-  void update_ctx_ir0 (uint64_t&, ProbParIter) const;
+  void update_ctx_ir0(uint64_t&, ProbParIter) const;
   template <typename ProbParIter>
-  void update_ctx_ir1 (uint64_t&, ProbParIter) const;
+  void update_ctx_ir1(uint64_t&, ProbParIter) const;
   template <typename ProbParIter>
-  void update_ctx_ir2 (uint64_t&, uint64_t&, ProbParIter) const;
+  void update_ctx_ir2(uint64_t&, uint64_t&, ProbParIter) const;
 };
-}
+}  // namespace smashpp
 
-#endif //SMASHPP_FCM_HPP
+#endif  // SMASHPP_FCM_HPP

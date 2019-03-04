@@ -11,30 +11,30 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -Wall")
 
 add_executable(
   smashpp  
-           src/def.hpp
-           src/exception.hpp
-           src/par.hpp
-           src/assert.hpp
-           src/time.hpp
-           src/file.hpp
-           src/container.hpp
-           src/number.hpp
-           src/naming.hpp
-           src/mdlpar.hpp
-           src/string.hpp
-           src/svg.hpp
-           src/color.hpp
-           src/fcm.cpp
-           src/tbl64.cpp
-           src/tbl32.cpp
-           src/cmls4.cpp
-           src/logtbl8.cpp
+          #  src/number.hpp
+          #  src/exception.hpp
+          #  src/string.hpp
+          #  src/def.hpp
+          #  src/par.hpp
+          #  src/assert.hpp
+          #  src/time.hpp
+          #  src/file.hpp
+          #  src/container.hpp
+          #  src/naming.hpp
+          #  src/mdlpar.hpp
+          #  src/svg.hpp
+          #  src/color.hpp
+          #  src/fcm.cpp
+          #  src/tbl64.cpp
+          #  src/tbl32.cpp
+          #  src/cmls4.cpp
+          #  src/logtbl8.cpp
            src/filter.cpp
-           src/segment.cpp
-           src/color.cpp
-           src/svg.cpp
+          #  src/segment.cpp
+          #  src/color.cpp
+          #  src/svg.cpp
            src/vizpaint.cpp
-           src/vizdef.hpp
+          #  src/vizdef.hpp
            src/main.cpp
 )
 
