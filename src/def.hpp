@@ -3,10 +3,10 @@
 #ifndef SMASHPP_DEF_HPP
 #define SMASHPP_DEF_HPP
 
-#include <chrono>
-#include <iomanip>  // setw, setprecision
 #include <iostream>
 #include <unordered_map>
+#include <chrono>
+#include <iomanip>  // setw, setprecision
 #include <vector>
 
 namespace smashpp {

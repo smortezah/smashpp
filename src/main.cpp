@@ -87,18 +87,18 @@
 #include <unistd.h>
 #endif
 
-#include <chrono>
-#include <iomanip>  // setw, setprecision
 #include <iostream>
-#include "time.hpp"
-#include "container.hpp"
-#include "vizpaint.hpp"
-#include "exception.hpp"
+#include <chrono>
+#include <iomanip>      // setw, setprecision
+#include "par.hpp"
 #include "fcm.hpp"
 #include "filter.hpp"
+#include "container.hpp"
+#include "time.hpp"
 #include "naming.hpp"
-#include "par.hpp"
+#include "exception.hpp"
 #include "segment.hpp"
+#include "vizpaint.hpp"
 using namespace smashpp;
 
 int main(int argc, char* argv[]) {

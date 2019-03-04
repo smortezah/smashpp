@@ -1,7 +1,7 @@
-#include "svg.hpp"
 #include <algorithm>
-#include "color.hpp"
+#include "svg.hpp"
 #include "vizdef.hpp"
+#include "color.hpp"
 using namespace smashpp;
 
 std::string SVG::attr(std::string name, float value, bool precise,
