@@ -1,6 +1,6 @@
-#include "cmls4.hpp"
-#include <fstream>
 #include <random>
+#include <fstream>
+#include "cmls4.hpp"
 #include "exception.hpp"
 using namespace smashpp;
 

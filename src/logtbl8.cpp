@@ -1,6 +1,6 @@
-#include "logtbl8.hpp"
 #include <algorithm>
 #include <fstream>
+#include "logtbl8.hpp"
 #include "exception.hpp"
 using namespace smashpp;
 

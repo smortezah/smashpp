@@ -2,12 +2,12 @@
 #define SMASHPP_FCM_HPP
 
 #include <memory>
-#include "cmls4.hpp"
-#include "logtbl8.hpp"
-#include "mdlpar.hpp"
 #include "par.hpp"
-#include "tbl32.hpp"
 #include "tbl64.hpp"
+#include "tbl32.hpp"
+#include "logtbl8.hpp"
+#include "cmls4.hpp"
+#include "mdlpar.hpp"
 
 namespace smashpp {
 class FCM {  // Finite-context models

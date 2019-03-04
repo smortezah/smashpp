@@ -1,9 +1,9 @@
 #ifndef SVG_H_INCLUDED
 #define SVG_H_INCLUDED
 
+#include "par.hpp"
 #include "exception.hpp"
 #include "number.hpp"
-#include "par.hpp"
 
 namespace smashpp {
 class SVG {

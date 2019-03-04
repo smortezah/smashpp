@@ -2,7 +2,7 @@
 #define PROJECT_CONTAINER_HPP
 
 #include <numeric>
-#include <algorithm>
+// #include <algorithm>
 #include "def.hpp"
 
 namespace smashpp {

@@ -1,12 +1,11 @@
-#include "filter.hpp"
 #include <cmath>
 #include <numeric>
+#include "number.hpp"
+#include "filter.hpp"
+#include "segment.hpp"
+#include "string.hpp"
 #include "file.hpp"
 #include "naming.hpp"
-#include "exception.hpp"
-#include "string.hpp"
-#include "number.hpp"
-#include "segment.hpp"
 using namespace smashpp;
 
 Filter::Filter(const Param& p) : wtype(p.wtype) {

@@ -1,14 +1,14 @@
-#include "fcm.hpp"
-#include <cmath>
 #include <fstream>
-#include <numeric>  // std::accumulate
+#include <cmath>
 #include <thread>
+#include <numeric>  // std::accumulate
+#include "fcm.hpp"
 #include "assert.hpp"
 #include "container.hpp"
-#include "exception.hpp"
+#include "number.hpp"
 #include "file.hpp"
 #include "naming.hpp"
-#include "number.hpp"
+#include "exception.hpp"
 using namespace smashpp;
 
 FCM::FCM(Param& p)

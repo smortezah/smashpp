@@ -1,11 +1,11 @@
 #ifndef VIZPAINT_H_INCLUDED
 #define VIZPAINT_H_INCLUDED
 
-#include "color.cpp"
-#include "color.hpp"
+#include "vizdef.hpp"
 #include "par.hpp"
 #include "svg.hpp"
-#include "vizdef.hpp"
+#include "color.hpp"
+#include "color.cpp"
 
 namespace smashpp {
 struct Position {

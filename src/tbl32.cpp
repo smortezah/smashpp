@@ -1,6 +1,6 @@
-#include "tbl32.hpp"
 #include <algorithm>
 #include <fstream>
+#include "tbl32.hpp"
 #include "exception.hpp"
 using namespace smashpp;
 

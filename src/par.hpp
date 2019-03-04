@@ -1,14 +1,14 @@
 #ifndef SMASHPP_PAR_HPP
 #define SMASHPP_PAR_HPP
 
-#include <algorithm>
 #include <fstream>
-#include <memory>
 #include <vector>
+#include <algorithm>
+#include <memory>
 #include "assert.hpp"
-#include "container.hpp"
 #include "def.hpp"
 #include "exception.hpp"
+#include "container.hpp"
 #include "file.hpp"
 #include "mdlpar.hpp"
 #include "vizdef.hpp"
