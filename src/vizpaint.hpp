@@ -99,7 +99,7 @@ class VizPaint {
   std::vector<int64_t> lastPos;
   std::vector<PosNode> nodes;
 
-  void read_matadata (std::ifstream&);
+  void read_matadata (std::ifstream&, VizParam&);
   void show_info (VizParam&) const;
   void config (double, double, uint32_t);
   void set_page (bool);

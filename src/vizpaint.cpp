@@ -9,7 +9,7 @@ void VizPaint::plot (VizParam& p) {
   std::ifstream fPos(p.posFile);
   std::ofstream fPlot(p.image);
 
-  read_matadata(fPos);
+  read_matadata(fPos, p);
   if (p.verbose) 
     show_info(p);
 
@@ -86,9 +86,14 @@ void VizPaint::plot (VizParam& p) {
   fPos.close();  fPlot.close();
 }
 
-inline void VizPaint::read_matadata (std::ifstream& fPos) {
+inline void VizPaint::read_matadata (std::ifstream& fPos, VizParam& p) {
   std::string watermark;
   fPos >> watermark >> ref >> n_refBases >> tar >> n_tarBases;
+
+  if (!p.refName.empty())
+    ref = p.refName;
+  if (!p.tarName.empty())
+    tar = p.tarName;
   
   if (watermark != POS_HDR)
     error("unknown file format for positions.");
