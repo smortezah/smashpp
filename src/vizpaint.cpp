@@ -17,9 +17,7 @@ void VizPaint::plot (VizParam& p) {
 
   config(p.width, p.space, p.mult);
   set_page(p.vertical);
-
   svg->print_header(fPlot);
-
   plot_background(fPlot);
 
   // If min is set to default, reset to base max proportion
@@ -1356,16 +1354,16 @@ const VizParam& par, std::string&& type) {
 //   } // for
 // }
 
-inline void VizPaint::plot_pos (std::ofstream& fPlot, std::ifstream& fPos,
-std::vector<Position>& pos, VizParam& p) {
+inline void VizPaint::plot_pos(std::ofstream &fPlot, std::ifstream &fPos,
+                               std::vector<Position> &pos, VizParam &p) {
   read_pos(fPos, pos, p);
-
   auto posPlot = std::make_unique<PosPlot>();
-  posPlot->vertical  = p.vertical;
-  posPlot->showNRC   = p.showNRC;
+  posPlot->vertical = p.vertical;
+  posPlot->showNRC = p.showNRC;
   posPlot->showRedun = p.showRedun;
-  posPlot->refTick   = p.refTick;
-  posPlot->tarTick   = p.tarTick;
+  posPlot->refTick = p.refTick;
+  posPlot->tarTick = p.tarTick;
+  posPlot->tickHumanRead = p.tickHumanRead;
 
   make_posNode(pos, p, "ref");
   posPlot->n_bases = n_refBases;
@@ -1436,7 +1434,7 @@ std::unique_ptr<PosPlot>& posPlot) const {
     }
     
     // Major ticks
-    if (static_cast<uint64_t>(round(pos)) % 
+    if (static_cast<uint64_t>(std::round(pos)) % 
         static_cast<uint64_t>(majorTick) == 0) {
       // Line
       line->y2 = posPlot->plotRef ? line->y1 + posPlot->majorTickSize 
@@ -1449,16 +1447,19 @@ std::unique_ptr<PosPlot>& posPlot) const {
       if (posPlot->plotRef)
         text->y = line->y1 - posPlot->tickLabelSkip;
       else
-        text->y = 
-          line->y1 + posPlot->tickLabelSkip + VERT_BOTTOM * text->font_size;
+        text->y = line->y1 + posPlot->tickLabelSkip +
+                  VERT_BOTTOM * text->font_size;
       // text->font_size = (posPlot->n_bases < POW10[7]) ? 9 : 8.5;
       text->font_size = 9;
       text->font_weight = "normal";
       text->text_anchor = "middle";
       // text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
-      text->Label = human_readable_non_cs(static_cast<uint64_t>(round(pos)), 1);
+      if (posPlot->tickHumanRead)
+        text->Label = human_readable_non_cs(uint64_t(std::round(pos)), 1);
+      else
+        text->Label = std::to_string(uint64_t(std::round(pos)));
       // text->Label = thousands_sep(u64(round(pos)));
-      if (pos!=0.0f)
+      if (pos != 0.0f)
         text->plot(f);
     }
     else {  // Minor ticks
@@ -1545,7 +1546,10 @@ std::unique_ptr<PosPlot>& posPlot) const {
       text->font_weight = "normal";
       text->text_anchor = posPlot->plotRef ? "end" : "start";
       // text->dominant_baseline = "middle";
-      text->Label = human_readable_non_cs(static_cast<uint64_t>(round(pos)), 1);
+      if (posPlot->tickHumanRead)
+        text->Label = human_readable_non_cs(uint64_t(std::round(pos)), 1);
+      else
+        text->Label = std::to_string(uint64_t(std::round(pos)));
       // text->Label = thousands_sep(u64(round(pos)));
       if (pos!=0.0f)
         text->plot(f);

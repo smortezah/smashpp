@@ -100,12 +100,13 @@ class VizParam {
   std::string posFile;
   uint64_t refTick;
   uint64_t tarTick;
+  bool tickHumanRead;
   bool vertical;
 
   VizParam () : verbose(false), inverse(true), regular(true), showNRC(true),
     showRedun(true), image(IMAGE), link(LINK), colorMode(COLOR), opacity(OPAC),
     width(WDTH), space(SPC), mult(MULT), start(BEGN), min(MINP), manMult(false),
-    refTick(0), tarTick(0), vertical(false) {}
+    refTick(0), tarTick(0), tickHumanRead(true), vertical(false) {}
 
   void parse (int, char**&);
 
@@ -554,6 +555,9 @@ inline void VizParam::parse (int argc, char**& argv) {
         TICK, "Tick hop for target", "[]", "default", Problem::WARNING);
       range->assert(tarTick);
     }
+    else if ((*i=="-th" || *i=="--tick-human") && i+1!=std::end(vArgs)) {
+      tickHumanRead = (std::stoi(*++i) != 0);
+    }
     else if ((*i=="-c" || *i=="--color") && i+1!=std::end(vArgs)) {
       colorMode = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(MIN_COLOR, MAX_COLOR, 
@@ -652,14 +656,15 @@ inline void VizParam::help () const {
   ll(bold("-tt") + ", " + bold("--tar-tick") + " " + underline("INT"), 3,
     "target tick: [" + std::to_string(MIN_TICK) + ", " + 
     std::to_string(MAX_TICK) + "]");
+  ll(bold("-th") + "," + bold("--tick-human") + " " + underline("0|1"), 3,
+    "tick label human readable: 0=false, 1=true");
   ll(bold("-m") + ",  " + bold("--min") + "      " + underline("INT"), 3,
     "minimum block size: [" + std::to_string(MIN_MINP) + ", " + 
     std::to_string(MAX_MINP) + "]");
   ll(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
   l("");
-  t("AUTHORS");
+  t("AUTHOR");
   ll("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
-  ll("Diogo   Pratas", 0, "pratas@ua.pt");
   l("");
   t("COPYRIGHT");
   l("Copyright (C) " + DEV_YEARS + ", IEETA, University of Aveiro. You may  ");

@@ -44,8 +44,9 @@ struct PosPlot {
   bool showNRC;
   bool showRedun;
   bool plotRef;
-  bool refTick;
-  bool tarTick;
+  uint64_t refTick;
+  uint64_t tarTick;
+  bool tickHumanRead;
   float minorStrokeWidth;
   float majorStrokeWidth;
   double n_bases;
