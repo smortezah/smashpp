@@ -102,6 +102,8 @@ class VizParam {
   uint64_t tarTick;
   bool tickHumanRead;
   bool vertical;
+  std::string refName;
+  std::string tarName;
 
   VizParam () : verbose(false), inverse(true), regular(true), showNRC(true),
     showRedun(true), image(IMAGE), link(LINK), colorMode(COLOR), opacity(OPAC),
@@ -512,6 +514,12 @@ inline void VizParam::parse (int argc, char**& argv) {
   for (auto i=std::begin(vArgs); i!=std::end(vArgs); ++i) {
     if ((*i=="-o" || *i=="--out") && i+1!=std::end(vArgs))
       image = *++i;
+    else if ((*i=="-rn" || *i=="--ref-name") && i+1!=std::end(vArgs)) {
+      refName = *++i;
+    }
+    else if ((*i=="-tn" || *i=="--tar-name") && i+1!=std::end(vArgs)) {
+      tarName = *++i;
+    }
     else if ((*i=="-p" || *i=="--opacity") && i+1!=std::end(vArgs)) {
       opacity = std::stof(*++i);
       auto range = std::make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, 
@@ -598,7 +606,7 @@ inline void VizParam::help () const {
   // Print column 1: left-aligned + column 2: left-aligned
   const auto ll =
     [&](const std::string& strL, uint8_t n, const std::string& strR) {
-    std::cerr << "  " << std::left << std::setw(27+n*8) << strL;
+    std::cerr << "  " << std::left << std::setw(25+n*8) << strL;
     std::cerr.clear();
     std::cerr << strR << '\n';
   };
@@ -622,6 +630,12 @@ inline void VizParam::help () const {
   ll(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
   ll(bold("-o") + ",  " + bold("--out") + " " + underline("SVG-FILE"), 3, 
     "output image name (*.svg)");
+  ll(bold("-rn") + ", " + bold("--ref-name") + " " + underline("STRING"), 3, 
+    "reference name shown on output. If name");
+  ll("", 0, "has space, use \"s, e.g. \"Seq label\".");
+  ll("", 0, "Default: name in header of position file.");
+  ll(bold("-tn") + ", " + bold("--tar-name") + " " + underline("STRING"), 3, 
+    "target name shown on output");
   ll(bold("-vv") + ", " + bold("--vertical"), 2, "vertical view");
   ll(bold("-nn") + ", " + bold("--no-nrc"), 2, "do NOT show normalized");
   ll("", 0, "relative compression (NRC)");
@@ -656,8 +670,8 @@ inline void VizParam::help () const {
   ll(bold("-tt") + ", " + bold("--tar-tick") + " " + underline("INT"), 3,
     "target tick: [" + std::to_string(MIN_TICK) + ", " + 
     std::to_string(MAX_TICK) + "]");
-  ll(bold("-th") + "," + bold("--tick-human") + " " + underline("0|1"), 3,
-    "tick label human readable: 0=false, 1=true");
+  ll(bold("-th") + ", " + bold("--tick-human") + " " + underline("0|1"), 3,
+    "tick human readable: 0=false, 1=true");
   ll(bold("-m") + ",  " + bold("--min") + "      " + underline("INT"), 3,
     "minimum block size: [" + std::to_string(MIN_MINP) + ", " + 
     std::to_string(MAX_MINP) + "]");
