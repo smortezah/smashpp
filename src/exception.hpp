@@ -6,7 +6,8 @@
 
 namespace smashpp {
 // "inline" is a MUST -- not to get "multiple definition of ..." error
-inline static void error(std::string&& msg) {
+// inline static 
+void error(std::string&& msg) {
   std::string message = "Error: " + std::move(msg);
   wrap_text(message);
   throw std::runtime_error(bold_red(message.substr(0, 6)) + message.substr(6) +
