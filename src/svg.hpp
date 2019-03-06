@@ -1,3 +1,7 @@
+// Smash++
+// Morteza Hosseini    seyedmorteza@ua.pt
+// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+
 #ifndef SVG_H_INCLUDED
 #define SVG_H_INCLUDED
 

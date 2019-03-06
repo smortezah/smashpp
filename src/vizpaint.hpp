@@ -1,3 +1,7 @@
+// Smash++
+// Morteza Hosseini    seyedmorteza@ua.pt
+// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+
 #ifndef VIZPAINT_H_INCLUDED
 #define VIZPAINT_H_INCLUDED
 
@@ -100,7 +104,7 @@ class VizPaint {
 
   VizPaint()
       : svg(std::make_unique<SVG>()), ratio(1), plottable(true), ry(2.0f) {}
-  void plot(VizParam&);
+  void plot(std::unique_ptr<VizParam>&);
 
  private:
   std::string ref;
@@ -114,8 +118,8 @@ class VizPaint {
   std::vector<int64_t> lastPos;
   std::vector<PosNode> nodes;
 
-  void read_matadata(std::ifstream&, VizParam&);
-  void show_info(VizParam&) const;
+  void read_matadata(std::ifstream&, std::unique_ptr<VizParam>&);
+  void show_info(std::unique_ptr<VizParam>&) const;
   void config(double, double, uint32_t);
   void set_page(bool);
   auto rgb_color(uint32_t) const -> std::string;
@@ -130,15 +134,15 @@ class VizPaint {
   auto get_index(double point) const -> uint64_t;
   void plot_background(std::ofstream&) const;
   void plot_seq_ref(std::ofstream&, const std::vector<Position>::iterator&,
-                    const VizParam&) const;
+                    std::unique_ptr<VizParam>&) const;
   void plot_seq_tar(std::ofstream&, const std::vector<Position>::iterator&,
-                    const VizParam&, bool) const;
+                    std::unique_ptr<VizParam>&, bool) const;
   void plot_periph(std::ofstream&, std::unique_ptr<Cylinder>&, bool, char,
                    uint8_t) const;
   void plot_connector(std::ofstream&, const std::vector<Position>::iterator&,
-                      VizParam&, bool) const;
+                      std::unique_ptr<VizParam>&, bool) const;
   void plot_title(std::ofstream&, std::string, std::string, bool) const;
-  void plot_legend(std::ofstream&, const VizParam&, int64_t) const;
+  void plot_legend(std::ofstream&, std::unique_ptr<VizParam>&, int64_t) const;
   void set_legend_rect(std::ofstream&, std::unique_ptr<LegendPlot>&,
                        char) const;
   void plot_legend_gradient(std::ofstream&, std::unique_ptr<LegendPlot>&) const;
@@ -154,11 +158,12 @@ class VizPaint {
   auto tspan(uint32_t, std::string) const -> std::string;
   void sort_merge(std::string&) const;
   void save_n_pos(std::string) const;
-  void read_pos(std::ifstream&, std::vector<Position>&, VizParam&) const;
-  void make_posNode(const std::vector<Position>&, const VizParam&,
+  void read_pos(std::ifstream&, std::vector<Position>&,
+                std::unique_ptr<VizParam>&) const;
+  void make_posNode(const std::vector<Position>&, std::unique_ptr<VizParam>&,
                     std::string&&);
   void plot_pos(std::ofstream&, std::ifstream&, std::vector<Position>&,
-                VizParam&);
+                std::unique_ptr<VizParam>&);
   void plot_pos_horizontal(std::ofstream&, std::unique_ptr<PosPlot>&) const;
   void plot_pos_vertical(std::ofstream&, std::unique_ptr<PosPlot>&) const;
   void plot_Ns(std::ofstream&, float, bool) const;

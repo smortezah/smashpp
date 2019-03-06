@@ -1,26 +1,30 @@
+// Smash++
+// Morteza Hosseini    seyedmorteza@ua.pt
+// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+
 #include "vizpaint.hpp"
 #include "exception.hpp"
 #include "file.hpp"
 #include "number.hpp"
 using namespace smashpp;
 
-void VizPaint::plot(VizParam& p) {
-  check_file(p.posFile);
-  std::ifstream fPos(p.posFile);
-  std::ofstream fPlot(p.image);
+void VizPaint::plot(std::unique_ptr<VizParam>& p) {
+  check_file(p->posFile);
+  std::ifstream fPos(p->posFile);
+  std::ofstream fPlot(p->image);
 
   read_matadata(fPos, p);
-  if (p.verbose) show_info(p);
+  if (p->verbose) show_info(p);
 
   std::cerr << "Plotting ...\r";
 
-  config(p.width, p.space, p.mult);
-  set_page(p.vertical);
+  config(p->width, p->space, p->mult);
+  set_page(p->vertical);
   svg->print_header(fPlot);
   plot_background(fPlot);
 
   // If min is set to default, reset to base max proportion
-  if (p.min == 0) p.min = static_cast<uint32_t>(maxSize / 100);
+  if (p->min == 0) p->min = static_cast<uint32_t>(maxSize / 100);
 
   // Read positions from file and Print them
   std::vector<Position> pos;
@@ -37,10 +41,10 @@ void VizPaint::plot(VizParam& p) {
       [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
 
   for (auto e = std::begin(pos); e != std::end(pos); ++e) {
-    if (abs(e->endTar - e->begTar) <= p.min) {
+    if (abs(e->endTar - e->begTar) <= p->min) {
       ++n_ignored;
       continue;
-    } else if (e->begRef != DBLANK && e->endRef - e->begRef <= p.min) {
+    } else if (e->begRef != DBLANK && e->endRef - e->begRef <= p->min) {
       ++n_ignored;
       continue;
     }
@@ -49,7 +53,7 @@ void VizPaint::plot(VizParam& p) {
       e->endTar > e->begTar ? ++n_regularSolo : ++n_inverseSolo;
 
     if (e->endTar > e->begTar) {
-      if (p.regular) {
+      if (p->regular) {
         plot_seq_ref(fPlot, e, p);
         plot_seq_tar(fPlot, e, p, false /*ir*/);
 
@@ -59,7 +63,7 @@ void VizPaint::plot(VizParam& p) {
         }
       }
     } else {
-      if (p.inverse) {
+      if (p->inverse) {
         plot_seq_ref(fPlot, e, p);
         plot_seq_tar(fPlot, e, p, true /*ir*/);
 
@@ -72,9 +76,9 @@ void VizPaint::plot(VizParam& p) {
   }
   fPos.seekg(std::ios::beg);
 
-  plot_Ns(fPlot, p.opacity, p.vertical);
-  plot_seq_borders(fPlot, p.vertical);
-  plot_title(fPlot, ref, tar, p.vertical);
+  plot_Ns(fPlot, p->opacity, p->vertical);
+  plot_seq_borders(fPlot, p->vertical);
+  plot_title(fPlot, ref, tar, p->vertical);
   plot_legend(fPlot, p, std::max(n_refBases, n_tarBases));
   print_log(n_regular, n_regularSolo, n_inverse, n_inverseSolo, n_ignored);
 
@@ -84,17 +88,18 @@ void VizPaint::plot(VizParam& p) {
   fPlot.close();
 }
 
-inline void VizPaint::read_matadata(std::ifstream& fPos, VizParam& p) {
+inline void VizPaint::read_matadata(std::ifstream& fPos,
+                                    std::unique_ptr<VizParam>& p) {
   std::string watermark;
   fPos >> watermark >> ref >> n_refBases >> tar >> n_tarBases;
 
-  if (!p.refName.empty()) ref = p.refName;
-  if (!p.tarName.empty()) tar = p.tarName;
+  if (!p->refName.empty()) ref = p->refName;
+  if (!p->tarName.empty()) tar = p->tarName;
 
   if (watermark != POS_HDR) error("unknown file format for positions.");
 }
 
-inline void VizPaint::show_info(VizParam& p) const {
+inline void VizPaint::show_info(std::unique_ptr<VizParam>& p) const {
   const uint8_t lblWidth{18};
   const uint8_t colWidth{8};
   uint8_t tblWidth{58};
@@ -120,28 +125,28 @@ inline void VizPaint::show_info(VizParam& p) const {
     std::cerr << std::setw(colWidth) << std::left;
     switch (c) {
       case 'w':
-        std::cerr << p.width;
+        std::cerr << p->width;
         break;
       case 's':
-        std::cerr << p.space;
+        std::cerr << p->space;
         break;
       case 'f':
-        std::cerr << p.mult;
+        std::cerr << p->mult;
         break;
       case 'b':
-        std::cerr << p.start;
+        std::cerr << p->start;
         break;
       case 'm':
-        std::cerr << p.min;
+        std::cerr << p->min;
         break;
       case 'r':
-        std::cerr << (p.regular ? "yes" : "no");
+        std::cerr << (p->regular ? "yes" : "no");
         break;
       case 'i':
-        std::cerr << (p.inverse ? "yes" : "no");
+        std::cerr << (p->inverse ? "yes" : "no");
         break;
       case 'l':
-        std::cerr << static_cast<uint16_t>(p.link);
+        std::cerr << static_cast<uint16_t>(p->link);
         break;
       default:
         break;
@@ -168,7 +173,7 @@ inline void VizPaint::show_info(VizParam& p) const {
         std::cerr << file_name(tar);
         break;
       case 'i':
-        std::cerr << p.image;
+        std::cerr << p->image;
         break;
       default:
         std::cerr << '-';
@@ -327,17 +332,18 @@ inline void VizPaint::plot_background(std::ofstream& f) const {
   rect->plot(f);
 }
 
+// inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
 inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
                                    const std::vector<Position>::iterator& e,
-                                   const VizParam& p) const {
+                                   std::unique_ptr<VizParam>& p) const {
   if (e->begRef != DBLANK) {
     auto cylinder = std::make_unique<Cylinder>();
     cylinder->width = seqWidth;
     cylinder->stroke_width = 0.75;
-    cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
+    cylinder->fill_opacity = cylinder->stroke_opacity = p->opacity;
     cylinder->height = get_point(e->endRef - e->begRef);
     cylinder->stroke = shade(rgb_color(e->start));
-    if (p.vertical) {
+    if (p->vertical) {
       cylinder->x = x;
       cylinder->y = y + get_point(e->begRef);
     } else {
@@ -351,32 +357,33 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
     cylinder->plot(fPlot);
 
     cylinder->stroke_width = 0.7;
-    if (p.showNRC) {
+    if (p->showNRC) {
       cylinder->id += "NRC";
-      cylinder->fill = periph_gradient(fPlot, nrc_color(e->entRef, p.colorMode),
-                                       cylinder->id);
-      cylinder->stroke = shade(nrc_color(e->entRef, p.colorMode), 0.96);
-      plot_periph(fPlot, cylinder, p.vertical, 'r', 0);
+      cylinder->fill = periph_gradient(
+          fPlot, nrc_color(e->entRef, p->colorMode), cylinder->id);
+      cylinder->stroke = shade(nrc_color(e->entRef, p->colorMode), 0.96);
+      plot_periph(fPlot, cylinder, p->vertical, 'r', 0);
     }
-    if (p.showRedun) {
+    if (p->showRedun) {
       cylinder->id += "Redun";
       cylinder->fill = periph_gradient(
-          fPlot, redun_color(e->selfRef, p.colorMode), cylinder->id);
-      cylinder->stroke = shade(redun_color(e->selfRef, p.colorMode), 0.95);
-      plot_periph(fPlot, cylinder, p.vertical, 'r', uint8_t(p.showNRC));
+          fPlot, redun_color(e->selfRef, p->colorMode), cylinder->id);
+      cylinder->stroke = shade(redun_color(e->selfRef, p->colorMode), 0.95);
+      plot_periph(fPlot, cylinder, p->vertical, 'r', uint8_t(p->showNRC));
     }
   }
 }
 
 inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
                                    const std::vector<Position>::iterator& e,
-                                   const VizParam& p, bool inverted) const {
+                                   std::unique_ptr<VizParam>& p,
+                                   bool inverted) const {
   auto cylinder = std::make_unique<Cylinder>();
   cylinder->width = seqWidth;
   cylinder->stroke_width = 0.75;
-  cylinder->fill_opacity = cylinder->stroke_opacity = p.opacity;
+  cylinder->fill_opacity = cylinder->stroke_opacity = p->opacity;
   cylinder->height = get_point(abs(e->begTar - e->endTar));
-  if (p.vertical) {
+  if (p->vertical) {
     cylinder->x = x + seqWidth + innerSpace;
     cylinder->y =
         !inverted ? y + get_point(e->begTar) : y + get_point(e->endTar);
@@ -406,19 +413,19 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
   }
 
   cylinder->stroke_width = 0.7;
-  if (p.showNRC) {
+  if (p->showNRC) {
     cylinder->id += "NRC";
-    cylinder->fill =
-        periph_gradient(fPlot, nrc_color(e->entTar, p.colorMode), cylinder->id);
-    cylinder->stroke = shade(nrc_color(e->entTar, p.colorMode), 0.96);
-    plot_periph(fPlot, cylinder, p.vertical, 't', 0);
+    cylinder->fill = periph_gradient(fPlot, nrc_color(e->entTar, p->colorMode),
+                                     cylinder->id);
+    cylinder->stroke = shade(nrc_color(e->entTar, p->colorMode), 0.96);
+    plot_periph(fPlot, cylinder, p->vertical, 't', 0);
   }
-  if (p.showRedun) {
+  if (p->showRedun) {
     cylinder->id += "Redun";
     cylinder->fill = periph_gradient(
-        fPlot, redun_color(e->selfTar, p.colorMode), cylinder->id);
-    cylinder->stroke = shade(redun_color(e->selfTar, p.colorMode), 0.95);
-    plot_periph(fPlot, cylinder, p.vertical, 't', uint8_t(p.showNRC));
+        fPlot, redun_color(e->selfTar, p->colorMode), cylinder->id);
+    cylinder->stroke = shade(redun_color(e->selfTar, p->colorMode), 0.95);
+    plot_periph(fPlot, cylinder, p->vertical, 't', uint8_t(p->showNRC));
   }
 }
 
@@ -459,14 +466,15 @@ inline void VizPaint::plot_periph(std::ofstream& f,
 
 inline void VizPaint::plot_connector(std::ofstream& fPlot,
                                      const std::vector<Position>::iterator& e,
-                                     VizParam& par, bool ir) const {
+                                     std::unique_ptr<VizParam>& par,
+                                     bool ir) const {
   auto poly = std::make_unique<Polygon>();
   auto line = std::make_unique<Line>();
   line->stroke_width = 1.5;
 
-  switch (par.link) {
+  switch (par->link) {
     case 1:
-      if (par.vertical)
+      if (par->vertical)
         poly->points =
             poly->point(x + seqWidth, y + get_point(e->begRef)) +
             poly->point(x + seqWidth, y + get_point(e->endRef)) +
@@ -479,11 +487,11 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
             poly->point(x + get_point(e->endTar), y + seqWidth + innerSpace) +
             poly->point(x + get_point(e->begTar), y + seqWidth + innerSpace);
       poly->stroke = poly->fill = rgb_color(e->start);
-      poly->stroke_opacity = poly->fill_opacity = 0.5 * par.opacity;
+      poly->stroke_opacity = poly->fill_opacity = 0.5 * par->opacity;
       poly->plot(fPlot);
       break;
     case 2:
-      if (par.vertical) {
+      if (par->vertical) {
         line->x1 = x + seqWidth;
         line->y1 = y + get_point(e->begRef + (e->endRef - e->begRef) / 2.0);
         line->x2 = x + seqWidth + innerSpace;
@@ -502,7 +510,7 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
       line->plot(fPlot);
       break;
     case 3:
-      if (par.vertical) {
+      if (par->vertical) {
         line->x1 = x + seqWidth;
         line->y1 = y + get_point(e->begRef + (e->endRef - e->begRef) / 2.0);
         line->x2 = x + seqWidth + innerSpace;
@@ -522,7 +530,7 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
       break;
     case 4:
       line->stroke = rgb_color(e->start);
-      if (par.vertical) {
+      if (par->vertical) {
         line->x1 = x + seqWidth;
         line->y1 = y + get_point(e->begRef);
         line->x2 = x + seqWidth + innerSpace;
@@ -548,7 +556,7 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
       break;
     case 5:
       line->stroke = ir ? "green" : "black";
-      if (par.vertical) {
+      if (par->vertical) {
         line->x1 = x + seqWidth;
         line->y1 = y + get_point(e->begRef);
         line->x2 = x + seqWidth + innerSpace;
@@ -626,16 +634,17 @@ inline void VizPaint::plot_title(std::ofstream& f, std::string ref,
   }
 }
 
-inline void VizPaint::plot_legend(std::ofstream& f, const VizParam& p,
+inline void VizPaint::plot_legend(std::ofstream& f,
+                                  std::unique_ptr<VizParam>& p,
                                   int64_t maxWidth) const {
-  if (!p.showNRC && !p.showRedun) return;
+  if (!p->showNRC && !p->showRedun) return;
 
   auto legend = std::make_unique<LegendPlot>();
   legend->maxWidth = maxWidth;
-  legend->showNRC = p.showNRC;
-  legend->showRedun = p.showRedun;
-  legend->vertical = p.vertical;
-  legend->colorMode = p.colorMode;
+  legend->showNRC = p->showNRC;
+  legend->showRedun = p->showRedun;
+  legend->vertical = p->vertical;
+  legend->colorMode = p->colorMode;
 
   legend->text.emplace_back(std::make_unique<Text>());  // Numbers
   if (legend->showNRC && !legend->showRedun)
@@ -1238,13 +1247,13 @@ inline void VizPaint::save_n_pos(std::string filePath) const {
 }
 
 inline void VizPaint::read_pos(std::ifstream& fPos, std::vector<Position>& pos,
-                               VizParam& par) const {
+                               std::unique_ptr<VizParam>& par) const {
   double nr, nt, sr, st;
   for (int64_t br, er, bt, et;
-       fPos >> br >> er >> nr >> sr >> bt >> et >> nt >> st; ++par.start)
-    pos.emplace_back(Position(br, er, nr, sr, bt, et, nt, st, par.start));
+       fPos >> br >> er >> nr >> sr >> bt >> et >> nt >> st; ++par->start)
+    pos.emplace_back(Position(br, er, nr, sr, bt, et, nt, st, par->start));
 
-  if (sr == DBLANK && st == DBLANK) par.showRedun = false;
+  if (sr == DBLANK && st == DBLANK) par->showRedun = false;
 
   // std::sort(begin(pos), end(pos),
   //   [](const Position& l, const Position& r) { return l.begRef < r.begRef;
@@ -1257,26 +1266,29 @@ inline void VizPaint::read_pos(std::ifstream& fPos, std::vector<Position>& pos,
 }
 
 inline void VizPaint::make_posNode(const std::vector<Position>& pos,
-                                   const VizParam& par, std::string&& type) {
+                                   std::unique_ptr<VizParam>& par,
+                                   std::string&& type) {
   nodes.clear();
   nodes.reserve(2 * pos.size());
 
   if (type == "ref") {
     for (auto e : pos)
-      if (e.endRef - e.begRef > par.min && abs(e.endTar - e.begTar) > par.min)
+      if (e.endRef - e.begRef > par->min && abs(e.endTar - e.begTar) > par->min)
         nodes.emplace_back(PosNode(e.begRef, 'b', e.start));
     for (auto e : pos)
-      if (e.endRef - e.begRef > par.min && abs(e.endTar - e.begTar) > par.min)
+      if (e.endRef - e.begRef > par->min && abs(e.endTar - e.begTar) > par->min)
         nodes.emplace_back(PosNode(e.endRef, 'e', e.start));
   } else if (type == "tar") {
     for (auto e : pos)
-      if ((abs(e.endTar - e.begTar) > par.min && e.begRef == DBLANK) ||
-          (abs(e.endTar - e.begTar) > par.min && e.endRef - e.begRef > par.min))
+      if ((abs(e.endTar - e.begTar) > par->min && e.begRef == DBLANK) ||
+          (abs(e.endTar - e.begTar) > par->min &&
+           e.endRef - e.begRef > par->min))
         nodes.emplace_back(
             PosNode(e.begTar, e.endTar > e.begTar ? 'b' : 'e', e.start));
     for (auto e : pos)
-      if ((abs(e.endTar - e.begTar) > par.min && e.begRef == DBLANK) ||
-          (abs(e.endTar - e.begTar) > par.min && e.endRef - e.begRef > par.min))
+      if ((abs(e.endTar - e.begTar) > par->min && e.begRef == DBLANK) ||
+          (abs(e.endTar - e.begTar) > par->min &&
+           e.endRef - e.begRef > par->min))
         nodes.emplace_back(
             PosNode(e.endTar, e.endTar > e.begTar ? 'e' : 'b', e.start));
   }
@@ -1448,15 +1460,16 @@ inline void VizPaint::make_posNode(const std::vector<Position>& pos,
 // }
 
 inline void VizPaint::plot_pos(std::ofstream& fPlot, std::ifstream& fPos,
-                               std::vector<Position>& pos, VizParam& p) {
+                               std::vector<Position>& pos,
+                               std::unique_ptr<VizParam>& p) {
   read_pos(fPos, pos, p);
   auto posPlot = std::make_unique<PosPlot>();
-  posPlot->vertical = p.vertical;
-  posPlot->showNRC = p.showNRC;
-  posPlot->showRedun = p.showRedun;
-  posPlot->refTick = p.refTick;
-  posPlot->tarTick = p.tarTick;
-  posPlot->tickHumanRead = p.tickHumanRead;
+  posPlot->vertical = p->vertical;
+  posPlot->showNRC = p->showNRC;
+  posPlot->showRedun = p->showRedun;
+  posPlot->refTick = p->refTick;
+  posPlot->tarTick = p->tarTick;
+  posPlot->tickHumanRead = p->tickHumanRead;
 
   make_posNode(pos, p, "ref");
   posPlot->n_bases = n_refBases;

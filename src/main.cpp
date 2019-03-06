@@ -1,3 +1,6 @@
+// Smash++
+// Morteza Hosseini    seyedmorteza@ua.pt
+// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 //    ____                      _
 //   / ___| _ __ ___   __ _ ___| |__    _     _
 //   \___ \| '_ ` _ \ / _` / __| '_ \ _| |_ _| |_
@@ -106,8 +109,10 @@ int main(int argc, char* argv[]) {
     const auto t0{now()};
 
     if (has(argv, argv + argc, std::string("-viz"))) {
-      VizParam vizpar;
-      vizpar.parse(argc, argv);
+      auto vizpar = std::make_unique<VizParam>();
+      // VizParam vizpar;
+      // vizpar.parse(argc, argv);
+      vizpar->parse(argc, argv);
       auto paint = std::make_unique<VizPaint>();
       paint->plot(vizpar);
     } else {

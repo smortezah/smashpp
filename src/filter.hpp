@@ -1,3 +1,7 @@
+// Smash++
+// Morteza Hosseini    seyedmorteza@ua.pt
+// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+
 #ifndef PROJECT_FILTER_HPP
 #define PROJECT_FILTER_HPP
 

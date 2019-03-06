@@ -1,6 +1,7 @@
-//
-// Created by morteza on 16-10-2018.
-//
+// Smash++
+// Morteza Hosseini    seyedmorteza@ua.pt
+// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+
 #include <iostream>
 #include <fstream>
 #include "def.hpp"
