@@ -110,8 +110,6 @@ int main(int argc, char* argv[]) {
 
     if (has(argv, argv + argc, std::string("-viz"))) {
       auto vizpar = std::make_unique<VizParam>();
-      // VizParam vizpar;
-      // vizpar.parse(argc, argv);
       vizpar->parse(argc, argv);
       auto paint = std::make_unique<VizPaint>();
       paint->plot(vizpar);
@@ -147,8 +145,7 @@ int main(int argc, char* argv[]) {
           par.tar = origTar;
           par.tarName = file_name(par.tar);
 
-          auto models =
-              std::make_unique<FCM>(par);  // auto* models=new FCM(par);
+          auto models = std::make_unique<FCM>(par);
           // Make all IRs consistent
           for (auto& e : models->rMs) {
             e.ir = timesRunning;
