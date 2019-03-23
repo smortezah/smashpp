@@ -1,5 +1,8 @@
 **/CMakeFiles
 
+Diogo/*
+tmp/*
+
 *.prf
 *.co
 *.iae
