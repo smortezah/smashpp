@@ -57,7 +57,7 @@
         "mutex": "cpp",
         "shared_mutex": "cpp"
     },
-    "python.pythonPath": "C:\\Users\\Utilizador\\Anaconda3\\python.exe",
+    "python.pythonPath": "C:\\Users\\Utilizador\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe",
     "git.postCommitCommand": "push",
     "C_Cpp.intelliSenseEngineFallback": "Enabled",
     // "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
