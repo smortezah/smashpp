@@ -2,6 +2,8 @@
 \section{Methods}
 \label{sec.methods}
 
+Schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. There are five major stages in this method, including 
+
 \begin{figure}[!h]
 \includegraphics[width=\linewidth]{schema.pdf}
 \caption{The schema of Smash++.}
@@ -29,17 +31,10 @@ in which, $0\le n\le N$ and length of the window is $N+1$ (Fig.~\ref{fig.hann}).
 
 \subsection{The software}
 
-Besides Hann window, that is used as default to filter the profile information obtained by the reference-based compression, we have implemented several other window functions, shown in Fig.~\ref{fig.filters}.
+Besides Hann window, that is used as default to filter the profile information obtained by the reference-based compression, we have implemented several other window functions (Fig.~\ref{fig.filters}), including Blackman, Hamming, Nuttall, rectangular, sine, triangular and Welch windows.
 \begin{figure}[!h]
   \centering
-\includegraphics[width=7cm]{hann.pdf}
+\includegraphics[width=.95\linewidth]{filters.pdf}
 \caption{Window functions.}
 \label{fig.filters}
 \end{figure}
-
-% void hamming();
-% void blackman();
-% void triangular();  // Bartlett window
-% void welch();
-% void sine();
-% void nuttall();
