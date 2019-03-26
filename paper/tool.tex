@@ -1,13 +1,10 @@
 \clearpage
 \section{Tool availability and implementation}
 \label{sec.tool}
-\smashpp is implemented in \cpp language and is available at~\cite{web-smashpp}. This tool is able to find rearrangements in sequences, FASTA and FASTQ files; although, it is highly recommended to use sequences as input. To work with \smashpp, it should be first installed. 
-% Besides running \smashpp in stand-alone mode, it is possible to compare it with other methods, by means of a set of \bash scripts. 
-In the following sections, we describe installing and running \smashpp.
-
+\smashpp is implemented in \cpp language and is available at~\cite{web-smashpp}. This tool is able to find and visualize rearrangements in sequences, \fasta and \fastq files; although, it is highly recommended to use sequences as input. In the following sections, we describe installing and running \smashpp.
 
 \subsection{Install}
-In order to install \smashpp, we run the following commands:
+In order to install \smashpp on Linux, run the following commands:
 \begin{code}[style=bash]
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
@@ -15,75 +12,68 @@ cmake .
 make
 \end{code}
 
-
 \subsection{Run}
-% To run \smashpp, two files are required: a file containing the password (\mono{KEY_FILE}), and the file to be compacted and encrypted (\mono{IN_FILE}). 
-Running
+A reference file and a target file are clearly mandatory to run \smashpp (without visualization). Running
 \begin{code}[style=bash]
 ./smashpp
 \end{code}
 provides the following guide:
 %\vskip2mm
 \begin{code}[style=bash]
-SYNOPSIS
-  ./smashpp [OPTIONS]...  -r [REF-FILE] -t [TAR-FILE]
-
-SAMPLE
-
-DESCRIPTION
-  Mandatory arguments
-  -r,  --ref FILE            reference file (Seq/Fasta/Fastq)
-  -t,  --tar FILE            target file    (Seq/Fasta/Fastq)
-  
-  Options
-  -v,  --verbose             more information
-  -l,  --level INT           level of compression: [0, 5]
-  -m,  --min   INT           min segment size: [1, 4294967295]
-  -nr, --no-redun            do NOT compute self complexity
-  -e,  --ent-n FLOAT         Entropy of 'N's: [0.0, 100.0]
-  -n,  --nthr  INT           number of threads: [1, 8]
-  -fs, --filter-scale S|M|L  scale of the filter:
-                             {S|small, M|medium, L|large}
-  -w,  --wsize INT           window size: [1, 4294967295]
-  -wt, --wtype INT/STRING    type of windowing function:
+SYNOPSIS                                                       
+  ./smashpp  OPTIONS...  -r REF-FILE  -t TAR-FILE              
+                                                               
+SAMPLE                                                         
+                                                               
+DESCRIPTION                                                    
+  Mandatory arguments                                          
+  -r,  --ref FILE            reference file (Seq/Fasta/Fastq)  
+  -t,  --tar FILE            target file    (Seq/Fasta/Fastq)  
+                                                               
+  Options                                                      
+  -v,  --verbose             more information                  
+  -l,  --level INT           level of compression: [0, 5]      
+  -m,  --min   INT           min segment size: [1, 4294967295] 
+  -nr, --no-redun            do NOT compute self complexity    
+  -e,  --ent-n FLOAT         Entropy of 'N's: [0.0, 100.0]     
+  -n,  --nthr  INT           number of threads: [1, 8]         
+  -fs, --filter-scale S|M|L  scale of the filter:              
+                             {S|small, M|medium, L|large}      
+  -w,  --wsize INT           window size: [1, 4294967295]      
+  -wt, --wtype INT/STRING    type of windowing function:       
                              {0|rectangular, 1|hamming, 2|hann,
                              3|blackman, 4|triangular, 5|welch,
-                             6|sine, 7|nuttall}
-  -d,  --step   INT          sampling steps
-  -th, --thresh FLOAT        threshold: [0.0, 20.0]
-  -sp, --save-profile        save profile (*.prf)
-  -sf, --save-filter         save filtered file (*.fil)
+                             6|sine, 7|nuttall}                
+  -d,  --step   INT          sampling steps                    
+  -th, --thresh FLOAT        threshold: [0.0, 20.0]            
+  -sp, --save-profile        save profile (*.prf)              
+  -sf, --save-filter         save filtered file (*.fil)        
   -sb, --save-seq            save sequence (input: Fasta/Fastq)
-  -ss, --save-segment        save segmented files (*-s_i)
-  -sa, --save-all            save profile, filetered and
-                             segmented files
-  -h,  --help                usage guide
-  -rm, --ref-model  k,[w,d,]ir,a,g/t,ir,a,g:...
-  -tm, --tar-model  k,[w,d,]ir,a,g/t,ir,a,g:...
-                             parameters of models
-                       (INT) k:  context size
-                       (INT) w:  width of sketch in log2 form,
-                                 e.g., set 10 for w=2^10=1024
-                       (INT) d:  depth of sketch
-                       (INT) ir: inverted repeat: {0, 1, 2}
-                                 0: regular (not inverted)
-                                 1: inverted, solely
-                                 2: both regular and inverted
-                     (FLOAT) a:  estimator
-                     (FLOAT) g:  forgetting factor: [0.0, 1.0)
+  -ss, --save-segment        save segmented files (*-s_i)      
+  -sa, --save-all            save profile, filetered and       
+                             segmented files                   
+  -h,  --help                usage guide                       
+  -rm, --ref-model  k,[w,d,]ir,a,g/t,ir,a,g:...                
+  -tm, --tar-model  k,[w,d,]ir,a,g/t,ir,a,g:...                
+                             parameters of models              
+                       (INT) k:  context size                  
+                       (INT) w:  width of sketch in log2 form, 
+                                 e.g., set 10 for w=2^10=1024  
+                       (INT) d:  depth of sketch               
+                       (INT) ir: inverted repeat: {0, 1, 2}    
+                                 0: regular (not inverted)     
+                                 1: inverted, solely           
+                                 2: both regular and inverted  
+                     (FLOAT) a:  estimator                     
+                     (FLOAT) g:  forgetting factor: [0.0, 1.0) 
                        (INT) t:  threshold (no. substitutions)
 \end{code}
 
-The arguments ``-r'' and ``-t'' are used to specify the reference and the target files. It is highly recommended to choose short names for these files.
+The arguments ``-r'' and ``-t'' are used to specify the reference and the target, respectively, which are highly recommended to have short names. Level of compression, that is an integer between 0 and 5, can be determined with ``-l''. By setting ``-m'' to an integer value, only those regions in the reference file that are greater than that value can be considered for the compression. Triggering ``-nr'' makes the tool not to perform the reference-free compression (self-complexity computation) part. 
 
-Here, on reference-based compression, we have replaced `N' bases in the references with `A's and `N' bases in the targets with `T's. Also, on reference-free compression, we have replaced `N's in the references and the targets with `A's. If a user tends to replace `N' bases in a sequence with a normal distribution of `A', `C', `G' and `T's, he/she can employ GOOSE toolkit~\cite{web-goose}.
+In implementation of the reference-based compression, we have replaced `N' bases in the references and the targets with `A's and `T's, respectively. On reference-free compression, they are replaced with `A's, in both references and targets. If a user tends to replace `N' bases in a sequence with a normal distribution of `A', `C', `G' and `T's, he/she can employ GOOSE toolkit~\cite{web-goose}. Note that we have set the entropy of `N's to 2.0, by default, but it is possible for the user to set them to another value of interest, by ``-e'' option.
 
-% In the second~line of the \smashpp usage guide, ``\mono{-d}'' option can only be used for \ddion.
-
-% In the fifth and sixth~lines, two samples are shown for \ceion as well as \ddion.
-
-% Eighth and ninth lines describe the cases in which input files are not of \fasta or \fastq formats.
-
+Building different finite-context models can be done in the multi-threaded fashion, setting ``-n'' to an integer. To find similar regions in the reference and the target, information profile (obtained by compression) needs to be filtered, of which the scale can be set as S (small), M (medium) or L (large). Size of the window and type of the windowing function, described in~\ref{subsec.software}, can be set by ``-w'' and ``-wt'' options, respectively. Instead of considering the complete profile information, the user is able to make samples of it by steps of which size can be determined by ``-d''.
 
 \subsection{Example}
 This section guides, step-by-step, employing \smashpp to find rearrangements.
@@ -101,97 +91,3 @@ Then, we copy \smashpp's binary file into \mono{example/} directory and go to th
 cp smashpp example/
 cd example/
 \end{code}
-
-% In order to run \smashpp, we need a file to be \ceed/encrypted as well as a file containing the password. In the \mono{example/} directory, the file ``\mono{in.fq}'' is provided, which would be \ceed. The contents of \mono{in.fq} is
-% \begin{code}[style=bash]
-% @SRR707196.1 HWI-ST896:317:C1HAMACXX:7:1101:1338:2148/1
-% TCGAGAGCTCATTGATGCTCTGACAGCTGAAATTCTTCGTCTTAGAGAAGAAAACGCTGCTACACAGGTACTCAG
-% +
-% 4=DDFFFHHHHHJJJJJJJJJJJJJJJJJJJJJJJJJJJHHIIJIJJJJJIJJJJJJJJJJJJJJHHH=CEFFFF
-% @SRR707196.2 HWI-ST896:317:C1HAMACXX:7:1101:1492:2234/1
-% GATAAAGATCAAATAAGAGCCTCAGGGGACTGAATCCAACGGGAATATTAGAGTCCTACAGGGAGCCCCCAACCC
-% +
-% CCCFFFFFHGHHHIJJJJJJJJIJJJJJJJJJJJIJJJJJJJJIJIJJJIJJJFHIJJJJJIGFHFFFFDDDDDD
-% \end{code}
-
-
-% \subsection{Compare with other methods}
-% To make a comparison between \smashpp and other methods, including \gzip, \bzip, \mfcompress, \deliminate, \fqzcomp, \quip, \dsrc, \fqc and \aescrypt, a set of \bash scripts are provided. These scripts make it possible to download the datasets, install the dependencies, install the compression and encryption tools, run these tools and finally, save the results in a number of tables. To perform each of these operations, a set of parameters should be set in \mono{run.sh} script, which can be found in the main directory of \smashpp tool. These parameters are described in the following sections. The value of each parameter must be set to 1 to activate, and 0 to deactivate.
-
-% \subsubsection*{Datasets}
-% Among the parameters for getting the datasets, if \mono{GET_DATASET} is 0, no dataset will be downloaded. Otherwise, if \mono{GET_DATASET} is 1, the datasets associated with the parameters with the value 1 will be downloaded. For example, with the following set of values, only \fasta datasets will be downloaded. Note, storing all datasets needs 54~GB free disk space.
-% \begin{code}[style=bash]
-% GET_DATASET=1               # 54 GB free disk space
-%     DL_HUMAN_FA=1           # Download Human             (FASTA) -- 3.1  GB
-%     DL_VIRUSES_FA=1         # Download Viruses           (FASTA) -- 0.3  GB
-%     DL_NEANDERTHAL_BAM=0    # Download Neanderthal       (BAM)   -- 1.3  GB
-% \end{code}
-
-% \subsubsection*{Dependencies}
-% To install dependencies of different methods, the following parameters can be set. Note, executables of the methods are provided in the repository and \szip and \cmake are enough to run the methods.
-% \begin{code}[style=bash]
-% INSTALL_DEPENDENCIES=1
-%     INS_7ZIP=1          # 7zip
-%     INS_CMAKE=1         # Cmake
-%     INS_BOOST=0         # Boost
-%     INS_CURL=0          # Curl
-%     INS_VALGRIND=0      # Valgrind
-%     INS_ZLIB=0          # Zlib
-%     INS_SAMTOOLS=0      # Samtools
-% \end{code}
-
-% \subsubsection*{Install methods}
-% By setting the following parameters, the methods can be installed. However, since the executables of all methods but \smashpp is available at \mono{progs/} directory, it is only required to install \smashpp.
-% \begin{code}[style=bash]
-% INSTALL_METHODS=1
-%     # FASTA/FASTQ/VCF/SAM/BAM
-%     INS_CRYFA=1         # Cryfa
-%     # FASTA
-%     INS_MFCOMPRESS=0    # MFCompress
-% \end{code}
-
-% \subsubsection*{Run \smashpp}
-% The following setting can be used to run \smashpp on all \fasta, \fastq, \vcf, \sam and \bam datasets, then save the results at \mono{result/} directory. The results include \cratio, memory usage and elapsed time for \ceing and \dding the datasets. Note, running \smashpp on all datasets needs 100~GB free disk~space in order to store compressed files along with reconstructed datasets, which will be obtained from \ddion phase. For debugging purpose, the reconstructed files are stored at \mono{progs/cryfa/} directory to enable user to perform a comparison, individually, between these files and the original datasets.
-% \begin{code}[style=bash]
-% RUN_METHODS_COMP=1      # 100 GB free disk space
-%     # FASTA
-%     RUN_CRYFA_FA=1      # Cryfa
-%     # FASTQ
-%     # Results
-%     RESULTS_COMP=1
-% \end{code}
-
-% \subsubsection*{Run \ceion methods}
-% Setting the following parameters, the methods will be carried out on all datasets. In order to \ce a dataset, it is first compressed by a compression method, then encrypted by \aescrypt. Also, to \dd a dataset, it is first decrypted by \aescrypt, then decompressed by a compression method. Note that, running \fasta and \fastq methods needs 60~GB free disk~space. A portion of this space is used to store the reconstructed datasets, which are obtained from \ddion phase. This is helpful when a method cannot compress a file, losslessly. In this case, the user will be able to find differences of the reconstructed file and the original dataset.
-% \begin{code}[style=bash]
-% RUN_METHODS_COMP_ENC=1
-%     # Fasta -- 10 GB free disk space
-%     RUN_GZIP_FA_AESCRYPT=1       # gzip       + AES Crypt
-%     # Fastq -- 50 GB free disk space
-%     RUN_GZIP_FQ_AESCRYPT=1       # gzip       + AES Crypt
-%     # Results
-%     RESULTS_COMP_ENC=1
-% \end{code}
-
-% \subsubsection*{Run encryption methods}
-% To run \aescrypt, a \generalPur encryption method, the following setting can be used. Note, running this method on all \fasta, \fastq, \vcf, \sam and \bam datasets needs 110~GB free disk~space.
-% \begin{code}[style=bash]
-% RUN_METHODS_ENC=1       # 110 GB free disk space
-%     RUN_AESCRYPT=1      # AES Crypt
-%     # Results
-%     RESULTS_ENC=1
-% \end{code}
-
-
-% \subsection{Run with different number of threads} \label{ssThreads}
-% The followings can be set to run \smashpp with a different number of threads on a single dataset. In this example, \smashpp will be carried out on \mono{viruses.fasta} dataset with $1, 2, \ldots, 8$~threads, then the results will be saved at \mono{result/} directory. To specify the path of the dataset, \mono{CRYFA_THR_DATASET}, the main directory of \smashpp should be considered as the origin.
-% \begin{code}[style=bash]
-% RUN_CRYFA_THREADS=1
-%     MAX_N_THR=8         # Max number of threads
-%     CRYFA_THR_DATASET="dataset/FA/V/viruses.fasta"
-%     #CRYFA_THR_DATASET="dataset/FQ/DS/DS-B1088_SR.fastq"
-%     # Run
-%     RUN_CRYFA_THR=1
-%     # Results
-%     RESULTS_CRYFA_THR=1
-% \end{code}
