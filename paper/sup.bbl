@@ -21,6 +21,40 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
+\bibitem{blackman1959particular}
+R.~Blackman and J.~Tukey, ``Particular pairs of windows,'' \emph{The
+  measurement of power spectra, from the point of view of communications
+  engineering}, pp. 95--101, 1959.
+
+\bibitem{tukey1949measuring}
+J.~W. Tukey and R.~W. Hamming, \emph{Measuring noise color}.\hskip 1em plus
+  0.5em minus 0.4em\relax Bell Telephone Laboratories, 1949.
+
+\bibitem{nuttall1981some}
+A.~Nuttall, ``Some windows with very good sidelobe behavior,'' \emph{IEEE
+  Transactions on Acoustics, Speech, and Signal Processing}, vol.~29, no.~1,
+  pp. 84--91, 1981.
+
+\bibitem{oppenheim1999discrete}
+A.~V. Oppenheim, R.~W. Schafer, and J.~R. Buck, \emph{Discrete-Time Signal
+  Processing}.\hskip 1em plus 0.5em minus 0.4em\relax Upper Saddle River, NJ:
+  Prentice Hall, 1999.
+
+\bibitem{harris1978use}
+F.~J. Harris, ``On the use of windows for harmonic analysis with the discrete
+  {Fourier} transform,'' \emph{Proceedings of the IEEE}, vol.~66, no.~1, pp.
+  51--83, 1978.
+
+\bibitem{bartlett1950periodogram}
+M.~S. Bartlett, ``Periodogram analysis and continuous spectra,''
+  \emph{Biometrika}, vol.~37, no. 1/2, pp. 1--16, 1950.
+
+\bibitem{welch1967use}
+P.~Welch, ``The use of fast {Fourier} transform for the estimation of power
+  spectra: a method based on time averaging over short, modified
+  periodograms,'' \emph{IEEE Transactions on audio and electroacoustics},
+  vol.~15, no.~2, pp. 70--73, 1967.
+
 \bibitem{web-smashpp}
 \BIBentryALTinterwordspacing
 M.~Hosseini, D.~Pratas, and A.~J. Pinho. Smash++. [Online]. Available:
