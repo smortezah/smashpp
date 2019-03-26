@@ -61,5 +61,13 @@
     "git.postCommitCommand": "push",
     "C_Cpp.intelliSenseEngineFallback": "Enabled",
     // "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-    "terminal.integrated.shell.windows": "C:\\WINDOWS\\sysnative\\bash.exe"
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\sysnative\\bash.exe",
+    "spellright.language": [
+        "en"
+    ],
+    "spellright.documentTypes": [
+        "markdown",
+        "latex",
+        "plaintext"
+    ]
 }
