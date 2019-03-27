@@ -333,7 +333,8 @@ inline void Filter::smooth_seg_rect(const Param& p) {
   auto sum{0.f};
   auto filtered{0.f};
   uint64_t symsNo{0};
-  const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
+  seg->totalSize = file_lines(profileName) / p.sampleStep;
+  // const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
   const auto jump_lines = [&]() {
     for (uint64_t i = p.sampleStep - 1; i--;) ignore_this_line(prfF);
   };
@@ -343,7 +344,7 @@ inline void Filter::smooth_seg_rect(const Param& p) {
     const auto val{stof(num)};
     seq.emplace_back(val);
     sum += val;
-    show_progress(++symsNo, totalSize, message);
+    show_progress(++symsNo, seg->totalSize, message);
     jump_lines();
   }
   filtered = sum / seq.size();
@@ -359,7 +360,7 @@ inline void Filter::smooth_seg_rect(const Param& p) {
     filtered = sum / seq.size();
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
-    show_progress(++symsNo, totalSize, message);
+    show_progress(++symsNo, seg->totalSize, message);
     jump_lines();
   }
 
@@ -374,7 +375,7 @@ inline void Filter::smooth_seg_rect(const Param& p) {
     seg->partition(posF, filtered);
     seq[idx] = val;
     idx = (idx + 1) % wsize;
-    show_progress(++symsNo, totalSize, message);
+    show_progress(++symsNo, seg->totalSize, message);
     jump_lines();
   }
   prfF.close();
@@ -387,10 +388,10 @@ inline void Filter::smooth_seg_rect(const Param& p) {
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
     idx = (idx + 1) % wsize;
-    show_progress(++symsNo, totalSize, message);
+    show_progress(++symsNo, seg->totalSize, message);
   }
   seg->partition_last(posF);
-  show_progress(++symsNo, totalSize, message);
+  show_progress(++symsNo, seg->totalSize, message);
 
   posF.close();
   if (file_is_empty(positionName)) remove(positionName.c_str());
@@ -426,7 +427,8 @@ inline void Filter::smooth_seg_non_rect(const Param& p) {
   auto sum{0.f};
   auto filtered{0.f};
   uint64_t symsNo{0};
-  const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
+  seg->totalSize = file_lines(profileName) / p.sampleStep;
+  // const auto totalSize = (file_lines(profileName) / p.sampleStep) + 1;
   const auto jump_lines = [&]() {
     for (uint64_t i = p.sampleStep - 1; i--;) ignore_this_line(prfF);
   };
@@ -441,7 +443,7 @@ inline void Filter::smooth_seg_non_rect(const Param& p) {
   filtered = sum / sWeight;
   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
   seg->partition(posF, filtered);
-  show_progress(++symsNo, totalSize, message);
+  show_progress(++symsNo, seg->totalSize, message);
 
   // Next wsize>>1 values
   for (auto i = (wsize >> 1u); i-- && std::getline(prfF, num);) {
@@ -452,7 +454,7 @@ inline void Filter::smooth_seg_non_rect(const Param& p) {
     filtered = sum / sWeight;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
-    show_progress(++symsNo, totalSize, message);
+    show_progress(++symsNo, seg->totalSize, message);
     jump_lines();
   }
 
@@ -467,7 +469,7 @@ inline void Filter::smooth_seg_non_rect(const Param& p) {
     filtered = sum / sWeight;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
-    show_progress(++symsNo, totalSize, message);
+    show_progress(++symsNo, seg->totalSize, message);
     jump_lines();
   }
   prfF.close();
@@ -487,10 +489,10 @@ inline void Filter::smooth_seg_non_rect(const Param& p) {
     filtered = sum / sWeight;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(posF, filtered);
-    show_progress(++symsNo, totalSize, message);
+    show_progress(++symsNo, seg->totalSize, message);
   }
   seg->partition_last(posF);
-  show_progress(++symsNo, totalSize, message);
+  show_progress(++symsNo, seg->totalSize, message);
 
   posF.close();
   if (file_is_empty(positionName)) remove(positionName.c_str());

@@ -15,8 +15,11 @@ void Segment::partition(std::ofstream& posF, float filtered) {
       if (endPos - begPos >= minSize) {
         ++nSegs;
         posF << (begPos < begGuard ? 0 : begPos - begGuard) << '\t'
-             << endPos + endGuard << '\t' << std::fixed
-             << std::setprecision(PREC_FIL) << sumEnt / numEnt << '\n';
+             << (endPos + endGuard > totalSize ? totalSize : endPos + endGuard)
+             << '\t' << fixed_precision(PREC_FIL) << sumEnt / numEnt << '\n';
+        // posF << (begPos < begGuard ? 0 : begPos - begGuard) << '\t'
+        //      << endPos + endGuard << '\t' << fixed_precision(PREC_FIL)
+        //      << sumEnt / numEnt << '\n';
       }
     }
     begPos = 0, endPos = 0, sumEnt = 0, numEnt = 0;
@@ -39,8 +42,11 @@ void Segment::partition_last(std::ofstream& posF) {
     if (endPos - begPos >= minSize) {
       ++nSegs;
       posF << (begPos < begGuard ? 0 : begPos - begGuard) << '\t'
-           << endPos + endGuard << '\t' << fixed_precision(PREC_FIL)
-           << sumEnt / numEnt << '\n';
+           << (endPos + endGuard > totalSize ? totalSize : endPos + endGuard)
+           << '\t' << fixed_precision(PREC_FIL) << sumEnt / numEnt << '\n';
+      // posF << (begPos < begGuard ? 0 : begPos - begGuard) << '\t'
+      //      << endPos + endGuard << '\t' << fixed_precision(PREC_FIL)
+      //      << sumEnt / numEnt << '\n';
     }
   }
 }

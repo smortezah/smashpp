@@ -132,7 +132,7 @@ The output of \smashpp visualizer is an ``SVG'' file, which its name is determin
 Options ``-l'', ``-c'', ``-p'', ``-w'', ``-s'', ``-f'' and ``-b'' can be used to change the appearance of the image. Assigning integers to ``-rt'' and ``-tt'' options will change the tick sizes of the reference and the target, respectively. \smashpp prints the sizes on axes in human readable format, e.g., 1K, 2M, etc. However, it can be triggered by ``-th'' option. Note that, here, 1K is equivalent to 1000 and not 1024. Finally, by setting ``-m'' to an integer value, only the regions that are bigger than that value will be illustrated.
 
 \subsection{Example}
-This section guides, step-by-step, employing \smashpp to find rearrangements.
+This section guides, step-by-step, employing \smashpp to find and visualize rearrangements in a sample genomic data.
 
 \subsubsection*{Install \smashpp and provide the required files}
 First, we install \smashpp:
@@ -142,8 +142,18 @@ cd smashpp
 cmake .
 make
 \end{code}
-Then, we copy \smashpp's binary file into \mono{example/} directory and go to that directory:
+Then, we copy \mono{smashpp} binary file into \mono{example/} directory and go to that directory:
 \begin{code}[style=bash]
 cp smashpp example/
 cd example/
 \end{code}
+In this directory, we have provided a 1000 byte reference sequence, \mono{ref}, and a 1000 byte target sequence, \mono{tar}.
+
+
+The result is shown in Fig.~\ref{fig.example}.
+
+\begin{figure}[!h]
+  \includegraphics[width=\linewidth]{example.pdf}
+  \caption{The result of running Smash++ on ...}
+  \label{fig.example}
+  \end{figure}
