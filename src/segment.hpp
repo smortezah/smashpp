@@ -22,6 +22,7 @@ class Segment {
   uint64_t numEnt;
   uint32_t minSize;
   uint8_t maxCtx;
+  uint64_t totalSize;
 
   Segment()
       : begun(false),
