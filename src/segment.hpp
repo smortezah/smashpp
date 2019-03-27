@@ -21,8 +21,9 @@ class Segment {
   prc_t sumEnt;
   uint64_t numEnt;
   uint32_t minSize;
-  uint8_t maxCtx;
   uint64_t totalSize;
+  uint64_t begGuard;
+  uint64_t endGuard;
 
   Segment()
       : begun(false),
@@ -37,6 +38,7 @@ class Segment {
 
   void partition(std::ofstream&, float);
   void partition_last(std::ofstream&);
+  void set_guards(uint8_t);
 };
 }  // namespace smashpp
 

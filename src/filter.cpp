@@ -324,10 +324,10 @@ inline void Filter::smooth_seg_rect(const Param& p) {
   seg->thresh = p.thresh;
   if (p.manSegSize) seg->minSize = p.segSize;
   {
-    uint8_t maxCtx = p.refMs[0].k;
+    uint8_t maxCtx = 0;
     for (const auto& e : p.refMs)
       if (e.k > maxCtx) maxCtx = e.k;
-    seg->maxCtx = maxCtx;
+    seg->set_guards(maxCtx);
   }
   std::string num;
   auto sum{0.f};
@@ -415,10 +415,10 @@ inline void Filter::smooth_seg_non_rect(const Param& p) {
   seg->thresh = p.thresh;
   if (p.manSegSize) seg->minSize = p.segSize;
   {
-    uint8_t maxCtx = p.refMs[0].k;
+    uint8_t maxCtx = 0;
     for (const auto& e : p.refMs)
       if (e.k > maxCtx) maxCtx = e.k;
-    seg->maxCtx = maxCtx;
+    seg->set_guards(maxCtx);
   }
   const auto winBeg{std::begin(window)};
   const auto winEnd{std::end(window)};
