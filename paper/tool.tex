@@ -69,7 +69,7 @@ DESCRIPTION
                        (INT) t:  threshold (no. substitutions)
 \end{code}
 
-The arguments ``-r'' and ``-t'' are used to specify the reference and the target, respectively, which are highly recommended to have short names. Level of compression, that is an integer between 0 and 5, can be determined with ``-l''. By setting ``-m'' to an integer value, only those regions in the reference file that are greater than that value can be considered for the compression. Triggering ``-nr'' makes the tool not to perform the reference-free compression (self-complexity computation) part. 
+The arguments ``-r'' and ``-t'' are used to specify the reference and the target, respectively, which are highly recommended to have short names. Level of compression, that is an integer between 0 and 5, can be determined with ``-l''. By setting ``-m'' to an integer value, only those regions in the reference file that are bigger than that value can be considered for compression. Triggering ``-nr'' makes the tool not to perform the reference-free compression (self-complexity computation) part. 
 
 In implementation of the reference-based compression, we have replaced `N' bases in the references and the targets with `A's and `T's, respectively. On reference-free compression, they are replaced with `A's, in both references and targets. If a user tends to replace `N' bases in a sequence with a normal distribution of `A', `C', `G' and `T's, he/she can employ GOOSE toolkit~\cite{web-goose}. Note that we have set the entropy of `N's to 2.0, by default, but it is possible for the user to set them to another value of interest, by ``-e'' option.
 
@@ -124,6 +124,12 @@ DESCRIPTION
   -m,  --min      INT      minimum block size: [1, 4294967295]
   -h,  --help              usage guide
 \end{code}
+
+The output of \smashpp visualizer is an ``SVG'' file, which its name is determined by ``-o'' option. By default, it is named ``map.svg''. Names of the reference and the target, which are going to be printed on the output image, can be altered by ``-rn'' and ``-tn'', respectively. They are by default the names written in the positions file. To have a vertical view of the image, instead of the default horizontal view, one can use ``-vv'' trigger.
+
+\smashpp performs reference-based and reference-free compressions to calculate the normalized relative compression (NRC) and redundancy (self complexity), respectively. If the user is not interested in showing them, he/she can turn them off by ``-nn'' and ``-nr'' triggers. In addition, \smashpp considers both regular and reverse complement maps by default in its calculations. Triggering ``-ni'' and ``-ng'' will stop showing inverted and regular maps, respectively.
+
+Options ``-l'', ``-c'', ``-p'', ``-w'', ``-s'', ``-f'' and ``-b'' can be used to change the appearance of the image. Assigning integers to ``-rt'' and ``-tt'' options will change the tick sizes of the reference and the target, respectively. \smashpp prints the sizes on axes in human readable format, e.g., 1K, 2M, etc. However, it can be triggered by ``-th'' option. Note that, here, 1K is equivalent to 1000 and not 1024. Finally, by setting ``-m'' to an integer value, only the regions that are bigger than that value will be illustrated.
 
 \subsection{Example}
 This section guides, step-by-step, employing \smashpp to find rearrangements.
