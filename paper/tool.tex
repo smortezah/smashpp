@@ -45,10 +45,10 @@ DESCRIPTION
                              3|blackman, 4|triangular, 5|welch,
                              6|sine, 7|nuttall}                
   -d,  --step   INT          sampling steps                    
-  -th, --thresh FLOAT        threshold: [0.0, 20.0]            
-  -sp, --save-profile        save profile (*.prf)              
-  -sf, --save-filter         save filtered file (*.fil)        
+  -th, --thresh FLOAT        threshold: [0.0, 20.0]        
   -sb, --save-seq            save sequence (input: Fasta/Fastq)
+  -sp, --save-profile        save profile (*.prf)              
+  -sf, --save-filter         save filtered file (*.fil)
   -ss, --save-segment        save segmented files (*-s_i)      
   -sa, --save-all            save profile, filetered and       
                              segmented files                   
@@ -73,7 +73,13 @@ The arguments ``-r'' and ``-t'' are used to specify the reference and the target
 
 In implementation of the reference-based compression, we have replaced `N' bases in the references and the targets with `A's and `T's, respectively. On reference-free compression, they are replaced with `A's, in both references and targets. If a user tends to replace `N' bases in a sequence with a normal distribution of `A', `C', `G' and `T's, he/she can employ GOOSE toolkit~\cite{web-goose}. Note that we have set the entropy of `N's to 2.0, by default, but it is possible for the user to set them to another value of interest, by ``-e'' option.
 
-Building different finite-context models can be done in the multi-threaded fashion, setting ``-n'' to an integer. To find similar regions in the reference and the target, information profile (obtained by compression) needs to be filtered, of which the scale can be set as S (small), M (medium) or L (large). Size of the window and type of the windowing function, described in~\ref{subsec.software}, can be set by ``-w'' and ``-wt'' options, respectively. Instead of considering the complete profile information, the user is able to make samples of it by steps of which size can be determined by ``-d''.
+Building different finite-context models can be done in the multi-threaded fashion, setting ``-n'' to an integer. To find similar regions in the reference and the target, information profile (obtained by compression) needs to be filtered, of which the scale can be set as S (small), M (medium) or L (large). Size of the window and type of the windowing function, described in~\ref{subsec.software}, can be set by ``-w'' and ``-wt'' options, respectively. Instead of considering the complete profile information, the user is able to make samples of it by steps of which size can be determined by ``-d''. For the purpose of segmenting the filtered information profile, the average entropy of reference-based compression is used as the threshold, by default. However, this threshold can be altered by ``-th'' option.
+
+\smashpp accepts \fasta and \fastq files as input, in addition to sequences. In these cases, the input files are converted to sequences and then processed further. It is possible to save these sequences by ``-sb'' option.
+
+After obtaining the information profile, \smashpp filters it and then removes it, by default. However, it is possible to save the profile by ``-sp'' option. The same thing happens to the filtered file, i.e., it is segmented and then is removed. But, the user can use ``-sf'' to save the filtered file. Also, the segmented files can be saved using ``-ss''. The user can save all the information profile, filtered and segmented files, by triggering ``-sa'' option.
+
+For the purpose of compression, either reference-based or reference-free, it is recommended to use ``-l'' option, since it configures the models automatically. However, using ``-rm'' and ``-tm'', the user would be able to manually configure the reference model, for reference-based compression, and the target model, for reference-free compression. Parameters of the models are described in detail in section~\ref{sec.methods}.
 
 \subsection{Example}
 This section guides, step-by-step, employing \smashpp to find rearrangements.

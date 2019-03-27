@@ -460,6 +460,8 @@ inline void Param::help() const {
   ll(bold("-th") + ", " + bold("--thresh") + " " + underline("FLOAT"), 3,
      "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
          string_format("%.1f", MAX_THRSH) + "]");
+  ll(bold("-sb") + ", " + bold("--save-seq"), 2,
+     "save sequence (input: Fasta/Fastq)");
   ll(bold("-sp") + ", " + bold("--save-profile"), 2, "save profile (*.prf)");
   ll(bold("-sf") + ", " + bold("--save-filter"), 2,
      "save filtered file (*.fil)");
