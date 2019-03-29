@@ -12,16 +12,16 @@
 #include "naming.hpp"
 using namespace smashpp;
 
-Filter::Filter(std::shared_ptr<Param> p) : wtype(p->wtype) {
-  set_wsize(p);
-  if ((p->filter || p->segment) && p->verbose) show_info(p);
+Filter::Filter(std::shared_ptr<Param> par) : wtype(par->wtype) {
+  set_wsize(par);
+  if ((par->filter || par->segment) && par->verbose) show_info(par);
 }
 
-inline void Filter::set_wsize(std::shared_ptr<Param> p) {
-  if (p->manFilterScale) {
-    const auto biggest = std::min(file_size(p->tar), file_size(p->ref));
-    const auto lg = std::log10(biggest / p->sampleStep);
-    switch (p->filterScale) {
+inline void Filter::set_wsize(std::shared_ptr<Param> par) {
+  if (par->manFilterScale) {
+    const auto biggest = std::min(file_size(par->tar), file_size(par->ref));
+    const auto lg = std::log10(biggest / par->sampleStep);
+    switch (par->filterScale) {
       case FilterScale::S:
         wsize = std::pow(2, 2 * lg) + 1;
         break;
@@ -33,13 +33,13 @@ inline void Filter::set_wsize(std::shared_ptr<Param> p) {
         break;
     }
   } else {
-    wsize = is_odd(p->wsize) ? p->wsize : p->wsize + 1;
+    wsize = is_odd(par->wsize) ? par->wsize : par->wsize + 1;
   }
 
   window.resize(wsize);
 }
 
-inline void Filter::show_info(std::shared_ptr<Param> p) const {
+inline void Filter::show_info(std::shared_ptr<Param> par) const {
   constexpr uint8_t lblWidth = 19;
   constexpr uint8_t colWidth = 8;
   constexpr uint8_t tblWidth =
@@ -62,16 +62,16 @@ inline void Filter::show_info(std::shared_ptr<Param> p) const {
     std::cerr << std::setw(colWidth) << std::left;
     switch (c) {
       case 'f':
-        std::cerr << p->print_win_type();
+        std::cerr << par->print_win_type();
         break;
       case 's':
-        std::cerr << p->print_filter_scale();
+        std::cerr << par->print_filter_scale();
         break;
       case 'w':
         std::cerr << wsize;
         break;
       case 't':
-        std::cerr << p->thresh;
+        std::cerr << par->thresh;
         break;
       default:
         break;
@@ -83,19 +83,19 @@ inline void Filter::show_info(std::shared_ptr<Param> p) const {
     switch (c) {
       case '1':
         std::cerr.imbue(std::locale("en_US.UTF8"));
-        std::cerr << file_size(p->ref);
+        std::cerr << file_size(par->ref);
         break;
-      // case 'r':  cerr<<p->ref; break;
+      // case 'r':  cerr<<par->ref; break;
       case 'r':
-        std::cerr << p->refName;
+        std::cerr << par->refName;
         break;
       case '2':
         std::cerr.imbue(std::locale("en_US.UTF8"));
-        std::cerr << file_size(p->tar);
+        std::cerr << file_size(par->tar);
         break;
-      // case 't':  cerr<<p->tar; break;
+      // case 't':  cerr<<par->tar; break;
       case 't':
-        std::cerr << p->tarName;
+        std::cerr << par->tarName;
         break;
       default:
         break;
@@ -108,13 +108,13 @@ inline void Filter::show_info(std::shared_ptr<Param> p) const {
   midrule();
   label("Window function");
   filter_vals('f');
-  if (p->manFilterScale || !p->manWSize) {
+  if (par->manFilterScale || !par->manWSize) {
     label("Filter scale");
     filter_vals('s');
   }
   label("Window size");
   filter_vals('w');
-  if (p->manThresh) {
+  if (par->manThresh) {
     label("Threshold");
     filter_vals('t');
   }
@@ -137,24 +137,26 @@ inline void Filter::show_info(std::shared_ptr<Param> p) const {
   botrule();
 }
 
-void Filter::smooth_seg(std::shared_ptr<Param> p) {
-  message = "Filtering & segmenting " + italic(p->tarName) + " ";
+void Filter::smooth_seg(std::shared_ptr<Param> par) {
+  message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (wtype == WType::RECTANGULAR) {
-    p->saveFilter ? smooth_seg_rect<true>(p) : smooth_seg_rect<false>(p);
+    par->saveFilter ? smooth_seg_rect<true>(par) : smooth_seg_rect<false>(par);
   } else {
     make_window();
-    p->saveFilter ? smooth_seg_non_rect<true>(p) : smooth_seg_non_rect<false>(p);
+    par->saveFilter ? smooth_seg_non_rect<true>(par)
+                    : smooth_seg_non_rect<false>(par);
   }
 
-  if (!p->saveAll && !p->saveProfile)
-    remove((gen_name(p->ID, p->refName, p->tarName, Format::PROFILE)).c_str());
-  if (!p->saveAll && !p->saveFilter)
-    remove((gen_name(p->ID, p->refName, p->tarName, Format::FILTER)).c_str());
+  if (!par->saveAll && !par->saveProfile)
+    remove((gen_name(par->ID, par->refName, par->tarName, Format::PROFILE))
+               .c_str());
+  if (!par->saveAll && !par->saveFilter)
+    remove((gen_name(par->ID, par->refName, par->tarName, Format::FILTER))
+               .c_str());
 
-  std::cerr << message << "finished. "
-            << "Detected " << nSegs << " segment" << (nSegs == 1 ? "" : "s")
-            << ".\n";
+  std::cerr << message << "finished. Detected " << nSegs << " segment"
+            << (nSegs == 1 ? "" : "s") << ".\n";
 }
 
 inline void Filter::make_window() {
@@ -310,10 +312,12 @@ inline void Filter::nuttall() {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_rect(std::shared_ptr<Param> p) {
-  const auto profileName{gen_name(p->ID, p->ref, p->tar, Format::PROFILE)};
-  const auto filterName{gen_name(p->ID, p->ref, p->tar, Format::FILTER)};
-  const auto positionName{gen_name(p->ID, p->ref, p->tar, Format::POSITION)};
+inline void Filter::smooth_seg_rect(std::shared_ptr<Param> par) {
+  const auto profileName{
+      gen_name(par->ID, par->ref, par->tar, Format::PROFILE)};
+  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::FILTER)};
+  const auto positionName{
+      gen_name(par->ID, par->ref, par->tar, Format::POSITION)};
   check_file(profileName);
   std::ifstream prfF(profileName);
   std::ofstream filF(filterName);
@@ -321,11 +325,11 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param> p) {
   std::vector<float> seq;
   seq.reserve(wsize);
   auto seg = std::make_shared<Segment>();
-  seg->thresh = p->thresh;
-  if (p->manSegSize) seg->minSize = p->segSize;
+  seg->thresh = par->thresh;
+  if (par->manSegSize) seg->minSize = par->segSize;
   {
     uint8_t maxCtx = 0;
-    for (const auto& e : p->refMs)
+    for (const auto& e : par->refMs)
       if (e.k > maxCtx) maxCtx = e.k;
     seg->set_guards(maxCtx);
   }
@@ -333,10 +337,10 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param> p) {
   auto sum{0.f};
   auto filtered{0.f};
   uint64_t symsNo{0};
-  seg->totalSize = file_lines(profileName) / p->sampleStep;
-  // const auto totalSize = (file_lines(profileName) / p->sampleStep) + 1;
+  seg->totalSize = file_lines(profileName) / par->sampleStep;
+  // const auto totalSize = (file_lines(profileName) / par->sampleStep) + 1;
   const auto jump_lines = [&]() {
-    for (uint64_t i = p->sampleStep - 1; i--;) ignore_this_line(prfF);
+    for (uint64_t i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
   };
 
   // First value
@@ -401,10 +405,12 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param> p) {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param> p) {
-  const auto profileName{gen_name(p->ID, p->ref, p->tar, Format::PROFILE)};
-  const auto filterName{gen_name(p->ID, p->ref, p->tar, Format::FILTER)};
-  const auto positionName{gen_name(p->ID, p->ref, p->tar, Format::POSITION)};
+inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param> par) {
+  const auto profileName{
+      gen_name(par->ID, par->ref, par->tar, Format::PROFILE)};
+  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::FILTER)};
+  const auto positionName{
+      gen_name(par->ID, par->ref, par->tar, Format::POSITION)};
   check_file(profileName);
   std::ifstream prfF(profileName);
   std::ofstream filF(filterName);
@@ -412,11 +418,11 @@ inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param> p) {
   std::vector<float> seq;
   seq.reserve(wsize);
   auto seg = std::make_shared<Segment>();
-  seg->thresh = p->thresh;
-  if (p->manSegSize) seg->minSize = p->segSize;
+  seg->thresh = par->thresh;
+  if (par->manSegSize) seg->minSize = par->segSize;
   {
     uint8_t maxCtx = 0;
-    for (const auto& e : p->refMs)
+    for (const auto& e : par->refMs)
       if (e.k > maxCtx) maxCtx = e.k;
     seg->set_guards(maxCtx);
   }
@@ -427,10 +433,10 @@ inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param> p) {
   auto sum{0.f};
   auto filtered{0.f};
   uint64_t symsNo{0};
-  seg->totalSize = file_lines(profileName) / p->sampleStep;
-  // const auto totalSize = (file_lines(profileName) / p->sampleStep) + 1;
+  seg->totalSize = file_lines(profileName) / par->sampleStep;
+  // const auto totalSize = (file_lines(profileName) / par->sampleStep) + 1;
   const auto jump_lines = [&]() {
-    for (uint64_t i = p->sampleStep - 1; i--;) ignore_this_line(prfF);
+    for (uint64_t i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
   };
 
   // First value

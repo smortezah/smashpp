@@ -68,7 +68,7 @@ inline static uint64_t file_lines(std::string name) {
 }
 
 // Must be inline
-inline static void extract_subseq(const std::unique_ptr<SubSeq>& subseq) {
+inline static void extract_subseq(std::unique_ptr<SubSeq>& subseq) {
   std::ifstream fIn(subseq->inName);
   std::ofstream fOut(subseq->outName);
 
