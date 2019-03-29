@@ -149,11 +149,13 @@ int main(int argc, char* argv[]) {
           // Make all IRs consistent
           for (auto& e : models->rMs) {
             e.ir = timesRunning;
-            if (e.child) e.child->ir = timesRunning;
+            if (e.child)
+              e.child->ir = timesRunning;
           }
           for (auto& e : models->tMs) {
             e.ir = timesRunning;
-            if (e.child) e.child->ir = timesRunning;
+            if (e.child)
+              e.child->ir = timesRunning;
           }
 
           // Build models and Compress
@@ -161,7 +163,8 @@ int main(int argc, char* argv[]) {
           models->compress(par);
 
           // Filter and segment
-          if (!par.manThresh) par.thresh = static_cast<float>(models->aveEnt);
+          if (!par.manThresh)
+            par.thresh = static_cast<float>(models->aveEnt);
           auto filter = std::make_unique<Filter>(par);
           filter->smooth_seg(par);
           if (filter->nSegs == 0) {
@@ -200,11 +203,13 @@ int main(int argc, char* argv[]) {
             models = std::make_unique<FCM>(par);
             for (auto& e : models->rMs) {
               e.ir = timesRunning;
-              if (e.child) e.child->ir = timesRunning;
+              if (e.child)
+                e.child->ir = timesRunning;
             }
             for (auto& e : models->tMs) {
               e.ir = timesRunning;
-              if (e.child) e.child->ir = timesRunning;
+              if (e.child)
+                e.child->ir = timesRunning;
             }
 
             // Build models and Compress
@@ -214,7 +219,8 @@ int main(int argc, char* argv[]) {
             models->compress(par);
 
             // Filter and segment
-            if (!par.manThresh) par.thresh = static_cast<float>(models->aveEnt);
+            if (!par.manThresh)
+              par.thresh = static_cast<float>(models->aveEnt);
             filter = std::make_unique<Filter>(par);
             filter->smooth_seg(par);
             if (filter->nSegs == 0) {
@@ -237,7 +243,8 @@ int main(int argc, char* argv[]) {
               for (uint64_t j = 0; j != filter->nSegs; ++j) {
                 par.seq = selfSegName + std::to_string(j);
                 models->self_compress(par, j);
-                if (!par.saveAll && !par.saveSegment) remove(par.seq.c_str());
+                if (!par.saveAll && !par.saveSegment)
+                  remove(par.seq.c_str());
               }
             }
             models->aggregate_slf(par);
