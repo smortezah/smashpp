@@ -161,10 +161,10 @@ int main(int argc, char* argv[]) {
           models->store(par);
           models->compress(par);
 
-      //     // Filter and segment
-      //     if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
-      //     auto filter = std::make_unique<Filter>(par);
-      //     filter->smooth_seg(par);
+          // Filter and segment
+          if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
+          auto filter = std::make_unique<Filter>(par);
+          filter->smooth_seg(par);
       //     if (filter->nSegs == 0) {
       //       std::cerr << '\n';
       //       continue;

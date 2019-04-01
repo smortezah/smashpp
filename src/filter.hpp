@@ -33,13 +33,13 @@ class Filter {
   void set_wsize(std::shared_ptr<Param>);
   void show_info(std::shared_ptr<Param>) const;
   void make_window();
-  void hamming();
-  void hann();
-  void blackman();
-  void triangular();  // Bartlett window
-  void welch();
-  void sine();
-  void nuttall();
+  void make_hamming();
+  void make_hann();
+  void make_blackman();
+  void make_triangular();  // Bartlett window
+  void make_welch();
+  void make_sine();
+  void make_nuttall();
   template <bool SaveFilter>
   void smooth_seg_rect(std::shared_ptr<Param>);
   template <bool SaveFilter>

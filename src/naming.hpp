@@ -17,9 +17,11 @@ inline static std::string gen_name(uint32_t ID, std::string ref,
       return std::to_string(ID) + "." + tarName + ".prf";
       // return std::to_string(ID) + "-" + refName + "_" + tarName + ".prf";
     case Format::filter:
-      return std::to_string(ID) + "-" + refName + "_" + tarName + ".fil";
+      return std::to_string(ID) + "." + tarName + ".fil";
+      // return std::to_string(ID) + "-" + refName + "_" + tarName + ".fil";
     case Format::position:
-      return std::to_string(ID) + "-" + refName + "_" + tarName + ".pos";
+      return std::to_string(ID) + "." + tarName + ".pos";
+      // return std::to_string(ID) + "-" + refName + "_" + tarName + ".pos";
     case Format::segment:
       return std::to_string(ID) + "-" + refName + "_" + tarName + "-s";
     default:
@@ -36,9 +38,11 @@ inline static std::string gen_name(std::string ref, std::string tar,
       return tarName + ".prf";
       // return refName + "-" + tarName + ".prf";
     case Format::filter:
-      return refName + "-" + tarName + ".fil";
+      return tarName + ".fil";
+      // return refName + "-" + tarName + ".fil";
     case Format::position:
-      return refName + "-" + tarName + ".pos";
+      return tarName + ".pos";
+      // return refName + "-" + tarName + ".pos";
     case Format::segment:
       return refName + "-" + tarName + "-s";
     default:
