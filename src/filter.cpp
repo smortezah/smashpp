@@ -141,11 +141,12 @@ void Filter::smooth_seg(std::shared_ptr<Param> par) {
   message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (wtype == WType::rectangular) {
-    par->saveFilter ? smooth_seg_rect<true>(par) : smooth_seg_rect<false>(par);
+    (par->saveFilter || par->saveAll) ? smooth_seg_rect<true>(par)
+                                      : smooth_seg_rect<false>(par);
   } else {
     make_window();
-    par->saveFilter ? smooth_seg_non_rect<true>(par)
-                    : smooth_seg_non_rect<false>(par);
+    (par->saveFilter || par->saveAll) ? smooth_seg_non_rect<true>(par)
+                                      : smooth_seg_non_rect<false>(par);
   }
 
   if (!par->saveAll && !par->saveProfile)
@@ -162,32 +163,32 @@ void Filter::smooth_seg(std::shared_ptr<Param> par) {
 inline void Filter::make_window() {
   switch (wtype) {
     case WType::hamming:
-      hamming();
+      make_hamming();
       break;
     case WType::hann:
-      hann();
+      make_hann();
       break;
     case WType::blackman:
-      blackman();
+      make_blackman();
       break;
     case WType::triangular:
-      triangular();
+      make_triangular();
       break;
     case WType::welch:
-      welch();
+      make_welch();
       break;
     case WType::sine:
-      sine();
+      make_sine();
       break;
     case WType::nuttall:
-      nuttall();
+      make_nuttall();
       break;
     default:
       break;
   }
 }
 
-inline void Filter::hamming() {
+inline void Filter::make_hamming() {
   if (wsize == 1) error("The size of Hamming window must be greater than 1.");
   float num{0.f};
   uint32_t den{0};
@@ -204,7 +205,7 @@ inline void Filter::hamming() {
         static_cast<float>(0.54 - 0.46 * std::cos(n * num / den));
 }
 
-inline void Filter::hann() {
+inline void Filter::make_hann() {
   if (wsize == 1) error("The size of Hann window must be greater than 1.");
   float num{0.f};
   uint32_t den{0};
@@ -221,7 +222,7 @@ inline void Filter::hann() {
         static_cast<float>(0.5 * (1 - std::cos(n * num / den)));
 }
 
-inline void Filter::blackman() {
+inline void Filter::make_blackman() {
   if (wsize == 1) error("The size of Blackman window must be greater than 1.");
   float num1{0.f};
   float num2{0.f};
@@ -245,7 +246,7 @@ inline void Filter::blackman() {
 }
 
 // Bartlett window:  w(n) = 1 - |(n - (N-1)/2) / (N-1)/2|
-inline void Filter::triangular() {
+inline void Filter::make_triangular() {
   if (wsize == 1)
     error("The size of triangular window must be greater than 1.");
 
@@ -262,7 +263,7 @@ inline void Filter::triangular() {
   }
 }
 
-inline void Filter::welch() {  // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
+inline void Filter::make_welch() {  // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
   if (wsize == 1) error("The size of Welch window must be greater than 1.");
 
   if (is_odd(wsize)) {
@@ -277,7 +278,7 @@ inline void Filter::welch() {  // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
   }
 }
 
-inline void Filter::sine() {
+inline void Filter::make_sine() {
   if (wsize == 1) error("The size of sine window must be greater than 1.");
   constexpr float num{PI};
   const uint32_t den{wsize - 1};
@@ -286,7 +287,7 @@ inline void Filter::sine() {
     window[n] = window[last - n] = std::sin(n * num / den);
 }
 
-inline void Filter::nuttall() {
+inline void Filter::make_nuttall() {
   if (wsize == 1) error("The size of Nuttall window must be greater than 1.");
   float num1{0.f};
   float num2{0.f};
@@ -401,6 +402,7 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param> par) {
   if (file_is_empty(positionName)) remove(positionName.c_str());
   filF.close();
   if (!SaveFilter) remove(filterName.c_str());
+  // if (!par->saveAll && !SaveFilter) remove(filterName.c_str());
   nSegs = seg->nSegs;
 }
 
