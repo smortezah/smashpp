@@ -106,9 +106,6 @@ static constexpr float PI{3.14159265f};
 static constexpr int FILE_BUF{8 * 1024};    // 8K
 static constexpr uint8_t TEXTWIDTH{65};
 static constexpr double DBLANK{-2.0};
-static const std::string TERM_SEP{
-    ". . . . . . . . . . . . . . . . . . . "
-    ". . . . . . . . . .\n"};
 
 // Lookup table
 static constexpr uint64_t POW2[44] {

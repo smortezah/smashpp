@@ -165,26 +165,28 @@ int main(int argc, char* argv[]) {
           if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
           auto filter = std::make_unique<Filter>(par);
           filter->smooth_seg(par);
-      //     if (filter->nSegs == 0) {
-      //       std::cerr << '\n';
-      //       continue;
-      //     }
-      //     filter->merge_extract_seg(par->ID, par->ref, par->tar);
-      //     const auto segName_tar{
-      //         gen_name(par->ID, par->ref, par->tar, Format::segment)};
+          if (filter->nSegs == 0) {
+            std::cerr << '\n';
+            continue;
+          }
+          filter->merge_extract_seg(par->ID, par->ref, par->tar);
+          const auto segName_tar{
+              gen_name(par->ID, par->ref, par->tar, Format::segment)};
 
-      //     // Ref-free compress
-      //     if (!par->noRedun) {
-      //       std::cerr << TERM_SEP << ">>> "
-      //                 << italic("Reference-free compression of the segment")
-      //                 << italic(filter->nSegs == 1 ? "" : "s") << '\n';
-      //       models->selfEnt.reserve(filter->nSegs);
-      //       for (uint64_t i = 0; i != filter->nSegs; ++i) {
-      //         par->seq = segName_tar + std::to_string(i);
-      //         models->self_compress(par, i);
-      //       }
-      //     }
-      //     models->aggregate_slf(par);
+          // Ref-free compress
+          if (!par->noRedun) {
+            std::cerr << ". . . . . . . . . . . . . . . . . . . "
+                         ". . . . . . . . . .\n>>> "
+                      << italic("Reference-free compression of the segment")
+                      << italic(filter->nSegs == 1 ? "" : "s") << '\n';
+
+            models->selfEnt.reserve(filter->nSegs);
+            for (uint64_t i = 0; i != filter->nSegs; ++i) {
+              par->seq = segName_tar + std::to_string(i);
+              models->self_compress(par, i);
+            }
+          }
+          // models->aggregate_slf(par);
 
       //     // Consider the ref as new tar and segments of the tar as new refs
       //     std::cerr << bold(
@@ -226,43 +228,44 @@ int main(int argc, char* argv[]) {
       //       filter->merge_extract_seg(par->ID, par->ref, par->tar);
 
       //       // Ref-free compress
-      //       if (!par->noRedun) {
-      //         std::cerr << TERM_SEP;
-      //         std::cerr << ">>> "
-      //                   << italic("Reference-free compression of the segment")
-      //                   << italic(filter->nSegs == 1 ? "" : "s") << '\n';
-      //         models->selfEnt.reserve(filter->nSegs);
-      //         const auto selfSegName{
-      //             gen_name(par->ID, par->ref, par->tar, Format::segment)};
-      //         for (uint64_t j = 0; j != filter->nSegs; ++j) {
-      //           par->seq = selfSegName + std::to_string(j);
-      //           models->self_compress(par, j);
-      //           if (!par->saveAll && !par->saveSegment)
-      //             remove(par->seq.c_str());
-      //         }
-      //       }
-      //       models->aggregate_slf(par);
-      //       std::cerr << '\n';
-      //     }
-      //     models->tarSegMsg.clear();
-      //     filter->aggregate_mid_pos(par->ID, origRef, origTar);
+            if (!par->noRedun) {
+              // std::cerr << ". . . . . . . . . . . . . . . . . . . "
+              //              ". . . . . . . . . .\n>>> "
+              //           << italic("Reference-free compression of the segment")
+            //             << italic(filter->nSegs == 1 ? "" : "s") << '\n';
+          //         models->selfEnt.reserve(filter->nSegs);
+          //         const auto selfSegName{
+          //             gen_name(par->ID, par->ref, par->tar,
+          //             Format::segment)};
+          //         for (uint64_t j = 0; j != filter->nSegs; ++j) {
+          //           par->seq = selfSegName + std::to_string(j);
+          //           models->self_compress(par, j);
+          //           if (!par->saveAll && !par->saveSegment)
+          //             remove(par->seq.c_str());
+          //         }
+          //       }
+          //       models->aggregate_slf(par);
+          //       std::cerr << '\n';
+          //     }
+          //     models->tarSegMsg.clear();
+          //     filter->aggregate_mid_pos(par->ID, origRef, origTar);
 
-      //     // Remove temporary files
-      //     for (uint64_t i = 0; i != tarSegs; ++i)
-      //       if (!par->saveAll && !par->saveSegment)
-      //         remove((segName_tar + std::to_string(i)).c_str());
-      //     if (!par->saveSeq) {
-      //       if (par->refType == FileType::fasta ||
-      //           par->refType == FileType::fastq) {
-      //         remove(origRef.c_str());
-      //         rename((origRef + LBL_BAK).c_str(), origRef.c_str());
-      //       }
-      //       if (par->tarType == FileType::fasta ||
-      //           par->tarType == FileType::fastq) {
-      //         remove(origTar.c_str());
-      //         rename((origTar + LBL_BAK).c_str(), origTar.c_str());
-      //       }
-      //     }
+          //     // Remove temporary files
+          //     for (uint64_t i = 0; i != tarSegs; ++i)
+          //       if (!par->saveAll && !par->saveSegment)
+          //         remove((segName_tar + std::to_string(i)).c_str());
+          //     if (!par->saveSeq) {
+          //       if (par->refType == FileType::fasta ||
+          //           par->refType == FileType::fastq) {
+          //         remove(origRef.c_str());
+          //         rename((origRef + LBL_BAK).c_str(), origRef.c_str());
+          //       }
+          //       if (par->tarType == FileType::fasta ||
+          //           par->tarType == FileType::fastq) {
+          //         remove(origTar.c_str());
+          //         rename((origTar + LBL_BAK).c_str(), origTar.c_str());
+          //       }
+          //     }
         }  // for
 
       //   // Aggregate final positions

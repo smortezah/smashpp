@@ -521,7 +521,7 @@ inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param> par) {
 void Filter::merge_extract_seg(uint32_t ID, std::string ref,
                                std::string tar) const {
   check_file(gen_name(ID, ref, tar, Format::position));
-  std::ifstream posF(gen_name(ID, ref, tar, Format::position));
+  std::ifstream pos_file(gen_name(ID, ref, tar, Format::position));
   const auto segName{gen_name(ID, ref, tar, Format::segment)};
   auto subseq = std::make_unique<SubSeq>();
   subseq->inName = tar;
@@ -529,13 +529,13 @@ void Filter::merge_extract_seg(uint32_t ID, std::string ref,
   const uint64_t maxTarPos{file_size(tar) - 1};
 
   // vector<Position> pos;
-  // for (uint64_t beg,end,ent; posF >> beg >> end >> ent;) {
+  // for (uint64_t beg,end,ent; pos_file >> beg >> end >> ent;) {
   //   pos.emplace_back(Position(beg, end));
   // }
   // std::sort(std::begin(pos), std::end(pos),
   //   [] (const Position& a, const Position& b) { return a.beg < b.beg; });
 
-  for (std::string beg, end, ent; posF >> beg >> end >> ent; ++i) {
+  for (std::string beg, end, ent; pos_file >> beg >> end >> ent; ++i) {
     subseq->outName = segName + std::to_string(i);
     subseq->begPos = std::stoull(beg);
     if (std::stoull(end) > maxTarPos)
@@ -547,7 +547,7 @@ void Filter::merge_extract_seg(uint32_t ID, std::string ref,
     extract_subseq(subseq);
   }
 
-  posF.close();
+  pos_file.close();
 }
 
 void Filter::aggregate_mid_pos(uint32_t ID, std::string origin,

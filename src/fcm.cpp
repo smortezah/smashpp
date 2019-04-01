@@ -724,7 +724,7 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
   }
 }
 
-void FCM::self_compress(std::shared_ptr<Param> p, uint64_t ID) {
+void FCM::self_compress(std::shared_ptr<Param> par, uint64_t ID) {
   message = "Compressing segment " + std::to_string(ID + 1) + " ";
 
   self_compress_alloc();
@@ -732,20 +732,20 @@ void FCM::self_compress(std::shared_ptr<Param> p, uint64_t ID) {
   if (tMs.size() == 1 && tTMsSize == 0)  // 1 MM
     switch (tMs[0].cont) {
       case Container::sketch_8:
-        self_compress_1(p, std::begin(cmls4), ID);
+        self_compress_1(par, std::begin(cmls4), ID);
         break;
       case Container::log_table_8:
-        self_compress_1(p, std::begin(lgtbl8), ID);
+        self_compress_1(par, std::begin(lgtbl8), ID);
         break;
       case Container::table_32:
-        self_compress_1(p, std::begin(tbl32), ID);
+        self_compress_1(par, std::begin(tbl32), ID);
         break;
       case Container::table_64:
-        self_compress_1(p, std::begin(tbl64), ID);
+        self_compress_1(par, std::begin(tbl64), ID);
         break;
     }
   else
-    self_compress_n(p, ID);
+    self_compress_n(par, ID);
 
   std::cerr << message
             << "finished. Average entropy=" << fixed_precision(PREC_PRF)
