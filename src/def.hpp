@@ -25,31 +25,31 @@ using prc_t = double;  // Precision type -- MUST be double
 
 // Enum
 enum class Container {  // Data struct
-  TABLE_64,
-  TABLE_32,
-  LOG_TABLE_8,
-  SKETCH_8
+  table_64,
+  table_32,
+  log_table_8,
+  sketch_8
 };
 enum class WType {  // Types of windowing function
-  RECTANGULAR,
-  HAMMING,
-  HANN,
-  BLACKMAN,
-  TRIANGULAR,
-  WELCH,
-  SINE,
-  NUTTALL
+  rectangular,
+  hamming,
+  hann,
+  blackman,
+  triangular,
+  welch,
+  sine,
+  nuttall
 };
-enum class Format { PROFILE, FILTER, POSITION, SEGMENT, SELF };
-enum class FileType { SEQ, FASTA, FASTQ };
-enum class FilterScale { S, M, L };
-enum class Problem { WARNING, ERROR };
+enum class Format { profile, filter, position, segment, self };
+enum class FileType { seq, fasta, fastq };
+enum class FilterScale { s, m, l };
+enum class Problem { warning, error };
 
 const std::vector<WType> SET_WTYPE{
-    WType::RECTANGULAR, WType::HAMMING, WType::HANN, WType::BLACKMAN,
-    WType::TRIANGULAR,  WType::WELCH,   WType::SINE, WType::NUTTALL};
-const std::vector<FilterScale> SET_FSCALE{FilterScale::S, FilterScale::M,
-                                          FilterScale::L};
+    WType::rectangular, WType::hamming, WType::hann, WType::blackman,
+    WType::triangular,  WType::welch,   WType::sine, WType::nuttall};
+const std::vector<FilterScale> SET_FSCALE{FilterScale::s, FilterScale::m,
+                                          FilterScale::l};
 
 // Metaprogram
 // Power a^n
@@ -80,8 +80,8 @@ static constexpr uint8_t PART_GUARD{10};    // Expand beg & end pos -- filter
 static constexpr uint32_t WS{256};          // Window size -- filter
 static constexpr uint32_t MIN_WS{1};
 static constexpr uint32_t MAX_WS{0xffffffff};  // 2^32 - 1
-static constexpr auto WT{WType::HANN};      // Window type -- filter
-static constexpr auto FS{FilterScale::L};   // Filt. scale -- filter
+static constexpr auto WT{WType::hann};      // Window type -- filter
+static constexpr auto FS{FilterScale::l};   // Filt. scale -- filter
 static constexpr float THRSH{1.5};          // Threshold   -- filter
 static constexpr float MIN_THRSH{0};
 static constexpr float MAX_THRSH{20};
@@ -96,11 +96,7 @@ static constexpr uint32_t G{64};            // Machine word size-univers hash fn
 static constexpr uint8_t LOG_BASE{2};       // Logarithmic counting
 static constexpr uint8_t PREC_PRF{3};       // Precisions - floats in Inf. prof
 static constexpr uint8_t PREC_FIL{3};       // Precisions - floats in filt. file
-static const std::string FMT_PRF{"prf"};    // Format - inf. profile
-static const std::string FMT_POS{"pos"};    // Format - positions file
-static const std::string FMT_FIL{"fil"};    // Format - filtered files
 static const std::string FMT_N{"n"};        // Format - position of N files
-static const std::string LBL_SEG{"s"};      // Label  - segment files
 static const std::string LBL_BAK{"_bk"};    // Label  - backup files
 static const std::string LBL_MID{"mid"};    // Label  - mid position files
 static const std::string POS_HDR{"#" + SMASHPP};  // Hdr of pos file

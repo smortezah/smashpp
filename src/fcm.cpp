@@ -39,13 +39,13 @@ FCM::FCM(std::shared_ptr<Param>& par)
 inline void FCM::set_cont(std::vector<MMPar>& Ms) {
   for (auto& m : Ms) {
     if (m.k > K_MAX_LGTBL8)
-      m.cont = Container::SKETCH_8;
+      m.cont = Container::sketch_8;
     else if (m.k > K_MAX_TBL32)
-      m.cont = Container::LOG_TABLE_8;
+      m.cont = Container::log_table_8;
     else if (m.k > K_MAX_TBL64)
-      m.cont = Container::TABLE_32;
+      m.cont = Container::table_32;
     else
-      m.cont = Container::TABLE_64;
+      m.cont = Container::table_64;
   }
 }
 
@@ -214,7 +214,7 @@ inline void FCM::show_info(std::shared_ptr<Param> par) const {
   rmm_row("Context size (\U0001D705)    ", 'k');
   bool hasSketch{false};
   for (const auto& e : rMs)
-    if (e.cont == Container::SKETCH_8) {
+    if (e.cont == Container::sketch_8) {
       hasSketch = true;
       break;
     }
@@ -242,7 +242,7 @@ inline void FCM::show_info(std::shared_ptr<Param> par) const {
   tmm_row("Context size (\U0001D705)    ", 'k');
   hasSketch = false;
   for (const auto& e : tMs)
-    if (e.cont == Container::SKETCH_8) {
+    if (e.cont == Container::sketch_8) {
       hasSketch = true;
       break;
     }
@@ -286,16 +286,16 @@ inline void FCM::show_info(std::shared_ptr<Param> par) const {
 inline void FCM::alloc_model() {
   for (const auto& m : rMs) {
     switch (m.cont) {
-      case Container::SKETCH_8:
+      case Container::sketch_8:
         cmls4.emplace_back(std::make_unique<CMLS4>(m.w, m.d));
         break;
-      case Container::LOG_TABLE_8:
+      case Container::log_table_8:
         lgtbl8.emplace_back(std::make_unique<LogTable8>(m.k));
         break;
-      case Container::TABLE_32:
+      case Container::table_32:
         tbl32.emplace_back(std::make_unique<Table32>(m.k));
         break;
-      case Container::TABLE_64:
+      case Container::table_64:
         tbl64.emplace_back(std::make_unique<Table64>(m.k));
         break;
     }
@@ -327,19 +327,19 @@ inline void FCM::store_1(std::shared_ptr<Param> par) {
 
   for (const auto& m : rMs) {  // Mask: 1<<2k - 1 = 4^k - 1
     switch (m.cont) {
-      case Container::SKETCH_8:
+      case Container::sketch_8:
         store_impl(par->ref, (1ull << (2 * m.k)) - 1ull /*Mask 64*/,
                    cmls4_iter++);
         break;
-      case Container::LOG_TABLE_8:
+      case Container::log_table_8:
         store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
                    lgtbl8_iter++);
         break;
-      case Container::TABLE_64:
+      case Container::table_64:
         store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
                    tbl64_iter++);
         break;
-      case Container::TABLE_32:
+      case Container::table_32:
         store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
                    tbl32_iter++);
         break;
@@ -359,22 +359,22 @@ inline void FCM::store_n(std::shared_ptr<Param> par) {
 
   for (uint8_t i = 0; i != rMs.size(); ++i) {  // Mask: 1<<2k-1 = 4^k-1
     switch (rMs[i].cont) {
-      case Container::SKETCH_8:
+      case Container::sketch_8:
         thrd[i % vThrSz] = std::thread(
             &FCM::store_impl<uint64_t, decltype(cmls4_iter)>, this,
             std::cref(par->ref), (1ull << (2 * rMs[i].k)) - 1ull, cmls4_iter++);
         break;
-      case Container::LOG_TABLE_8:
+      case Container::log_table_8:
         thrd[i % vThrSz] = std::thread(
             &FCM::store_impl<uint32_t, decltype(lgtbl8_iter)>, this,
             std::cref(par->ref), (1ul << (2 * rMs[i].k)) - 1ul, lgtbl8_iter++);
         break;
-      case Container::TABLE_64:
+      case Container::table_64:
         thrd[i % vThrSz] = std::thread(
             &FCM::store_impl<uint32_t, decltype(tbl64_iter)>, this,
             std::cref(par->ref), (1ul << (2 * rMs[i].k)) - 1ul, tbl64_iter++);
         break;
-      case Container::TABLE_32:
+      case Container::table_32:
         thrd[i % vThrSz] = std::thread(
             &FCM::store_impl<uint32_t, decltype(tbl32_iter)>, this,
             std::cref(par->ref), (1ul << (2 * rMs[i].k)) - 1ul, tbl32_iter++);
@@ -416,16 +416,16 @@ void FCM::compress(std::shared_ptr<Param> par) {
 
   if (rMs.size() == 1 && rTMsSize == 0)  // 1 MM
     switch (rMs[0].cont) {
-      case Container::SKETCH_8:
+      case Container::sketch_8:
         compress_1(par, std::begin(cmls4));
         break;
-      case Container::LOG_TABLE_8:
+      case Container::log_table_8:
         compress_1(par, std::begin(lgtbl8));
         break;
-      case Container::TABLE_32:
+      case Container::table_32:
         compress_1(par, std::begin(tbl32));
         break;
-      case Container::TABLE_64:
+      case Container::table_64:
         compress_1(par, std::begin(tbl64));
         break;
     }
@@ -443,69 +443,71 @@ inline void FCM::compress_1(std::shared_ptr<Param> par, ContIter cont) {
   uint64_t ctxIr{(1ull << (2 * rMs[0].k)) - 1};
   uint64_t symsNo{0};  // No. syms in target file, except \n
   prc_t sumEnt{0};     // Sum of entropies = sum(log_2 P(s|c^t))
-  ProbPar pp{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
-             static_cast<uint8_t>(rMs[0].k << 1u)};
+  ProbPar prob_par{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
+                   static_cast<uint8_t>(rMs[0].k << 1u)};
   const auto totalSize = file_size(par->tar);
-  std::ifstream tf(par->tar);
-  std::ofstream pf(gen_name(par->ID, par->ref, par->tar, Format::PROFILE));
+  std::ifstream tar_file(par->tar);
+  std::ofstream prf_file(
+      gen_name(par->ID, par->ref, par->tar, Format::profile));
 
-  for (std::vector<char> buffer(FILE_BUF, 0); tf.peek() != EOF;) {
-    tf.read(buffer.data(), FILE_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + tf.gcount();
-         ++it) {
+  for (std::vector<char> buffer(FILE_BUF, 0); tar_file.peek() != EOF;) {
+    tar_file.read(buffer.data(), FILE_BUF);
+    for (auto it = std::begin(buffer);
+         it != std::begin(buffer) + tar_file.gcount(); ++it) {
       auto c = *it;
       if (c != '\n') {
         ++symsNo;
         prc_t entr;
         if (rMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
           if (c != 'N') {
-            pp.config_ir0(c, ctx);
+            prob_par.config_ir0(c, ctx);
             std::array<decltype((*cont)->query(0)), 4> f{};
-            freqs_ir0(f, cont, pp.l);
-            entr = entropy(prob(std::begin(f), &pp));
+            freqs_ir0(f, cont, prob_par.l);
+            entr = entropy(prob(std::begin(f), &prob_par));
           } else {
             c = TAR_ALT_N;
-            pp.config_ir0(c, ctx);
+            prob_par.config_ir0(c, ctx);
             entr = entropyN;
           }
-          pf << precision(PREC_PRF) << entr << '\n';
+          prf_file << precision(PREC_PRF) << entr << '\n';
           sumEnt += entr;
-          update_ctx_ir0(ctx, &pp);
+          update_ctx_ir0(ctx, &prob_par);
         } else if (rMs[0].ir == 1) {
           if (c != 'N') {
-            pp.config_ir1(c, ctxIr);
+            prob_par.config_ir1(c, ctxIr);
             std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-            freqs_ir1(f, cont, pp.shl, pp.r);
-            entr = entropy(prob(std::begin(f), &pp));
+            freqs_ir1(f, cont, prob_par.shl, prob_par.r);
+            entr = entropy(prob(std::begin(f), &prob_par));
           } else {
             c = TAR_ALT_N;
-            pp.config_ir1(c, ctxIr);
+            prob_par.config_ir1(c, ctxIr);
             entr = entropyN;
           }
-          pf << precision(PREC_PRF) << entr << '\n';
+          prf_file << precision(PREC_PRF) << entr << '\n';
           sumEnt += entr;
-          update_ctx_ir1(ctxIr, &pp);
+          update_ctx_ir1(ctxIr, &prob_par);
         } else if (rMs[0].ir == 2) {
           if (c != 'N') {
-            pp.config_ir2(c, ctx, ctxIr);
+            prob_par.config_ir2(c, ctx, ctxIr);
             std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-            freqs_ir2(f, cont, &pp);
-            entr = entropy(prob(begin(f), &pp));
+            freqs_ir2(f, cont, &prob_par);
+            entr = entropy(prob(begin(f), &prob_par));
           } else {
             c = TAR_ALT_N;
-            pp.config_ir2(c, ctx, ctxIr);
+            prob_par.config_ir2(c, ctx, ctxIr);
             entr = entropyN;
           }
-          pf << precision(PREC_PRF) << entr << '\n';
+          prf_file << precision(PREC_PRF) << entr << '\n';
           sumEnt += entr;
-          update_ctx_ir2(ctx, ctxIr, &pp);
+          update_ctx_ir2(ctx, ctxIr, &prob_par);
         }
         show_progress(symsNo, totalSize, message);
       }
     }
   }
-  tf.close();
-  pf.close();
+
+  tar_file.close();
+  prf_file.close();
   aveEnt = sumEnt / symsNo;
 }
 
@@ -533,8 +535,10 @@ inline void FCM::compress_n(std::shared_ptr<Param> par) {
                           static_cast<uint8_t>(2 * mm.k));
   }
   const auto totalSize = file_size(par->tar);
-  std::ifstream tf(par->tar);
-  std::ofstream pf(gen_name(par->ID, par->ref, par->tar, Format::PROFILE));
+  std::ifstream tar_file(par->tar);
+  std::ofstream prf_file(
+      gen_name(par->ID, par->ref, par->tar, Format::profile));
+
   const auto compress_n_impl = [&](auto& cp, auto cont, uint8_t& n) {
     compress_n_parent(cp, cont, n);
     if (cp->mm.child) {
@@ -545,10 +549,10 @@ inline void FCM::compress_n(std::shared_ptr<Param> par) {
     }
   };
 
-  for (std::vector<char> buffer(FILE_BUF, 0); tf.peek() != EOF;) {
-    tf.read(buffer.data(), FILE_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + tf.gcount();
-         ++it) {
+  for (std::vector<char> buffer(FILE_BUF, 0); tar_file.peek() != EOF;) {
+    tar_file.read(buffer.data(), FILE_BUF);
+    for (auto it = std::begin(buffer);
+         it != std::begin(buffer) + tar_file.gcount(); ++it) {
       const auto c = *it;
       if (c != '\n') {
         ++symsNo;
@@ -568,16 +572,16 @@ inline void FCM::compress_n(std::shared_ptr<Param> par) {
         for (const auto& mm : rMs) {
           cp->mm = mm;
           switch (mm.cont) {
-            case Container::SKETCH_8:
+            case Container::sketch_8:
               compress_n_impl(cp, cmls4_it++, n);
               break;
-            case Container::LOG_TABLE_8:
+            case Container::log_table_8:
               compress_n_impl(cp, lgtbl8_it++, n);
               break;
-            case Container::TABLE_32:
+            case Container::table_32:
               compress_n_impl(cp, tbl32_it++, n);
               break;
-            case Container::TABLE_64:
+            case Container::table_64:
               compress_n_impl(cp, tbl64_it++, n);
               break;
           }
@@ -589,7 +593,7 @@ inline void FCM::compress_n(std::shared_ptr<Param> par) {
 
         const auto ent = entropy(std::begin(cp->w), std::begin(cp->probs),
                                  std::end(cp->probs));
-        pf << precision(PREC_PRF) << ent << '\n';
+        prf_file << precision(PREC_PRF) << ent << '\n';
         normalize(std::begin(cp->w), std::begin(cp->wNext),
                   std::end(cp->wNext));
         ////        update_weights(begin(cp->w), begin(cp->probs),
@@ -599,57 +603,58 @@ inline void FCM::compress_n(std::shared_ptr<Param> par) {
       }
     }
   }
-  tf.close();
-  pf.close();
+
+  tar_file.close();
+  prf_file.close();
   aveEnt = sumEnt / symsNo;
 }
 
 template <typename ContIter>
 inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
                                    ContIter cont, uint8_t n) const {
-  prc_t P;
+  prc_t prb;
 
   if (cp->mm.ir == 0) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
       std::array<decltype((*cont)->query(0)), 4> f{};
       freqs_ir0(f, cont, cp->ppIt->l);
-      P = prob(std::begin(f), cp->ppIt);
+      prb = prob(std::begin(f), cp->ppIt);
     } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
-      P = entropyN;
+      prb = entropyN;
     }
-    cp->probs.emplace_back(P);
-    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    cp->probs.emplace_back(prb);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
     update_ctx_ir0(*cp->ctxIt, cp->ppIt);
   } else if (cp->mm.ir == 1) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
-      P = prob(std::begin(f), cp->ppIt);
+      prb = prob(std::begin(f), cp->ppIt);
     } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
-      P = entropyN;
+      prb = entropyN;
     }
-    cp->probs.emplace_back(P);
-    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    cp->probs.emplace_back(prb);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
     update_ctx_ir1(*cp->ctxIrIt, cp->ppIt);
   } else if (cp->mm.ir == 2) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir2(f, cont, cp->ppIt);
-      P = prob(std::begin(f), cp->ppIt);
+      prb = prob(std::begin(f), cp->ppIt);
     } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);
-      P = entropyN;
+      prb = entropyN;
     }
-    cp->probs.emplace_back(P);
-    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    cp->probs.emplace_back(prb);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
     update_ctx_ir2(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
@@ -657,64 +662,64 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
 template <typename ContIter>
 inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
                                   ContIter cont, uint8_t n) const {
-  prc_t P;
+  prc_t prb;
 
   if (cp->mm.child->ir == 0) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
       std::array<decltype((*cont)->query(0)), 4> f{};
       freqs_ir0(f, cont, cp->ppIt->l);
-      P = prob(std::begin(f), cp->ppIt);
-      cp->probs.emplace_back(P);
+      prb = prob(std::begin(f), cp->ppIt);
+      cp->probs.emplace_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
       std::array<decltype((*cont)->query(0)), 4> f{};
       freqs_ir0(f, cont, cp->ppIt->l);
-      P = entropyN;
-      cp->probs.emplace_back(P);
+      prb = entropyN;
+      cp->probs.emplace_back(prb);
       correct_stmm(cp, std::begin(f));
     }
-    cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, prb);
     update_ctx_ir0(*cp->ctxIt, cp->ppIt);
   } else if (cp->mm.child->ir == 1) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
-      P = prob(std::begin(f), cp->ppIt);
-      cp->probs.emplace_back(P);
+      prb = prob(std::begin(f), cp->ppIt);
+      cp->probs.emplace_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
-      P = entropyN;
-      cp->probs.emplace_back(P);
+      prb = entropyN;
+      cp->probs.emplace_back(prb);
       correct_stmm(cp, std::begin(f));
     }
-    cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, prb);
     update_ctx_ir1(*cp->ctxIrIt, cp->ppIt);
   } else if (cp->mm.child->ir == 2) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir2(f, cont, cp->ppIt);
-      P = prob(std::begin(f), cp->ppIt);
-      cp->probs.emplace_back(P);
+      prb = prob(std::begin(f), cp->ppIt);
+      cp->probs.emplace_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir2(f, cont, cp->ppIt);
-      P = entropyN;
-      cp->probs.emplace_back(P);
+      prb = entropyN;
+      cp->probs.emplace_back(prb);
       correct_stmm(cp, std::begin(f));
     }
-    cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, P);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, prb);
     update_ctx_ir2(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
@@ -726,16 +731,16 @@ void FCM::self_compress(std::shared_ptr<Param> p, uint64_t ID) {
 
   if (tMs.size() == 1 && tTMsSize == 0)  // 1 MM
     switch (tMs[0].cont) {
-      case Container::SKETCH_8:
+      case Container::sketch_8:
         self_compress_1(p, std::begin(cmls4), ID);
         break;
-      case Container::LOG_TABLE_8:
+      case Container::log_table_8:
         self_compress_1(p, std::begin(lgtbl8), ID);
         break;
-      case Container::TABLE_32:
+      case Container::table_32:
         self_compress_1(p, std::begin(tbl32), ID);
         break;
-      case Container::TABLE_64:
+      case Container::table_64:
         self_compress_1(p, std::begin(tbl64), ID);
         break;
     }
@@ -759,16 +764,16 @@ inline void FCM::self_compress_alloc() {
 
   for (const auto& m : tMs) {
     switch (m.cont) {
-      case Container::SKETCH_8:
+      case Container::sketch_8:
         cmls4.emplace_back(std::make_unique<CMLS4>(m.w, m.d));
         break;
-      case Container::LOG_TABLE_8:
+      case Container::log_table_8:
         lgtbl8.emplace_back(std::make_unique<LogTable8>(m.k));
         break;
-      case Container::TABLE_32:
+      case Container::table_32:
         tbl32.emplace_back(std::make_unique<Table32>(m.k));
         break;
-      case Container::TABLE_64:
+      case Container::table_64:
         tbl64.emplace_back(std::make_unique<Table64>(m.k));
         break;
     }
@@ -903,16 +908,16 @@ inline void FCM::self_compress_n(std::shared_ptr<Param> par, uint64_t ID) {
         for (const auto& mm : tMs) {
           cp->mm = mm;
           switch (mm.cont) {
-            case Container::SKETCH_8:
+            case Container::sketch_8:
               self_compress_n_impl(cp, cmls4_it++, n);
               break;
-            case Container::LOG_TABLE_8:
+            case Container::log_table_8:
               self_compress_n_impl(cp, lgtbl8_it++, n);
               break;
-            case Container::TABLE_32:
+            case Container::table_32:
               self_compress_n_impl(cp, tbl32_it++, n);
               break;
-            case Container::TABLE_64:
+            case Container::table_64:
               self_compress_n_impl(cp, tbl64_it++, n);
               break;
           }
@@ -942,19 +947,19 @@ template <typename ContIter>
 inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
                                         ContIter cont, uint8_t n,
                                         uint64_t& valUpd) const {
-  prc_t P;
+  prc_t prb;
 
   if (cp->mm.ir == 0) {
     cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
     if (cp->c != 'N') {
       std::array<decltype((*cont)->query(0)), 4> f{};
       freqs_ir0(f, cont, cp->ppIt->l);
-      P = prob(begin(f), cp->ppIt);
+      prb = prob(begin(f), cp->ppIt);
     } else {
-      P = entropyN;
+      prb = entropyN;
     }
-    cp->probs.emplace_back(P);
-    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    cp->probs.emplace_back(prb);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
     valUpd = cp->ppIt->l | cp->ppIt->numSym;
     update_ctx_ir0(*cp->ctxIt, cp->ppIt);
   } else if (cp->mm.ir == 1) {
@@ -962,12 +967,12 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
     if (cp->c != 'N') {
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
-      P = prob(std::begin(f), cp->ppIt);
+      prb = prob(std::begin(f), cp->ppIt);
     } else {
-      P = entropyN;
+      prb = entropyN;
     }
-    cp->probs.emplace_back(P);
-    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    cp->probs.emplace_back(prb);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
     valUpd = (cp->ppIt->revNumSym << cp->ppIt->shl) | cp->ppIt->r;
     update_ctx_ir1(*cp->ctxIrIt, cp->ppIt);
   } else if (cp->mm.ir == 2) {
@@ -975,19 +980,19 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
     if (cp->c != 'N') {
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir2(f, cont, cp->ppIt);
-      P = prob(std::begin(f), cp->ppIt);
+      prb = prob(std::begin(f), cp->ppIt);
     } else {
-      P = entropyN;
+      prb = entropyN;
     }
-    cp->probs.emplace_back(P);
-    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, P);
+    cp->probs.emplace_back(prb);
+    cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
     valUpd = cp->ppIt->l | cp->ppIt->numSym;
     update_ctx_ir2(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
 
 void FCM::aggregate_slf(std::shared_ptr<Param> par) const {
-  const auto posName = gen_name(par->ID, par->ref, par->tar, Format::POSITION);
+  const auto posName = gen_name(par->ID, par->ref, par->tar, Format::position);
   rename(posName.c_str(), (posName + LBL_BAK).c_str());
   std::ifstream pfOld(posName + LBL_BAK);
   std::ofstream pf(posName);

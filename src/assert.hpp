@@ -75,9 +75,9 @@ void ValRange<Value>::assert(Value& val) {
 
   if (!inRange) {
     val = def;
-    if (problem == Problem::WARNING)
+    if (problem == Problem::warning)
       warning(std::move(message));
-    else if (problem == Problem::ERROR)
+    else if (problem == Problem::error)
       error(std::move(message));
   }
 }
@@ -132,9 +132,9 @@ void ValSet<Value>::assert(Value& val) {
   msg += conv_to_string(set.back()) + "}. ";
 
   append_msg(std::move(msg));
-  if (problem == Problem::WARNING)
+  if (problem == Problem::warning)
     warning(std::move(message));
-  else if (problem == Problem::ERROR)
+  else if (problem == Problem::error)
     error(std::move(message));
 }
 }  // namespace smashpp

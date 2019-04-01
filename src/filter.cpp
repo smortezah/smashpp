@@ -22,13 +22,13 @@ inline void Filter::set_wsize(std::shared_ptr<Param> par) {
     const auto biggest = std::min(file_size(par->tar), file_size(par->ref));
     const auto lg = std::log10(biggest / par->sampleStep);
     switch (par->filterScale) {
-      case FilterScale::S:
+      case FilterScale::s:
         wsize = std::pow(2, 2 * lg) + 1;
         break;
-      case FilterScale::M:
+      case FilterScale::m:
         wsize = std::pow(2, 2 * lg + 1) + 1;
         break;
-      case FilterScale::L:
+      case FilterScale::l:
         wsize = std::pow(2, 2 * lg + 2) + 1;
         break;
     }
@@ -140,7 +140,7 @@ inline void Filter::show_info(std::shared_ptr<Param> par) const {
 void Filter::smooth_seg(std::shared_ptr<Param> par) {
   message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
-  if (wtype == WType::RECTANGULAR) {
+  if (wtype == WType::rectangular) {
     par->saveFilter ? smooth_seg_rect<true>(par) : smooth_seg_rect<false>(par);
   } else {
     make_window();
@@ -149,10 +149,10 @@ void Filter::smooth_seg(std::shared_ptr<Param> par) {
   }
 
   if (!par->saveAll && !par->saveProfile)
-    remove((gen_name(par->ID, par->refName, par->tarName, Format::PROFILE))
+    remove((gen_name(par->ID, par->refName, par->tarName, Format::profile))
                .c_str());
   if (!par->saveAll && !par->saveFilter)
-    remove((gen_name(par->ID, par->refName, par->tarName, Format::FILTER))
+    remove((gen_name(par->ID, par->refName, par->tarName, Format::filter))
                .c_str());
 
   std::cerr << message << "finished. Detected " << nSegs << " segment"
@@ -161,25 +161,25 @@ void Filter::smooth_seg(std::shared_ptr<Param> par) {
 
 inline void Filter::make_window() {
   switch (wtype) {
-    case WType::HAMMING:
+    case WType::hamming:
       hamming();
       break;
-    case WType::HANN:
+    case WType::hann:
       hann();
       break;
-    case WType::BLACKMAN:
+    case WType::blackman:
       blackman();
       break;
-    case WType::TRIANGULAR:
+    case WType::triangular:
       triangular();
       break;
-    case WType::WELCH:
+    case WType::welch:
       welch();
       break;
-    case WType::SINE:
+    case WType::sine:
       sine();
       break;
-    case WType::NUTTALL:
+    case WType::nuttall:
       nuttall();
       break;
     default:
@@ -314,10 +314,10 @@ inline void Filter::nuttall() {
 template <bool SaveFilter>
 inline void Filter::smooth_seg_rect(std::shared_ptr<Param> par) {
   const auto profileName{
-      gen_name(par->ID, par->ref, par->tar, Format::PROFILE)};
-  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::FILTER)};
+      gen_name(par->ID, par->ref, par->tar, Format::profile)};
+  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
   const auto positionName{
-      gen_name(par->ID, par->ref, par->tar, Format::POSITION)};
+      gen_name(par->ID, par->ref, par->tar, Format::position)};
   check_file(profileName);
   std::ifstream prfF(profileName);
   std::ofstream filF(filterName);
@@ -407,10 +407,10 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param> par) {
 template <bool SaveFilter>
 inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param> par) {
   const auto profileName{
-      gen_name(par->ID, par->ref, par->tar, Format::PROFILE)};
-  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::FILTER)};
+      gen_name(par->ID, par->ref, par->tar, Format::profile)};
+  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
   const auto positionName{
-      gen_name(par->ID, par->ref, par->tar, Format::POSITION)};
+      gen_name(par->ID, par->ref, par->tar, Format::position)};
   check_file(profileName);
   std::ifstream prfF(profileName);
   std::ofstream filF(filterName);
@@ -518,9 +518,9 @@ inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param> par) {
 
 void Filter::merge_extract_seg(uint32_t ID, std::string ref,
                                std::string tar) const {
-  check_file(gen_name(ID, ref, tar, Format::POSITION));
-  std::ifstream posF(gen_name(ID, ref, tar, Format::POSITION));
-  const auto segName{gen_name(ID, ref, tar, Format::SEGMENT)};
+  check_file(gen_name(ID, ref, tar, Format::position));
+  std::ifstream posF(gen_name(ID, ref, tar, Format::position));
+  const auto segName{gen_name(ID, ref, tar, Format::segment)};
   auto subseq = std::make_unique<SubSeq>();
   subseq->inName = tar;
   uint64_t i{0};
@@ -550,18 +550,18 @@ void Filter::merge_extract_seg(uint32_t ID, std::string ref,
 
 void Filter::aggregate_mid_pos(uint32_t ID, std::string origin,
                                std::string dest) const {
-  const std::string dirFileName{gen_name(ID, origin, dest, Format::POSITION)};
+  const std::string dirFileName{gen_name(ID, origin, dest, Format::position)};
   std::ifstream fDirect(dirFileName);
   std::ofstream fmid(LBL_MID + "-" +
-                     gen_name(ID, origin, dest, Format::POSITION));
+                     gen_name(ID, origin, dest, Format::position));
   int i{0};
 
   for (std::string begDir, endDir, entDir, selfEntDir;
        fDirect >> begDir >> endDir >> entDir >> selfEntDir; ++i) {
-    const std::string refRev{gen_name(ID, origin, dest, Format::SEGMENT) +
+    const std::string refRev{gen_name(ID, origin, dest, Format::segment) +
                              std::to_string(i)};
     const std::string revFileName{
-        gen_name(ID, refRev, origin, Format::POSITION)};
+        gen_name(ID, refRev, origin, Format::position)};
 
     if (!file_is_empty(revFileName)) {
       std::ifstream fReverse(revFileName);
@@ -595,8 +595,8 @@ void Filter::aggregate_mid_pos(uint32_t ID, std::string origin,
 }
 
 void Filter::aggregate_final_pos(std::string ref, std::string tar) const {
-  const auto midf0Name{LBL_MID + "-" + gen_name(0, ref, tar, Format::POSITION)};
-  const auto midf1Name{LBL_MID + "-" + gen_name(1, ref, tar, Format::POSITION)};
+  const auto midf0Name{LBL_MID + "-" + gen_name(0, ref, tar, Format::position)};
+  const auto midf1Name{LBL_MID + "-" + gen_name(1, ref, tar, Format::position)};
   const bool midf0IsEmpty{file_is_empty(midf0Name)};
   const bool midf1IsEmpty{file_is_empty(midf1Name)};
 
@@ -604,7 +604,7 @@ void Filter::aggregate_final_pos(std::string ref, std::string tar) const {
     std::cerr << bold("The reference and the target are not similar.\n");
   } else if (!midf0IsEmpty && midf1IsEmpty) {
     std::ifstream midf0(midf0Name);
-    std::ofstream finf(gen_name(ref, tar, Format::POSITION));
+    std::ofstream finf(gen_name(ref, tar, Format::position));
 
     finf << POS_HDR << '\t' << file_name(ref) << '\t'
          << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
@@ -620,7 +620,7 @@ void Filter::aggregate_final_pos(std::string ref, std::string tar) const {
     finf.close();
   } else if (midf0IsEmpty && !midf1IsEmpty) {
     std::ifstream midf1(midf1Name);
-    std::ofstream finf(gen_name(ref, tar, Format::POSITION));
+    std::ofstream finf(gen_name(ref, tar, Format::position));
 
     finf << POS_HDR << '\t' << file_name(ref) << '\t'
          << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
@@ -637,7 +637,7 @@ void Filter::aggregate_final_pos(std::string ref, std::string tar) const {
   } else {
     std::ifstream midf0(midf0Name);
     std::ifstream midf1(midf1Name);
-    std::ofstream finf(gen_name(ref, tar, Format::POSITION));
+    std::ofstream finf(gen_name(ref, tar, Format::position));
 
     finf << POS_HDR << '\t' << file_name(ref) << '\t'
          << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'

@@ -13,14 +13,15 @@ inline static std::string gen_name(uint32_t ID, std::string ref,
   const auto refName{file_name(ref)};
   const auto tarName{file_name(tar)};
   switch (frmt) {
-    case Format::PROFILE:
-      return std::to_string(ID) + "-" + refName + "_" + tarName + "." + FMT_PRF;
-    case Format::FILTER:
-      return std::to_string(ID) + "-" + refName + "_" + tarName + "." + FMT_FIL;
-    case Format::POSITION:
-      return std::to_string(ID) + "-" + refName + "_" + tarName + "." + FMT_POS;
-    case Format::SEGMENT:
-      return std::to_string(ID) + "-" + refName + "_" + tarName + "-" + LBL_SEG;
+    case Format::profile:
+      return std::to_string(ID) + "." + tarName + ".prf";
+      // return std::to_string(ID) + "-" + refName + "_" + tarName + ".prf";
+    case Format::filter:
+      return std::to_string(ID) + "-" + refName + "_" + tarName + ".fil";
+    case Format::position:
+      return std::to_string(ID) + "-" + refName + "_" + tarName + ".pos";
+    case Format::segment:
+      return std::to_string(ID) + "-" + refName + "_" + tarName + "-s";
     default:
       return "";
   }
@@ -31,14 +32,15 @@ inline static std::string gen_name(std::string ref, std::string tar,
   const auto refName{file_name(ref)};
   const auto tarName{file_name(tar)};
   switch (frmt) {
-    case Format::PROFILE:
-      return refName + "-" + tarName + "." + FMT_PRF;
-    case Format::FILTER:
-      return refName + "-" + tarName + "." + FMT_FIL;
-    case Format::POSITION:
-      return refName + "-" + tarName + "." + FMT_POS;
-    case Format::SEGMENT:
-      return refName + "-" + tarName + "-" + LBL_SEG;
+    case Format::profile:
+      return tarName + ".prf";
+      // return refName + "-" + tarName + ".prf";
+    case Format::filter:
+      return refName + "-" + tarName + ".fil";
+    case Format::position:
+      return refName + "-" + tarName + ".pos";
+    case Format::segment:
+      return refName + "-" + tarName + "-s";
     default:
       return "";
   }

@@ -171,7 +171,7 @@ int main(int argc, char* argv[]) {
       //     }
       //     filter->merge_extract_seg(par->ID, par->ref, par->tar);
       //     const auto segName_tar{
-      //         gen_name(par->ID, par->ref, par->tar, Format::SEGMENT)};
+      //         gen_name(par->ID, par->ref, par->tar, Format::segment)};
 
       //     // Ref-free compress
       //     if (!par->noRedun) {
@@ -233,7 +233,7 @@ int main(int argc, char* argv[]) {
       //                   << italic(filter->nSegs == 1 ? "" : "s") << '\n';
       //         models->selfEnt.reserve(filter->nSegs);
       //         const auto selfSegName{
-      //             gen_name(par->ID, par->ref, par->tar, Format::SEGMENT)};
+      //             gen_name(par->ID, par->ref, par->tar, Format::segment)};
       //         for (uint64_t j = 0; j != filter->nSegs; ++j) {
       //           par->seq = selfSegName + std::to_string(j);
       //           models->self_compress(par, j);
@@ -252,13 +252,13 @@ int main(int argc, char* argv[]) {
       //       if (!par->saveAll && !par->saveSegment)
       //         remove((segName_tar + std::to_string(i)).c_str());
       //     if (!par->saveSeq) {
-      //       if (par->refType == FileType::FASTA ||
-      //           par->refType == FileType::FASTQ) {
+      //       if (par->refType == FileType::fasta ||
+      //           par->refType == FileType::fastq) {
       //         remove(origRef.c_str());
       //         rename((origRef + LBL_BAK).c_str(), origRef.c_str());
       //       }
-      //       if (par->tarType == FileType::FASTA ||
-      //           par->tarType == FileType::FASTQ) {
+      //       if (par->tarType == FileType::fasta ||
+      //           par->tarType == FileType::fastq) {
       //         remove(origTar.c_str());
       //         rename((origTar + LBL_BAK).c_str(), origTar.c_str());
       //       }
