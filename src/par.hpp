@@ -85,8 +85,8 @@ class Param {  // Parameters
         saveFilter(false),
         saveSegment(false),
         saveAll(false),
-        refType(FileType::SEQ),
-        tarType(FileType::SEQ),
+        refType(FileType::seq),
+        tarType(FileType::seq),
         showInfo(true),
         compress(false),
         filter(false),
@@ -194,14 +194,14 @@ inline void Param::parse(int argc, char**& argv) {
     } else if ((*i == "-l" || *i == "--level") && i + 1 != std::end(vArgs)) {
       level = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default", Problem::WARNING);
+          MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default", Problem::warning);
       range->assert(level);
     } else if ((*i == "-m" || *i == "--min") && i + 1 != end(vArgs)) {
       manSegSize = true;
       segSize = std::stoul(*++i);
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", "[]", "default",
-          Problem::WARNING);
+          Problem::warning);
       range->assert(segSize);
     } else if ((*i == "-rm" || *i == "--ref-model") &&
                i + 1 != std::end(vArgs)) {
@@ -223,14 +223,14 @@ inline void Param::parse(int argc, char**& argv) {
       manWSize = true;
       wsize = static_cast<uint32_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_WS, MAX_WS, WS, "Window size", "[]", "default", Problem::WARNING);
+          MIN_WS, MAX_WS, WS, "Window size", "[]", "default", Problem::warning);
       range->assert(wsize);
     } else if ((*i == "-th" || *i == "--thresh") && i + 1 != std::end(vArgs)) {
       manThresh = true;
       thresh = std::stof(*++i);
       auto range = std::make_unique<ValRange<float>>(
           MIN_THRSH, MAX_THRSH, THRSH, "Threshold", "(]", "default",
-          Problem::WARNING);
+          Problem::warning);
       range->assert(thresh);
     } else if ((*i == "-wt" || *i == "--wtype") && i + 1 != std::end(vArgs)) {
       const auto is_win_type = [](std::string t) {
@@ -241,20 +241,20 @@ inline void Param::parse(int argc, char**& argv) {
       };
       const std::string cmd{*++i};
       auto set = std::make_unique<ValSet<WType>>(
-          SET_WTYPE, WT, "Window type", "default", Problem::WARNING,
+          SET_WTYPE, WT, "Window type", "default", Problem::warning,
           win_type(cmd), is_win_type(cmd));
       set->assert(wtype);
     } else if ((*i == "-e" || *i == "--ent-n") && i + 1 != std::end(vArgs)) {
       entropyN = static_cast<prc_t>(std::stod(*++i));
       auto range = std::make_unique<ValRange<prc_t>>(
           MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases", "[]", "default",
-          Problem::WARNING);
+          Problem::warning);
       range->assert(entropyN);
     } else if ((*i == "-n" || *i == "--nthr") && i + 1 != std::end(vArgs)) {
       nthr = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_THRD, MAX_THRD, THRD, "Number of threads", "[]", "default",
-          Problem::WARNING);
+          Problem::warning);
       range->assert(nthr);
     } else if ((*i == "-d" || *i == "--step") && i + 1 != std::end(vArgs)) {
       sampleStep = std::stoull(*++i);
@@ -268,7 +268,7 @@ inline void Param::parse(int argc, char**& argv) {
       };
       const std::string cmd{*++i};
       auto set = std::make_unique<ValSet<FilterScale>>(
-          SET_FSCALE, FS, "Filter scale", "default", Problem::WARNING,
+          SET_FSCALE, FS, "Filter scale", "default", Problem::warning,
           filter_scale(cmd), is_filter_scale(cmd));
       set->assert(filterScale);
     } else if (*i == "-nr" || *i == "--no-redun")
@@ -330,19 +330,19 @@ inline void Param::parse(int argc, char**& argv) {
     to_seq(f + LBL_BAK, f, type);
   };
   refType = file_type(ref);
-  if (refType == FileType::FASTA)
-    convert_to_seq(ref, FileType::FASTA);
-  else if (refType == FileType::FASTQ)
-    convert_to_seq(ref, FileType::FASTQ);
-  else if (refType != FileType::SEQ)
+  if (refType == FileType::fasta)
+    convert_to_seq(ref, FileType::fasta);
+  else if (refType == FileType::fastq)
+    convert_to_seq(ref, FileType::fastq);
+  else if (refType != FileType::seq)
     error("\"" + refName + "\" has unknown format.");
 
   tarType = file_type(tar);
-  if (tarType == FileType::FASTA)
-    convert_to_seq(tar, FileType::FASTA);
-  else if (tarType == FileType::FASTQ)
-    convert_to_seq(tar, FileType::FASTQ);
-  else if (tarType != FileType::SEQ)
+  if (tarType == FileType::fasta)
+    convert_to_seq(tar, FileType::fasta);
+  else if (tarType == FileType::fastq)
+    convert_to_seq(tar, FileType::fastq);
+  else if (tarType != FileType::seq)
     error("\"" + tarName + "\" has unknown format.");
 }
 
@@ -510,49 +510,49 @@ inline void Param::help() const {
 
 inline WType Param::win_type(std::string t) const {
   if (t == "0" || t == "rectangular")
-    return WType::RECTANGULAR;
+    return WType::rectangular;
   else if (t == "1" || t == "hamming")
-    return WType::HAMMING;
+    return WType::hamming;
   else if (t == "2" || t == "hann")
-    return WType::HANN;
+    return WType::hann;
   else if (t == "3" || t == "blackman")
-    return WType::BLACKMAN;
+    return WType::blackman;
   else if (t == "4" || t == "triangular")
-    return WType::TRIANGULAR;
+    return WType::triangular;
   else if (t == "5" || t == "welch")
-    return WType::WELCH;
+    return WType::welch;
   else if (t == "6" || t == "sine")
-    return WType::SINE;
+    return WType::sine;
   else if (t == "7" || t == "nuttall")
-    return WType::NUTTALL;
+    return WType::nuttall;
   else
-    return WType::HANN;
+    return WType::hann;
 }
 
 inline std::string Param::print_win_type() const {
   switch (wtype) {
-    case WType::RECTANGULAR:
+    case WType::rectangular:
       return "Rectangular";
       break;
-    case WType::HAMMING:
+    case WType::hamming:
       return "Hamming";
       break;
-    case WType::HANN:
+    case WType::hann:
       return "Hann";
       break;
-    case WType::BLACKMAN:
+    case WType::blackman:
       return "Blackman";
       break;
-    case WType::TRIANGULAR:
+    case WType::triangular:
       return "Triangular";
       break;
-    case WType::WELCH:
+    case WType::welch:
       return "Welch";
       break;
-    case WType::SINE:
+    case WType::sine:
       return "Sine";
       break;
-    case WType::NUTTALL:
+    case WType::nuttall:
       return "Nuttall";
       break;
     default:
@@ -562,24 +562,24 @@ inline std::string Param::print_win_type() const {
 
 inline FilterScale Param::filter_scale(std::string s) const {
   if (s == "S" || s == "small")
-    return FilterScale::S;
+    return FilterScale::s;
   else if (s == "M" || s == "medium")
-    return FilterScale::M;
+    return FilterScale::m;
   else if (s == "L" || s == "large")
-    return FilterScale::L;
+    return FilterScale::l;
   else
-    return FilterScale::L;
+    return FilterScale::l;
 }
 
 inline std::string Param::print_filter_scale() const {
   switch (filterScale) {
-    case FilterScale::S:
+    case FilterScale::s:
       return "Small";
       break;
-    case FilterScale::M:
+    case FilterScale::m:
       return "Medium";
       break;
-    case FilterScale::L:
+    case FilterScale::l:
       return "Large";
       break;
     default:
@@ -610,42 +610,42 @@ inline void VizParam::parse(int argc, char**& argv) {
       opacity = std::stof(*++i);
       auto range =
           std::make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, "Opacity",
-                                            "[]", "default", Problem::WARNING);
+                                            "[]", "default", Problem::warning);
       range->assert(opacity);
     } else if ((*i == "-l" || *i == "--link") && i + 1 != std::end(vArgs)) {
       link = static_cast<uint8_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LINK, MAX_LINK, LINK, "Link", "[]", "default", Problem::WARNING);
+          MIN_LINK, MAX_LINK, LINK, "Link", "[]", "default", Problem::warning);
       range->assert(link);
     } else if ((*i == "-m" || *i == "--min") && i + 1 != std::end(vArgs)) {
       min = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_MINP, MAX_MINP, MINP, "Min", "[]", "default", Problem::WARNING);
+          MIN_MINP, MAX_MINP, MINP, "Min", "[]", "default", Problem::warning);
       range->assert(min);
     } else if ((*i == "-f" || *i == "--mult") && i + 1 != std::end(vArgs)) {
       manMult = true;
       mult = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_MULT, MAX_MULT, MULT, "Mult", "[]", "default", Problem::WARNING);
+          MIN_MULT, MAX_MULT, MULT, "Mult", "[]", "default", Problem::warning);
       range->assert(mult);
     } else if ((*i == "-b" || *i == "--begin") && i + 1 != std::end(vArgs)) {
       start = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_BEGN, MAX_BEGN, BEGN, "Begin", "[]", "default", Problem::WARNING);
+          MIN_BEGN, MAX_BEGN, BEGN, "Begin", "[]", "default", Problem::warning);
       range->assert(start);
     } else if ((*i == "-rt" || *i == "--ref-tick") &&
                i + 1 != std::end(vArgs)) {
       refTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for reference", "[]", "default",
-          Problem::WARNING);
+          Problem::warning);
       range->assert(refTick);
     } else if ((*i == "-tt" || *i == "--tar-tick") &&
                i + 1 != std::end(vArgs)) {
       tarTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for target", "[]", "default",
-          Problem::WARNING);
+          Problem::warning);
       range->assert(tarTick);
     } else if ((*i == "-th" || *i == "--tick-human") &&
                i + 1 != std::end(vArgs)) {
@@ -654,17 +654,17 @@ inline void VizParam::parse(int argc, char**& argv) {
       colorMode = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_COLOR, MAX_COLOR, COLOR, "Color", "[]", "default",
-          Problem::WARNING);
+          Problem::warning);
       range->assert(colorMode);
     } else if ((*i == "-w" || *i == "--width") && i + 1 != std::end(vArgs)) {
       width = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_WDTH, MAX_WDTH, WDTH, "Width", "[]", "default", Problem::WARNING);
+          MIN_WDTH, MAX_WDTH, WDTH, "Width", "[]", "default", Problem::warning);
       range->assert(width);
     } else if ((*i == "-s" || *i == "--space") && i + 1 != std::end(vArgs)) {
       space = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_SPC, MAX_SPC, SPC, "Space", "[]", "default", Problem::WARNING);
+          MIN_SPC, MAX_SPC, SPC, "Space", "[]", "default", Problem::warning);
       range->assert(space);
     } else if (*i == "-nn" || *i == "--no-nrc")
       showNRC = false;

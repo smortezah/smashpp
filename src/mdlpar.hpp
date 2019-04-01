@@ -28,7 +28,7 @@ struct MMPar {
         ir(ir_),
         alpha(a_),
         gamma(g_),
-        cont(Container::TABLE_64),
+        cont(Container::table_64),
         child(nullptr) {}
   MMPar(uint8_t k_, uint8_t ir_, prc_t a_, prc_t g_)
       : MMPar(k_, 0, 0, ir_, a_, g_) {}

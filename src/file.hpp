@@ -94,7 +94,7 @@ inline static FileType file_type(std::string name) {
     if (c == '\t') ++nTabs;
   if (f.peek() == '+') {
     f.close();
-    return FileType::FASTQ;
+    return FileType::fastq;
   }
 
   // Fasta or bare Seq
@@ -103,10 +103,10 @@ inline static FileType file_type(std::string name) {
   while (f.peek() != '>' && f.peek() != EOF) ignore_this_line(f);
   if (f.peek() == '>') {
     f.close();
-    return FileType::FASTA;
+    return FileType::fasta;
   } else {
     f.close();
-    return FileType::SEQ;
+    return FileType::seq;
   }
 }
 
@@ -115,7 +115,7 @@ inline static void to_seq(std::string inName, std::string outName,
   std::ifstream fIn(inName);
   std::ofstream fOut(outName);
 
-  if (type == FileType::FASTA) {
+  if (type == FileType::fasta) {
     bool isHeader{false};  // MUST be positioned before the following loop
     for (std::vector<char> buffer(FILE_BUF, 0); fIn.peek() != EOF;) {
       fIn.read(buffer.data(), FILE_BUF);
@@ -137,7 +137,7 @@ inline static void to_seq(std::string inName, std::string outName,
       }
       fOut.write(out.data(), out.size());
     }
-  } else if (type == FileType::FASTQ) {
+  } else if (type == FileType::fastq) {
     uint8_t line{0};    // MUST be positioned before the following loop
     bool isDNA{false};  // MUST be positioned before the following loop
     for (std::vector<char> buffer(FILE_BUF, 0); fIn.peek() != EOF;) {

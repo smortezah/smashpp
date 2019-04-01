@@ -127,28 +127,28 @@ inline static std::string string_format(const std::string& format,
 
 inline static std::string conv_to_string(WType val) {
   switch (val) {
-    case WType::RECTANGULAR:
+    case WType::rectangular:
       return "0|rectangular";
       break;
-    case WType::HAMMING:
+    case WType::hamming:
       return "1|hamming";
       break;
-    case WType::HANN:
+    case WType::hann:
       return "2|hann";
       break;
-    case WType::BLACKMAN:
+    case WType::blackman:
       return "3|blackman";
       break;
-    case WType::TRIANGULAR:
+    case WType::triangular:
       return "4|triangular";
       break;
-    case WType::WELCH:
+    case WType::welch:
       return "5|welch";
       break;
-    case WType::SINE:
+    case WType::sine:
       return "6|sine";
       break;
-    case WType::NUTTALL:
+    case WType::nuttall:
       return "7|nuttall";
       break;
     default:
@@ -158,13 +158,13 @@ inline static std::string conv_to_string(WType val) {
 
 inline static std::string conv_to_string(FilterScale val) {
   switch (val) {
-    case FilterScale::S:
+    case FilterScale::s:
       return "S|small";
       break;
-    case FilterScale::M:
+    case FilterScale::m:
       return "M|medium";
       break;
-    case FilterScale::L:
+    case FilterScale::l:
       return "L|large";
       break;
     default:
