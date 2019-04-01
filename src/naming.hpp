@@ -23,7 +23,8 @@ inline static std::string gen_name(uint32_t ID, std::string ref,
       return std::to_string(ID) + "." + tarName + ".pos";
       // return std::to_string(ID) + "-" + refName + "_" + tarName + ".pos";
     case Format::segment:
-      return std::to_string(ID) + "-" + refName + "_" + tarName + "-s";
+      return std::to_string(ID) + "." + tarName + ".s";
+      // return std::to_string(ID) + "-" + refName + "_" + tarName + "-s";
     default:
       return "";
   }
@@ -44,7 +45,8 @@ inline static std::string gen_name(std::string ref, std::string tar,
       return tarName + ".pos";
       // return refName + "-" + tarName + ".pos";
     case Format::segment:
-      return refName + "-" + tarName + "-s";
+      return tarName + "-s";
+      // return refName + "-" + tarName + "-s";
     default:
       return "";
   }
