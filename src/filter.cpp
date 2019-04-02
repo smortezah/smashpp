@@ -550,50 +550,49 @@ void Filter::merge_extract_seg(uint32_t ID, std::string ref,
   pos_file.close();
 }
 
-void Filter::aggregate_mid_pos(uint32_t ID, std::string origin,
-                               std::string dest) const {
-  const std::string dirFileName{gen_name(ID, origin, dest, Format::position)};
-  std::ifstream fDirect(dirFileName);
-  std::ofstream fmid(LBL_MID + "-" +
-                     gen_name(ID, origin, dest, Format::position));
+void Filter::aggregate_mid_pos(uint32_t ID, std::string src,
+                               std::string dst) const {
+  const std::string direct_file_name{gen_name(ID, src, dst, Format::position)};
+  std::ifstream direct_file(direct_file_name);
+  std::ofstream mid_file(LBL_MID + "-" +
+                         gen_name(ID, src, dst, Format::position));
   int i{0};
 
   for (std::string begDir, endDir, entDir, selfEntDir;
-       fDirect >> begDir >> endDir >> entDir >> selfEntDir; ++i) {
-    const std::string refRev{gen_name(ID, origin, dest, Format::segment) +
+       direct_file >> begDir >> endDir >> entDir >> selfEntDir; ++i) {
+    const std::string refRev{gen_name(ID, src, dst, Format::segment) +
                              std::to_string(i)};
-    const std::string revFileName{
-        gen_name(ID, refRev, origin, Format::position)};
+    const std::string revFileName{gen_name(ID, refRev, src, Format::position)};
 
     if (!file_is_empty(revFileName)) {
       std::ifstream fReverse(revFileName);
       for (std::string begRev, endRev, entRev, selfEntRev;
            fReverse >> begRev >> endRev >> entRev >> selfEntRev;) {
-        fmid << begRev << '\t' << endRev << '\t' << entRev << '\t' << selfEntRev
-             << '\t';
+        mid_file << begRev << '\t' << endRev << '\t' << entRev << '\t'
+                 << selfEntRev << '\t';
         if (ID == 0)
-          fmid << begDir << '\t' << endDir;
+          mid_file << begDir << '\t' << endDir;
         else if (ID == 1)
-          fmid << endDir << '\t' << begDir;
-        fmid << '\t' << entDir << '\t' << selfEntDir << '\n';
+          mid_file << endDir << '\t' << begDir;
+        mid_file << '\t' << entDir << '\t' << selfEntDir << '\n';
       }
       fReverse.close();
     } else {
-      fmid << DBLANK << '\t' << DBLANK << '\t' << DBLANK << '\t' << DBLANK
-           << '\t';
+      mid_file << DBLANK << '\t' << DBLANK << '\t' << DBLANK << '\t' << DBLANK
+               << '\t';
       if (ID == 0)
-        fmid << begDir << '\t' << endDir;
+        mid_file << begDir << '\t' << endDir;
       else if (ID == 1)
-        fmid << endDir << '\t' << begDir;
-      fmid << '\t' << entDir << '\t' << selfEntDir << '\n';
+        mid_file << endDir << '\t' << begDir;
+      mid_file << '\t' << entDir << '\t' << selfEntDir << '\n';
     }
 
     remove(revFileName.c_str());
   }
 
-  fDirect.close();
-  remove(dirFileName.c_str());
-  fmid.close();
+  direct_file.close();
+  remove(direct_file_name.c_str());
+  mid_file.close();
 }
 
 void Filter::aggregate_final_pos(std::string ref, std::string tar) const {

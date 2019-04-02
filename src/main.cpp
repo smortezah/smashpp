@@ -135,8 +135,10 @@ int main(int argc, char* argv[]) {
 
         // const auto origRef{par->ref};
         // const auto origTar{par->tar};
-        // // for (uint8_t timesRunning = 0; timesRunning != 2; ++timesRunning) {
-        for (uint8_t timesRunning = 0; timesRunning != 1; ++timesRunning) {//todo
+        // // for (uint8_t timesRunning = 0; timesRunning != 2; ++timesRunning)
+        // {
+        for (uint8_t timesRunning = 0; timesRunning != 1;
+             ++timesRunning) {  // todo
           if (timesRunning == 0)
             std::cerr << bold(
                 "====[ REGULAR MODE ]==================================\n");
@@ -168,7 +170,8 @@ int main(int argc, char* argv[]) {
           models->compress(par1);
 
           // Filter and segment
-          if (!par1->manThresh) par1->thresh = static_cast<float>(models->aveEnt);
+          if (!par1->manThresh)
+            par1->thresh = static_cast<float>(models->aveEnt);
           auto filter = std::make_unique<Filter>(par1);
           filter->smooth_seg(par1);
           if (filter->nSegs == 0) {
@@ -193,15 +196,17 @@ int main(int argc, char* argv[]) {
             }
           }
           models->aggregate_slf(par1);
-          
-          // Round 2: ref (of round 1) is new tar and tar segments (of round 1) are new refs
+
+          // Round 2: ref (of round 1) is new tar and tar segments (of round 1)
+          // are new refs
           std::cerr << bold(
               underline("\nBuilding reference map for each target pattern\n"));
           par2->tar = par1->ref;
           par2->tarName = file_name(par2->tar);
           const auto seg_ref2_num{filter->nSegs};
 
-          for (uint64_t seg_ref2_idx = 0; seg_ref2_idx != seg_ref2_num; ++seg_ref2_idx) {
+          for (uint64_t seg_ref2_idx = 0; seg_ref2_idx != seg_ref2_num;
+               ++seg_ref2_idx) {
             par2->ref = seg_tar1_name + std::to_string(seg_ref2_idx);
             par2->refName = file_name(par2->ref);
             // Make all IRs consistent
@@ -245,71 +250,74 @@ int main(int argc, char* argv[]) {
               for (uint64_t j = 0; j != filter->nSegs; ++j) {
                 par2->seq = seg_tar2_name + std::to_string(j);
                 models->self_compress(par2, j);
-                // if (!par->saveAll && !par->saveSegment)
-                //   remove(par->seq.c_str());
+                if (!par2->saveAll && !par2->saveSegment)
+                  remove(par2->seq.c_str());
               }
             }
             models->aggregate_slf(par2);
             std::cerr << '\n';
 
-// //             // // Round 3
-// //             // auto tar_round3 = par->ref;
-// //             // par->tar = tar_round3;
-// //             // par->tarName = file_name(par->tar);
+            //             // // Round 3
+            //             // auto tar_round3 = par->ref;
+            //             // par->tar = tar_round3;
+            //             // par->tarName = file_name(par->tar);
 
-// //             // for (uint64_t seg_ref_idx = 0; seg_ref_idx != filter->nSegs;
-// //             //      ++seg_ref_idx) {
-// //             //   auto ref_round3 = seg_tar2_name + std::to_string(seg_ref_idx);
-// //             //   par->ref = ref_round3;
-// //             //   par->refName = file_name(par->ref);
-// //             //   // Make all IRs consistent
-// //             //   models = std::make_unique<FCM>(par);
-// //             //   for (auto& e : models->rMs) {
-// //             //     e.ir = timesRunning;
-// //             //     if (e.child) e.child->ir = timesRunning;
-// //             //   }
-// //             //   for (auto& e : models->tMs) {
-// //             //     e.ir = timesRunning;
-// //             //     if (e.child) e.child->ir = timesRunning;
-// //             //   }
+            //             // for (uint64_t seg_ref_idx = 0; seg_ref_idx !=
+            // filter->nSegs;
+            //             //      ++seg_ref_idx) {
+            //             //   auto ref_round3 = seg_tar2_name +
+            // std::to_string(seg_ref_idx);
+            //             //   par->ref = ref_round3;
+            //             //   par->refName = file_name(par->ref);
+            //             //   // Make all IRs consistent
+            //             //   models = std::make_unique<FCM>(par);
+            //             //   for (auto& e : models->rMs) {
+            //             //     e.ir = timesRunning;
+            //             //     if (e.child) e.child->ir = timesRunning;
+            //             //   }
+            //             //   for (auto& e : models->tMs) {
+            //             //     e.ir = timesRunning;
+            //             //     if (e.child) e.child->ir = timesRunning;
+            //             //   }
 
-// //             //   // Build models and Compress
-// //             //   models->tarSegMsg = origRef + "-segment-";
-// //             //   models->tarSegID = seg_ref_idx + 1;
-// //             //   models->store(par);
-// //             //   models->compress(par);
+            //             //   // Build models and Compress
+            //             //   models->tarSegMsg = origRef + "-segment-";
+            //             //   models->tarSegID = seg_ref_idx + 1;
+            //             //   models->store(par);
+            //             //   models->compress(par);
 
-// //             //   std::cerr << '\n';
-// //             // }
+            //             //   std::cerr << '\n';
+            //             // }
           }
-//           models->tarSegMsg.clear();
-//           filter->aggregate_mid_pos(par->ID, origRef, origTar);
+          models->tarSegMsg.clear();
+          filter->aggregate_mid_pos(par2->ID, par1->ref, par1->tar);
 
-//           // Remove temporary files
-//           for (uint64_t i = 0; i != seg_ref2_num; ++i)
-//             if (!par->saveAll && !par->saveSegment)
-//               remove((seg_tar1_name + std::to_string(i)).c_str());
-//           if (!par->saveSeq) {
-//             if (par->refType == FileType::fasta ||
-//                 par->refType == FileType::fastq) {
-//               remove(origRef.c_str());
-//               rename((origRef + LBL_BAK).c_str(), origRef.c_str());
-//             }
-//             if (par->tarType == FileType::fasta ||
-//                 par->tarType == FileType::fastq) {
-//               remove(origTar.c_str());
-//               rename((origTar + LBL_BAK).c_str(), origTar.c_str());
-//             }
-//           }
+          // Remove temporary files
+          for (uint64_t seg_ref2_idx = 0; seg_ref2_idx != seg_ref2_num;
+               ++seg_ref2_idx)
+            if (!par2->saveAll && !par2->saveSegment)
+              remove((seg_tar1_name + std::to_string(seg_ref2_idx)).c_str());
+          if (!par2->saveSeq) {
+            if (par2->refType == FileType::fasta ||
+                par2->refType == FileType::fastq) {
+              remove(par1->ref.c_str());
+              rename((par1->ref + LBL_BAK).c_str(), par1->ref.c_str());
+            }
+            if (par1->tarType == FileType::fasta ||
+                par1->tarType == FileType::fastq) {
+              remove(par1->tar.c_str());
+              rename((par1->tar + LBL_BAK).c_str(), par1->tar.c_str());
+            }
+          }
         }  // for
 
-        // // Aggregate final positions
+        // Aggregate final positions
         // par->ref = origRef;
         // par->refName = file_name(par->ref);
         // par->tar = origTar;
         // par->tarName = file_name(par->tar);
-        // auto filter = std::make_unique<Filter>(par);
-        // filter->aggregate_final_pos(origRef, origTar);
+        auto filter = std::make_unique<Filter>(par1);
+        filter->aggregate_final_pos(par1->ref, par1->tar);
       }
     }
 
