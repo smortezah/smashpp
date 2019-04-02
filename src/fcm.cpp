@@ -303,18 +303,16 @@ inline void FCM::alloc_model() {
 }
 
 void FCM::store(std::shared_ptr<Param> par) {
-  const auto nMdl = rMs.size();
-
   message = "Building the model";
-  if (nMdl != 1) message += "s";
+  if (rMs.size() > 1) message += "s";
   message += " of ";
   message += tarSegMsg.empty() ? italic(par->refName)
                                : italic(tarSegMsg + std::to_string(tarSegID));
   message += " ";
   std::cerr << message << "...";
 
-  (par->nthr == 1 || nMdl == 1) ? store_1(par)
-                                : store_n(par) /*Multiple threads*/;
+  (par->nthr == 1 || rMs.size() == 1) ? store_1(par)
+                                      : store_n(par) /*Multiple threads*/;
 
   std::cerr << "\r" << message << "finished.\n";
 }
@@ -994,22 +992,22 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
 void FCM::aggregate_slf(std::shared_ptr<Param> par) const {
   const auto posName = gen_name(par->ID, par->ref, par->tar, Format::position);
   rename(posName.c_str(), (posName + LBL_BAK).c_str());
-  std::ifstream pfOld(posName + LBL_BAK);
-  std::ofstream pf(posName);
+  std::ifstream pos_file_old(posName + LBL_BAK);
+  std::ofstream pos_file(posName);
   uint64_t i = 0;
 
-  for (std::string line; getline(pfOld, line); ++i) {
-    pf << line << '\t';
+  for (std::string line; getline(pos_file_old, line); ++i) {
+    pos_file << line << '\t';
     if (!par->noRedun)
-      pf << fixed_precision(PREC_FIL) << selfEnt[i];
+      pos_file << fixed_precision(PREC_FIL) << selfEnt[i];
     else
-      pf << DBLANK;
-    pf << '\n';
+      pos_file << DBLANK;
+    pos_file << '\n';
   }
 
-  pfOld.close();
+  pos_file_old.close();
   remove((posName + LBL_BAK).c_str());
-  pf.close();
+  pos_file.close();
 }
 
 //// Called from main -- MUST NOT be inline
