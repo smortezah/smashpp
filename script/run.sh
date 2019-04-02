@@ -16,7 +16,7 @@ fi
 
 ### Simulate synthetic dataset
 if [[ $DATASET_SYNTH -eq 1 ]]; then
-  chmod 777 smashpp-inv-rep
+  sudo chmod 777 smashpp-inv-rep
 
   # ### Small (S) sizes: ref:1.000, tar:1.000
   # ./goose-fastqsimulation \

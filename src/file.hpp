@@ -69,16 +69,16 @@ inline static uint64_t file_lines(std::string name) {
 
 // Must be inline
 inline static void extract_subseq(std::unique_ptr<SubSeq>& subseq) {
-  std::ifstream fIn(subseq->inName);
-  std::ofstream fOut(subseq->outName);
+  std::ifstream in_file(subseq->inName);
+  std::ofstream out_file(subseq->outName);
 
-  fIn.seekg(subseq->begPos);
+  in_file.seekg(subseq->begPos);
   std::vector<char> buffer(static_cast<uint64_t>(subseq->size), 0);
-  fIn.read(buffer.data(), subseq->size);
-  fOut.write(buffer.data(), subseq->size);
+  in_file.read(buffer.data(), subseq->size);
+  out_file.write(buffer.data(), subseq->size);
 
-  fIn.close();
-  fOut.close();
+  in_file.close();
+  out_file.close();
 }
 
 inline static FileType file_type(std::string name) {
@@ -112,16 +112,16 @@ inline static FileType file_type(std::string name) {
 
 inline static void to_seq(std::string inName, std::string outName,
                           const FileType& type) {
-  std::ifstream fIn(inName);
-  std::ofstream fOut(outName);
+  std::ifstream in_file(inName);
+  std::ofstream out_file(outName);
 
   if (type == FileType::fasta) {
     bool isHeader{false};  // MUST be positioned before the following loop
-    for (std::vector<char> buffer(FILE_BUF, 0); fIn.peek() != EOF;) {
-      fIn.read(buffer.data(), FILE_BUF);
+    for (std::vector<char> buffer(FILE_BUF, 0); in_file.peek() != EOF;) {
+      in_file.read(buffer.data(), FILE_BUF);
       std::string out;
       for (auto it = std::begin(buffer);
-           it != std::begin(buffer) + fIn.gcount(); ++it) {
+           it != std::begin(buffer) + in_file.gcount(); ++it) {
         const auto c = *it;
         if (c == '>') {
           isHeader = true;
@@ -135,16 +135,16 @@ inline static void to_seq(std::string inName, std::string outName,
           out += c;
         }
       }
-      fOut.write(out.data(), out.size());
+      out_file.write(out.data(), out.size());
     }
   } else if (type == FileType::fastq) {
     uint8_t line{0};    // MUST be positioned before the following loop
     bool isDNA{false};  // MUST be positioned before the following loop
-    for (std::vector<char> buffer(FILE_BUF, 0); fIn.peek() != EOF;) {
-      fIn.read(buffer.data(), FILE_BUF);
+    for (std::vector<char> buffer(FILE_BUF, 0); in_file.peek() != EOF;) {
+      in_file.read(buffer.data(), FILE_BUF);
       std::string out;
       for (auto it = std::begin(buffer);
-           it != std::begin(buffer) + fIn.gcount(); ++it) {
+           it != std::begin(buffer) + in_file.gcount(); ++it) {
         const auto c{*it};
         switch (line) {
           case 0:
@@ -177,12 +177,12 @@ inline static void to_seq(std::string inName, std::string outName,
         if (!isDNA || c == '\n') continue;
         if (c > 64 && c < 123) out += c;
       }
-      fOut.write(out.data(), out.size());
+      out_file.write(out.data(), out.size());
     }
   }
 
-  fIn.close();
-  fOut.close();
+  in_file.close();
+  out_file.close();
 }
 }  // namespace smashpp
 
