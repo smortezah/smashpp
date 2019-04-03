@@ -596,75 +596,17 @@ void Filter::aggregate_mid_pos(uint32_t ID, std::string ref,
   mid_file.close();
 }
 
-void Filter::aggregate_final_pos_single(std::string ref, std::string tar,
-                                        std::string mid_file_name) const {
-  std::ifstream mid_file(mid_file_name);
-  std::ofstream pos_file(gen_name(ref, tar, Format::position));
-
-  pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
-           << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
-           << std::to_string(file_size(tar)) << '\n';
-
-  const uint64_t size{file_size(mid_file_name)};
-  std::vector<char> buffer(size, 0);
-  mid_file.read(buffer.data(), size);
-  pos_file.write(buffer.data(), size);
-
-  mid_file.close();
-  remove(mid_file_name.c_str());
-  pos_file.close();
-}
-
 void Filter::move_mid_to_pos_file(std::string mid_file_name,
-                                  std::string pos_file_name) const {
+                                  std::ofstream& pos_file) const {
   std::ifstream mid_file(mid_file_name);
-  std::ofstream pos_file(pos_file_name);
-  const uint64_t size{file_size(mid_file_name)};
-  std::vector<char> buffer(size, 0);
+  const uint64_t chunk_size{file_size(mid_file_name)};
+  std::vector<char> buffer(chunk_size, 0);
 
-  mid_file.read(buffer.data(), size);
-  pos_file.write(buffer.data(), size);
+  mid_file.read(buffer.data(), chunk_size);
+  pos_file.write(buffer.data(), chunk_size);
 
   mid_file.close();
   remove(mid_file_name.c_str());
-  pos_file.close();
-}
-
-void Filter::aggregate_final_pos_double(std::string ref, std::string tar,
-                                        std::string mid0_file_name,
-                                        std::string mid1_file_name) const {
-  // std::ifstream mid0_file(mid0_file_name);
-  // std::ifstream mid1_file(mid1_file_name);
-  const std::string pos_file_name{gen_name(ref, tar, Format::position)};
-  std::ofstream pos_file(pos_file_name);
-
-  pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
-           << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
-           << std::to_string(file_size(tar)) << '\n';
-
-  pos_file.close();
-
-  move_mid_to_pos_file(mid0_file_name, pos_file_name);
-  move_mid_to_pos_file(mid1_file_name, pos_file_name);
-
-  // {
-  //   const uint64_t size{file_size(mid0_file_name)};
-  //   std::vector<char> buffer(size, 0);
-  //   mid0_file.read(buffer.data(), size);
-  //   pos_file.write(buffer.data(), size);
-  // }
-  // {
-  //   const uint64_t size{file_size(mid1_file_name)};
-  //   std::vector<char> buffer(size, 0);
-  //   mid1_file.read(buffer.data(), size);
-  //   pos_file.write(buffer.data(), size);
-  // }
-
-  // mid0_file.close();
-  // remove(mid0_file_name.c_str());
-  // mid1_file.close();
-  // remove(mid1_file_name.c_str());
-  // pos_file.close();
 }
 
 void Filter::aggregate_final_pos(std::string ref, std::string tar) const {
@@ -675,17 +617,25 @@ void Filter::aggregate_final_pos(std::string ref, std::string tar) const {
 
   if (mid0_file_is_empty && mid1_file_is_empty) {
     std::cerr << bold("The reference and the target are not similar.\n");
-  } else {
-
-    
-    if (!mid0_file_is_empty && mid1_file_is_empty) {
-      aggregate_final_pos_single(ref, tar, mid0_file_name);
-    } else if (mid0_file_is_empty && !mid1_file_is_empty) {
-      aggregate_final_pos_single(ref, tar, mid1_file_name);
-    } else {
-      aggregate_final_pos_double(ref, tar, mid0_file_name, mid1_file_name);
-    }
+    return;
   }
+
+  const auto pos_file_name{gen_name(ref, tar, Format::position)};
+  std::ofstream pos_file(pos_file_name);
+  pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
+           << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
+           << std::to_string(file_size(tar)) << '\n';
+
+  if (!mid0_file_is_empty && mid1_file_is_empty) {
+    move_mid_to_pos_file(mid0_file_name, pos_file);
+  } else if (mid0_file_is_empty && !mid1_file_is_empty) {
+    move_mid_to_pos_file(mid1_file_name, pos_file);
+  } else {
+    move_mid_to_pos_file(mid0_file_name, pos_file);
+    move_mid_to_pos_file(mid1_file_name, pos_file);
+  }
+
+  pos_file.close();
 }
 
 #ifdef BENCH
