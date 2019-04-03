@@ -45,11 +45,8 @@ class Filter {
   template <bool SaveFilter>
   void smooth_seg_non_rect(std::unique_ptr<Param>&);
   // bool is_mergable (const Position&, const Position&) const;
-  void aggregate_final_pos_single(std::string, std::string, std::string) const;
-  void aggregate_final_pos_double(std::string, std::string, std::string,
-                                  std::string) const;
-  void move_mid_to_pos_file(std::string, std::string) const;
-  
+  void move_mid_to_pos_file(std::string, std::ofstream&) const;
+
 #ifdef BENCH
   template <typename Iter, typename Value>
   void shift_left_insert(Iter, Value);
