@@ -42,4 +42,7 @@ void Segment::partition_last(std::ofstream& posF) {
 void Segment::set_guards(uint8_t maxCtx) {
   begGuard = static_cast<uint64_t>(maxCtx + PART_GUARD);
   endGuard = static_cast<uint64_t>(PART_GUARD);
+  // //todo remove
+  // begGuard = static_cast<uint64_t>(10);
+  // endGuard = static_cast<uint64_t>(10);
 }

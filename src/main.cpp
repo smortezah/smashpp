@@ -248,8 +248,6 @@ auto mori=2;//todo
               for (uint64_t j = 0; j != filter->nSegs; ++j) {
                 par2->seq = seg_tar2_name + std::to_string(j);
                 models->self_compress(par2, j);
-                if (!par2->saveAll && !par2->saveSegment)
-                  remove(par2->seq.c_str());
               }
             }
             models->aggregate_slf(par2);
@@ -261,9 +259,8 @@ auto mori=2;//todo
             par3->tar = seg_tar1_name + std::to_string(seg_ref2_idx);
             par3->tarName = file_name(par3->tar);
 
-            std::cerr<<filter->nSegs<<"\n";//todo
-
-            for (uint64_t seg_ref3_idx = 0; seg_ref3_idx != filter->nSegs;
+            const auto seg_ref3_num{filter->nSegs};
+            for (uint64_t seg_ref3_idx = 0; seg_ref3_idx != seg_ref3_num;
                  ++seg_ref3_idx) {
 
               par3->ref = seg_tar2_name + std::to_string(seg_ref3_idx);
@@ -295,10 +292,29 @@ auto mori=2;//todo
                 continue;
               }
               filter->merge_extract_seg(par3->ID, par3->ref, par3->tar);
+
+              const auto seg_tar3_name{
+                  gen_name(par3->ID, par3->ref, par3->tar, Format::segment)};
+
+              // Ref-free compress
+              if (!par3->noRedun) {
+                std::cerr << ". . . . . . . . . . . . . . . . . . . "
+                             ". . . . . . . . . .\n>>> "
+                          << italic("Reference-free compression of the segment")
+                          << italic(filter->nSegs > 1 ? "s" : "") << '\n';
+
+                models->selfEnt.reserve(filter->nSegs);
+                for (uint64_t j = 0; j != filter->nSegs; ++j) {
+                  par3->seq = seg_tar3_name + std::to_string(j);
+                  models->self_compress(par3, j);
+                  if (!par3->saveAll && !par3->saveSegment)
+                    remove(par3->seq.c_str());
+                }
+              }
+              models->aggregate_slf(par3);
+              std::cerr << '\n';
             }
             std::cerr<<"*************\n\n";
-
-            //todo self etc...
           }
           models->tarSegMsg.clear();
           filter->aggregate_mid_pos(par1->ID, par1->ref, par1->tar);
