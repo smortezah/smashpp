@@ -40,7 +40,7 @@ enum class WType {  // Types of windowing function
   sine,
   nuttall
 };
-enum class Format { profile, filter, position, segment, self };
+enum class Format { profile, filter, position, midposition, segment, self };
 enum class FileType { seq, fasta, fastq };
 enum class FilterScale { s, m, l };
 enum class Problem { warning, error };
@@ -98,7 +98,6 @@ static constexpr uint8_t PREC_PRF{3};       // Precisions - floats in Inf. prof
 static constexpr uint8_t PREC_FIL{3};       // Precisions - floats in filt. file
 static const std::string FMT_N{"n"};        // Format - position of N files
 static const std::string LBL_BAK{"_bk"};    // Label  - backup files
-static const std::string LBL_MID{"mid"};    // Label  - mid position files
 static const std::string POS_HDR{"#" + SMASHPP};  // Hdr of pos file
 static const std::string POS_NRC{"N"};      // Hdr of pos file
 static const std::string POS_REDUN{"R"};    // Hdr of pos file

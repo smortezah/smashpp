@@ -550,18 +550,17 @@ void Filter::merge_extract_seg(uint32_t ID, std::string ref,
   pos_file.close();
 }
 
-void Filter::aggregate_mid_pos(uint32_t ID, std::string src,
-                               std::string dst) const {
-                                //  std::cerr<<src<<' '<<dst;//todo
-  const std::string file1_name{gen_name(ID, src, dst, Format::position)};
+void Filter::aggregate_mid_pos(uint32_t ID, std::string ref,
+                               std::string tar) const {
+  const std::string file1_name{gen_name(ID, ref, tar, Format::position)};
   std::ifstream file1(file1_name);
-  std::ofstream mid_file(LBL_MID + "." + file1_name);
+  std::ofstream mid_file(gen_name(ID, ref, tar, Format::midposition));
   int i{0};
 
   for (std::string beg1, end1, ent1, self_ent1;
        file1 >> beg1 >> end1 >> ent1 >> self_ent1; ++i) {
     const std::string file2_name{gen_name(
-        ID, gen_name(ID, src, dst, Format::segment) + std::to_string(i), src,
+        ID, gen_name(ID, ref, tar, Format::segment) + std::to_string(i), ref,
         Format::position)};
 
     if (!file_is_empty(file2_name)) {
@@ -589,80 +588,88 @@ void Filter::aggregate_mid_pos(uint32_t ID, std::string src,
       mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
     }
 
-    // remove(file2_name.c_str());
+    remove(file2_name.c_str());
   }
 
   file1.close();
-  // remove(file1_name.c_str());
+  remove(file1_name.c_str());
   mid_file.close();
 }
 
+void Filter::aggregate_final_pos_single(std::string pos_file_name, std::string mid_file_name) {
+  std::ifstream mid_file(mid_file_name);
+  std::ofstream pos_file(gen_name(ref, tar, Format::position));
+
+  pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
+           << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
+           << std::to_string(file_size(tar)) << '\n';
+
+  const uint64_t size{file_size(mid_file_name)};
+  std::vector<char> buffer(size, 0);
+  mid_file.read(buffer.data(), size);
+  pos_file.write(buffer.data(), size);
+
+  mid_file.close();
+  remove(mid_file_name.c_str());
+  pos_file.close();
+}
+
 void Filter::aggregate_final_pos(std::string ref, std::string tar) const {
-  const auto midf0Name{LBL_MID + "-" + gen_name(0, ref, tar, Format::position)};
-  const auto midf1Name{LBL_MID + "-" + gen_name(1, ref, tar, Format::position)};
-  const bool midf0IsEmpty{file_is_empty(midf0Name)};
-  const bool midf1IsEmpty{file_is_empty(midf1Name)};
+  const auto mid0_file_name{gen_name(0, ref, tar, Format::midposition)};
+  const auto mid1_file_name{gen_name(1, ref, tar, Format::midposition)};
+  const bool mid0_file_is_empty{file_is_empty(mid0_file_name)};
+  const bool mid1_file_is_empty{file_is_empty(mid1_file_name)};
 
-  if (midf0IsEmpty && midf1IsEmpty) {
+  const auto aggregate_single_mid_pos = [=](std::string mid_file_name) {
+    std::ifstream mid_file(mid_file_name);
+    std::ofstream pos_file(gen_name(ref, tar, Format::position));
+
+    pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
+             << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
+             << std::to_string(file_size(tar)) << '\n';
+
+    const uint64_t size{file_size(mid_file_name)};
+    std::vector<char> buffer(size, 0);
+    mid_file.read(buffer.data(), size);
+    pos_file.write(buffer.data(), size);
+
+    mid_file.close();
+    remove(mid_file_name.c_str());
+    pos_file.close();
+  };
+
+  if (mid0_file_is_empty && mid1_file_is_empty) {
     std::cerr << bold("The reference and the target are not similar.\n");
-  } else if (!midf0IsEmpty && midf1IsEmpty) {
-    std::ifstream midf0(midf0Name);
-    std::ofstream finf(gen_name(ref, tar, Format::position));
-
-    finf << POS_HDR << '\t' << file_name(ref) << '\t'
-         << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
-         << std::to_string(file_size(tar)) << '\n';
-
-    const uint64_t size{file_size(midf0Name)};
-    std::vector<char> buffer(size, 0);
-    midf0.read(buffer.data(), size);
-    finf.write(buffer.data(), size);
-
-    midf0.close();
-    remove(midf0Name.c_str());
-    finf.close();
-  } else if (midf0IsEmpty && !midf1IsEmpty) {
-    std::ifstream midf1(midf1Name);
-    std::ofstream finf(gen_name(ref, tar, Format::position));
-
-    finf << POS_HDR << '\t' << file_name(ref) << '\t'
-         << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
-         << std::to_string(file_size(tar)) << '\n';
-
-    const uint64_t size{file_size(midf1Name)};
-    std::vector<char> buffer(size, 0);
-    midf1.read(buffer.data(), size);
-    finf.write(buffer.data(), size);
-
-    midf1.close();
-    remove(midf1Name.c_str());
-    finf.close();
+  } else if (!mid0_file_is_empty && mid1_file_is_empty) {
+    aggregate_single_mid_pos(mid0_file_name);
+  } else if (mid0_file_is_empty && !mid1_file_is_empty) {
+    aggregate_single_mid_pos(mid1_file_name);
   } else {
-    std::ifstream midf0(midf0Name);
-    std::ifstream midf1(midf1Name);
-    std::ofstream finf(gen_name(ref, tar, Format::position));
+    std::ifstream mid0_file(mid0_file_name);
+    std::ifstream mid1_file(mid1_file_name);
+    std::ofstream pos_file(gen_name(ref, tar, Format::position));
 
-    finf << POS_HDR << '\t' << file_name(ref) << '\t'
-         << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
-         << std::to_string(file_size(tar)) << '\n';
+    pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
+             << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
+             << std::to_string(file_size(tar)) << '\n';
     {
-      const uint64_t size{file_size(midf0Name)};
+      const uint64_t size{file_size(mid0_file_name)};
       std::vector<char> buffer(size, 0);
-      midf0.read(buffer.data(), size);
-      finf.write(buffer.data(), size);
+      mid0_file.read(buffer.data(), size);
+      pos_file.write(buffer.data(), size);
     }
     {
-      const uint64_t size{file_size(midf1Name)};
+      const uint64_t size{file_size(mid1_file_name)};
       std::vector<char> buffer(size, 0);
-      midf1.read(buffer.data(), size);
-      finf.write(buffer.data(), size);
+      mid1_file.read(buffer.data(), size);
+      pos_file.write(buffer.data(), size);
     }
 
-    midf0.close();
-    remove(midf0Name.c_str());
-    midf1.close();
-    remove(midf1Name.c_str());
-    finf.close();
+    mid0_file.close();
+    remove(mid0_file_name.c_str());
+    mid1_file.close();
+    remove(mid1_file_name.c_str());
+    pos_file.close();
   }
 }
 
