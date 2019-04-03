@@ -579,7 +579,7 @@ void Filter::aggregate_mid_pos(uint32_t ID, std::string ref,
         if (!file_is_empty(file3_name)) {
           std::ifstream file3(file3_name);
 
-          for (std::string beg3, end3, ent3; file3 >> beg3 >> end3 >> ent3;) {
+          for (std::string beg3, end3, ent3, self_ent3; file3 >> beg3 >> end3 >> ent3 >> self_ent3;) {
             mid_file << beg2 << '\t' << end2 << '\t' << ent2 << '\t'
                      << self_ent2 << '\t';
 
@@ -594,22 +594,11 @@ void Filter::aggregate_mid_pos(uint32_t ID, std::string ref,
               mid_file << end_final << '\t' << beg_final;
 
             // todo ent1 or ent3???
-            mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
-          }  // todo
-          // for (std::string beg3, end3, ent3, self_ent3;
-          //      file2 >> beg3 >> end3 >> ent3 >> self_ent3;) {
-          //      }
+            mid_file << '\t' << ent1 << '\t' << self_ent3 << '\n';
+          }
 
           file3.close();
         }
-
-        // mid_file << beg2 << '\t' << end2 << '\t' << ent2 << '\t' << self_ent2
-        //          << '\t';
-        // if (ID == 0)
-        //   mid_file << beg1 << '\t' << end1;
-        // else if (ID == 1)
-        //   mid_file << end1 << '\t' << beg1;
-        // mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
       }
 
       file2.close();
@@ -669,11 +658,11 @@ void Filter::aggregate_mid_pos(uint32_t ID, std::string ref,
 //       mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
 //     }
 
-//     // remove(file2_name.c_str());//todo
+//     remove(file2_name.c_str());//todo
 //   }
 
 //   file1.close();
-//   // remove(file1_name.c_str());//todo
+//   remove(file1_name.c_str());//todo
 //   mid_file.close();
 // }
 
