@@ -41,11 +41,9 @@ inline static bool file_is_empty(std::string name) {
 
   for (char c; f.get(c) && !foundChar;)
     if (c != ' ' && c != '\n' && c != '\t') foundChar = true;
+    
   f.close();
-
-  if (!foundChar) return true;
-
-  return false;
+  return !foundChar;
 }
 
 inline static std::string file_name(std::string str) {

@@ -13,8 +13,8 @@ class Filter {
  public:
   uint64_t nSegs;
 
-  explicit Filter(std::shared_ptr<Param>);
-  void smooth_seg(std::shared_ptr<Param>);
+  explicit Filter(std::unique_ptr<Param>&);
+  void smooth_seg(std::unique_ptr<Param>&);
   void merge_extract_seg(uint32_t, std::string, std::string) const;
   void aggregate_mid_pos(uint32_t, std::string, std::string) const;
   void aggregate_final_pos(std::string, std::string) const;
@@ -30,8 +30,8 @@ class Filter {
     Position(uint64_t b, uint64_t e) : beg(b), end(e) {}
   };
 
-  void set_wsize(std::shared_ptr<Param>);
-  void show_info(std::shared_ptr<Param>) const;
+  void set_wsize(std::unique_ptr<Param>&);
+  void show_info(std::unique_ptr<Param>&) const;
   void make_window();
   void make_hamming();
   void make_hann();
@@ -41,9 +41,9 @@ class Filter {
   void make_sine();
   void make_nuttall();
   template <bool SaveFilter>
-  void smooth_seg_rect(std::shared_ptr<Param>);
+  void smooth_seg_rect(std::unique_ptr<Param>&);
   template <bool SaveFilter>
-  void smooth_seg_non_rect(std::shared_ptr<Param>);
+  void smooth_seg_non_rect(std::unique_ptr<Param>&);
   // bool is_mergable (const Position&, const Position&) const;
 #ifdef BENCH
   template <typename Iter, typename Value>
