@@ -15,7 +15,7 @@
 #include "exception.hpp"
 using namespace smashpp;
 
-FCM::FCM(std::shared_ptr<Param>& par)
+FCM::FCM(std::unique_ptr<Param>& par)
     : aveEnt(static_cast<prc_t>(0)), tarSegID(0), entropyN(par->entropyN) {
   rMs = par->refMs;
   set_cont(rMs);
@@ -49,7 +49,7 @@ inline void FCM::set_cont(std::vector<MMPar>& Ms) {
   }
 }
 
-inline void FCM::show_info(std::shared_ptr<Param> par) const {
+inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   constexpr uint8_t lblWidth = 20;
   constexpr uint8_t colWidth = 8;
   constexpr uint8_t tblWidth =
@@ -302,7 +302,7 @@ inline void FCM::alloc_model() {
   }
 }
 
-void FCM::store(std::shared_ptr<Param> par) {
+void FCM::store(std::unique_ptr<Param>& par) {
   message = "Building the model";
   if (rMs.size() > 1) message += "s";
   message += " of ";
@@ -317,7 +317,7 @@ void FCM::store(std::shared_ptr<Param> par) {
   std::cerr << "\r" << message << "finished.\n";
 }
 
-inline void FCM::store_1(std::shared_ptr<Param> par) {
+inline void FCM::store_1(std::unique_ptr<Param>& par) {
   auto tbl64_iter = std::begin(tbl64);
   auto tbl32_iter = std::begin(tbl32);
   auto lgtbl8_iter = std::begin(lgtbl8);
@@ -347,7 +347,7 @@ inline void FCM::store_1(std::shared_ptr<Param> par) {
   }
 }
 
-inline void FCM::store_n(std::shared_ptr<Param> par) {
+inline void FCM::store_n(std::unique_ptr<Param>& par) {
   auto tbl64_iter = std::begin(tbl64);
   auto tbl32_iter = std::begin(tbl32);
   auto lgtbl8_iter = std::begin(lgtbl8);
@@ -409,7 +409,7 @@ inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
   rf.close();
 }
 
-void FCM::compress(std::shared_ptr<Param> par) {
+void FCM::compress(std::unique_ptr<Param>& par) {
   message = "Compressing " + italic(par->tarName) + " ";
 
   if (rMs.size() == 1 && rTMsSize == 0)  // 1 MM
@@ -436,7 +436,7 @@ void FCM::compress(std::shared_ptr<Param> par) {
 }
 
 template <typename ContIter>
-inline void FCM::compress_1(std::shared_ptr<Param> par, ContIter cont) {
+inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
   uint64_t ctx{0};  // Ctx, Mir (int) sliding through the dataset
   uint64_t ctxIr{(1ull << (2 * rMs[0].k)) - 1};
   uint64_t symsNo{0};  // No. syms in target file, except \n
@@ -509,7 +509,7 @@ inline void FCM::compress_1(std::shared_ptr<Param> par, ContIter cont) {
   aveEnt = sumEnt / symsNo;
 }
 
-inline void FCM::compress_n(std::shared_ptr<Param> par) {
+inline void FCM::compress_n(std::unique_ptr<Param>& par) {
   uint64_t symsNo{0};  // No. syms in target file, except \n
   prc_t sumEnt{0};     // Sum of entropies = sum(log_2 P(s|c^t))
   auto cp = std::make_unique<CompressPar>();
@@ -722,7 +722,7 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
   }
 }
 
-void FCM::self_compress(std::shared_ptr<Param> par, uint64_t ID) {
+void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID) {
   message = "Compressing segment " + std::to_string(ID + 1) + " ";
 
   self_compress_alloc();
@@ -779,7 +779,7 @@ inline void FCM::self_compress_alloc() {
 }
 
 template <typename ContIter>
-inline void FCM::self_compress_1(std::shared_ptr<Param> par, ContIter cont,
+inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
                                  uint64_t ID) {
   uint64_t ctx{0};
   uint64_t ctxIr{(1ull << (2 * tMs[0].k)) - 1};
@@ -846,7 +846,7 @@ inline void FCM::self_compress_1(std::shared_ptr<Param> par, ContIter cont,
   seqF.close();
 }
 
-inline void FCM::self_compress_n(std::shared_ptr<Param> par, uint64_t ID) {
+inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
   uint64_t symsNo{0};
   prc_t sumEnt{0};
   std::ifstream seqF(par->seq);
@@ -989,7 +989,7 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
   }
 }
 
-void FCM::aggregate_slf(std::shared_ptr<Param> par) const {
+void FCM::aggregate_slf(std::unique_ptr<Param>& par) const {
   const auto posName = gen_name(par->ID, par->ref, par->tar, Format::position);
   rename(posName.c_str(), (posName + LBL_BAK).c_str());
   std::ifstream pos_file_old(posName + LBL_BAK);
@@ -1011,7 +1011,7 @@ void FCM::aggregate_slf(std::shared_ptr<Param> par) const {
 }
 
 //// Called from main -- MUST NOT be inline
-// void FCM::report (std::shared_ptr<Param> p) const {
+// void FCM::report (std::unique_ptr<Param>& p) const {
 //  ofstream f(par->report, ofstream::out | ofstream::app);
 //  f << par->tar
 //    << '\t' << par->ref

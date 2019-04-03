@@ -12,12 +12,12 @@
 #include "naming.hpp"
 using namespace smashpp;
 
-Filter::Filter(std::shared_ptr<Param> par) : wtype(par->wtype) {
+Filter::Filter(std::unique_ptr<Param>& par) : wtype(par->wtype) {
   set_wsize(par);
   if ((par->filter || par->segment) && par->verbose) show_info(par);
 }
 
-inline void Filter::set_wsize(std::shared_ptr<Param> par) {
+inline void Filter::set_wsize(std::unique_ptr<Param>& par) {
   if (par->manFilterScale) {
     const auto biggest = std::min(file_size(par->tar), file_size(par->ref));
     const auto lg = std::log10(biggest / par->sampleStep);
@@ -39,7 +39,7 @@ inline void Filter::set_wsize(std::shared_ptr<Param> par) {
   window.resize(wsize);
 }
 
-inline void Filter::show_info(std::shared_ptr<Param> par) const {
+inline void Filter::show_info(std::unique_ptr<Param>& par) const {
   constexpr uint8_t lblWidth = 19;
   constexpr uint8_t colWidth = 8;
   constexpr uint8_t tblWidth =
@@ -137,7 +137,7 @@ inline void Filter::show_info(std::shared_ptr<Param> par) const {
   botrule();
 }
 
-void Filter::smooth_seg(std::shared_ptr<Param> par) {
+void Filter::smooth_seg(std::unique_ptr<Param>& par) {
   message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (wtype == WType::rectangular) {
@@ -313,7 +313,7 @@ inline void Filter::make_nuttall() {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_rect(std::shared_ptr<Param> par) {
+inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
@@ -407,7 +407,7 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param> par) {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param> par) {
+inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
@@ -552,46 +552,48 @@ void Filter::merge_extract_seg(uint32_t ID, std::string ref,
 
 void Filter::aggregate_mid_pos(uint32_t ID, std::string src,
                                std::string dst) const {
-  const std::string direct_file_name{gen_name(ID, src, dst, Format::position)};
-  std::ifstream direct_file(direct_file_name);
-  std::ofstream mid_file(LBL_MID + "-" +
-                         gen_name(ID, src, dst, Format::position));
+                                //  std::cerr<<src<<' '<<dst;//todo
+  const std::string file1_name{gen_name(ID, src, dst, Format::position)};
+  std::ifstream file1(file1_name);
+  std::ofstream mid_file(LBL_MID + "." + file1_name);
   int i{0};
 
-  for (std::string begDir, endDir, entDir, selfEntDir;
-       direct_file >> begDir >> endDir >> entDir >> selfEntDir; ++i) {
-    const std::string refRev{gen_name(ID, src, dst, Format::segment) +
-                             std::to_string(i)};
-    const std::string revFileName{gen_name(ID, refRev, src, Format::position)};
+  for (std::string beg1, end1, ent1, self_ent1;
+       file1 >> beg1 >> end1 >> ent1 >> self_ent1; ++i) {
+    const std::string file2_name{gen_name(
+        ID, gen_name(ID, src, dst, Format::segment) + std::to_string(i), src,
+        Format::position)};
 
-    if (!file_is_empty(revFileName)) {
-      std::ifstream fReverse(revFileName);
-      for (std::string begRev, endRev, entRev, selfEntRev;
-           fReverse >> begRev >> endRev >> entRev >> selfEntRev;) {
-        mid_file << begRev << '\t' << endRev << '\t' << entRev << '\t'
-                 << selfEntRev << '\t';
+    if (!file_is_empty(file2_name)) {
+      std::ifstream file2(file2_name);
+
+      for (std::string beg2, end2, ent2, self_ent2;
+           file2 >> beg2 >> end2 >> ent2 >> self_ent2;) {
+        mid_file << beg2 << '\t' << end2 << '\t' << ent2 << '\t' << self_ent2
+                 << '\t';
         if (ID == 0)
-          mid_file << begDir << '\t' << endDir;
+          mid_file << beg1 << '\t' << end1;
         else if (ID == 1)
-          mid_file << endDir << '\t' << begDir;
-        mid_file << '\t' << entDir << '\t' << selfEntDir << '\n';
+          mid_file << end1 << '\t' << beg1;
+        mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
       }
-      fReverse.close();
+
+      file2.close();
     } else {
       mid_file << DBLANK << '\t' << DBLANK << '\t' << DBLANK << '\t' << DBLANK
                << '\t';
       if (ID == 0)
-        mid_file << begDir << '\t' << endDir;
+        mid_file << beg1 << '\t' << end1;
       else if (ID == 1)
-        mid_file << endDir << '\t' << begDir;
-      mid_file << '\t' << entDir << '\t' << selfEntDir << '\n';
+        mid_file << end1 << '\t' << beg1;
+      mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
     }
 
-    remove(revFileName.c_str());
+    // remove(file2_name.c_str());
   }
 
-  direct_file.close();
-  remove(direct_file_name.c_str());
+  file1.close();
+  // remove(file1_name.c_str());
   mid_file.close();
 }
 
