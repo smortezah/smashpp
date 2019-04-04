@@ -34,7 +34,7 @@ add_executable(
            src/color.cpp
            src/svg.cpp
            src/vizpaint.cpp
-           src/vizdef.hpp
+          #  src/vizdef.hpp
            src/main.cpp
 )
 
