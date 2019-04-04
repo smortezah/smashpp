@@ -136,7 +136,9 @@ int main(int argc, char* argv[]) {
         auto par3 = std::make_unique<Param>();  // For round 3
         par3->parse(argc, argv);
 
+//todo
         for (uint8_t timesRunning = 0; timesRunning != 2; ++timesRunning) {
+        // for (uint8_t timesRunning = 0; timesRunning != 1; ++timesRunning) {
           if (timesRunning == 0)
             std::cerr << bold(
                 "====[ REGULAR MODE ]==================================\n");
@@ -247,6 +249,10 @@ int main(int argc, char* argv[]) {
               for (uint64_t j = 0; j != filter->nSegs; ++j) {
                 par2->seq = seg_tar2_name + std::to_string(j);
                 models->self_compress(par2, j);
+                
+                //todo remove
+                  if (!par2->saveAll && !par2->saveSegment)
+                    remove(par2->seq.c_str());
               }
             }
             models->aggregate_slf(par2);
