@@ -257,9 +257,6 @@ static const std::vector<std::string> REFFREE_LEVEL{
 ////constexpr auto a = LogInt<256>();
 ////cerr << (int) a.lg[3];
 
-
-
-
 static constexpr uint8_t PREC_VIZ{2};  // Precision
 static const std::string IMAGE{"map.svg"};
 static constexpr uint8_t LINK{1};
@@ -317,9 +314,6 @@ static const std::vector<std::vector<std::string>> COLORSET{
     //  "#000086"},
     {"#5E4FA2", "#41799C", "#62A08D", "#9CB598", "#C8CEAD", "#E6E6BA",
      "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"}};
-
-
-
 }  // namespace smashpp
 
 #endif  // SMASHPP_DEF_HPP

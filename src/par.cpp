@@ -13,7 +13,7 @@
 #include "container.hpp"
 #include "file.hpp"
 #include "mdlpar.hpp"
-#include "vizdef.hpp"
+// #include "vizdef.hpp"
 using namespace smashpp;
 
 void Param::parse(int argc, char**& argv) {

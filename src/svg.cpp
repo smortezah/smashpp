@@ -4,7 +4,8 @@
 
 #include <algorithm>
 #include "svg.hpp"
-#include "vizdef.hpp"
+#include "def.hpp"
+// #include "vizdef.hpp"
 #include "color.hpp"
 using namespace smashpp;
 

@@ -5,8 +5,8 @@
 #ifndef PROJECT_EXCEPTION_HPP
 #define PROJECT_EXCEPTION_HPP
 
-#include "def.hpp"
 #include "string.hpp"
+#include "def.hpp"
 
 namespace smashpp {
 // "inline" is a MUST -- not to get "multiple definition of ..." error
