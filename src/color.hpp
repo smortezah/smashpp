@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef COLOR_H_INCLUDED
-#define COLOR_H_INCLUDED
+#ifndef PROJECT_COLOR_HPP
+#define PROJECT_COLOR_HPP
 
 #include "par.hpp"
 

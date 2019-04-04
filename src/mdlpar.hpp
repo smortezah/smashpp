@@ -5,6 +5,7 @@
 #ifndef PROJECT_MDLPAR_HPP
 #define PROJECT_MDLPAR_HPP
 
+#include <memory>
 #include "def.hpp"
 
 namespace smashpp {

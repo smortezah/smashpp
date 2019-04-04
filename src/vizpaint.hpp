@@ -5,7 +5,8 @@
 #ifndef VIZPAINT_H_INCLUDED
 #define VIZPAINT_H_INCLUDED
 
-#include "vizdef.hpp"
+// #include "vizdef.hpp"
+#include "def.hpp"
 #include "par.hpp"
 #include "svg.hpp"
 #include "color.hpp"

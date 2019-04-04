@@ -6,6 +6,7 @@
 #define PROJECT_FILE_HPP
 
 #include <iterator>
+#include <algorithm>
 #include "def.hpp"
 #include "exception.hpp"
 
@@ -61,7 +62,7 @@ inline static uint64_t file_lines(std::string name) {
   std::ifstream f(name);
   f.unsetf(
       std::ios_base::skipws);  // New lines will be skipped unless we stop it
-  return static_cast<uint64_t>(count(std::istream_iterator<char>(f),
+  return static_cast<uint64_t>(std::count(std::istream_iterator<char>(f),
                                      std::istream_iterator<char>(), '\n'));
 }
 
