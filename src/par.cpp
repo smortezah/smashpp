@@ -130,12 +130,29 @@ void Param::parse(int argc, char**& argv) {
           filter_scale(cmd), is_filter_scale(cmd));
       set->assert(filterScale);
     } else if ((*i == "-rb" || *i == "--ref-beg-grd") && i + 1 != end(vArgs)) {
-      man_ref_beg_grd = true;
-      // segSize = std::stoul(*++i);
-      // auto range = std::make_unique<ValRange<uint32_t>>(
-      //     MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", "[]", "default",
-      //     Problem::warning);
-      // range->assert(segSize);
+      ref_beg_guard = static_cast<int16_t>(std::stoi(*++i));
+      auto range = std::make_unique<ValRange<int16_t>>(
+          std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard", "[]", "default",
+          Problem::warning);
+      range->assert(ref_beg_guard);
+    } else if ((*i == "-re" || *i == "--ref-end-grd") && i + 1 != end(vArgs)) {
+      ref_end_guard = static_cast<int16_t>(std::stoi(*++i));
+      auto range = std::make_unique<ValRange<int16_t>>(
+          std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0, "Reference ending guard", "[]", "default",
+          Problem::warning);
+      range->assert(ref_end_guard);
+    } else if ((*i == "-tb" || *i == "--tar-beg-grd") && i + 1 != end(vArgs)) {
+      tar_beg_guard = static_cast<int16_t>(std::stoi(*++i));
+      auto range = std::make_unique<ValRange<int16_t>>(
+          std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0, "Target beginning guard", "[]", "default",
+          Problem::warning);
+      range->assert(tar_beg_guard);
+    } else if ((*i == "-te" || *i == "--tar-end-grd") && i + 1 != end(vArgs)) {
+      tar_end_guard = static_cast<int16_t>(std::stoi(*++i));
+      auto range = std::make_unique<ValRange<int16_t>>(
+          std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0, "Target ending guard", "[]", "default",
+          Problem::warning);
+      range->assert(tar_end_guard);
     } else if (*i == "-nr" || *i == "--no-redun")
       noRedun = true;
     else if (*i == "-sb" || *i == "--save-seq")
