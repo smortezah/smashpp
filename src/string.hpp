@@ -7,58 +7,30 @@
 
 #include "def.hpp"
 #include "number.hpp"
-// #include "exception.hpp"
 
 namespace smashpp {
-inline static std::string bold(std::string&& text) {
+inline std::string bold(const std::string& text) {
   return "\033[1m" + text + "\033[0m";
 }
 
-inline static std::string bold(const std::string& text) {
-  return "\033[1m" + text + "\033[0m";
-}
-
-inline static std::string faint(std::string&& text) {
+inline std::string faint(const std::string& text) {
   return "\033[2m" + text + "\033[0m";
 }
 
-inline static std::string faint(const std::string& text) {
-  return "\033[2m" + text + "\033[0m";
-}
-
-inline static std::string italic(std::string&& text) {
+inline std::string italic(const std::string& text) {
   return "\033[3m" + text + "\033[0m";
 }
 
-inline static std::string italic(const std::string& text) {
-  return "\033[3m" + text + "\033[0m";
-}
-
-inline static std::string underline(std::string&& text) {
+inline std::string underline(const std::string& text) {
   return "\033[4m" + text + "\033[0m";
 }
 
-inline static std::string underline(const std::string& text) {
-  return "\033[4m" + text + "\033[0m";
-}
-
-inline static std::string highlight(std::string&& text) {
+inline std::string highlight(const std::string& text) {
   return "\033[7m" + text + "\033[0m";
 }
 
-inline static std::string highlight(const std::string& text) {
-  return "\033[7m" + text + "\033[0m";
-}
-
-//todo change
-inline static std::string bold_red(std::string&& text) {
-  return "\033[1m\033[31m" + text + "\033[0m";
-  // return "\033[1m\033[38;5;1m" + text + "\033[0m";
-}
-//todo change
-inline static std::string bold_red(const std::string& text) {
-  return "\033[1m\033[31m" + text + "\033[0m";
-  // return "\033[1m\033[38;5;1m" + text + "\033[0m";
+inline std::string bold_red(const std::string& text) {
+  return "\033[1m\033[38;5;1m" + text + "\033[0m";
 }
 
 #ifdef DEBUG
@@ -71,7 +43,9 @@ inline static std::string bold_red(const std::string& text) {
 // }
 #endif
 
-inline static void wrap_text(std::string& text) {
+inline
+//  static 
+void wrap_text(std::string& text) {
   constexpr auto width{TEXTWIDTH};
   std::string out;
   std::string word;

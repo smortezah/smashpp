@@ -9,8 +9,12 @@
 #include "string.hpp"
 
 namespace smashpp {
+extern void wrap_text(std::string&);
+extern std::string bold(const std::string&);
+extern std::string bold_red(const std::string&);
+
 // "inline" is a MUST -- not to get "multiple definition of ..." error
-inline static void error(std::string&& msg) {
+inline void error(std::string&& msg) {
   std::string message = "Error: " + std::move(msg);
   wrap_text(message);
   throw std::runtime_error(bold_red(message.substr(0, 6)) + message.substr(6) +
