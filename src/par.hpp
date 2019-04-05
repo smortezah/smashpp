@@ -54,10 +54,10 @@ class Param {
   bool noRedun;
   std::vector<MMPar> refMs;
   std::vector<MMPar> tarMs;
-  uint64_t ref_beg_grd;
-  uint64_t ref_end_grd;
-  uint64_t tar_beg_grd;
-  uint64_t tar_end_grd;
+  int16_t ref_beg_guard;
+  int16_t ref_end_guard;
+  int16_t tar_beg_guard;
+  int16_t tar_end_guard;
 
   // Define Param::Param(){} in *.hpp => compile error
   Param()
@@ -88,7 +88,10 @@ class Param {
         segment(false),
         ID(0),
         noRedun(false),
-        ref_beg_grd(0) {}
+        ref_beg_guard(0),
+        ref_end_guard(0),
+        tar_beg_guard(0),
+        tar_end_guard(0) {}
 
   void parse(int, char**&);
   auto win_type(std::string) const -> WType;

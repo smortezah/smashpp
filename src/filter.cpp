@@ -332,7 +332,7 @@ inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par) {
     uint8_t maxCtx = 0;
     for (const auto& e : par->refMs)
       if (e.k > maxCtx) maxCtx = e.k;
-    seg->set_guards(maxCtx);
+    seg->set_guards(maxCtx, par->ref_beg_guard, par->ref_end_guard, par->tar_beg_guard, par->tar_end_guard);
   }
   std::string num;
   auto sum{0.f};
@@ -426,7 +426,7 @@ inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par) {
     uint8_t maxCtx = 0;
     for (const auto& e : par->refMs)
       if (e.k > maxCtx) maxCtx = e.k;
-    seg->set_guards(maxCtx);
+    seg->set_guards(maxCtx, par->ref_beg_guard, par->ref_end_guard, par->tar_beg_guard, par->tar_end_guard);
   }
   const auto winBeg{std::begin(window)};
   const auto winEnd{std::end(window)};
