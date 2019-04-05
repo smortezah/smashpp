@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "color.hpp"
 #include "string.hpp"
+#include "exception.hpp"
 
 namespace smashpp {
 // Global functions

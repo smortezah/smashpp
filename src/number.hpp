@@ -24,14 +24,10 @@ inline static bool is_odd(Value val) {
   // +
   //                          "\n");
   if (val < 0) {
-    // std::string message =
-        // "Error: \"" + std::to_string(val) + "\" is a negative number.";
-    // wrap_text(message);
-    // std::string message = "\033[1m\033[38;5;1m" + "Error:" + "\033[0m" + " \"" +
-    //                       std::to_string(val) + "\" is a negative number.\n";
-    std::string message = std::string("\033[1m") +
+    std::string message = std::string("\033[1m\033[31m") +
                           "Error:" + std::string("\033[0m") + " \"" +
                           std::to_string(val) + "\" is a negative number.\n";
+    // wrap_text(message);
     throw std::runtime_error(message);
   }
 
