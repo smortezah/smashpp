@@ -5,7 +5,6 @@
 #ifndef SMASHPP_VIZPAINT_HPP
 #define SMASHPP_VIZPAINT_HPP
 
-// #include "vizdef.hpp"
 #include "def.hpp"
 #include "par.hpp"
 #include "svg.hpp"

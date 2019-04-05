@@ -100,7 +100,7 @@
 #include "container.hpp"
 #include "time.hpp"
 #include "naming.hpp"
-#include "exception.hpp"
+#include "string.hpp"
 #include "segment.hpp"
 #include "vizpaint.hpp"
 using namespace smashpp;

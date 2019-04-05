@@ -6,6 +6,7 @@
 #define SMASHPP_NAMING_HPP
 
 #include "def.hpp"
+#include "file.hpp"
 
 namespace smashpp {
 inline static std::string gen_name(uint32_t ID, std::string ref,

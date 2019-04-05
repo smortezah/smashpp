@@ -7,10 +7,13 @@
 
 #include <iterator>
 #include <algorithm>
+#include <fstream>
 #include "def.hpp"
 #include "exception.hpp"
 
 namespace smashpp {
+extern void error(std::string&&);
+
 struct SubSeq {
   std::string inName;
   std::string outName;

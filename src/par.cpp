@@ -13,7 +13,6 @@
 #include "container.hpp"
 #include "file.hpp"
 #include "mdlpar.hpp"
-// #include "vizdef.hpp"
 using namespace smashpp;
 
 void Param::parse(int argc, char**& argv) {
@@ -438,7 +437,7 @@ inline WType Param::win_type(std::string t) const {
     return WType::hann;
 }
 
-inline std::string Param::print_win_type() const {
+std::string Param::print_win_type() const {
   switch (wtype) {
     case WType::rectangular:
       return "Rectangular";
@@ -480,7 +479,7 @@ inline FilterScale Param::filter_scale(std::string s) const {
     return FilterScale::l;
 }
 
-inline std::string Param::print_filter_scale() const {
+std::string Param::print_filter_scale() const {
   switch (filterScale) {
     case FilterScale::s:
       return "Small";
@@ -496,7 +495,7 @@ inline std::string Param::print_filter_scale() const {
   }
 }
 
-inline void VizParam::parse(int argc, char**& argv) {
+void VizParam::parse(int argc, char**& argv) {
   if (argc < 3) {
     help();
     throw EXIT_SUCCESS;

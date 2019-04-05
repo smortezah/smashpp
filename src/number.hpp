@@ -7,8 +7,7 @@
 
 #include <cmath>
 #include "def.hpp"
-// #include "exception.hpp"
-// #include "string.hpp"
+#include "file.hpp"
 
 namespace smashpp {
 template <typename Input>
@@ -18,21 +17,7 @@ inline static bool is_uint8_t(const Input& in) {
 
 template <typename Value>
 inline static bool is_odd(Value val) {
-  // std::string message = "Error: " + std::move(msg);
-  // wrap_text(message);
-  // throw std::runtime_error(bold_red(message.substr(0, 6)) + message.substr(6)
-  // +
-  //                          "\n");
-  if (val < 0) {
-    std::string message = std::string("\033[1m\033[31m") +
-                          "Error:" + std::string("\033[0m") + " \"" +
-                          std::to_string(val) + "\" is a negative number.\n";
-    // wrap_text(message);
-    throw std::runtime_error(message);
-  }
-
-  // if (val < 0) error("\"" + std::to_string(val) + "\" is a negative
-  // number.");
+  if (val < 0) error("\"" + std::to_string(val) + "\" is a negative number.");
 
   return (val & 1ull);
 }

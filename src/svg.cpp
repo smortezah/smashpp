@@ -3,9 +3,9 @@
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
 #include <algorithm>
+#include <fstream>
 #include "svg.hpp"
 #include "def.hpp"
-// #include "vizdef.hpp"
 #include "color.hpp"
 using namespace smashpp;
 

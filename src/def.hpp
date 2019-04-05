@@ -257,6 +257,7 @@ static const std::vector<std::string> REFFREE_LEVEL{
 ////constexpr auto a = LogInt<256>();
 ////cerr << (int) a.lg[3];
 
+// Visualization
 static constexpr uint8_t PREC_VIZ{2};  // Precision
 static const std::string IMAGE{"map.svg"};
 static constexpr uint8_t LINK{1};

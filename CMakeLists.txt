@@ -11,19 +11,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -Wall -march=nat
 
 add_executable(
   smashpp  
-          #  src/def.hpp
-          #  src/number.hpp
-          #  src/string.hpp
-          #  src/exception.hpp
-          # #  src/par.hpp
-          #  src/assert.hpp
-          #  src/time.hpp
-          #  src/file.hpp
-          #  src/container.hpp
-          #  src/naming.hpp
-          #  src/mdlpar.hpp
-          #  src/svg.hpp
-          #  src/color.hpp
            src/par.cpp
            src/fcm.cpp
            src/tbl64.cpp
@@ -35,7 +22,6 @@ add_executable(
            src/color.cpp
            src/svg.cpp
            src/vizpaint.cpp
-          #  src/vizdef.hpp
            src/main.cpp
 )
 
