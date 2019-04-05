@@ -2,12 +2,13 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_NUMBER_HPP
-#define PROJECT_NUMBER_HPP
+#ifndef SMASHPP_NUMBER_HPP
+#define SMASHPP_NUMBER_HPP
 
 #include <cmath>
 #include "def.hpp"
-#include "exception.hpp"
+// #include "exception.hpp"
+// #include "string.hpp"
 
 namespace smashpp {
 template <typename Input>
@@ -17,7 +18,25 @@ inline static bool is_uint8_t(const Input& in) {
 
 template <typename Value>
 inline static bool is_odd(Value val) {
-  if (val < 0) error("\"" + std::to_string(val) + "\" is a negative number.");
+  // std::string message = "Error: " + std::move(msg);
+  // wrap_text(message);
+  // throw std::runtime_error(bold_red(message.substr(0, 6)) + message.substr(6)
+  // +
+  //                          "\n");
+  if (val < 0) {
+    // std::string message =
+        // "Error: \"" + std::to_string(val) + "\" is a negative number.";
+    // wrap_text(message);
+    // std::string message = "\033[1m\033[38;5;1m" + "Error:" + "\033[0m" + " \"" +
+    //                       std::to_string(val) + "\" is a negative number.\n";
+    std::string message = std::string("\033[1m") +
+                          "Error:" + std::string("\033[0m") + " \"" +
+                          std::to_string(val) + "\" is a negative number.\n";
+    throw std::runtime_error(message);
+  }
+
+  // if (val < 0) error("\"" + std::to_string(val) + "\" is a negative
+  // number.");
 
   return (val & 1ull);
 }
@@ -136,4 +155,4 @@ inline static float tick_round(float lowerBound, float upperBound,
 }
 }  // namespace smashpp
 
-#endif  // PROJECT_NUMBER_HPP
+#endif  // SMASHPP_NUMBER_HPP

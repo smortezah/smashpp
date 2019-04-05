@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef VIZPAINT_H_INCLUDED
-#define VIZPAINT_H_INCLUDED
+#ifndef SMASHPP_VIZPAINT_HPP
+#define SMASHPP_VIZPAINT_HPP
 
 // #include "vizdef.hpp"
 #include "def.hpp"
@@ -175,4 +175,4 @@ class VizPaint {
 };
 }  // namespace smashpp
 
-#endif
+#endif // SMASHPP_VIZPAINT_HPP

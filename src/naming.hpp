@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_NAMING_HPP
-#define PROJECT_NAMING_HPP
+#ifndef SMASHPP_NAMING_HPP
+#define SMASHPP_NAMING_HPP
 
 #include "def.hpp"
 
@@ -50,4 +50,4 @@ inline static std::string gen_name(std::string ref, std::string tar,
 }
 }  // namespace smashpp
 
-#endif  // PROJECT_NAMING_HPP
+#endif  // SMASHPP_NAMING_HPP

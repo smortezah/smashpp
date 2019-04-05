@@ -316,4 +316,4 @@ static const std::vector<std::vector<std::string>> COLORSET{
      "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"}};
 }  // namespace smashpp
 
-#endif  // SMASHPP_DEF_HPP
+#endif  //SMASHPP_DEF_HPP

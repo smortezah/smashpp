@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_ASSERT_HPP
-#define PROJECT_ASSERT_HPP
+#ifndef SMASHPP_ASSERT_HPP
+#define SMASHPP_ASSERT_HPP
 
 #include <stdexcept>
 #include "exception.hpp"
@@ -139,4 +139,4 @@ void ValSet<Value>::assert(Value& val) {
 }
 }  // namespace smashpp
 
-#endif  // PROJECT_ASSERT_HPP
+#endif  // SMASHPP_ASSERT_HPP

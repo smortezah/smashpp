@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_FILTER_HPP
-#define PROJECT_FILTER_HPP
+#ifndef SMASHPP_FILTER_HPP
+#define SMASHPP_FILTER_HPP
 
 #include <memory>
 #include "par.hpp"
@@ -54,4 +54,4 @@ class Filter {
 };
 }  // namespace smashpp
 
-#endif  // PROJECT_FILTER_HPP
+#endif  // SMASHPP_FILTER_HPP

@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_TIME_HPP
-#define PROJECT_TIME_HPP
+#ifndef SMASHPP_TIME_HPP
+#define SMASHPP_TIME_HPP
 
 #include "def.hpp"
 
@@ -33,4 +33,4 @@ inline static std::string hms(Time elapsed) {
 }
 }  // namespace smashpp
 
-#endif  // PROJECT_TIME_HPP
+#endif  // SMASHPP_TIME_HPP

@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_MDLPAR_HPP
-#define PROJECT_MDLPAR_HPP
+#ifndef SMASHPP_MDLPAR_HPP
+#define SMASHPP_MDLPAR_HPP
 
 #include <memory>
 #include "def.hpp"
@@ -138,4 +138,4 @@ struct CompressPar {
 };
 }  // namespace smashpp
 
-#endif  // PROJECT_MDLPAR_HPP
+#endif  // SMASHPP_MDLPAR_HPP

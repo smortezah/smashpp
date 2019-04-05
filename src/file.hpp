@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_FILE_HPP
-#define PROJECT_FILE_HPP
+#ifndef SMASHPP_FILE_HPP
+#define SMASHPP_FILE_HPP
 
 #include <iterator>
 #include <algorithm>
@@ -185,4 +185,4 @@ inline static void to_seq(std::string inName, std::string outName,
 }
 }  // namespace smashpp
 
-#endif  // PROJECT_FILE_HPP
+#endif  // SMASHPP_FILE_HPP

@@ -3,8 +3,8 @@
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
 #include <algorithm>
-#include "string.hpp"
 #include "color.hpp"
+#include "string.hpp"
 
 namespace smashpp {
 // Global functions

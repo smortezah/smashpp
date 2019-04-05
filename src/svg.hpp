@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef SVG_H_INCLUDED
-#define SVG_H_INCLUDED
+#ifndef SMASHPP_SVG_HPP
+#define SMASHPP_SVG_HPP
 
 #include "par.hpp"
 #include "exception.hpp"
@@ -409,4 +409,4 @@ inline std::string path_shadow(std::ofstream& file) {
 }
 }  // namespace smashpp
 
-#endif
+#endif // SMASHPP_SVG_HPP
