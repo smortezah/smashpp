@@ -50,12 +50,15 @@ inline static std::string highlight(const std::string& text) {
   return "\033[7m" + text + "\033[0m";
 }
 
+//todo change
 inline static std::string bold_red(std::string&& text) {
-  return "\033[1m\033[38;5;1m" + text + "\033[0m";
+  return "\033[1m\033[31m" + text + "\033[0m";
+  // return "\033[1m\033[38;5;1m" + text + "\033[0m";
 }
-
+//todo change
 inline static std::string bold_red(const std::string& text) {
-  return "\033[1m\033[38;5;1m" + text + "\033[0m";
+  return "\033[1m\033[31m" + text + "\033[0m";
+  // return "\033[1m\033[38;5;1m" + text + "\033[0m";
 }
 
 #ifdef DEBUG
