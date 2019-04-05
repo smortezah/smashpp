@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef DEFS_H_INCLUDED
-#define DEFS_H_INCLUDED
+#ifndef SMASHPP_DEFS_HPP
+#define SMASHPP_DEFS_HPP
 
 #include <stdint.h>
 #define __STDC_FORMAT_MACROS
@@ -69,4 +69,4 @@ static const std::vector<std::vector<std::string>> COLORSET{
      "#E8D499", "#E2B07F", "#E67F5F", "#C55562", "#A53A66"}};
 }  // namespace smashpp
 
-#endif
+#endif // SMASHPP_DEFS_HPP

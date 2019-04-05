@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_SEGMENT_HPP
-#define PROJECT_SEGMENT_HPP
+#ifndef SMASHPP_SEGMENT_HPP
+#define SMASHPP_SEGMENT_HPP
 
 #include <fstream>
 #include "def.hpp"
@@ -42,4 +42,4 @@ class Segment {
 };
 }  // namespace smashpp
 
-#endif  // PROJECT_SEGMENT_HPP
+#endif  // SMASHPP_SEGMENT_HPP

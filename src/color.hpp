@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_COLOR_HPP
-#define PROJECT_COLOR_HPP
+#ifndef SMASHPP_COLOR_HPP
+#define SMASHPP_COLOR_HPP
 
 #include "par.hpp"
 
@@ -53,4 +53,4 @@ class HSV : public Color {
 };
 }  // namespace smashpp
 
-#endif
+#endif  //SMASHPP_COLOR_HPP

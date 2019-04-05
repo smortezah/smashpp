@@ -2,12 +2,12 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_STRING_HPP
-#define PROJECT_STRING_HPP
+#ifndef SMASHPP_STRING_HPP
+#define SMASHPP_STRING_HPP
 
 #include "def.hpp"
 #include "number.hpp"
-#include "exception.hpp"
+// #include "exception.hpp"
 
 namespace smashpp {
 inline static std::string bold(std::string&& text) {
@@ -226,4 +226,4 @@ inline static std::string human_readable_non_cs(uint64_t bytes,
 }
 }  // namespace smashpp
 
-#endif  // PROJECT_STRING_HPP
+#endif  // SMASHPP_STRING_HPP

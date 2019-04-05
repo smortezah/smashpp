@@ -2,11 +2,11 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_EXCEPTION_HPP
-#define PROJECT_EXCEPTION_HPP
+#ifndef SMASHPP_EXCEPTION_HPP
+#define SMASHPP_EXCEPTION_HPP
 
-#include "string.hpp"
 #include "def.hpp"
+#include "string.hpp"
 
 namespace smashpp {
 // "inline" is a MUST -- not to get "multiple definition of ..." error
@@ -30,4 +30,4 @@ inline static void warning(std::string&& msg) {
 }
 }  // namespace smashpp
 
-#endif  // PROJECT_EXCEPTION_HPP
+#endif  // SMASHPP_EXCEPTION_HPP

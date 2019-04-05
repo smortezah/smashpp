@@ -2,8 +2,8 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#ifndef PROJECT_CONTAINER_HPP
-#define PROJECT_CONTAINER_HPP
+#ifndef SMASHPP_CONTAINER_HPP
+#define SMASHPP_CONTAINER_HPP
 
 #include <numeric>
 #include <algorithm>
@@ -88,4 +88,4 @@ inline static void normalize(OutIter oFirst, InIter iFirst, InIter iLast) {
 }
 }  // namespace smashpp
 
-#endif  // PROJECT_CONTAINER_HPP
+#endif  // SMASHPP_CONTAINER_HPP
