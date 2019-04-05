@@ -129,6 +129,13 @@ void Param::parse(int argc, char**& argv) {
           SET_FSCALE, FS, "Filter scale", "default", Problem::warning,
           filter_scale(cmd), is_filter_scale(cmd));
       set->assert(filterScale);
+    } else if ((*i == "-rb" || *i == "--ref-beg-grd") && i + 1 != end(vArgs)) {
+      man_ref_beg_grd = true;
+      // segSize = std::stoul(*++i);
+      // auto range = std::make_unique<ValRange<uint32_t>>(
+      //     MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", "[]", "default",
+      //     Problem::warning);
+      // range->assert(segSize);
     } else if (*i == "-nr" || *i == "--no-redun")
       noRedun = true;
     else if (*i == "-sb" || *i == "--save-seq")
@@ -246,27 +253,6 @@ void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
 }
 
 void Param::help() const {
-  // const auto t = [](std::string&& str) {  // Print title
-  //   std::cerr << bold(std::move(str)) << '\n';
-  // };
-  // const auto l = [](const std::string& str) {  // Line
-  //   std::cerr << "  " << str << '\n';
-  // };
-  // // Print column 1: left-aligned + column 2: left-aligned
-  // const auto ll = [](const std::string& strL, uint8_t n,
-  //                     const std::string& strR) {
-  //   std::cerr << "  " << std::left << std::setw(27 + n * 8) << strL;
-  //   std::cerr.clear();
-  //   std::cerr << strR << '\n';
-  // };
-  // // Print column 1: right-aligned + column 2: left-aligned
-  // const auto rl = [](const std::string& strL, uint8_t n,
-  //                     const std::string& strR) {
-  //   std::cerr << "  " << std::right << std::setw(27 + n * 8) << strL;
-  //   std::cerr.clear();
-  //   std::cerr << strR << '\n';
-  // };
-
   title("NAME");
   line("Smash++ v" + VERSION + " - rearrangements finder");
   line("");
@@ -610,21 +596,6 @@ void VizParam::parse(int argc, char**& argv) {
 }
 
 void VizParam::help() const {
-  // // Print title
-  // const auto t = [](std::string&& str) {
-  //   std::cerr << bold(std::move(str)) << '\n';
-  // };
-  // const auto l = [](const std::string& str) {
-  //   std::cerr << "  " << str << '\n';
-  // };  // Line
-  // // Print column 1: left-aligned + column 2: left-aligned
-  // const auto ll = [](const std::string& strL, uint8_t n,
-  //                    const std::string& strR) {
-  //   std::cerr << "  " << std::left << std::setw(25 + n * 8) << strL;
-  //   std::cerr.clear();
-  //   std::cerr << strR << '\n';
-  // };
-
   title("NAME");
   line("Smash++ Visualizer v" + VERSION + " - Visualization of Samsh++ output");
   line("");
