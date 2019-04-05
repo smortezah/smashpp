@@ -13,6 +13,7 @@
 #include "container.hpp"
 #include "file.hpp"
 #include "mdlpar.hpp"
+#include "print.hpp"
 using namespace smashpp;
 
 void Param::parse(int argc, char**& argv) {
@@ -204,8 +205,7 @@ void Param::parse(int argc, char**& argv) {
 }
 
 template <typename Iter>
-inline void Param::parseModelsPars(Iter begin, Iter end,
-                                   std::vector<MMPar>& Ms) {
+void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
   std::vector<std::string> mdls;
   split(begin, end, ':', mdls);
   for (const auto& e : mdls) {
@@ -245,178 +245,193 @@ inline void Param::parseModelsPars(Iter begin, Iter end,
   }
 }
 
-void Param::print_title(std::string&& str) const {
-  std::cerr << bold(std::move(str)) << '\n';
+void Param::help() const {
+  // const auto t = [](std::string&& str) {  // Print title
+  //   std::cerr << bold(std::move(str)) << '\n';
+  // };
+  // const auto l = [](const std::string& str) {  // Line
+  //   std::cerr << "  " << str << '\n';
+  // };
+  // // Print column 1: left-aligned + column 2: left-aligned
+  // const auto ll = [](const std::string& strL, uint8_t n,
+  //                     const std::string& strR) {
+  //   std::cerr << "  " << std::left << std::setw(27 + n * 8) << strL;
+  //   std::cerr.clear();
+  //   std::cerr << strR << '\n';
+  // };
+  // // Print column 1: right-aligned + column 2: left-aligned
+  // const auto rl = [](const std::string& strL, uint8_t n,
+  //                     const std::string& strR) {
+  //   std::cerr << "  " << std::right << std::setw(27 + n * 8) << strL;
+  //   std::cerr.clear();
+  //   std::cerr << strR << '\n';
+  // };
+
+  title("NAME");
+  line("Smash++ v" + VERSION + " - rearrangements finder");
+  line("");
+
+  title("SYNOPSIS");
+  line("./smashpp  " + underline("OPTIONS") + "...  -r " +
+       underline("REF-FILE") + "  -t " + underline("TAR-FILE"));
+  line("");
+
+  title("SAMPLE");
+  // line("./smashpp -t TAR -r REF");
+  line("");
+
+  title("DESCRIPTION");
+  line(italic("Mandatory arguments"));
+
+  line_left_left(bold("-r") + ",  " + bold("--ref") + "  " + underline("FILE"),
+                 3, "reference file (Seq/Fasta/Fastq)");
+
+  line_left_left(bold("-t") + ",  " + bold("--tar") + "  " + underline("FILE"),
+                 3, "target file    (Seq/Fasta/Fastq)");
+  line("");
+
+  line(italic("Options"));
+
+  line_left_left(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
+
+  line_left_left(bold("-l") + ",  " + bold("--level") + "  " + underline("INT"),
+                 3,
+                 "level of compression: [" + std::to_string(MIN_LVL) + ", " +
+                     std::to_string(MAX_LVL) + "]");
+
+  line_left_left(bold("-m") + ",  " + bold("--min") + "    " + underline("INT"),
+                 3,
+                 "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
+                     std::to_string(MAX_SSIZE) + "]");
+
+  line_left_left(bold("-nr") + ", " + bold("--no-redun"), 2,
+                 "do NOT compute self complexity");
+
+  line_left_left(
+      bold("-e") + ",  " + bold("--ent-n") + "  " + underline("FLOAT"), 3,
+      "Entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) + ", " +
+          string_format("%.1f", MAX_ENTR_N) + "]");
+
+  line_left_left(bold("-n") + ",  " + bold("--nthr") + "   " + underline("INT"),
+                 3,
+                 "number of threads: [" + std::to_string(MIN_THRD) + ", " +
+                     std::to_string(MAX_THRD) + "]");
+
+  line_left_left(bold("-fs") + ", " + bold("--filter-scale") + " " +
+                     underline("S") + "|" + underline("M") + "|" +
+                     underline("L"),
+                 5, "scale of the filter:");
+  line_left_left("", 0, "{S|small, M|medium, L|large}");
+
+  line_left_left(bold("-w") + ",  " + bold("--wsize") + "  " + underline("INT"),
+                 3,
+                 "window size: [" + std::to_string(MIN_WS) + ", " +
+                     std::to_string(MAX_WS) + "]");
+
+  line_left_left(bold("-wt") + ", " + bold("--wtype") + "  " +
+                     underline("INT") + "/" + underline("STRING"),
+                 4, "type of windowing function:");
+  line_left_left("", 0, "{0|rectangular, 1|hamming, 2|hann,");
+  line_left_left("", 0, "3|blackman, 4|triangular, 5|welch,");
+  line_left_left("", 0, "6|sine, 7|nuttall}");
+
+  line_left_left(
+      bold("-d") + ",  " + bold("--step") + "    " + underline("INT"), 3,
+      "sampling steps");
+
+  line_left_left(
+      bold("-th") + ", " + bold("--thresh") + "  " + underline("FLOAT"), 3,
+      "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
+          string_format("%.1f", MAX_THRSH) + "]");
+
+  line_left_left(
+      bold("-rb") + ", " + bold("--ref-beg-grd") + "  " + underline("INT"), 3,
+      "reference beginning guard");
+
+  line_left_left(
+      bold("-re") + ", " + bold("--ref-end-grd") + "  " + underline("INT"), 3,
+      "reference ending guard");
+
+  line_left_left(
+      bold("-tb") + ", " + bold("--tar-beg-grd") + "  " + underline("INT"), 3,
+      "target beginning guard");
+
+  line_left_left(
+      bold("-te") + ", " + bold("--tar-end-grd") + "  " + underline("INT"), 3,
+      "target ending guard");
+
+  line_left_left(bold("-sb") + ", " + bold("--save-seq"), 2,
+                 "save sequence (input: FASTA/FASTQ)");
+
+  line_left_left(bold("-sp") + ", " + bold("--save-profile"), 2,
+                 "save profile (*.prf)");
+
+  line_left_left(bold("-sf") + ", " + bold("--save-filter"), 2,
+                 "save filtered file (*.fil)");
+
+  line_left_left(bold("-sb") + ", " + bold("--save-seq"), 2,
+                 "save sequence (input: FASTA/FASTQ)");
+
+  line_left_left(bold("-ss") + ", " + bold("--save-segment"), 2,
+                 "save segmented files (*.s" + italic("i") + ")");
+
+  line_left_left(bold("-sa") + ", " + bold("--save-all"), 2,
+                 "save profile, filetered and");
+  line_left_left("", 0, "segmented files");
+
+  line_left_left(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
+
+  line(bold("-rm") + ", " + bold("--ref-model") + "  " + italic("k") + ",[" +
+       italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," +
+       italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," +
+       italic("g") + ":...");
+
+  line(bold("-tm") + ", " + bold("--tar-model") + "  " + italic("k") + ",[" +
+       italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," +
+       italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," +
+       italic("g") + ":...");
+
+  line_left_left("", 0, "parameters of models");
+
+  line_right_left("(" + underline("INT") + ") ", 1,
+                  italic("k") + ":  context size");
+
+  line_right_left("(" + underline("INT") + ") ", 1,
+                  italic("w") + ":  width of sketch in log2 form,");
+  line_left_left("", 0, "    e.g., set 10 for w=2^10=1024");
+
+  line_right_left("(" + underline("INT") + ") ", 1,
+                  italic("d") + ":  depth of sketch");
+
+  line_right_left("(" + underline("INT") + ") ", 1,
+                  "ir: inverted repeat: {0, 1, 2}");
+  line_left_left("", 0, "    0: regular (not inverted)");
+  line_left_left("", 0, "    1: inverted, solely");
+  line_left_left("", 0, "    2: both regular and inverted");
+
+  line_right_left("(" + underline("FLOAT") + ") ", 1,
+                  italic("a") + ":  estimator");
+
+  line_right_left("(" + underline("FLOAT") + ") ", 1,
+                  italic("g") + ":  forgetting factor: [0.0, 1.0)");
+
+  line_right_left("(" + underline("INT") + ") ", 1,
+                  italic("t") + ":  threshold (no. substitutions)");
+  line("");
+
+  title("AUTHOR");
+  line_left_left("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
+  line("");
+
+  title("COPYRIGHT");
+  line("Copyright (C) " + DEV_YEARS +
+       ", IEETA, University of Aveiro. You may  ");
+  line("redistribute copies of this Free software under the terms of the");
+  line("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
+  line("There is NO WARRANTY, to the extent permitted by law.");
 }
 
-inline void Param::help() const {
-  const auto t = [](std::string&& str) {  // Print title
-    std::cerr << bold(std::move(str)) << '\n';
-  };
-  const auto l = [](const std::string& str) {  // Line
-    std::cerr << "  " << str << '\n';
-  };
-  // Print column 1: left-aligned + column 2: left-aligned
-  const auto ll = [](const std::string& strL, uint8_t n,
-                      const std::string& strR) {
-    std::cerr << "  " << std::left << std::setw(27 + n * 8) << strL;
-    std::cerr.clear();
-    std::cerr << strR << '\n';
-  };
-  // Print column 1: right-aligned + column 2: left-aligned
-  const auto rl = [](const std::string& strL, uint8_t n,
-                      const std::string& strR) {
-    std::cerr << "  " << std::right << std::setw(27 + n * 8) << strL;
-    std::cerr.clear();
-    std::cerr << strR << '\n';
-  };
-
-  t("NAME");
-  l("Smash++ v" + VERSION + " - rearrangements finder");
-  l("");
-  
-  t("SYNOPSIS");
-  l("./smashpp  " + underline("OPTIONS") + "...  -r " + underline("REF-FILE") +
-    "  -t " + underline("TAR-FILE"));
-  l("");
-  
-  t("SAMPLE");
-  // l("./smashpp -t TAR -r REF");
-  l("");
-  
-  t("DESCRIPTION");
-  l(italic("Mandatory arguments"));
-
-  ll(bold("-r") + ",  " + bold("--ref") + "  " + underline("FILE"), 3,
-     "reference file (Seq/Fasta/Fastq)");
-  
-  ll(bold("-t") + ",  " + bold("--tar") + "  " + underline("FILE"), 3,
-     "target file    (Seq/Fasta/Fastq)");
-  l("");
-  
-  l(italic("Options"));
-  
-  ll(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
-  
-  ll(bold("-l") + ",  " + bold("--level") + "  " + underline("INT"), 3,
-     "level of compression: [" + std::to_string(MIN_LVL) + ", " +
-         std::to_string(MAX_LVL) + "]");
-  
-  ll(bold("-m") + ",  " + bold("--min") + "    " + underline("INT"), 3,
-     "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
-         std::to_string(MAX_SSIZE) + "]");
-  
-  ll(bold("-nr") + ", " + bold("--no-redun"), 2,
-     "do NOT compute self complexity");
-  
-  ll(bold("-e") + ",  " + bold("--ent-n") + "  " + underline("FLOAT"), 3,
-     "Entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) + ", " +
-         string_format("%.1f", MAX_ENTR_N) + "]");
-  
-  ll(bold("-n") + ",  " + bold("--nthr") + "   " + underline("INT"), 3,
-     "number of threads: [" + std::to_string(MIN_THRD) + ", " +
-         std::to_string(MAX_THRD) + "]");
-
-  ll(bold("-fs") + ", " + bold("--filter-scale") + " " + underline("S") + "|" +
-         underline("M") + "|" + underline("L"),
-     5, "scale of the filter:");
-  ll("", 0, "{S|small, M|medium, L|large}");
-  
-  ll(bold("-w") + ",  " + bold("--wsize") + "  " + underline("INT"), 3,
-     "window size: [" + std::to_string(MIN_WS) + ", " + std::to_string(MAX_WS) +
-         "]");
-  
-  ll(bold("-wt") + ", " + bold("--wtype") + "  " + underline("INT") + "/" +
-         underline("STRING"),
-     4, "type of windowing function:");
-  ll("", 0, "{0|rectangular, 1|hamming, 2|hann,");
-  ll("", 0, "3|blackman, 4|triangular, 5|welch,");
-  ll("", 0, "6|sine, 7|nuttall}");
-  
-  ll(bold("-d") + ",  " + bold("--step") + "    " + underline("INT"), 3,
-     "sampling steps");
-  
-  ll(bold("-th") + ", " + bold("--thresh") + "  " + underline("FLOAT"), 3,
-     "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
-         string_format("%.1f", MAX_THRSH) + "]");
-  
-  ll(bold("-rb") + ", " + bold("--ref-beg-grd") + "  " + underline("INT"), 3,
-     "reference beginning guard");
-  
-  ll(bold("-re") + ", " + bold("--ref-end-grd") + "  " + underline("INT"), 3,
-     "reference ending guard");
-  
-  ll(bold("-tb") + ", " + bold("--tar-beg-grd") + "  " + underline("INT"), 3,
-     "target beginning guard");
-  
-  ll(bold("-te") + ", " + bold("--tar-end-grd") + "  " + underline("INT"), 3,
-     "target ending guard");
-  
-  ll(bold("-sb") + ", " + bold("--save-seq"), 2,
-     "save sequence (input: FASTA/FASTQ)");
-  
-  ll(bold("-sp") + ", " + bold("--save-profile"), 2, "save profile (*.prf)");
-  
-  ll(bold("-sf") + ", " + bold("--save-filter"), 2,
-     "save filtered file (*.fil)");
-  
-  ll(bold("-sb") + ", " + bold("--save-seq"), 2,
-     "save sequence (input: FASTA/FASTQ)");
-  
-  ll(bold("-ss") + ", " + bold("--save-segment"), 2,
-     "save segmented files (*.s" + italic("i") + ")");
-  
-  ll(bold("-sa") + ", " + bold("--save-all"), 2, "save profile, filetered and");
-  ll("", 0, "segmented files");
-  
-  ll(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
-  
-  l(bold("-rm") + ", " + bold("--ref-model") + "  " + italic("k") + ",[" +
-    italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," +
-    italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," + italic("g") +
-    ":...");
-  
-  l(bold("-tm") + ", " + bold("--tar-model") + "  " + italic("k") + ",[" +
-    italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," +
-    italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," + italic("g") +
-    ":...");
-  
-  ll("", 0, "parameters of models");
-  
-  rl("(" + underline("INT") + ") ", 1, italic("k") + ":  context size");
-  
-  rl("(" + underline("INT") + ") ", 1,
-     italic("w") + ":  width of sketch in log2 form,");
-  ll("", 0, "    e.g., set 10 for w=2^10=1024");
-  
-  rl("(" + underline("INT") + ") ", 1, italic("d") + ":  depth of sketch");
-  
-  rl("(" + underline("INT") + ") ", 1, "ir: inverted repeat: {0, 1, 2}");
-  ll("", 0, "    0: regular (not inverted)");
-  ll("", 0, "    1: inverted, solely");
-  ll("", 0, "    2: both regular and inverted");
-
-  rl("(" + underline("FLOAT") + ") ", 1, italic("a") + ":  estimator");
-  
-  rl("(" + underline("FLOAT") + ") ", 1,
-     italic("g") + ":  forgetting factor: [0.0, 1.0)");
-  
-  rl("(" + underline("INT") + ") ", 1,
-     italic("t") + ":  threshold (no. substitutions)");
-  l("");
-  
-  t("AUTHOR");
-  ll("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
-  l("");
-  
-  t("COPYRIGHT");
-  l("Copyright (C) " + DEV_YEARS + ", IEETA, University of Aveiro. You may  ");
-  l("redistribute copies of this Free software under the terms of the");
-  l("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
-  l("There is NO WARRANTY, to the extent permitted by law.");
-}
-
-inline WType Param::win_type(std::string t) const {
+WType Param::win_type(std::string t) const {
   if (t == "0" || t == "rectangular")
     return WType::rectangular;
   else if (t == "1" || t == "hamming")
@@ -468,7 +483,7 @@ std::string Param::print_win_type() const {
   }
 }
 
-inline FilterScale Param::filter_scale(std::string s) const {
+FilterScale Param::filter_scale(std::string s) const {
   if (s == "S" || s == "small")
     return FilterScale::s;
   else if (s == "M" || s == "medium")
@@ -594,123 +609,142 @@ void VizParam::parse(int argc, char**& argv) {
   posFile = vArgs.back();
 }
 
-inline void VizParam::help() const {
-  // Print title
-  const auto t = [](std::string&& str) {
-    std::cerr << bold(std::move(str)) << '\n';
-  };
-  const auto l = [](const std::string& str) {
-    std::cerr << "  " << str << '\n';
-  };  // Line
-  // Print column 1: left-aligned + column 2: left-aligned
-  const auto ll = [](const std::string& strL, uint8_t n,
-                      const std::string& strR) {
-    std::cerr << "  " << std::left << std::setw(25 + n * 8) << strL;
-    std::cerr.clear();
-    std::cerr << strR << '\n';
-  };
+void VizParam::help() const {
+  // // Print title
+  // const auto t = [](std::string&& str) {
+  //   std::cerr << bold(std::move(str)) << '\n';
+  // };
+  // const auto l = [](const std::string& str) {
+  //   std::cerr << "  " << str << '\n';
+  // };  // Line
+  // // Print column 1: left-aligned + column 2: left-aligned
+  // const auto ll = [](const std::string& strL, uint8_t n,
+  //                    const std::string& strR) {
+  //   std::cerr << "  " << std::left << std::setw(25 + n * 8) << strL;
+  //   std::cerr.clear();
+  //   std::cerr << strR << '\n';
+  // };
 
-  t("NAME");
-  l("Smash++ Visualizer v" + VERSION + " - Visualization of Samsh++ output");
-  l("");
-  
-  t("SYNOPSIS");
-  l("./smashpp -viz  " + underline("OPTIONS") + "...  -o " +
-    underline("SVG-FILE") + "  " + underline("POS-FILE"));
-  l("");
-  
-  t("SAMPLE");
-  // l("./smashpp -viz -o out.svg ab.pos");
-  l("");
-  
-  t("DESCRIPTION");
-  l(italic("Mandatory arguments") + ":");
-  
-  ll(underline("POS-FILE"), 1, "positions file, generated by");
-  ll("", 0, "Smash++ tool (*.pos)");
-  l("");
-  
-  l(italic("Options") + ":");
-  
-  ll(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
-  
-  ll(bold("-o") + ",  " + bold("--out") + " " + underline("SVG-FILE"), 3,
-     "output image name (*.svg)");
-  
-  ll(bold("-rn") + ", " + bold("--ref-name") + " " + underline("STRING"), 3,
-     "reference name shown on output. If name");
-  ll("", 0, "has space, use \"s, e.g. \"Seq label\".");
-  ll("", 0, "Default: name in header of position file.");
-  
-  ll(bold("-tn") + ", " + bold("--tar-name") + " " + underline("STRING"), 3,
-     "target name shown on output");
-  
-  ll(bold("-vv") + ", " + bold("--vertical"), 2, "vertical view");
-  
-  ll(bold("-nn") + ", " + bold("--no-nrc"), 2, "do NOT show normalized");
-  ll("", 0, "relative compression (NRC)");
-  
-  ll(bold("-nr") + ", " + bold("--no-redun"), 2, "do NOT show self complexity");
-  
-  ll(bold("-ni") + ", " + bold("--no-inv"), 2, "do NOT show inverse maps");
-  
-  ll(bold("-ng") + ", " + bold("--no-reg"), 2, "do NOT show regular maps");
-  
-  ll(bold("-l") + ",  " + bold("--link") + "     " + underline("INT"), 3,
-     "type of the link between maps: [" + std::to_string(MIN_LINK) + ", " +
-         std::to_string(MAX_LINK) + "]");
-  
-  ll(bold("-c") + ",  " + bold("--color") + "    " + underline("INT"), 3,
-     "color mode: [" + std::to_string(MIN_COLOR) + ", " +
-         std::to_string(MAX_COLOR) + "]");
-  
-  ll(bold("-p") + ",  " + bold("--opacity") + "  " + underline("FLOAT"), 3,
-     "opacity: [" + string_format("%.1f", MIN_OPAC) + ", " +
-         string_format("%.1f", MAX_OPAC) + "]");
-  
-  ll(bold("-w") + ",  " + bold("--width") + "    " + underline("INT"), 3,
-     "width of the sequence: [" + std::to_string(MIN_WDTH) + ", " +
-         std::to_string(MAX_WDTH) + "]");
-  
-  ll(bold("-s") + ",  " + bold("--space") + "    " + underline("INT"), 3,
-     "space between sequences: [" + std::to_string(MIN_SPC) + ", " +
-         std::to_string(MAX_SPC) + "]");
-  
-  ll(bold("-f") + ",  " + bold("--mult") + "     " + underline("INT"), 3,
-     "multiplication factor for");
-  ll("", 0,
-     "color ID: [" + std::to_string(MIN_MULT) + ", " +
-         std::to_string(MAX_MULT) + "]");
-  
-  ll(bold("-b") + ",  " + bold("--begin") + "    " + underline("INT"), 3,
-     "beginning of color ID: [" + std::to_string(MIN_BEGN) + ", " +
-         std::to_string(MAX_BEGN) + "]");
-  
-  ll(bold("-rt") + ", " + bold("--ref-tick") + " " + underline("INT"), 3,
-     "reference tick: [" + std::to_string(MIN_TICK) + ", " +
-         std::to_string(MAX_TICK) + "]");
-  
-  ll(bold("-tt") + ", " + bold("--tar-tick") + " " + underline("INT"), 3,
-     "target tick: [" + std::to_string(MIN_TICK) + ", " +
-         std::to_string(MAX_TICK) + "]");
-  
-  ll(bold("-th") + ", " + bold("--tick-human") + " " + underline("0|1"), 3,
-     "tick human readable: 0=false, 1=true");
-  
-  ll(bold("-m") + ",  " + bold("--min") + "      " + underline("INT"), 3,
-     "minimum block size: [" + std::to_string(MIN_MINP) + ", " +
-         std::to_string(MAX_MINP) + "]");
-  
-  ll(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
-  l("");
-  
-  t("AUTHOR");
-  ll("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
-  l("");
-  
-  t("COPYRIGHT");
-  l("Copyright (C) " + DEV_YEARS + ", IEETA, University of Aveiro. You may  ");
-  l("redistribute copies of this Free software under the terms of the");
-  l("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
-  l("There is NO WARRANTY, to the extent permitted by law.");
+  title("NAME");
+  line("Smash++ Visualizer v" + VERSION + " - Visualization of Samsh++ output");
+  line("");
+
+  title("SYNOPSIS");
+  line("./smashpp -viz  " + underline("OPTIONS") + "...  -o " +
+       underline("SVG-FILE") + "  " + underline("POS-FILE"));
+  line("");
+
+  title("SAMPLE");
+  // line("./smashpp -viz -o out.svg ab.pos");
+  line("");
+
+  title("DESCRIPTION");
+  line(italic("Mandatory arguments") + ":");
+
+  line_left_left(underline("POS-FILE"), 1, "positions file, generated by");
+  line_left_left("", 0, "Smash++ tool (*.pos)");
+  line("");
+
+  line(italic("Options") + ":");
+
+  line_left_left(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
+
+  line_left_left(
+      bold("-o") + ",  " + bold("--out") + " " + underline("SVG-FILE"), 3,
+      "output image name (*.svg)");
+
+  line_left_left(
+      bold("-rn") + ", " + bold("--ref-name") + " " + underline("STRING"), 3,
+      "reference name shown on output. If name");
+  line_left_left("", 0, "has space, use \"s, e.g. \"Seq label\".");
+  line_left_left("", 0, "Default: name in header of position file.");
+
+  line_left_left(
+      bold("-tn") + ", " + bold("--tar-name") + " " + underline("STRING"), 3,
+      "target name shown on output");
+
+  line_left_left(bold("-vv") + ", " + bold("--vertical"), 2, "vertical view");
+
+  line_left_left(bold("-nn") + ", " + bold("--no-nrc"), 2,
+                 "do NOT show normalized");
+  line_left_left("", 0, "relative compression (NRC)");
+
+  line_left_left(bold("-nr") + ", " + bold("--no-redun"), 2,
+                 "do NOT show self complexity");
+
+  line_left_left(bold("-ni") + ", " + bold("--no-inv"), 2,
+                 "do NOT show inverse maps");
+
+  line_left_left(bold("-ng") + ", " + bold("--no-reg"), 2,
+                 "do NOT show regular maps");
+
+  line_left_left(
+      bold("-l") + ",  " + bold("--link") + "     " + underline("INT"), 3,
+      "type of the link between maps: [" + std::to_string(MIN_LINK) + ", " +
+          std::to_string(MAX_LINK) + "]");
+
+  line_left_left(
+      bold("-c") + ",  " + bold("--color") + "    " + underline("INT"), 3,
+      "color mode: [" + std::to_string(MIN_COLOR) + ", " +
+          std::to_string(MAX_COLOR) + "]");
+
+  line_left_left(
+      bold("-p") + ",  " + bold("--opacity") + "  " + underline("FLOAT"), 3,
+      "opacity: [" + string_format("%.1f", MIN_OPAC) + ", " +
+          string_format("%.1f", MAX_OPAC) + "]");
+
+  line_left_left(
+      bold("-w") + ",  " + bold("--width") + "    " + underline("INT"), 3,
+      "width of the sequence: [" + std::to_string(MIN_WDTH) + ", " +
+          std::to_string(MAX_WDTH) + "]");
+
+  line_left_left(
+      bold("-s") + ",  " + bold("--space") + "    " + underline("INT"), 3,
+      "space between sequences: [" + std::to_string(MIN_SPC) + ", " +
+          std::to_string(MAX_SPC) + "]");
+
+  line_left_left(
+      bold("-f") + ",  " + bold("--mult") + "     " + underline("INT"), 3,
+      "multiplication factor for");
+  line_left_left("", 0,
+                 "color ID: [" + std::to_string(MIN_MULT) + ", " +
+                     std::to_string(MAX_MULT) + "]");
+
+  line_left_left(
+      bold("-b") + ",  " + bold("--begin") + "    " + underline("INT"), 3,
+      "beginning of color ID: [" + std::to_string(MIN_BEGN) + ", " +
+          std::to_string(MAX_BEGN) + "]");
+
+  line_left_left(
+      bold("-rt") + ", " + bold("--ref-tick") + " " + underline("INT"), 3,
+      "reference tick: [" + std::to_string(MIN_TICK) + ", " +
+          std::to_string(MAX_TICK) + "]");
+
+  line_left_left(
+      bold("-tt") + ", " + bold("--tar-tick") + " " + underline("INT"), 3,
+      "target tick: [" + std::to_string(MIN_TICK) + ", " +
+          std::to_string(MAX_TICK) + "]");
+
+  line_left_left(
+      bold("-th") + ", " + bold("--tick-human") + " " + underline("0|1"), 3,
+      "tick human readable: 0=false, 1=true");
+
+  line_left_left(
+      bold("-m") + ",  " + bold("--min") + "      " + underline("INT"), 3,
+      "minimum block size: [" + std::to_string(MIN_MINP) + ", " +
+          std::to_string(MAX_MINP) + "]");
+
+  line_left_left(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
+  line("");
+
+  title("AUTHOR");
+  line_left_left("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
+  line("");
+
+  title("COPYRIGHT");
+  line("Copyright (C) " + DEV_YEARS +
+       ", IEETA, University of Aveiro. You may  ");
+  line("redistribute copies of this Free software under the terms of the");
+  line("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
+  line("There is NO WARRANTY, to the extent permitted by law.");
 }

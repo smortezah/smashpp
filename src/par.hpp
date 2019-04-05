@@ -17,7 +17,7 @@ namespace smashpp {
 //     return *++iter;
 // }
 
-class Param {  // Parameters
+class Param {
  public:
   std::string ref;
   std::string tar;
@@ -54,15 +54,6 @@ class Param {  // Parameters
   bool noRedun;
   std::vector<MMPar> refMs;
   std::vector<MMPar> tarMs;
-
-  struct Help
-  {
-  // void print_menu() const;
-  // void title(std::string&&) const;
-  // void line() const;
-  // void line_left_left() const;
-  // void line_left_right() const;
-  };
 
   // Define Param::Param(){} in *.hpp => compile error
   Param()
@@ -104,10 +95,6 @@ class Param {  // Parameters
   template <typename Iter>
   void parseModelsPars(Iter, Iter, std::vector<MMPar>&);
   void help() const;
-  void print_title(std::string&&) const;
-  // void print_line() const;
-  // void print_line_left_left() const;
-  // void print_line_left_right() const;
 };
 
 class VizParam {

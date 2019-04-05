@@ -12,7 +12,7 @@
 namespace smashpp {
 // Split a range by delim and insert the result into an std::vector
 template <typename InIter, typename Vec>
-inline static void split(InIter first, InIter last, char delim, Vec& vOut) {
+inline void split(InIter first, InIter last, char delim, Vec& vOut) {
   while (true) {
     InIter found = std::find(first, last, delim);
     vOut.emplace_back(std::string(first, found));
@@ -22,7 +22,7 @@ inline static void split(InIter first, InIter last, char delim, Vec& vOut) {
 }
 
 template <typename Iter, typename Element>
-inline static bool has(Iter first, Iter last, Element elem) {
+inline bool has(Iter first, Iter last, Element elem) {
   return std::find(first, last, elem) != last;
 }
 
