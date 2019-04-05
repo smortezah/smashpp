@@ -21,13 +21,13 @@ inline void error(std::string&& msg) {
                            "\n");
 }
 
-inline static void err(std::string&& msg) {
+inline void err(std::string&& msg) {
   std::string message = "Error: " + std::move(msg);
   wrap_text(message);
   std::cerr << bold_red(message.substr(0, 6)) << message.substr(6) << '\n';
 }
 
-inline static void warning(std::string&& msg) {
+inline void warning(std::string&& msg) {
   std::string message = "Warning: " + std::move(msg);
   wrap_text(message);
   std::cerr << bold(message.substr(0, 8)) << message.substr(8) << '\n';

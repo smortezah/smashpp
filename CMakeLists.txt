@@ -9,20 +9,19 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -Wall -march=nat
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -pg") # mem prof
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -fopenmp -D_GLIBCXX_PARALLEL")
 
-add_executable(
-  smashpp  
-           src/par.cpp
-           src/fcm.cpp
-           src/tbl64.cpp
-           src/tbl32.cpp
-           src/cmls4.cpp
-           src/logtbl8.cpp
-           src/filter.cpp
-           src/segment.cpp
-           src/color.cpp
-           src/svg.cpp
-           src/vizpaint.cpp
-           src/main.cpp
+add_executable(smashpp 
+  src/par.cpp
+  src/fcm.cpp
+  src/tbl64.cpp
+  src/tbl32.cpp
+  src/cmls4.cpp
+  src/logtbl8.cpp
+  src/filter.cpp
+  src/segment.cpp
+  src/color.cpp
+  src/svg.cpp
+  src/vizpaint.cpp
+  src/main.cpp
 )
 
 
