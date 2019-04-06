@@ -7,6 +7,7 @@
 #include <thread>
 #include <numeric>  // std::accumulate
 #include "fcm.hpp"
+#include "par.hpp"
 #include "assert.hpp"
 #include "container.hpp"
 #include "number.hpp"

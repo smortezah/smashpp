@@ -6,7 +6,8 @@
 #define SMASHPP_SEGMENT_HPP
 
 #include <fstream>
-#include "def.hpp"
+// #include "def.hpp"
+#include "par.hpp"
 #include "number.hpp"
 
 namespace smashpp {
