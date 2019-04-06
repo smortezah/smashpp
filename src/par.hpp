@@ -9,14 +9,6 @@
 #include "mdlpar.hpp"
 
 namespace smashpp {
-// todo
-// template <typename Iterator>
-// string get_arg (Iterator& iter, const string& shortName, const string&
-// longName) {
-//   if (*iter=="-"+shortName || *iter=="--"+longName)
-//     return *++iter;
-// }
-
 static constexpr uint8_t THRD{4};  // No. threads
 static constexpr uint8_t MIN_THRD{1};
 static constexpr uint8_t MAX_THRD{8};
@@ -80,7 +72,6 @@ class Param {
   FileType refType;
   FileType tarType;
   bool showInfo;
-  std::string report;
   bool compress;
   bool filter;
   bool segment;
@@ -127,7 +118,7 @@ class Param {
         tar_beg_guard(0),
         tar_end_guard(0) {}
 
-  void parse(int, char**&);
+  void parse(int, char**&, std::string="audible");
   auto win_type(std::string) const -> WType;
   auto print_win_type() const -> std::string;
   auto filter_scale(std::string) const -> FilterScale;
