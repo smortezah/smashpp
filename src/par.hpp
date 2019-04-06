@@ -127,6 +127,8 @@ class Param {
  private:
   template <typename Iter>
   void parseModelsPars(Iter, Iter, std::vector<MMPar>&);
+  template <typename T>
+  void assert(T, T, T, T, std::string&&, std::string&&, std::string&&, Problem);
   void help() const;
 };
 
