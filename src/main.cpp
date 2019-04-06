@@ -132,13 +132,11 @@ int main(int argc, char* argv[]) {
       } else {
         // unique_ptr cannot be copied
         auto par2 = std::make_unique<Param>();  // For round 2
-        par2->parse(argc, argv);
+        par2->parse(argc, argv, "silent");
         auto par3 = std::make_unique<Param>();  // For round 3
-        par3->parse(argc, argv);
+        par3->parse(argc, argv, "silent");
 
-//todo
         for (uint8_t timesRunning = 0; timesRunning != 2; ++timesRunning) {
-        // for (uint8_t timesRunning = 0; timesRunning != 1; ++timesRunning) {
           if (timesRunning == 0)
             std::cerr << bold(
                 "====[ REGULAR MODE ]==================================\n");

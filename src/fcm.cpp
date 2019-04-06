@@ -1011,20 +1011,6 @@ void FCM::aggregate_slf(std::unique_ptr<Param>& par) const {
   pos_file.close();
 }
 
-//// Called from main -- MUST NOT be inline
-// void FCM::report (std::unique_ptr<Param>& p) const {
-//  ofstream f(par->report, ofstream::out | ofstream::app);
-//  f << par->tar
-//    << '\t' << par->ref
-//    << '\t' << static_cast<uint32_t>(models[0].Mir)
-//    << '\t' << static_cast<uint32_t>(models[0].k)
-//    << '\t' << std::fixed << std::setprecision(3) << models[0].Malpha
-//    << '\t' << (models[0].w==0 ? 0 : static_cast<uint32_t>(log2(models[0].w)))
-//    << '\t' << static_cast<uint32_t>(models[0].d)
-//    << '\t' << std::fixed << std::setprecision(3) << sumEnt << '\n';
-//  f.close();  // Actually done, automatically
-//}
-
 template <typename OutT, typename ContIter>
 inline void FCM::freqs_ir0(std::array<OutT, 4>& a, ContIter cont,
                            uint64_t l) const {
