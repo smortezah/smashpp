@@ -27,20 +27,18 @@ void Param::parse(int argc, char**& argv, std::string mode) {
   for (int i = 0; i != argc; ++i)
     vArgs.push_back(static_cast<std::string>(argv[i]));
 
-  const auto trig_inserted = [](auto iter, std::string short_name,
-                                std::string long_name) -> bool {
+  auto trig_inserted = [](auto iter, std::string short_name,
+                          std::string long_name) -> bool {
     return (*iter == "-" + short_name || *iter == "--" + long_name);
   };
 
-  const auto option_inserted = [&](auto iter, std::string short_name,
-                                   std::string long_name) -> bool {
-    // return ((*iter == "-" + short_name || *iter == "--" + long_name) &&
-    //         iter + 1 != std::end(vArgs));
+  auto option_inserted = [&](auto iter, std::string short_name,
+                             std::string long_name) -> bool {
     return (iter + 1 != std::end(vArgs)) &&
            trig_inserted(iter, short_name, long_name);
   };
 
-  const auto problem = [=](std::string type) {
+  auto problem = [=](std::string type) {
     if (mode != "silent") {
       if (type == "warning")
         return Problem::warning;
@@ -74,8 +72,11 @@ void Param::parse(int argc, char**& argv, std::string mode) {
       }
     } else if (option_inserted(i, "l", "level")) {
       level = static_cast<uint8_t>(std::stoi(*++i));
+      // assert(level, MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
+      //        problem("warning"));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default", problem("warning"));
+          MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
+          problem("warning"));
       range->assert(level);
     } else if (option_inserted(i, "m", "min")) {
       manSegSize = true;
@@ -290,6 +291,23 @@ void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
                   std::stof(tm[3])));
     }
   }
+}
+
+template <typename T>
+void Param::assert(T variable, T lower_bound, T upper_bound, T default_val,
+                   std::string&& label, std::string&& criterion,
+                   std::string&& init_mode, Problem problem) {
+  // auto range = std::make_unique<ValRange<T>>(
+  //     lower_bound, upper_bound, default_val, std::move(label),
+  //     std::move(criterion), std::move(init_mode), problem);
+
+  // range->assert(variable);
+
+  // auto range =
+  //     ValRange<T>(lower_bound, upper_bound, default_val, label,
+  //                 criterion, init_mode, problem);
+
+  // range.assert(variable);
 }
 
 void Param::help() const {
