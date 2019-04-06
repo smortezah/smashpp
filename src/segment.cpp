@@ -12,7 +12,8 @@ void Segment::partition(std::ofstream& posF, float filtered) {
       if (endPos - begPos >= minSize) {
         ++nSegs;
         posF << (begPos < beg_guard ? 0 : begPos - beg_guard) << '\t'
-             << (endPos + end_guard > totalSize ? totalSize : endPos + end_guard)
+             << (endPos + end_guard > totalSize ? totalSize
+                                                : endPos + end_guard)
              << '\t' << fixed_precision(PREC_FIL) << sumEnt / numEnt << '\n';
       }
     }
@@ -39,10 +40,12 @@ void Segment::partition_last(std::ofstream& posF) {
   }
 }
 
-void Segment::set_guards(uint8_t maxCtx, int16_t ref_beg_guard, int16_t ref_end_guard, int16_t tar_beg_guard, int16_t tar_end_guard) {
+void Segment::set_guards(uint8_t maxCtx, int16_t ref_beg_guard,
+                         int16_t ref_end_guard, int16_t tar_beg_guard,
+                         int16_t tar_end_guard) {
   // beg_guard = static_cast<uint64_t>(maxCtx + PART_GUARD);
   // end_guard = static_cast<uint64_t>(PART_GUARD);
-  //todo 
-  beg_guard = static_cast<uint64_t>(maxCtx+ref_beg_guard);
+  // todo
+  beg_guard = static_cast<uint64_t>(maxCtx + ref_beg_guard);
   end_guard = static_cast<uint64_t>(ref_end_guard);
 }

@@ -5,7 +5,7 @@
 #ifndef SMASHPP_CMLS4_HPP
 #define SMASHPP_CMLS4_HPP
 
-#include "def.hpp"
+#include "par.hpp"
 
 namespace smashpp {
 class CMLS4 {  // Count-min-log sketch, 4 bits per counter

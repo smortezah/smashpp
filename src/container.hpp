@@ -7,7 +7,7 @@
 
 #include <numeric>
 #include <algorithm>
-#include "def.hpp"
+#include "par.hpp"
 
 namespace smashpp {
 // Split a range by delim and insert the result into an std::vector

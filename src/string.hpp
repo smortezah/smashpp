@@ -5,10 +5,12 @@
 #ifndef SMASHPP_STRING_HPP
 #define SMASHPP_STRING_HPP
 
-#include "def.hpp"
+#include "par.hpp"
 #include "number.hpp"
 
 namespace smashpp {
+static constexpr uint8_t TEXTWIDTH{65};
+
 inline std::string bold(const std::string& text) {
   return "\033[1m" + text + "\033[0m";
 }

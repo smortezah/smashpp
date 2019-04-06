@@ -8,7 +8,7 @@
 #include <iterator>
 #include <algorithm>
 #include <fstream>
-#include "def.hpp"
+#include "par.hpp"
 #include "exception.hpp"
 
 namespace smashpp {
