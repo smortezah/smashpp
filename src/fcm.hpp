@@ -14,6 +14,8 @@
 #include "mdlpar.hpp"
 
 namespace smashpp {
+static constexpr uint8_t PREC_PRF{3};  // Precisions - floats in Inf. prof
+
 class FCM {  // Finite-context models
  public:
   prc_t aveEnt;

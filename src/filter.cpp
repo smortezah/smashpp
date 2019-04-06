@@ -347,7 +347,7 @@ inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par) {
   // First value
   for (auto i = (wsize >> 1u) + 1; i-- && getline(prfF, num);) {
     const auto val{stof(num)};
-    seq.emplace_back(val);
+    seq.push_back(val);
     sum += val;
     show_progress(++symsNo, seg->totalSize, message);
     jump_lines();
@@ -359,7 +359,7 @@ inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par) {
   // Next wsize>>1 values
   for (auto i = (wsize >> 1u); i-- && getline(prfF, num);) {
     const auto val{stof(num)};
-    seq.emplace_back(val);
+    seq.push_back(val);
     sum += val;
     ++seg->pos;
     filtered = sum / seq.size();
@@ -444,7 +444,7 @@ inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par) {
   // First value
   for (auto i = (wsize >> 1u) + 1; i-- && std::getline(prfF, num);
        jump_lines()) {
-    seq.emplace_back(stof(num));
+    seq.push_back(stof(num));
     jump_lines();
   }
   sum = inner_product(winBeg + (wsize >> 1u), winEnd, std::begin(seq), 0.f);
@@ -455,7 +455,7 @@ inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par) {
 
   // Next wsize>>1 values
   for (auto i = (wsize >> 1u); i-- && std::getline(prfF, num);) {
-    seq.emplace_back(stof(num));
+    seq.push_back(stof(num));
     sum = std::inner_product(winBeg + i, winEnd, std::begin(seq), 0.f);
     ++seg->pos;
     sWeight += window[i];
@@ -530,7 +530,7 @@ void Filter::merge_extract_seg(uint32_t ID, std::string ref,
 
   // vector<Position> pos;
   // for (uint64_t beg,end,ent; pos_file >> beg >> end >> ent;) {
-  //   pos.emplace_back(Position(beg, end));
+  //   pos.push_back(Position(beg, end));
   // }
   // std::sort(std::begin(pos), std::end(pos),
   //   [] (const Position& a, const Position& b) { return a.beg < b.beg; });

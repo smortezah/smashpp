@@ -201,21 +201,6 @@ static const std::vector<std::string> REFFREE_LEVEL{
     "8,0,1,0.92:4,0,1,0.9"  // Level 5
 };
 
-////template<uint32_t N>    // Up to 262144=2^18 elements
-////struct LogInt      // 0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,...
-////{
-////  constexpr LogInt() : lg() {
-////    for (uint32_t i=0; i!=LOG_BASE; ++i)
-////      lg[i] = 0;
-////    for (uint32_t i=LOG_BASE; i!=N; ++i)
-////      lg[i] = static_cast<uint8_t>(1 + lg[i/LOG_BASE]);
-////  }
-////  uint8_t lg[N];
-////};
-//// Inside function definition
-////constexpr auto a = LogInt<256>();
-////cerr << (int) a.lg[3];
-
 // Visualization
 static constexpr uint8_t PREC_VIZ{2};  // Precision
 static const std::string IMAGE{"map.svg"};
