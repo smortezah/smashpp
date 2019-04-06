@@ -25,7 +25,7 @@ void Param::parse(int argc, char**& argv) {
   std::vector<std::string> vArgs;
   vArgs.reserve(static_cast<uint64_t>(argc));
   for (int i = 0; i != argc; ++i)
-    vArgs.emplace_back(static_cast<std::string>(argv[i]));
+    vArgs.push_back(static_cast<std::string>(argv[i]));
 
   bool man_rm{false};
   bool man_tm{false};
@@ -132,26 +132,30 @@ void Param::parse(int argc, char**& argv) {
     } else if ((*i == "-rb" || *i == "--ref-beg-grd") && i + 1 != end(vArgs)) {
       ref_beg_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
-          std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard", "[]", "default",
-          Problem::warning);
+          std::numeric_limits<int16_t>::min(),
+          std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard",
+          "[]", "default", Problem::warning);
       range->assert(ref_beg_guard);
     } else if ((*i == "-re" || *i == "--ref-end-grd") && i + 1 != end(vArgs)) {
       ref_end_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
-          std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0, "Reference ending guard", "[]", "default",
-          Problem::warning);
+          std::numeric_limits<int16_t>::min(),
+          std::numeric_limits<int16_t>::max(), 0, "Reference ending guard",
+          "[]", "default", Problem::warning);
       range->assert(ref_end_guard);
     } else if ((*i == "-tb" || *i == "--tar-beg-grd") && i + 1 != end(vArgs)) {
       tar_beg_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
-          std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0, "Target beginning guard", "[]", "default",
-          Problem::warning);
+          std::numeric_limits<int16_t>::min(),
+          std::numeric_limits<int16_t>::max(), 0, "Target beginning guard",
+          "[]", "default", Problem::warning);
       range->assert(tar_beg_guard);
     } else if ((*i == "-te" || *i == "--tar-end-grd") && i + 1 != end(vArgs)) {
       tar_end_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
-          std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0, "Target ending guard", "[]", "default",
-          Problem::warning);
+          std::numeric_limits<int16_t>::min(),
+          std::numeric_limits<int16_t>::max(), 0, "Target ending guard", "[]",
+          "default", Problem::warning);
       range->assert(tar_end_guard);
     } else if (*i == "-nr" || *i == "--no-redun")
       noRedun = true;
@@ -241,19 +245,19 @@ void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
 
     if (m.size() == 4) {
       if (std::stoi(m[0]) > K_MAX_LGTBL8)
-        Ms.emplace_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])), W, D,
-                              static_cast<uint8_t>(std::stoi(m[1])),
-                              std::stof(m[2]), std::stof(m[3])));
+        Ms.push_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])), W, D,
+                           static_cast<uint8_t>(std::stoi(m[1])),
+                           std::stof(m[2]), std::stof(m[3])));
       else
-        Ms.emplace_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])),
-                              static_cast<uint8_t>(std::stoi(m[1])),
-                              std::stof(m[2]), std::stof(m[3])));
+        Ms.push_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])),
+                           static_cast<uint8_t>(std::stoi(m[1])),
+                           std::stof(m[2]), std::stof(m[3])));
     } else if (m.size() == 6) {
-      Ms.emplace_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])),
-                            pow2(std::stoull(m[1])),
-                            static_cast<uint8_t>(std::stoi(m[2])),
-                            static_cast<uint8_t>(std::stoi(m[3])),
-                            std::stof(m[4]), std::stof(m[5])));
+      Ms.push_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])),
+                         pow2(std::stoull(m[1])),
+                         static_cast<uint8_t>(std::stoi(m[2])),
+                         static_cast<uint8_t>(std::stoi(m[3])), std::stof(m[4]),
+                         std::stof(m[5])));
     }
 
     // Tolerant models
@@ -522,7 +526,7 @@ void VizParam::parse(int argc, char**& argv) {
   std::vector<std::string> vArgs;
   vArgs.reserve(static_cast<uint64_t>(argc));
   for (int i = 0; i != argc; ++i)
-    vArgs.emplace_back(static_cast<std::string>(argv[i]));
+    vArgs.push_back(static_cast<std::string>(argv[i]));
 
   for (auto i = std::begin(vArgs); i != std::end(vArgs); ++i) {
     if ((*i == "-o" || *i == "--out") && i + 1 != std::end(vArgs))

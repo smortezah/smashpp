@@ -12,6 +12,8 @@
 #include "color.cpp"
 
 namespace smashpp {
+static const std::string FMT_N{"n"};  // Format - position of N files
+
 struct Position {
   int64_t begRef;
   int64_t endRef;

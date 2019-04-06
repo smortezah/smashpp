@@ -646,14 +646,14 @@ inline void VizPaint::plot_legend(std::ofstream& f,
   legend->vertical = p->vertical;
   legend->colorMode = p->colorMode;
 
-  legend->text.emplace_back(std::make_unique<Text>());  // Numbers
+  legend->text.push_back(std::make_unique<Text>());  // Numbers
   if (legend->showNRC && !legend->showRedun)
-    legend->text.emplace_back(std::make_unique<Text>());  // NRC
+    legend->text.push_back(std::make_unique<Text>());  // NRC
   else if (!legend->showNRC && legend->showRedun)
-    legend->text.emplace_back(std::make_unique<Text>());  // Redun
+    legend->text.push_back(std::make_unique<Text>());  // Redun
   else if (legend->showNRC && legend->showRedun)
     for (uint8_t i = 0; i != 2; ++i)
-      legend->text.emplace_back(std::make_unique<Text>());  // NRC + Redun
+      legend->text.push_back(std::make_unique<Text>());  // NRC + Redun
 
   if (legend->vertical) {
     set_legend_rect(f, legend, 'h');
@@ -1160,7 +1160,7 @@ inline std::string VizPaint::tspan(uint32_t start, std::string pos) const {
 inline void VizPaint::sort_merge(std::string& s) const {
   std::istringstream stream(s);
   std::vector<std::string> vLine;
-  for (std::string gl; std::getline(stream, gl);) vLine.emplace_back(gl);
+  for (std::string gl; std::getline(stream, gl);) vLine.push_back(gl);
 
   if (vLine.size() == 1) {
     s.erase(s.find(", "), 2);
@@ -1171,7 +1171,7 @@ inline void VizPaint::sort_merge(std::string& s) const {
   for (const auto& l : vLine) {
     auto foundBeg{l.find("id=", 0) + 4};
     auto foundEnd{l.find("\"", foundBeg + 1)};
-    vID.emplace_back(std::stoull(l.substr(foundBeg, foundEnd)));
+    vID.push_back(std::stoull(l.substr(foundBeg, foundEnd)));
   }
 
   std::vector<int64_t> vPos;
@@ -1180,7 +1180,7 @@ inline void VizPaint::sort_merge(std::string& s) const {
     auto foundEnd{l.find("<", foundBeg + 1)};
     auto strPos{l.substr(foundBeg, foundEnd - foundBeg)};
     strPos.erase(strPos.find_last_of(", ") - 1, 2);
-    vPos.emplace_back(std::stoull(strPos));
+    vPos.push_back(std::stoull(strPos));
   }
 
   struct Env {
@@ -1251,7 +1251,7 @@ inline void VizPaint::read_pos(std::ifstream& fPos, std::vector<Position>& pos,
   double nr, nt, sr, st;
   for (int64_t br, er, bt, et;
        fPos >> br >> er >> nr >> sr >> bt >> et >> nt >> st; ++par->start)
-    pos.emplace_back(Position(br, er, nr, sr, bt, et, nt, st, par->start));
+    pos.push_back(Position(br, er, nr, sr, bt, et, nt, st, par->start));
 
   if (sr == DBLANK && st == DBLANK) par->showRedun = false;
 
@@ -1274,22 +1274,22 @@ inline void VizPaint::make_posNode(const std::vector<Position>& pos,
   if (type == "ref") {
     for (auto e : pos)
       if (e.endRef - e.begRef > par->min && abs(e.endTar - e.begTar) > par->min)
-        nodes.emplace_back(PosNode(e.begRef, 'b', e.start));
+        nodes.push_back(PosNode(e.begRef, 'b', e.start));
     for (auto e : pos)
       if (e.endRef - e.begRef > par->min && abs(e.endTar - e.begTar) > par->min)
-        nodes.emplace_back(PosNode(e.endRef, 'e', e.start));
+        nodes.push_back(PosNode(e.endRef, 'e', e.start));
   } else if (type == "tar") {
     for (auto e : pos)
       if ((abs(e.endTar - e.begTar) > par->min && e.begRef == DBLANK) ||
           (abs(e.endTar - e.begTar) > par->min &&
            e.endRef - e.begRef > par->min))
-        nodes.emplace_back(
+        nodes.push_back(
             PosNode(e.begTar, e.endTar > e.begTar ? 'b' : 'e', e.start));
     for (auto e : pos)
       if ((abs(e.endTar - e.begTar) > par->min && e.begRef == DBLANK) ||
           (abs(e.endTar - e.begTar) > par->min &&
            e.endRef - e.begRef > par->min))
-        nodes.emplace_back(
+        nodes.push_back(
             PosNode(e.endTar, e.endTar > e.begTar ? 'e' : 'b', e.start));
   }
 
@@ -1304,7 +1304,7 @@ inline void VizPaint::make_posNode(const std::vector<Position>& pos,
   // if (!par.manMult)  par.mult = 512 / nodes.size();  // 256/(size/2)
   // mult = par.mult;
 
-  lastPos.emplace_back(nodes.back().position);
+  lastPos.push_back(nodes.back().position);
 }
 
 // inline void VizPaint::print_pos (ofstream& fPlot, VizParam& par,

@@ -15,7 +15,7 @@ template <typename InIter, typename Vec>
 inline void split(InIter first, InIter last, char delim, Vec& vOut) {
   while (true) {
     InIter found = std::find(first, last, delim);
-    vOut.emplace_back(std::string(first, found));
+    vOut.push_back(std::string(first, found));
     if (found == last) break;
     first = ++found;
   }

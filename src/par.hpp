@@ -41,19 +41,13 @@ static constexpr float MAX_THRSH{20};
 static constexpr uint8_t K_MAX_TBL64{11};   // Max ctx table 64     (128 MB mem)
 static constexpr uint8_t K_MAX_TBL32{13};   // Max ctx table 32     (1   GB mem)
 static constexpr uint8_t K_MAX_LGTBL8{14};  // Max ctx log table 8  (1   GB mem)
-static constexpr uint32_t BLK_SZ{8192};     // 8K
 static constexpr uint64_t W{2 << 29ull};    // Width of CML sketch
 static constexpr uint8_t D{5};              // Depth of CML sketch
-static constexpr uint32_t G{64};            // Machine word size-univers hash fn
-static constexpr uint8_t LOG_BASE{2};       // Logarithmic counting
-static constexpr uint8_t PREC_PRF{3};       // Precisions - floats in Inf. prof
 static constexpr uint8_t PREC_FIL{3};       // Precisions - floats in filt. file
-static const std::string FMT_N{"n"};        // Format - position of N files
 static const std::string LBL_BAK{"_bk"};    // Label  - backup files
 static const std::string POS_HDR{"#" + SMASHPP};  // Hdr of pos file
-static const std::string POS_NRC{"N"};      // Hdr of pos file
-static const std::string POS_REDUN{"R"};    // Hdr of pos file
-static constexpr float PI{3.14159265f};
+// static const std::string POS_NRC{"N"};      // Hdr of pos file
+// static const std::string POS_REDUN{"R"};    // Hdr of pos file
 static constexpr int FILE_BUF{8 * 1024};    // 8K
 static constexpr double DBLANK{-2.0};
 

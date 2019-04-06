@@ -12,6 +12,7 @@
 #include "exception.hpp"
 
 namespace smashpp {
+static constexpr float PI{3.14159265f};
 extern void error(std::string&&);
 
 struct SubSeq {
