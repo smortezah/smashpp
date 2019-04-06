@@ -17,25 +17,25 @@ namespace smashpp {
 //     return *++iter;
 // }
 
-static constexpr uint8_t THRD{4};           // No. threads
+static constexpr uint8_t THRD{4};  // No. threads
 static constexpr uint8_t MIN_THRD{1};
 static constexpr uint8_t MAX_THRD{8};
-static constexpr uint8_t LVL{0};            // Level
+static constexpr uint8_t LVL{0};  // Level
 static constexpr uint8_t MIN_LVL{0};
 static constexpr uint8_t MAX_LVL{5};
-static constexpr uint32_t SSIZE{1};         // Min segment size
+static constexpr uint32_t SSIZE{1};  // Min segment size
 static constexpr uint32_t MIN_SSIZE{1};
 static constexpr uint32_t MAX_SSIZE{0xffffffff};  // 2^32 - 1
-static constexpr prc_t ENTR_N{2.0};         // Entropy of Ns
+static constexpr prc_t ENTR_N{2.0};               // Entropy of Ns
 static constexpr prc_t MIN_ENTR_N{0.0};
 static constexpr prc_t MAX_ENTR_N{100.0};
-static constexpr char TAR_ALT_N{'T'};       // Alter. to Ns in target file
-static constexpr uint32_t WS{256};          // Window size -- filter
+static constexpr char TAR_ALT_N{'T'};  // Alter. to Ns in target file
+static constexpr uint32_t WS{256};     // Window size -- filter
 static constexpr uint32_t MIN_WS{1};
 static constexpr uint32_t MAX_WS{0xffffffff};  // 2^32 - 1
-static constexpr auto WT{WType::hann};      // Window type -- filter
-static constexpr auto FS{FilterScale::l};   // Filt. scale -- filter
-static constexpr float THRSH{1.5};          // Threshold   -- filter
+static constexpr auto WT{WType::hann};         // Window type -- filter
+static constexpr auto FS{FilterScale::l};      // Filt. scale -- filter
+static constexpr float THRSH{1.5};             // Threshold   -- filter
 static constexpr float MIN_THRSH{0};
 static constexpr float MAX_THRSH{20};
 static constexpr uint8_t K_MAX_TBL64{11};   // Max ctx table 64     (128 MB mem)
@@ -48,7 +48,7 @@ static const std::string LBL_BAK{"_bk"};    // Label  - backup files
 static const std::string POS_HDR{"#" + SMASHPP};  // Hdr of pos file
 // static const std::string POS_NRC{"N"};      // Hdr of pos file
 // static const std::string POS_REDUN{"R"};    // Hdr of pos file
-static constexpr int FILE_BUF{8 * 1024};    // 8K
+static constexpr int FILE_BUF{8 * 1024};  // 8K
 static constexpr double DBLANK{-2.0};
 
 class Param {
