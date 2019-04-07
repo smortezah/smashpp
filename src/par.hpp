@@ -49,7 +49,7 @@ class Param {
   std::string tar;
   std::string seq;
   std::string refName;
-  std::string tarName;
+  std::string tarName;// Define Param::Param(){} in *.hpp => compile error
   bool verbose;
   uint8_t level;
   uint32_t segSize;
@@ -84,8 +84,7 @@ class Param {
   int16_t tar_beg_guard;
   int16_t tar_end_guard;
 
-  // Define Param::Param(){} in *.hpp => compile error
-  Param()
+  Param()  // Define Param::Param(){} in *.hpp => compile error
       : verbose(false),
         level(LVL),
         segSize(SSIZE),
@@ -118,7 +117,8 @@ class Param {
         tar_beg_guard(0),
         tar_end_guard(0) {}
 
-  void parse(int, char**&, std::string="audible");
+  Param(std::shared_ptr<Param>);
+  void parse(int, char**&);
   auto win_type(std::string) const -> WType;
   auto print_win_type() const -> std::string;
   auto filter_scale(std::string) const -> FilterScale;
@@ -128,7 +128,7 @@ class Param {
   template <typename Iter>
   void parseModelsPars(Iter, Iter, std::vector<MMPar>&);
   template <typename T>
-  void assert(T, T, T, T, std::string&&, std::string&&, std::string&&, Problem);
+  void assert(T, T, T, T, std::string&&, std::string&&, std::string&&, Problem);//todo
   void help() const;
 };
 

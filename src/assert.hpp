@@ -79,7 +79,6 @@ void ValRange<Value>::assert(Value& val) {
       warning(std::move(message));
     else if (problem == Problem::error)
       error(std::move(message));
-    else if (problem == Problem::silent);
   }
 }
 
@@ -137,7 +136,6 @@ void ValSet<Value>::assert(Value& val) {
     warning(std::move(message));
   else if (problem == Problem::error)
     error(std::move(message));
-  else if (problem == Problem::silent);
 }
 }  // namespace smashpp
 
