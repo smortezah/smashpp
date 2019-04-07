@@ -103,12 +103,10 @@ void Param::parse(int argc, char**& argv) {
       }
     } else if (option_inserted(i, "l", "level")) {
       level = static_cast<uint8_t>(std::stoi(*++i));
-      assert(level, MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
-             Problem::warning);
-      // auto range = std::make_unique<ValRange<uint8_t>>(
-      //     MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
-      //     Problem::warning);
-      // range->assert(level);
+      auto range = std::make_unique<ValRange<uint8_t>>(
+          MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
+          Problem::warning);
+      range->assert(level);
     } else if (option_inserted(i, "m", "min")) {
       manSegSize = true;
       segSize = std::stoul(*++i);
@@ -322,17 +320,6 @@ void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
                   std::stof(tm[3])));
     }
   }
-}
-
-template <typename T>
-void Param::assert(T variable, T lower_bound, T upper_bound, T default_val,
-                   std::string&& label, std::string&& criterion,
-                   std::string&& init_mode, Problem problem) {
-  auto range = std::make_unique<ValRange<T>>(
-      lower_bound, upper_bound, default_val, std::move(label),
-      std::move(criterion), std::move(init_mode), problem);
-
-  range->assert(variable);
 }
 
 void Param::help() const {
