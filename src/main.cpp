@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
       auto paint = std::make_unique<VizPaint>();
       paint->plot(vizpar);
     } else {
-      auto par1 = std::make_unique<Param>();
+      auto par1 = std::make_shared<Param>();
       par1->parse(argc, argv);  // Parse the command
 
       if (par1->compress) {
@@ -131,10 +131,8 @@ int main(int argc, char* argv[]) {
         filter->merge_extract_seg(par1->ID, par1->ref, par1->tar);
       } else {
         // unique_ptr cannot be copied
-        auto par2 = std::make_unique<Param>();  // For round 2
-        par2->parse(argc, argv, "silent");
-        auto par3 = std::make_unique<Param>();  // For round 3
-        par3->parse(argc, argv, "silent");
+        auto par2 = std::make_shared<Param>(par1);  // For round 2
+        auto par3 = std::make_shared<Param>(par1);  // For round 3
 
         for (uint8_t timesRunning = 0; timesRunning != 2; ++timesRunning) {
           if (timesRunning == 0)

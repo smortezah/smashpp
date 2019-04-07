@@ -16,7 +16,48 @@
 #include "print.hpp"
 using namespace smashpp;
 
-void Param::parse(int argc, char**& argv, std::string mode) {
+Param::Param(std::shared_ptr<Param> par) {
+  ref = par->ref;
+  tar = par->tar;
+  seq = par->seq;
+  refName = par->refName;
+  tarName = par->tarName;
+  verbose = par->verbose;
+  level = par->level;
+  segSize = par->segSize;
+  entropyN = par->entropyN;
+  nthr = par->nthr;
+  wsize = par->wsize;
+  wtype = par->wtype;
+  sampleStep = par->sampleStep;
+  thresh = par->thresh;
+  manSegSize = par->manSegSize;
+  manWSize = par->manWSize;
+  manThresh = par->manThresh;
+  manFilterScale = par->manFilterScale;
+  filterScale = par->filterScale;
+  saveSeq = par->saveSeq;
+  saveProfile = par->saveProfile;
+  saveFilter = par->saveFilter;
+  saveSegment = par->saveSegment;
+  saveAll = par->saveAll;
+  refType = par->refType;
+  tarType = par->tarType;
+  showInfo = par->showInfo;
+  compress = par->compress;
+  filter = par->filter;
+  segment = par->segment;
+  ID = par->ID;
+  noRedun = par->noRedun;
+  refMs = par->refMs;
+  tarMs = par->tarMs;
+  ref_beg_guard = par->ref_beg_guard;
+  ref_end_guard = par->ref_end_guard;
+  tar_beg_guard = par->tar_beg_guard;
+  tar_end_guard = par->tar_end_guard;
+}
+
+void Param::parse(int argc, char**& argv) {
   if (argc < 2) {
     help();
     throw EXIT_SUCCESS;
@@ -36,16 +77,6 @@ void Param::parse(int argc, char**& argv, std::string mode) {
                              std::string long_name) -> bool {
     return (iter + 1 != std::end(vArgs)) &&
            trig_inserted(iter, short_name, long_name);
-  };
-
-  auto problem = [=](std::string type) {
-    if (mode != "silent") {
-      if (type == "warning")
-        return Problem::warning;
-      else if (type == "error")
-        return Problem::error;
-    }
-    return Problem::silent;
   };
 
   bool man_rm{false};
@@ -72,18 +103,18 @@ void Param::parse(int argc, char**& argv, std::string mode) {
       }
     } else if (option_inserted(i, "l", "level")) {
       level = static_cast<uint8_t>(std::stoi(*++i));
-      // assert(level, MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
-      //        problem("warning"));
-      auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
-          problem("warning"));
-      range->assert(level);
+      assert(level, MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
+             Problem::warning);
+      // auto range = std::make_unique<ValRange<uint8_t>>(
+      //     MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
+      //     Problem::warning);
+      // range->assert(level);
     } else if (option_inserted(i, "m", "min")) {
       manSegSize = true;
       segSize = std::stoul(*++i);
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", "[]", "default",
-          problem("warning"));
+          Problem::warning);
       range->assert(segSize);
     } else if (option_inserted(i, "rm", "ref-model")) {
       man_rm = true;
@@ -103,14 +134,14 @@ void Param::parse(int argc, char**& argv, std::string mode) {
       manWSize = true;
       wsize = static_cast<uint32_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_WS, MAX_WS, WS, "Window size", "[]", "default", problem("warning"));
+          MIN_WS, MAX_WS, WS, "Window size", "[]", "default", Problem::warning);
       range->assert(wsize);
     } else if (option_inserted(i, "th", "thresh")) {
       manThresh = true;
       thresh = std::stof(*++i);
       auto range = std::make_unique<ValRange<float>>(
           MIN_THRSH, MAX_THRSH, THRSH, "Threshold", "(]", "default",
-          problem("warning"));
+          Problem::warning);
       range->assert(thresh);
     } else if (option_inserted(i, "wt", "wtype")) {
       const auto is_win_type = [](std::string t) {
@@ -121,20 +152,20 @@ void Param::parse(int argc, char**& argv, std::string mode) {
       };
       const std::string cmd{*++i};
       auto set = std::make_unique<ValSet<WType>>(
-          SET_WTYPE, WT, "Window type", "default", problem("warning"),
+          SET_WTYPE, WT, "Window type", "default", Problem::warning,
           win_type(cmd), is_win_type(cmd));
       set->assert(wtype);
     } else if (option_inserted(i, "e", "ent-n")) {
       entropyN = static_cast<prc_t>(std::stod(*++i));
       auto range = std::make_unique<ValRange<prc_t>>(
           MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases", "[]", "default",
-          problem("warning"));
+          Problem::warning);
       range->assert(entropyN);
     } else if (option_inserted(i, "n", "nthr")) {
       nthr = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_THRD, MAX_THRD, THRD, "Number of threads", "[]", "default",
-          problem("warning"));
+          Problem::warning);
       range->assert(nthr);
     } else if (option_inserted(i, "d", "step")) {
       sampleStep = std::stoull(*++i);
@@ -147,7 +178,7 @@ void Param::parse(int argc, char**& argv, std::string mode) {
       };
       const std::string cmd{*++i};
       auto set = std::make_unique<ValSet<FilterScale>>(
-          SET_FSCALE, FS, "Filter scale", "default", problem("warning"),
+          SET_FSCALE, FS, "Filter scale", "default", Problem::warning,
           filter_scale(cmd), is_filter_scale(cmd));
       set->assert(filterScale);
     } else if (option_inserted(i, "rb", "ref-beg-grd")) {
@@ -155,28 +186,28 @@ void Param::parse(int argc, char**& argv, std::string mode) {
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard",
-          "[]", "default", problem("warning"));
+          "[]", "default", Problem::warning);
       range->assert(ref_beg_guard);
     } else if (option_inserted(i, "re", "ref-end-grd")) {
       ref_end_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference ending guard",
-          "[]", "default", problem("warning"));
+          "[]", "default", Problem::warning);
       range->assert(ref_end_guard);
     } else if (option_inserted(i, "tb", "tar-beg-grd")) {
       tar_beg_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target beginning guard",
-          "[]", "default", problem("warning"));
+          "[]", "default", Problem::warning);
       range->assert(tar_beg_guard);
     } else if (option_inserted(i, "te", "tar-end-grd")) {
       tar_end_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target ending guard", "[]",
-          "default", problem("warning"));
+          "default", Problem::warning);
       range->assert(tar_end_guard);
     } else if (trig_inserted(i, "nr", "no-redun")) {
       noRedun = true;
@@ -297,17 +328,11 @@ template <typename T>
 void Param::assert(T variable, T lower_bound, T upper_bound, T default_val,
                    std::string&& label, std::string&& criterion,
                    std::string&& init_mode, Problem problem) {
-  // auto range = std::make_unique<ValRange<T>>(
-  //     lower_bound, upper_bound, default_val, std::move(label),
-  //     std::move(criterion), std::move(init_mode), problem);
+  auto range = std::make_unique<ValRange<T>>(
+      lower_bound, upper_bound, default_val, std::move(label),
+      std::move(criterion), std::move(init_mode), problem);
 
-  // range->assert(variable);
-
-  // auto range =
-  //     ValRange<T>(lower_bound, upper_bound, default_val, label,
-  //                 criterion, init_mode, problem);
-
-  // range.assert(variable);
+  range->assert(variable);
 }
 
 void Param::help() const {

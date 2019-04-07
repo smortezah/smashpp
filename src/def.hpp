@@ -48,7 +48,7 @@ enum class WType {  // Types of windowing function
 enum class Format { profile, filter, position, midposition, segment, self };
 enum class FileType { seq, fasta, fastq };
 enum class FilterScale { s, m, l };
-enum class Problem { warning, error, silent };
+enum class Problem { warning, error };
 
 const std::vector<WType> SET_WTYPE{
     WType::rectangular, WType::hamming, WType::hann, WType::blackman,
