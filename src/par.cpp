@@ -104,7 +104,7 @@ void Param::parse(int argc, char**& argv) {
     } else if (option_inserted(i, "l", "level")) {
       level = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LVL, MAX_LVL, LVL, "Level", "[]", "default",
+          MIN_LVL, MAX_LVL, level, "Level", "[]", "default",
           Problem::warning);
       range->assert(level);
     } else if (option_inserted(i, "m", "min")) {
@@ -350,10 +350,10 @@ void Param::help() const {
 
   line_left_left(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
 
-  line_left_left(bold("-l") + ",  " + bold("--level") + "  " + underline("INT"),
-                 3,
-                 "level of compression: [" + std::to_string(MIN_LVL) + ", " +
-                     std::to_string(MAX_LVL) + "]");
+  line_left_left(
+      bold("-l") + ",  " + bold("--level") + "  " + underline("INT"), 3,
+      "level of compression: [" + std::to_string(MIN_LVL) + ", " +
+          std::to_string(MAX_LVL) + "]. --> Def: " + std::to_string(level));
 
   line_left_left(bold("-m") + ",  " + bold("--min") + "    " + underline("INT"),
                  3,

@@ -5,6 +5,10 @@
 #ifndef SMASHPP_ASSERT_HPP
 #define SMASHPP_ASSERT_HPP
 
+#ifdef __APPLE__
+#undef assert
+#endif
+
 #include <stdexcept>
 #include "exception.hpp"
 

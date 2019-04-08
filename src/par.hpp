@@ -12,7 +12,7 @@ namespace smashpp {
 static constexpr uint8_t THRD{4};  // No. threads
 static constexpr uint8_t MIN_THRD{1};
 static constexpr uint8_t MAX_THRD{8};
-static constexpr uint8_t LVL{0};  // Level
+// static constexpr uint8_t LVL{0};  // Level
 static constexpr uint8_t MIN_LVL{0};
 static constexpr uint8_t MAX_LVL{5};
 static constexpr uint32_t SSIZE{1};  // Min segment size
@@ -86,7 +86,7 @@ class Param {
 
   Param()  // Define Param::Param(){} in *.hpp => compile error
       : verbose(false),
-        level(LVL),
+        level(0),
         segSize(SSIZE),
         entropyN(ENTR_N),
         nthr(THRD),
