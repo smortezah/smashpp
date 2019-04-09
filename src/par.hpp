@@ -72,6 +72,16 @@ class Param {
   bool noRedun;
   std::vector<MMPar> refMs;
   std::vector<MMPar> tarMs;
+
+//todo
+  struct Guard {
+    int16_t round1_beg;
+    int16_t round1_end;
+    int16_t round2_beg;
+    int16_t round2_end;
+  };
+  std::unique_ptr<Guard> guard;
+
   int16_t ref_beg_guard;
   int16_t ref_end_guard;
   int16_t tar_beg_guard;
