@@ -111,7 +111,7 @@ void Param::parse(int argc, char**& argv) {
       manSegSize = true;
       segSize = std::stoul(*++i);
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", "[]", "default",
+          MIN_SSIZE, MAX_SSIZE, segSize, "Minimum segment size", "[]", "default",
           Problem::warning);
       range->assert(segSize);
     } else if (option_inserted(i, "rm", "ref-model")) {
@@ -132,13 +132,13 @@ void Param::parse(int argc, char**& argv) {
       manWSize = true;
       wsize = static_cast<uint32_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_WS, MAX_WS, WS, "Window size", "[]", "default", Problem::warning);
+          MIN_WS, MAX_WS, wsize, "Window size", "[]", "default", Problem::warning);
       range->assert(wsize);
     } else if (option_inserted(i, "th", "thresh")) {
       manThresh = true;
       thresh = std::stof(*++i);
       auto range = std::make_unique<ValRange<float>>(
-          MIN_THRSH, MAX_THRSH, THRSH, "Threshold", "(]", "default",
+          MIN_THRSH, MAX_THRSH, thresh, "Threshold", "(]", "default",
           Problem::warning);
       range->assert(thresh);
     } else if (option_inserted(i, "wt", "wtype")) {
@@ -156,13 +156,13 @@ void Param::parse(int argc, char**& argv) {
     } else if (option_inserted(i, "e", "ent-n")) {
       entropyN = static_cast<prc_t>(std::stod(*++i));
       auto range = std::make_unique<ValRange<prc_t>>(
-          MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases", "[]", "default",
+          MIN_ENTR_N, MAX_ENTR_N, entropyN, "Entropy of N bases", "[]", "default",
           Problem::warning);
       range->assert(entropyN);
     } else if (option_inserted(i, "n", "nthr")) {
       nthr = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_THRD, MAX_THRD, THRD, "Number of threads", "[]", "default",
+          MIN_THRD, MAX_THRD, nthr, "Number of threads", "[]", "default",
           Problem::warning);
       range->assert(nthr);
     } else if (option_inserted(i, "d", "step")) {
@@ -176,7 +176,7 @@ void Param::parse(int argc, char**& argv) {
       };
       const std::string cmd{*++i};
       auto set = std::make_unique<ValSet<FilterScale>>(
-          SET_FSCALE, FS, "Filter scale", "default", Problem::warning,
+          SET_FSCALE, filterScale, "Filter scale", "default", Problem::warning,
           filter_scale(cmd), is_filter_scale(cmd));
       set->assert(filterScale);
     } else if (option_inserted(i, "rb", "ref-beg-grd")) {
@@ -348,57 +348,58 @@ void Param::help() const {
 
   line(italic("Options"));
 
-  line_left_left(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
+  line_left_left(bold("-v") + ",  " + bold("--verbose"), 2, "more information         -> Default: no");
 
   line_left_left(
       bold("-l") + ",  " + bold("--level") + "  " + underline("INT"), 3,
       "level of compression: [" + std::to_string(MIN_LVL) + ", " +
-          std::to_string(MAX_LVL) + "]. --> Def: " + std::to_string(level));
+          std::to_string(MAX_LVL) + "]      -> " + std::to_string(level));
 
-  line_left_left(bold("-m") + ",  " + bold("--min") + "    " + underline("INT"),
-                 3,
-                 "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
-                     std::to_string(MAX_SSIZE) + "]");
+  line_left_left(
+      bold("-m") + ",  " + bold("--min") + "    " + underline("INT"), 3,
+      "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
+          std::to_string(MAX_SSIZE) + "] -> " + std::to_string(segSize));
 
   line_left_left(bold("-nr") + ", " + bold("--no-redun"), 2,
-                 "do NOT compute self complexity");
+                 "do NOT compute self complexity    -> no");
 
   line_left_left(
       bold("-e") + ",  " + bold("--ent-n") + "  " + underline("FLOAT"), 3,
       "Entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) + ", " +
-          string_format("%.1f", MAX_ENTR_N) + "]");
+          string_format("%.1f", MAX_ENTR_N) + "]     -> " +
+          string_format("%.1f", entropyN));
 
-  line_left_left(bold("-n") + ",  " + bold("--nthr") + "   " + underline("INT"),
-                 3,
-                 "number of threads: [" + std::to_string(MIN_THRD) + ", " +
-                     std::to_string(MAX_THRD) + "]");
+  line_left_left(
+      bold("-n") + ",  " + bold("--nthr") + "   " + underline("INT"), 3,
+      "number of threads: [" + std::to_string(MIN_THRD) + ", " +
+          std::to_string(MAX_THRD) + "]         -> " + std::to_string(nthr));
 
   line_left_left(bold("-fs") + ", " + bold("--filter-scale") + " " +
                      underline("S") + "|" + underline("M") + "|" +
                      underline("L"),
-                 5, "scale of the filter:");
+                 5, "scale of the filter:              -> L");
   line_left_left("", 0, "{S|small, M|medium, L|large}");
 
-  line_left_left(bold("-w") + ",  " + bold("--wsize") + "  " + underline("INT"),
-                 3,
-                 "window size: [" + std::to_string(MIN_WS) + ", " +
-                     std::to_string(MAX_WS) + "]");
+  line_left_left(
+      bold("-w") + ",  " + bold("--wsize") + "  " + underline("INT"), 3,
+      "window size: [" + std::to_string(MIN_WS) + ", " +
+          std::to_string(MAX_WS) + "]      -> " + std::to_string(wsize));
 
   line_left_left(bold("-wt") + ", " + bold("--wtype") + "  " +
                      underline("INT") + "/" + underline("STRING"),
-                 4, "type of windowing function:");
+                 4, "type of windowing function:       -> hann");
   line_left_left("", 0, "{0|rectangular, 1|hamming, 2|hann,");
   line_left_left("", 0, "3|blackman, 4|triangular, 5|welch,");
   line_left_left("", 0, "6|sine, 7|nuttall}");
 
   line_left_left(
       bold("-d") + ",  " + bold("--step") + "    " + underline("INT"), 3,
-      "sampling steps");
+      "sampling steps                 -> " + std::to_string(sampleStep));
 
   line_left_left(
       bold("-th") + ", " + bold("--thresh") + "  " + underline("FLOAT"), 3,
       "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
-          string_format("%.1f", MAX_THRSH) + "]");
+          string_format("%.1f", MAX_THRSH) + "]         -> " + string_format("%.1f", MAX_THRSH));
 
   line_left_left(
       bold("-rb") + ", " + bold("--ref-beg-grd") + "  " + underline("INT"), 3,
