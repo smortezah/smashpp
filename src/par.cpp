@@ -16,7 +16,9 @@
 #include "print.hpp"
 using namespace smashpp;
 
-Param::Param(std::shared_ptr<Param> par) {
+Param::Param(std::shared_ptr<Param> par)
+    : tar_guard(std::make_unique<TarGuard>()),
+      ref_guard(std::make_unique<RefGuard>()) {
   ref = par->ref;
   tar = par->tar;
   seq = par->seq;
@@ -51,8 +53,6 @@ Param::Param(std::shared_ptr<Param> par) {
   noRedun = par->noRedun;
   refMs = par->refMs;
   tarMs = par->tarMs;
-  tar_guard = std::make_unique<TarGuard>();
-  ref_guard = std::make_unique<RefGuard>();
   tar_guard->beg = par->tar_guard->beg;
   tar_guard->end = par->tar_guard->end;
   ref_guard->beg = par->ref_guard->beg;
