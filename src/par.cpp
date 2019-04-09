@@ -323,301 +323,138 @@ void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
 }
 
 void Param::help() const {
-  title("NAME");
-  line("Smash++ v" + VERSION + " - rearrangements finder");
-  line("");
+  print_title("Usage");
+  print_line("./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>");
+  std::cerr << '\n';
 
-  title("SYNOPSIS");
-  line("./smashpp  " + underline("OPTIONS") + "...  -r " +
-       underline("REF-FILE") + "  -t " + underline("TAR-FILE"));
-  line("");
+  print_title("Mandatory arguments");
 
-  title("SAMPLE");
+  print_aligned("-r", "<FILE>", "=", "reference file (Seq/FASTA/FASTQ)");
+
+  print_aligned("-t", "<FILE>", "=", "target file    (Seq/FASTA/FASTQ)");
+  std::cerr << '\n';
+
+  print_title("Options");
+
+  print_aligned("-l", "<INT>", "=",
+                "level of compression: [" + std::to_string(MIN_LVL) + ", " +
+                    std::to_string(MAX_LVL) + "]. Default",
+                "->", std::to_string(level));
+
+  print_aligned("-m", "<INT>", "=",
+                "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
+                    std::to_string(MAX_SSIZE) + "]",
+                "->", std::to_string(segSize));
+
+  print_aligned("-e", "<FLOAT>", "=",
+                "entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) +
+                    ", " + string_format("%.1f", MAX_ENTR_N) + "]",
+                "->", string_format("%.1f", entropyN));
+
+  print_aligned("-n", "<INT>", "=",
+                "number of threads: [" + std::to_string(MIN_THRD) + ", " +
+                    std::to_string(MAX_THRD) + "]",
+                "->", std::to_string(nthr));
+
+  print_aligned("-fs", "[S][M][L]", "=", "scale of the filter:", "->", "L");
+  print_aligned("", "", "", "{S|small, M|medium, L|large}");
+
+  print_aligned("-w", "<INT>", "=",
+                "window size: [" + std::to_string(MIN_WS) + ", " +
+                    std::to_string(MAX_WS) + "]",
+                "->", std::to_string(wsize));
+
+  print_aligned("-wt", "<INT/STRING>", "=", "type of windowing function:", "->",
+                "hann");
+  print_aligned("", "", "", "{0|rectangular, 1|hamming, 2|hann,");
+  print_aligned("", "", "", "3|blackman, 4|triangular, 5|welch,");
+  print_aligned("", "", "", "6|sine, 7|nuttall}");
+
+  print_aligned("-d", "<INT>", "=", "sampling steps", "->",
+                std::to_string(sampleStep));
+
+  print_aligned("-th", "<FLOAT>", "=",
+                "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
+                    string_format("%.1f", MAX_THRSH) + "]",
+                "->", string_format("%.1f", thresh));
+
+  print_aligned("-rb", "<INT>", "=", "reference beginning guard", "->",
+                std::to_string(ref_beg_guard));
+
+  print_aligned("-re", "<INT>", "=", "reference ending guard", "->",
+                std::to_string(ref_end_guard));
+
+  print_aligned("-tb", "<INT>", "=", "target beginning guard", "->",
+                std::to_string(tar_beg_guard));
+
+  print_aligned("-te", "<INT>", "=", "target ending guard", "->",
+                std::to_string(tar_end_guard));
+
+  print_line(bold("-rm") + " <" + italic("k") + ",[" + italic("w") + "," +
+             italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +
+             italic("t") + ",ir," + italic("a") + "," + italic("g") + ":...>");
+
+  print_line(bold("-tm") + " <" + italic("k") + ",[" + italic("w") + "," +
+             italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +
+             italic("t") + ",ir," + italic("a") + "," + italic("g") + ":...>");
+
+  print_aligned("", "", "=", "parameters of models");
+
+  print_aligned_right_left("", "<INT>", "", italic("k") + ":  context size");
+
+  print_aligned_right_left("", "<INT>", "",
+                           italic("w") + ":  width of sketch in log2 form,");
+  print_aligned_right_left("", "", "", "    e.g., set 10 for w=2^10=1024");
+
+  print_aligned_right_left("", "<INT>", "", italic("d") + ":  depth of sketch");
+
+  print_aligned_right_left("", "<INT>", "", "ir: inverted repeat: {0, 1, 2}");
+  print_aligned_right_left("", "", "", "    0: regular (not inverted)");
+  print_aligned_right_left("", "", "", "    1: inverted, solely");
+  print_aligned_right_left("", "", "", "    2: both regular and inverted");
+
+  print_aligned_right_left("", "<FLOAT>", "", italic("a") + ":  estimator");
+
+  print_aligned_right_left("", "<FLOAT>", "",
+                           italic("g") + ":  forgetting factor: [0.0, 1.0)");
+
+  print_aligned_right_left("", "<INT>", "",
+                           italic("t") + ":  threshold (no. substitutions)");
+  std::cerr << '\n';
+
+  print_title("Flags");
+
+  print_aligned("-h", "", "=", "usage guide", "->", "no");
+
+  print_aligned("-v", "", "=", "more information", "->", "no");
+
+  print_aligned("-nr", "", "=", "do NOT compute self complexity", "->", "no");
+
+  print_aligned("-sb", "", "=", "save sequence (input: FASTA/FASTQ)", "->", "no");
+
+  print_aligned("-sp", "", "=", "save profile (*.prf)", "->", "no");
+
+  print_aligned("-sf", "", "=", "save filtered file (*.fil)", "->", "no");
+
+  print_aligned("-ss", "", "=", "save segmented files (*.s[i])", "->", "no");
+
+  print_aligned("-sa", "", "=", "save profile, filetered and", "->", "no");
+  print_aligned("", "", "", "segmented files");
+
+  print_title("AUTHOR");
+  print_line("Morteza Hosseini   seyedmorteza@ua.pt");
+std::cerr<<'\n';
+
+  print_title("SAMPLE");
   // line("./smashpp -t TAR -r REF");
-  line("");
-
-  title("DESCRIPTION");
-  line(italic("Mandatory arguments"));
-
-  line_left_left(bold("-r") + " <file>", 1, "reference file (Seq/FASTA/FASTQ)");
-
-  line_left_left(bold("-t") + " <file>", 1, "target file    (Seq/FASTA/FASTQ)");
-  line("");
-
-  line(italic("Options"));
-
-  line_left_left(bold("-l") + "  " + underline("INT"), 2,
-                 "level of compression: [" + std::to_string(MIN_LVL) + ", " +
-                     std::to_string(MAX_LVL) + "]. Def -> " +
-                     std::to_string(level));
-
-  line_left_left(bold("-m") + "  " + underline("INT"), 2,
-                 "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
-                     std::to_string(MAX_SSIZE) + "] -> " +
-                     std::to_string(segSize));
-
-  line_left_left(bold("-e") + "  " + underline("FLOAT"), 2,
-                 "Entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) +
-                     ", " + string_format("%.1f", MAX_ENTR_N) + "]     -> " +
-                     string_format("%.1f", entropyN));
-
-  line_left_left(bold("-n") + "  " + underline("INT"), 2,
-                 "number of threads: [" + std::to_string(MIN_THRD) + ", " +
-                     std::to_string(MAX_THRD) + "]         -> " +
-                     std::to_string(nthr));
-
-  line_left_left(bold("-fs") + "  " + underline("S") + "|" + underline("M") +
-                     "|" + underline("L"),
-                 4, "scale of the filter:              -> L");
-  line_left_left("", 0, "{S|small, M|medium, L|large}");
-
-  line_left_left(bold("-w") + "  " + underline("INT"), 2,
-                 "window size: [" + std::to_string(MIN_WS) + ", " +
-                     std::to_string(MAX_WS) + "]      -> " +
-                     std::to_string(wsize));
-
-  line_left_left(
-      bold("-wt") + " " + underline("INT") + "/" + underline("STRING"), 3,
-      "type of windowing function:       -> hann");
-  line_left_left("", 0, "{0|rectangular, 1|hamming, 2|hann,");
-  line_left_left("", 0, "3|blackman, 4|triangular, 5|welch,");
-  line_left_left("", 0, "6|sine, 7|nuttall}");
-
-  line_left_left(
-      bold("-d") + "    " + underline("INT"), 2,
-      "sampling steps                    -> " + std::to_string(sampleStep));
-
-  line_left_left(bold("-th") + "  " + underline("FLOAT"), 2,
-                 "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
-                     string_format("%.1f", MAX_THRSH) + "]            -> " +
-                     string_format("%.1f", thresh));
-
-  line_left_left(
-      bold("-rb") + "  " + underline("INT"), 2,
-      "reference beginning guard         -> " + std::to_string(ref_beg_guard));
-
-  line_left_left(
-      bold("-re") + "  " + underline("INT"), 2,
-      "reference ending guard            -> " + std::to_string(ref_end_guard));
-
-  line_left_left(
-      bold("-tb") + "  " + underline("INT"), 2,
-      "target beginning guard            -> " + std::to_string(tar_beg_guard));
-
-  line_left_left(
-      bold("-te") + "  " + underline("INT"), 2,
-      "target ending guard               -> " + std::to_string(tar_end_guard));
-
-  line(bold("-rm") + ", " + bold("--ref-model") + "  " + italic("k") + ",[" +
-       italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," +
-       italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," +
-       italic("g") + ":...");
-
-  line(bold("-tm") + ", " + bold("--tar-model") + "  " + italic("k") + ",[" +
-       italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," +
-       italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," +
-       italic("g") + ":...");
-
-  line_left_left("", 0, "parameters of models");
-
-  line_right_left("(" + underline("INT") + ") ", 1,
-                  italic("k") + ":  context size");
-
-  line_right_left("(" + underline("INT") + ") ", 1,
-                  italic("w") + ":  width of sketch in log2 form,");
-  line_left_left("", 0, "    e.g., set 10 for w=2^10=1024");
-
-  line_right_left("(" + underline("INT") + ") ", 1,
-                  italic("d") + ":  depth of sketch");
-
-  line_right_left("(" + underline("INT") + ") ", 1,
-                  "ir: inverted repeat: {0, 1, 2}");
-  line_left_left("", 0, "    0: regular (not inverted)");
-  line_left_left("", 0, "    1: inverted, solely");
-  line_left_left("", 0, "    2: both regular and inverted");
-
-  line_right_left("(" + underline("FLOAT") + ") ", 1,
-                  italic("a") + ":  estimator");
-
-  line_right_left("(" + underline("FLOAT") + ") ", 1,
-                  italic("g") + ":  forgetting factor: [0.0, 1.0)");
-
-  line_right_left("(" + underline("INT") + ") ", 1,
-                  italic("t") + ":  threshold (no. substitutions)");
-  line("");
-
-  line(italic("Flags"));
-
-  line_left_left(bold("-h"), 1, "usage guide                Default -> no");
-
-  line_left_left(bold("-v"), 1, "more information.                  -> no");
-
-  line_left_left(bold("-nr"), 1, "do NOT compute self complexity     -> no");
-
-  line_left_left(bold("-sb"), 1, "save sequence (input: FASTA/FASTQ) -> no");
-
-  line_left_left(bold("-sp"), 1, "save profile (*.prf)               -> no");
-
-  line_left_left(bold("-sf"), 1, "save filtered file (*.fil)         -> no");
-
-  line_left_left(bold("-ss"), 1,
-                 "save segmented files (*.s" + italic("i") + ")        -> no");
-
-  line_left_left(bold("-sa"), 1,
-                 "save profile, filetered and segmented files -> no");
-
-  // line(italic("Mandatory arguments"));
-
-  // line_left_left(bold("-r") + ",  " + bold("--ref") + "  " + underline("FILE"),
-  //                3, "reference file (Seq/Fasta/Fastq)");
-
-  // line_left_left(bold("-t") + ",  " + bold("--tar") + "  " + underline("FILE"),
-  //                3, "target file    (Seq/Fasta/Fastq)");
-  // line("");
-
-  // line(italic("Options"));
-  // line_left_left(
-  //     bold("-l") + ",  " + bold("--level") + "  " + underline("INT"), 3,
-  //     "level of compression: [" + std::to_string(MIN_LVL) + ", " +
-  //         std::to_string(MAX_LVL) + "]. Def -> " + std::to_string(level));
-
-  // line_left_left(
-  //     bold("-m") + ",  " + bold("--min") + "    " + underline("INT"), 3,
-  //     "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
-  //         std::to_string(MAX_SSIZE) + "] -> " + std::to_string(segSize));
-
-  // line_left_left(
-  //     bold("-e") + ",  " + bold("--ent-n") + "  " + underline("FLOAT"), 3,
-  //     "Entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) + ", " +
-  //         string_format("%.1f", MAX_ENTR_N) + "]     -> " +
-  //         string_format("%.1f", entropyN));
-
-  // line_left_left(
-  //     bold("-n") + ",  " + bold("--nthr") + "   " + underline("INT"), 3,
-  //     "number of threads: [" + std::to_string(MIN_THRD) + ", " +
-  //         std::to_string(MAX_THRD) + "]         -> " + std::to_string(nthr));
-
-  // line_left_left(bold("-fs") + ", " + bold("--filter-scale") + " " +
-  //                    underline("S") + "|" + underline("M") + "|" +
-  //                    underline("L"),
-  //                5, "scale of the filter:              -> L");
-  // line_left_left("", 0, "{S|small, M|medium, L|large}");
-
-  // line_left_left(
-  //     bold("-w") + ",  " + bold("--wsize") + "  " + underline("INT"), 3,
-  //     "window size: [" + std::to_string(MIN_WS) + ", " +
-  //         std::to_string(MAX_WS) + "]      -> " + std::to_string(wsize));
-
-  // line_left_left(bold("-wt") + ", " + bold("--wtype") + "  " +
-  //                    underline("INT") + "/" + underline("STRING"),
-  //                4, "type of windowing function:       -> hann");
-  // line_left_left("", 0, "{0|rectangular, 1|hamming, 2|hann,");
-  // line_left_left("", 0, "3|blackman, 4|triangular, 5|welch,");
-  // line_left_left("", 0, "6|sine, 7|nuttall}");
-
-  // line_left_left(
-  //     bold("-d") + ",  " + bold("--step") + "    " + underline("INT"), 3,
-  //     "sampling steps                    -> " + std::to_string(sampleStep));
-
-  // line_left_left(
-  //     bold("-th") + ", " + bold("--thresh") + "  " + underline("FLOAT"), 3,
-  //     "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
-  //         string_format("%.1f", MAX_THRSH) + "]            -> " +
-  //         string_format("%.1f", thresh));
-
-  // line_left_left(
-  //     bold("-rb") + ", " + bold("--ref-beg-grd") + "  " + underline("INT"), 3,
-  //     "reference beginning guard         -> " + std::to_string(ref_beg_guard));
-
-  // line_left_left(
-  //     bold("-re") + ", " + bold("--ref-end-grd") + "  " + underline("INT"), 3,
-  //     "reference ending guard            -> " + std::to_string(ref_end_guard));
-
-  // line_left_left(
-  //     bold("-tb") + ", " + bold("--tar-beg-grd") + "  " + underline("INT"), 3,
-  //     "target beginning guard            -> " + std::to_string(tar_beg_guard));
-
-  // line_left_left(
-  //     bold("-te") + ", " + bold("--tar-end-grd") + "  " + underline("INT"), 3,
-  //     "target ending guard               -> " + std::to_string(tar_end_guard));
-
-  // line(bold("-rm") + ", " + bold("--ref-model") + "  " + italic("k") + ",[" +
-  //      italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," +
-  //      italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," +
-  //      italic("g") + ":...");
-
-  // line(bold("-tm") + ", " + bold("--tar-model") + "  " + italic("k") + ",[" +
-  //      italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," +
-  //      italic("g") + "/" + italic("t") + ",ir," + italic("a") + "," +
-  //      italic("g") + ":...");
-
-  // line_left_left("", 0, "parameters of models");
-
-  // line_right_left("(" + underline("INT") + ") ", 1,
-  //                 italic("k") + ":  context size");
-
-  // line_right_left("(" + underline("INT") + ") ", 1,
-  //                 italic("w") + ":  width of sketch in log2 form,");
-  // line_left_left("", 0, "    e.g., set 10 for w=2^10=1024");
-
-  // line_right_left("(" + underline("INT") + ") ", 1,
-  //                 italic("d") + ":  depth of sketch");
-
-  // line_right_left("(" + underline("INT") + ") ", 1,
-  //                 "ir: inverted repeat: {0, 1, 2}");
-  // line_left_left("", 0, "    0: regular (not inverted)");
-  // line_left_left("", 0, "    1: inverted, solely");
-  // line_left_left("", 0, "    2: both regular and inverted");
-
-  // line_right_left("(" + underline("FLOAT") + ") ", 1,
-  //                 italic("a") + ":  estimator");
-
-  // line_right_left("(" + underline("FLOAT") + ") ", 1,
-  //                 italic("g") + ":  forgetting factor: [0.0, 1.0)");
-
-  // line_right_left("(" + underline("INT") + ") ", 1,
-  //                 italic("t") + ":  threshold (no. substitutions)");
-  // line("");
-
-  // line(italic("Flags"));
-
-  // line_left_left(bold("-h") + ",  " + bold("--help"), 2,
-  //                "usage guide                Default -> no");
-
-  // line_left_left(bold("-v") + ",  " + bold("--verbose"), 2,
-  //                "more information.                  -> no");
-
-  // line_left_left(bold("-nr") + ", " + bold("--no-redun"), 2,
-  //                "do NOT compute self complexity     -> no");
-
-  // line_left_left(bold("-sb") + ", " + bold("--save-seq"), 2,
-  //                "save sequence (input: FASTA/FASTQ) -> no");
-
-  // line_left_left(bold("-sp") + ", " + bold("--save-profile"), 2,
-  //                "save profile (*.prf)               -> no");
-
-  // line_left_left(bold("-sf") + ", " + bold("--save-filter"), 2,
-  //                "save filtered file (*.fil)         -> no");
-
-  // line_left_left(bold("-ss") + ", " + bold("--save-segment"), 2,
-  //                "save segmented files (*.s" + italic("i") + ")        -> no");
-
-  // line_left_left(bold("-sa") + ", " + bold("--save-all"), 2,
-  //                "save profile, filetered and        -> no");
-  // line_left_left("", 0, "segmented files");
-
-  line("");
-
-  title("AUTHOR");
-  line_left_left("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
-  line("");
-
-  title("COPYRIGHT");
-  line("Copyright (C) " + DEV_YEARS +
-       ", IEETA, University of Aveiro. You may  ");
-  line("redistribute copies of this Free software under the terms of the");
-  line("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
-  line("There is NO WARRANTY, to the extent permitted by law.");
+std::cerr<<'\n';
+
+  // // title("COPYRIGHT");
+  // // line("Copyright (C) " + DEV_YEARS +
+  // //      ", IEETA, University of Aveiro. You may  ");
+  // // line("redistribute copies of this Free software under the terms of the");
+  // // line("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
+  // // line("There is NO WARRANTY, to the extent permitted by law.");
 }
 
 WType Param::win_type(std::string t) const {
@@ -799,126 +636,126 @@ void VizParam::parse(int argc, char**& argv) {
 }
 
 void VizParam::help() const {
-  title("NAME");
-  line("Smash++ Visualizer v" + VERSION + " - Visualization of Samsh++ output");
-  line("");
+  // title("NAME");
+  // line("Smash++ Visualizer v" + VERSION + " - Visualization of Samsh++ output");
+  // line("");
 
-  title("SYNOPSIS");
-  line("./smashpp -viz  " + underline("OPTIONS") + "...  -o " +
-       underline("SVG-FILE") + "  " + underline("POS-FILE"));
-  line("");
+  // title("SYNOPSIS");
+  // line("./smashpp -viz  " + underline("OPTIONS") + "...  -o " +
+  //      underline("SVG-FILE") + "  " + underline("POS-FILE"));
+  // line("");
 
-  title("SAMPLE");
-  // line("./smashpp -viz -o out.svg ab.pos");
-  line("");
+  // title("SAMPLE");
+  // // line("./smashpp -viz -o out.svg ab.pos");
+  // line("");
 
-  title("DESCRIPTION");
-  line(italic("Mandatory arguments") + ":");
+  // title("DESCRIPTION");
+  // line(italic("Mandatory arguments") + ":");
 
-  line_left_left(underline("POS-FILE"), 1, "positions file, generated by");
-  line_left_left("", 0, "Smash++ tool (*.pos)");
-  line("");
+  // line_left_left(underline("POS-FILE"), 1, "positions file, generated by");
+  // line_left_left("", 0, "Smash++ tool (*.pos)");
+  // line("");
 
-  line(italic("Options") + ":");
+  // line(italic("Options") + ":");
 
-  line_left_left(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
+  // line_left_left(bold("-v") + ",  " + bold("--verbose"), 2, "more information");
 
-  line_left_left(
-      bold("-o") + ",  " + bold("--out") + " " + underline("SVG-FILE"), 3,
-      "output image name (*.svg)");
+  // line_left_left(
+  //     bold("-o") + ",  " + bold("--out") + " " + underline("SVG-FILE"), 3,
+  //     "output image name (*.svg)");
 
-  line_left_left(
-      bold("-rn") + ", " + bold("--ref-name") + " " + underline("STRING"), 3,
-      "reference name shown on output. If name");
-  line_left_left("", 0, "has space, use \"s, e.g. \"Seq label\".");
-  line_left_left("", 0, "Default: name in header of position file.");
+  // line_left_left(
+  //     bold("-rn") + ", " + bold("--ref-name") + " " + underline("STRING"), 3,
+  //     "reference name shown on output. If name");
+  // line_left_left("", 0, "has space, use \"s, e.g. \"Seq label\".");
+  // line_left_left("", 0, "Default: name in header of position file.");
 
-  line_left_left(
-      bold("-tn") + ", " + bold("--tar-name") + " " + underline("STRING"), 3,
-      "target name shown on output");
+  // line_left_left(
+  //     bold("-tn") + ", " + bold("--tar-name") + " " + underline("STRING"), 3,
+  //     "target name shown on output");
 
-  line_left_left(bold("-vv") + ", " + bold("--vertical"), 2, "vertical view");
+  // line_left_left(bold("-vv") + ", " + bold("--vertical"), 2, "vertical view");
 
-  line_left_left(bold("-nn") + ", " + bold("--no-nrc"), 2,
-                 "do NOT show normalized");
-  line_left_left("", 0, "relative compression (NRC)");
+  // line_left_left(bold("-nn") + ", " + bold("--no-nrc"), 2,
+  //                "do NOT show normalized");
+  // line_left_left("", 0, "relative compression (NRC)");
 
-  line_left_left(bold("-nr") + ", " + bold("--no-redun"), 2,
-                 "do NOT show self complexity");
+  // line_left_left(bold("-nr") + ", " + bold("--no-redun"), 2,
+  //                "do NOT show self complexity");
 
-  line_left_left(bold("-ni") + ", " + bold("--no-inv"), 2,
-                 "do NOT show inverse maps");
+  // line_left_left(bold("-ni") + ", " + bold("--no-inv"), 2,
+  //                "do NOT show inverse maps");
 
-  line_left_left(bold("-ng") + ", " + bold("--no-reg"), 2,
-                 "do NOT show regular maps");
+  // line_left_left(bold("-ng") + ", " + bold("--no-reg"), 2,
+  //                "do NOT show regular maps");
 
-  line_left_left(
-      bold("-l") + ",  " + bold("--link") + "     " + underline("INT"), 3,
-      "type of the link between maps: [" + std::to_string(MIN_LINK) + ", " +
-          std::to_string(MAX_LINK) + "]");
+  // line_left_left(
+  //     bold("-l") + ",  " + bold("--link") + "     " + underline("INT"), 3,
+  //     "type of the link between maps: [" + std::to_string(MIN_LINK) + ", " +
+  //         std::to_string(MAX_LINK) + "]");
 
-  line_left_left(
-      bold("-c") + ",  " + bold("--color") + "    " + underline("INT"), 3,
-      "color mode: [" + std::to_string(MIN_COLOR) + ", " +
-          std::to_string(MAX_COLOR) + "]");
+  // line_left_left(
+  //     bold("-c") + ",  " + bold("--color") + "    " + underline("INT"), 3,
+  //     "color mode: [" + std::to_string(MIN_COLOR) + ", " +
+  //         std::to_string(MAX_COLOR) + "]");
 
-  line_left_left(
-      bold("-p") + ",  " + bold("--opacity") + "  " + underline("FLOAT"), 3,
-      "opacity: [" + string_format("%.1f", MIN_OPAC) + ", " +
-          string_format("%.1f", MAX_OPAC) + "]");
+  // line_left_left(
+  //     bold("-p") + ",  " + bold("--opacity") + "  " + underline("FLOAT"), 3,
+  //     "opacity: [" + string_format("%.1f", MIN_OPAC) + ", " +
+  //         string_format("%.1f", MAX_OPAC) + "]");
 
-  line_left_left(
-      bold("-w") + ",  " + bold("--width") + "    " + underline("INT"), 3,
-      "width of the sequence: [" + std::to_string(MIN_WDTH) + ", " +
-          std::to_string(MAX_WDTH) + "]");
+  // line_left_left(
+  //     bold("-w") + ",  " + bold("--width") + "    " + underline("INT"), 3,
+  //     "width of the sequence: [" + std::to_string(MIN_WDTH) + ", " +
+  //         std::to_string(MAX_WDTH) + "]");
 
-  line_left_left(
-      bold("-s") + ",  " + bold("--space") + "    " + underline("INT"), 3,
-      "space between sequences: [" + std::to_string(MIN_SPC) + ", " +
-          std::to_string(MAX_SPC) + "]");
+  // line_left_left(
+  //     bold("-s") + ",  " + bold("--space") + "    " + underline("INT"), 3,
+  //     "space between sequences: [" + std::to_string(MIN_SPC) + ", " +
+  //         std::to_string(MAX_SPC) + "]");
 
-  line_left_left(
-      bold("-f") + ",  " + bold("--mult") + "     " + underline("INT"), 3,
-      "multiplication factor for");
-  line_left_left("", 0,
-                 "color ID: [" + std::to_string(MIN_MULT) + ", " +
-                     std::to_string(MAX_MULT) + "]");
+  // line_left_left(
+  //     bold("-f") + ",  " + bold("--mult") + "     " + underline("INT"), 3,
+  //     "multiplication factor for");
+  // line_left_left("", 0,
+  //                "color ID: [" + std::to_string(MIN_MULT) + ", " +
+  //                    std::to_string(MAX_MULT) + "]");
 
-  line_left_left(
-      bold("-b") + ",  " + bold("--begin") + "    " + underline("INT"), 3,
-      "beginning of color ID: [" + std::to_string(MIN_BEGN) + ", " +
-          std::to_string(MAX_BEGN) + "]");
+  // line_left_left(
+  //     bold("-b") + ",  " + bold("--begin") + "    " + underline("INT"), 3,
+  //     "beginning of color ID: [" + std::to_string(MIN_BEGN) + ", " +
+  //         std::to_string(MAX_BEGN) + "]");
 
-  line_left_left(
-      bold("-rt") + ", " + bold("--ref-tick") + " " + underline("INT"), 3,
-      "reference tick: [" + std::to_string(MIN_TICK) + ", " +
-          std::to_string(MAX_TICK) + "]");
+  // line_left_left(
+  //     bold("-rt") + ", " + bold("--ref-tick") + " " + underline("INT"), 3,
+  //     "reference tick: [" + std::to_string(MIN_TICK) + ", " +
+  //         std::to_string(MAX_TICK) + "]");
 
-  line_left_left(
-      bold("-tt") + ", " + bold("--tar-tick") + " " + underline("INT"), 3,
-      "target tick: [" + std::to_string(MIN_TICK) + ", " +
-          std::to_string(MAX_TICK) + "]");
+  // line_left_left(
+  //     bold("-tt") + ", " + bold("--tar-tick") + " " + underline("INT"), 3,
+  //     "target tick: [" + std::to_string(MIN_TICK) + ", " +
+  //         std::to_string(MAX_TICK) + "]");
 
-  line_left_left(
-      bold("-th") + ", " + bold("--tick-human") + " " + underline("0|1"), 3,
-      "tick human readable: 0=false, 1=true");
+  // line_left_left(
+  //     bold("-th") + ", " + bold("--tick-human") + " " + underline("0|1"), 3,
+  //     "tick human readable: 0=false, 1=true");
 
-  line_left_left(
-      bold("-m") + ",  " + bold("--min") + "      " + underline("INT"), 3,
-      "minimum block size: [" + std::to_string(MIN_MINP) + ", " +
-          std::to_string(MAX_MINP) + "]");
+  // line_left_left(
+  //     bold("-m") + ",  " + bold("--min") + "      " + underline("INT"), 3,
+  //     "minimum block size: [" + std::to_string(MIN_MINP) + ", " +
+  //         std::to_string(MAX_MINP) + "]");
 
-  line_left_left(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
-  line("");
+  // line_left_left(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
+  // line("");
 
-  title("AUTHOR");
-  line_left_left("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
-  line("");
+  // title("AUTHOR");
+  // line_left_left("Morteza Hosseini", 0, "seyedmorteza@ua.pt");
+  // line("");
 
-  title("COPYRIGHT");
-  line("Copyright (C) " + DEV_YEARS +
-       ", IEETA, University of Aveiro. You may  ");
-  line("redistribute copies of this Free software under the terms of the");
-  line("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
-  line("There is NO WARRANTY, to the extent permitted by law.");
+  // title("COPYRIGHT");
+  // line("Copyright (C) " + DEV_YEARS +
+  //      ", IEETA, University of Aveiro. You may  ");
+  // line("redistribute copies of this Free software under the terms of the");
+  // line("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
+  // line("There is NO WARRANTY, to the extent permitted by law.");
 }
