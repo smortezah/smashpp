@@ -348,20 +348,15 @@ void Param::help() const {
 
   line(italic("Options"));
 
-  line_left_left(bold("-v") + ",  " + bold("--verbose"), 2, "more information         -> Default: no");
-
   line_left_left(
       bold("-l") + ",  " + bold("--level") + "  " + underline("INT"), 3,
       "level of compression: [" + std::to_string(MIN_LVL) + ", " +
-          std::to_string(MAX_LVL) + "]      -> " + std::to_string(level));
+          std::to_string(MAX_LVL) + "]. Def -> " + std::to_string(level));
 
   line_left_left(
       bold("-m") + ",  " + bold("--min") + "    " + underline("INT"), 3,
       "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
           std::to_string(MAX_SSIZE) + "] -> " + std::to_string(segSize));
-
-  line_left_left(bold("-nr") + ", " + bold("--no-redun"), 2,
-                 "do NOT compute self complexity    -> no");
 
   line_left_left(
       bold("-e") + ",  " + bold("--ent-n") + "  " + underline("FLOAT"), 3,
@@ -394,49 +389,29 @@ void Param::help() const {
 
   line_left_left(
       bold("-d") + ",  " + bold("--step") + "    " + underline("INT"), 3,
-      "sampling steps                 -> " + std::to_string(sampleStep));
+      "sampling steps                    -> " + std::to_string(sampleStep));
 
   line_left_left(
       bold("-th") + ", " + bold("--thresh") + "  " + underline("FLOAT"), 3,
       "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
-          string_format("%.1f", MAX_THRSH) + "]         -> " + string_format("%.1f", MAX_THRSH));
+          string_format("%.1f", MAX_THRSH) + "]            -> " +
+          string_format("%.1f", thresh));
 
   line_left_left(
       bold("-rb") + ", " + bold("--ref-beg-grd") + "  " + underline("INT"), 3,
-      "reference beginning guard");
+      "reference beginning guard         -> " + std::to_string(ref_beg_guard));
 
   line_left_left(
       bold("-re") + ", " + bold("--ref-end-grd") + "  " + underline("INT"), 3,
-      "reference ending guard");
+      "reference ending guard            -> " + std::to_string(ref_end_guard));
 
   line_left_left(
       bold("-tb") + ", " + bold("--tar-beg-grd") + "  " + underline("INT"), 3,
-      "target beginning guard");
+      "target beginning guard            -> " + std::to_string(tar_beg_guard));
 
   line_left_left(
       bold("-te") + ", " + bold("--tar-end-grd") + "  " + underline("INT"), 3,
-      "target ending guard");
-
-  line_left_left(bold("-sb") + ", " + bold("--save-seq"), 2,
-                 "save sequence (input: FASTA/FASTQ)");
-
-  line_left_left(bold("-sp") + ", " + bold("--save-profile"), 2,
-                 "save profile (*.prf)");
-
-  line_left_left(bold("-sf") + ", " + bold("--save-filter"), 2,
-                 "save filtered file (*.fil)");
-
-  line_left_left(bold("-sb") + ", " + bold("--save-seq"), 2,
-                 "save sequence (input: FASTA/FASTQ)");
-
-  line_left_left(bold("-ss") + ", " + bold("--save-segment"), 2,
-                 "save segmented files (*.s" + italic("i") + ")");
-
-  line_left_left(bold("-sa") + ", " + bold("--save-all"), 2,
-                 "save profile, filetered and");
-  line_left_left("", 0, "segmented files");
-
-  line_left_left(bold("-h") + ",  " + bold("--help"), 2, "usage guide");
+      "target ending guard               -> " + std::to_string(tar_end_guard));
 
   line(bold("-rm") + ", " + bold("--ref-model") + "  " + italic("k") + ",[" +
        italic("w") + "," + italic("d") + ",]ir," + italic("a") + "," +
@@ -474,6 +449,38 @@ void Param::help() const {
 
   line_right_left("(" + underline("INT") + ") ", 1,
                   italic("t") + ":  threshold (no. substitutions)");
+  line("");
+
+  line(italic("Flags"));
+
+  line_left_left(bold("-h") + ",  " + bold("--help"), 2,
+                 "usage guide                Default -> no");
+
+  line_left_left(bold("-v") + ",  " + bold("--verbose"), 2,
+                 "more information.                  -> no");
+
+  line_left_left(bold("-nr") + ", " + bold("--no-redun"), 2,
+                 "do NOT compute self complexity     -> no");
+
+  line_left_left(bold("-sb") + ", " + bold("--save-seq"), 2,
+                 "save sequence (input: FASTA/FASTQ) -> no");
+
+  line_left_left(bold("-sp") + ", " + bold("--save-profile"), 2,
+                 "save profile (*.prf)               -> no");
+
+  line_left_left(bold("-sf") + ", " + bold("--save-filter"), 2,
+                 "save filtered file (*.fil)         -> no");
+
+  line_left_left(bold("-sb") + ", " + bold("--save-seq"), 2,
+                 "save sequence (input: FASTA/FASTQ) -> no");
+
+  line_left_left(bold("-ss") + ", " + bold("--save-segment"), 2,
+                 "save segmented files (*.s" + italic("i") + ")        -> no");
+
+  line_left_left(bold("-sa") + ", " + bold("--save-all"), 2,
+                 "save profile, filetered and        -> no");
+  line_left_left("", 0, "segmented files");
+
   line("");
 
   title("AUTHOR");
