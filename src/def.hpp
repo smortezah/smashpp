@@ -204,10 +204,10 @@ static const std::vector<std::string> REFFREE_LEVEL{
 // Visualization
 static constexpr uint8_t PREC_VIZ{2};  // Precision
 static const std::string IMAGE{"map.svg"};
-static constexpr uint8_t LINK{1};
+// static constexpr uint8_t LINK{1};
 static constexpr uint8_t MIN_LINK{1};
 static constexpr uint8_t MAX_LINK{6};
-static constexpr uint8_t COLOR{0};
+// static constexpr uint8_t COLOR{0};
 static constexpr uint8_t MIN_COLOR{0};
 static constexpr uint8_t MAX_COLOR{2};
 static constexpr float OPAC{0.9f};
