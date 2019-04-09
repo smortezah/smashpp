@@ -73,19 +73,18 @@ class Param {
   std::vector<MMPar> refMs;
   std::vector<MMPar> tarMs;
 
-//todo
-  struct Guard {
-    int16_t round1_beg;
-    int16_t round1_end;
-    int16_t round2_beg;
-    int16_t round2_end;
+  struct TarGuard {
+    int16_t beg;
+    int16_t end;
+    TarGuard() : beg(0), end(0) {}
   };
-  std::unique_ptr<Guard> guard;
-
-  int16_t ref_beg_guard;
-  int16_t ref_end_guard;
-  int16_t tar_beg_guard;
-  int16_t tar_end_guard;
+  struct RefGuard {
+    int16_t beg;
+    int16_t end;
+    RefGuard() : beg(0), end(0) {}
+  };
+  std::unique_ptr<TarGuard> tar_guard;
+  std::unique_ptr<RefGuard> ref_guard;
 
   Param()  // Define Param::Param(){} in *.hpp => compile error
       : verbose(false),
@@ -115,10 +114,8 @@ class Param {
         segment(false),
         ID(0),
         noRedun(false),
-        ref_beg_guard(0),
-        ref_end_guard(0),
-        tar_beg_guard(0),
-        tar_end_guard(0) {}
+        tar_guard(std::make_unique<TarGuard>()),
+        ref_guard(std::make_unique<RefGuard>()) {}
 
   Param(std::shared_ptr<Param>);
   void parse(int, char**&);

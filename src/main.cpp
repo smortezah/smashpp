@@ -124,10 +124,10 @@ int main(int argc, char* argv[]) {
         models->compress(par1);
       } else if (par1->filter) {
         auto filter = std::make_unique<Filter>(par1);
-        filter->smooth_seg(par1);
+        filter->smooth_seg(par1, 1);
       } else if (par1->segment) {
         auto filter = std::make_unique<Filter>(par1);
-        filter->smooth_seg(par1);
+        filter->smooth_seg(par1, 1);
         filter->merge_extract_seg(par1->ID, par1->ref, par1->tar);
       } else {
         // unique_ptr cannot be copied
@@ -167,7 +167,7 @@ int main(int argc, char* argv[]) {
           if (!par1->manThresh)
             par1->thresh = static_cast<float>(models->aveEnt);
           auto filter = std::make_unique<Filter>(par1);
-          filter->smooth_seg(par1);
+          filter->smooth_seg(par1, 1);
           if (filter->nSegs == 0) {
             std::cerr << '\n';
             continue;
@@ -225,7 +225,7 @@ int main(int argc, char* argv[]) {
             if (!par2->manThresh)
               par2->thresh = static_cast<float>(models->aveEnt);
             filter = std::make_unique<Filter>(par2);
-            filter->smooth_seg(par2);
+            filter->smooth_seg(par2, 2);
             if (filter->nSegs == 0) {
               std::cerr << '\n';
               continue;
@@ -287,7 +287,7 @@ int main(int argc, char* argv[]) {
             //   if (!par3->manThresh)
             //     par3->thresh = static_cast<float>(models->aveEnt);
             //   filter = std::make_unique<Filter>(par3);
-            //   filter->smooth_seg(par3);
+            //   filter->smooth_seg(par3, 3);
             //   if (filter->nSegs == 0) {
             //     std::cerr << '\n';
             //     continue;

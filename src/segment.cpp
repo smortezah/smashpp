@@ -52,12 +52,7 @@ void Segment::partition_last(std::ofstream& posF) {
   }
 }
 
-void Segment::set_guards(uint8_t maxCtx, int16_t ref_beg_guard,
-                         int16_t ref_end_guard, int16_t tar_beg_guard,
-                         int16_t tar_end_guard) {
-  // beg_guard = static_cast<uint64_t>(maxCtx + PART_GUARD);
-  // end_guard = static_cast<uint64_t>(PART_GUARD);
-  // todo
-  beg_guard = static_cast<uint64_t>(maxCtx + ref_beg_guard);
-  end_guard = static_cast<uint64_t>(ref_end_guard);
-  }
+void Segment::set_guards(uint8_t maxCtx, int16_t beg, int16_t end) {
+  beg_guard = beg;  // beg_guard = maxCtx + beg;
+  end_guard = end;
+}

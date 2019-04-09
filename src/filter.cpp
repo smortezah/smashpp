@@ -137,16 +137,16 @@ inline void Filter::show_info(std::shared_ptr<Param>& par) const {
   botrule();
 }
 
-void Filter::smooth_seg(std::shared_ptr<Param>& par) {
+void Filter::smooth_seg(std::shared_ptr<Param>& par, uint8_t round_num) {
   message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (wtype == WType::rectangular) {
-    (par->saveFilter || par->saveAll) ? smooth_seg_rect<true>(par)
-                                      : smooth_seg_rect<false>(par);
+    (par->saveFilter || par->saveAll) ? smooth_seg_rect<true>(par, round_num)
+                                      : smooth_seg_rect<false>(par, round_num);
   } else {
     make_window();
-    (par->saveFilter || par->saveAll) ? smooth_seg_non_rect<true>(par)
-                                      : smooth_seg_non_rect<false>(par);
+    (par->saveFilter || par->saveAll) ? smooth_seg_non_rect<true>(par, round_num)
+                                      : smooth_seg_non_rect<false>(par, round_num);
   }
 
   if (!par->saveAll && !par->saveProfile)
@@ -313,7 +313,7 @@ inline void Filter::make_nuttall() {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_rect(std::shared_ptr<Param>& par) {
+inline void Filter::smooth_seg_rect(std::shared_ptr<Param>& par, uint8_t round_num) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
@@ -332,7 +332,11 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param>& par) {
     uint8_t maxCtx = 0;
     for (const auto& e : par->refMs)
       if (e.k > maxCtx) maxCtx = e.k;
-    seg->set_guards(maxCtx, par->ref_beg_guard, par->ref_end_guard, par->tar_beg_guard, par->tar_end_guard);
+
+    if (round_num == 2)
+      seg->set_guards(maxCtx, par->ref_guard->beg, par->ref_guard->end);
+    else if (round_num == 1 || round_num == 3)
+      seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
   }
   std::string num;
   auto sum{0.f};
@@ -407,7 +411,7 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param>& par) {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param>& par) {
+inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param>& par, uint8_t round_num) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
@@ -426,7 +430,11 @@ inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param>& par) {
     uint8_t maxCtx = 0;
     for (const auto& e : par->refMs)
       if (e.k > maxCtx) maxCtx = e.k;
-    seg->set_guards(maxCtx, par->ref_beg_guard, par->ref_end_guard, par->tar_beg_guard, par->tar_end_guard);
+
+    if (round_num == 2)
+      seg->set_guards(maxCtx, par->ref_guard->beg, par->ref_guard->end);
+    else if (round_num == 1 || round_num == 3)
+      seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
   }
   const auto winBeg{std::begin(window)};
   const auto winEnd{std::end(window)};
