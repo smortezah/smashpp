@@ -12,13 +12,13 @@
 #include <chrono>
 #include <iomanip>  // setw, setprecision
 #include <vector>
-#include <stdint.h>
-#define __STDC_FORMAT_MACROS
+// #include <stdint.h>
+// #define __STDC_FORMAT_MACROS
 
 namespace smashpp {
 // Version
 static const std::string SMASHPP{"SMASHPP"};
-static const std::string VERSION{"19.03"};
+static const std::string VERSION{"19.04"};
 static const std::string DEV_YEARS{"2018-2019"};
 
 // Typedef
