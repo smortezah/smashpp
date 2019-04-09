@@ -51,6 +51,12 @@ Param::Param(std::shared_ptr<Param> par) {
   noRedun = par->noRedun;
   refMs = par->refMs;
   tarMs = par->tarMs;
+  //todo
+  guard->round1_beg = par->guard->round1_beg;
+  guard->round1_end = par->guard->round1_end;
+  guard->round2_beg = par->guard->round2_beg;
+  guard->round2_end = par->guard->round2_end;
+
   ref_beg_guard = par->ref_beg_guard;
   ref_end_guard = par->ref_end_guard;
   tar_beg_guard = par->tar_beg_guard;
@@ -68,15 +74,8 @@ void Param::parse(int argc, char**& argv) {
   for (int i = 0; i != argc; ++i)
     vArgs.push_back(static_cast<std::string>(argv[i]));
 
-  auto trig_inserted = [](auto iter, std::string short_name,
-                          std::string long_name) -> bool {
-    return (*iter == "-" + short_name || *iter == "--" + long_name);
-  };
-
-  auto option_inserted = [&](auto iter, std::string short_name,
-                             std::string long_name) -> bool {
-    return (iter + 1 != std::end(vArgs)) &&
-           trig_inserted(iter, short_name, long_name);
+  auto option_inserted = [&](auto iter, std::string name) -> bool {
+    return (iter + 1 <= std::end(vArgs)) && (*iter == name);
   };
 
   bool man_rm{false};
@@ -85,7 +84,7 @@ void Param::parse(int argc, char**& argv) {
   std::string tModelsPars;
 
   for (auto i = std::begin(vArgs); i != std::end(vArgs); ++i) {
-    if (*i == "-r" || *i == "--ref") {
+    if (*i == "-r") {
       if (i + 1 != std::end(vArgs)) {
         ref = *++i;
         check_file(ref);
@@ -93,7 +92,7 @@ void Param::parse(int argc, char**& argv) {
       } else {
         error("reference file not specified. Use \"-r <fileName>\".");
       }
-    } else if (*i == "-t" || *i == "--tar") {
+    } else if (*i == "-t") {
       if (i + 1 != std::end(vArgs)) {
         tar = *++i;
         check_file(tar);
@@ -101,47 +100,47 @@ void Param::parse(int argc, char**& argv) {
       } else {
         error("target file not specified. Use \"-t <fileName>\".");
       }
-    } else if (option_inserted(i, "l", "level")) {
+    } else if (option_inserted(i, "-l")) {
       level = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LVL, MAX_LVL, level, "Level", "[]", "default",
-          Problem::warning);
+          MIN_LVL, MAX_LVL, level, "Level", "[]", "default", Problem::warning);
       range->assert(level);
-    } else if (option_inserted(i, "m", "min")) {
+    } else if (option_inserted(i, "-m")) {
       manSegSize = true;
       segSize = std::stoul(*++i);
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_SSIZE, MAX_SSIZE, segSize, "Minimum segment size", "[]", "default",
-          Problem::warning);
+          MIN_SSIZE, MAX_SSIZE, segSize, "Minimum segment size", "[]",
+          "default", Problem::warning);
       range->assert(segSize);
-    } else if (option_inserted(i, "rm", "ref-model")) {
+    } else if (option_inserted(i, "-rm")) {
       man_rm = true;
       rModelsPars = *++i;
       if (rModelsPars.front() == '-' || rModelsPars.empty())
         error("incorrect reference model parameters.");
       else
         parseModelsPars(std::begin(rModelsPars), std::end(rModelsPars), refMs);
-    } else if (option_inserted(i, "tm", "tar-model")) {
+    } else if (option_inserted(i, "-tm")) {
       man_tm = true;
       tModelsPars = *++i;
       if (tModelsPars.front() == '-' || tModelsPars.empty())
         error("incorrect target model parameters.");
       else
         parseModelsPars(std::begin(tModelsPars), std::end(tModelsPars), tarMs);
-    } else if (option_inserted(i, "w", "wsize")) {
+    } else if (option_inserted(i, "-w")) {
       manWSize = true;
       wsize = static_cast<uint32_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_WS, MAX_WS, wsize, "Window size", "[]", "default", Problem::warning);
+          MIN_WS, MAX_WS, wsize, "Window size", "[]", "default",
+          Problem::warning);
       range->assert(wsize);
-    } else if (option_inserted(i, "th", "thresh")) {
+    } else if (option_inserted(i, "-th")) {
       manThresh = true;
       thresh = std::stof(*++i);
       auto range = std::make_unique<ValRange<float>>(
           MIN_THRSH, MAX_THRSH, thresh, "Threshold", "(]", "default",
           Problem::warning);
       range->assert(thresh);
-    } else if (option_inserted(i, "wt", "wtype")) {
+    } else if (option_inserted(i, "-wt")) {
       const auto is_win_type = [](std::string t) {
         return (t == "0" || t == "rectangular" || t == "1" || t == "hamming" ||
                 t == "2" || t == "hann" || t == "3" || t == "blackman" ||
@@ -153,22 +152,22 @@ void Param::parse(int argc, char**& argv) {
           SET_WTYPE, WT, "Window type", "default", Problem::warning,
           win_type(cmd), is_win_type(cmd));
       set->assert(wtype);
-    } else if (option_inserted(i, "e", "ent-n")) {
+    } else if (option_inserted(i, "-e")) {
       entropyN = static_cast<prc_t>(std::stod(*++i));
       auto range = std::make_unique<ValRange<prc_t>>(
-          MIN_ENTR_N, MAX_ENTR_N, entropyN, "Entropy of N bases", "[]", "default",
-          Problem::warning);
+          MIN_ENTR_N, MAX_ENTR_N, entropyN, "Entropy of N bases", "[]",
+          "default", Problem::warning);
       range->assert(entropyN);
-    } else if (option_inserted(i, "n", "nthr")) {
+    } else if (option_inserted(i, "-n")) {
       nthr = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_THRD, MAX_THRD, nthr, "Number of threads", "[]", "default",
           Problem::warning);
       range->assert(nthr);
-    } else if (option_inserted(i, "d", "step")) {
+    } else if (option_inserted(i, "-d")) {
       sampleStep = std::stoull(*++i);
       if (sampleStep == 0) sampleStep = 1ull;
-    } else if (option_inserted(i, "fs", "filter-scale")) {
+    } else if (option_inserted(i, "-fs")) {
       manFilterScale = true;
       const auto is_filter_scale = [](std::string s) {
         return (s == "S" || s == "small" || s == "M" || s == "medium" ||
@@ -179,45 +178,45 @@ void Param::parse(int argc, char**& argv) {
           SET_FSCALE, filterScale, "Filter scale", "default", Problem::warning,
           filter_scale(cmd), is_filter_scale(cmd));
       set->assert(filterScale);
-    } else if (option_inserted(i, "rb", "ref-beg-grd")) {
+    } else if (option_inserted(i, "-rb")) {
       ref_beg_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard",
           "[]", "default", Problem::warning);
       range->assert(ref_beg_guard);
-    } else if (option_inserted(i, "re", "ref-end-grd")) {
+    } else if (option_inserted(i, "-re")) {
       ref_end_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference ending guard",
           "[]", "default", Problem::warning);
       range->assert(ref_end_guard);
-    } else if (option_inserted(i, "tb", "tar-beg-grd")) {
+    } else if (option_inserted(i, "-tb")) {
       tar_beg_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target beginning guard",
           "[]", "default", Problem::warning);
       range->assert(tar_beg_guard);
-    } else if (option_inserted(i, "te", "tar-end-grd")) {
+    } else if (option_inserted(i, "-te")) {
       tar_end_guard = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target ending guard", "[]",
           "default", Problem::warning);
       range->assert(tar_end_guard);
-    } else if (trig_inserted(i, "nr", "no-redun")) {
+    } else if (*i == "-nr") {
       noRedun = true;
-    } else if (trig_inserted(i, "sb", "save-seq")) {
+    } else if (*i == "-sb") {
       saveSeq = true;
-    } else if (trig_inserted(i, "sp", "save-profile")) {
+    } else if (*i == "-sp") {
       saveProfile = true;
-    } else if (trig_inserted(i, "sf", "save-fitler")) {
+    } else if (*i == "-sf") {
       saveFilter = true;
-    } else if (trig_inserted(i, "ss", "save-segment")) {
+    } else if (*i == "-ss") {
       saveSegment = true;
-    } else if (trig_inserted(i, "sa", "save-all")) {
+    } else if (*i == "-sa") {
       saveAll = true;
     } else if (*i == "-compress") {
       compress = true;
@@ -225,10 +224,10 @@ void Param::parse(int argc, char**& argv) {
       filter = true;
     } else if (*i == "-segment") {
       segment = true;
-    } else if (trig_inserted(i, "h", "help")) {
+    } else if (*i == "-h") {
       help();
       throw EXIT_SUCCESS;
-    } else if (trig_inserted(i, "v", "verbose")) {
+    } else if (*i == "-v") {
       verbose = true;
     }
   }
