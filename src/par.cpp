@@ -51,16 +51,12 @@ Param::Param(std::shared_ptr<Param> par) {
   noRedun = par->noRedun;
   refMs = par->refMs;
   tarMs = par->tarMs;
-  //todo
-  guard->round1_beg = par->guard->round1_beg;
-  guard->round1_end = par->guard->round1_end;
-  guard->round2_beg = par->guard->round2_beg;
-  guard->round2_end = par->guard->round2_end;
-
-  ref_beg_guard = par->ref_beg_guard;
-  ref_end_guard = par->ref_end_guard;
-  tar_beg_guard = par->tar_beg_guard;
-  tar_end_guard = par->tar_end_guard;
+  tar_guard = std::make_unique<TarGuard>();
+  ref_guard = std::make_unique<RefGuard>();
+  tar_guard->beg = par->tar_guard->beg;
+  tar_guard->end = par->tar_guard->end;
+  ref_guard->beg = par->ref_guard->beg;
+  ref_guard->end = par->ref_guard->end;
 }
 
 void Param::parse(int argc, char**& argv) {
@@ -179,33 +175,37 @@ void Param::parse(int argc, char**& argv) {
           filter_scale(cmd), is_filter_scale(cmd));
       set->assert(filterScale);
     } else if (option_inserted(i, "-rb")) {
-      ref_beg_guard = static_cast<int16_t>(std::stoi(*++i));
+      // ref_beg_guard = static_cast<int16_t>(std::stoi(*++i));
+      ref_guard->beg = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard",
           "[]", "default", Problem::warning);
-      range->assert(ref_beg_guard);
+      range->assert(ref_guard->beg);
     } else if (option_inserted(i, "-re")) {
-      ref_end_guard = static_cast<int16_t>(std::stoi(*++i));
+      // ref_end_guard = static_cast<int16_t>(std::stoi(*++i));
+      ref_guard->end = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference ending guard",
           "[]", "default", Problem::warning);
-      range->assert(ref_end_guard);
+      range->assert(ref_guard->end);
     } else if (option_inserted(i, "-tb")) {
-      tar_beg_guard = static_cast<int16_t>(std::stoi(*++i));
+      // tar_beg_guard = static_cast<int16_t>(std::stoi(*++i));
+      tar_guard->beg = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target beginning guard",
           "[]", "default", Problem::warning);
-      range->assert(tar_beg_guard);
+      range->assert(tar_guard->beg);
     } else if (option_inserted(i, "-te")) {
-      tar_end_guard = static_cast<int16_t>(std::stoi(*++i));
+      // tar_end_guard = static_cast<int16_t>(std::stoi(*++i));
+      tar_guard->end = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target ending guard", "[]",
           "default", Problem::warning);
-      range->assert(tar_end_guard);
+      range->assert(tar_guard->end);
     } else if (*i == "-nr") {
       noRedun = true;
     } else if (*i == "-sb") {
@@ -378,16 +378,16 @@ void Param::help() const {
                 "->", string_format("%.1f", thresh));
 
   print_aligned("-rb", "INT", "=", "reference beginning guard", "->",
-                std::to_string(ref_beg_guard));
+                std::to_string(ref_guard->beg));
 
   print_aligned("-re", "INT", "=", "reference ending guard", "->",
-                std::to_string(ref_end_guard));
+                std::to_string(ref_guard->end));
 
   print_aligned("-tb", "INT", "=", "target beginning guard", "->",
-                std::to_string(tar_beg_guard));
+                std::to_string(tar_guard->beg));
 
   print_aligned("-te", "INT", "=", "target ending guard", "->",
-                std::to_string(tar_end_guard));
+                std::to_string(tar_guard->end));
 
   print_line(bold("-rm") + " " + italic("k") + ",[" + italic("w") + "," +
              italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +

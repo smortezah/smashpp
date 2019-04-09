@@ -25,8 +25,6 @@ class Segment {
   uint64_t totalSize;
   int16_t beg_guard;
   int16_t end_guard;
-  // uint64_t beg_guard;
-  // uint64_t end_guard;
 
   Segment()
       : begun(false),
@@ -41,7 +39,7 @@ class Segment {
 
   void partition(std::ofstream&, float);
   void partition_last(std::ofstream&);
-  void set_guards(uint8_t, int16_t, int16_t, int16_t, int16_t);
+  void set_guards(uint8_t, int16_t, int16_t);
 };
 }  // namespace smashpp
 

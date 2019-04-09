@@ -26,3 +26,5 @@ t
 r-t.pos
 gprof2dot.py
 smashpp
+0.*
+RefS.TarS.pos

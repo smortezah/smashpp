@@ -14,7 +14,7 @@ class Filter {
   uint64_t nSegs;
 
   explicit Filter(std::shared_ptr<Param>&);
-  void smooth_seg(std::shared_ptr<Param>&);
+  void smooth_seg(std::shared_ptr<Param>&, uint8_t);
   void merge_extract_seg(uint32_t, std::string, std::string) const;
   void aggregate_mid_pos(uint32_t, std::string, std::string) const;
   void aggregate_final_pos(std::string, std::string) const;
@@ -41,9 +41,9 @@ class Filter {
   void make_sine();
   void make_nuttall();
   template <bool SaveFilter>
-  void smooth_seg_rect(std::shared_ptr<Param>&);
+  void smooth_seg_rect(std::shared_ptr<Param>&, uint8_t);
   template <bool SaveFilter>
-  void smooth_seg_non_rect(std::shared_ptr<Param>&);
+  void smooth_seg_non_rect(std::shared_ptr<Param>&, uint8_t);
   // bool is_mergable (const Position&, const Position&) const;
   void move_mid_to_pos_file(std::string, std::ofstream&) const;
 
