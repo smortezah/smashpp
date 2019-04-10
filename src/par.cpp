@@ -37,7 +37,20 @@ void Param::parse(int argc, char**& argv) {
   std::string tModelsPars;
 
   for (auto i = std::begin(vArgs); i != std::end(vArgs); ++i) {
-    if (*i == "-r") {
+    if (*i == "-h") {
+      help();
+      throw EXIT_SUCCESS;
+    } else if (*i == "-v") {
+      verbose = true;
+    } else if (*i == "--version") {
+      std::cerr << "Smash++ " << VERSION << "\n"
+                << "Maintained by Morteza Hosseini (seyedmorteza@ua.pt)"
+                << "\n"
+                << "Copyright (C) " << DEV_YEARS
+                << " IEETA, University of Aveiro."
+                << "\n";
+      throw EXIT_SUCCESS;
+    } else if (*i == "-r") {
       if (i + 1 != std::end(vArgs)) {
         ref = *++i;
         check_file(ref);
@@ -181,11 +194,6 @@ void Param::parse(int argc, char**& argv) {
       filter = true;
     } else if (*i == "-segment") {
       segment = true;
-    } else if (*i == "-h") {
-      help();
-      throw EXIT_SUCCESS;
-    } else if (*i == "-v") {
-      verbose = true;
     }
   }
 
@@ -292,7 +300,6 @@ void Param::help() const {
   print_aligned("-t", "FILE", "=", "target file    (Seq/FASTA/FASTQ)");
   std::cerr << '\n';
 
-  // print_title("Options");
   print_line(italic("Optional")+":");
 
   print_aligned("-l", "INT", "=",
@@ -337,17 +344,55 @@ void Param::help() const {
                     string_format("%.1f", MAX_THRSH) + "]",
                 "->", string_format("%.1f", thresh));
 
-  print_aligned("-rb", "INT", "=", "reference beginning guard", "->",
-                std::to_string(ref_guard->beg));
+  print_aligned(
+      "-rb", "INT", "=",
+      "ref beginning guard: [" +
+          std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::min()) +
+          ", " +
+          std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::max()) +
+          "]",
+      "->", std::to_string(ref_guard->beg));
 
-  print_aligned("-re", "INT", "=", "reference ending guard", "->",
-                std::to_string(ref_guard->end));
+  print_aligned(
+      "-re", "INT", "=",
+      "ref ending guard: [" +
+          std::to_string(std::numeric_limits<decltype(ref_guard->end)>::min()) +
+          ", " +
+          std::to_string(std::numeric_limits<decltype(ref_guard->end)>::max()) +
+          "]",
+      "->", std::to_string(ref_guard->end));
 
-  print_aligned("-tb", "INT", "=", "target beginning guard", "->",
-                std::to_string(tar_guard->beg));
+  print_aligned(
+      "-tb", "INT", "=",
+      "tar beginning guard: [" +
+          std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::min()) +
+          ", " +
+          std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::max()) +
+          "]",
+      "->", std::to_string(tar_guard->beg));
 
-  print_aligned("-te", "INT", "=", "target ending guard", "->",
-                std::to_string(tar_guard->end));
+  print_aligned(
+      "-te", "INT", "=",
+      "tar ending guard: [" +
+          std::to_string(std::numeric_limits<decltype(tar_guard->end)>::min()) +
+          ", " +
+          std::to_string(std::numeric_limits<decltype(tar_guard->end)>::max()) +
+          "]",
+      "->", std::to_string(tar_guard->end));
+
+  print_aligned("-nr", "", "=", "do NOT compute self complexity", "->", "no");
+
+  print_aligned("-sb", "", "=", "save sequence (input: FASTA/FASTQ)", "->",
+                "no");
+
+  print_aligned("-sp", "", "=", "save profile (*.prf)", "->", "no");
+
+  print_aligned("-sf", "", "=", "save filtered file (*.fil)", "->", "no");
+
+  print_aligned("-ss", "", "=", "save segmented files (*.s[i])", "->", "no");
+
+  print_aligned("-sa", "", "=", "save profile, filetered and", "->", "no");
+  print_aligned("", "", "", "segmented files");
 
   print_line(bold("-rm") + " " + italic("k") + ",[" + italic("w") + "," +
              italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +
@@ -379,27 +424,13 @@ void Param::help() const {
 
   print_aligned_right_left("", "INT", "",
                            italic("t") + ":  threshold (no. substitutions)");
-  std::cerr << '\n';
 
-  print_title("Flags");
+  print_aligned("-h", "", "=", "usage guide");
 
-  print_aligned("-h", "", "=", "usage guide", "->", "no");
+  print_aligned("-v", "", "=", "more information");
 
-  print_aligned("-v", "", "=", "more information", "->", "no");
+  print_line(bold("--version") + "          = show version");
 
-  print_aligned("-nr", "", "=", "do NOT compute self complexity", "->", "no");
-
-  print_aligned("-sb", "", "=", "save sequence (input: FASTA/FASTQ)", "->",
-                "no");
-
-  print_aligned("-sp", "", "=", "save profile (*.prf)", "->", "no");
-
-  print_aligned("-sf", "", "=", "save filtered file (*.fil)", "->", "no");
-
-  print_aligned("-ss", "", "=", "save segmented files (*.s[i])", "->", "no");
-
-  print_aligned("-sa", "", "=", "save profile, filetered and", "->", "no");
-  print_aligned("", "", "", "segmented files");
   std::cerr << '\n';
 
   print_title("AUTHOR");
@@ -509,9 +540,23 @@ void VizParam::parse(int argc, char**& argv) {
     vArgs.push_back(static_cast<std::string>(argv[i]));
 
   for (auto i = std::begin(vArgs); i != std::end(vArgs); ++i) {
-    if ((*i == "-o" || *i == "--out") && i + 1 != std::end(vArgs))
+    if (*i == "-h" || *i == "--help") {
+      help();
+      throw EXIT_SUCCESS;
+    } else if (*i == "-v" || *i == "--verbose") {
+      verbose = true;
+    } else if (*i == "--version") {
+      std::cerr << "Smash++ " << VERSION << "\n"
+                << "Maintained by Morteza Hosseini (seyedmorteza@ua.pt)"
+                << "\n"
+                << "Copyright (C) " << DEV_YEARS
+                << " IEETA, University of Aveiro."
+                << "\n";
+      throw EXIT_SUCCESS;
+    } else if ((*i == "-o" || *i == "--out") && i + 1 != std::end(vArgs)) {
       image = *++i;
-    else if ((*i == "-rn" || *i == "--ref-name") && i + 1 != std::end(vArgs)) {
+    } else if ((*i == "-rn" || *i == "--ref-name") &&
+               i + 1 != std::end(vArgs)) {
       refName = *++i;
     } else if ((*i == "-tn" || *i == "--tar-name") &&
                i + 1 != std::end(vArgs)) {
@@ -576,38 +621,35 @@ void VizParam::parse(int argc, char**& argv) {
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SPC, MAX_SPC, SPC, "Space", "[]", "default", Problem::warning);
       range->assert(space);
-    } else if (*i == "-nn" || *i == "--no-nrc")
+    } else if (*i == "-nn" || *i == "--no-nrc") {
       showNRC = false;
-    else if (*i == "-vv" || *i == "--vertical")
+    } else if (*i == "-vv" || *i == "--vertical") {
       vertical = true;
-    else if (*i == "-nr" || *i == "--no-redun")
+    } else if (*i == "-nr" || *i == "--no-redun") {
       showRedun = false;
-    else if (*i == "-ni" || *i == "--no-inv")
+    } else if (*i == "-ni" || *i == "--no-inv") {
       inverse = false;
-    else if (*i == "-ng" || *i == "--no-reg")
+    } else if (*i == "-ng" || *i == "--no-reg") {
       regular = false;
-    else if (*i == "-v" || *i == "--verbose")
-      verbose = true;
-    else if (*i == "-h" || *i == "--help") {
-      help();
-      throw EXIT_SUCCESS;
     }
   }
   posFile = vArgs.back();
 }
 
 void VizParam::help() const {
-  print_title("Usage");
+  print_title("SYNOPSIS");
   print_line("./smashpp -viz [OPTIONS]  -o <SVG-FILE>  <POS-FILE>");
   std::cerr << '\n';
 
-  print_title("Mandatory arguments");
+  print_title("OPTIONS");
+
+  print_line(italic("Required")+":");
 
   print_aligned("<POS-FILE>", "= position file, generated by");
   print_aligned("", "", "", "Smash++ tool (*.pos)");
   std::cerr << '\n';
 
-  print_title("Options");
+  print_line(italic("Optional")+":");
 
   print_aligned("-o", "SVG-FILE", "=", "output image name (*.svg)", "->",
                 "map.svg");
@@ -670,13 +712,6 @@ void VizParam::help() const {
                 "minimum block size: [" + std::to_string(MIN_MINP) + ", " +
                     std::to_string(MAX_MINP) + "]",
                 "->", std::to_string(min));
-  std::cerr << '\n';
-
-  print_title("Flags");
-
-  print_aligned("-h", "", "=", "usage guide", "->", "no");
-
-  print_aligned("-v", "", "=", "more information", "->", "no");
 
   print_aligned("-vv", "", "=", "vertical view", "->", "no");
 
@@ -688,6 +723,13 @@ void VizParam::help() const {
   print_aligned("-ni", "", "=", "do NOT show inverse maps", "->", "no");
 
   print_aligned("-ng", "", "=", "do NOT show regular maps", "->", "no");
+  
+  print_aligned("-h", "", "=", "usage guide");
+
+  print_aligned("-v", "", "=", "more information");
+
+  print_line(bold("--version") + "          = show version");
+
   std::cerr << '\n';
 
   print_title("AUTHOR");
