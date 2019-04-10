@@ -12,12 +12,12 @@
 #include "naming.hpp"
 using namespace smashpp;
 
-Filter::Filter(std::shared_ptr<Param>& par) : wtype(par->wtype) {
+Filter::Filter(std::unique_ptr<Param>& par) : wtype(par->wtype) {
   set_wsize(par);
   if ((par->filter || par->segment) && par->verbose) show_info(par);
 }
 
-inline void Filter::set_wsize(std::shared_ptr<Param>& par) {
+inline void Filter::set_wsize(std::unique_ptr<Param>& par) {
   if (par->manFilterScale) {
     const auto biggest = std::min(file_size(par->tar), file_size(par->ref));
     const auto lg = std::log10(biggest / par->sampleStep);
@@ -39,7 +39,7 @@ inline void Filter::set_wsize(std::shared_ptr<Param>& par) {
   window.resize(wsize);
 }
 
-inline void Filter::show_info(std::shared_ptr<Param>& par) const {
+inline void Filter::show_info(std::unique_ptr<Param>& par) const {
   constexpr uint8_t lblWidth = 19;
   constexpr uint8_t colWidth = 8;
   constexpr uint8_t tblWidth =
@@ -137,7 +137,7 @@ inline void Filter::show_info(std::shared_ptr<Param>& par) const {
   botrule();
 }
 
-void Filter::smooth_seg(std::shared_ptr<Param>& par, uint8_t round_num) {
+void Filter::smooth_seg(std::unique_ptr<Param>& par, uint8_t round_num) {
   message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (wtype == WType::rectangular) {
@@ -314,7 +314,7 @@ inline void Filter::make_nuttall() {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_rect(std::shared_ptr<Param>& par, uint8_t round_num) {
+inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par, uint8_t round_num) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
@@ -412,7 +412,7 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param>& par, uint8_t round_n
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param>& par,
+inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par,
                                         uint8_t round_num) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
