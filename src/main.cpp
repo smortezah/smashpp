@@ -105,6 +105,66 @@
 #include "vizpaint.hpp"
 using namespace smashpp;
 
+void run_regular(std::unique_ptr<Param>& par) {
+  // run_regular_round1
+  // run_regular_round2
+  // aggr
+  // remove temp
+}
+
+void run_regular_round1(std::unique_ptr<Param>& par) {
+  std::cerr << bold("====[ REGULAR MODE ]==================================\n");
+  auto timesRunning = 0;
+
+  par->ID = timesRunning;
+  par->refName = file_name(par->ref);
+  par->tarName = file_name(par->tar);
+
+  auto models = std::make_unique<FCM>(par);
+  // Make all IRs consistent
+  for (auto& e : models->rMs) {
+    e.ir = timesRunning;
+    if (e.child) e.child->ir = timesRunning;
+  }
+  for (auto& e : models->tMs) {
+    e.ir = timesRunning;
+    if (e.child) e.child->ir = timesRunning;
+  }
+
+  // // Build models and Compress
+  // models->store(par);
+  // models->compress(par);
+
+  // // Filter and segment
+  // if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
+  // auto filter = std::make_unique<Filter>(par);
+  // filter->smooth_seg(par, 1);
+  // uint64_t seg_num_round1 = filter->nSegs;
+  // if (seg_num_round1 == 0) {
+  //   std::cerr << '\n';
+  //   continue;
+  // }
+  // filter->merge_extract_seg(par->ID, ref_round1, tar_round1);
+  // const auto seg_tar1_name{
+  //     gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
+
+  // // Ref-free compress
+  // if (!par->noRedun) {
+  //   std::cerr << ". . . . . . . . . . . . . . . . . . . "
+  //                ". . . . . . . . . .\n>>> "
+  //             << italic("Reference-free compression of the segment")
+  //             << italic(seg_num_round1 == 1 ? "" : "s") << '\n';
+
+  //   models->selfEnt.reserve(seg_num_round1);
+  //   for (uint64_t i = 0; i != seg_num_round1; ++i) {
+  //     par->seq = seg_tar1_name + std::to_string(i);
+  //     models->self_compress(par, i);
+  //   }
+  // }
+  // models->aggregate_slf(par);
+}
+
+
 int main(int argc, char* argv[]) {
   try {
     const auto t0{now()};
@@ -115,7 +175,7 @@ int main(int argc, char* argv[]) {
       auto paint = std::make_unique<VizPaint>();
       paint->plot(vizpar);
     } else {
-      auto par = std::make_shared<Param>();
+      auto par = std::make_unique<Param>();
       par->parse(argc, argv);  // Parse the command
 
       if (par->compress) {
@@ -164,6 +224,7 @@ int main(int argc, char* argv[]) {
           models->store(par);
           models->compress(par);
 
+// Filter and segment
           if (!par->manThresh)
             par->thresh = static_cast<float>(models->aveEnt);
           auto filter = std::make_unique<Filter>(par);

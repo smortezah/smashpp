@@ -25,11 +25,11 @@ class FCM {  // Finite-context models
   uint64_t tarSegID;
   std::string tarSegMsg;
 
-  explicit FCM(std::shared_ptr<Param>&);
-  void store(std::shared_ptr<Param>&);  // Build FCM
-  void compress(std::shared_ptr<Param>&);
-  void self_compress(std::shared_ptr<Param>&, uint64_t);
-  void aggregate_slf(std::shared_ptr<Param>&) const;
+  explicit FCM(std::unique_ptr<Param>&);
+  void store(std::unique_ptr<Param>&);  // Build FCM
+  void compress(std::unique_ptr<Param>&);
+  void self_compress(std::unique_ptr<Param>&, uint64_t);
+  void aggregate_slf(std::unique_ptr<Param>&) const;
 
  private:
   std::vector<std::unique_ptr<Table64>> tbl64;
@@ -43,17 +43,17 @@ class FCM {  // Finite-context models
 
   void set_cont(std::vector<MMPar>&);
   void show_info(
-      std::shared_ptr<Param>&) const;  // Show inputs info on the screen
+      std::unique_ptr<Param>&) const;  // Show inputs info on the screen
   void alloc_model();                 // Allocate memory to models
 
-  void store_1(std::shared_ptr<Param>&);  // Build models one thread
-  void store_n(std::shared_ptr<Param>&);  // Build models multiple threads
+  void store_1(std::unique_ptr<Param>&);  // Build models one thread
+  void store_n(std::unique_ptr<Param>&);  // Build models multiple threads
   template <typename Mask, typename ContIter>
   void store_impl(std::string, Mask, ContIter);  // Fill data struct
 
   template <typename ContIter>
-  void compress_1(std::shared_ptr<Param>&, ContIter);  // Compress with 1 model
-  void compress_n(std::shared_ptr<Param>&);            // Compress with n Models
+  void compress_1(std::unique_ptr<Param>&, ContIter);  // Compress with 1 model
+  void compress_n(std::unique_ptr<Param>&);            // Compress with n Models
   template <typename ContIter>
   void compress_n_parent(std::unique_ptr<CompressPar>&, ContIter,
                          uint8_t) const;
@@ -62,8 +62,8 @@ class FCM {  // Finite-context models
 
   void self_compress_alloc();
   template <typename ContIter>
-  void self_compress_1(std::shared_ptr<Param>&, ContIter, uint64_t);
-  void self_compress_n(std::shared_ptr<Param>&, uint64_t);
+  void self_compress_1(std::unique_ptr<Param>&, ContIter, uint64_t);
+  void self_compress_n(std::unique_ptr<Param>&, uint64_t);
   template <typename ContIter>
   void self_compress_n_parent(std::unique_ptr<CompressPar>&, ContIter, uint8_t,
                               uint64_t&) const;
