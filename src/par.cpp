@@ -302,6 +302,9 @@ void Param::help() const {
 
   print_line(italic("Optional")+":");
 
+  auto row = std::make_unique<Row>();
+  
+
   print_aligned("-l", "INT", "=",
                 "level of compression: [" + std::to_string(MIN_LVL) + ", " +
                     std::to_string(MAX_LVL) + "]. Default",
