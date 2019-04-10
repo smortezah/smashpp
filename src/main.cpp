@@ -133,11 +133,9 @@ int main(int argc, char* argv[]) {
         std::string ref_round1 = par->ref;
         std::string tar_round1 = par->tar;
         std::string ref_round2, tar_round2;
-        std::string ref_round3, tar_round3;
+        // std::string ref_round3, tar_round3;
 
         for (uint8_t timesRunning = 0; timesRunning != 2; ++timesRunning) {
-          uint64_t filter_seg_num_round1=0;
-
           if (timesRunning == 0)
             std::cerr << bold(
                 "====[ REGULAR MODE ]==================================\n");
@@ -148,8 +146,10 @@ int main(int argc, char* argv[]) {
           par->ID = timesRunning;
 
           // Round 1
-          par->refName = file_name(ref_round1);
-          par->tarName = file_name(tar_round1);
+          par->ref = ref_round1;
+          par->tar = tar_round1;
+          par->refName = file_name(par->ref);
+          par->tarName = file_name(par->tar);
 
           auto models = std::make_unique<FCM>(par);
           // Make all IRs consistent
@@ -170,8 +170,8 @@ int main(int argc, char* argv[]) {
             par->thresh = static_cast<float>(models->aveEnt);
           auto filter = std::make_unique<Filter>(par);
           filter->smooth_seg(par, 1);
-          filter_seg_num_round1 = filter->nSegs;
-          if (filter_seg_num_round1 == 0) {
+          uint64_t seg_num_round1 = filter->nSegs;
+          if (seg_num_round1 == 0) {
             std::cerr << '\n';
             continue;
           }
@@ -184,10 +184,10 @@ int main(int argc, char* argv[]) {
             std::cerr << ". . . . . . . . . . . . . . . . . . . "
                          ". . . . . . . . . .\n>>> "
                       << italic("Reference-free compression of the segment")
-                      << italic(filter_seg_num_round1 == 1 ? "" : "s") << '\n';
+                      << italic(seg_num_round1 == 1 ? "" : "s") << '\n';
 
-            models->selfEnt.reserve(filter_seg_num_round1);
-            for (uint64_t i = 0; i != filter_seg_num_round1; ++i) {
+            models->selfEnt.reserve(seg_num_round1);
+            for (uint64_t i = 0; i != seg_num_round1; ++i) {
               par->seq = seg_tar1_name + std::to_string(i);
               models->self_compress(par, i);
             }
@@ -199,19 +199,16 @@ int main(int argc, char* argv[]) {
           std::cerr << bold(
               underline("\nBuilding reference map for each target pattern\n"));
 
-          par->tar = ref_round1;
+          par->tar = tar_round2 = ref_round1;
           par->tarName = file_name(par->tar);
-          tar_round2 = par->tar;
-          const auto seg_ref2_num{filter_seg_num_round1};
+          const auto seg_ref2_num{seg_num_round1};
           //todo movazebe filter->nSegs bash
 
           for (uint64_t seg_ref2_idx = 0; seg_ref2_idx != seg_ref2_num;
                ++seg_ref2_idx) {
-            uint64_t filter_seg_num_round2 = 0;
-
-            par->ref = seg_tar1_name + std::to_string(seg_ref2_idx);
-            par->refName = file_name(par->ref);         
-            ref_round2 = par->ref;
+            par->ref = ref_round2 =
+                seg_tar1_name + std::to_string(seg_ref2_idx);
+            par->refName = file_name(par->ref);
             // Make all IRs consistent
             models = std::make_unique<FCM>(par);
             for (auto& e : models->rMs) {
@@ -224,7 +221,7 @@ int main(int argc, char* argv[]) {
             }
 
             // Build models and Compress
-            models->tarSegMsg = par->ref + "-segment-";
+            models->tarSegMsg = ref_round2 + "-segment-";
             models->tarSegID = seg_ref2_idx + 1;
             models->store(par);
             models->compress(par);
@@ -232,14 +229,14 @@ int main(int argc, char* argv[]) {
             // Filter and segment
             if (!par->manThresh)
               par->thresh = static_cast<float>(models->aveEnt);
-            auto filter2 = std::make_unique<Filter>(par);
-            filter2->smooth_seg(par, 2);
-            filter_seg_num_round2 = filter2->nSegs;
-            if (filter_seg_num_round2 == 0) {
+            filter = std::make_unique<Filter>(par);
+            filter->smooth_seg(par, 2);
+            uint64_t seg_num_round2 = filter->nSegs;
+            if (seg_num_round2 == 0) {
               std::cerr << '\n';
               continue;
             }
-            filter2->merge_extract_seg(par->ID, ref_round2, tar_round2);
+            filter->merge_extract_seg(par->ID, ref_round2, tar_round2);
             const auto seg_tar2_name{
                 gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
 
@@ -248,10 +245,10 @@ int main(int argc, char* argv[]) {
               std::cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . "
                            ". . . .\n>>> "
                         << italic("Reference-free compression of the segment")
-                        << italic(filter_seg_num_round2 > 1 ? "s" : "") << '\n';
+                        << italic(seg_num_round2 > 1 ? "s" : "") << '\n';
 
-              models->selfEnt.reserve(filter_seg_num_round2);
-              for (uint64_t j = 0; j != filter_seg_num_round2; ++j) {
+              models->selfEnt.reserve(seg_num_round2);
+              for (uint64_t j = 0; j != seg_num_round2; ++j) {
                 par->seq = seg_tar2_name + std::to_string(j);
                 models->self_compress(par, j);
                 
@@ -348,10 +345,16 @@ int main(int argc, char* argv[]) {
           }
         }  // for
 
+        // // todo
+        // par->ref = ref_round1;
+        // par->tar = tar_round1;
+        // par->refName = file_name(ref_round1);
+        // par->tarName = file_name(tar_round1);
+
         // Aggregate final positions
         auto filter = std::make_unique<Filter>(par);
         filter->aggregate_final_pos(ref_round1, tar_round1);
-      }
+      } // else
     }
 
     const auto t1{now()};
