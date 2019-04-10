@@ -412,7 +412,8 @@ inline void Filter::smooth_seg_rect(std::shared_ptr<Param>& par, uint8_t round_n
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param>& par, uint8_t round_num) {
+inline void Filter::smooth_seg_non_rect(std::shared_ptr<Param>& par,
+                                        uint8_t round_num) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
