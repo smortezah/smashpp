@@ -279,18 +279,21 @@ void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
 }
 
 void Param::help() const {
-  print_title("Usage");
+  print_title("SYNOPSIS");
   print_line("./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>");
   std::cerr << '\n';
 
-  print_title("Mandatory arguments");
+  print_title("OPTIONS");
+  
+  print_line(italic("Required")+":");
 
   print_aligned("-r", "FILE", "=", "reference file (Seq/FASTA/FASTQ)");
 
   print_aligned("-t", "FILE", "=", "target file    (Seq/FASTA/FASTQ)");
   std::cerr << '\n';
 
-  print_title("Options");
+  // print_title("Options");
+  print_line(italic("Optional")+":");
 
   print_aligned("-l", "INT", "=",
                 "level of compression: [" + std::to_string(MIN_LVL) + ", " +
