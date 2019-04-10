@@ -132,8 +132,6 @@ int main(int argc, char* argv[]) {
       } else {
         std::string ref_round1 = par->ref;
         std::string tar_round1 = par->tar;
-        std::string ref_round2, tar_round2;
-        // std::string ref_round3, tar_round3;
 
         for (uint8_t timesRunning = 0; timesRunning != 2; ++timesRunning) {
           if (timesRunning == 0)
@@ -198,11 +196,12 @@ int main(int argc, char* argv[]) {
           // are new refs
           std::cerr << bold(
               underline("\nBuilding reference map for each target pattern\n"));
+          
+          std::string ref_round2, tar_round2;
 
           par->tar = tar_round2 = ref_round1;
           par->tarName = file_name(par->tar);
           const auto seg_ref2_num{seg_num_round1};
-          //todo movazebe filter->nSegs bash
 
           for (uint64_t seg_ref2_idx = 0; seg_ref2_idx != seg_ref2_num;
                ++seg_ref2_idx) {
@@ -344,12 +343,6 @@ int main(int argc, char* argv[]) {
             }
           }
         }  // for
-
-        // // todo
-        // par->ref = ref_round1;
-        // par->tar = tar_round1;
-        // par->refName = file_name(ref_round1);
-        // par->tarName = file_name(tar_round1);
 
         // Aggregate final positions
         auto filter = std::make_unique<Filter>(par);

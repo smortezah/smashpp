@@ -38,20 +38,10 @@ static constexpr double DBLANK{-2.0};
 
 class Param {
  public:
-  std::string ref;//todo remove
-  std::string tar;//todo remove
+  std::string ref;
+  std::string tar;
   std::string refName;
   std::string tarName;
-
-  // struct Round {
-  //   std::string ref;
-  //   std::string tar;
-  //   std::string ref_name;
-  //   std::string tar_name;
-  //   Round() = default;
-  // };
-  // std::vector<std::unique_ptr<Round>> round;
-
   std::string seq;
   bool verbose;
   uint8_t level;
@@ -127,7 +117,6 @@ class Param {
         tar_guard(std::make_unique<TarGuard>()),
         ref_guard(std::make_unique<RefGuard>()) {}
 
-  Param(std::shared_ptr<Param>);
   void parse(int, char**&);
   auto win_type(std::string) const -> WType;
   auto print_win_type() const -> std::string;

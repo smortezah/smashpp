@@ -16,49 +16,6 @@
 #include "print.hpp"
 using namespace smashpp;
 
-Param::Param(std::shared_ptr<Param> par)
-    : tar_guard(std::make_unique<TarGuard>()),
-      ref_guard(std::make_unique<RefGuard>()) {
-  ref = par->ref;
-  tar = par->tar;
-  seq = par->seq;
-  refName = par->refName;
-  tarName = par->tarName;
-  verbose = par->verbose;
-  level = par->level;
-  segSize = par->segSize;
-  entropyN = par->entropyN;
-  nthr = par->nthr;
-  wsize = par->wsize;
-  wtype = par->wtype;
-  sampleStep = par->sampleStep;
-  thresh = par->thresh;
-  manSegSize = par->manSegSize;
-  manWSize = par->manWSize;
-  manThresh = par->manThresh;
-  manFilterScale = par->manFilterScale;
-  filterScale = par->filterScale;
-  saveSeq = par->saveSeq;
-  saveProfile = par->saveProfile;
-  saveFilter = par->saveFilter;
-  saveSegment = par->saveSegment;
-  saveAll = par->saveAll;
-  refType = par->refType;
-  tarType = par->tarType;
-  showInfo = par->showInfo;
-  compress = par->compress;
-  filter = par->filter;
-  segment = par->segment;
-  ID = par->ID;
-  noRedun = par->noRedun;
-  refMs = par->refMs;
-  tarMs = par->tarMs;
-  tar_guard->beg = par->tar_guard->beg;
-  tar_guard->end = par->tar_guard->end;
-  ref_guard->beg = par->ref_guard->beg;
-  ref_guard->end = par->ref_guard->end;
-}
-
 void Param::parse(int argc, char**& argv) {
   if (argc < 2) {
     help();
