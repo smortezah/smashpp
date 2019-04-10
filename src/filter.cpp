@@ -145,8 +145,9 @@ void Filter::smooth_seg(std::shared_ptr<Param>& par, uint8_t round_num) {
                                       : smooth_seg_rect<false>(par, round_num);
   } else {
     make_window();
-    (par->saveFilter || par->saveAll) ? smooth_seg_non_rect<true>(par, round_num)
-                                      : smooth_seg_non_rect<false>(par, round_num);
+    (par->saveFilter || par->saveAll)
+        ? smooth_seg_non_rect<true>(par, round_num)
+        : smooth_seg_non_rect<false>(par, round_num);
   }
 
   if (!par->saveAll && !par->saveProfile)

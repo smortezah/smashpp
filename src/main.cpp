@@ -130,9 +130,18 @@ int main(int argc, char* argv[]) {
         filter->smooth_seg(par1, 1);
         filter->merge_extract_seg(par1->ID, par1->ref, par1->tar);
       } else {
+        // struct Round {
+        //   std::string ref;
+        //   std::string tar;
+        //   std::string ref_name;
+        //   std::string tar_name;
+        //   Round() = default;
+        // };
+        // std::vector<std::unique_ptr<Round>> round;
+
         // unique_ptr cannot be copied
         auto par2 = std::make_shared<Param>(par1);  // For round 2
-        auto par3 = std::make_shared<Param>(par1);  // For round 3
+        // auto par3 = std::make_shared<Param>(par1);  // For round 3
 
         for (uint8_t timesRunning = 0; timesRunning != 2; ++timesRunning) {
           if (timesRunning == 0)
@@ -142,9 +151,19 @@ int main(int argc, char* argv[]) {
             std::cerr << bold(
                 "====[ INVERTED MODE ]=================================\n");
 
-          par3->ID = par2->ID = par1->ID = timesRunning;
+          // par3->ID = par2->ID = par1->ID = timesRunning;
+          par2->ID = par1->ID = timesRunning;
+          // par1->ID = timesRunning;
 
           // Round 1
+          // // todo
+          // round.push_back(std::make_unique<Round>());
+          // // todo
+          // round[0]->ref = par1->ref;
+          // round[0]->tar = par1->tar;
+          // round[0]->ref_name = file_name(round[0]->ref);
+          // round[0]->tar_name = file_name(round[0]->tar);
+
           par1->refName = file_name(par1->ref);
           par1->tarName = file_name(par1->tar);
 
@@ -236,8 +255,8 @@ int main(int argc, char* argv[]) {
 
             // Ref-free compress
             if (!par2->noRedun) {
-              std::cerr << ". . . . . . . . . . . . . . . . . . . "
-                           ". . . . . . . . . .\n>>> "
+              std::cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . "
+                           ". . . .\n>>> "
                         << italic("Reference-free compression of the segment")
                         << italic(filter->nSegs > 1 ? "s" : "") << '\n';
 
