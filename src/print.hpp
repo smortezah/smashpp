@@ -10,11 +10,48 @@
 #include "string.hpp"
 
 namespace smashpp {
+class Column {
+ public:
+  Align align;
+  uint8_t width;
+  std::string text;
+  std::string pre;
+  std::string post;
+
+  Column() = default;
+  Column(Align align_, uint8_t width_, std::string text_)
+      : align(align_), width(width_), text(text_) {}
+  Column(uint8_t width_, std::string text_)
+      : Column(Align::left, width_, text_) {}
+  Column(std::string text_) : Column(text_.size() + 1, text_) {}
+};
+
+class Row {
+ public:
+  void add_col(std::string);
+  void print();
+
+ private:
+  // uint8_t num_columns;
+  std::vector<std::unique_ptr<Column>> vec_col;
+};
+
+void Row::add_col(std::string text) {
+  auto column = std::make_unique<Column>(text);
+  vec_col.push_back(column);
+}
+
+void Row::print() {
+  // for (const auto& column : vec_col) {
+  // }
+  std::cerr << '\n';
+}
+
 void print_title(std::string str) { std::cerr << bold(str) << '\n'; }
 
 void print_line(const std::string& str) { std::cerr << "  " << str << '\n'; }
 
-// Print column 1: left-aligned + column 2: left-aligned
+// Multiple columns
 void print_aligned(std::string arg, std::string type,
                    std::string delim_description,
                    const std::string& description,
@@ -30,6 +67,7 @@ void print_aligned(std::string arg, std::string type,
   std::cerr << default_val << '\n';
 }
 
+// 2 columns
 void print_aligned(std::string arg, const std::string& description) {
   std::cerr << "  ";
   std::cerr << std::left << std::setw(19) << arg;
