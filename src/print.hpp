@@ -15,8 +15,7 @@ class Column {
   Align align;
   uint8_t width;
   std::string text;
-  std::string pre;
-  std::string post;
+  std::pair<std::string,std::string> pre_post;
 
   Column() = default;
   Column(Align align_, uint8_t width_, std::string text_)
@@ -29,21 +28,49 @@ class Column {
 class Row {
  public:
   void add_col(std::string);
+  void add_col(const Column &);
   void print();
 
  private:
   // uint8_t num_columns;
-  std::vector<std::unique_ptr<Column>> vec_col;
+  std::vector<Column> vec_col;
 };
 
 void Row::add_col(std::string text) {
-  auto column = std::make_unique<Column>(text);
+  vec_col.push_back(Column(text));
+}
+
+void Row::add_col(const Column& column) {
   vec_col.push_back(column);
 }
 
 void Row::print() {
-  // for (const auto& column : vec_col) {
-  // }
+  for (const auto& column : vec_col) {
+    std::cerr << ((column.align == Align::left)
+                      ? std::left
+                      : (column.align == Align::right) ? std::right
+                                                       : std::internal)
+              << std::setw(column.width) << column.pre_post.first << column.text
+              << column.pre_post.second;
+
+    // switch (column.align) {
+    //   case Align::left:
+    //     std::cerr << std::left << std::setw(column.width)
+    //               << column.pre_post.first << column.text
+    //               << column.pre_post.second;
+    //     break;
+    //   case Align::right:
+    //     std::cerr << std::right << std::setw(column.width)
+    //               << column.pre_post.first << column.text
+    //               << column.pre_post.second;
+    //     break;
+    //   case Align::internal:
+    //     std::cerr << std::internal << std::setw(column.width)
+    //               << column.pre_post.first << column.text
+    //               << column.pre_post.second;
+    //     break;
+    // }
+  }
   std::cerr << '\n';
 }
 

@@ -13,6 +13,7 @@ class Filter {
  public:
   uint64_t nSegs;
 
+  Filter() = default;
   explicit Filter(std::unique_ptr<Param>&);
   void smooth_seg(std::unique_ptr<Param>&, uint8_t);
   void merge_extract_seg(uint32_t, std::string, std::string) const;
