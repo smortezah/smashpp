@@ -83,12 +83,12 @@
 // hhdmmmmmhhyyhhhhhdddhhyyyhNNNNNmmNNNNNNN
 // hddmmNNmmddhhhhhhddhhhhhmNNNNNMNNNNNNNNN
 
-#define __STDC_FORMAT_MACROS
-#if defined(_MSC_VER)
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
+// #define __STDC_FORMAT_MACROS
+// #if defined(_MSC_VER)
+// #include <io.h>
+// #else
+// #include <unistd.h>
+// #endif
 
 #include <iostream>
 #include <chrono>
@@ -127,15 +127,15 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round,
   models->compress(par);
 
   // Filter and segment
-  if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
   auto filter = std::make_unique<Filter>(par);
+  if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
   filter->smooth_seg(par, round);
+
   if (filter->nSegs == 0) {
     std::cerr << '\n';
     return 0;  // continue;
   }
   filter->merge_extract_seg(par->ID, par->ref, par->tar);
-  const auto seg_name{gen_name(par->ID, par->ref, par->tar, Format::segment)};
 
   // Ref-free compress
   if (!par->noRedun) {
@@ -144,6 +144,7 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round,
               << italic("Reference-free compression of the segment")
               << italic(filter->nSegs == 1 ? "" : "s") << '\n';
 
+    const auto seg_name{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.reserve(filter->nSegs);
     for (uint64_t i = 0; i != filter->nSegs; ++i) {
       par->seq = seg_name + std::to_string(i);
@@ -264,7 +265,7 @@ void run(std::unique_ptr<Param>& par) {
       //   std::cerr << '\n';
       // }
       // std::cerr << "*************\n\n";
-    }
+    }  // Round 2
 
     par->ref = ref_round1;
     par->tar = tar_round1;
@@ -272,7 +273,7 @@ void run(std::unique_ptr<Param>& par) {
 
     remove_temp_seg(par, num_seg_round1);
     remove_temp_seq(par);
-  }  // for
+  }
 
   filter->aggregate_final_pos(ref_round1, tar_round1);
 }
@@ -288,22 +289,8 @@ int main(int argc, char* argv[]) {
       paint->plot(vizpar);
     } else {
       auto par = std::make_unique<Param>();
-      par->parse(argc, argv);  // Parse the command
-
-      if (par->compress) {
-        auto models = std::make_unique<FCM>(par);
-        models->store(par);
-        models->compress(par);
-      } else if (par->filter) {
-        auto filter = std::make_unique<Filter>(par);
-        filter->smooth_seg(par, 1);
-      } else if (par->segment) {
-        auto filter = std::make_unique<Filter>(par);
-        filter->smooth_seg(par, 1);
-        filter->merge_extract_seg(par->ID, par->ref, par->tar);
-      } else {
-        run(par);
-      }
+      par->parse(argc, argv);
+      run(par);
     }
 
     const auto t1{now()};
