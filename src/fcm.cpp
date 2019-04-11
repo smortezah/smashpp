@@ -304,7 +304,7 @@ inline void FCM::alloc_model() {
 }
 
 void FCM::store(std::unique_ptr<Param>& par) {
-  message = "Building the model";
+  std::string message = "Building the model";
   if (rMs.size() > 1) message += "s";
   message += " of ";
   message += tarSegMsg.empty() ? italic(par->refName)
@@ -315,7 +315,8 @@ void FCM::store(std::unique_ptr<Param>& par) {
   (par->nthr == 1 || rMs.size() == 1) ? store_1(par)
                                       : store_n(par) /*Multiple threads*/;
 
-  std::cerr << "\r" << message << "finished.\n";
+  std::cerr << "\r" << message << "finished.";
+  if (par->verbose) std::cerr << "\n";
 }
 
 inline void FCM::store_1(std::unique_ptr<Param>& par) {
@@ -411,7 +412,7 @@ inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
 }
 
 void FCM::compress(std::unique_ptr<Param>& par) {
-  message = "Compressing " + italic(par->tarName) + " ";
+  std::string message = "Compressing " + italic(par->tarName) + " ";
 
   if (rMs.size() == 1 && rTMsSize == 0)  // 1 MM
     switch (rMs[0].cont) {
@@ -431,9 +432,11 @@ void FCM::compress(std::unique_ptr<Param>& par) {
   else
     compress_n(par);
 
+  if (!par->verbose) std::cerr << "\r";
   std::cerr << message
             << "finished. Average entropy=" << fixed_precision(PREC_PRF)
-            << aveEnt << " bps.\n";
+            << aveEnt << " bps.";
+  if (par->verbose) std::cerr << "\n";
 }
 
 template <typename ContIter>
@@ -724,7 +727,12 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
 }
 
 void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID) {
-  message = "Compressing segment " + std::to_string(ID + 1) + " ";
+  std::string message;
+  if (par->verbose)
+    message += "Compressing ";
+  else
+    message += "Ref-free compressing ";
+  message += "segment " + std::to_string(ID + 1) + " ";
 
   self_compress_alloc();
 
@@ -746,9 +754,11 @@ void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID) {
   else
     self_compress_n(par, ID);
 
+  if (!par->verbose) std::cerr << "\r";
   std::cerr << message
             << "finished. Average entropy=" << fixed_precision(PREC_PRF)
-            << selfEnt[ID] << " bps.\n";
+            << selfEnt[ID] << " bps.";
+  if (par->verbose) std::cerr << "\n";
 }
 
 inline void FCM::self_compress_alloc() {

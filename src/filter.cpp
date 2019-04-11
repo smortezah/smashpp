@@ -138,7 +138,7 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
 }
 
 void Filter::smooth_seg(std::unique_ptr<Param>& par, uint8_t round_num) {
-  message = "Filtering & segmenting " + italic(par->tarName) + " ";
+  std::string message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (wtype == WType::rectangular) {
     (par->saveFilter || par->saveAll) ? smooth_seg_rect<true>(par, round_num)
@@ -157,8 +157,10 @@ void Filter::smooth_seg(std::unique_ptr<Param>& par, uint8_t round_num) {
     remove((gen_name(par->ID, par->refName, par->tarName, Format::filter))
                .c_str());
 
+  if (!par->verbose) std::cerr << "\r";
   std::cerr << message << "finished. Detected " << nSegs << " segment"
-            << (nSegs == 1 ? "" : "s") << ".\n";
+            << (nSegs == 1 ? "" : "s") << ".";
+  if (par->verbose) std::cerr << "\n";
 }
 
 inline void Filter::make_window() {
