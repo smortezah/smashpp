@@ -139,10 +139,11 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round,
 
   // Ref-free compress
   if (!par->noRedun) {
-    std::cerr << ". . . . . . . . . . . . . . . . . . . "
-                 ". . . . . . . . . .\n>>> "
-              << italic("Reference-free compression of the segment")
-              << italic(filter->nSegs == 1 ? "" : "s") << '\n';
+    if (par->verbose)
+      std::cerr << ". . . . . . . . . . . . . . . . . . . "
+                   ". . . . . . . . . .\n>>> "
+                << italic("Reference-free compression of the segment")
+                << italic(filter->nSegs == 1 ? "" : "s") << '\n';
 
     const auto seg_name{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.reserve(filter->nSegs);
