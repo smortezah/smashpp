@@ -188,12 +188,6 @@ void Param::parse(int argc, char**& argv) {
       saveSegment = true;
     } else if (*i == "-sa") {
       saveAll = true;
-    } else if (*i == "-compress") {
-      compress = true;
-    } else if (*i == "-filter") {
-      filter = true;
-    } else if (*i == "-segment") {
-      segment = true;
     }
   }
 
