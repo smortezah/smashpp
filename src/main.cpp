@@ -112,6 +112,14 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round,
   par->tarName = file_name(par->tar);
 
   auto models = std::make_unique<FCM>(par);
+
+  if (round == 1 && run_num == 0)
+    std::cerr << bold(
+        "====[ REGULAR MODE ]==================================\n");
+  else if (round == 1 && run_num == 1)
+    std::cerr << bold(
+        "====[ INVERTED MODE ]=================================\n");
+
   // Make all IRs consistent
   for (auto& ref_model : models->rMs) {
     ref_model.ir = run_num;
@@ -184,13 +192,6 @@ void run(std::unique_ptr<Param>& par) {
   auto filter = std::make_unique<Filter>();
 
   for (uint8_t run_num = 0; run_num != 2; ++run_num) {
-    if (run_num == 0)
-      std::cerr << bold(
-          "====[ REGULAR MODE ]==================================\n");
-    else if (run_num == 1)
-      std::cerr << bold(
-          "====[ INVERTED MODE ]=================================\n");
-
     auto num_seg_round1 = run_round(par, 1, run_num);
     const auto name_seg_round1{
         gen_name(par->ID, ref_round1, tar_round1, Format::segment)};

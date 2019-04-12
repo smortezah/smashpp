@@ -212,7 +212,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   toprule();
   rmm_row("Ref Model(s)", 'm');
   midrule();
-  rmm_row("Context size (\U0001D705)    ", 'k');
+  rmm_row("Context size (k)", 'k');
   bool hasSketch{false};
   for (const auto& e : rMs)
     if (e.cont == Container::sketch_8) {
@@ -220,27 +220,27 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
       break;
     }
   if (hasSketch) {
-    rmm_row("Sketch width (\U0001D464)    ", 'w');
-    rmm_row("Sketch depth (\U0001D451)    ", 'd');
+    rmm_row("Sketch width (w)", 'w');
+    rmm_row("Sketch depth (d)", 'd');
   }
   rmm_row("Inv. repeat  (ir)", 'i');
-  rmm_row("Alpha        (\U0001D6FC)    ", 'a');
-  rmm_row("Gamma        (\U0001D6FE)    ", 'g');
+  rmm_row("Alpha        (a)", 'a');
+  rmm_row("Gamma        (g)", 'g');
   botrule();  // cerr << '\n';
 
   toprule();
   rstmm_row("Ref Substituttional Model(s)", 'h');
   midrule();
-  rstmm_row("No. Subst.   (\U0001D70F)    ", 't');
+  rstmm_row("No. Subst.   (t)", 't');
   rstmm_row("Inv. repeat  (ir)", 'i');
-  rstmm_row("Alpha        (\U0001D6FC)    ", 'a');
-  rstmm_row("Gamma        (\U0001D6FE)    ", 'g');
+  rmm_row("Alpha        (a)", 'a');
+  rmm_row("Gamma        (g)", 'g');
   botrule();  // cerr << '\n';
 
   toprule();
   tmm_row("Tar Model(s)", 'm');
   midrule();
-  tmm_row("Context size (\U0001D705)    ", 'k');
+  rmm_row("Context size (k)", 'k');
   hasSketch = false;
   for (const auto& e : tMs)
     if (e.cont == Container::sketch_8) {
@@ -248,21 +248,21 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
       break;
     }
   if (hasSketch) {
-    tmm_row("Sketch width (\U0001D464)    ", 'w');
-    tmm_row("Sketch depth (\U0001D451)    ", 'd');
+    rmm_row("Sketch width (w)", 'w');
+    rmm_row("Sketch depth (d)", 'd');
   }
   tmm_row("Inv. repeat  (ir)", 'i');
-  tmm_row("Alpha        (\U0001D6FC)    ", 'a');
-  tmm_row("Gamma        (\U0001D6FE)    ", 'g');
+  rmm_row("Alpha        (a)", 'a');
+  rmm_row("Gamma        (g)", 'g');
   botrule();  // cerr << '\n';
 
   toprule();
   tstmm_row("Tar Substituttional Model(s)", 'h');
   midrule();
-  tstmm_row("No. Subst.   (\U0001D70F)    ", 't');
+  rstmm_row("No. Subst.   (t)", 't');
   tstmm_row("Inv. repeat  (ir)", 'i');
-  tstmm_row("Alpha        (\U0001D6FC)    ", 'a');
-  tstmm_row("Gamma        (\U0001D6FE)    ", 'g');
+  rmm_row("Alpha        (a)", 'a');
+  rmm_row("Gamma        (g)", 'g');
   botrule();  // cerr << '\n';
 
   if (!par->compress) {
