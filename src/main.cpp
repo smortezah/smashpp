@@ -200,24 +200,41 @@ void run(std::unique_ptr<Param>& par) {
     std::cerr << bold(
         underline("\nBuilding reference map for each target pattern\n"));
 
+    std::string tar_round2 = 
     par->tar = par->ref;
     for (uint64_t i = 0; i != num_seg_round1; ++i) {
+      std::string ref_round2 = 
       par->ref = name_seg_round1 + std::to_string(i);
       auto num_seg_round2 = run_round(par, 2, run_num);
       remove_temp_seg(par, num_seg_round2);
       std::cerr << '\n';
 
+      const auto name_seg_round2{
+          gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+      par->tar = ref_round2;
+      for (uint64_t j = 0; j != num_seg_round2; ++j) {
+        par->ref = name_seg_round2 + std::to_string(j);
+        auto num_seg_round3 = run_round(par, 3, run_num);
+        std::cerr << "*************\n\n";
+      }
+
+      par->ref = ref_round2;
+      par->tar = tar_round2;
+      filter->aggregate_mid_pos(par->ID, ref_round2, tar_round2);
+
       // // Round 3
       // std::cerr << bold(underline("\nRound 3\n"));
 
-      // par3->tar = name_seg_round1 + std::to_string(i);
-      // par3->tarName = file_name(par3->tar);
+      // par->tar = name_seg_round1 + std::to_string(i);
+      // par->tarName = file_name(par->tar);
+      // const auto name_seg_round2{
+      //     gen_name(par->ID, par->ref, par->tar, Format::segment)};
 
-      // const auto seg_ref3_num{filter->nSegs};
-      // for (uint64_t seg_ref3_idx = 0; seg_ref3_idx != seg_ref3_num;
+      // // const auto seg_ref3_num{num_seg_round2};
+      // for (uint64_t seg_ref3_idx = 0; seg_ref3_idx != num_seg_round2;
       //      ++seg_ref3_idx) {
-      //   par3->ref = seg_tar2_name + std::to_string(seg_ref3_idx);
-      //   par3->refName = file_name(par3->ref);
+      //   par->ref = name_seg_round2 + std::to_string(seg_ref3_idx);
+      //   par->refName = file_name(par->ref);
       //   // Make all IRs consistent
       //   models = std::make_unique<FCM>(par3);
       //   for (auto& e : models->rMs) {
@@ -252,8 +269,7 @@ void run(std::unique_ptr<Param>& par) {
       //   if (!par3->noRedun) {
       //     std::cerr << ". . . . . . . . . . . . . . . . . . . "
       //                  ". . . . . . . . . .\n>>> "
-      //               << italic("Reference-free compression of the
-      //               segment")
+      //               << italic("Reference-free compression of the segment")
       //               << italic(filter->nSegs > 1 ? "s" : "") << '\n';
 
       //     models->selfEnt.reserve(filter->nSegs);
