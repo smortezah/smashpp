@@ -27,6 +27,7 @@ using prc_t = double;  // Precision type -- MUST be double
 
 // Constant
 static constexpr uint8_t CARDIN{4};  // CARDINALITY = Alphabet size
+static constexpr double DBLANK{-2.0};
 
 // Enum
 enum class Container {  // Data structure
@@ -78,7 +79,7 @@ struct PosRow {
         tar(tar_) {}
 
   void print() const {
-    std::cerr << run_num << ' ' << ref << ' ' << tar << ' ' << beg_pos << ' '
+    std::cerr << int(run_num) << ' ' << ref << ' ' << tar << ' ' << beg_pos << ' '
               << end_pos << ' ' << ent << ' ' << self_ent << '\n';
   }
 };

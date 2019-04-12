@@ -12,7 +12,10 @@
 #include "naming.hpp"
 using namespace smashpp;
 
-Filter::Filter(std::unique_ptr<Param>& par) : wtype(par->wtype) {
+Filter::Filter() : nSegs(0) {}
+
+Filter::Filter(std::unique_ptr<Param>& par)
+    : nSegs(0), wtype(par->wtype) {
   set_wsize(par);
   if ((par->filter || par->segment) && par->verbose) show_info(par);
 }
@@ -137,24 +140,33 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
   botrule();
 }
 
-void Filter::smooth_seg(std::vector<PosRow>& pos_row, std::unique_ptr<Param>& par, uint8_t round_num) {
+void Filter::smooth_seg(std::vector<PosRow>& pos_out,
+                        std::unique_ptr<Param>& par, uint8_t round_num,uint64_t& current_pos_row) {
   std::string message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (wtype == WType::rectangular) {
-    (par->saveFilter || par->saveAll) ? smooth_seg_rect<true>(pos_row,par, round_num)
-                                      : smooth_seg_rect<false>(pos_row,par, round_num);
+    (par->saveFilter || par->saveAll)
+        ? smooth_seg_rect<true>(pos_out, par, round_num)
+        : smooth_seg_rect<false>(pos_out, par, round_num);
   } else {
     make_window();
     (par->saveFilter || par->saveAll)
-        ? smooth_seg_non_rect<true>(pos_row,par, round_num)
-        : smooth_seg_non_rect<false>(pos_row,par, round_num);
+        ? smooth_seg_non_rect<true>(pos_out, par, round_num)
+        : smooth_seg_non_rect<false>(pos_out, par, round_num);
   }
 
-  for (auto& row : pos_row) {
-    row.run_num=par->ID;
-    row.ref = par->ref;
-    row.tar = par->tar;
+  for (uint64_t i = current_pos_row; i != current_pos_row+nSegs; ++i) {
+    pos_out[i].run_num = par->ID;
+    pos_out[i].ref = par->ref;
+    pos_out[i].tar = par->tar;
   }
+  current_pos_row += nSegs;
+
+  //todo
+  for (auto row : pos_out) {
+    row.print();
+  }
+
 
   if (!par->saveAll && !par->saveProfile)
     remove((gen_name(par->ID, par->refName, par->tarName, Format::profile))
@@ -411,7 +423,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_row,std::unique_ptr
   seg->partition_last(pos_row);
   show_progress(++symsNo, seg->totalSize, message);
 
-  if (file_is_empty(positionName)) remove(positionName.c_str());
+  // if (file_is_empty(positionName)) remove(positionName.c_str());
   filF.close();
   if (!SaveFilter) remove(filterName.c_str());
   // if (!par->saveAll && !SaveFilter) remove(filterName.c_str());
@@ -521,7 +533,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_row,
   seg->partition_last(pos_row);
   show_progress(++symsNo, seg->totalSize, message);
 
-  if (file_is_empty(positionName)) remove(positionName.c_str());
+  // if (file_is_empty(positionName)) remove(positionName.c_str());
   filF.close();
   if (!SaveFilter) remove(filterName.c_str());
   nSegs = seg->nSegs;

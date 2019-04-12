@@ -106,11 +106,10 @@
 using namespace smashpp;
 
 uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round,
-                   uint8_t run_num,std::vector<PosRow>& pos_row) {
+                   uint8_t run_num,std::vector<PosRow>& pos_out,uint64_t& current_pos_row) {
   par->ID = run_num;
   par->refName = file_name(par->ref);
   par->tarName = file_name(par->tar);
-
   auto models = std::make_unique<FCM>(par);
 
   if (round == 1 && run_num == 0)
@@ -137,12 +136,12 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round,
   // Filter and segment
   auto filter = std::make_unique<Filter>(par);
   if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
-  filter->smooth_seg(pos_row, par, round);
+  filter->smooth_seg(pos_out, par, round,current_pos_row);
 
-  // if (filter->nSegs == 0) {
-  //   std::cerr << '\n';
-  //   return 0;  // continue;
-  // }
+  if (filter->nSegs == 0) {
+    std::cerr << '\n';
+    return 0;  // continue;
+  }
   // filter->merge_extract_seg(par->ID, par->ref, par->tar);
 
   // // Ref-free compress
@@ -195,10 +194,11 @@ void run(std::unique_ptr<Param>& par) {
   auto filter = std::make_unique<Filter>();
 
   std::vector<PosRow> pos_out;
+  uint64_t current_pos_row = 0;
 
-// Round 1
+  // Round 1
   for (uint8_t run_num = 0; run_num != 2; ++run_num) {
-    auto num_seg_round1 = run_round(par, 1, run_num, pos_out);
+    auto num_seg_round1 = run_round(par, 1, run_num, pos_out,current_pos_row);
     // const auto name_seg_round1{
     //     gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
 
@@ -305,12 +305,6 @@ void run(std::unique_ptr<Param>& par) {
   }
 
   // filter->aggregate_final_pos(ref_round1, tar_round1);
-
-
-  for (auto row : pos_out) {
-      std::cerr << row.beg_pos << ' ';
-    
-  }
 }
 
 int main(int argc, char* argv[]) {
