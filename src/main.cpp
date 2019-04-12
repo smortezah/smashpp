@@ -139,28 +139,28 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round,
   if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
   filter->smooth_seg(par, round);
 
-  if (filter->nSegs == 0) {
-    std::cerr << '\n';
-    return 0;  // continue;
-  }
-  filter->merge_extract_seg(par->ID, par->ref, par->tar);
+  // if (filter->nSegs == 0) {
+  //   std::cerr << '\n';
+  //   return 0;  // continue;
+  // }
+  // filter->merge_extract_seg(par->ID, par->ref, par->tar);
 
-  // Ref-free compress
-  if (!par->noRedun) {
-    if (par->verbose)
-      std::cerr << ". . . . . . . . . . . . . . . . . . . "
-                   ". . . . . . . . . .\n>>> "
-                << italic("Reference-free compression of the segment")
-                << italic(filter->nSegs == 1 ? "" : "s") << '\n';
+  // // Ref-free compress
+  // if (!par->noRedun) {
+  //   if (par->verbose)
+  //     std::cerr << ". . . . . . . . . . . . . . . . . . . "
+  //                  ". . . . . . . . . .\n>>> "
+  //               << italic("Reference-free compression of the segment")
+  //               << italic(filter->nSegs == 1 ? "" : "s") << '\n';
 
-    const auto seg_name{gen_name(par->ID, par->ref, par->tar, Format::segment)};
-    models->selfEnt.reserve(filter->nSegs);
-    for (uint64_t i = 0; i != filter->nSegs; ++i) {
-      par->seq = seg_name + std::to_string(i);
-      models->self_compress(par, i);
-    }
-  }
-  models->aggregate_slf(par);
+  //   const auto seg_name{gen_name(par->ID, par->ref, par->tar, Format::segment)};
+  //   models->selfEnt.reserve(filter->nSegs);
+  //   for (uint64_t i = 0; i != filter->nSegs; ++i) {
+  //     par->seq = seg_name + std::to_string(i);
+  //     models->self_compress(par, i);
+  //   }
+  // }
+  // models->aggregate_slf(par);
 
   return filter->nSegs;
 }
@@ -197,8 +197,8 @@ void run(std::unique_ptr<Param>& par) {
 // Round 1
   for (uint8_t run_num = 0; run_num != 2; ++run_num) {
     auto num_seg_round1 = run_round(par, 1, run_num);
-    const auto name_seg_round1{
-        gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
+    // const auto name_seg_round1{
+    //     gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
 
 //     // Round 2: old ref = new tar & old tar segments = new refs
 //     std::cerr << bold(
@@ -294,15 +294,15 @@ void run(std::unique_ptr<Param>& par) {
 //       remove_temp_seg(par, num_seg_round2);
 //     }  // Round 2
 
-    par->ref = ref_round1;
-    par->tar = tar_round1;
-    filter->aggregate_mid_pos(par->ID, ref_round1, tar_round1);
+    // par->ref = ref_round1;
+    // par->tar = tar_round1;
+    // filter->aggregate_mid_pos(par->ID, ref_round1, tar_round1);
 
-    remove_temp_seg(par, num_seg_round1);
-    remove_temp_seq(par);
+    // remove_temp_seg(par, num_seg_round1);
+    // remove_temp_seq(par);
   }
 
-  filter->aggregate_final_pos(ref_round1, tar_round1);
+  // filter->aggregate_final_pos(ref_round1, tar_round1);
 }
 
 int main(int argc, char* argv[]) {

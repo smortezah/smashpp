@@ -29,7 +29,7 @@ using prc_t = double;  // Precision type -- MUST be double
 static constexpr uint8_t CARDIN{4};  // CARDINALITY = Alphabet size
 
 // Enum
-enum class Container {  // Data struct
+enum class Container {  // Data structure
   table_64,
   table_32,
   log_table_8,
