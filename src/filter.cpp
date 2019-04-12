@@ -137,17 +137,23 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
   botrule();
 }
 
-void Filter::smooth_seg(std::unique_ptr<Param>& par, uint8_t round_num) {
+void Filter::smooth_seg(std::vector<PosRow>& pos_row, std::unique_ptr<Param>& par, uint8_t round_num) {
   std::string message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (wtype == WType::rectangular) {
-    (par->saveFilter || par->saveAll) ? smooth_seg_rect<true>(par, round_num)
-                                      : smooth_seg_rect<false>(par, round_num);
+    (par->saveFilter || par->saveAll) ? smooth_seg_rect<true>(pos_row,par, round_num)
+                                      : smooth_seg_rect<false>(pos_row,par, round_num);
   } else {
     make_window();
     (par->saveFilter || par->saveAll)
-        ? smooth_seg_non_rect<true>(par, round_num)
-        : smooth_seg_non_rect<false>(par, round_num);
+        ? smooth_seg_non_rect<true>(pos_row,par, round_num)
+        : smooth_seg_non_rect<false>(pos_row,par, round_num);
+  }
+
+  for (auto& row : pos_row) {
+    row.run_num=par->ID;
+    row.ref = par->ref;
+    row.tar = par->tar;
   }
 
   if (!par->saveAll && !par->saveProfile)
@@ -316,16 +322,16 @@ inline void Filter::make_nuttall() {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par, uint8_t round_num) {
+inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_row,std::unique_ptr<Param>& par, uint8_t round_num) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
-  const auto positionName{
-      gen_name(par->ID, par->ref, par->tar, Format::position)};
+  // const auto positionName{
+  //     gen_name(par->ID, par->ref, par->tar, Format::position)};
   check_file(profileName);
   std::ifstream prfF(profileName);
   std::ofstream filF(filterName);
-  std::ofstream posF(positionName);
+  // std::ofstream posF(positionName);
   std::vector<float> seq;
   seq.reserve(wsize);
   auto seg = std::make_shared<Segment>();
@@ -361,7 +367,7 @@ inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par, uint8_t round_n
   }
   filtered = sum / seq.size();
   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-  seg->partition(posF, filtered);
+  seg->partition(pos_row, filtered);
 
   // Next wsize>>1 values
   for (auto i = (wsize >> 1u); i-- && getline(prfF, num);) {
@@ -371,7 +377,7 @@ inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par, uint8_t round_n
     ++seg->pos;
     filtered = sum / seq.size();
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-    seg->partition(posF, filtered);
+    seg->partition(pos_row, filtered);
     show_progress(++symsNo, seg->totalSize, message);
     jump_lines();
   }
@@ -384,7 +390,7 @@ inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par, uint8_t round_n
     ++seg->pos;
     filtered = sum / wsize;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-    seg->partition(posF, filtered);
+    seg->partition(pos_row, filtered);
     seq[idx] = val;
     idx = (idx + 1) % wsize;
     show_progress(++symsNo, seg->totalSize, message);
@@ -398,14 +404,13 @@ inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par, uint8_t round_n
     ++seg->pos;
     filtered = sum / (wsize - i);
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-    seg->partition(posF, filtered);
+    seg->partition(pos_row, filtered);
     idx = (idx + 1) % wsize;
     show_progress(++symsNo, seg->totalSize, message);
   }
-  seg->partition_last(posF);
+  seg->partition_last(pos_row);
   show_progress(++symsNo, seg->totalSize, message);
 
-  posF.close();
   if (file_is_empty(positionName)) remove(positionName.c_str());
   filF.close();
   if (!SaveFilter) remove(filterName.c_str());
@@ -414,17 +419,18 @@ inline void Filter::smooth_seg_rect(std::unique_ptr<Param>& par, uint8_t round_n
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par,
+inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_row,
+                                        std::unique_ptr<Param>& par,
                                         uint8_t round_num) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
-  const auto positionName{
-      gen_name(par->ID, par->ref, par->tar, Format::position)};
+  // const auto positionName{
+  //     gen_name(par->ID, par->ref, par->tar, Format::position)};
   check_file(profileName);
   std::ifstream prfF(profileName);
   std::ofstream filF(filterName);
-  std::ofstream posF(positionName);
+  // std::ofstream posF(positionName);
   std::vector<float> seq;
   seq.reserve(wsize);
   auto seg = std::make_shared<Segment>();
@@ -462,7 +468,7 @@ inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par,
   sum = inner_product(winBeg + (wsize >> 1u), winEnd, std::begin(seq), 0.f);
   filtered = sum / sWeight;
   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-  seg->partition(posF, filtered);
+  seg->partition(pos_row, filtered);
   show_progress(++symsNo, seg->totalSize, message);
 
   // Next wsize>>1 values
@@ -473,7 +479,7 @@ inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par,
     sWeight += window[i];
     filtered = sum / sWeight;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-    seg->partition(posF, filtered);
+    seg->partition(pos_row, filtered);
     show_progress(++symsNo, seg->totalSize, message);
     jump_lines();
   }
@@ -488,7 +494,8 @@ inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par,
     ++seg->pos;
     filtered = sum / sWeight;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-    seg->partition(posF, filtered);
+    seg->partition(pos_row, filtered);
+    // seg->partition(posF, filtered);
     show_progress(++symsNo, seg->totalSize, message);
     jump_lines();
   }
@@ -508,13 +515,12 @@ inline void Filter::smooth_seg_non_rect(std::unique_ptr<Param>& par,
     sWeight -= window[wsize - i];
     filtered = sum / sWeight;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-    seg->partition(posF, filtered);
+    seg->partition(pos_row, filtered);
     show_progress(++symsNo, seg->totalSize, message);
   }
-  seg->partition_last(posF);
+  seg->partition_last(pos_row);
   show_progress(++symsNo, seg->totalSize, message);
 
-  posF.close();
   if (file_is_empty(positionName)) remove(positionName.c_str());
   filF.close();
   if (!SaveFilter) remove(filterName.c_str());
