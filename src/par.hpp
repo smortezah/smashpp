@@ -34,7 +34,6 @@ static const std::string POS_HDR{"#" + SMASHPP};  // Hdr of pos file
 // static const std::string POS_NRC{"N"};      // Hdr of pos file
 // static const std::string POS_REDUN{"R"};    // Hdr of pos file
 static constexpr int FILE_BUF{8 * 1024};  // 8K
-static constexpr double DBLANK{-2.0};
 
 class Param {
  public:
