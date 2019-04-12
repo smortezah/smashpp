@@ -624,11 +624,11 @@ void Filter::aggregate_mid_pos(uint32_t ID, std::string ref,
       mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
     }
 
-    remove(file2_name.c_str());
+    // remove(file2_name.c_str());//todo remove comment
   }
 
   file1.close();
-  remove(file1_name.c_str());
+  // remove(file1_name.c_str());//todo remove comment
   mid_file.close();
 }
 
@@ -688,7 +688,7 @@ void Filter::move_mid_to_pos_file(std::string mid_file_name,
   pos_file.write(buffer.data(), chunk_size);
 
   mid_file.close();
-  remove(mid_file_name.c_str());
+  // remove(mid_file_name.c_str());//todo remove comment
 }
 
 void Filter::aggregate_final_pos(std::string ref, std::string tar) const {

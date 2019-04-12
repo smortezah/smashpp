@@ -169,8 +169,11 @@ void remove_temp_seg(std::unique_ptr<Param>& par, uint64_t seg_num) {
   const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
 
   for (uint64_t i = 0; i != seg_num; ++i)
-    if (!par->saveAll && !par->saveSegment)
+    if (!par->saveAll && !par->saveSegment) {
+      // std::cerr << "\n++++++removed " << seg + std::to_string(i) <<
+      // "+++++++\n";
       remove((seg + std::to_string(i)).c_str());
+    }
 }
 
 void remove_temp_seq(std::unique_ptr<Param>& par) {
@@ -206,9 +209,11 @@ void run(std::unique_ptr<Param>& par) {
       std::string ref_round2 = 
       par->ref = name_seg_round1 + std::to_string(i);
       auto num_seg_round2 = run_round(par, 2, run_num);
-      remove_temp_seg(par, num_seg_round2);
+      // remove_temp_seg(par, num_seg_round2);
       std::cerr << '\n';
 
+      // Round 3
+      std::cerr << bold(underline("\nRound 3\n"));
       const auto name_seg_round2{
           gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
       par->tar = ref_round2;
@@ -216,6 +221,7 @@ void run(std::unique_ptr<Param>& par) {
         par->ref = name_seg_round2 + std::to_string(j);
         auto num_seg_round3 = run_round(par, 3, run_num);
         std::cerr << "*************\n\n";
+        remove_temp_seg(par, num_seg_round3);
       }
 
       par->ref = ref_round2;
@@ -283,6 +289,8 @@ void run(std::unique_ptr<Param>& par) {
       //   std::cerr << '\n';
       // }
       // std::cerr << "*************\n\n";
+      
+      remove_temp_seg(par, num_seg_round2);
     }  // Round 2
 
     par->ref = ref_round1;
