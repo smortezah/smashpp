@@ -216,7 +216,7 @@ void run(std::unique_ptr<Param>& par) {
   std::vector<PosRow> pos_out;
   uint64_t current_pos_row = 0;
 
-  for (uint8_t run_num = 0; run_num != 1/*2*/; ++run_num) {
+  for (uint8_t run_num = 0; run_num != 2/*1*/; ++run_num) {
     // Round 1
     auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
     const auto name_seg_round1{
