@@ -80,10 +80,25 @@ struct PosRow {
         tar(tar_),
         round(round_) {}
 
-  void print() const {
-    std::cerr << int(round) << ' ' << int(run_num) << ' ' << ref << ' '
-              << tar << ' ' << beg_pos << '\t' << end_pos << '\t' << ent << '\t'
+  PosRow(const PosRow& row)
+      : beg_pos(row.beg_pos),
+        end_pos(row.end_pos),
+        ent(row.ent),
+        self_ent(row.self_ent),
+        run_num(row.run_num),
+        ref(row.ref),
+        tar(row.tar),
+        round(row.round) {}
+
+  // Test
+  void show() const {
+    std::cerr << int(round) << ' ' << int(run_num) << ' ' << ref << ' ' << tar
+              << ' ' << beg_pos << ' ' << end_pos << ' ' << ent << ' '
               << self_ent << '\n';
+  }
+
+  void print() const {
+    std::cerr << beg_pos << '\t' << end_pos << '\t' << ent << '\t' << self_ent;
   }
 };
 
