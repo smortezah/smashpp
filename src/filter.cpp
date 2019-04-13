@@ -162,7 +162,7 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
     pos_out[i].ref = par->ref;
     pos_out[i].tar = par->tar;
   }
-  current_pos_row += nSegs;
+  // current_pos_row += nSegs;
 
   if (!par->saveAll && !par->saveProfile)
     remove((gen_name(par->ID, par->refName, par->tarName, Format::profile))

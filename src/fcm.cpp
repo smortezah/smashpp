@@ -1000,19 +1000,21 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
   }
 }
 
-void FCM::aggregate_slf(std::vector<PosRow>& pos_out, uint8_t round,
+void FCM::aggregate_slf_ent(std::vector<PosRow>& pos_out, uint8_t round,
                         uint8_t run_num, uint64_t& current_pos_row,
                         bool no_redun) const {
-  uint64_t i = 0;
-  std::cerr << "\n++++++++++++"<<selfEnt.size() << "\n++++++++++++";
+  // uint64_t i = 0;
+  // std::cerr << "\n++++++++++++"<<selfEnt.size() << "\n++++++++++++";
   // for (auto i = 0; i < selfEnt.size(); ++i)
   //   std::cerr << /*"\n+++++" <<*/ selfEnt[i] /*<< "+++++"*/;
-  
-  // for (auto& row : pos_out) {
-  //   if (row.round == round && row.run_num == run_num) {
-  //     row.self_ent = (!no_redun ? selfEnt[i++ + current_pos_row] : DBLANK);
-  //   }
-  // }
+
+  auto selfEnt_beg = std::begin(selfEnt);
+
+  for (auto& row : pos_out) {
+    if (row.round == round && row.run_num == run_num) {
+      row.self_ent = (!no_redun ? *selfEnt_beg++ : DBLANK);
+    }
+  }
 
   // current_pos_row += i;
 }
