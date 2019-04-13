@@ -157,7 +157,7 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
     std::cerr << '\n';
     return 0;  // continue;
   }
-  filter->extract_seg(pos_out, round, run_num);
+  filter->extract_seg(pos_out, round, run_num, par->ref);
 
   // Ref-free compress
   if (!par->noRedun) {
