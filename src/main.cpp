@@ -168,15 +168,19 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
                 << italic("Reference-free compression of the segment")
                 << italic(filter->nSegs == 1 ? "" : "s") << '\n';
 
-    const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
-    models->selfEnt.reserve(filter->nSegs);
-    for (uint64_t i = 0; i != filter->nSegs; ++i) {
-      par->seq = seg + std::to_string(i);
-      models->self_compress(par, i);
-    }
+    std::cerr << "\n^^^^^^^^^^^^^^^^" << filter->nSegs <<"^^^^\n";//todo
+
+      const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
+      models->selfEnt.reserve(filter->nSegs);
+      for (uint64_t i = 0; i != filter->nSegs; ++i) {
+        par->seq = seg + std::to_string(i);
+        models->self_compress(par, i);
+      }
+
+      for (auto e : models->selfEnt) std::cerr << e << ' ';//todo
   }
-  // models->aggregate_slf(par);
-  models->aggregate_slf(pos_out, round, run_num);
+  // // models->aggregate_slf(par);
+  // models->aggregate_slf(pos_out, round, run_num, current_pos_row, par->noRedun);
 
   return filter->nSegs;
 }
