@@ -177,7 +177,7 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
       models->self_compress(par, i);
     }
 
-    models->aggregate_slf_ent(pos_out, round, run_num, par->noRedun);
+    models->aggregate_slf_ent(pos_out, round, run_num,  par->ref,par->noRedun);
   }
   
   current_pos_row += filter->nSegs;
@@ -246,7 +246,7 @@ void run(std::unique_ptr<Param>& par) {
       //   remove_temp_seg(par, num_seg_round3);
       // }
 
-      // par->ref = ref_round2;
+      par->ref = ref_round2;
       par->tar = tar_round2;
       // filter->aggregate_mid_pos(par->ID, ref_round2, tar_round2);
 

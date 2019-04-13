@@ -1001,11 +1001,11 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
 }
 
 void FCM::aggregate_slf_ent(std::vector<PosRow>& pos_out, uint8_t round,
-                            uint8_t run_num, bool no_redun) const {
+                            uint8_t run_num,std::string ref, bool no_redun) const {
   auto selfEnt_beg = std::begin(selfEnt);
   
   for (auto& row : pos_out)
-    if (row.round == round && row.run_num == run_num)
+    if (row.round == round && row.run_num == run_num && row.ref==ref)
       row.self_ent = (!no_redun ? *selfEnt_beg++ : DBLANK);
 }
 
