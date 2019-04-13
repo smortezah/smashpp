@@ -81,8 +81,8 @@ struct PosRow {
         round(round_) {}
 
   void print() const {
-    std::cerr << int(round) << '\t' << int(run_num) << '\t' << ref << '\t'
-              << tar << '\t' << beg_pos << '\t' << end_pos << '\t' << ent << '\t'
+    std::cerr << int(round) << ' ' << int(run_num) << ' ' << ref << ' '
+              << tar << ' ' << beg_pos << '\t' << end_pos << '\t' << ent << '\t'
               << self_ent << '\n';
   }
 };
