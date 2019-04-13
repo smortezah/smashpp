@@ -29,9 +29,7 @@ class FCM {  // Finite-context models
   void store(std::unique_ptr<Param>&);  // Build FCM
   void compress(std::unique_ptr<Param>&);
   void self_compress(std::unique_ptr<Param>&, uint64_t);
-  // void aggregate_slf(std::unique_ptr<Param>&) const;
-  void aggregate_slf_ent(std::vector<PosRow>&, uint8_t, uint8_t, uint64_t&,
-                     bool) const;
+  void aggregate_slf_ent(std::vector<PosRow>&, uint8_t, uint8_t, bool) const;
 
  private:
   std::vector<std::unique_ptr<Table64>> tbl64;
