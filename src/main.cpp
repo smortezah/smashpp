@@ -120,6 +120,34 @@
 
 using namespace smashpp;
 
+void write_pos_file(const std::vector<PosRow>& pos_out) {
+  std::vector<PosRow> pos_left;
+  std::vector<PosRow> pos_right;
+
+  for (auto& row : pos_out) {
+    if (row.round == 1) pos_right.push_back(PosRow(row));
+    if (row.round == 2) pos_left.push_back(PosRow(row));
+  }
+
+  // pos_left.front().show();
+  // std::cerr << '\t';
+  // pos_right.front().show();
+  // std::cerr << '\n';
+
+  // auto ref_left{pos_left.front().ref};
+  // for (auto l = 1, r = 0; l != pos_left.size(); ++l, ++r) {
+  //   std::cerr << pos_left[l] << '\t';
+  // }
+
+  // std::cerr << '\n';
+
+  // todo
+  for (auto row : pos_left) row.show();
+  std::cerr << '\n';
+  for (auto row : pos_right) row.show();
+  std::cerr << '\n';
+}
+
 uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
                    std::vector<PosRow>& pos_out, uint64_t& current_pos_row) {
   par->ID = run_num;
@@ -161,9 +189,6 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
 
   // Ref-free compress
   if (!par->noRedun) {
-    // std::cerr << "\n" << par->ref << "\n" << par->tar << "\n";//todo
-
-
     if (par->verbose)
       std::cerr << ". . . . . . . . . . . . . . . . . . . "
                    ". . . . . . . . . .\n>>> "
@@ -231,7 +256,7 @@ void run(std::unique_ptr<Param>& par) {
       std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
       auto num_seg_round2 =
           run_round(par, 2, run_num, pos_out, current_pos_row);
-      // remove_temp_seg(par, num_seg_round2);
+
       std::cerr << '\n';
 
       // // Round 3
@@ -241,32 +266,36 @@ void run(std::unique_ptr<Param>& par) {
       // par->tar = ref_round2;
       // for (uint64_t j = 0; j != num_seg_round2; ++j) {
       //   par->ref = name_seg_round2 + std::to_string(j);
-      //   auto num_seg_round3 = run_round(par, 3, run_num);
+      //   auto num_seg_round3 =
+      //       run_round(par, 3, run_num, pos_out, current_pos_row);
       //   std::cerr << "*************\n\n";
       //   remove_temp_seg(par, num_seg_round3);
-      // }
+      // }  // Round 3
 
       par->ref = ref_round2;
       par->tar = tar_round2;
       // filter->aggregate_mid_pos(par->ID, ref_round2, tar_round2);
 
-      // remove_temp_seg(par, num_seg_round2);
+      remove_temp_seg(par, num_seg_round2);
     }  // Round 2
 
     par->ref = ref_round1;
     par->tar = tar_round1;
     // filter->aggregate_mid_pos(par->ID, ref_round1, tar_round1);
 
-    // remove_temp_seg(par, num_seg_round1);
-    // remove_temp_seq(par);
-  }
+    remove_temp_seg(par, num_seg_round1);
+    remove_temp_seq(par);
+  }  // Round 1
 
   // filter->aggregate_final_pos(ref_round1, tar_round1);
 
+  write_pos_file(pos_out);
+
   // todo
   for (auto row : pos_out) {
-    row.print();
+    row.show();
   }
+
 }
 
 int main(int argc, char* argv[]) {
