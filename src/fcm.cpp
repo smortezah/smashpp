@@ -1001,44 +1001,13 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
 }
 
 void FCM::aggregate_slf_ent(std::vector<PosRow>& pos_out, uint8_t round,
-                        uint8_t run_num, uint64_t& current_pos_row,
-                        bool no_redun) const {
-  // uint64_t i = 0;
-  // std::cerr << "\n++++++++++++"<<selfEnt.size() << "\n++++++++++++";
-  // for (auto i = 0; i < selfEnt.size(); ++i)
-  //   std::cerr << /*"\n+++++" <<*/ selfEnt[i] /*<< "+++++"*/;
-
+                            uint8_t run_num, bool no_redun) const {
   auto selfEnt_beg = std::begin(selfEnt);
-
-  for (auto& row : pos_out) {
-    if (row.round == round && row.run_num == run_num) {
+  
+  for (auto& row : pos_out)
+    if (row.round == round && row.run_num == run_num)
       row.self_ent = (!no_redun ? *selfEnt_beg++ : DBLANK);
-    }
-  }
-
-  // current_pos_row += i;
 }
-
-// void FCM::aggregate_slf(std::unique_ptr<Param>& par) const {
-//   const auto posName = gen_name(par->ID, par->ref, par->tar, Format::position);
-//   rename(posName.c_str(), (posName + LBL_BAK).c_str());
-//   std::ifstream pos_file_old(posName + LBL_BAK);
-//   std::ofstream pos_file(posName);
-//   uint64_t i = 0;
-
-//   for (std::string line; getline(pos_file_old, line); ++i) {
-//     pos_file << line << '\t';
-//     if (!par->noRedun)
-//       pos_file << fixed_precision(PREC_FIL) << selfEnt[i];
-//     else
-//       pos_file << DBLANK;
-//     pos_file << '\n';
-//   }
-
-//   pos_file_old.close();
-//   remove((posName + LBL_BAK).c_str());
-//   pos_file.close();
-// }
 
 template <typename OutT, typename ContIter>
 inline void FCM::freqs_ir0(std::array<OutT, 4>& a, ContIter cont,

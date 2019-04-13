@@ -577,6 +577,9 @@ void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round,
       subseq->inName = row.tar;
       const auto seg{gen_name(row.run_num, row.ref, row.tar, Format::segment)};
       subseq->outName = seg + std::to_string(seg_idx);
+    
+    std::cerr << "\n" << subseq->outName << "\n";//todo
+
       subseq->begPos = row.beg_pos;
       const uint64_t max_tar_pos{file_size(row.tar) - 1};
       subseq->size = static_cast<std::streamsize>(

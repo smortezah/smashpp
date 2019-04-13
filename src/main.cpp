@@ -157,11 +157,13 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
     std::cerr << '\n';
     return 0;  // continue;
   }
-  // filter->merge_extract_seg(par->ID, par->ref, par->tar);
   filter->extract_seg(pos_out, round, run_num);
 
   // Ref-free compress
   if (!par->noRedun) {
+    // std::cerr << "\n" << par->ref << "\n" << par->tar << "\n";//todo
+
+
     if (par->verbose)
       std::cerr << ". . . . . . . . . . . . . . . . . . . "
                    ". . . . . . . . . .\n>>> "
@@ -175,12 +177,9 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
       models->self_compress(par, i);
     }
 
-    models->aggregate_slf_ent(pos_out, round, run_num, current_pos_row,
-                          par->noRedun);
+    models->aggregate_slf_ent(pos_out, round, run_num, par->noRedun);
   }
-
-  // models->aggregate_slf(par);
-
+  
   current_pos_row += filter->nSegs;
   return filter->nSegs;
 }
@@ -217,114 +216,45 @@ void run(std::unique_ptr<Param>& par) {
   std::vector<PosRow> pos_out;
   uint64_t current_pos_row = 0;
 
-  // Round 1
-  for (uint8_t run_num = 0; run_num != 2; ++run_num) {
+  for (uint8_t run_num = 0; run_num != 1/*2*/; ++run_num) {
+    // Round 1
     auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
-    // const auto name_seg_round1{
-    //     gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
+    const auto name_seg_round1{
+        gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
 
-    //     // Round 2: old ref = new tar & old tar segments = new refs
-    //     std::cerr << bold(
-    //         underline("\nBuilding reference map for each target pattern\n"));
+    // Round 2: old ref = new tar & old tar segments = new refs
+    std::cerr << bold(
+        underline("\nBuilding reference map for each target pattern\n"));
 
-    //     std::string tar_round2 =
-    //     par->tar = par->ref;
-    //     for (uint64_t i = 0; i != num_seg_round1; ++i) {
-    //       std::string ref_round2 =
-    //       par->ref = name_seg_round1 + std::to_string(i);
-    //       auto num_seg_round2 = run_round(par, 2, run_num);
-    //       // remove_temp_seg(par, num_seg_round2);
-    //       std::cerr << '\n';
+    std::string tar_round2 = par->tar = par->ref;
+    for (uint64_t i = 0; i != num_seg_round1; ++i) {
+      std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
+      auto num_seg_round2 =
+          run_round(par, 2, run_num, pos_out, current_pos_row);
+      // remove_temp_seg(par, num_seg_round2);
+      std::cerr << '\n';
 
-    //       // // Round 3
-    //       // std::cerr << bold(underline("\nRound 3\n"));
-    //       // const auto name_seg_round2{
-    //       //     gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-    //       // par->tar = ref_round2;
-    //       // for (uint64_t j = 0; j != num_seg_round2; ++j) {
-    //       //   par->ref = name_seg_round2 + std::to_string(j);
-    //       //   auto num_seg_round3 = run_round(par, 3, run_num);
-    //       //   std::cerr << "*************\n\n";
-    //       //   remove_temp_seg(par, num_seg_round3);
-    //       // }
+      // // Round 3
+      // std::cerr << bold(underline("\nRound 3\n"));
+      // const auto name_seg_round2{
+      //     gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+      // par->tar = ref_round2;
+      // for (uint64_t j = 0; j != num_seg_round2; ++j) {
+      //   par->ref = name_seg_round2 + std::to_string(j);
+      //   auto num_seg_round3 = run_round(par, 3, run_num);
+      //   std::cerr << "*************\n\n";
+      //   remove_temp_seg(par, num_seg_round3);
+      // }
 
-    //       // par->ref = ref_round2;
-    //       // par->tar = tar_round2;
-    //       // filter->aggregate_mid_pos(par->ID, ref_round2, tar_round2);
+      // par->ref = ref_round2;
+      par->tar = tar_round2;
+      // filter->aggregate_mid_pos(par->ID, ref_round2, tar_round2);
 
-    // //       // // Round 3
-    // //       // std::cerr << bold(underline("\nRound 3\n"));
+      // remove_temp_seg(par, num_seg_round2);
+    }  // Round 2
 
-    // //       // par->tar = name_seg_round1 + std::to_string(i);
-    // //       // par->tarName = file_name(par->tar);
-    // //       // const auto name_seg_round2{
-    // //       //     gen_name(par->ID, par->ref, par->tar, Format::segment)};
-
-    // //       // // const auto seg_ref3_num{num_seg_round2};
-    // //       // for (uint64_t seg_ref3_idx = 0; seg_ref3_idx !=
-    // num_seg_round2;
-    // //       //      ++seg_ref3_idx) {
-    // //       //   par->ref = name_seg_round2 + std::to_string(seg_ref3_idx);
-    // //       //   par->refName = file_name(par->ref);
-    // //       //   // Make all IRs consistent
-    // //       //   models = std::make_unique<FCM>(par3);
-    // //       //   for (auto& e : models->rMs) {
-    // //       //     e.ir = run_num;
-    // //       //     if (e.child) e.child->ir = run_num;
-    // //       //   }
-    // //       //   for (auto& e : models->tMs) {
-    // //       //     e.ir = run_num;
-    // //       //     if (e.child) e.child->ir = run_num;
-    // //       //   }
-
-    // //       //   // Build models and Compress
-    // //       //   models->tarSegMsg = par3->ref + "-segment-";
-    // //       //   models->tarSegID = seg_ref3_idx + 1;
-    // //       //   models->store(par3);
-    // //       //   models->compress(par3);
-
-    // //       //   // Filter and segment
-    // //       //   if (!par3->manThresh) par3->thresh =
-    // static_cast<float>(models->aveEnt);
-    // //       //   filter = std::make_unique<Filter>(par3);
-    // //       //   filter->smooth_seg(par3, 3);
-    // //       //   if (filter->nSegs == 0) {
-    // //       //     std::cerr << '\n';
-    // //       //     continue;
-    // //       //   }
-    // //       //   filter->merge_extract_seg(par3->ID, par3->ref, par3->tar);
-
-    // //       //   const auto seg_tar3_name{
-    // //       //       gen_name(par3->ID, par3->ref, par3->tar,
-    // Format::segment)};
-
-    // //       //   // Ref-free compress
-    // //       //   if (!par3->noRedun) {
-    // //       //     std::cerr << ". . . . . . . . . . . . . . . . . . . "
-    // //       //                  ". . . . . . . . . .\n>>> "
-    // //       //               << italic("Reference-free compression of the
-    // segment")
-    // //       //               << italic(filter->nSegs > 1 ? "s" : "") <<
-    // '\n';
-
-    // //       //     models->selfEnt.reserve(filter->nSegs);
-    // //       //     for (uint64_t j = 0; j != filter->nSegs; ++j) {
-    // //       //       par3->seq = seg_tar3_name + std::to_string(j);
-    // //       //       models->self_compress(par3, j);
-    // //       //       if (!par3->saveAll && !par3->saveSegment)
-    // remove(par3->seq.c_str());
-    // //       //     }
-    // //       //   }
-    // //       //   models->aggregate_slf(par3);
-    // //       //   std::cerr << '\n';
-    // //       // }
-    // //       // std::cerr << "*************\n\n";
-
-    //       remove_temp_seg(par, num_seg_round2);
-    //     }  // Round 2
-
-    // par->ref = ref_round1;
-    // par->tar = tar_round1;
+    par->ref = ref_round1;
+    par->tar = tar_round1;
     // filter->aggregate_mid_pos(par->ID, ref_round1, tar_round1);
 
     // remove_temp_seg(par, num_seg_round1);
