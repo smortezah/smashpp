@@ -35,8 +35,7 @@ class Segment {
         thresh(0),
         sumEnt(0),
         numEnt(0),
-        minSize(MIN_SSIZE)
-        {}
+        minSize(MIN_SSIZE) {}
 
   void partition(std::vector<PosRow>&, float);
   void partition_last(std::vector<PosRow>&);

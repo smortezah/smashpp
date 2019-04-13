@@ -141,23 +141,23 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
 }
 
 void Filter::smooth_seg(std::vector<PosRow>& pos_out,
-                        std::unique_ptr<Param>& par, uint8_t round_num,
+                        std::unique_ptr<Param>& par, uint8_t round,
                         uint64_t& current_pos_row) {
   std::string message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (wtype == WType::rectangular) {
     (par->saveFilter || par->saveAll)
-        ? smooth_seg_rect<true>(pos_out, par, round_num)
-        : smooth_seg_rect<false>(pos_out, par, round_num);
+        ? smooth_seg_rect<true>(pos_out, par, round)
+        : smooth_seg_rect<false>(pos_out, par, round);
   } else {
     make_window();
     (par->saveFilter || par->saveAll)
-        ? smooth_seg_non_rect<true>(pos_out, par, round_num)
-        : smooth_seg_non_rect<false>(pos_out, par, round_num);
+        ? smooth_seg_non_rect<true>(pos_out, par, round)
+        : smooth_seg_non_rect<false>(pos_out, par, round);
   }
 
   for (uint64_t i = current_pos_row; i != current_pos_row + nSegs; ++i) {
-    pos_out[i].round_num = round_num;
+    pos_out[i].round = round;
     pos_out[i].run_num = par->ID;
     pos_out[i].ref = par->ref;
     pos_out[i].tar = par->tar;
@@ -330,7 +330,7 @@ inline void Filter::make_nuttall() {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_row,std::unique_ptr<Param>& par, uint8_t round_num) {
+inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_row,std::unique_ptr<Param>& par, uint8_t round) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
@@ -347,9 +347,9 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_row,std::unique_ptr
     for (const auto& e : par->refMs)
       if (e.k > maxCtx) maxCtx = e.k;
 
-    if (round_num == 2)
+    if (round == 2)
       seg->set_guards(maxCtx, par->ref_guard->beg, par->ref_guard->end);
-    else if (round_num == 1 || round_num == 3)
+    else if (round == 1 || round == 3)
       seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
   }
   std::string num;
@@ -425,7 +425,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_row,std::unique_ptr
 template <bool SaveFilter>
 inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_row,
                                         std::unique_ptr<Param>& par,
-                                        uint8_t round_num) {
+                                        uint8_t round) {
   const auto profileName{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
@@ -442,9 +442,9 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_row,
     for (const auto& e : par->refMs)
       if (e.k > maxCtx) maxCtx = e.k;
 
-    if (round_num == 2)
+    if (round == 2)
       seg->set_guards(maxCtx, par->ref_guard->beg, par->ref_guard->end);
-    else if (round_num == 1 || round_num == 3)
+    else if (round == 1 || round == 3)
       seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
   }
   const auto winBeg{std::begin(window)};
@@ -535,36 +535,58 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_row,
 //   return static_cast<double>(minEnd-maxBeg) > 0.8 * (maxEnd-minBeg);
 // }
 
-void Filter::merge_extract_seg(uint32_t ID, std::string ref,
-                               std::string tar) const {
-  check_file(gen_name(ID, ref, tar, Format::position));
-  std::ifstream pos_file(gen_name(ID, ref, tar, Format::position));
-  const auto segName{gen_name(ID, ref, tar, Format::segment)};
-  auto subseq = std::make_unique<SubSeq>();
-  subseq->inName = tar;
-  uint64_t i{0};
-  const uint64_t maxTarPos{file_size(tar) - 1};
+// void Filter::merge_extract_seg(uint32_t ID, std::string ref,
+//                                std::string tar) const {
+//   check_file(gen_name(ID, ref, tar, Format::position));
+//   std::ifstream pos_file(gen_name(ID, ref, tar, Format::position));
+//   const auto segName{gen_name(ID, ref, tar, Format::segment)};
+//   auto subseq = std::make_unique<SubSeq>();
+//   subseq->inName = tar;
+//   uint64_t i{0};
+//   const uint64_t maxTarPos{file_size(tar) - 1};
 
-  // vector<Position> pos;
-  // for (uint64_t beg,end,ent; pos_file >> beg >> end >> ent;) {
-  //   pos.push_back(Position(beg, end));
-  // }
-  // std::sort(std::begin(pos), std::end(pos),
-  //   [] (const Position& a, const Position& b) { return a.beg < b.beg; });
+//   // vector<Position> pos;
+//   // for (uint64_t beg,end,ent; pos_file >> beg >> end >> ent;) {
+//   //   pos.push_back(Position(beg, end));
+//   // }
+//   // std::sort(std::begin(pos), std::end(pos),
+//   //   [] (const Position& a, const Position& b) { return a.beg < b.beg; });
 
-  for (std::string beg, end, ent; pos_file >> beg >> end >> ent; ++i) {
-    subseq->outName = segName + std::to_string(i);
-    subseq->begPos = std::stoull(beg);
-    if (std::stoull(end) > maxTarPos)
-      subseq->size =
-          static_cast<std::streamsize>(maxTarPos - subseq->begPos + 1);
-    else
-      subseq->size =
-          static_cast<std::streamsize>(std::stoull(end) - subseq->begPos + 1);
-    extract_subseq(subseq);
+//   for (std::string beg, end, ent; pos_file >> beg >> end >> ent; ++i) {
+//     subseq->outName = segName + std::to_string(i);
+//     subseq->begPos = std::stoull(beg);
+//     if (std::stoull(end) > maxTarPos)
+//       subseq->size =
+//           static_cast<std::streamsize>(maxTarPos - subseq->begPos + 1);
+//     else
+//       subseq->size =
+//           static_cast<std::streamsize>(std::stoull(end) - subseq->begPos + 1);
+//     extract_subseq(subseq);
+//   }
+
+//   pos_file.close();
+// }
+
+void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round,
+                         uint8_t run_num) const {
+  uint64_t seg_idx{0};
+
+  for (const auto& row : pos_out) {
+    if (row.round == round && row.run_num==run_num) {
+      auto subseq = std::make_unique<SubSeq>();
+      subseq->inName = row.tar;
+      const auto seg{gen_name(row.run_num, row.ref, row.tar, Format::segment)};
+      subseq->outName = seg + std::to_string(seg_idx);
+      subseq->begPos = row.beg_pos;
+      const uint64_t max_tar_pos{file_size(row.tar) - 1};
+      subseq->size = static_cast<std::streamsize>(
+          row.end_pos > max_tar_pos ? max_tar_pos - subseq->begPos + 1
+                                    : row.end_pos - subseq->begPos + 1);
+      extract_subseq(subseq);
+
+      ++seg_idx;
+    }
   }
-
-  pos_file.close();
 }
 
 // void Filter::aggregate_mid_pos(uint32_t ID, std::string ref,
