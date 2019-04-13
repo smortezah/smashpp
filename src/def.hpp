@@ -59,28 +59,31 @@ const std::vector<FilterScale> SET_FSCALE{FilterScale::s, FilterScale::m,
                                           FilterScale::l};
 
 struct PosRow {
-  int64_t beg_pos;
-  int64_t end_pos;
+  uint64_t beg_pos;
+  uint64_t end_pos;
   prc_t ent;
   prc_t self_ent;
   uint8_t run_num;  // 0=reg, 1=ir
   std::string ref;
   std::string tar;
+  uint8_t round_num;
 
-  PosRow(int64_t beg_pos_ = DBLANK, int64_t end_pos_ = DBLANK,
-         prc_t ent_ = 0.0, prc_t self_ent_ = 0.0, uint8_t run_num_ = 0,
-         std::string ref_ = "", std::string tar_ = "")
+  PosRow(uint64_t beg_pos_ = 0, uint64_t end_pos_ = 0, prc_t ent_ = 0.0,
+         prc_t self_ent_ = 0.0, uint8_t run_num_ = 0, std::string ref_ = "",
+         std::string tar_ = "", uint8_t round_num_ = 1)
       : beg_pos(beg_pos_),
         end_pos(end_pos_),
         ent(ent_),
         self_ent(self_ent_),
         run_num(run_num_),
         ref(ref_),
-        tar(tar_) {}
+        tar(tar_),
+        round_num(round_num_) {}
 
   void print() const {
-    std::cerr << int(run_num) << ' ' << ref << ' ' << tar << ' ' << beg_pos << ' '
-              << end_pos << ' ' << ent << ' ' << self_ent << '\n';
+    std::cerr << int(round_num) << ' ' << int(run_num) << ' ' << ref << ' '
+              << tar << ' ' << beg_pos << ' ' << end_pos << ' ' << ent << ' '
+              << self_ent << '\n';
   }
 };
 
