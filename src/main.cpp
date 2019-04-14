@@ -103,89 +103,118 @@
 #include "string.hpp"
 #include "segment.hpp"
 #include "vizpaint.hpp"
-
-// #include <chrono>
-// #include <iomanip>  // setw, setprecision
-// #include <iostream>
-// #include <thread>
-// #include "container.hpp"
-// #include "fcm.hpp"
-// #include "filter.hpp"
-// #include "naming.hpp"
-// #include "par.hpp"
-// #include "segment.hpp"
-// #include "string.hpp"
-// #include "time.hpp"
-// #include "vizpaint.hpp"
-
 using namespace smashpp;
 
+template <typename Iterator>
+void make_pos_pair(Iterator left_first_iter, Iterator left_last_iter,
+                   Iterator right_first_iter, Iterator right_last_iter) {
+  for (auto right_begin = right_first_iter; left_first_iter != left_last_iter;
+       ++left_first_iter) {
+    left_first_iter->print();
+    // left_first_iter->show();
+    std::cerr << '\t';
+
+    for (; right_first_iter != right_last_iter; ++right_first_iter) {
+      auto seg_name{
+          gen_name(right_first_iter->run_num, right_first_iter->ref,
+                   right_first_iter->tar, Format::segment) +
+          std::to_string(std::distance(right_begin, right_first_iter))};
+      if (left_first_iter->ref == seg_name) {
+        right_first_iter->print();
+        // right_first_iter->show();
+        break;
+      }
+    }
+    std::cerr << '\n';
+  }
+}
+
+void make_pos_pair(const std::vector<PosRow>& left,
+                   const std::vector<PosRow>& right1,
+                   const std::vector<PosRow>& right3 = nullptr) {
+  // for (auto right_begin = right_first_iter; left_first_iter !=
+  // left_last_iter;
+  //      ++left_first_iter) {
+  //   left_first_iter->print();
+  //   // left_first_iter->show();
+  //   std::cerr << '\t';
+
+  //   for (; right_first_iter != right_last_iter; ++right_first_iter) {
+  //     auto seg_name{
+  //         gen_name(right_first_iter->run_num, right_first_iter->ref,
+  //                  right_first_iter->tar, Format::segment) +
+  //         std::to_string(std::distance(right_begin, right_first_iter))};
+  //     if (left_first_iter->ref == seg_name) {
+  //       right_first_iter->print();
+  //       // right_first_iter->show();
+  //       break;
+  //     }
+  //   }
+  //   std::cerr << '\n';
+  // }
+}
+
 void write_pos_file(const std::vector<PosRow>& pos_out) {
-  std::vector<PosRow> left;
-  std::vector<PosRow> right1;
-  std::vector<PosRow> right3;
+  std::vector<PosRow> left_reg;
+  std::vector<PosRow> left_ir;
+  std::vector<PosRow> right1_reg;
+  std::vector<PosRow> right1_ir;
+  std::vector<PosRow> right3_reg;
+  std::vector<PosRow> right3_ir;
 
   for (auto& row : pos_out) {
-    switch (row.round) {
-      case 1:
-        right1.push_back(PosRow(row));
-        break;
-      case 2:
-        left.push_back(PosRow(row));
-        break;
-      case 3:
-        right3.push_back(PosRow(row));
-        break;
-    }
+    if (row.round == 1 && row.run_num==0) right1_reg.push_back(PosRow(row));
+    if (row.round == 1 && row.run_num==1) right1_ir.push_back(PosRow(row));
+    if (row.round == 2 && row.run_num==0) left_reg.push_back(PosRow(row));
+    if (row.round == 2 && row.run_num==1) left_ir.push_back(PosRow(row));
+    if (row.round == 3 && row.run_num==0) right3_reg.push_back(PosRow(row));
+    if (row.round == 3 && row.run_num==1) right3_ir.push_back(PosRow(row));
   }
 
-  if (right3.empty()) {
-    if (left.size() == right1.size()) {
-      for (auto left_iter = std::begin(left), first_right = std::begin(right1);
-           left_iter != std::end(left); ++left_iter, ++first_right) {
-        left_iter->show();
-        std::cerr << '\t';
-        first_right->show();
-        std::cerr << '\n';
-      }
-    } else {
-      std::string first_ref_left;
-      for (auto left_iter = std::begin(left), first_right = std::begin(right1);
-           left_iter != std::end(left); ++left_iter) {
-        if (left_iter->ref == first_ref_left) {
-          --first_right;
+  // make_pos_pair(std::begin(left_reg), std::end(left_reg),
+  //               std::begin(right1_reg), std::end(right1_reg));
+  // make_pos_pair(std::begin(left_ir), std::end(left_ir), std::begin(right1_ir),
+  //               std::end(right1_ir));
 
-          left_iter->show();
-          // left_iter->print();
-          std::cerr << '\t';
-          first_right->show();
-          // first_right->print();
-          std::cerr << '\n';
-        } else {
-          left_iter->show();
-          // left_iter->print();
-          std::cerr << '\t';
-          first_right->show();
-          // first_right->print();
-          std::cerr << '\n';
 
-          ++first_right;
-        }
+  // if (right3_reg.empty() && right3_ir.empty()) {
+  //   make_pos_pair(left_reg, right1_reg);
+  //   make_pos_pair(left_ir, right1_ir);
+  // } else {
+  //   make_pos_pair(left_ir, right1_ir, right3_ir);
+  // }
 
-        first_ref_left = left_iter->ref;
-      }
-    }
-  } else
-  {
-    //todo
+  // todo
+  std::cerr << '\n';
+  for (auto row : right1_reg) {
+    row.show();
+    std::cerr << '\n';
   }
-  
-
-  // // todo
-  // for (auto row : left) row.show();
-  // std::cerr << '\n';
-  // for (auto row : right1) row.show();
-  // std::cerr << '\n';
+  std::cerr << '\n';
+  for (auto row : right1_ir) {
+    row.show();
+    std::cerr << '\n';
+  }
+  std::cerr << '\n';
+  for (auto row : left_reg) {
+    row.show();
+    std::cerr << '\n';
+  }
+  std::cerr << '\n';
+  for (auto row : left_ir) {
+    row.show();
+    std::cerr << '\n';
+  }
+  std::cerr << '\n';
+  for (auto row : right3_reg) {
+    row.show();
+    std::cerr << '\n';
+  }
+  std::cerr << '\n';
+  for (auto row : right3_ir) {
+    row.show();
+    std::cerr << '\n';
+  }
 }
 
 uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
@@ -319,6 +348,7 @@ void run(std::unique_ptr<Param>& par) {
       par->ref = ref_round2;
       par->tar = tar_round2;
       // filter->aggregate_mid_pos(par->ID, ref_round2, tar_round2);
+      // filter->aggregate_mid_pos(pos_out,par->ID, ref_round2, tar_round2);
 
       remove_temp_seg(par, num_seg_round2);
     }  // Round 2
@@ -335,10 +365,9 @@ void run(std::unique_ptr<Param>& par) {
 
   write_pos_file(pos_out);
 
-  // todo
-  for (auto row : pos_out) {
-    row.show();
-  }
+  // // todo
+  // for (auto row : pos_out) 
+  //   row.show();
 }
 
 int main(int argc, char* argv[]) {

@@ -94,7 +94,9 @@ struct PosRow {
   void show() const {
     std::cerr << int(round) << ' ' << int(run_num) << ' ' << ref << ' ' << tar
               << ' ' << beg_pos << ' ' << end_pos << ' ' << ent << ' '
-              << self_ent << '\n';
+              << self_ent 
+              // << '\n'
+              ;
   }
 
   void print() const {

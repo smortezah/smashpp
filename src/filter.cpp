@@ -659,51 +659,51 @@ void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round,
 //   mid_file.close();
 // }
 
-void Filter::aggregate_mid_pos(uint32_t ID, std::string ref,
-                               std::string tar) const {
-  const std::string file1_name{gen_name(ID, ref, tar, Format::position)};
-  std::ifstream file1(file1_name);
-  std::ofstream mid_file(gen_name(ID, ref, tar, Format::midposition));
-  int i{0};
+// void Filter::aggregate_mid_pos(uint32_t ID, std::string ref,
+//                                std::string tar) const {
+//   const std::string file1_name{gen_name(ID, ref, tar, Format::position)};
+//   std::ifstream file1(file1_name);
+//   std::ofstream mid_file(gen_name(ID, ref, tar, Format::midposition));
+//   int i{0};
 
-  for (std::string beg1, end1, ent1, self_ent1;
-       file1 >> beg1 >> end1 >> ent1 >> self_ent1; ++i) {
-    const std::string file2_name{gen_name(
-        ID, gen_name(ID, ref, tar, Format::segment) + std::to_string(i), ref,
-        Format::position)};
+//   for (std::string beg1, end1, ent1, self_ent1;
+//        file1 >> beg1 >> end1 >> ent1 >> self_ent1; ++i) {
+//     const std::string file2_name{gen_name(
+//         ID, gen_name(ID, ref, tar, Format::segment) + std::to_string(i), ref,
+//         Format::position)};
 
-    if (!file_is_empty(file2_name)) {
-      std::ifstream file2(file2_name);
+//     if (!file_is_empty(file2_name)) {
+//       std::ifstream file2(file2_name);
 
-      for (std::string beg2, end2, ent2, self_ent2;
-           file2 >> beg2 >> end2 >> ent2 >> self_ent2;) {
-        mid_file << beg2 << '\t' << end2 << '\t' << ent2 << '\t' << self_ent2
-                 << '\t';
-        if (ID == 0)
-          mid_file << beg1 << '\t' << end1;
-        else if (ID == 1)
-          mid_file << end1 << '\t' << beg1;
-        mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
-      }
+//       for (std::string beg2, end2, ent2, self_ent2;
+//            file2 >> beg2 >> end2 >> ent2 >> self_ent2;) {
+//         mid_file << beg2 << '\t' << end2 << '\t' << ent2 << '\t' << self_ent2
+//                  << '\t';
+//         if (ID == 0)
+//           mid_file << beg1 << '\t' << end1;
+//         else if (ID == 1)
+//           mid_file << end1 << '\t' << beg1;
+//         mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
+//       }
 
-      file2.close();
-    } else {
-      mid_file << DBLANK << '\t' << DBLANK << '\t' << DBLANK << '\t' << DBLANK
-               << '\t';
-      if (ID == 0)
-        mid_file << beg1 << '\t' << end1;
-      else if (ID == 1)
-        mid_file << end1 << '\t' << beg1;
-      mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
-    }
+//       file2.close();
+//     } else {
+//       mid_file << DBLANK << '\t' << DBLANK << '\t' << DBLANK << '\t' << DBLANK
+//                << '\t';
+//       if (ID == 0)
+//         mid_file << beg1 << '\t' << end1;
+//       else if (ID == 1)
+//         mid_file << end1 << '\t' << beg1;
+//       mid_file << '\t' << ent1 << '\t' << self_ent1 << '\n';
+//     }
 
-    // remove(file2_name.c_str());//todo remove comment
-  }
+//     // remove(file2_name.c_str());//todo remove comment
+//   }
 
-  file1.close();
-  // remove(file1_name.c_str());//todo remove comment
-  mid_file.close();
-}
+//   file1.close();
+//   // remove(file1_name.c_str());//todo remove comment
+//   mid_file.close();
+// }
 
 void Filter::move_mid_to_pos_file(std::string mid_file_name,
                                   std::ofstream& pos_file) const {
