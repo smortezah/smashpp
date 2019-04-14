@@ -18,7 +18,6 @@ class Filter {
   void smooth_seg(std::vector<PosRow>&,std::unique_ptr<Param>&, uint8_t,uint64_t&);
   // void merge_extract_seg(uint32_t, std::string, std::string) const;
   void extract_seg(std::vector<PosRow>&, uint8_t, uint8_t,std::string) const;
-  void aggregate_mid_pos(uint32_t, std::string, std::string) const;
   void aggregate_final_pos(std::string, std::string) const;
 
  private:
