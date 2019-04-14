@@ -121,31 +121,71 @@
 using namespace smashpp;
 
 void write_pos_file(const std::vector<PosRow>& pos_out) {
-  std::vector<PosRow> pos_left;
-  std::vector<PosRow> pos_right;
+  std::vector<PosRow> left;
+  std::vector<PosRow> right1;
+  std::vector<PosRow> right3;
 
   for (auto& row : pos_out) {
-    if (row.round == 1) pos_right.push_back(PosRow(row));
-    if (row.round == 2) pos_left.push_back(PosRow(row));
+    switch (row.round) {
+      case 1:
+        right1.push_back(PosRow(row));
+        break;
+      case 2:
+        left.push_back(PosRow(row));
+        break;
+      case 3:
+        right3.push_back(PosRow(row));
+        break;
+    }
   }
 
-  // pos_left.front().show();
-  // std::cerr << '\t';
-  // pos_right.front().show();
+  if (right3.empty()) {
+    if (left.size() == right1.size()) {
+      for (auto left_iter = std::begin(left), first_right = std::begin(right1);
+           left_iter != std::end(left); ++left_iter, ++first_right) {
+        left_iter->show();
+        std::cerr << '\t';
+        first_right->show();
+        std::cerr << '\n';
+      }
+    } else {
+      std::string first_ref_left;
+      for (auto left_iter = std::begin(left), first_right = std::begin(right1);
+           left_iter != std::end(left); ++left_iter) {
+        if (left_iter->ref == first_ref_left) {
+          --first_right;
+
+          left_iter->show();
+          // left_iter->print();
+          std::cerr << '\t';
+          first_right->show();
+          // first_right->print();
+          std::cerr << '\n';
+        } else {
+          left_iter->show();
+          // left_iter->print();
+          std::cerr << '\t';
+          first_right->show();
+          // first_right->print();
+          std::cerr << '\n';
+
+          ++first_right;
+        }
+
+        first_ref_left = left_iter->ref;
+      }
+    }
+  } else
+  {
+    //todo
+  }
+  
+
+  // // todo
+  // for (auto row : left) row.show();
   // std::cerr << '\n';
-
-  // auto ref_left{pos_left.front().ref};
-  // for (auto l = 1, r = 0; l != pos_left.size(); ++l, ++r) {
-  //   std::cerr << pos_left[l] << '\t';
-  // }
-
+  // for (auto row : right1) row.show();
   // std::cerr << '\n';
-
-  // todo
-  for (auto row : pos_left) row.show();
-  std::cerr << '\n';
-  for (auto row : pos_right) row.show();
-  std::cerr << '\n';
 }
 
 uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
@@ -182,6 +222,9 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   filter->smooth_seg(pos_out, par, round, current_pos_row);
 
   if (filter->nSegs == 0) {
+    if (round == 2) {
+      pos_out.push_back(PosRow(0, 0, 0.0, 0.0, 0, par->ref, par->tar, 2));
+    }
     std::cerr << '\n';
     return 0;  // continue;
   }
@@ -259,18 +302,19 @@ void run(std::unique_ptr<Param>& par) {
 
       std::cerr << '\n';
 
-      // // Round 3
-      // std::cerr << bold(underline("\nRound 3\n"));
-      // const auto name_seg_round2{
-      //     gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-      // par->tar = ref_round2;
-      // for (uint64_t j = 0; j != num_seg_round2; ++j) {
-      //   par->ref = name_seg_round2 + std::to_string(j);
-      //   auto num_seg_round3 =
-      //       run_round(par, 3, run_num, pos_out, current_pos_row);
-      //   std::cerr << "*************\n\n";
-      //   remove_temp_seg(par, num_seg_round3);
-      // }  // Round 3
+      // Round 3
+      std::cerr << bold(underline("\nRound 3\n"));
+      const auto name_seg_round2{
+          gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+      par->tar = ref_round2;
+      for (uint64_t j = 0; j != num_seg_round2; ++j) {
+        par->ref = name_seg_round2 + std::to_string(j);
+        auto num_seg_round3 =
+            run_round(par, 3, run_num, pos_out, current_pos_row);
+        std::cerr << "*************\n\n";
+
+        remove_temp_seg(par, num_seg_round3);
+      }  // Round 3
 
       par->ref = ref_round2;
       par->tar = tar_round2;
@@ -295,7 +339,6 @@ void run(std::unique_ptr<Param>& par) {
   for (auto row : pos_out) {
     row.show();
   }
-
 }
 
 int main(int argc, char* argv[]) {

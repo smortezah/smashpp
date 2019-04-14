@@ -5,11 +5,11 @@
 #include "segment.hpp"
 using namespace smashpp;
 
-void Segment::partition(std::vector<PosRow>& pos_row, float filtered) {
+void Segment::partition(std::vector<PosRow>& pos_out, float filtered) {
   if (filtered > thresh) {
     begun = false;
 
-    partition_last(pos_row);
+    partition_last(pos_out);
 
     begPos = 0, endPos = 0, sumEnt = 0, numEnt = 0;
   } else {
@@ -23,7 +23,7 @@ void Segment::partition(std::vector<PosRow>& pos_row, float filtered) {
   }
 }
 
-void Segment::partition_last(std::vector<PosRow>& pos_row) {
+void Segment::partition_last(std::vector<PosRow>& pos_out) {
   if (begPos != endPos) {
     if (endPos - begPos >= minSize) {
       ++nSegs;
@@ -35,7 +35,7 @@ void Segment::partition_last(std::vector<PosRow>& pos_row) {
           (endPos + end_guard > totalSize) ? totalSize : endPos + end_guard;
       const auto ent = sumEnt / numEnt;
 
-      pos_row.push_back(PosRow(beg, end, ent));
+      pos_out.push_back(PosRow(beg, end, ent));
     }
   }
 }
