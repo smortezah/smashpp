@@ -156,11 +156,13 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
         : smooth_seg_non_rect<false>(pos_out, par, round);
   }
 
-  for (uint64_t i = current_pos_row; i != current_pos_row + nSegs; ++i) {
+  for (uint64_t i = current_pos_row, j = 0; i != current_pos_row + nSegs;
+       ++i, ++j) {
     pos_out[i].round = round;
     pos_out[i].run_num = par->ID;
     pos_out[i].ref = par->ref;
     pos_out[i].tar = par->tar;
+    pos_out[i].seg_num = j;
   }
   // current_pos_row += nSegs;
 

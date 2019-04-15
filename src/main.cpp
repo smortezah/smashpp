@@ -129,6 +129,7 @@ using namespace smashpp;
 //   }
 // }
 
+//todo save not show
 void make_pos_pair(const std::vector<PosRow>& left,
                    const std::vector<PosRow>& right1) {
   for (auto right_first_iter = std::begin(right1),
@@ -153,6 +154,7 @@ void make_pos_pair(const std::vector<PosRow>& left,
   }
 }
 
+
 void make_pos_pair(const std::vector<PosRow>& left,
                    const std::vector<PosRow>& right1,
                    const std::vector<PosRow>& right3) {
@@ -163,82 +165,117 @@ void make_pos_pair(const std::vector<PosRow>& left,
     OutRowAux() = default;
     OutRowAux(PosRow pos2_, PosRow pos1_) : pos2(pos2_), pos1(pos1_) {}
   };
-  std::vector<OutRowAux> pos_row_aux{std::vector<OutRowAux>()};
+  std::vector<OutRowAux> out_aux{std::vector<OutRowAux>()};
 
-  for (auto left_iter = std::begin(left), right1_iter = std::begin(right1),
-            right1_begin = right1_iter;
+  for (auto left_iter = std::begin(left), right1_iter = std::begin(right1);
        left_iter != std::end(left); ++left_iter) {
     for (; right1_iter != std::end(right1); ++right1_iter) {
       auto seg_name{gen_name(right1_iter->run_num, right1_iter->ref,
                              right1_iter->tar, Format::segment) +
-                    std::to_string(std::distance(right1_begin, right1_iter))};
+                    std::to_string(right1_iter->seg_num)};
       if (left_iter->ref == seg_name) {
-        pos_row_aux.push_back(OutRowAux(*left_iter, *right1_iter));
+        out_aux.push_back(OutRowAux(*left_iter, *right1_iter));
         break;
       }
     }
-      
-    // for (auto right3_iter = std::begin(right3); right3_iter != std::end(right3);
-    //      ++right3_iter)
-    //   if (right3_iter->tar == left_iter->ref)
-    //     pos_row_aux.back().pos3.push_back(*right3_iter);
   }
 
-  for (auto right3_iter = std::begin(right3), left_iter = std::begin(left),
-            left_begin = left_iter;
-       right3_iter != std::end(right3); ++right3_iter) {
-
-    for (; left_iter != std::end(left); ++left_iter) {
-      auto seg_name{gen_name(left_iter->run_num, left_iter->ref,
-                             left_iter->tar, Format::segment) +
-                    std::to_string(std::distance(left_begin, left_iter))};
+  auto pos_iter = std::begin(out_aux);
+  for (auto right3_iter = std::begin(right3); right3_iter != std::end(right3);
+       ++right3_iter) {
+    for (; pos_iter != std::end(out_aux); ++pos_iter) {
+      auto seg_name{gen_name(pos_iter->pos2.run_num, pos_iter->pos2.ref,
+                             pos_iter->pos2.tar, Format::segment) +
+                    std::to_string(pos_iter->pos2.seg_num)};
       if (right3_iter->ref == seg_name) {
-        pos_row_aux.back().pos3.push_back(*right3_iter);
+        pos_iter->pos3.push_back(*right3_iter);
         break;
       }
     }
   }
 
-  // struct OutRow {
-  //   PosRow pos2;
-  //   PosRow pos1;
-  //   PosRow pos3;
-  //   OutRow() = default;
-  //   OutRow(PosRow pos2_, PosRow pos1_) : pos2(pos2_), pos1(pos1_) {}
-  //   OutRow(PosRow pos2_, PosRow pos1_, PosRow pos3_)
-  //       : pos2(pos2_), pos1(pos1_), pos3(pos3_) {}
-  // };
-  // std::vector<OutRow> out{std::vector<OutRow>()};
 
-  // for (auto row : pos_row_aux) {
-  //   if (row.pos3.size() == 0) {
-  //     out.push_back(OutRow(row.pos2, row.pos1));
-  //     // row.pos2.show();
-  //     // std::cerr << " * ";
-  //     // row.pos1.show();
-  //     // std::cerr << "\n";
-  //   } else {
-  //     for (auto p3 : row.pos3) {
-  //       out.push_back(OutRow(row.pos2, row.pos1, p3));
-  //       // row.pos2.show();
-  //       // std::cerr << " * ";
-  //       // row.pos1.show();
-  //       // std::cerr << " * ";
-  //       // p3.show();
-  //       // std::cerr << "\n";
-  //     }
-  //   }
-  //   // std::cerr << "\n";
-  // }
-
-  // for (auto e : out) {
+  // for (auto e : out_aux) {
   //   e.pos2.show();
   //   std::cerr << "\n";
   //   e.pos1.show();
   //   std::cerr << "\n";
-  //   e.pos3.show();
+  //   for (auto ee : e.pos3) {
+  //     ee.show();
+  //     std::cerr << "\n";
+  //   }
   //   std::cerr << "\n\n";
   // }
+
+struct PosOut
+{
+  uint64_t beg_pos;
+  uint64_t end_pos;
+  prc_t ent;
+  prc_t self_ent;
+  PosOut() = default;
+  PosOut(uint64_t beg_pos_, uint64_t end_pos_, prc_t ent_, prc_t self_ent_)
+      : beg_pos(beg_pos_), end_pos(end_pos_), ent(ent_), self_ent(self_ent_) {}
+};
+
+std::vector<std::pair<PosOut, PosOut>> pos_out;
+for (auto row : out_aux) {
+  PosOut left;
+  PosOut right;
+
+  if (row.pos2.run_num == 0)
+    left = PosOut(row.pos2.beg_pos, row.pos2.end_pos, row.pos2.ent,
+                  row.pos2.self_ent);
+  else if (row.pos2.run_num == 1)
+    left = PosOut(row.pos2.end_pos, row.pos2.beg_pos, row.pos2.ent,
+                  row.pos2.self_ent);
+
+  if (row.pos3.size() == 0 || row.pos3.size() > 1) {
+    if (row.pos1.run_num == 0)
+      right = PosOut(row.pos1.beg_pos, row.pos1.end_pos, row.pos1.ent,
+                     row.pos1.self_ent);
+    else if (row.pos1.run_num == 1)
+      right = PosOut(row.pos1.end_pos, row.pos1.beg_pos, row.pos1.ent,
+                     row.pos1.self_ent);
+    pos_out.push_back(std::make_pair(left, right));
+  } else {
+    for (auto p3 : row.pos3) {
+      if (p3.run_num == 0)
+        right = PosOut(row.pos1.beg_pos + p3.beg_pos,
+                       row.pos1.beg_pos + p3.end_pos, p3.ent, p3.self_ent);
+      else if (p3.run_num == 1)
+        right = PosOut(row.pos1.beg_pos + p3.end_pos,
+                       row.pos1.beg_pos + p3.beg_pos, p3.ent, p3.self_ent);
+    }
+  }
+}
+
+// struct OutRow {
+//   PosRow pos2;
+//   PosRow pos1;
+//   PosRow pos3;
+//   OutRow() = default;
+//   OutRow(PosRow pos2_, PosRow pos1_) : pos2(pos2_), pos1(pos1_) {}
+//   OutRow(PosRow pos2_, PosRow pos1_, PosRow pos3_)
+//       : pos2(pos2_), pos1(pos1_), pos3(pos3_) {}
+// };
+// std::vector<OutRow> out{std::vector<OutRow>()};
+
+// for (auto row : out_aux) {
+//   if (row.pos3.size() == 0)
+//     out.push_back(OutRow(row.pos2, row.pos1));
+//   else
+//     for (auto p3 : row.pos3) out.push_back(OutRow(row.pos2, row.pos1, p3));
+// }
+
+// for (auto e : out) {
+//   e.pos2.show();
+//   std::cerr << "\n";
+//   e.pos1.show();
+//   std::cerr << "\n";
+//   e.pos3.show();
+//   std::cerr << "\n\n";
+// }
 }
 
 void write_pos_file(const std::vector<PosRow>& pos_out) {
