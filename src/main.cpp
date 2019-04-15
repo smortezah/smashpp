@@ -129,29 +129,55 @@ void make_pos_pair(Iterator left_first_iter, Iterator left_last_iter,
   }
 }
 
-void make_pos_pair(const std::vector<PosRow>& left,
-                   const std::vector<PosRow>& right1,
-                   const std::vector<PosRow>& right3 = nullptr) {
-  // for (auto right_begin = right_first_iter; left_first_iter !=
-  // left_last_iter;
-  //      ++left_first_iter) {
-  //   left_first_iter->print();
-  //   // left_first_iter->show();
-  //   std::cerr << '\t';
+// void make_pos_pair(const std::vector<PosRow>& left,
+//                    const std::vector<PosRow>& right1) {
+//   for (auto right_first_iter = std::begin(right1),
+//             right_begin = right_first_iter, left_first_iter = std::begin(left);
+//        left_first_iter != std::end(left); ++left_first_iter) {
+//     left_first_iter->print();
+//     // left_first_iter->show();
+//     std::cerr << '\t';
 
-  //   for (; right_first_iter != right_last_iter; ++right_first_iter) {
-  //     auto seg_name{
-  //         gen_name(right_first_iter->run_num, right_first_iter->ref,
-  //                  right_first_iter->tar, Format::segment) +
-  //         std::to_string(std::distance(right_begin, right_first_iter))};
-  //     if (left_first_iter->ref == seg_name) {
-  //       right_first_iter->print();
-  //       // right_first_iter->show();
-  //       break;
-  //     }
-  //   }
-  //   std::cerr << '\n';
-  // }
+//     for (; right_first_iter != std::end(right1); ++right_first_iter) {
+//       auto seg_name{
+//           gen_name(right_first_iter->run_num, right_first_iter->ref,
+//                    right_first_iter->tar, Format::segment) +
+//           std::to_string(std::distance(right_begin, right_first_iter))};
+//       if (left_first_iter->ref == seg_name) {
+//         right_first_iter->print();
+//         // right_first_iter->show();
+//         break;
+//       }
+//     }
+//     std::cerr << '\n';
+//   }
+// }
+
+void make_pos_pair(const std::vector<PosRow>& left,
+                   const std::vector<PosRow>& right1
+                   ,
+                   const std::vector<PosRow>& right3
+                   ) {
+  for (auto right_first_iter = std::begin(right1),
+            right_begin = right_first_iter, left_first_iter = std::begin(left);
+       left_first_iter != std::end(left); ++left_first_iter) {
+    left_first_iter->print();
+    // left_first_iter->show();
+    std::cerr << '\t';
+
+    for (; right_first_iter != std::end(right1); ++right_first_iter) {
+      auto seg_name{
+          gen_name(right_first_iter->run_num, right_first_iter->ref,
+                   right_first_iter->tar, Format::segment) +
+          std::to_string(std::distance(right_begin, right_first_iter))};
+      if (left_first_iter->ref == seg_name) {
+        right_first_iter->print();
+        // right_first_iter->show();
+        break;
+      }
+    }
+    std::cerr << '\n';
+  }
 }
 
 void write_pos_file(const std::vector<PosRow>& pos_out) {
@@ -171,16 +197,15 @@ void write_pos_file(const std::vector<PosRow>& pos_out) {
     if (row.round == 3 && row.run_num==1) right3_ir.push_back(PosRow(row));
   }
 
-  // make_pos_pair(std::begin(left_reg), std::end(left_reg),
-  //               std::begin(right1_reg), std::end(right1_reg));
-  // make_pos_pair(std::begin(left_ir), std::end(left_ir), std::begin(right1_ir),
-  //               std::end(right1_ir));
-
-
   // if (right3_reg.empty() && right3_ir.empty()) {
-  //   make_pos_pair(left_reg, right1_reg);
-  //   make_pos_pair(left_ir, right1_ir);
-  // } else {
+    // make_pos_pair(left_reg, right1_reg);
+    // make_pos_pair(left_ir, right1_ir);
+  make_pos_pair(std::begin(left_reg), std::end(left_reg),
+                std::begin(right1_reg), std::end(right1_reg));
+  make_pos_pair(std::begin(left_ir), std::end(left_ir), std::begin(right1_ir),
+                std::end(right1_ir));
+  // } 
+  // else {
   //   make_pos_pair(left_ir, right1_ir, right3_ir);
   // }
 
@@ -348,7 +373,6 @@ void run(std::unique_ptr<Param>& par) {
       par->ref = ref_round2;
       par->tar = tar_round2;
       // filter->aggregate_mid_pos(par->ID, ref_round2, tar_round2);
-      // filter->aggregate_mid_pos(pos_out,par->ID, ref_round2, tar_round2);
 
       remove_temp_seg(par, num_seg_round2);
     }  // Round 2
