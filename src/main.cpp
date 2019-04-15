@@ -129,34 +129,6 @@ using namespace smashpp;
 //   }
 // }
 
-// void make_pos_pair(std::ofstream& pos_file, const std::vector<PosRow>& left,
-//                    const std::vector<PosRow>& right1) {
-//   for (auto right_first_iter = std::begin(right1),
-//             right_begin = right_first_iter, left_first_iter = std::begin(left);
-//        left_first_iter != std::end(left); ++left_first_iter) {
-//     left_first_iter->print();
-//     // left_first_iter->show();
-//     std::cerr << '\t';
-
-//     for (; right_first_iter != std::end(right1); ++right_first_iter) {
-//       auto seg_name{
-//           gen_name(right_first_iter->run_num, right_first_iter->ref,
-//                    right_first_iter->tar, Format::segment) +
-//           std::to_string(std::distance(right_begin, right_first_iter))};
-//       if (left_first_iter->ref == seg_name) {
-//         right_first_iter->print();
-//         // right_first_iter->show();
-//         break;
-//       }
-//     }
-//     std::cerr << '\n';
-//   }
-  
-//   // // Write to pos file
-//   // for (auto row : pos_out)
-//   //   pos_file << row.first.data() << '\t' << row.second.data() << '\n';
-// }
-
 void make_pos_pair(std::ofstream& pos_file, const std::vector<PosRow>& left,
                    const std::vector<PosRow>& right1,
                    const std::vector<PosRow>& right3) {
@@ -277,6 +249,10 @@ void write_pos_file(const std::vector<PosRow>& pos_out) {
   const auto pos_file_name{gen_name(right1_reg.front().ref,
                                     right1_reg.front().tar, Format::position)};
   std::ofstream pos_file(pos_file_name);
+  pos_file << POS_HDR << '\t' << file_name(right1_reg.front().ref) << '\t'
+           << std::to_string(file_size(right1_reg.front().ref)) << '\t'
+           << file_name(right1_reg.front().tar) << '\t'
+           << std::to_string(file_size(right1_reg.front().tar)) << '\n';
 
   if (right3_reg.empty() && right3_ir.empty()) {
     make_pos_pair(pos_file, left_reg, right1_reg, right3_reg);
@@ -426,7 +402,7 @@ void run(std::unique_ptr<Param>& par) {
   std::vector<PosRow> pos_out;
   uint64_t current_pos_row = 0;
 
-  for (uint8_t run_num = 0; run_num != 2/*1*/; ++run_num) {
+  for (uint8_t run_num = 0; run_num != 2; ++run_num) {
     // Round 1
     auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
     const auto name_seg_round1{
@@ -444,42 +420,32 @@ void run(std::unique_ptr<Param>& par) {
 
       std::cerr << '\n';
 
-      // // Round 3
-      // std::cerr << bold(underline("\nRound 3\n"));
-      // const auto name_seg_round2{
-      //     gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-      // par->tar = ref_round2;
-      // for (uint64_t j = 0; j != num_seg_round2; ++j) {
-      //   par->ref = name_seg_round2 + std::to_string(j);
-      //   auto num_seg_round3 =
-      //       run_round(par, 3, run_num, pos_out, current_pos_row);
-      //   std::cerr << "*************\n\n";
+      // Round 3
+      std::cerr << bold(underline("\nRound 3\n"));
+      const auto name_seg_round2{
+          gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+      par->tar = ref_round2;
+      for (uint64_t j = 0; j != num_seg_round2; ++j) {
+        par->ref = name_seg_round2 + std::to_string(j);
+        auto num_seg_round3 =
+            run_round(par, 3, run_num, pos_out, current_pos_row);
+        std::cerr << "*************\n\n";
 
-      //   remove_temp_seg(par, num_seg_round3);
-      // }  // Round 3
+        remove_temp_seg(par, num_seg_round3);
+      }  // Round 3
 
       par->ref = ref_round2;
       par->tar = tar_round2;
-      // filter->aggregate_mid_pos(par->ID, ref_round2, tar_round2);
-
       remove_temp_seg(par, num_seg_round2);
     }  // Round 2
 
     par->ref = ref_round1;
     par->tar = tar_round1;
-    // filter->aggregate_mid_pos(par->ID, ref_round1, tar_round1);
-
     remove_temp_seg(par, num_seg_round1);
     remove_temp_seq(par);
   }  // Round 1
 
-  // filter->aggregate_final_pos(ref_round1, tar_round1);
-
   write_pos_file(pos_out);
-
-  // // todo
-  // for (auto row : pos_out) 
-  //   row.show();
 }
 
 int main(int argc, char* argv[]) {
