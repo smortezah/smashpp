@@ -176,6 +176,8 @@ void Param::parse(int argc, char**& argv) {
           std::numeric_limits<int16_t>::max(), 0, "Target ending guard", "[]",
           "default", Problem::warning);
       range->assert(tar_guard->end);
+    } else if (*i == "-dp") {
+      deep = true;
     } else if (*i == "-nr") {
       noRedun = true;
     } else if (*i == "-sb") {
@@ -382,8 +384,7 @@ void Param::help() const {
           "]",
       "->", std::to_string(tar_guard->end));
 
-//todo
-  print_aligned("-dp", "", "=", "deep processing", "->", "no");
+  print_aligned("-dp", "", "=", "deep compression", "->", "no");
 
   print_aligned("-nr", "", "=", "do NOT compute self complexity", "->", "no");
 

@@ -69,6 +69,7 @@ class Param {
   bool segment;
   uint32_t ID;
   bool noRedun;
+  bool deep;
   std::vector<MMPar> refMs;
   std::vector<MMPar> tarMs;
 
@@ -110,6 +111,7 @@ class Param {
         showInfo(true),
         ID(0),
         noRedun(false),
+        deep(false),
         tar_guard(std::make_unique<TarGuard>()),
         ref_guard(std::make_unique<RefGuard>()) {}
 
