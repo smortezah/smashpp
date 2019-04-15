@@ -382,6 +382,9 @@ void Param::help() const {
           "]",
       "->", std::to_string(tar_guard->end));
 
+//todo
+  print_aligned("-dp", "", "=", "deep processing", "->", "no");
+
   print_aligned("-nr", "", "=", "do NOT compute self complexity", "->", "no");
 
   print_aligned("-sb", "", "=", "save sequence (input: FASTA/FASTQ)", "->",
