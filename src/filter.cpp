@@ -707,47 +707,47 @@ void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round,
 //   mid_file.close();
 // }
 
-void Filter::move_mid_to_pos_file(std::string mid_file_name,
-                                  std::ofstream& pos_file) const {
-  std::ifstream mid_file(mid_file_name);
-  const uint64_t chunk_size{file_size(mid_file_name)};
-  std::vector<char> buffer(chunk_size, 0);
+// void Filter::move_mid_to_pos_file(std::string mid_file_name,
+//                                   std::ofstream& pos_file) const {
+//   std::ifstream mid_file(mid_file_name);
+//   const uint64_t chunk_size{file_size(mid_file_name)};
+//   std::vector<char> buffer(chunk_size, 0);
 
-  mid_file.read(buffer.data(), chunk_size);
-  pos_file.write(buffer.data(), chunk_size);
+//   mid_file.read(buffer.data(), chunk_size);
+//   pos_file.write(buffer.data(), chunk_size);
 
-  mid_file.close();
-  // remove(mid_file_name.c_str());//todo remove comment
-}
+//   mid_file.close();
+//   // remove(mid_file_name.c_str());//todo remove comment
+// }
 
-void Filter::aggregate_final_pos(std::string ref, std::string tar) const {
-  const auto mid0_file_name{gen_name(0, ref, tar, Format::midposition)};
-  const auto mid1_file_name{gen_name(1, ref, tar, Format::midposition)};
-  const bool mid0_file_is_empty{file_is_empty(mid0_file_name)};
-  const bool mid1_file_is_empty{file_is_empty(mid1_file_name)};
+// void Filter::aggregate_final_pos(std::string ref, std::string tar) const {
+//   const auto mid0_file_name{gen_name(0, ref, tar, Format::midposition)};
+//   const auto mid1_file_name{gen_name(1, ref, tar, Format::midposition)};
+//   const bool mid0_file_is_empty{file_is_empty(mid0_file_name)};
+//   const bool mid1_file_is_empty{file_is_empty(mid1_file_name)};
 
-  if (mid0_file_is_empty && mid1_file_is_empty) {
-    std::cerr << bold("The reference and the target are not similar.\n");
-    return;
-  }
+//   if (mid0_file_is_empty && mid1_file_is_empty) {
+//     std::cerr << bold("The reference and the target are not similar.\n");
+//     return;
+//   }
 
-  const auto pos_file_name{gen_name(ref, tar, Format::position)};
-  std::ofstream pos_file(pos_file_name);
-  pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
-           << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
-           << std::to_string(file_size(tar)) << '\n';
+//   const auto pos_file_name{gen_name(ref, tar, Format::position)};
+//   std::ofstream pos_file(pos_file_name);
+//   pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
+//            << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
+//            << std::to_string(file_size(tar)) << '\n';
 
-  if (!mid0_file_is_empty && mid1_file_is_empty) {
-    move_mid_to_pos_file(mid0_file_name, pos_file);
-  } else if (mid0_file_is_empty && !mid1_file_is_empty) {
-    move_mid_to_pos_file(mid1_file_name, pos_file);
-  } else {
-    move_mid_to_pos_file(mid0_file_name, pos_file);
-    move_mid_to_pos_file(mid1_file_name, pos_file);
-  }
+//   if (!mid0_file_is_empty && mid1_file_is_empty) {
+//     move_mid_to_pos_file(mid0_file_name, pos_file);
+//   } else if (mid0_file_is_empty && !mid1_file_is_empty) {
+//     move_mid_to_pos_file(mid1_file_name, pos_file);
+//   } else {
+//     move_mid_to_pos_file(mid0_file_name, pos_file);
+//     move_mid_to_pos_file(mid1_file_name, pos_file);
+//   }
 
-  pos_file.close();
-}
+//   pos_file.close();
+// }
 
 #ifdef BENCH
 template <typename Iter, typename Value>
