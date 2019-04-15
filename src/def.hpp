@@ -66,11 +66,12 @@ struct PosRow {
   uint8_t run_num;  // 0=reg, 1=ir
   std::string ref;
   std::string tar;
+  uint64_t seg_num;
   uint8_t round;
 
   PosRow(uint64_t beg_pos_ = 0, uint64_t end_pos_ = 0, prc_t ent_ = 0.0,
          prc_t self_ent_ = 0.0, uint8_t run_num_ = 0, std::string ref_ = "",
-         std::string tar_ = "", uint8_t round_ = 1)
+         std::string tar_ = "", uint64_t seg_num_ = 0, uint8_t round_ = 1)
       : beg_pos(beg_pos_),
         end_pos(end_pos_),
         ent(ent_),
@@ -78,6 +79,7 @@ struct PosRow {
         run_num(run_num_),
         ref(ref_),
         tar(tar_),
+        seg_num(seg_num_),
         round(round_) {}
 
   PosRow(const PosRow& row)
@@ -88,15 +90,14 @@ struct PosRow {
         run_num(row.run_num),
         ref(row.ref),
         tar(row.tar),
+        seg_num(row.seg_num),
         round(row.round) {}
 
   // Test
   void show() const {
-    std::cerr << int(round) << ' ' << int(run_num) << ' ' << ref << ' ' << tar
-              << ' ' << beg_pos << ' ' << end_pos << ' ' << ent << ' '
-              << self_ent 
-              // << '\n'
-              ;
+    std::cerr << int(round) << ' ' << int(run_num) << ' ' << seg_num << ' '
+              << ref << ' ' << tar << ' ' << beg_pos << ' ' << end_pos << ' '
+              << ent << ' ' << self_ent;
   }
 
   void print() const {
