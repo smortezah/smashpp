@@ -18,7 +18,7 @@ class Filter {
   void smooth_seg(std::vector<PosRow>&,std::unique_ptr<Param>&, uint8_t,uint64_t&);
   // void merge_extract_seg(uint32_t, std::string, std::string) const;
   void extract_seg(std::vector<PosRow>&, uint8_t, uint8_t,std::string) const;
-  void aggregate_final_pos(std::string, std::string) const;
+  // void aggregate_final_pos(std::string, std::string) const;
 
  private:
   WType wtype;
@@ -46,7 +46,7 @@ class Filter {
   template <bool SaveFilter>
   void smooth_seg_non_rect(std::vector<PosRow>&,std::unique_ptr<Param>&, uint8_t);
   // bool is_mergable (const Position&, const Position&) const;
-  void move_mid_to_pos_file(std::string, std::ofstream&) const;
+  // void move_mid_to_pos_file(std::string, std::ofstream&) const;
 
 #ifdef BENCH
   template <typename Iter, typename Value>
