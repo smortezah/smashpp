@@ -156,48 +156,71 @@ void make_pos_pair(const std::vector<PosRow>& left,
 void make_pos_pair(const std::vector<PosRow>& left,
                    const std::vector<PosRow>& right1,
                    const std::vector<PosRow>& right3) {
-  struct Out {
+  struct OutRow {
     PosRow pos2;
     PosRow pos1;
     std::vector<PosRow> pos3;
+    OutRow() = default;
+    OutRow(PosRow pos2_, PosRow pos1_) : pos2(pos2_), pos1(pos1_) {}
   };
-  std::vector<Out> out{};
-  out.resize(1);
+  std::vector<OutRow> out{std::vector<OutRow>()};
 
-  uint64_t line = 0;
-  for (auto right1_iter = std::begin(right1), right1_begin = right1_iter,
-            left_iter = std::begin(left);
+  for (auto left_iter = std::begin(left), right1_iter = std::begin(right1),
+            right1_begin = right1_iter;
        left_iter != std::end(left); ++left_iter) {
-    // left_iter->print();
-    // left_iter->show();
-    // Out tmp_out;
-    // tmp_out.pos2=*left_iter;
-    // out.push_back(tmp_out);
-// out[line].pos2=*left_iter;
-    std::cerr << '\t';
-
     for (; right1_iter != std::end(right1); ++right1_iter) {
       auto seg_name{gen_name(right1_iter->run_num, right1_iter->ref,
                              right1_iter->tar, Format::segment) +
                     std::to_string(std::distance(right1_begin, right1_iter))};
       if (left_iter->ref == seg_name) {
-        // right_first_iter->print();
-        // right1_iter->show();
-        // out[line].pos1 = *right1_iter;
+        out.push_back(OutRow(*left_iter, *right1_iter));
         break;
       }
     }
-    std::cerr << '\n';
+  }
 
-    ++line;
+  for (auto right3_iter = std::begin(right3), left_iter = std::begin(left),
+            left_begin = left_iter;
+       right3_iter != std::end(right3); ++right3_iter) {
+    for (auto line{static_cast<uint64_t>(std::distance(left_begin, left_iter))};
+         left_iter != std::end(left); ++left_iter) {
+      auto seg_name{gen_name(left_iter->run_num, left_iter->ref, left_iter->tar,
+                             Format::segment) +
+                    std::to_string(line)};
+      if (right3_iter->ref == seg_name) {
+        out[line].pos3.push_back(*right3_iter);
+        ++line;
+        break;
+      }
+    }
   }
 
   // todo
-  // for (auto e : out) {
-  //   e.pos2.show();
-  //   e.pos1.show();
-  //   for (auto ee : e.pos3) ee.show();
-  // }
+  for (std::size_t i = 0; i != out.size(); ++i) {
+    out[i].pos2.show();
+    std::cerr << "->";
+    out[i].pos1.show();
+    std::cerr << "->";
+
+    for (std::size_t j = 0; j != out[i].pos3.size(); ++j) {
+      out[i].pos3[j].show();
+      std::cerr << " + ";
+    }
+    std::cerr << '\n';
+  }
+
+  //   for (auto e : out) {
+  //     e.pos2.show();
+  //     std::cerr << "->";
+  //     e.pos1.show();
+  //     std::cerr << "->";
+  //     for (auto ee : e.pos3) {
+  //       ee.show();
+  //       std::cerr << '\t';
+  //     }
+  //     std::cerr << '\n';
+  //   }
+  // std::cerr << "\n+++++++++++++++++\n";
 }
 
 void write_pos_file(const std::vector<PosRow>& pos_out) {
