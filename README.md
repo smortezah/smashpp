@@ -4,20 +4,41 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/028cee56c77046dea4bc870237aae46a)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=smortezah/smashpp&amp;utm_campaign=Badge_Grade)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
-A tool to find and visualize rearrangements in DNA sequences.
+## What is Smash++?
+A fast tool to find and visualize rearrangements in DNA sequences.
 
-## INSTALL
-Get Smash++ and make the project, using:
+## Install
+### Linux
+Install "git" and "cmake":
+```bash
+sudo apt update
+sudo apt install git cmake
+```
+
+Clone Smash++ and make the project:
 ```bash
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
-cmake .
-make -j4
+./compile.sh
 ```
-Note, an already compiled version is available for 64 bit Linux OS in
-the `bin/` directory.
 
-## RUN
+### macOS
+Install "Homebrew", "git" and "cmake":
+```bash
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install git cmake
+```
+
+Clone Smash++ and make the project:
+```bash
+git clone https://github.com/smortezah/smashpp.git
+cd smashpp
+./compile.sh
+```
+
+Note that a precompiled version is available for 64 bit Linux and macOS in the `bin/` directory.
+
+## Run
 ```bash
 ./smashpp [OPTION]...  -r [REF_FILE] -t [TAR_FILE]
 ```
@@ -140,17 +161,17 @@ In order for comparison, you might set the parameters in
 With this script, you can download the datasets, install the dependencies, 
 install the other tools, run all the tools, and finally, visualize the results.
 
-## CITE
+## Cite
 Please cite the following, if you use Smash++:
 * In process ...
 
-## RELEASES
+## Releases
 * [Release](https://github.com/smortezah/smashpp/releases) 1: .
 
-## ISSUES
+## Issues
 Please let us know if there is any 
 [issues](https://github.com/smortezah/smashpp/issues).
 
-## LICENSE
+## License
 Smash++ is under GPL v3 license. For more information, click 
 [here](http://www.gnu.org/licenses/gpl-3.0.html).
