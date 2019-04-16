@@ -235,10 +235,13 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
   filter->smooth_seg(pos_out, par, round, current_pos_row);
   if (filter->nSegs == 0) {
-    //todo
+    // todo
     // if (round == 2) {
-    //   pos_out.push_back(PosRow(0, 0, 0.0, 0.0, 0, par->ref, par->tar, 2));
+    //   pos_out.push_back(PosRow(0, 0, 0.0, 0.0, 0, par->ref, par->tar,
+    //   2));
     // }
+    pos_out.push_back(
+        PosRow(0, 0, 0.0, 0.0, run_num, par->ref, par->tar, 0, round));
     // std::cerr << '\n';
     return 0;  // continue;
   }
@@ -291,7 +294,6 @@ void run(std::unique_ptr<Param>& par) {
   std::string ref_round1 = par->ref;
   std::string tar_round1 = par->tar;
   auto filter = std::make_unique<Filter>();
-
   std::vector<PosRow> pos_out;
   uint64_t current_pos_row = 0;
 
@@ -299,8 +301,8 @@ void run(std::unique_ptr<Param>& par) {
   for (uint8_t run_num = 0; run_num != 2; ++run_num) {
     auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
 
+    // Round 2: old ref = new tar & old tar segments = new refs
     if (num_seg_round1 != 0) {
-      // Round 2: old ref = new tar & old tar segments = new refs
       std::cerr << '\n'
                 << bold("[+] Building reference map for each target pattern")
                 << '\n';
@@ -314,9 +316,9 @@ void run(std::unique_ptr<Param>& par) {
             run_round(par, 2, run_num, pos_out, current_pos_row);
         std::cerr << '\n';
 
+        // Round 3
         if (num_seg_round2 != 0) {
           if (par->deep) {
-            // Round 3
             if (par->verbose) std::cerr << bold("[+] Deep compression") << '\n';
 
             const auto name_seg_round2{
@@ -329,15 +331,15 @@ void run(std::unique_ptr<Param>& par) {
                   run_round(par, 3, run_num, pos_out, current_pos_row);
               std::cerr << "\n";
               remove_temp_seg(par, num_seg_round3);
-            }  // Round 3
+            }
           }
-        }
+        }  // Round 3
 
         par->ref = ref_round2;
         par->tar = tar_round2;
         remove_temp_seg(par, num_seg_round2);
-      }  // Round 2
-    }
+      }
+    }  // Round 2
 
     par->ref = ref_round1;
     par->tar = tar_round1;
@@ -345,7 +347,12 @@ void run(std::unique_ptr<Param>& par) {
     remove_temp_seq(par);
   }  // Round 1
 
-  write_pos_file(pos_out);
+
+// //todo
+//   for (auto e : pos_out) {e.show();
+//     std::cerr << '\t';}
+
+    write_pos_file(pos_out);
 }
 
 int main(int argc, char* argv[]) {
