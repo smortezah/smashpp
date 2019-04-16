@@ -236,6 +236,7 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
 
   //todo erroneous
   filter->smooth_seg(pos_out, par, round, current_pos_row);
+  
   if (filter->nSegs == 0) {
     if (round == 1) {
     } else if (round == 2) {
@@ -312,6 +313,7 @@ void run(std::unique_ptr<Param>& par) {
 
       for (uint64_t i = 0; i != num_seg_round1; ++i) {
         std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
+
         auto num_seg_round2 = run_round(par, 2, run_num, pos_out, current_pos_row);
         std::cerr << '\n';
 
