@@ -24,5 +24,5 @@ r-t.pos
 gprof2dot.py
 0.*
 RefS.TarS.pos
-example/refs.tars.pos
-example/refs.tars.pos
+example/*.pos
+example/*.s*
