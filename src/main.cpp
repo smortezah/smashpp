@@ -105,16 +105,58 @@
 #include "vizpaint.hpp"
 using namespace smashpp;
 
-void make_pos_pair(std::ofstream& pos_file, const std::vector<PosRow>& left,
-                   const std::vector<PosRow>& right1,
-                   const std::vector<PosRow>& right3) {
-  struct OutRowAux {
-    PosRow pos2;
-    PosRow pos1;
-    std::vector<PosRow> pos3;
-    OutRowAux() = default;
-    OutRowAux(PosRow pos2_, PosRow pos1_) : pos2(pos2_), pos1(pos1_) {}
-  };
+struct OutRowAux {
+  PosRow pos2;
+  PosRow pos1;
+  std::vector<PosRow> pos3;
+  OutRowAux() = default;
+  OutRowAux(PosRow pos2_, PosRow pos1_) : pos2(pos2_), pos1(pos1_) {}
+};
+
+void write_pos_file_impl(const std::vector<OutRowAux>& out_aux) {
+  const auto ref{out_aux.front().pos1.ref};
+  const auto tar{out_aux.front().pos1.tar};
+  const auto pos_file_name{gen_name(ref, tar, Format::position)};
+  std::ofstream pos_file(pos_file_name);
+
+  // Header
+  pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
+           << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
+           << std::to_string(file_size(tar)) << '\n';
+
+  // Body
+  for (auto row : out_aux) {
+    // Left hand side
+    pos_file << row.pos2.beg_pos << '\t' << row.pos2.end_pos << '\t'
+             << row.pos2.ent << '\t' << row.pos2.self_ent << '\t';
+
+    // Right hand side
+    if (row.pos3.size() == 1) {
+      if (row.pos3.front().run_num == 0)
+        pos_file << row.pos1.beg_pos + row.pos3.front().beg_pos << '\t'
+                 << row.pos1.beg_pos + row.pos3.front().end_pos << '\t';
+      else if (row.pos3.front().run_num == 1)
+        pos_file << row.pos1.beg_pos + row.pos3.front().end_pos << '\t'
+                 << row.pos1.beg_pos + row.pos3.front().beg_pos << '\t';
+
+      pos_file << row.pos3.front().ent << '\t' << row.pos3.front().self_ent
+               << '\n';
+    } else {
+      if (row.pos1.run_num == 0)
+        pos_file << row.pos1.beg_pos << '\t' << row.pos1.end_pos << '\t';
+      else if (row.pos1.run_num == 1)
+        pos_file << row.pos1.end_pos << '\t' << row.pos1.beg_pos << '\t';
+
+      pos_file << row.pos1.ent << '\t' << row.pos1.self_ent << '\n';
+    }
+  }
+
+  pos_file.close();
+}
+
+void make_write_pos_pair(const std::vector<PosRow>& left,
+                         const std::vector<PosRow>& right1,
+                         const std::vector<PosRow>& right3) {
   std::vector<OutRowAux> out_aux{std::vector<OutRowAux>()};
 
   for (auto left_iter = std::begin(left), right1_iter = std::begin(right1);
@@ -146,52 +188,18 @@ void make_pos_pair(std::ofstream& pos_file, const std::vector<PosRow>& left,
     }
   }
 
-  for (auto row : out_aux) {
-    pos_file << row.pos2.beg_pos << '\t' << row.pos2.end_pos << '\t'
-             << row.pos2.ent << '\t' << row.pos2.self_ent << '\t';
-
-    if (row.pos3.size() == 1) {
-      if (row.pos3.front().run_num == 0)
-        pos_file << row.pos1.beg_pos + row.pos3.front().beg_pos << '\t'
-                 << row.pos1.beg_pos + row.pos3.front().end_pos << '\t';
-      else if (row.pos3.front().run_num == 1)
-        pos_file << row.pos1.beg_pos + row.pos3.front().end_pos << '\t'
-                 << row.pos1.beg_pos + row.pos3.front().beg_pos << '\t';
-
-      pos_file << row.pos3.front().ent << '\t' << row.pos3.front().self_ent
-               << '\n';
-    } else {
-      if (row.pos1.run_num == 0)
-        pos_file << row.pos1.beg_pos << '\t' << row.pos1.end_pos << '\t';
-      else if (row.pos1.run_num == 1)
-        pos_file << row.pos1.end_pos << '\t' << row.pos1.beg_pos << '\t';
-
-      pos_file << row.pos1.ent << '\t' << row.pos1.self_ent << '\n';
-    }
-  }
+  write_pos_file_impl(out_aux);
 }
 
 void write_pos_file(const std::vector<PosRow>& pos_out) {
-  std::vector<PosRow> left;
-  std::vector<PosRow> right1;
-  std::vector<PosRow> right3;
-
-  for (auto& row : pos_out) {
-    if (row.round == 1) right1.push_back(PosRow(row));
+  std::vector<PosRow> left, right1, right3;
+  for (const auto& row : pos_out) {
     if (row.round == 2) left.push_back(PosRow(row));
+    if (row.round == 1) right1.push_back(PosRow(row));
     if (row.round == 3) right3.push_back(PosRow(row));
   }
 
-  const auto pos_file_name{
-      gen_name(right1.front().ref, right1.front().tar, Format::position)};
-  std::ofstream pos_file(pos_file_name);
-  pos_file << POS_HDR << '\t' << file_name(right1.front().ref) << '\t'
-           << std::to_string(file_size(right1.front().ref)) << '\t'
-           << file_name(right1.front().tar) << '\t'
-           << std::to_string(file_size(right1.front().tar)) << '\n';
-
-  make_pos_pair(pos_file, left, right1, right3);
-  pos_file.close();
+  make_write_pos_pair(left, right1, right3);
 }
 
 uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
@@ -240,8 +248,8 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   if (!par->noRedun) {
     if (par->verbose)
       std::cerr << ". . . . . . . . . . . . . . . . . . . "
-                   ". . . . . . . . . .\n>>> "
-                << italic("Reference-free compression of the segment")
+                   ". . . . . . . . . ." << '\n'
+                << italic("[-] Reference-free compression of the segment")
                 << italic(filter->nSegs == 1 ? "" : "s") << '\n';
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
@@ -294,8 +302,7 @@ void run(std::unique_ptr<Param>& par) {
         gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
 
     // Round 2: old ref = new tar & old tar segments = new refs
-    std::cerr << bold(
-        underline("\nBuilding reference map for each target pattern\n"));
+    std::cerr << bold("\n[+] Building reference map for each target pattern\n");
 
     std::string tar_round2 = par->tar = par->ref;
     for (uint64_t i = 0; i != num_seg_round1; ++i) {
@@ -307,16 +314,18 @@ void run(std::unique_ptr<Param>& par) {
 
       if (par->deep) {
         // Round 3
-        std::cerr << bold(underline("\nRound 3\n"));
+        if (par->verbose)
+          std::cerr << bold("[+] Deep compression") << '\n';
+
         const auto name_seg_round2{
             gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
         par->tar = ref_round2;
+
         for (uint64_t j = 0; j != num_seg_round2; ++j) {
           par->ref = name_seg_round2 + std::to_string(j);
           auto num_seg_round3 =
               run_round(par, 3, run_num, pos_out, current_pos_row);
-          std::cerr << "*************\n\n";
-
+          std::cerr << "\n";
           remove_temp_seg(par, num_seg_round3);
         }  // Round 3
       }
