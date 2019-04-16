@@ -538,11 +538,11 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 // }
 
 void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round,
-                         uint8_t run_num,std::string ref) const {
+                         uint8_t run_num, std::string ref) const {
   uint64_t seg_idx{0};
 
   for (const auto& row : pos_out) {
-    if (row.round == round && row.run_num==run_num && row.ref==ref) {
+    if (row.round == round && row.run_num == run_num && row.ref == ref) {
       auto subseq = std::make_unique<SubSeq>();
       subseq->inName = row.tar;
       const auto seg{gen_name(row.run_num, row.ref, row.tar, Format::segment)};
