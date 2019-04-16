@@ -236,10 +236,11 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   filter->smooth_seg(pos_out, par, round, current_pos_row);
 
   if (filter->nSegs == 0) {
-    if (round == 2) {
-      pos_out.push_back(PosRow(0, 0, 0.0, 0.0, 0, par->ref, par->tar, 2));
-    }
-    std::cerr << '\n';
+    //todo
+    // if (round == 2) {
+    //   pos_out.push_back(PosRow(0, 0, 0.0, 0.0, 0, par->ref, par->tar, 2));
+    // }
+    // std::cerr << '\n';
     return 0;  // continue;
   }
   filter->extract_seg(pos_out, round, run_num, par->ref);
@@ -295,45 +296,49 @@ void run(std::unique_ptr<Param>& par) {
   std::vector<PosRow> pos_out;
   uint64_t current_pos_row = 0;
 
+  // Round 1
   for (uint8_t run_num = 0; run_num != 2; ++run_num) {
-    // Round 1
     auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
-    const auto name_seg_round1{
-        gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
 
-    // Round 2: old ref = new tar & old tar segments = new refs
-    std::cerr << bold("\n[+] Building reference map for each target pattern\n");
+    if (num_seg_round1 != 0) {
+      // Round 2: old ref = new tar & old tar segments = new refs
+      std::cerr << '\n'
+                << bold("[+] Building reference map for each target pattern")
+                << '\n';
+      const auto name_seg_round1{
+          gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
+      std::string tar_round2 = par->tar = par->ref;
 
-    std::string tar_round2 = par->tar = par->ref;
-    for (uint64_t i = 0; i != num_seg_round1; ++i) {
-      std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
-      auto num_seg_round2 =
-          run_round(par, 2, run_num, pos_out, current_pos_row);
+      for (uint64_t i = 0; i != num_seg_round1; ++i) {
+        std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
+        auto num_seg_round2 =
+            run_round(par, 2, run_num, pos_out, current_pos_row);
+        std::cerr << '\n';
 
-      std::cerr << '\n';
+        if (num_seg_round2 != 0) {
+          if (par->deep) {
+            // Round 3
+            if (par->verbose) std::cerr << bold("[+] Deep compression") << '\n';
 
-      if (par->deep) {
-        // Round 3
-        if (par->verbose)
-          std::cerr << bold("[+] Deep compression") << '\n';
+            const auto name_seg_round2{
+                gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+            par->tar = ref_round2;
 
-        const auto name_seg_round2{
-            gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-        par->tar = ref_round2;
+            for (uint64_t j = 0; j != num_seg_round2; ++j) {
+              par->ref = name_seg_round2 + std::to_string(j);
+              auto num_seg_round3 =
+                  run_round(par, 3, run_num, pos_out, current_pos_row);
+              std::cerr << "\n";
+              remove_temp_seg(par, num_seg_round3);
+            }  // Round 3
+          }
+        }
 
-        for (uint64_t j = 0; j != num_seg_round2; ++j) {
-          par->ref = name_seg_round2 + std::to_string(j);
-          auto num_seg_round3 =
-              run_round(par, 3, run_num, pos_out, current_pos_row);
-          std::cerr << "\n";
-          remove_temp_seg(par, num_seg_round3);
-        }  // Round 3
-      }
-
-      par->ref = ref_round2;
-      par->tar = tar_round2;
-      remove_temp_seg(par, num_seg_round2);
-    }  // Round 2
+        par->ref = ref_round2;
+        par->tar = tar_round2;
+        remove_temp_seg(par, num_seg_round2);
+      }  // Round 2
+    }
 
     par->ref = ref_round1;
     par->tar = tar_round1;
