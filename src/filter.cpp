@@ -537,38 +537,6 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 //   return static_cast<double>(minEnd-maxBeg) > 0.8 * (maxEnd-minBeg);
 // }
 
-// void Filter::merge_extract_seg(uint32_t ID, std::string ref,
-//                                std::string tar) const {
-//   check_file(gen_name(ID, ref, tar, Format::position));
-//   std::ifstream pos_file(gen_name(ID, ref, tar, Format::position));
-//   const auto segName{gen_name(ID, ref, tar, Format::segment)};
-//   auto subseq = std::make_unique<SubSeq>();
-//   subseq->inName = tar;
-//   uint64_t i{0};
-//   const uint64_t maxTarPos{file_size(tar) - 1};
-
-//   // vector<Position> pos;
-//   // for (uint64_t beg,end,ent; pos_file >> beg >> end >> ent;) {
-//   //   pos.push_back(Position(beg, end));
-//   // }
-//   // std::sort(std::begin(pos), std::end(pos),
-//   //   [] (const Position& a, const Position& b) { return a.beg < b.beg; });
-
-//   for (std::string beg, end, ent; pos_file >> beg >> end >> ent; ++i) {
-//     subseq->outName = segName + std::to_string(i);
-//     subseq->begPos = std::stoull(beg);
-//     if (std::stoull(end) > maxTarPos)
-//       subseq->size =
-//           static_cast<std::streamsize>(maxTarPos - subseq->begPos + 1);
-//     else
-//       subseq->size =
-//           static_cast<std::streamsize>(std::stoull(end) - subseq->begPos + 1);
-//     extract_subseq(subseq);
-//   }
-
-//   pos_file.close();
-// }
-
 void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round,
                          uint8_t run_num,std::string ref) const {
   uint64_t seg_idx{0};
