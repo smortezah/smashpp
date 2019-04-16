@@ -1,7 +1,8 @@
-**/CMakeFiles
-CMakeCache.txt
-Makefile
-cmake_install.cmake
+# **/CMakeFiles
+# CMakeCache.txt
+# Makefile
+# cmake_install.cmake
+**/build
 .vscode
 diogo/*
 *.svg
@@ -25,9 +26,7 @@ r
 t
 r-t.pos
 gprof2dot.py
-smashpp
 0.*
 RefS.TarS.pos
 example/refs.tars.pos
 example/refs.tars.pos
-smashpp

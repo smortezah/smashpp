@@ -234,7 +234,6 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   auto filter = std::make_unique<Filter>(par);
   if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
   filter->smooth_seg(pos_out, par, round, current_pos_row);
-
   if (filter->nSegs == 0) {
     //todo
     // if (round == 2) {
@@ -329,14 +328,14 @@ void run(std::unique_ptr<Param>& par) {
               auto num_seg_round3 =
                   run_round(par, 3, run_num, pos_out, current_pos_row);
               std::cerr << "\n";
-              remove_temp_seg(par, num_seg_round3);
+              // remove_temp_seg(par, num_seg_round3);
             }  // Round 3
           }
         }
 
         par->ref = ref_round2;
         par->tar = tar_round2;
-        remove_temp_seg(par, num_seg_round2);
+        // remove_temp_seg(par, num_seg_round2);
       }  // Round 2
     }
 
