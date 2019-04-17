@@ -153,9 +153,10 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
     make_window();
     (par->saveFilter || par->saveAll)
         ? smooth_seg_non_rect<true>(pos_out, par, round)
-        : smooth_seg_non_rect<false>(pos_out, par, round);
+        : smooth_seg_non_rect<false>(pos_out, par, round);//todo erroneous
   }
 
+  ++current_pos_row;//todo
   for (uint64_t i = current_pos_row, j = 0; i != current_pos_row + nSegs;
        ++i, ++j) {
     pos_out[i].round = round;
@@ -508,6 +509,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   for (auto i = 1u; i != (wsize >> 1u) + 1; ++i) {
     auto seqBeg = std::begin(seq), seqEnd = std::end(seq);
     if (++idx < wsize + 1)
+    //todo erroneous
       sum = (std::inner_product(seqBeg + idx, seqEnd, winBeg, 0.f) +
              std::inner_product(seqBeg, seqBeg + offset, winEnd - idx, 0.f));
     else
