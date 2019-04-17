@@ -609,13 +609,14 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     for (auto i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
   };
 
-  const auto win_beg{std::begin(window)};
-  const auto win_end{std::end(window)};
+  const auto win_beg = std::begin(window);
+  const auto win_end = std::end(window);
   const auto sum_win_weights{std::accumulate(win_beg, win_end, 0.f)};
   // auto sum{0.f};
   uint64_t symsNo{0};
-  std::vector<float> seq;
-  seq.resize(wsize >> 1u);
+  const auto buff_size = 12;//todo change
+  std::vector<float> seq(wsize >> 1u, 0);
+  seq.reserve(wsize+buff_size);  // Essential
 
   for (auto i = (wsize >> 1u) + 1; i-- && std::getline(prfF, num);) {
     seq.push_back(stof(num));
@@ -624,8 +625,9 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
   if (seq.size() < wsize) {
     seq.resize(seq.size() + (wsize >> 1u));  // Append wsize>>1u zeros
-    auto data_beg{std::begin(seq)};
-    auto data_end{data_beg + wsize};
+
+    auto data_beg = std::begin(seq);
+    auto data_end = data_beg + wsize;
     do {
       filtered = std::inner_product(data_beg, data_end, win_beg, 0.f) /
                  sum_win_weights;
@@ -638,22 +640,26 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
       ++data_end;
     } while (data_end <= std::end(seq));
   } else {
-    auto data_beg{std::begin(seq)};
-    auto data_end{data_beg + wsize};
+      auto data_beg = std::begin(seq);
+      auto data_end = std::end(seq);
+
     filtered =
-        std::inner_product(data_beg, data_end, win_beg, 0.f) / sum_win_weights;
+        std::inner_product(data_beg, data_end, win_beg, 0.f) /
+        sum_win_weights;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(pos_out, filtered);
     show_progress(++symsNo, seg->totalSize, message);
 
     while (prfF) {
-      const auto buff_size = 256;
+      data_beg = std::begin(seq);
+      data_end = std::end(seq);
+
       for (auto i = buff_size; i-- && std::getline(prfF, num);) {
         seq.push_back(stof(num));
         jump_lines();
       }
 
-      while (++data_end <= std::end(seq)) {
+      while (++data_end <= std::end(seq)) {  // todo correct
         ++data_beg;
         ++seg->pos;
 
