@@ -26,3 +26,4 @@ gprof2dot.py
 RefS.TarS.pos
 example/*.pos
 example/*.s*
+Makefile

@@ -22,7 +22,7 @@
                 "-th",
                 "1.8",
                 "-v",
-                "-dp",
+                // "-dp",
                 "-nr"
             ],
             "stopAtEntry": false,
