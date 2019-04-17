@@ -160,7 +160,7 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
     smooth_seg_win1(pos_out, par, round);
   }
 
-  ++current_pos_row;  // todo
+  // ++current_pos_row;  // todo
   for (uint64_t i = current_pos_row, j = 0; i != current_pos_row + nSegs;
        ++i, ++j) {
     pos_out[i].round = round;
@@ -168,6 +168,11 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
     pos_out[i].ref = par->ref;
     pos_out[i].tar = par->tar;
     pos_out[i].seg_num = j;
+    // pos_out.at(i).round = round;
+    // pos_out.at(i).run_num = par->ID;
+    // pos_out.at(i).ref = par->ref;
+    // pos_out.at(i).tar = par->tar;
+    // pos_out.at(i).seg_num = j;
   }
   // current_pos_row += nSegs;
 
