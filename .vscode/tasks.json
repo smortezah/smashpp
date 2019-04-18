@@ -2,17 +2,51 @@
   "tasks": [
     {
       "type": "shell",
-      "label": "g++ build active file",
-      "command": "/usr/bin/g++",
+      // "options": {
+      //   "cwd": "C:\\cygwin64\\bin"
+      // },
+      "label": "g++.exe build active file",
+      "command": "C:\\cygwin64\\bin\\g++.exe",
       "args": [
+        "-std=c++17",
+        "-pthread",
+        "-Wall",
         "-g",
-        "${file}",
+        "src\\par.cpp",
+        "src\\fcm.cpp",
+        "src\\tbl64.cpp",
+        "src\\tbl32.cpp",
+        "src\\cmls4.cpp",
+        "src\\logtbl8.cpp",
+        "src\\filter.cpp",
+        "src\\segment.cpp",
+        "src\\color.cpp",
+        "src\\svg.cpp",
+        "src\\vizpaint.cpp",
+        "src\\main.cpp",
         "-o",
-        "${fileDirname}/${fileBasenameNoExtension}"
+        "smashpp",
+        // "${workspaceFolder}\\smashpp",
+        // "${workspaceFolder}\\src\\par.cpp",
+        // "${workspaceFolder}\\src\\fcm.cpp",
+        // "${workspaceFolder}\\src\\tbl64.cpp",
+        // "${workspaceFolder}\\src\\tbl32.cpp",
+        // "${workspaceFolder}\\src\\cmls4.cpp",
+        // "${workspaceFolder}\\src\\logtbl8.cpp",
+        // "${workspaceFolder}\\src\\filter.cpp",
+        // "${workspaceFolder}\\src\\segment.cpp",
+        // "${workspaceFolder}\\src\\color.cpp",
+        // "${workspaceFolder}\\src\\svg.cpp",
+        // "${workspaceFolder}\\src\\vizpaint.cpp",
+        // "${workspaceFolder}\\src\\main.cpp"
       ],
-      "options": {
-        "cwd": "/usr/bin"
-      }
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
     }
   ],
   "version": "2.0.0"
