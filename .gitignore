@@ -27,3 +27,5 @@ RefS.TarS.pos
 example/*.pos
 example/*.s*
 Makefile
+0.*
+1.*

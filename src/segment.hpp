@@ -38,7 +38,7 @@ class Segment {
         minSize(MIN_SSIZE) {}
 
   void partition(std::vector<PosRow>&, float);
-  void partition_last(std::vector<PosRow>&);
+  void finalize_partition(std::vector<PosRow>&);
   void set_guards(uint8_t, int16_t, int16_t);
 };
 }  // namespace smashpp
