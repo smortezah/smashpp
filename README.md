@@ -8,6 +8,9 @@
 A fast tool to find and visualize rearrangements in DNA sequences.
 
 ## Install
+### Conda
+
+
 ### Linux
 Install "git" and "cmake":
 ```bash

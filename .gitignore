@@ -29,3 +29,5 @@ example/*.s*
 Makefile
 0.*
 1.*
+smashpp.exe
+gdb.exe.stackdump
