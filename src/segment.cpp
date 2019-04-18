@@ -9,7 +9,7 @@ void Segment::partition(std::vector<PosRow>& pos_out, float filtered) {
   if (filtered > thresh) {
     begun = false;
 
-    partition_last(pos_out);
+    finalize_partition(pos_out);
 
     begPos = 0, endPos = 0, sumEnt = 0, numEnt = 0;
   } else {
@@ -23,14 +23,14 @@ void Segment::partition(std::vector<PosRow>& pos_out, float filtered) {
   }
 }
 
-void Segment::partition_last(std::vector<PosRow>& pos_out) {
-  if (begPos != endPos) {
+void Segment::finalize_partition(std::vector<PosRow>& pos_out) {
+  if (endPos != begPos) {
     if (endPos - begPos >= minSize) {
       ++nSegs;
 
       const auto beg = (static_cast<int64_t>(begPos - beg_guard) < 0)
-                        ? 0
-                        : begPos - beg_guard;
+                           ? 0
+                           : begPos - beg_guard;
       const auto end =
           (endPos + end_guard > totalSize) ? totalSize : endPos + end_guard;
       const auto ent = sumEnt / numEnt;
