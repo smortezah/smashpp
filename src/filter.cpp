@@ -643,7 +643,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     do {
       data_beg = std::begin(seq);
 
-      for (auto i = buff_size; i-- && (prfF >> entropy);) {
+      for (auto i = buff_size; i-- && (prfF >> entropy);++data_beg) {
         filtered =
             std::inner_product(data_beg, data_beg + wsize, win_beg, 0.f) /
             sum_win_weights;
@@ -654,7 +654,6 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
         seq.push_back(entropy);
         jump_lines();
 
-        ++data_beg;
         ++seg->pos;
       }
 
