@@ -613,69 +613,68 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   const auto win_end = std::end(window);
   const auto sum_win_weights{std::accumulate(win_beg, win_end, 0.f)};
   uint64_t symsNo{0};
-  const auto buff_size = 12;//todo change
-  std::vector<float> seq(wsize >> 1u, 0);
-  seq.reserve(wsize+buff_size);  // Essential
 
-  for (auto i = (wsize >> 1u) + 1; i-- && std::getline(prfF, num);) {
-    seq.push_back(stof(num));
+  const auto buff_size = 256;  // todo
+  // const auto buff_size = (wsize < 256) ? 256 - wsize : 1;//todo
+
+  std::vector<float> seq(wsize >> 1u, 0);
+  seq.reserve(wsize + buff_size);  // Essential
+
+  // auto print_seq = [&]() {
+  //   for (auto e : seq) std::cerr << e << ' ';
+  //   std::cerr << '\n';
+  // };  // todo debug
+
+  float entropy;
+  for (auto i = (wsize >> 1u) + 1; i-- && (prfF >> entropy);) {
+    seq.push_back(entropy);
     jump_lines();
   }
 
+  // print_seq(); // todo debug
+
+  std::vector<float>::iterator data_beg;
+  uint64_t running_times;
+
   if (seq.size() < wsize) {
-    seq.resize(seq.size() + (wsize >> 1u));  // Append wsize>>1u zeros
-
-    auto data_beg = std::begin(seq);
-    auto data_end = data_beg + wsize;
-    do {
-      filtered = std::inner_product(data_beg, data_end, win_beg, 0.f) /
-                 sum_win_weights;
-      if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-      seg->partition(pos_out, filtered);
-      show_progress(++symsNo, seg->totalSize, message);
-
-      ++seg->pos;
-      ++data_beg;
-      ++data_end;
-    } while (data_end <= std::end(seq));
+    data_beg = std::begin(seq);
+    running_times = seq.size() - (wsize >> 1u);
   } else {
-    std::vector<float>::iterator data_beg;
-    std::vector<float>::iterator data_end;
-
     do {
       data_beg = std::begin(seq);
-      data_end = std::end(seq);
 
-      for (auto i = buff_size; i-- && std::getline(prfF, num);) {
-        seq.push_back(stof(num));
-        jump_lines();
-      }
-
-      for (;data_end <= std::end(seq);++data_beg,++data_end) {
-        filtered = std::inner_product(data_beg, data_end, win_beg, 0.f) /
-                   sum_win_weights;
+      for (auto i = buff_size; i-- && (prfF >> entropy);) {
+        filtered =
+            std::inner_product(data_beg, data_beg + wsize, win_beg, 0.f) /
+            sum_win_weights;
         if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
         seg->partition(pos_out, filtered);
         show_progress(++symsNo, seg->totalSize, message);
 
+        seq.push_back(entropy);
+        jump_lines();
+
+        ++data_beg;
         ++seg->pos;
       }
 
       seq.erase(std::begin(seq), data_beg);  // todo change. ~ slow
-      // seq.erase(std::begin(seq), std::end(seq) - wsize);
     } while (prfF);
 
-    seq.resize(seq.size() + (wsize >> 1u));  // Append wsize>>1u zeros
+    data_beg = std::begin(seq) + 1;
+    running_times = (wsize >> 1u);
+  }
 
-    for (;++data_end <= std::end(seq);++data_beg) {
-      ++seg->pos;
+  seq.resize(seq.size() + (wsize >> 1u));  // Append wsize>>1u zeros
 
-      filtered = std::inner_product(data_beg, data_end, win_beg, 0.f) /
-                 sum_win_weights;
-      if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-      seg->partition(pos_out, filtered);
-      show_progress(++symsNo, seg->totalSize, message);
-    }
+  for (auto i = running_times; i--;) {
+    filtered = std::inner_product(data_beg, data_beg + wsize, win_beg, 0.f) /
+               sum_win_weights;
+    if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
+    seg->partition(pos_out, filtered);
+    show_progress(++symsNo, seg->totalSize, message);
+    ++data_beg;
+    ++seg->pos;
   }
 
   seg->finalize_partition(pos_out);
