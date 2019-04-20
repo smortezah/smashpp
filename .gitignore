@@ -32,3 +32,4 @@ Makefile
 smashpp.exe
 gdb.exe.stackdump
 smashpp.exe
+.Rproj.user
