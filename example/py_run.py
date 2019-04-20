@@ -15,7 +15,7 @@ for idx_ref in range(1, num_files+1):
         ref = str(idx_ref)
         tar = str(idx_tar)
         cmd = './smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r ' + ref + \
-            ' -t ' + tar + ' -th 1.8 -v -dp';# + ' -rb 20 -re 10;'
+            ' -t ' + tar + ' -th 1.8 -v -dp -m 60'  # + ' -rb 20 -re 10;'
         os.popen(cmd).read()
 
 
