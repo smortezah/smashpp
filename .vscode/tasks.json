@@ -3,8 +3,7 @@
     {
       "type": "shell",
       "label": "g++.exe build active file",
-      // "command": "C:\\cygwin64\\bin\\g++.exe -g -std=c++17 -pthread -Wall src\\par.cpp src\\fcm.cpp src\\tbl64.cpp src\\tbl32.cpp src\\cmls4.cpp src\\logtbl8.cpp src\\filter.cpp src\\segment.cpp src\\color.cpp src\\svg.cpp src\\vizpaint.cpp src\\main.cpp -o smashpp",
-      "command": "C:\\cygwin64\\bin\\g++.exe -g -std=c++17 -pthread -Wall src\\*.cpp -o smashpp",
+      "command": "C:\\cygwin64\\bin\\g++.exe -g -O0 -std=c++17 -pthread -Wall src\\par.cpp src\\fcm.cpp src\\tbl64.cpp src\\tbl32.cpp src\\cmls4.cpp src\\logtbl8.cpp src\\filter.cpp src\\segment.cpp src\\color.cpp src\\svg.cpp src\\vizpaint.cpp src\\main.cpp -o smashpp",
       "group": {
         "kind": "build",
         "isDefault": true

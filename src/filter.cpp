@@ -376,6 +376,7 @@ inline void Filter::make_nuttall() {
   window.front() = window.back() = 0.0;
 }
 
+//todo adjuct code with non_rect v2.0
 template <bool SaveFilter>
 inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
                                     std::unique_ptr<Param>& par,
@@ -615,30 +616,23 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   uint64_t symsNo{0};
 
   const auto buff_size = 256;  // todo
-  // const auto buff_size = (wsize < 256) ? 256 - wsize : 1;//todo
+  const auto half_wsize = (wsize >> 1u);
 
-  std::vector<float> seq(wsize >> 1u, 0);
+  std::vector<float> seq(half_wsize, 0);
   seq.reserve(wsize + buff_size);  // Essential
 
-  // auto print_seq = [&]() {
-  //   for (auto e : seq) std::cerr << e << ' ';
-  //   std::cerr << '\n';
-  // };  // todo debug
-
   float entropy;
-  for (auto i = (wsize >> 1u) + 1; i-- && (prfF >> entropy);) {
+  for (auto i = half_wsize + 1; i-- && (prfF >> entropy);) {
     seq.push_back(entropy);
     jump_lines();
   }
-
-  // print_seq(); // todo debug
 
   std::vector<float>::iterator data_beg;
   uint64_t running_times;
 
   if (seq.size() < wsize) {
     data_beg = std::begin(seq);
-    running_times = seq.size() - (wsize >> 1u);
+    running_times = seq.size() - half_wsize;
   } else {
     do {
       data_beg = std::begin(seq);
@@ -661,10 +655,10 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     } while (prfF);
 
     data_beg = std::begin(seq) + 1;
-    running_times = (wsize >> 1u);
+    running_times = half_wsize;
   }
 
-  seq.resize(seq.size() + (wsize >> 1u));  // Append wsize>>1u zeros
+  seq.resize(seq.size() + half_wsize);  // Append wsize>>1u zeros
 
   for (auto i = running_times; i--;) {
     filtered = std::inner_product(data_beg, data_beg + wsize, win_beg, 0.f) /
