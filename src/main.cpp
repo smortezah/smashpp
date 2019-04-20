@@ -234,9 +234,9 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   auto filter = std::make_unique<Filter>(par);
   if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
 
-  //todo erroneous
+  // todo erroneous
   filter->smooth_seg(pos_out, par, round, current_pos_row);
-  
+
   if (filter->nSegs == 0) {
     if (round == 1) {
     } else if (round == 2) {
@@ -251,8 +251,8 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   // Ref-free compress
   if (!par->noRedun) {
     if (par->verbose)
-      std::cerr << ". . . . . . . . . . . . . . . . . . . "
-                   ". . . . . . . . . ." << '\n'
+      std::cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                << '\n'
                 << italic("[-] Reference-free compression of the segment")
                 << italic(filter->nSegs == 1 ? "" : "s") << '\n';
 
@@ -263,9 +263,9 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
       models->self_compress(par, i);
     }
 
-    models->aggregate_slf_ent(pos_out, round, run_num,  par->ref,par->noRedun);
+    models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);
   }
-  
+
   current_pos_row += filter->nSegs;
   return filter->nSegs;
 }
@@ -314,7 +314,8 @@ void run(std::unique_ptr<Param>& par) {
       for (uint64_t i = 0; i != num_seg_round1; ++i) {
         std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
 
-        auto num_seg_round2 = run_round(par, 2, run_num, pos_out, current_pos_row);
+        auto num_seg_round2 =
+            run_round(par, 2, run_num, pos_out, current_pos_row);
         std::cerr << '\n';
 
         if (num_seg_round2 != 0) {
@@ -348,12 +349,7 @@ void run(std::unique_ptr<Param>& par) {
     remove_temp_seq(par);
   }  // Round 1
 
-
-// //todo
-//   for (auto e : pos_out) {e.show();
-//     std::cerr << '\t';}
-
-    write_pos_file(pos_out);
+  write_pos_file(pos_out);
 }
 
 int main(int argc, char* argv[]) {
