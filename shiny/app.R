@@ -1,9 +1,19 @@
 library(shiny)
 
-
 ui <- fluidPage(sidebarLayout(
   sidebarPanel(
-    # # Compile
+    # Compile
+    textInput(
+      inputId = "command",
+      label = "Compilation",
+      value = "g++ -g -O0 -std=c++17 -pthread -Wall ..\\src\\par.cpp 
+      ..\\src\\fcm.cpp ..\\src\\tbl64.cpp ..\\src\\tbl32.cpp ..\\src\\cmls4.cpp 
+      ..\\src\\logtbl8.cpp ..\\src\\filter.cpp ..\\src\\segment.cpp 
+      ..\\src\\color.cpp ..\\src\\svg.cpp ..\\src\\vizpaint.cpp 
+      ..\\src\\main.cpp -o smashpp"
+    ),
+    actionButton("compile", "compile"),
+    
     # sliderInput(
     #   "optimize",
     #   "Optimization level",
@@ -36,24 +46,19 @@ ui <- fluidPage(sidebarLayout(
     # Visualize
     selectInput("mode", "Mode",
                 c("Horizontal", "Vertical"), selected = "Vertical"),
-    actionButton("visual", "Visualize"),
-    
-    textInput(
-      inputId = "command",
-      label = "",
-      value = "ls"
-    ),
-    actionButton("btn", "run")
+    actionButton("visual", "Visualize")
   ),
   
-  mainPanel(textOutput("cpp"))
+  mainPanel(verbatimTextOutput("cpp", placeholder = TRUE))
 ))
 
 server <- function(input, output, session) {
-  observeEvent(input$btn, {
-    output$cpp <- renderText({
-      paste(system(input$command))
-    })
+  console_out <- eventReactive(input$compile, {
+    capture.output(cat(system(input$command, intern = TRUE), sep = '\n'))
+  })
+  
+  output$cpp <- renderPrint({
+    console_out()
   })
 }
 
