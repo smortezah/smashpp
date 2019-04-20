@@ -142,7 +142,6 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
 void Filter::smooth_seg(std::vector<PosRow>& pos_out,
                         std::unique_ptr<Param>& par, uint8_t round,
                         uint64_t& current_pos_row) {
-  // std::string
   message = "Filtering & segmenting " + italic(par->tarName) + " ";
 
   if (window.size() != 1) {
@@ -160,7 +159,6 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
     smooth_seg_win1(pos_out, par, round);
   }
 
-  // ++current_pos_row;  // todo
   for (uint64_t i = current_pos_row, j = 0; i != current_pos_row + nSegs;
        ++i, ++j) {
     pos_out.at(i).round = round;
@@ -169,7 +167,6 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
     pos_out.at(i).tar = par->tar;
     pos_out.at(i).seg_num = j;
   }
-  // current_pos_row += nSegs;
 
   if (!par->saveAll && !par->saveProfile)
     remove((gen_name(par->ID, par->refName, par->tarName, Format::profile))
@@ -376,19 +373,17 @@ inline void Filter::make_nuttall() {
   window.front() = window.back() = 0.0;
 }
 
-//todo adjuct code with non_rect v2.0
 template <bool SaveFilter>
 inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
-                                    std::unique_ptr<Param>& par,
-                                    uint8_t round) {
-  const auto profileName{
+                                        std::unique_ptr<Param>& par,
+                                        uint8_t round) {
+  const auto profile_name{
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
-  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
-  check_file(profileName);
-  std::ifstream prfF(profileName);
-  std::ofstream filF(filterName);
-  std::vector<float> seq;
-  seq.reserve(wsize);
+  check_file(profile_name);
+  std::ifstream prfF(profile_name);
+  const auto filter_name{gen_name(par->ID, par->ref, par->tar, Format::filter)};
+  std::ofstream filF(filter_name);
+
   auto seg = std::make_shared<Segment>();
   seg->thresh = par->thresh;
   if (par->manSegSize) seg->minSize = par->segSize;
@@ -402,182 +397,80 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
     else if (round == 1 || round == 3)
       seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
   }
-  std::string num;
-  auto sum{0.f};
-  auto filtered{0.f};
+  seg->totalSize = file_lines(profile_name) / par->sampleStep;
+  // const auto totalSize = (file_lines(profile_name) / par->sampleStep) + 1;
+
+  const auto sum_win_weights{wsize};
   uint64_t symsNo{0};
-  seg->totalSize = file_lines(profileName) / par->sampleStep;
-  // const auto totalSize = (file_lines(profileName) / par->sampleStep) + 1;
+
+  const auto buff_size = 256;  // todo
+  const auto half_wsize = (wsize >> 1u);
+
+  std::vector<float> seq(half_wsize, 0);
+  seq.reserve(wsize + buff_size);  // Essential
+
   const auto jump_lines = [&]() {
-    for (uint64_t i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
+    for (auto i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
   };
-
-  // First value
-  for (auto i = (wsize >> 1u) + 1; i-- && getline(prfF, num);) {
-    const auto val{stof(num)};
-    seq.push_back(val);
-    sum += val;
-    show_progress(++symsNo, seg->totalSize, message);
-    jump_lines();
-  }
-  filtered = sum / seq.size();
-  if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-  seg->partition(pos_out, filtered);
-
-  // Next wsize>>1 values
-  for (auto i = (wsize >> 1u); i-- && getline(prfF, num);) {
-    const auto val{stof(num)};
-    seq.push_back(val);
-    sum += val;
-    ++seg->pos;
-    filtered = sum / seq.size();
-    if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-    seg->partition(pos_out, filtered);
-    show_progress(++symsNo, seg->totalSize, message);
+  float entropy;
+  for (auto i = half_wsize + 1; i-- && (prfF >> entropy);) {
+    seq.push_back(entropy);
     jump_lines();
   }
 
-  // The rest
-  uint32_t idx{0};
-  while (getline(prfF, num)) {
-    const auto val = stof(num);
-    sum += val - seq[idx];
-    ++seg->pos;
-    filtered = sum / wsize;
-    if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-    seg->partition(pos_out, filtered);
-    seq[idx] = val;
-    idx = (idx + 1) % wsize;
-    show_progress(++symsNo, seg->totalSize, message);
-    jump_lines();
-  }
-  prfF.close();
+  std::vector<float>::iterator data_beg;
+  uint64_t running_times;
+  auto filtered{0.f};
 
-  // Until half of the window goes outside the array
-  for (auto i = 1u; i != (wsize >> 1u) + 1; ++i) {
-    sum -= seq[idx];
-    ++seg->pos;
-    filtered = sum / (wsize - i);
+  if (seq.size() < wsize || prfF.peek() == EOF) {
+    data_beg = std::begin(seq);
+    running_times = seq.size() - half_wsize;
+  } else {
+    do {
+      data_beg = std::begin(seq);
+      filtered =
+          std::accumulate(data_beg, data_beg + wsize, 0.f) / sum_win_weights;
+
+      for (auto i = buff_size; i-- && (prfF >> entropy); ++data_beg) {
+        if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
+        seg->partition(pos_out, filtered);
+        show_progress(++symsNo, seg->totalSize, message);
+
+        seq.push_back(entropy);
+        jump_lines();
+
+        filtered += (entropy - *data_beg) / sum_win_weights;
+        ++seg->pos;
+      }
+
+      seq.erase(std::begin(seq), data_beg);  // todo ~ slow
+    } while (prfF);
+
+    data_beg = std::begin(seq) + 1;
+    running_times = half_wsize;
+  }
+
+  seq.resize(seq.size() + half_wsize);  // Append half_wsize zeros
+  filtered = std::accumulate(data_beg, data_beg + wsize, 0.f) / sum_win_weights;
+
+  for (auto i = running_times; i--;) {
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(pos_out, filtered);
-    idx = (idx + 1) % wsize;
     show_progress(++symsNo, seg->totalSize, message);
+    filtered -= *data_beg / sum_win_weights;
+    ++data_beg;
+    ++seg->pos;
   }
+
   seg->finalize_partition(pos_out);
   show_progress(++symsNo, seg->totalSize, message);
 
+  prfF.close();
   filF.close();
-  if (!SaveFilter) remove(filterName.c_str());
-  // if (!par->saveAll && !SaveFilter) remove(filterName.c_str());
+  if (!SaveFilter) remove(filter_name.c_str());
   nSegs = seg->nSegs;
 }
 
-// template <bool SaveFilter>
-// inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
-//                                         std::unique_ptr<Param>& par,
-//                                         uint8_t round) {
-//   const auto profileName{
-//       gen_name(par->ID, par->ref, par->tar, Format::profile)};
-//   const auto filterName{gen_name(par->ID, par->ref, par->tar,
-//   Format::filter)}; check_file(profileName); std::ifstream prfF(profileName);
-//   std::ofstream filF(filterName);
-//   std::vector<float> seq;
-//   seq.reserve(wsize);
-//   auto seg = std::make_shared<Segment>();
-//   seg->thresh = par->thresh;
-//   if (par->manSegSize) seg->minSize = par->segSize;
-//   {
-//     uint8_t maxCtx = 0;
-//     for (const auto& e : par->refMs)
-//       if (e.k > maxCtx) maxCtx = e.k;
-
-//     if (round == 2)
-//       seg->set_guards(maxCtx, par->ref_guard->beg, par->ref_guard->end);
-//     else if (round == 1 || round == 3)
-//       seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
-//   }
-//   const auto winBeg{std::begin(window)};
-//   const auto winEnd{std::end(window)};
-//   auto sWeight{std::accumulate(winBeg + (wsize >> 1u), winEnd, 0.f)};
-//   std::string num;
-//   auto sum{0.f};
-//   auto filtered{0.f};
-//   uint64_t symsNo{0};
-//   seg->totalSize = file_lines(profileName) / par->sampleStep;
-//   // const auto totalSize = (file_lines(profileName) / par->sampleStep) + 1;
-//   const auto jump_lines = [&]() {
-//     for (uint64_t i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
-//   };
-
-//   // First value
-//   for (auto i = (wsize >> 1u) + 1; i-- && std::getline(prfF, num);
-//        jump_lines()) {
-//     seq.push_back(stof(num));
-//     jump_lines();
-//   }
-//   sum = inner_product(winBeg + (wsize >> 1u), winEnd, std::begin(seq), 0.f);
-//   filtered = sum / sWeight;
-//   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-//   seg->partition(pos_out, filtered);
-//   show_progress(++symsNo, seg->totalSize, message);
-
-//   // Next wsize>>1 values
-//   for (auto i = (wsize >> 1u); i-- && std::getline(prfF, num);) {
-//     seq.push_back(stof(num));
-//     sum = std::inner_product(winBeg + i, winEnd, std::begin(seq), 0.f);
-//     ++seg->pos;
-//     sWeight += window[i];
-//     filtered = sum / sWeight;
-//     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-//     seg->partition(pos_out, filtered);
-//     show_progress(++symsNo, seg->totalSize, message);
-//     jump_lines();
-//   }
-
-//   // The rest
-//   uint32_t idx{0};
-//   for (auto seqBeg = std::begin(seq); std::getline(prfF, num);) {
-//     seq[idx] = std::stof(num);
-//     idx = (idx + 1) % wsize;
-//     sum = (std::inner_product(winBeg, winEnd - idx, seqBeg + idx, 0.f) +
-//            std::inner_product(winEnd - idx, winEnd, seqBeg, 0.f));
-//     ++seg->pos;
-//     filtered = sum / sWeight;
-//     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-//     seg->partition(pos_out, filtered);
-//     show_progress(++symsNo, seg->totalSize, message);
-//     jump_lines();
-//   }
-//   prfF.close();
-
-//   // Until half of the window goes outside the array
-//   const auto offset{idx};
-//   for (auto i = 1u; i != (wsize >> 1u) + 1; ++i) {
-//     auto seqBeg = std::begin(seq), seqEnd = std::end(seq);
-//     if (++idx < wsize + 1)
-//     //todo erroneous
-//       sum = (std::inner_product(seqBeg + idx, seqEnd, winBeg, 0.f) +
-//              std::inner_product(seqBeg, seqBeg + offset, winEnd - idx, 0.f));
-//     else
-//       sum = std::inner_product(seqBeg + (idx % wsize), seqBeg + offset,
-//       winBeg,
-//                                0.f);
-//     ++seg->pos;
-//     sWeight -= window[wsize - i];
-//     filtered = sum / sWeight;
-//     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-//     seg->partition(pos_out, filtered);
-//     show_progress(++symsNo, seg->totalSize, message);
-//   }
-//   seg->finalize_partition(pos_out);
-//   show_progress(++symsNo, seg->totalSize, message);
-
-//   filF.close();
-//   if (!SaveFilter) remove(filterName.c_str());
-//   nSegs = seg->nSegs;
-// }
-
-// todo v2.0
 template <bool SaveFilter>
 inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
                                         std::unique_ptr<Param>& par,
@@ -586,9 +479,8 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
       gen_name(par->ID, par->ref, par->tar, Format::profile)};
   check_file(profile_name);
   std::ifstream prfF(profile_name);
-  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
-  std::ofstream filF(filterName);
-  auto filtered{0.f};
+  const auto filter_name{gen_name(par->ID, par->ref, par->tar, Format::filter)};
+  std::ofstream filF(filter_name);
 
   auto seg = std::make_shared<Segment>();
   seg->thresh = par->thresh;
@@ -603,12 +495,8 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     else if (round == 1 || round == 3)
       seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
   }
-  std::string num;
   seg->totalSize = file_lines(profile_name) / par->sampleStep;
   // const auto totalSize = (file_lines(profile_name) / par->sampleStep) + 1;
-  const auto jump_lines = [&]() {
-    for (auto i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
-  };
 
   const auto win_beg = std::begin(window);
   const auto win_end = std::end(window);
@@ -621,6 +509,9 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   std::vector<float> seq(half_wsize, 0);
   seq.reserve(wsize + buff_size);  // Essential
 
+  const auto jump_lines = [&]() {
+    for (auto i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
+  };
   float entropy;
   for (auto i = half_wsize + 1; i-- && (prfF >> entropy);) {
     seq.push_back(entropy);
@@ -629,15 +520,16 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
   std::vector<float>::iterator data_beg;
   uint64_t running_times;
+  auto filtered{0.f};
 
-  if (seq.size() < wsize) {
+  if (seq.size() < wsize || prfF.peek() == EOF) {
     data_beg = std::begin(seq);
     running_times = seq.size() - half_wsize;
   } else {
     do {
       data_beg = std::begin(seq);
 
-      for (auto i = buff_size; i-- && (prfF >> entropy);++data_beg) {
+      for (auto i = buff_size; i-- && (prfF >> entropy); ++data_beg) {
         filtered =
             std::inner_product(data_beg, data_beg + wsize, win_beg, 0.f) /
             sum_win_weights;
@@ -651,14 +543,14 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
         ++seg->pos;
       }
 
-      seq.erase(std::begin(seq), data_beg);  // todo change. ~ slow
+      seq.erase(std::begin(seq), data_beg);  // todo ~ slow
     } while (prfF);
 
     data_beg = std::begin(seq) + 1;
     running_times = half_wsize;
   }
 
-  seq.resize(seq.size() + half_wsize);  // Append wsize>>1u zeros
+  seq.resize(seq.size() + half_wsize);  // Append half_wsize zeros
 
   for (auto i = running_times; i--;) {
     filtered = std::inner_product(data_beg, data_beg + wsize, win_beg, 0.f) /
@@ -675,7 +567,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
   prfF.close();
   filF.close();
-  if (!SaveFilter) remove(filterName.c_str());
+  if (!SaveFilter) remove(filter_name.c_str());
   nSegs = seg->nSegs;
 }
 
