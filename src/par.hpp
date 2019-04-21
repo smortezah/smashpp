@@ -89,7 +89,7 @@ class Param {
   Param()  // Define Param::Param(){} in *.hpp => compile error
       : verbose(false),
         level(0),
-        segSize(40),
+        segSize(50),
         entropyN(2.0),
         nthr(4),
         wsize(256),
