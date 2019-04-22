@@ -72,6 +72,7 @@ class Param {
   bool deep;
   std::vector<MMPar> refMs;
   std::vector<MMPar> tarMs;
+  std::string message;
 
   struct TarGuard {
     int16_t beg;
