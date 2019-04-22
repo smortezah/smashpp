@@ -227,8 +227,8 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   }
 
   // Build models and Compress
-  models->store(par);
-  models->compress(par);
+  models->store(par, round);
+  models->compress(par, round);
 
   // Filter and segment
   auto filter = std::make_unique<Filter>(par);
@@ -248,26 +248,31 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
 
   // Ref-free compress
   if (!par->noRedun) {
-    if (par->verbose)
-      std::cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                << '\n'
-                << "[+] Reference-free compression of the segment"
-                << (filter->nSegs == 1 ? "" : "s") << '\n';
-    else
-      par->message = "[+] Ref-free compress of segment";
+    if (round == 1) {
+      if (par->verbose)
+        std::cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                  << '\n'
+                  << "[+] Reference-free compression of the segment"
+                  << (filter->nSegs == 1 ? "" : "s") << '\n';
+      else
+        par->message = "[+] Ref-free compression of segment";
+    }
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.reserve(filter->nSegs);
     for (uint64_t i = 0; i != filter->nSegs; ++i) {
-      std::cerr << "\r " << par->message << " " << i + 1 << " ...";
+      if (round == 1) {
+        std::cerr << "\r " << par->message << " " << i + 1 << " ...";
+      }
       par->seq = seg + std::to_string(i);
       models->self_compress(par, i);
     }
 
     models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);
-    std::cerr << "\r                                                          ";
-    std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "" : "s")
-              << " finished." << '\n';
+    if (round == 1) {
+      std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "" : "s")
+                << " done.         " << '\n';
+    }
   }
 
   current_pos_row += filter->nSegs;
@@ -306,51 +311,56 @@ void run(std::unique_ptr<Param>& par) {
   for (uint8_t run_num = 0; run_num != 2; ++run_num) {
     auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
 
-    // // Round 2: old ref = new tar & old tar segments = new refs
-    // if (num_seg_round1 != 0) {
-    //   std::cerr << '\n'
-    //             << bold("[+] Building reference map for each target pattern")
-    //             << '\n';
-    //   const auto name_seg_round1{
-    //       gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
-    //   std::string tar_round2 = par->tar = par->ref;
+    // Round 2: old ref = new tar & old tar segments = new refs
+    if (num_seg_round1 != 0) {
+      //todo
+      if(par->verbose)
+        std::cerr << '\n'
+                  << bold("[+] Building reference map for each target pattern")
+                  << '\n';
+      par->message = "[+] Repeating above process for each segment ";
+      std::cerr << par->message << "...";
 
-    //   for (uint64_t i = 0; i != num_seg_round1; ++i) {
-    //     std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
+      const auto name_seg_round1{
+          gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
+      std::string tar_round2 = par->tar = par->ref;
 
-    //     auto num_seg_round2 =
-    //         run_round(par, 2, run_num, pos_out, current_pos_row);
-    //     std::cerr << '\n';
+      for (uint64_t i = 0; i != num_seg_round1; ++i) {
+        std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
 
-    //     if (num_seg_round2 != 0) {
-    //       // Round 3
-    //       if (par->deep) {
-    //         if (par->verbose) std::cerr << bold("[+] Deep compression") << '\n';
+        auto num_seg_round2 =
+            run_round(par, 2, run_num, pos_out, current_pos_row);
+        if (par->verbose) std::cerr << '\n';
 
-    //         const auto name_seg_round2{
-    //             gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-    //         par->tar = ref_round2;
+        if (num_seg_round2 != 0) {
+          // Round 3
+          if (par->deep) {
+            if (par->verbose) std::cerr << bold("[+] Deep compression") << '\n';
 
-    //         for (uint64_t j = 0; j != num_seg_round2; ++j) {
-    //           par->ref = name_seg_round2 + std::to_string(j);
-    //           auto num_seg_round3 =
-    //               run_round(par, 3, run_num, pos_out, current_pos_row);
-    //           std::cerr << "\n";
-    //           remove_temp_seg(par, num_seg_round3);
-    //         }
-    //       }  // Round 3
+            const auto name_seg_round2{
+                gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+            par->tar = ref_round2;
 
-    //       par->ref = ref_round2;
-    //       par->tar = tar_round2;
-    //       remove_temp_seg(par, num_seg_round2);
-    //     }
-    //   }
-    // }  // Round 2
+            for (uint64_t j = 0; j != num_seg_round2; ++j) {
+              par->ref = name_seg_round2 + std::to_string(j);
+              auto num_seg_round3 =
+                  run_round(par, 3, run_num, pos_out, current_pos_row);
+              std::cerr << "\n";
+              remove_temp_seg(par, num_seg_round3);
+            }
+          }  // Round 3
 
-    // par->ref = ref_round1;
-    // par->tar = tar_round1;
-    // remove_temp_seg(par, num_seg_round1);
-    // remove_temp_seq(par);
+          par->ref = ref_round2;
+          par->tar = tar_round2;
+          remove_temp_seg(par, num_seg_round2);
+        }
+      }
+    }  // Round 2
+
+    par->ref = ref_round1;
+    par->tar = tar_round1;
+    remove_temp_seg(par, num_seg_round1);
+    remove_temp_seq(par);
   }  // Round 1
 
   write_pos_file(pos_out);
