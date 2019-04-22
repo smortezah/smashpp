@@ -304,8 +304,11 @@ inline void FCM::alloc_model() {
 }
 
 void FCM::store(std::unique_ptr<Param>& par, uint8_t round) {
-  if (round == 1) {
-    par->message = "[+] Building model";
+  if (round == 1 || par->verbose) {
+    if (round == 3)
+      par->message = "    [+] Building model";
+    else
+      par->message = "[+] Building model";
     if (rMs.size() > 1) par->message += "s";
     par->message += " of ";
     par->message += tarSegMsg.empty()
@@ -318,10 +321,8 @@ void FCM::store(std::unique_ptr<Param>& par, uint8_t round) {
   (par->nthr == 1 || rMs.size() == 1) ? store_1(par)
                                       : store_n(par) /*Multiple threads*/;
 
-  if (round == 1) {
-    std::cerr << "\r" << par->message << "done."
-              << "\n";
-  }
+  if (round == 1 || par->verbose)
+    std::cerr << "\r" << par->message << "done." << '\n';
 }
 
 inline void FCM::store_1(std::unique_ptr<Param>& par) {
@@ -417,10 +418,13 @@ inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
 }
 
 void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
-  if (round == 1) {
-    if (par->verbose)
-      par->message = "[+] Compressing " + italic(par->tarName) + " ";
+  if (par->verbose) {
+    if (round == 3)
+      par->message = "    [+] Compressing " + italic(par->tarName) + " ";
     else
+      par->message = "[+] Compressing " + italic(par->tarName) + " ";
+  } else {
+    if (round == 1)
       par->message =
           "[+] Compressing & filtering " + italic(par->tarName) + " ";
   }
@@ -443,13 +447,12 @@ void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
   else
     compress_n(par);
 
-  if (round == 1) {
-    if (par->verbose)
-      std::cerr << "\r" << par->message
-                << "finished. Ave. entropy = " << fixed_precision(PREC_PRF)
-                << aveEnt << " bps." << '\n';
-    else
-      std::cerr << par->message << "...";
+  if (par->verbose) {
+    std::cerr << "\r" << par->message
+              << "finished. Ave. entropy = " << fixed_precision(PREC_PRF)
+              << aveEnt << " bps." << '\n';
+  } else {
+    if (round == 1) std::cerr << par->message << "...";
   }
 }
 
@@ -517,8 +520,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
           sumEnt += entr;
           update_ctx_ir2(ctx, ctxIr, &prob_par);
         }
-        if(par->verbose)
-        show_progress(symsNo, totalSize, message);
+        if (par->verbose) show_progress(symsNo, totalSize, message);
       }
     }
   }
@@ -616,8 +618,7 @@ inline void FCM::compress_n(std::unique_ptr<Param>& par) {
         ////        update_weights(begin(cp->w), begin(cp->probs),
         /// end(cp->probs));
         sumEnt += ent;
-        if(par->verbose)
-        show_progress(symsNo, totalSize, message);
+        if (par->verbose) show_progress(symsNo, totalSize, message);
       }
     }
   }
@@ -742,10 +743,16 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
   }
 }
 
-void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID) {
+void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID,
+                        uint8_t round) {
   std::string message;
-  if (par->verbose)
-    message = "    [-] Compressing segment " + std::to_string(ID + 1) + " ";
+  if (par->verbose) {
+    if (round == 3)
+      message =
+          "        [-] Compressing segment " + std::to_string(ID + 1) + " ";
+    else
+      message = "    [-] Compressing segment " + std::to_string(ID + 1) + " ";
+  }
 
   self_compress_alloc();
 
@@ -861,8 +868,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
-        if(par->verbose)
-        show_progress(symsNo, totalSize, message);
+        if (par->verbose) show_progress(symsNo, totalSize, message);
       }
     }
   }
@@ -957,8 +963,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
         ////        update_weights(begin(cp->w), begin(cp->probs),
         /// end(cp->probs));
         sumEnt += ent;
-        if(par->verbose)
-        show_progress(symsNo, totalSize, message);
+        if (par->verbose) show_progress(symsNo, totalSize, message);
       }
     }
   }
@@ -1015,11 +1020,12 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
 }
 
 void FCM::aggregate_slf_ent(std::vector<PosRow>& pos_out, uint8_t round,
-                            uint8_t run_num,std::string ref, bool no_redun) const {
+                            uint8_t run_num, std::string ref,
+                            bool no_redun) const {
   auto selfEnt_beg = std::begin(selfEnt);
-  
+
   for (auto& row : pos_out)
-    if (row.round == round && row.run_num == run_num && row.ref==ref)
+    if (row.round == round && row.run_num == run_num && row.ref == ref)
       row.self_ent = (!no_redun ? *selfEnt_beg++ : DBLANK);
 }
 

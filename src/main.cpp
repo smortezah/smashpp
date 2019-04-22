@@ -249,29 +249,28 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   // Ref-free compress
   if (!par->noRedun) {
     if (par->verbose) {
+      if (round == 3) std::cerr << "    ";
       std::cerr << "[+] Reference-free compression of the segment"
                 << (filter->nSegs == 1 ? "" : "s") << '\n';
     } else {
-      if (round == 1)
-        par->message = "[+] Ref-free compression of segment";
+      if (round == 1) par->message = "[+] Ref-free compression of segment";
     }
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.reserve(filter->nSegs);
     for (uint64_t i = 0; i != filter->nSegs; ++i) {
-      if (!par->verbose && round == 1) 
+      if (!par->verbose && round == 1)
         std::cerr << "\r " << par->message << " " << i + 1 << " ...";
-      
-      par->seq = seg + std::to_string(i);
-      models->self_compress(par, i);
-      }
 
-      models->aggregate_slf_ent(pos_out, round, run_num, par->ref,
-                                par->noRedun);
-      if (!par->verbose && round == 1) {
-        std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "" : "s")
-                  << " done.         " << '\n';
-      }
+      par->seq = seg + std::to_string(i);
+      models->self_compress(par, i, round);
+    }
+
+    models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);
+    if (!par->verbose && round == 1) {
+      std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "" : "s")
+                << " done.         " << '\n';
+    }
   }
 
   current_pos_row += filter->nSegs;
@@ -312,11 +311,10 @@ void run(std::unique_ptr<Param>& par) {
 
     // Round 2: old ref = new tar & old tar segments = new refs
     if (num_seg_round1 != 0) {
-      if (par->verbose)
-        std::cerr << '\n'
-                  << italic("Repeating above process for each segment")
-                  << '\n';
-      else {
+      if (par->verbose) {
+        par->message = italic("Repeat above process for each segment");
+        std::cerr << '\n' << par->message << '\n';
+      } else {
         par->message = "[+] Repeating above process for each segment ";
         std::cerr << par->message << "...";
       }
@@ -335,7 +333,8 @@ void run(std::unique_ptr<Param>& par) {
         if (num_seg_round2 != 0) {
           // Round 3
           if (par->deep) {
-            if (par->verbose) std::cerr << bold("[+] Deep compression") << '\n';
+            if (par->verbose)
+              std::cerr << "    " << italic("Deep compression") << '\n';
 
             const auto name_seg_round2{
                 gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
@@ -345,7 +344,7 @@ void run(std::unique_ptr<Param>& par) {
               par->ref = name_seg_round2 + std::to_string(j);
               auto num_seg_round3 =
                   run_round(par, 3, run_num, pos_out, current_pos_row);
-              std::cerr << "\n";
+              if (par->verbose) std::cerr << "\n";
               remove_temp_seg(par, num_seg_round3);
             }
           }  // Round 3
@@ -356,8 +355,7 @@ void run(std::unique_ptr<Param>& par) {
         }
       }
 
-if(!par->verbose)
-      std::cerr << "\r" << par->message << "done." << "\n\n";
+      if (!par->verbose) std::cerr << "\r" << par->message << "done.\n\n";
     }  // Round 2
 
     par->ref = ref_round1;
