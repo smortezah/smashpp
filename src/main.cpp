@@ -233,8 +233,6 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   // Filter and segment
   auto filter = std::make_unique<Filter>(par);
   if (!par->manThresh) par->thresh = static_cast<float>(models->aveEnt);
-
-  // todo erroneous
   filter->smooth_seg(pos_out, par, round, current_pos_row);
 
   if (filter->nSegs == 0) {
@@ -253,17 +251,23 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
     if (par->verbose)
       std::cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
                 << '\n'
-                << italic("[-] Reference-free compression of the segment")
-                << italic(filter->nSegs == 1 ? "" : "s") << '\n';
+                << "[+] Reference-free compression of the segment"
+                << (filter->nSegs == 1 ? "" : "s") << '\n';
+    else
+      par->message = "[+] Ref-free compress of segment";
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.reserve(filter->nSegs);
     for (uint64_t i = 0; i != filter->nSegs; ++i) {
+      std::cerr << "\r " << par->message << " " << i + 1 << " ...";
       par->seq = seg + std::to_string(i);
       models->self_compress(par, i);
     }
 
     models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);
+    std::cerr << "\r                                                          ";
+    std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "" : "s")
+              << " finished." << '\n';
   }
 
   current_pos_row += filter->nSegs;

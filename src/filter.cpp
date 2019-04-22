@@ -142,7 +142,8 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
 void Filter::smooth_seg(std::vector<PosRow>& pos_out,
                         std::unique_ptr<Param>& par, uint8_t round,
                         uint64_t& current_pos_row) {
-  message = "Filtering & segmenting " + italic(par->tarName) + " ";
+  if(par->verbose)
+    par->message = "[+] Filtering " + italic(par->tarName) + " ";
 
   if (window.size() != 1) {
     if (wtype == WType::rectangular) {
@@ -175,10 +176,8 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
     remove((gen_name(par->ID, par->refName, par->tarName, Format::filter))
                .c_str());
 
-  if (!par->verbose) std::cerr << "\r";
-  std::cerr << message << "finished. Detected " << nSegs << " segment"
-            << (nSegs == 1 ? "" : "s") << ".";
-  if (par->verbose) std::cerr << "\n";
+  std::cerr << "\r" << par->message << "finished ==> " << nSegs << " segment"
+            << (nSegs == 1 ? "" : "s") << '\n';
 }
 
 void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out,
