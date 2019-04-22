@@ -248,31 +248,30 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
 
   // Ref-free compress
   if (!par->noRedun) {
-    if (round == 1) {
-      if (par->verbose)
-        std::cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                  << '\n'
-                  << "[+] Reference-free compression of the segment"
-                  << (filter->nSegs == 1 ? "" : "s") << '\n';
-      else
+    if (par->verbose) {
+      std::cerr << "[+] Reference-free compression of the segment"
+                << (filter->nSegs == 1 ? "" : "s") << '\n';
+    } else {
+      if (round == 1)
         par->message = "[+] Ref-free compression of segment";
     }
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.reserve(filter->nSegs);
     for (uint64_t i = 0; i != filter->nSegs; ++i) {
-      if (round == 1) {
+      if (!par->verbose && round == 1) 
         std::cerr << "\r " << par->message << " " << i + 1 << " ...";
-      }
+      
       par->seq = seg + std::to_string(i);
       models->self_compress(par, i);
-    }
+      }
 
-    models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);
-    if (round == 1) {
-      std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "" : "s")
-                << " done.         " << '\n';
-    }
+      models->aggregate_slf_ent(pos_out, round, run_num, par->ref,
+                                par->noRedun);
+      if (!par->verbose && round == 1) {
+        std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "" : "s")
+                  << " done.         " << '\n';
+      }
   }
 
   current_pos_row += filter->nSegs;
@@ -313,13 +312,14 @@ void run(std::unique_ptr<Param>& par) {
 
     // Round 2: old ref = new tar & old tar segments = new refs
     if (num_seg_round1 != 0) {
-      //todo
-      if(par->verbose)
+      if (par->verbose)
         std::cerr << '\n'
-                  << bold("[+] Building reference map for each target pattern")
+                  << italic("Repeating above process for each segment")
                   << '\n';
-      par->message = "[+] Repeating above process for each segment ";
-      std::cerr << par->message << "...";
+      else {
+        par->message = "[+] Repeating above process for each segment ";
+        std::cerr << par->message << "...";
+      }
 
       const auto name_seg_round1{
           gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
@@ -355,6 +355,9 @@ void run(std::unique_ptr<Param>& par) {
           remove_temp_seg(par, num_seg_round2);
         }
       }
+
+if(!par->verbose)
+      std::cerr << "\r" << par->message << "done." << "\n\n";
     }  // Round 2
 
     par->ref = ref_round1;

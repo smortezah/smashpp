@@ -217,6 +217,7 @@ void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out,
   for (; profile >> filtered; jump_lines()) {
     if (par->saveFilter) filter_file << precision(PREC_FIL) << filtered << '\n';
     seg->partition(pos_out, filtered);
+    if(par->verbose)
     show_progress(++symsNo, seg->totalSize, message);
   }
 
@@ -437,6 +438,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
       for (auto i = buff_size; i-- && (prfF >> entropy); ++data_beg) {
         if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
         seg->partition(pos_out, filtered);
+        if(par->verbose)
         show_progress(++symsNo, seg->totalSize, message);
 
         seq.push_back(entropy);
@@ -459,6 +461,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   for (auto i = running_times; i--;) {
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(pos_out, filtered);
+    if(par->verbose)
     show_progress(++symsNo, seg->totalSize, message);
     filtered -= *data_beg / sum_win_weights;
     ++data_beg;
@@ -466,6 +469,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   }
 
   seg->finalize_partition(pos_out);
+  if(par->verbose)
   show_progress(++symsNo, seg->totalSize, message);
 
   prfF.close();
@@ -538,6 +542,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
             sum_win_weights;
         if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
         seg->partition(pos_out, filtered);
+        if(par->verbose)
         show_progress(++symsNo, seg->totalSize, message);
 
         seq.push_back(entropy);
@@ -560,13 +565,13 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
                sum_win_weights;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     seg->partition(pos_out, filtered);
-    show_progress(++symsNo, seg->totalSize, message);
+    if (par->verbose) show_progress(++symsNo, seg->totalSize, message);
     ++data_beg;
     ++seg->pos;
   }
 
   seg->finalize_partition(pos_out);
-  show_progress(++symsNo, seg->totalSize, message);
+  if (par->verbose) show_progress(++symsNo, seg->totalSize, message);
 
   prfF.close();
   filF.close();
