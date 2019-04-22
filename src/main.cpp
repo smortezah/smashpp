@@ -302,51 +302,51 @@ void run(std::unique_ptr<Param>& par) {
   for (uint8_t run_num = 0; run_num != 2; ++run_num) {
     auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
 
-    // Round 2: old ref = new tar & old tar segments = new refs
-    if (num_seg_round1 != 0) {
-      std::cerr << '\n'
-                << bold("[+] Building reference map for each target pattern")
-                << '\n';
-      const auto name_seg_round1{
-          gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
-      std::string tar_round2 = par->tar = par->ref;
+    // // Round 2: old ref = new tar & old tar segments = new refs
+    // if (num_seg_round1 != 0) {
+    //   std::cerr << '\n'
+    //             << bold("[+] Building reference map for each target pattern")
+    //             << '\n';
+    //   const auto name_seg_round1{
+    //       gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
+    //   std::string tar_round2 = par->tar = par->ref;
 
-      for (uint64_t i = 0; i != num_seg_round1; ++i) {
-        std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
+    //   for (uint64_t i = 0; i != num_seg_round1; ++i) {
+    //     std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
 
-        auto num_seg_round2 =
-            run_round(par, 2, run_num, pos_out, current_pos_row);
-        std::cerr << '\n';
+    //     auto num_seg_round2 =
+    //         run_round(par, 2, run_num, pos_out, current_pos_row);
+    //     std::cerr << '\n';
 
-        if (num_seg_round2 != 0) {
-          // Round 3
-          if (par->deep) {
-            if (par->verbose) std::cerr << bold("[+] Deep compression") << '\n';
+    //     if (num_seg_round2 != 0) {
+    //       // Round 3
+    //       if (par->deep) {
+    //         if (par->verbose) std::cerr << bold("[+] Deep compression") << '\n';
 
-            const auto name_seg_round2{
-                gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-            par->tar = ref_round2;
+    //         const auto name_seg_round2{
+    //             gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+    //         par->tar = ref_round2;
 
-            for (uint64_t j = 0; j != num_seg_round2; ++j) {
-              par->ref = name_seg_round2 + std::to_string(j);
-              auto num_seg_round3 =
-                  run_round(par, 3, run_num, pos_out, current_pos_row);
-              std::cerr << "\n";
-              remove_temp_seg(par, num_seg_round3);
-            }
-          }  // Round 3
+    //         for (uint64_t j = 0; j != num_seg_round2; ++j) {
+    //           par->ref = name_seg_round2 + std::to_string(j);
+    //           auto num_seg_round3 =
+    //               run_round(par, 3, run_num, pos_out, current_pos_row);
+    //           std::cerr << "\n";
+    //           remove_temp_seg(par, num_seg_round3);
+    //         }
+    //       }  // Round 3
 
-          par->ref = ref_round2;
-          par->tar = tar_round2;
-          remove_temp_seg(par, num_seg_round2);
-        }
-      }
-    }  // Round 2
+    //       par->ref = ref_round2;
+    //       par->tar = tar_round2;
+    //       remove_temp_seg(par, num_seg_round2);
+    //     }
+    //   }
+    // }  // Round 2
 
-    par->ref = ref_round1;
-    par->tar = tar_round1;
-    remove_temp_seg(par, num_seg_round1);
-    remove_temp_seq(par);
+    // par->ref = ref_round1;
+    // par->tar = tar_round1;
+    // remove_temp_seg(par, num_seg_round1);
+    // remove_temp_seq(par);
   }  // Round 1
 
   write_pos_file(pos_out);
