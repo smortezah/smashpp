@@ -517,6 +517,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
           sumEnt += entr;
           update_ctx_ir2(ctx, ctxIr, &prob_par);
         }
+        if(par->verbose)
         show_progress(symsNo, totalSize, message);
       }
     }
@@ -615,6 +616,7 @@ inline void FCM::compress_n(std::unique_ptr<Param>& par) {
         ////        update_weights(begin(cp->w), begin(cp->probs),
         /// end(cp->probs));
         sumEnt += ent;
+        if(par->verbose)
         show_progress(symsNo, totalSize, message);
       }
     }
@@ -741,13 +743,9 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
 }
 
 void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID) {
-  //todo
-  // std::string message;
-  // if (par->verbose)
-  //   message += "Compressing ";
-  // else
-  //   message += "Ref-free compressing ";
-  // message += "segment " + std::to_string(ID + 1) + " ";
+  std::string message;
+  if (par->verbose)
+    message = "    [-] Compressing segment " + std::to_string(ID + 1) + " ";
 
   self_compress_alloc();
 
@@ -769,12 +767,10 @@ void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID) {
   else
     self_compress_n(par, ID);
 
-//todo
-  // if (!par->verbose) std::cerr << "\r";
-  // std::cerr << message
-  //           << "finished. Average entropy=" << fixed_precision(PREC_PRF)
-  //           << selfEnt[ID] << " bps.";
-  // if (par->verbose) std::cerr << "\n";
+  if (par->verbose)
+    std::cerr << "\r" << message
+              << "done. Ave. entropy = " << fixed_precision(PREC_PRF)
+              << selfEnt[ID] << " bps." << '\n';
 }
 
 inline void FCM::self_compress_alloc() {
@@ -865,6 +861,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
+        if(par->verbose)
         show_progress(symsNo, totalSize, message);
       }
     }
@@ -960,6 +957,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
         ////        update_weights(begin(cp->w), begin(cp->probs),
         /// end(cp->probs));
         sumEnt += ent;
+        if(par->verbose)
         show_progress(symsNo, totalSize, message);
       }
     }
