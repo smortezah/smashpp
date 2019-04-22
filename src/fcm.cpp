@@ -303,20 +303,25 @@ inline void FCM::alloc_model() {
   }
 }
 
-void FCM::store(std::unique_ptr<Param>& par) {
-  par->message = "[+] Build model";
-  if (rMs.size() > 1) par->message += "s";
-  par->message += " of ";
-  par->message += tarSegMsg.empty()
-                      ? italic(par->refName)
-                      : italic(tarSegMsg + std::to_string(tarSegID));
-  par->message += " ";
-  std::cerr << par->message << "...";
+void FCM::store(std::unique_ptr<Param>& par, uint8_t round) {
+  if (round == 1) {
+    par->message = "[+] Building model";
+    if (rMs.size() > 1) par->message += "s";
+    par->message += " of ";
+    par->message += tarSegMsg.empty()
+                        ? italic(par->refName)
+                        : italic(tarSegMsg + std::to_string(tarSegID));
+    par->message += " ";
+    std::cerr << par->message << "...";
+  }
 
   (par->nthr == 1 || rMs.size() == 1) ? store_1(par)
                                       : store_n(par) /*Multiple threads*/;
 
-  std::cerr << "\r" << par->message << "finished." << "\n";
+  if (round == 1) {
+    std::cerr << "\r" << par->message << "done."
+              << "\n";
+  }
 }
 
 inline void FCM::store_1(std::unique_ptr<Param>& par) {
@@ -411,12 +416,14 @@ inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
   rf.close();
 }
 
-void FCM::compress(std::unique_ptr<Param>& par) {
-  if (par->verbose)
-    par->message = "[+] Compressing " + italic(par->tarName) + " ";
-  else
-    par->message =
-        "[+] Compress & filter " + italic(par->tarName) + " ";
+void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
+  if (round == 1) {
+    if (par->verbose)
+      par->message = "[+] Compressing " + italic(par->tarName) + " ";
+    else
+      par->message =
+          "[+] Compressing & filtering " + italic(par->tarName) + " ";
+  }
 
   if (rMs.size() == 1 && rTMsSize == 0)  // 1 MM
     switch (rMs[0].cont) {
@@ -436,12 +443,14 @@ void FCM::compress(std::unique_ptr<Param>& par) {
   else
     compress_n(par);
 
-if (par->verbose)
-  std::cerr << "\r" << par->message
-            << "finished. Ave. entropy = " << fixed_precision(PREC_PRF)
-            << aveEnt << " bps." << '\n';
-else
-  std::cerr << par->message << "...";
+  if (round == 1) {
+    if (par->verbose)
+      std::cerr << "\r" << par->message
+                << "finished. Ave. entropy = " << fixed_precision(PREC_PRF)
+                << aveEnt << " bps." << '\n';
+    else
+      std::cerr << par->message << "...";
+  }
 }
 
 template <typename ContIter>

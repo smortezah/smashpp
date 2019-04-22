@@ -26,8 +26,8 @@ class FCM {  // Finite-context models
   std::string tarSegMsg;
 
   explicit FCM(std::unique_ptr<Param>&);
-  void store(std::unique_ptr<Param>&);  // Build FCM
-  void compress(std::unique_ptr<Param>&);
+  void store(std::unique_ptr<Param>&, uint8_t);  // Build FCM
+  void compress(std::unique_ptr<Param>&, uint8_t);
   void self_compress(std::unique_ptr<Param>&, uint64_t);
   void aggregate_slf_ent(std::vector<PosRow>&, uint8_t, uint8_t,std::string, bool) const;
 
