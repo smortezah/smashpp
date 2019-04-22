@@ -28,8 +28,9 @@ class FCM {  // Finite-context models
   explicit FCM(std::unique_ptr<Param>&);
   void store(std::unique_ptr<Param>&, uint8_t);  // Build FCM
   void compress(std::unique_ptr<Param>&, uint8_t);
-  void self_compress(std::unique_ptr<Param>&, uint64_t);
-  void aggregate_slf_ent(std::vector<PosRow>&, uint8_t, uint8_t,std::string, bool) const;
+  void self_compress(std::unique_ptr<Param>&, uint64_t, uint8_t);
+  void aggregate_slf_ent(std::vector<PosRow>&, uint8_t, uint8_t, std::string,
+                         bool) const;
 
  private:
   std::vector<std::unique_ptr<Table64>> tbl64;
@@ -44,7 +45,7 @@ class FCM {  // Finite-context models
   void set_cont(std::vector<MMPar>&);
   void show_info(
       std::unique_ptr<Param>&) const;  // Show inputs info on the screen
-  void alloc_model();                 // Allocate memory to models
+  void alloc_model();                  // Allocate memory to models
 
   void store_1(std::unique_ptr<Param>&);  // Build models one thread
   void store_n(std::unique_ptr<Param>&);  // Build models multiple threads
