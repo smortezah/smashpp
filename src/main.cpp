@@ -236,12 +236,11 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   filter->smooth_seg(pos_out, par, round, current_pos_row);
 
   if (filter->nSegs == 0) {
-    if (round == 1) {
-    } else if (round == 2) {
-      pos_out.push_back(
-          PosRow(0, 0, 0.0, 0.0, run_num, par->ref, par->tar, 0, round));
-    }
-    // std::cerr << '\n';
+    // if (round == 2) {
+    //   pos_out.push_back(
+    //       PosRow(0, 0, 0.0, 0.0, run_num, par->ref, par->tar, 0, round));
+    // }
+    // // std::cerr << '\n';
     return 0;  // continue;
   }
   filter->extract_seg(pos_out, round, run_num, par->ref);

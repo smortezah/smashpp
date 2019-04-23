@@ -299,7 +299,7 @@ inline std::string VizPaint::seq_gradient(std::ofstream& fPlot,
   grad->plot(fPlot);
 
   return "url(#" + grad->id + ")";
-};
+}
 
 inline std::string VizPaint::periph_gradient(std::ofstream& fPlot,
                                              std::string color,
@@ -311,7 +311,7 @@ inline std::string VizPaint::periph_gradient(std::ofstream& fPlot,
   grad->plot(fPlot);
 
   return "url(#" + grad->id + ")";
-};
+}
 
 template <typename Value>
 inline double VizPaint::get_point(Value index) const {
