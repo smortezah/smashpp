@@ -601,7 +601,6 @@ void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round,
           row.end_pos > max_tar_pos ? max_tar_pos - subseq->begPos + 1
                                     : row.end_pos - subseq->begPos + 1);
       extract_subseq(subseq);
-
       ++seg_idx;
     }
   }
