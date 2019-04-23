@@ -253,14 +253,14 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
       std::cerr << "[+] Reference-free compression of the segment"
                 << (filter->nSegs == 1 ? "" : "s") << '\n';
     } else {
-      if (round == 1) par->message = "[+] Ref-free compression of segment";
+      if (round == 1) par->message = "[+] Ref-free compression of ";
     }
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.reserve(filter->nSegs);
     for (uint64_t i = 0; i != filter->nSegs; ++i) {
       if (!par->verbose && round == 1)
-        std::cerr << "\r " << par->message << " " << i + 1 << " ...";
+        std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
 
       par->seq = seg + std::to_string(i);
       models->self_compress(par, i, round);
@@ -268,8 +268,9 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
 
     models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);
     if (!par->verbose && round == 1) {
-      std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "" : "s")
-                << " done.         " << '\n';
+      std::cerr << "\r" << par->message
+                << (filter->nSegs == 1 ? "the segment " : "all segments ")
+                << "done.         " << '\n';
     }
   }
 
@@ -315,8 +316,7 @@ void run(std::unique_ptr<Param>& par) {
         par->message = italic("Repeat above process for each segment");
         std::cerr << '\n' << par->message << '\n';
       } else {
-        par->message = "[+] Repeating above process for each segment ";
-        std::cerr << par->message << "...";
+        par->message = "[+] Repeating above process for ";
       }
 
       const auto name_seg_round1{
@@ -324,8 +324,10 @@ void run(std::unique_ptr<Param>& par) {
       std::string tar_round2 = par->tar = par->ref;
 
       for (uint64_t i = 0; i != num_seg_round1; ++i) {
-        std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
+        if (!par->verbose)
+          std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
 
+        std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
         auto num_seg_round2 =
             run_round(par, 2, run_num, pos_out, current_pos_row);
         if (par->verbose) std::cerr << '\n';
@@ -355,7 +357,8 @@ void run(std::unique_ptr<Param>& par) {
         }
       }
 
-      if (!par->verbose) std::cerr << "\r" << par->message << "done.\n\n";
+      if (!par->verbose)
+        std::cerr << "\r" << par->message << "all segments done.\n\n";
     }  // Round 2
 
     par->ref = ref_round1;
