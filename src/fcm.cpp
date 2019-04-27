@@ -419,10 +419,8 @@ inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
 
 void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
   if (par->verbose) {
-    if (round == 3)
-      par->message = "    [+] Compressing " + italic(par->tarName) + " ";
-    else
-      par->message = "[+] Compressing " + italic(par->tarName) + " ";
+    par->message = (round == 3) ? "    " : "";
+    par->message += "[+] Compressing " + italic(par->tarName) + " ";
   } else {
     if (round == 1)
       par->message =
