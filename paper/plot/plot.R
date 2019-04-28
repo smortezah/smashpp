@@ -79,7 +79,8 @@ if (filters == 1) {
   sine <- read.table("sine.fil")
   triangular <- read.table("triangular.fil")
   welch <- read.table("welch.fil")
-  
+  main <- read.table("0.prf")
+
   df <-
     data.frame(
       Samples = index,
@@ -90,7 +91,8 @@ if (filters == 1) {
       Rectangular = rectangular$V1,
       Sine = sine$V1,
       Triangular = triangular$V1,
-      Welch = welch$V1
+      Welch = welch$V1,
+      Main = main$V1[1:999]
     )
   df <- melt(df, id.vars = "Samples")
   df$name <-
@@ -103,20 +105,16 @@ if (filters == 1) {
         "Rectangular",
         "Sine",
         "Triangular",
-        "Welch"
+        "Welch",
+        "Main"
       ),
       each = length(index)
     ))
-  
+
   ggplot(df, aes(x = Samples, y = value)) +
     geom_line(aes(color = variable)) +
     facet_wrap( ~ name, nrow = 4) +
     ylab("Value") +
     theme_bw() +
     theme(legend.position = "none")
-  
-  
-  
-  # ggplot(data=NULL,aes(x=index, y=blackman$V1) ) +
-  #   geom_line()
 }
