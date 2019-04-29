@@ -51,7 +51,6 @@ class Param {
   WType wtype;
   uint64_t sampleStep;
   float thresh;
-  bool manSegSize;
   bool manWSize;
   bool manThresh;
   bool manFilterScale;
@@ -97,7 +96,6 @@ class Param {
         wtype(WT),
         sampleStep(1ull),
         thresh(1.5),
-        manSegSize(false),
         manWSize(false),
         manThresh(false),
         manFilterScale(false),
