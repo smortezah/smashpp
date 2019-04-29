@@ -72,7 +72,6 @@ void Param::parse(int argc, char**& argv) {
           MIN_LVL, MAX_LVL, level, "Level", "[]", "default", Problem::warning);
       range->assert(level);
     } else if (option_inserted(i, "-m")) {
-      manSegSize = true;
       segSize = std::stoul(*++i);
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SSIZE, MAX_SSIZE, segSize, "Minimum segment size", "[]",

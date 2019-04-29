@@ -139,21 +139,22 @@ First, we install \smashpp:
 \begin{code}[style=bash]
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
-cmake .
-make
+./compile.sh
 \end{code}
 Then, we copy \mono{smashpp} binary file into \mono{example/} directory and go to that directory:
 \begin{code}[style=bash]
 cp smashpp example/
 cd example/
 \end{code}
-In this directory, we have provided a 1000 byte reference sequence, \mono{ref}, and a 1000 byte target sequence, \mono{tar}.
-
-
-The result is shown in Fig.~\ref{fig.example}.
+In this directory, a 1000 byte reference sequence, \mono{ref}, and a 1000 byte target sequence, \mono{tar}, are provided. Running
+\begin{code}[style=bash]
+./smashpp -r refs -t tars -w 45 -l 3
+./smashpp -viz refs.tars.pos
+\end{code}
+results in Fig.~\ref{fig.example}, which is saved in ``map.svg''.
 
 \begin{figure}[!h]
   \includegraphics[width=\linewidth]{example.pdf}
   \caption{The result of running Smash++ on ...}
   \label{fig.example}
-  \end{figure}
+\end{figure}
