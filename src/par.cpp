@@ -50,6 +50,14 @@ void Param::parse(int argc, char**& argv) {
                 << " IEETA, University of Aveiro."
                 << "\n";
       throw EXIT_SUCCESS;
+    } else if (*i == "-ll") {//todo
+      std::cerr << "Level  Model parameters" << '\n'
+                // << "-----  ----------------" << '\n'
+                ;
+      for (auto i = 0; i != LEVEL.size();++i) {
+        std::cerr <<"[ "<<i<<" ]  " << LEVEL[i] << '\n';
+      }
+      throw EXIT_SUCCESS;
     } else if (*i == "-r") {
       if (i + 1 != std::end(vArgs)) {
         ref = *++i;

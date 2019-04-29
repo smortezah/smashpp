@@ -8,8 +8,7 @@ In order to install \smashpp on Linux, run the following commands:
 \begin{code}[style=bash]
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
-cmake .
-make
+./install.sh
 \end{code}
 
 \subsection{Run}
@@ -139,7 +138,7 @@ First, we install \smashpp:
 \begin{code}[style=bash]
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
-./compile.sh
+./install.sh
 \end{code}
 Then, we copy \mono{smashpp} binary file into \mono{example/} directory and go to that directory:
 \begin{code}[style=bash]
@@ -151,7 +150,7 @@ In this directory, a 1000 byte reference sequence, \mono{ref}, and a 1000 byte t
 ./smashpp -r refs -t tars -w 45 -l 3
 ./smashpp -viz refs.tars.pos
 \end{code}
-results in Fig.~\ref{fig.example}, which is saved in ``map.svg''.
+results in Fig.~\ref{fig.example}, which is saved as ``map.svg''.
 
 \begin{figure}[!h]
   \includegraphics[width=\linewidth]{example.pdf}
