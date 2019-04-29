@@ -13,6 +13,12 @@
 
 namespace smashpp {
 static const std::string FMT_N{"n"};  // Format - position of N files
+static constexpr uint32_t PAINT_SCALE{100};
+static constexpr auto PAINT_SHORT{0.035};
+static constexpr auto SPACE_TUNE{6.0f};
+static constexpr auto TITLE_SPACE{16.0f};
+static constexpr auto VERT_MIDDLE{0.35f};
+static constexpr auto VERT_BOTTOM{0.7f};
 
 struct Position {
   int64_t begRef;

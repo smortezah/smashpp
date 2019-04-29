@@ -9,6 +9,8 @@
 #include "par.hpp"
 
 namespace smashpp {
+static constexpr uint8_t PREC_FIL{3};  // Precisions - floats in filt. file
+
 class Filter {
  public:
   uint64_t nSegs;

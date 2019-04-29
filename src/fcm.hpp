@@ -15,6 +15,7 @@
 
 namespace smashpp {
 static constexpr uint8_t PREC_PRF{3};  // Precisions - floats in Inf. prof
+static constexpr char TAR_ALT_N{'T'};  // Alter. to Ns in target file
 
 class FCM {  // Finite-context models
  public:
