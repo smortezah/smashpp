@@ -49,7 +49,7 @@ class HSV : public Color {
   uint8_t v;
 
   HSV() = default;
-  explicit HSV(uint8_t hue) : h(hue), s(PAINT_LVL_SATUR), v(PAINT_LVL_VAL) {}
+  explicit HSV(uint8_t hue) : h(hue), s(160), v(160) {}
 };
 }  // namespace smashpp
 

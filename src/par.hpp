@@ -17,7 +17,6 @@ static constexpr uint32_t MIN_SSIZE{1};
 static constexpr uint32_t MAX_SSIZE{0xffffffff};  // 2^32 - 1
 static constexpr prc_t MIN_ENTR_N{0.0};
 static constexpr prc_t MAX_ENTR_N{100.0};
-static constexpr char TAR_ALT_N{'T'};  // Alter. to Ns in target file
 static constexpr uint32_t MIN_WS{1};
 static constexpr uint32_t MAX_WS{0xffffffff};  // 2^32 - 1
 static constexpr auto WT{WType::hann};         // Window type -- filter
@@ -28,12 +27,36 @@ static constexpr uint8_t K_MAX_TBL32{13};   // Max ctx table 32     (1   GB mem)
 static constexpr uint8_t K_MAX_LGTBL8{14};  // Max ctx log table 8  (1   GB mem)
 static constexpr uint64_t W{2 << 29ull};    // Width of CML sketch
 static constexpr uint8_t D{5};              // Depth of CML sketch
-static constexpr uint8_t PREC_FIL{3};       // Precisions - floats in filt. file
 static const std::string LBL_BAK{"_bk"};    // Label  - backup files
 static const std::string POS_HDR{"#" + SMASHPP};  // Hdr of pos file
-// static const std::string POS_NRC{"N"};      // Hdr of pos file
-// static const std::string POS_REDUN{"R"};    // Hdr of pos file
 static constexpr int FILE_BUF{8 * 1024};  // 8K
+
+// Visualization
+static constexpr uint8_t MIN_LINK{1};
+static constexpr uint8_t MAX_LINK{6};
+static constexpr uint8_t MIN_COLOR{0};
+static constexpr uint8_t MAX_COLOR{1};
+static constexpr auto OPAC{0.9f};
+static constexpr auto MIN_OPAC{0.0f};
+static constexpr auto MAX_OPAC{1.0f};
+static constexpr uint32_t WDTH{16};
+static constexpr uint32_t MIN_WDTH{15};
+static constexpr uint32_t MAX_WDTH{100};
+static constexpr uint32_t SPC{62};
+static constexpr uint32_t MIN_SPC{15};
+static constexpr uint32_t MAX_SPC{200};
+static constexpr uint32_t MULT{43};  // 5 colors without overlapping
+static constexpr uint32_t MIN_MULT{1};
+static constexpr uint32_t MAX_MULT{255};
+static constexpr uint32_t BEGN{0};
+static constexpr uint32_t MIN_BEGN{0};
+static constexpr uint32_t MAX_BEGN{255};
+static constexpr uint32_t MINP{1};
+static constexpr uint32_t MIN_MINP{1};
+static constexpr uint32_t MAX_MINP{0xffffffff};  // 2^32 - 1
+static constexpr uint64_t TICK{100};             // Major tick
+static constexpr uint64_t MIN_TICK{1};
+static constexpr uint64_t MAX_TICK{0xffffffff};
 
 class Param {
  public:
@@ -157,7 +180,7 @@ class VizParam {
         regular(true),
         showNRC(true),
         showRedun(true),
-        image(IMAGE),
+        image("map.svg"),
         link(1),
         colorMode(0),
         opacity(OPAC),

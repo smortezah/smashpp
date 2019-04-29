@@ -9,7 +9,9 @@
 #include "exception.hpp"
 #include "number.hpp"
 
-namespace smashpp {
+namespace smashpp {  
+static constexpr uint8_t PREC_VIZ{2};  // Precision
+
 class SVG {
  public:
   std::string id;

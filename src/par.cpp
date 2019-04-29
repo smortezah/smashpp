@@ -544,11 +544,15 @@ void VizParam::parse(int argc, char**& argv) {
   for (int i = 0; i != argc; ++i)
     vArgs.push_back(static_cast<std::string>(argv[i]));
 
+  auto option_inserted = [&](auto iter, std::string name) -> bool {
+    return (iter + 1 <= std::end(vArgs)) && (*iter == name);
+  };
+
   for (auto i = std::begin(vArgs); i != std::end(vArgs); ++i) {
-    if (*i == "-h" || *i == "--help") {
+    if (*i == "-h") {
       help();
       throw EXIT_SUCCESS;
-    } else if (*i == "-v" || *i == "--verbose") {
+    } else if (*i == "-v") {
       verbose = true;
     } else if (*i == "--version") {
       std::cerr << "Smash++ " << VERSION << "\n"
@@ -558,83 +562,78 @@ void VizParam::parse(int argc, char**& argv) {
                 << " IEETA, University of Aveiro."
                 << "\n";
       throw EXIT_SUCCESS;
-    } else if ((*i == "-o" || *i == "--out") && i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-o")) {
       image = *++i;
-    } else if ((*i == "-rn" || *i == "--ref-name") &&
-               i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-rn")) {
       refName = *++i;
-    } else if ((*i == "-tn" || *i == "--tar-name") &&
-               i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-tn")) {
       tarName = *++i;
-    } else if ((*i == "-p" || *i == "--opacity") && i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-p")) {
       opacity = std::stof(*++i);
       auto range =
           std::make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, "Opacity",
                                             "[]", "default", Problem::warning);
       range->assert(opacity);
-    } else if ((*i == "-l" || *i == "--link") && i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-l")) {
       link = static_cast<uint8_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_LINK, MAX_LINK, link, "Link", "[]", "default", Problem::warning);
       range->assert(link);
-    } else if ((*i == "-m" || *i == "--min") && i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-m")) {
       min = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_MINP, MAX_MINP, MINP, "Min", "[]", "default", Problem::warning);
       range->assert(min);
-    } else if ((*i == "-f" || *i == "--mult") && i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-f")) {
       manMult = true;
       mult = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_MULT, MAX_MULT, MULT, "Mult", "[]", "default", Problem::warning);
       range->assert(mult);
-    } else if ((*i == "-b" || *i == "--begin") && i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-b")) {
       start = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_BEGN, MAX_BEGN, BEGN, "Begin", "[]", "default", Problem::warning);
       range->assert(start);
-    } else if ((*i == "-rt" || *i == "--ref-tick") &&
-               i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-rt")) {
       refTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for reference", "[]", "default",
           Problem::warning);
       range->assert(refTick);
-    } else if ((*i == "-tt" || *i == "--tar-tick") &&
-               i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-tt")) {
       tarTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for target", "[]", "default",
           Problem::warning);
       range->assert(tarTick);
-    } else if ((*i == "-th" || *i == "--tick-human") &&
-               i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-th")) {
       tickHumanRead = (std::stoi(*++i) != 0);
-    } else if ((*i == "-c" || *i == "--color") && i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-c")) {
       colorMode = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_COLOR, MAX_COLOR, colorMode, "Color", "[]", "default",
           Problem::warning);
       range->assert(colorMode);
-    } else if ((*i == "-w" || *i == "--width") && i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-w")) {
       width = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_WDTH, MAX_WDTH, WDTH, "Width", "[]", "default", Problem::warning);
       range->assert(width);
-    } else if ((*i == "-s" || *i == "--space") && i + 1 != std::end(vArgs)) {
+    } else if (option_inserted(i, "-s")) {
       space = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SPC, MAX_SPC, SPC, "Space", "[]", "default", Problem::warning);
       range->assert(space);
-    } else if (*i == "-nn" || *i == "--no-nrc") {
+    } else if (*i == "-nn") {
       showNRC = false;
-    } else if (*i == "-vv" || *i == "--vertical") {
+    } else if (*i == "-vv") {
       vertical = true;
-    } else if (*i == "-nr" || *i == "--no-redun") {
+    } else if (*i == "-nr") {
       showRedun = false;
-    } else if (*i == "-ni" || *i == "--no-inv") {
+    } else if (*i == "-ni") {
       inverse = false;
-    } else if (*i == "-ng" || *i == "--no-reg") {
+    } else if (*i == "-ng") {
       regular = false;
     }
   }
