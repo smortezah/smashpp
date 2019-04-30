@@ -54,9 +54,7 @@
 % \end{equation}
 % We have found that the lower the context-order size $k$, the lower $\gamma_m$ should be assigned to the model, and vice~versa. For example, for a model with $k=6$, a $\gamma_m \simeq 0.9$ and for a model with $k=18$, a $\gamma_m \simeq 0.95$ is the appropriate choice. This means, the more complex the model, the less the forgetting intensity.
 
-The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. There are five major stages in \smashpp: (1) reference-based compression, (2) filtering and segmentation, (3) reference-free compression, (4) positions aggregation and (5) visualization. In stage (1), model of the reference is built and the target is compressed using that model.
-
-The following sections describe the process in detail.
+The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. \smashpp takes a reference and a target file, as inputs, and produces a position file, as output, which is then fed to the \smashpp visualizer to produce an SVG image. This process has eight major stages: (1)~compression of the original target file based on the model of original reference file, (2)~filtering and segmentation of the compressed file, (3)~reference-free compression of the segmented files that are obtained by the previous stage, (4)~compression of the original reference file based on the model of segmented files obtained by stage~2, (5)~filtering and segmentation of the compressed files, (6)~reference-free compression of the segmented files which are obtained by the stage~5, (7)~aggregating positions based on the results of stages~3 and~6, and (8)~visualizing the positions. The following sections describe the process in detail.
 
 \begin{figure}[!h]
 \includegraphics[width=\linewidth]{schema.pdf}
