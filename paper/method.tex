@@ -54,9 +54,9 @@
 % \end{equation}
 % We have found that the lower the context-order size $k$, the lower $\gamma_m$ should be assigned to the model, and vice~versa. For example, for a model with $k=6$, a $\gamma_m \simeq 0.9$ and for a model with $k=18$, a $\gamma_m \simeq 0.95$ is the appropriate choice. This means, the more complex the model, the less the forgetting intensity.
 
+The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. There are five major stages in \smashpp: (1) reference-based compression, (2) filtering and segmentation, (3) reference-free compression, (4) positions aggregation and (5) visualization. In stage (1), model of the reference is built and the target is compressed using that model.
 
-
-The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. There are five major stages in this method, including 
+The following sections describe the process in detail.
 
 \begin{figure}[!h]
 \includegraphics[width=\linewidth]{schema.pdf}
