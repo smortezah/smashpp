@@ -22,8 +22,8 @@ class Filter {
   void extract_seg(std::vector<PosRow>&, uint8_t, uint8_t, std::string) const;
 
  private:
-  WType wtype;
-  uint32_t wsize;
+  FilterType filt_type;
+  uint32_t filt_size;
   std::string message;
   std::vector<float> window;
   struct Position {
@@ -32,7 +32,7 @@ class Filter {
     Position(uint64_t b, uint64_t e) : beg(b), end(e) {}
   };
 
-  void set_wsize(std::unique_ptr<Param>&);
+  void set_filt_size(std::unique_ptr<Param>&);
   void show_info(std::unique_ptr<Param>&) const;
   void make_window();
   void make_hamming();

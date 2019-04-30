@@ -36,7 +36,7 @@ enum class Container {  // Data structure
   log_table_8,
   sketch_8
 };
-enum class WType {  // Types of windowing function
+enum class FilterType {  // Types of windowing function
   rectangular,
   hamming,
   hann,
@@ -51,10 +51,12 @@ enum class FileType { seq, fasta, fastq };
 enum class FilterScale { s, m, l };
 enum class Problem { warning, error };
 enum class Align { left, right, internal };
+enum class Interval { open, closed, open_closed, closed_open };
 
-const std::vector<WType> SET_WTYPE{
-    WType::rectangular, WType::hamming, WType::hann, WType::blackman,
-    WType::triangular,  WType::welch,   WType::sine, WType::nuttall};
+const std::vector<FilterType> SET_WTYPE{
+    FilterType::rectangular, FilterType::hamming,    FilterType::hann,
+    FilterType::blackman,    FilterType::triangular, FilterType::welch,
+    FilterType::sine,        FilterType::nuttall};
 const std::vector<FilterScale> SET_FSCALE{FilterScale::s, FilterScale::m,
                                           FilterScale::l};
 

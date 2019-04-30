@@ -14,31 +14,34 @@ using namespace smashpp;
 
 Filter::Filter() : nSegs(0) {}
 
-Filter::Filter(std::unique_ptr<Param>& par) : nSegs(0), wtype(par->wtype) {
-  set_wsize(par);
+Filter::Filter(std::unique_ptr<Param>& par) : nSegs(0), filt_type(par->filt_type) {
+  set_filt_size(par);
   if ((par->filter || par->segment) && par->verbose) show_info(par);
 }
 
-inline void Filter::set_wsize(std::unique_ptr<Param>& par) {
+inline void Filter::set_filt_size(std::unique_ptr<Param>& par) {
   if (par->manFilterScale) {
-    const auto biggest = std::min(file_size(par->tar), file_size(par->ref));
-    const auto lg = std::log10(biggest / par->sampleStep);
+    // const auto biggest = std::min(file_size(par->tar), file_size(par->ref));
+    // const auto lg = std::log10(biggest / par->sampleStep);
     switch (par->filterScale) {
       case FilterScale::s:
-        wsize = std::pow(2, 2 * lg) + 1;
+        filt_size = 45;
+        // filt_size = std::pow(2, 2 * lg) + 1;
         break;
       case FilterScale::m:
-        wsize = std::pow(2, 2 * lg + 1) + 1;
+        filt_size = 499;
+        // filt_size = std::pow(2, 2 * lg + 1) + 1;
         break;
       case FilterScale::l:
-        wsize = std::pow(2, 2 * lg + 2) + 1;
+        filt_size = 1499;
+        // filt_size = std::pow(2, 2 * lg + 2) + 1;
         break;
     }
   } else {
-    wsize = is_odd(par->wsize) ? par->wsize : par->wsize + 1;
+    filt_size = is_odd(par->filt_size) ? par->filt_size : par->filt_size + 1;
   }
 
-  window.resize(wsize);
+  window.resize(filt_size);
 }
 
 inline void Filter::show_info(std::unique_ptr<Param>& par) const {
@@ -70,7 +73,7 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
         std::cerr << par->print_filter_scale();
         break;
       case 'w':
-        std::cerr << wsize;
+        std::cerr << filt_size;
         break;
       case 't':
         std::cerr << par->thresh;
@@ -150,7 +153,7 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
   }
 
   if (window.size() != 1) {
-    if (wtype == WType::rectangular) {
+    if (filt_type == FilterType::rectangular) {
       (par->saveFilter || par->saveAll)
           ? smooth_seg_rect<true>(pos_out, par, round)
           : smooth_seg_rect<false>(pos_out, par, round);
@@ -227,26 +230,26 @@ void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out,
 }
 
 inline void Filter::make_window() {
-  switch (wtype) {
-    case WType::hamming:
+  switch (filt_type) {
+    case FilterType::hamming:
       make_hamming();
       break;
-    case WType::hann:
+    case FilterType::hann:
       make_hann();
       break;
-    case WType::blackman:
+    case FilterType::blackman:
       make_blackman();
       break;
-    case WType::triangular:
+    case FilterType::triangular:
       make_triangular();
       break;
-    case WType::welch:
+    case FilterType::welch:
       make_welch();
       break;
-    case WType::sine:
+    case FilterType::sine:
       make_sine();
       break;
-    case WType::nuttall:
+    case FilterType::nuttall:
       make_nuttall();
       break;
     default:
@@ -255,55 +258,55 @@ inline void Filter::make_window() {
 }
 
 inline void Filter::make_hamming() {
-  if (wsize == 1) error("The size of Hamming window must be greater than 1.");
+  if (filt_size == 1) error("The size of Hamming window must be greater than 1.");
   float num{0.f};
   uint32_t den{0};
-  if (is_odd(wsize)) {
+  if (is_odd(filt_size)) {
     num = PI;
-    den = (wsize - 1) >> 1u;
+    den = (filt_size - 1) >> 1u;
   } else {
     num = 2 * PI;
-    den = wsize - 1;
+    den = filt_size - 1;
   }
 
-  for (auto n = (wsize + 1) >> 1u, last = wsize - 1; n--;)
+  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
     window[n] = window[last - n] =
         static_cast<float>(0.54 - 0.46 * std::cos(n * num / den));
 }
 
 inline void Filter::make_hann() {
-  if (wsize == 1) error("The size of Hann window must be greater than 1.");
+  if (filt_size == 1) error("The size of Hann window must be greater than 1.");
   float num{0.f};
   uint32_t den{0};
-  if (is_odd(wsize)) {
+  if (is_odd(filt_size)) {
     num = PI;
-    den = (wsize - 1) >> 1u;
+    den = (filt_size - 1) >> 1u;
   } else {
     num = 2 * PI;
-    den = wsize - 1;
+    den = filt_size - 1;
   }
 
-  for (auto n = (wsize + 1) >> 1u, last = wsize - 1; n--;)
+  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
     window[n] = window[last - n] =
         static_cast<float>(0.5 * (1 - std::cos(n * num / den)));
 }
 
 inline void Filter::make_blackman() {
-  if (wsize == 1) error("The size of Blackman window must be greater than 1.");
+  if (filt_size == 1) error("The size of Blackman window must be greater than 1.");
   float num1{0.f};
   float num2{0.f};
   uint32_t den{0};
-  if (is_odd(wsize)) {
+  if (is_odd(filt_size)) {
     num1 = PI;
     num2 = 2 * PI;
-    den = (wsize - 1) >> 1u;
+    den = (filt_size - 1) >> 1u;
   } else {
     num1 = 2 * PI;
     num2 = 4 * PI;
-    den = wsize - 1;
+    den = filt_size - 1;
   }
 
-  for (auto n = (wsize + 1) >> 1u, last = wsize - 1; n--;)
+  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
     window[n] = window[last - n] =
         static_cast<float>(0.42 - 0.5 * std::cos(n * num1 / den) +
                            0.08 * std::cos(n * num2 / den));
@@ -313,65 +316,65 @@ inline void Filter::make_blackman() {
 
 // Bartlett window:  w(n) = 1 - |(n - (N-1)/2) / (N-1)/2|
 inline void Filter::make_triangular() {
-  if (wsize == 1)
+  if (filt_size == 1)
     error("The size of triangular window must be greater than 1.");
 
-  if (is_odd(wsize)) {
-    const uint32_t den{(wsize - 1) >> 1u};
-    for (auto n = (wsize + 1) >> 1u, last = wsize - 1; n--;)
+  if (is_odd(filt_size)) {
+    const uint32_t den{(filt_size - 1) >> 1u};
+    for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
       window[n] = window[last - n] =
           1 - std::fabs(static_cast<float>(n) / den - 1);
   } else {
     constexpr auto num{2.0f};
-    const uint32_t den{wsize - 1};
-    for (auto n = (wsize + 1) >> 1u, last = wsize - 1; n--;)
+    const uint32_t den{filt_size - 1};
+    for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
       window[n] = window[last - n] = 1 - std::fabs(n * num / den - 1);
   }
 }
 
 inline void Filter::make_welch() {  // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
-  if (wsize == 1) error("The size of Welch window must be greater than 1.");
+  if (filt_size == 1) error("The size of Welch window must be greater than 1.");
 
-  if (is_odd(wsize)) {
-    const uint32_t den{(wsize - 1) >> 1u};
-    for (auto n = (wsize + 1) >> 1u, last = wsize - 1; n--;)
+  if (is_odd(filt_size)) {
+    const uint32_t den{(filt_size - 1) >> 1u};
+    for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
       window[n] = window[last - n] = float(1 - Power(float(n) / den - 1, 2));
   } else {
     constexpr auto num{2.0f};
-    const uint32_t den{wsize - 1};
-    for (auto n = (wsize + 1) >> 1u, last = wsize - 1; n--;)
+    const uint32_t den{filt_size - 1};
+    for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
       window[n] = window[last - n] = float(1 - Power(n * num / den - 1, 2));
   }
 }
 
 inline void Filter::make_sine() {
-  if (wsize == 1) error("The size of sine window must be greater than 1.");
+  if (filt_size == 1) error("The size of sine window must be greater than 1.");
   constexpr float num{PI};
-  const uint32_t den{wsize - 1};
+  const uint32_t den{filt_size - 1};
 
-  for (auto n = (wsize + 1) >> 1u, last = wsize - 1; n--;)
+  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
     window[n] = window[last - n] = std::sin(n * num / den);
 }
 
 inline void Filter::make_nuttall() {
-  if (wsize == 1) error("The size of Nuttall window must be greater than 1.");
+  if (filt_size == 1) error("The size of Nuttall window must be greater than 1.");
   float num1{0.f};
   float num2{0.f};
   float num3{0.f};
   uint32_t den{0};
-  if (is_odd(wsize)) {
+  if (is_odd(filt_size)) {
     num1 = PI;
     num2 = 2 * PI;
     num3 = 3 * PI;
-    den = (wsize - 1) >> 1u;
+    den = (filt_size - 1) >> 1u;
   } else {
     num1 = 2 * PI;
     num2 = 4 * PI;
     num3 = 6 * PI;
-    den = wsize - 1;
+    den = filt_size - 1;
   }
 
-  for (auto n = (wsize + 1) >> 1u, last = wsize - 1; n--;)
+  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
     window[n] = window[last - n] = static_cast<float>(
         0.36 - 0.49 * std::cos(n * num1 / den) + 0.14 * cos(n * num2 / den) -
         0.01 * std::cos(n * num3 / den));
@@ -405,14 +408,14 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   // seg->totalSize = file_lines(profile_name) / par->sampleStep;
   // // const auto totalSize = (file_lines(profile_name) / par->sampleStep) + 1;
 
-  // const auto sum_win_weights{wsize};
+  // const auto sum_win_weights{filt_size};
   // uint64_t symsNo{0};
 
   // const auto buff_size = 256;  // todo
-  // const auto half_wsize = (wsize >> 1u);
+  // const auto half_wsize = (filt_size >> 1u);
 
   // std::vector<float> seq(half_wsize, 0);
-  // seq.reserve(wsize + buff_size);  // Essential
+  // seq.reserve(filt_size + buff_size);  // Essential
 
   // const auto jump_lines = [&]() {
   //   for (auto i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
@@ -427,16 +430,16 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   // uint64_t running_times;
   // auto filtered{0.f};
 
-  // if (seq.size() < wsize || prfF.peek() == EOF) {
+  // if (seq.size() < filt_size || prfF.peek() == EOF) {
   //   data_beg = std::begin(seq);
   //   running_times = seq.size() - half_wsize;
   // } else {
   //   do {
   //     data_beg = std::begin(seq);
   //     filtered =
-  //         std::accumulate(data_beg, data_beg + wsize, 0.f) / sum_win_weights;
+  //         std::accumulate(data_beg, data_beg + filt_size, 0.f) / sum_win_weights;
 
-  //     for (auto i = buff_size-wsize; i-- && (prfF >> entropy); ++data_beg) {
+  //     for (auto i = buff_size-filt_size; i-- && (prfF >> entropy); ++data_beg) {
   //       if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
   //       seg->partition(pos_out, filtered);
   //       if (par->verbose) show_progress(++symsNo, seg->totalSize, message);
@@ -456,7 +459,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   // }
 
   // seq.resize(seq.size() + half_wsize);  // Append half_wsize zeros
-  // filtered = std::accumulate(data_beg, data_beg + wsize, 0.f) / sum_win_weights;
+  // filtered = std::accumulate(data_beg, data_beg + filt_size, 0.f) / sum_win_weights;
 
   // for (auto i = running_times; i--;) {
   //   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
@@ -503,9 +506,9 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   auto sum{0.f};
   // uint64_t symsNo{0};
   auto entropy{0.f};
-  const auto half_wsize{wsize >> 1u};
+  const auto half_wsize{filt_size >> 1u};
   std::vector<float> seq;
-  seq.reserve(wsize);
+  seq.reserve(filt_size);
 
   // First value
   for (auto i = half_wsize + 1; i-- && (prfF >> entropy);jump_lines()) {
@@ -514,7 +517,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
     sum += val;
     // show_progress(++symsNo, seg->totalSize, message);
   }
-  auto filtered = sum / wsize;
+  auto filtered = sum / filt_size;
   // auto filtered = sum / seq.size();
   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
   seg->partition(pos_out, filtered);
@@ -524,7 +527,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
     const auto val{entropy};
     seq.push_back(val);
     sum += val;
-    filtered = sum / wsize;
+    filtered = sum / filt_size;
     // filtered = sum / seq.size();
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
@@ -537,12 +540,12 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   for (; prfF >> entropy;jump_lines()) {
     const auto val = entropy;
     sum += val - seq[idx];
-    filtered = sum / wsize;
+    filtered = sum / filt_size;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
     seg->partition(pos_out, filtered);
     seq[idx] = val;
-    idx = (idx + 1) % wsize;
+    idx = (idx + 1) % filt_size;
     // show_progress(++symsNo, seg->totalSize, message);
   }
   prfF.close();
@@ -550,12 +553,12 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   // Until half of the window goes outside the array
   for (auto i = 1u; i != half_wsize + 1; ++i) {
     sum -= seq[idx];
-    filtered = sum / wsize;
-    // filtered = sum / (wsize - i);
+    filtered = sum / filt_size;
+    // filtered = sum / (filt_size - i);
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
     seg->partition(pos_out, filtered);
-    idx = (idx + 1) % wsize;
+    idx = (idx + 1) % filt_size;
     // show_progress(++symsNo, seg->totalSize, message);
   }
 
@@ -601,19 +604,19 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
   // // const auto buff_size = 256;  // todo
   // uint32_t buff_size;
-  // if (wsize < 256)
+  // if (filt_size < 256)
   //   buff_size = 256;
-  // else if (wsize < 512)
+  // else if (filt_size < 512)
   //   buff_size = 512;
-  // else if (wsize < 1024)
+  // else if (filt_size < 1024)
   //   buff_size = 1024;
-  // else if (wsize < 2048)
+  // else if (filt_size < 2048)
   //   buff_size = 2048;
 
-  // const auto half_wsize = (wsize >> 1u);
+  // const auto half_wsize = (filt_size >> 1u);
 
   // std::vector<float> seq(half_wsize, 0);
-  // seq.reserve(wsize + buff_size);  // Essential
+  // seq.reserve(filt_size + buff_size);  // Essential
 
   // const auto jump_lines = [&]() {
   //   for (auto i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
@@ -628,7 +631,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   // uint64_t running_times;
   // auto filtered{0.f};
 
-  // if (seq.size() < wsize || prfF.peek() == EOF) {
+  // if (seq.size() < filt_size || prfF.peek() == EOF) {
   //   data_beg = std::begin(seq);
   //   running_times = seq.size() - half_wsize;
   // } else {
@@ -644,9 +647,9 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   //   do {
   //     data_beg = std::begin(seq);
 
-  //     for (auto i = buff_size - wsize; i-- && (prfF >> entropy); ++data_beg) {
+  //     for (auto i = buff_size - filt_size; i-- && (prfF >> entropy); ++data_beg) {
   //       filtered =
-  //           std::inner_product(data_beg, data_beg + wsize, win_beg, 0.f) /
+  //           std::inner_product(data_beg, data_beg + filt_size, win_beg, 0.f) /
   //           sum_win_weights;
   //       if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
   //       seg->partition(pos_out, filtered);
@@ -668,7 +671,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   // seq.resize(seq.size() + half_wsize);  // Append half_wsize zeros
 
   // for (auto i = running_times; i--;) {
-  //   filtered = std::inner_product(data_beg, data_beg + wsize, win_beg, 0.f) /
+  //   filtered = std::inner_product(data_beg, data_beg + filt_size, win_beg, 0.f) /
   //              sum_win_weights;
   //   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
   //   seg->partition(pos_out, filtered);
@@ -707,7 +710,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   }
   const auto winBeg{std::begin(window)};
   const auto winEnd{std::end(window)};
-  const auto half_wsize = (wsize >> 1u);
+  const auto half_wsize = (filt_size >> 1u);
   // auto sWeight{std::accumulate(winBeg + half_wsize, winEnd, 0.f)};
   auto sum_weights{std::accumulate(winBeg, winEnd, 0.f)};
   // uint64_t symsNo{0};
@@ -719,7 +722,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
   std::string num;
   std::vector<float> seq;
-  seq.reserve(wsize);
+  seq.reserve(filt_size);
   auto entropy{0.f};
   
   // First value
@@ -750,7 +753,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   uint32_t idx{0};
   for (auto seqBeg = std::begin(seq); prfF >> entropy; jump_lines()) {
     seq[idx] = entropy;
-    idx = (idx + 1) % wsize;
+    idx = (idx + 1) % filt_size;
     sum = (std::inner_product(winBeg, winEnd - idx, seqBeg + idx, 0.f) +
            std::inner_product(winEnd - idx, winEnd, seqBeg, 0.f));
     filtered = sum / sum_weights;
@@ -766,14 +769,14 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   const auto offset{idx};
   for (auto i = 1u; i != half_wsize + 1; ++i) {
     auto seqBeg = std::begin(seq), seqEnd = std::end(seq);
-    if (++idx < wsize + 1)
+    if (++idx < filt_size + 1)
       sum = (std::inner_product(seqBeg + idx, seqEnd, winBeg, 0.f) +
              std::inner_product(seqBeg, seqBeg + offset, winEnd - idx, 0.f));
     else
-      sum = std::inner_product(seqBeg + (idx % wsize), seqBeg + offset, winBeg,
+      sum = std::inner_product(seqBeg + (idx % filt_size), seqBeg + offset, winBeg,
                                0.f);
     filtered = sum / sum_weights;
-    // sWeight -= window[wsize - i];
+    // sWeight -= window[filt_size - i];
     // filtered = sum / sWeight;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
@@ -821,7 +824,7 @@ void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round,
 #ifdef BENCH
 template <typename Iter, typename Value>
 inline void Filter::shift_left_insert(Iter first, Value v) {
-  std::copy(first + 1, first + wsize, first);
-  *(first + wsize - 1) = v;
+  std::copy(first + 1, first + filt_size, first);
+  *(first + filt_size - 1) = v;
 }
 #endif

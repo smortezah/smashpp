@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/smashpp",
             "args": [
-                // "-w",
+                // "-f",
                 // "45",
                 // "200",
                 // "-rm",
@@ -35,7 +35,7 @@
                 // "-re",
                 // "10",
                 // "-sa",
-                "-wt",
+                "-ft",
                 "5"
             ],
             "stopAtEntry": false,

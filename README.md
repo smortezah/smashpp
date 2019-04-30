@@ -81,8 +81,8 @@ DESCRIPTION
   -n,  --nthr  INT           number of threads: [1, 8]
   -fs, --filter-scale S|M|L  scale of the filter:
                              {S|small, M|medium, L|large}
-  -w,  --wsize INT           window size: [1, 4294967295]
-  -wt, --wtype INT/STRING    type of windowing function:
+  -w,  --filt_size INT           window size: [1, 4294967295]
+  -wt, --filt_type INT/STRING    type of windowing function:
                              {0|rectangular, 1|hamming, 2|hann,
                              3|blackman, 4|triangular, 5|welch,
                              6|sine, 7|nuttall}

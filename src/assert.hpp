@@ -17,13 +17,13 @@ template <typename Value>
 class ValRange {
  public:
   ValRange() = default;
-  ValRange(Value min_, Value max_, Value d_, std::string&& l_, std::string&& c_,
+  ValRange(Value min_, Value max_, Value d_, std::string&& l_, Interval i_,
            std::string&& m_, Problem p_)
       : min(min_),
         max(max_),
         def(d_),
         label(std::move(l_)),
-        criterion(std::move(c_)),
+        criterion(i_),
         initMode(std::move(m_)),
         problem(p_),
         inRange(true) {}
@@ -35,7 +35,8 @@ class ValRange {
   Value max;
   Value def;
   std::string label;
-  std::string criterion;
+  Interval criterion;
+  // std::string criterion;
   std::string initMode;
   Problem problem;
   bool inRange;
@@ -68,13 +69,13 @@ void ValRange<Value>::assert(Value& val) {
     append_msg(std::move(s));
   };
 
-  if (criterion == "[]" && (val > max || val < min))
+  if (criterion == Interval::closed && (val > max || val < min))
     create_message('[', ']');
-  else if (criterion == "[)" && (val >= max || val < min))
+  else if (criterion == Interval::closed_open && (val >= max || val < min))
     create_message('[', ')');
-  else if (criterion == "(]" && (val > max || val <= min))
+  else if (criterion == Interval::open_closed && (val > max || val <= min))
     create_message('(', ']');
-  else if (criterion == "()" && (val >= max || val <= min))
+  else if (criterion == Interval::open && (val >= max || val <= min))
     create_message('(', ')');
 
   if (!inRange) {
