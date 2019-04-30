@@ -19,7 +19,7 @@ static constexpr prc_t MIN_ENTR_N{0.0};
 static constexpr prc_t MAX_ENTR_N{100.0};
 static constexpr uint32_t MIN_WS{1};
 static constexpr uint32_t MAX_WS{0xffffffff};  // 2^32 - 1
-static constexpr auto WT{WType::hann};         // Window type -- filter
+static constexpr auto FT{FilterType::hann};         // Window type -- filter
 static constexpr float MIN_THRSH{0};
 static constexpr float MAX_THRSH{20};
 static constexpr uint8_t K_MAX_TBL64{11};   // Max ctx table 64     (128 MB mem)
@@ -70,8 +70,8 @@ class Param {
   uint32_t segSize;
   prc_t entropyN;
   uint8_t nthr;
-  uint32_t wsize;
-  WType wtype;
+  uint32_t filt_size;
+  FilterType filt_type;
   uint64_t sampleStep;
   float thresh;
   bool manWSize;
@@ -115,14 +115,14 @@ class Param {
         segSize(50),
         entropyN(2.0),
         nthr(4),
-        wsize(256),
-        wtype(WT),
+        filt_size(256),
+        filt_type(FT),
         sampleStep(1ull),
         thresh(1.5),
         manWSize(false),
         manThresh(false),
         manFilterScale(false),
-        filterScale(FilterScale::l),
+        filterScale(FilterScale::m),
         saveSeq(false),
         saveProfile(false),
         saveFilter(false),
@@ -138,7 +138,7 @@ class Param {
         ref_guard(std::make_unique<RefGuard>()) {}
 
   void parse(int, char**&);
-  auto win_type(std::string) const -> WType;
+  auto win_type(std::string) const -> FilterType;
   auto print_win_type() const -> std::string;
   auto filter_scale(std::string) const -> FilterScale;
   auto print_filter_scale() const -> std::string;

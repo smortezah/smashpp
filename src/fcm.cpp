@@ -137,7 +137,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
         std::cerr << par->print_filter_scale();
         break;
       case 'w':
-        std::cerr << par->wsize;
+        std::cerr << par->filt_size;
         break;
       case 't':
         std::cerr << par->thresh;

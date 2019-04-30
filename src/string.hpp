@@ -104,30 +104,30 @@ inline static std::string string_format(const std::string& format,
                      buf.get() + size - 1);  // Don't want the '\0' inside
 }
 
-inline static std::string conv_to_string(WType val) {
+inline static std::string conv_to_string(FilterType val) {
   switch (val) {
-    case WType::rectangular:
+    case FilterType::rectangular:
       return "0|rectangular";
       break;
-    case WType::hamming:
+    case FilterType::hamming:
       return "1|hamming";
       break;
-    case WType::hann:
+    case FilterType::hann:
       return "2|hann";
       break;
-    case WType::blackman:
+    case FilterType::blackman:
       return "3|blackman";
       break;
-    case WType::triangular:
+    case FilterType::triangular:
       return "4|triangular";
       break;
-    case WType::welch:
+    case FilterType::welch:
       return "5|welch";
       break;
-    case WType::sine:
+    case FilterType::sine:
       return "6|sine";
       break;
-    case WType::nuttall:
+    case FilterType::nuttall:
       return "7|nuttall";
       break;
     default:
