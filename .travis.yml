@@ -16,4 +16,4 @@ matrix:
 before_install:
     - eval "${MATRIX_EVAL}"
 
-script: ./install.sh
+script: sudo sh install.sh
