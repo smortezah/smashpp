@@ -57,12 +57,66 @@
 The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. \smashpp takes a reference and a target file, as inputs, and produces a position file, as output, which is then fed to the \smashpp visualizer to produce an SVG image. This process has eight major stages: (1)~compression of the original target file based on the model of original reference file, (2)~filtering and segmentation of the compressed file, (3)~reference-free compression of the segmented files that are obtained by the previous stage, (4)~compression of the original reference file based on the model of segmented files obtained by stage~2, (5)~filtering and segmentation of the compressed files, (6)~reference-free compression of the segmented files which are obtained by the stage~5, (7)~aggregating positions based on the results of stages~3 and~6, and (8)~visualizing the positions. The following sections describe the process in detail.
 
 \begin{figure}[!h]
-\includegraphics[width=\linewidth]{schema.pdf}
+% \includegraphics[width=\linewidth]{schema.pdf}
 \caption{The schema of Smash++.}
 \label{fig.schema}
 \end{figure}
 
 \subsection{Data modeling}
+\smashpp works on the basis of cooperation between finite-context models (FCMs) and substitutional tolerant Markov models (STMMs), as illustrated in Fig.~\ref{fig.model}. Applying these models on various contexts, seen in the past, provides probability and weight values, which are then mixed to provide the final probability ($P$) of the next symbol, G in this case. The following subsections describe FCMs and STMMs in detail.
+
+\begin{figure}[!h]
+% \includegraphics[]{data_model.pdf}
+\caption{model.}
+\label{fig.model}
+\end{figure}
+
+\paragraph{Finite-context model (FCM)}
+A finite-context model considers Markov property to estimate the probability of the next symbol in an information source, based on the past $k$ symbols (a context of size $k$)~\cite{sayood2017introduction,hosseini2019ac,pinho2013mfcompress}. Denoting the context as $x_{i-k}^{i-1} = x_{i-k} x_{i-k+1}\cdots x_{i-2} x_{i-1}$, the probability of the next symbol $s$, which is posed at $i$, can be estimated as
+\begin{equation} \label{eq.estimate}
+P_m(s|x_{i-k}^{i-1}) = \frac{N(s|x_{i-k}^{i-1})+\alpha}{N(x_{i-k}^{i-1})+ \alpha|\Theta|},
+\end{equation}
+in which $m$ stands for model (FCM in this case), $N(s|x_{i-k}^{i-1})$ shows the number of times that the information source has generated symbol~$s$ in the past, $|\Theta|$ denotes size of the alphabet~$\Theta$, $N(x_{i-k}^{i-1}) = \sum_{j \in \Theta} N(j|x_{i-k}^{i-1})$ represents the total number of events occurred for the context~$x_{i-k}^{i-1}$ and $\alpha$ allows to keep a balance between the maximum likelihood estimator and the uniform distribution. Eq.~\ref{eq.estimate} turns to the Laplace estimator, for $\alpha=1$, and also behaves as a maximum likelihood estimator, for large number of events~$i$~\cite{pratas2015alignment}.
+
+\paragraph{Substitutional tolerant Markov models} \label{stmm}
+A substitutional tolerant Markov model (STMM) \cite{pratas2016efficient,pratas2017substitutional} is a probabilistic-algorithmic context model. 
+An\linebreak STMM uses the occurrence probabilities stored in the memory and assumes that the symbol to be seen in the sequence is the one with the highest probability. This way, it does not take into consideration the symbol that actually is in the sequence. 
+
+Considering the $k$ most recent symbols, the probability of the next symbol $s$ is estimated as
+\begin{equation}
+P_m(s|{x'}_{i-k}^{i-1}) = \frac{N(s|{x'}_{i-k}^{i-1})+\alpha}
+{N({x'}_{i-k}^{i-1})+ \alpha|\Theta|},
+\end{equation}
+in which $N$ is the memory counts regarding the model and $x'$ is a copy of the context $x$ that is modified as 
+\begin{equation}
+{x'}_{i} = \argmax_{\forall s \in \Theta}{P_m(s|{x'}_{i-k}^{i-1})}.
+\end{equation}
+
+An STMM is an algorithmic model, namely because it can be disabled and enabled based on its performance. This operation is done considering a predefined threshold $t$. For this purpose, a cache array (history) with the size of $k$ (context-order size) is used to store the recent $k$ hits/misses. When we see a symbol in the sequence, if it is the most probable symbol, based on the number of occurrences saved in the memory, a hit will be stored in the history array; otherwise, a miss will be stored. At the time of seeing a symbol, before storing any hit/miss in the history, we check the number of misses. If it is greater than the threshold $t$, the STMM will be disabled and the history will be reset. This process starts over again for the next symbol.
+
+To make the difference of FCM and STMM clearer, we give an example. Assume, the current context is\linebreak $c_0=\textrm{FDCAE}$, with $k=5$, and the number of occurrences stored in the memory are $\textrm{F}=8$, $\textrm{D}=5$, $\textrm{C}=12$, $\textrm{A}=7$ and $\textrm{E}=10$. Also, assume the next symbol in the sequence, which is to be compressed, is $\textrm{A}$. Based on an FCM, the next context will be $c_1=\textrm{DCAEA}$, while based on an STMM, it will be $c'_1=\textrm{DCAEC}$. This is because an FCM considers the next symbol as the actual one seen in the sequence, i.e. $\textrm{A}$, but an STMM considers it as the most probable symbol, $\textrm{C}$. This way, the STMM assumes the next symbol to be compressed is $\textrm{C}$, instead of $\textrm{A}$.
+
+\paragraph{Cooperation of FCMs and STMMs} \label{cooper}
+In the case of cooperation between FCMs and STMMs, considering the $k$ most recent symbols in the sequence, the probability of the next symbol $s$ is estimated as
+\begin{equation}
+P(s) = \sum_{m\in\mathcal{F}} P_m(s|x_{i-k}^{i-1})\;w_{m,i} + \sum_{m\in\mathcal{S}} P_m(s|{x'}_{i-k}^{i-1})\;w_{m,i},
+\end{equation}
+where $\mathcal{F}$ is the set of FCMs and $\mathcal{S}$ is the set of STMMs. $P_m(s|x_{i-k}^{i-1})$ and $P_m(s|{x'}_{i-k}^{i-1})$ are the probabilities of the next symbol estimated by the FCM and the STMM, respectively. Also, $w_{m,i}$ is a weight assigned to each model, based on its performance. For this weighting factor, we have
+\begin{align}
+&\forall m\in\mathcal{F}:\quad w_{m,i} \propto (w_{m,i-1})^{\gamma_m} P_m(s | x_{i-k-1}^{i-2})
+\nonumber
+\\[1mm]
+&\forall m\in\mathcal{S}:\quad w_{m,i} \propto (w_{m,i-1})^{\gamma_m} P_m(s | {x'}_{i-k-1}^{i-2}),
+\end{align}
+in which $\gamma_m \in [0,1)$ acts as a forgetting factor for the models. Note,
+\begin{equation}
+\sum_{m\in\mathcal{F}} w_{m,i} + \sum_{m\in\mathcal{S}} w_{m,i} = 1.
+\end{equation}
+We have found that the lower the context-order size $k$, the lower $\gamma_m$ should be assigned to the model, and vice~versa. For example, for a model with $k=6$, a $\gamma_m \simeq 0.9$ and for a model with $k=18$, a $\gamma_m \simeq 0.95$ is the appropriate choice. This means, the more complex the model, the less the forgetting intensity.
+
+
+
+
 
 \subsection{Finding similar regions}
 
@@ -74,8 +128,8 @@ In order to smooth the profile information, we use Hann window~\cite{blackman195
 in which, $0\le n\le N$ and length of the window is $N+1$ (Fig.~\ref{fig.hann}).
 
 \begin{figure}[!h]
-  \centering
-\includegraphics[width=7cm]{hann.pdf}
+\centering
+% \includegraphics[width=7cm]{hann.pdf}
 \caption{Hann window for 101 samples.}
 \label{fig.hann}
 \end{figure}
@@ -104,8 +158,8 @@ Besides Hann window, that is used as default to filter the profile information o
 \end{align}
 
 \begin{figure}[!h]
-  \centering
-\includegraphics[width=.95\linewidth]{filters.pdf}
+\centering
+% \includegraphics[width=.95\linewidth]{filters.pdf}
 \caption{Window functions.}
 \label{fig.filters}
 \end{figure}
