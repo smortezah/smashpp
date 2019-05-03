@@ -40,11 +40,6 @@ D.~Pratas, R.~M. Silva, A.~J. Pinho, and P.~J. Ferreira, ``{An alignment-free
   method to find and visualise rearrangements between pairs of DNA
   sequences},'' \emph{Scientific reports}, vol.~5, p. 10203, 2015.
 
-\bibitem{pratas2016efficient}
-D.~Pratas, A.~J. Pinho, and P.~J. Ferreira, ``Efficient compression of genomic
-  sequences,'' in \emph{Proceedings of DCC '16: Data Compression
-  Conference}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2016, pp. 231--240.
-
 \bibitem{pratas2017substitutional}
 D.~Pratas, M.~Hosseini, and A.~J. Pinho, ``Substitutional tolerant {Markov}
   models for relative compression of {DNA} sequences,'' in \emph{International
