@@ -67,7 +67,7 @@ The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. \smas
 
 \begin{figure}[!h]
   \centering
-\includegraphics[width=.85\linewidth]{data_model.pdf}
+% \includegraphics[width=.85\linewidth]{data_model.pdf}
 \caption{model.}
 \label{fig.model}
 \end{figure}
@@ -112,8 +112,17 @@ where $\gamma_m$ and $\gamma'_m \in [0,1)$ are forgetting factors predefined for
 \end{equation}
 By experimenting different forgetting factors for models, we have found that higher factors should be assigned to models that have higher context-order sizes (less complexity) and vice versa. As an example, when the context size $k=6$, $\gamma_m \mathrm{\;or\;} \gamma'_m \simeq 0.9$ and when $k=18$, $\gamma_m \mathrm{\;or\;} \gamma'_m \simeq 0.95$ would be appropriate choices. These values show that forgetting factor and complexity of a model are inversely related.
 
-\paragraph{data structures}
-
+\paragraph{Storing models in memory}
+The FCMs and STMMs include, in fact, count values which need to be saved in memory. For this purpose, four different data structures have been employed considering the context-order size $k$, as follows:
+\begin{equation*}
+  \textrm{data structure} =
+\begin{cases}
+  \textrm{table of 64 bit counters}, & 1 \leq k \leq 11 \\
+  \textrm{table of 32 bit counters}, & k=12, 13 \\
+  \textrm{table of 8 bit logarithmic counters}, & k=14 \\
+  \textrm{Count-Min-Log sketch of 4 bit counters}, & k \ge 15
+\end{cases}
+\end{equation*}
 
 
 \subsection{Finding similar regions}
