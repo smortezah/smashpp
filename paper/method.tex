@@ -86,7 +86,7 @@ P_m(s|{x'}_{i-k}^{i-1}) = \frac{N(s|{x'}_{i-k}^{i-1})+\alpha}
 \end{equation}
 where $N$ represents the number of occurrences of symbols, that is saved in memory, and ${x'}_{i-k}^{i-1}$ is a copy of the context $x_{i-k}^{i-1}$ which is modified as 
 \begin{equation}
-{x'}_{i} = \argmax_{\forall s \in \Theta}{P_m(s|{x'}_{i-k}^{i-1})}.
+x'_{i} = \argmax_{\forall s \in \Theta}{P_m(s|{x'}_{i-k}^{i-1})}.
 \end{equation}
 
 STMMs can be used along with FCMs to modify the behavior of \smashpp in confronting with nucleotide substitutions in genomic sequences. These models have the potential to be disabled, to reduce the number of mathematical calculations and consequently, increase the performance of the proposed method. Such operation is automatically performed using an array of size $k$ (the context size), named history, which preserves the past $k$ hits/misses. Seeing a symbol in the information source, the memory is checked for the symbol with the highest number of occurrences. If they are equal, a hit is saved in the history array; otherwise, a miss is inserted into the array. Before getting to store a hit/miss in the array, it is checked for the number of misses and in the case they are more than a predefined threshold $t$, the STMM will be disabled and also the history array will be reset. This process is performed for each symbol in the sequence.
@@ -96,25 +96,22 @@ This example shows the distinction between a finite-context model and a substitu
 \paragraph{Cooperation of FCMs and STMMs}
 When FCMs and STMMs are in cooperation, the probability of the next symbol $s$, at position $i$, can be estimated as
 \begin{equation}
-P(s) = \sum_{m\in\mathcal{F}} P_m(s|x_{i-k}^{i-1})\;w_{m,i} + \sum_{m\in\mathcal{S}} P_m(s|{x'}_{i-k}^{i-1})\;w'_{m,i},
+P(s_i) = \sum_{m\in\mathcal{F}} P_m(s|x_{i-k}^{i-1})\;w_{m,i} + \sum_{m\in\mathcal{S}} P_m(s|{x'}_{i-k}^{i-1})\;w'_{m,i},
 \end{equation}
-in which $\mathcal{F}$ and $\mathcal{S}$ denote sets of FCMs and STMMs, respectively, $P_m(s|x_{i-k}^{i-1})$ shows the probability of the next symbol estimated by the FCM, $P_m(s|{x'}_{i-k}^{i-1})$ represents this probability for the STMM and 
-
-
-Also, $w_{m,i}$ is a weight assigned to each model, based on its performance. For this weighting factor, we have
+in which $\mathcal{F}$ and $\mathcal{S}$ denote sets of FCMs and STMMs, respectively, $P_m(s|x_{i-k}^{i-1})$ shows the probability of the next symbol estimated by the FCM, $P_m(s|{x'}_{i-k}^{i-1})$ represents this probability estimated by the STMM, and $w_{m,i}$ and $w'_{m,i}$ are weights assigned to each model based on its performance. We have
 \begin{align}
-&\forall m\in\mathcal{F}:\quad w_{m,i} \propto (w_{m,i-1})^{\gamma_m} P_m(s | x_{i-k-1}^{i-2})
+\forall m\in\mathcal{F}:\quad &w_{m,i} \propto (w_{m,i-1})^{\gamma_m} P_m(s | x_{i-k-1}^{i-2})
 \nonumber
 \\[1mm]
-&\forall m\in\mathcal{S}:\quad w_{m,i} \propto (w_{m,i-1})^{\gamma_m} P_m(s | {x'}_{i-k-1}^{i-2}),
+\forall m\in\mathcal{S}:\quad &w'_{m,i} \propto (w'_{m,i-1})^{\gamma'_m} P_m(s | {x'}_{i-k-1}^{i-2}),
 \end{align}
-in which $\gamma_m \in [0,1)$ acts as a forgetting factor for the models. Note,
+where $\gamma_m$ and $\gamma'_m \in [0,1)$ are forgetting factors predefined for each model. Also,
 \begin{equation}
-\sum_{m\in\mathcal{F}} w_{m,i} + \sum_{m\in\mathcal{S}} w_{m,i} = 1.
+\sum_{m\in\mathcal{F}} w_{m,i} + \sum_{m\in\mathcal{S}} w'_{m,i} = 1.
 \end{equation}
-We have found that the lower the context-order size $k$, the lower $\gamma_m$ should be assigned to the model, and vice~versa. For example, for a model with $k=6$, a $\gamma_m \simeq 0.9$ and for a model with $k=18$, a $\gamma_m \simeq 0.95$ is the appropriate choice. This means, the more complex the model, the less the forgetting intensity.
+By experimenting different forgetting factors for models, we have found that higher factors should be assigned to models that have higher context-order sizes (less complexity) and vice versa. As an example, when the context size $k=6$, $\gamma_m \mathrm{\;or\;} \gamma'_m \simeq 0.9$ and when $k=18$, $\gamma_m \mathrm{\;or\;} \gamma'_m \simeq 0.95$ would be appropriate choices. These values show that forgetting factor and complexity of a model are inversely related.
 
-
+\paragraph{data structures}
 
 
 
