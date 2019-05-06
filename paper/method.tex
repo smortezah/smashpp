@@ -125,34 +125,67 @@ The FCMs and STMMs include, in fact, count values which need to be saved in memo
 \end{equation*}
 
 
-\begin{minipage}{.6\linewidth}
+\begin{minipage}{.55\linewidth}
 \begin{algorithm}[H]
   \caption{Count-Min-Log Sketch UPDATE}\label{euclid}
   \begin{algorithmic}[1]
-    \Require sketch width $w$, sketch depth $d$, logarithm base $b>1$, independent hash functions $h_{1\ldots d}: U\to \{1\ldots w\}$
+    \Require sketch width $w$, sketch depth $d$, log base $b>1$, independent hash functions $h_{1..d}: U\to \{1..w\}$
+    \Function{\textsc{MinCount}}{$e$}
+    \State $\mathrm{minVal}\gets 0$
+    \For{$k\gets 1\mathrm{\;to\;}d$}
+    \If{$\mathrm{sk}[k, h_k(e)] < \mathrm{minVal}$}
+    \State $\mathrm{minVal}\gets \mathrm{sk}[k, h_k(e)]$
+    \EndIf
+    \EndFor
+    \State \textbf{return} minVal
+    \EndFunction
+    \State
     \Function{\textsc{IncreaseDecision}}{$c$}
     \State \textbf{return} True with probability $b^{-c}$, else False
     \EndFunction
     \State
     \Function{\textsc{Update}}{$e$}
-    \State $c\gets \min_{1\leq k\leq d}\; \mathrm{sk}[k, h_k(e)]$
-    \If{\textsc{IncreaseDecision($c$)}}
-    \For{$k\gets 1\ldots d$}
+    \State $c\gets \textsc{MinCount}(e)$
+    \If{$\textsc{IncreaseDecision($c$)}=\mathrm{True}$}
+    \For{$k\gets 1\mathrm{\;to\;}d$}
     \If{$\mathrm{sk}[k, h_k(e)] = c$}
     \State $\mathrm{sk}[k, h_k(e)]\gets c+1$
     \EndIf
     \EndFor
     \EndIf
     \EndFunction
-  % \State $r\gets a\bmod b$
-  % \While{$r\not=0$}\Comment{We have the answer if r is 0}
-  % \State $a\gets b$
-  % \State $b\gets r$
-  % \State $r\gets a\bmod b$
-  % \EndWhile\label{euclidendwhile}
-  % \State \textbf{return} $b$\Comment{The gcd is b}
   \end{algorithmic}
 \end{algorithm}
+\end{minipage}
+
+\begin{minipage}{.55\linewidth}
+  \begin{algorithm}[H]
+    \caption{Count-Min-Log Sketch QUERY}\label{euclid}
+    \begin{algorithmic}[1]
+      \Require sketch width $w$, sketch depth $d$, log base $b>1$, independent hash functions $h_{1\ldots d}: U\to \{1\ldots w\}$
+      \Function{\textsc{PointValue}}{$c$}
+      \If{$c=0$}
+      \State \textbf{return} $0$
+      \Else{}
+      \State \textbf{return} $b^{c-1}$
+      \EndIf
+      \EndFunction
+      \State
+      \Function{\textsc{Value}}{$e$}
+      \If{$c\le 1$}
+      \State \textbf{return} \textsc{PointValue}($c$)
+      \Else{}
+      \State $v\gets \textsc{PointValue}(c+1)$
+      \State \textbf{return} $\frac{1-v}{1-x}$
+      \EndIf
+      \EndFunction
+      \State
+      \Function{\textsc{Query}}{$e$}
+      \State $c\gets \min_{1\leq k\leq d}\; \mathrm{sk}[k, h_k(e)]$
+      \State \textbf{return} $\textsc{Value}(c)$
+      \EndFunction
+    \end{algorithmic}
+  \end{algorithm}
 \end{minipage}
 
 
