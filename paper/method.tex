@@ -131,6 +131,8 @@ The FCMs and STMMs include, in fact, count values which need to be saved in memo
 \label{fig.struct}
 \end{figure}
 
+The table of 64 bit counters, that is shown in Fig.~\ref{fig.struct}a, simply saves number of events for each context. The table of 32 bit counters, Fig.~\ref{fig.struct}b, saves in each position the number of times that the associated context is observed. When a counter reaches to the maximum value $2^{32}-1=4294967295$, the counts will be renormalized.
+
 \begin{center}
 \begin{minipage}[t]{.6\linewidth}
 \begin{algorithm}[H]
