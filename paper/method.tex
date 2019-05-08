@@ -119,40 +119,90 @@ The FCMs and STMMs include, in fact, count values which need to be saved in memo
 \begin{cases}
   \textrm{table of 64 bit counters}, & 1 \leq k \leq 11 \\
   \textrm{table of 32 bit counters}, & k=12, 13 \\
-  \textrm{table of 8 bit logarithmic counters}, & k=14 \\
+  \textrm{table of 8 bit approximate counters}, & k=14 \\
   \textrm{Count-Min-Log sketch of 4 bit counters}, & k \ge 15
 \end{cases}
 \end{equation*}
 
+\begin{figure}[!h]
+  \centering
+% \includegraphics[height=.95\textheight]{data_struct.pdf}
+\caption{data structure.}
+\label{fig.struct}
+\end{figure}
 
-\begin{minipage}{.5\linewidth}
+\begin{center}
+\begin{minipage}[t]{.6\linewidth}
 \begin{algorithm}[H]
-  \caption{Count-Min-Log Sketch UPDATE and QUERY}\label{euclid}
+  \caption{Approximate counting \textsc{Update} and \textsc{Query}}\label{alg.approx}
   \begin{algorithmic}[1]
-    \Require sketch width $w$, sketch depth $d$, independent hash functions $h_{1..d}: U\to \{1..w\}$
-    \Function{\textsc{IncreaseDecision}}{$c$}
-    \State \textbf{return} True with probability $\frac{1}{2^c}$, else False
+    % \Require table of 8 bit counters
+    \Function{\textsc{IncreaseDecision}}{$x$}
+    \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
     \EndFunction
     \State
-    \Function{\textsc{Update}}{$e$}
-    \State $c\gets \min_{1\le k\le d}\;\mathrm{sketch}[k, h_k(e)]$
-    % \State $c\gets \textsc{MinCount}(e)$
+    \Function{\textsc{Update}}{$x$}
+    \State $c\gets \mathrm{table}[x]$
     \If{$\textsc{IncreaseDecision($c$)}=\mathrm{True}$}
-    \For{$k\gets 1\mathrm{\;to\;}d$}
-    \If{$\mathrm{sketch}[k, h_k(e)] = c$}
-    \State $\mathrm{sketch}[k, h_k(e)]\gets c+1$
-    \EndIf
-    \EndFor
+    \State $\mathrm{table}[x]\gets c+1$
     \EndIf
     \EndFunction
     \State
-    \Function{\textsc{Query}}{$e$}
-    \State $c\gets \min_{1\le k\le d}\;\mathrm{sketch}[k, h_k(e)]$
-    \State \textbf{return} $2^c-1$
+    \Function{\textsc{Query}}{$x$}
+    \State $c\gets \mathrm{table}[x]$
+    \State \textbf{return} $2^x-1$
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
 \end{minipage}
+\end{center}
+% \hfill
+\begin{center}
+  \begin{minipage}[t]{.6\linewidth}
+  \begin{algorithm}[H]
+    \caption{Count-Min-Log Sketch \textsc{Update} and \textsc{Query}}\label{alg.cmls}
+    \begin{algorithmic}[1]
+      \Require sketch width $w$, sketch depth $d$, randomly chosen integers $a_{1..d}$ and $b_{1..d}$, $m$ bins, prime $p\ge m$
+      % independent hash functions $h_{1..d}: U\to \{1..w\}$
+      \Function{\textsc{Hash}}{$k, x$} \Comment{Universal hash family}
+      \State \textbf{return} $\left((a_k x + b_k)\mod p\right)\mod m$
+      \EndFunction
+      \State
+      \Function{\textsc{MinCount}}{$x$}
+      \State $\mathrm{minimum}\gets 15$ \Comment{Biggest 4 bit number}
+      \For{$k\gets 1\mathrm{\;to\;}d$}
+      \State $h\gets \textsc{Hash}(k, x)$
+      \If{$\mathrm{sketch}[k][h] < \mathrm{minimum}$}
+      \State $\mathrm{minimum}\gets \mathrm{sketch}[k][h]$
+      \EndIf
+      \EndFor
+      \State \textbf{return} $\mathrm{minimum}$
+      \EndFunction
+      \State
+      \Function{\textsc{IncreaseDecision}}{$x$}
+      \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
+      \EndFunction
+      \State
+      \Function{\textsc{Update}}{$x$}
+      \State $c\gets \textsc{MinCount}(x)$
+      \If{$\textsc{IncreaseDecision($c$)}=\mathrm{True}$}
+      \For{$k\gets 1\mathrm{\;to\;}d$}
+      \State $h\gets \textsc{Hash}(k, x)$
+      \If{$\mathrm{sketch}[k][h] = c$}
+      \State $\mathrm{sketch}[k][h]\gets c+1$
+      \EndIf
+      \EndFor
+      \EndIf
+      \EndFunction
+      \State
+      \Function{\textsc{Query}}{$x$}
+      \State $c\gets \textsc{MinCount}(x)$
+      \State \textbf{return} $2^c-1$
+      \EndFunction
+    \end{algorithmic}
+  \end{algorithm}
+  \end{minipage}
+  \end{center}
 
 \subsection{Finding similar regions}
 
