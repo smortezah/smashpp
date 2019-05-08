@@ -47,6 +47,10 @@ D.~Pratas, M.~Hosseini, and A.~J. Pinho, ``Substitutional tolerant {Markov}
   Bioinformatics (PACBB)}.\hskip 1em plus 0.5em minus 0.4em\relax Springer,
   2017, pp. 265--272.
 
+\bibitem{morris1978counting}
+R.~Morris, ``Counting large numbers of events in small registers,''
+  \emph{Commun. ACM}, vol.~21, no.~10, pp. 840--842, 1978.
+
 \bibitem{blackman1959particular}
 R.~Blackman and J.~Tukey, ``Particular pairs of windows,'' \emph{The
   measurement of power spectra, from the point of view of communications
