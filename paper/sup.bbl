@@ -51,6 +51,11 @@ D.~Pratas, M.~Hosseini, and A.~J. Pinho, ``Substitutional tolerant {Markov}
 R.~Morris, ``Counting large numbers of events in small registers,''
   \emph{Commun. ACM}, vol.~21, no.~10, pp. 840--842, 1978.
 
+\bibitem{pitel2015count}
+G.~Pitel and G.~Fouquier, ``Count-min-log sketch: Approximately counting with
+  approximate counters,'' in \emph{{International Symposium on Web
+  AlGorithms}}, Deauville, France, Jun 2015.
+
 \bibitem{blackman1959particular}
 R.~Blackman and J.~Tukey, ``Particular pairs of windows,'' \emph{The
   measurement of power spectra, from the point of view of communications
