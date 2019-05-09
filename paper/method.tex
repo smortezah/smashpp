@@ -56,8 +56,8 @@
 
 The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. \smashpp takes a reference and a target file, as inputs, and produces a position file, as output, which is then fed to the \smashpp visualizer to produce an SVG image. This process has eight major stages: (1)~compression of the original target file based on the model of original reference file, (2)~filtering and segmentation of the compressed file, (3)~reference-free compression of the segmented files that are obtained by the previous stage, (4)~compression of the original reference file based on the model of segmented files obtained by stage~2, (5)~filtering and segmentation of the compressed files, (6)~reference-free compression of the segmented files which are obtained by the stage~5, (7)~aggregating positions based on the results of stages~3 and~6, and (8)~visualizing the positions. The following sections describe the process in detail.
 
-\begin{figure}[!h]
-% \includegraphics[width=\linewidth]{schema.pdf}
+\begin{figure}[!b]
+\includegraphics[width=\linewidth]{schema.pdf}
 \caption{The schema of Smash++.}
 \label{fig.schema}
 \end{figure}
@@ -65,9 +65,9 @@ The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. \smas
 \subsection{Data modeling}
 \smashpp works on the basis of cooperation between finite-context models (FCMs) and substitutional tolerant Markov models (STMMs), as illustrated in Fig.~\ref{fig.model}. Applying these models on various contexts, seen in the past, provides probability and weight values, which are then mixed to provide the final probability ($P$) of the next symbol, G in this case. The following subsections describe FCMs and STMMs in detail.
 
-\begin{figure}[!h]
+\begin{figure}[!t]
   \centering
-% \includegraphics[width=.85\linewidth]{data_model.pdf}
+\includegraphics[width=.85\linewidth]{data_model.pdf}
 \caption{model.}
 \label{fig.model}
 \end{figure}
@@ -126,14 +126,14 @@ The FCMs and STMMs include, in fact, count values which need to be saved in memo
 
 \begin{figure}[!h]
   \centering
-% \includegraphics[height=.95\textheight]{data_struct.pdf}
+\includegraphics[height=.95\textheight]{data_struct.pdf}
 \caption{data structure.}
 \label{fig.struct}
 \end{figure}
 
 The table of 64 bit counters, that is shown in Fig.~\ref{fig.struct}a, simply saves number of events for each context. The table of 32 bit counters saves in each position the number of times that the associated context is observed. When a counter reaches to the maximum value $2^{32}-1=4294967295$, all the counts will be renormalized by dividing by two, as shown in Fig.~\ref{fig.struct}b.
 
-The approximate counting is a method that employs probabilistic techniques to count large number of events, while using small amount of memory~\cite{morris1978counting}. Fig.~\ref{alg.approx} shows the algorithm for two major functions associated with this method, \textsc{Update} and \textsc{Query}. In order to update the counter, a pseudo-random number generator (PRNG) is used the number of times of the counter's current value to simulate flipping a coin. If it comes up 0/Heads each time or 1/Tails each time, the counter will be incremented. In Fig.~\ref{fig.struct}c, the difference between arithmetic and approximate counting, and also the values which are actually stored in memory are shown. Note that since an approximate counter represents the actual count by an order of magnitude estimate, one only needs to save the exponent. For example, if the actual count is $8$, we store it as $\log_2 8=3$ in memory.
+The approximate counting is a method that employs probabilistic techniques to count large number of events, while using small amount of memory~\cite{morris1978counting}. Fig.~\ref{alg.approx} shows the algorithm for two major functions associated with this method, \textsc{Update} and \textsc{Query}. In order to update the counter, a pseudo-random number generator (PRNG) is used the number of times of the counter's current value to simulate flipping a coin. If it comes up 0/Heads each time or 1/Tails each time, the counter will be incremented. Fig.~\ref{fig.struct}c shows the difference between arithmetic and approximate counting, and also the values which are actually stored in memory. Note that since an approximate counter represents the actual count by an order of magnitude estimate, one only needs to save the exponent. For example, if the actual count is $8$, we store it in memory as $\log_2 8=3$.
 \begin{figure}[b]
   \centering
   \begin{tabular}{|c|}
