@@ -108,19 +108,19 @@ fi
 ### Run tests
 if [[ $RUN -eq 1 ]]; then
   ### S
-  ./smashpp -r dataset/RefS -t dataset/TarS -l 3 -w 45
-  ./smashpp -viz -p 1 -b 3 -o S.svg RefS-TarS.pos
+  ./smashpp -r dataset/RefS -t dataset/TarS -l 3 -f 45
+  ./smashpp -viz -p 1 -b 3 -o S.svg RefS.TarS.pos
   ### M
-  ./smashpp -r dataset/RefM -t dataset/TarM -l 3 -w 100
-  ./smashpp -viz -p 1 -b 2 -f 80 -o M.svg RefM-TarM.pos
+  ./smashpp -r dataset/RefM -t dataset/TarM -l 3 -f 100
+  ./smashpp -viz -p 1 -b 2 -f 80 -o M.svg RefM.TarM.pos
   ### L
-  ./smashpp -r dataset/RefL -t dataset/TarL -l 3 -w 135
-  ./smashpp -viz -p 1 -f 100 -o L.svg RefL-TarL.pos
+  ./smashpp -r dataset/RefL -t dataset/TarL -l 3 -f 135
+  ./smashpp -viz -p 1 -f 100 -o L.svg RefL.TarL.pos
   ### XL
-  ./smashpp -r dataset/RefXL -t dataset/TarXL -l 3 -w 275
-  ./smashpp -viz -p 1 -m 20000000 -o XL.svg RefXL-TarXL.pos
+  ./smashpp -r dataset/RefXL -t dataset/TarXL -l 3 -f 275
+  ./smashpp -viz -p 1 -m 20000000 -o XL.svg RefXL.TarXL.pos
   ### Mut
-  ./smashpp -r dataset/RefMut -t dataset/TarMut -th 1.5 -l 5 -w 5000
-  ./smashpp -viz -p 1 -b 2 -f 50 -o Mut.svg RefMut-TarMut.pos
-  ./smash -wt 1 -d 1 -w 5000 RefMut TarMut
+  ./smashpp -r dataset/RefMut -t dataset/TarMut -th 1.5 -l 5 -f 5000
+  ./smashpp -viz -p 1 -b 2 -f 50 -o Mut.svg RefMut.TarMut.pos
+  ./smash -wt 1 -d 1 -f 5000 RefMut TarMut
 fi
