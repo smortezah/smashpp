@@ -2,7 +2,8 @@ library(ggplot2)
 library(reshape2)
 
 filters <- 0
-filters_scatter <- 1
+filters_scatter <- 0
+simil <- 1
 
 if (filters == 1) {
   N <- 100
@@ -136,4 +137,60 @@ if (filters == 1) {
     ylab("Entropy") +
     theme_bw() + 
     theme(legend.position = "none")
+} else if (simil == 1) {
+  # index<-1:1000
+  hann <- read.table("hann.fil")
+  main <- read.table("main.prf")
+  
+  # df <-
+  #   data.frame(
+  #     Samples = index,
+  #     # Main = main$V,
+  #     Hann = hann$V1
+  #   )
+  # # df <- melt(df, id.vars = "Samples")
+  # # df$name <-
+  # #   as.factor(rep(
+  # #     c(
+  # #       "Main",
+  # #       "Hann"
+  # #     ),
+  # #     each = length(index)
+  # #   ))
+  # # df$name <-
+  # #   factor(
+  # #     df$name,
+  # #     c(
+  # #       "Main",
+  # #       "Hann"
+  # #     )
+  # #   )
+  # 
+  # plt1 <- ggplot(df, aes(x = Samples, y = Hann)) +
+  #   geom_line(aes(color = "red")) +
+  #   # geom_line(aes(x = Samples, y = 1.5)) +
+  #   # facet_wrap(~name, nrow = 2, strip.position = "top"
+  #   #            # , scales = "free_y"
+  #   # ) +
+  #   geom_ribbon(data=subset(df, value<=1.5),aes(ymin = value, ymax = 1.5), fill = "gray", alpha = .5) +
+  #   xlab("Base") +
+  #   ylab("Entropy") +
+  #   theme_bw() + 
+  #   theme(legend.position = "none")
+  # 
+  # plt1
+  
+  
+  df <- data.frame(x = 1:1000, y = hann$V1)
+  plt1 <- ggplot(df, aes(x))
+  
+  # h + geom_ribbon(aes(ymin=0, ymax=y))
+  # h + geom_area(aes(y = y))
+  
+  plt1 +
+    geom_ribbon(data = df[df$y<=1.5,], aes(ymin = y, ymax = 1.5)) +
+    geom_line(aes(y = y))
+  # +
+  #   scale_fill_manual(values=c("green"), name="fill")
 }
+
