@@ -145,14 +145,14 @@ The approximate counting is a method that employs probabilistic techniques to co
     \Function{\textsc{IncreaseDecision}}{$x$}
     \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
     \EndFunction
-    \State
+    \Statex
     \Function{\textsc{Update}}{$x$}
     \State $c\gets \mathrm{table}[x]$
     \If{$\textsc{IncreaseDecision($c$)}=\mathrm{True}$}
     \State $\mathrm{table}[x]\gets c+1$
     \EndIf
     \EndFunction
-    \State
+    \Statex
     \Function{\textsc{Query}}{$x$}
     \State $c\gets \mathrm{table}[x]$
     \State \textbf{return} $2^x-1$
@@ -190,7 +190,7 @@ where $p\ge m$ is a prime number and $a$ and $b$ are randomly chosen integers mo
       \Function{\textsc{Hash}}{$k, x$} \Comment{Universal hash family}
       \State \textbf{return} $\left((a_k x + b_k)~\bmod p\right)~\bmod m$
       \EndFunction
-      \State
+      \Statex
       \Function{\textsc{MinCount}}{$x$}
       \State $\mathrm{minimum}\gets 15$ \Comment{Biggest 4 bit number}
       \For{$k\gets 1\mathrm{\;to\;}d$}
@@ -201,11 +201,11 @@ where $p\ge m$ is a prime number and $a$ and $b$ are randomly chosen integers mo
       \EndFor
       \State \textbf{return} $\mathrm{minimum}$
       \EndFunction
-      \State
+      \Statex
       \Function{\textsc{IncreaseDecision}}{$x$}
       \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
       \EndFunction
-      \State
+      \Statex
       \Function{\textsc{Update}}{$x$}
       \State $c\gets \textsc{MinCount}(x)$
       \If{$\textsc{IncreaseDecision($c$)}=\mathrm{True}$}
@@ -217,7 +217,7 @@ where $p\ge m$ is a prime number and $a$ and $b$ are randomly chosen integers mo
       \EndFor
       \EndIf
       \EndFunction
-      \State
+      \Statex
       \Function{\textsc{Query}}{$x$}
       \State $c\gets \textsc{MinCount}(x)$
       \State \textbf{return} $2^c-1$
@@ -232,6 +232,13 @@ where $p\ge m$ is a prime number and $a$ and $b$ are randomly chosen integers mo
 \end{figure}
 
 \subsection{Finding similar regions}
+
+\begin{figure}[!h]
+  \centering
+\includegraphics[width=.95\linewidth]{simil.pdf}
+\caption{simil.}
+\label{fig.simil}
+\end{figure}
 
 In order to smooth the profile information, we use Hann window~\cite{blackman1959particular}, which is a discrete window function given by
 \begin{equation}
