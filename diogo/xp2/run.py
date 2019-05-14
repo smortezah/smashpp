@@ -68,4 +68,15 @@ if plot_simil:
 
     plt.matshow(simil_mat)
     # plt.matshow(nrc_mat)
+    plt.colorbar()
     plt.show()
+
+
+
+# #%%
+# import matplotlib.pyplot as plt
+# import numpy as np
+# arr = np.arange(11068929).reshape([3327, 3327])
+# plt.matshow(arr)
+# plt.colorbar()
+# plt.show()
