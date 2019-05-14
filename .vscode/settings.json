@@ -45,5 +45,6 @@
         "utility": "cpp"
     },
     "latex-workshop.latexindent.path": "C:\\Program Files\\MiKTeX 2.9\\miktex\\bin\\x64\\latexindent.exe",
-    "latex-workshop.intellisense.package.enabled": true
+    "latex-workshop.intellisense.package.enabled": true,
+    "python.dataScience.jupyterServerURI": "local"
 }
