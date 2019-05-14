@@ -1,10 +1,14 @@
 import os
+import matplotlib.pyplot as plt
 
 split_reads = False
 fasta_to_seq = False
-run_geco = True
-build_simil_matrix = True
-filter_nrc = False
+compress = True
+plot_simil_matrix = False
+
+num_files = 3  # 3327
+nrc_file = 'nrc'
+threshold = 1.9
 
 if split_reads:
     main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
@@ -18,48 +22,65 @@ if fasta_to_seq:
                 'rm -f ' + file
             os.popen(cmd).read()
 
-if run_geco:
-    num_files = 4  # 3327
+if compress:
     first = 1
-    out_file = 'nrc'
-    os.popen("rm -f " + out_file).read()
+    nrc_mat = [[0 for x in range(num_files)]
+               for y in range(num_files)]
+    # os.popen("rm -f " + nrc_file).read()
+    if os.path.exists(nrc_file):
+        os.remove(nrc_file)
 
-    for i in range(first, num_files - first + 1):
-        for j in range(first, num_files - first + 1):
+    for i in range(first, num_files - first + 2):
+        for j in range(first, num_files - first + 2):
             cmd = './geco -rm 6:1:0:0/0 -rm 10:10:1:0/0 -rm 14:50:1:3/10 ' + \
-                '-c 30 -g 0.95 -v -r ' + str(i) + ' ' + str(j) + ' > log;' + \
-                'grep bpb log | cut -d\' \' -f6 >> ' + out_file
+                '-c 30 -g 0.95 -r ' + str(i) + ' ' + str(j) + ' > log'
             os.popen(cmd).read()
 
-    os.popen("rm -f log *.co").read()
-    # if os.path.exists("log"):
-    #     os.remove("log")
+            with open('log', 'r') as log_file:
+                for line in log_file:
+                    line_list = line.split()
+                    if len(line_list) > 5:
+                        # print(line_list[5])
+                        nrc_mat[i-1][j-1] = line_list[5]
 
-if build_simil_matrix:
-    out_file = 'nrc'
-    threshold = 2.0
-    num_files_prev = 3  # 3327
-    nrc_mat = [[0 for x in range(num_files_prev)]
-               for y in range(num_files_prev)]
-    simil_mat = [[0 for x in range(num_files_prev)]
-                 for y in range(num_files_prev)]
+    for x in nrc_mat:
+        print(*x, sep="\t")
 
-    with open(out_file) as file:
-        for i in range(0, num_files_prev):
-            for j in range(0, num_files_prev):
+            # cmd = './geco -rm 6:1:0:0/0 -rm 10:10:1:0/0 -rm 14:50:1:3/10 ' + \
+            #     '-c 30 -g 0.95 -v -r ' + str(i) + ' ' + str(j) + ' > log;' + \
+            #     'grep bpb log | cut -d\' \' -f6 >> ' + nrc_file
+
+    # # os.popen("rm -f log *.co").read()
+    # for file in ["log", "*.co"]:
+    #     if os.path.exists(file):
+    #         os.remove(file)
+
+
+def build_simil_matrix():
+    nrc_mat = [[0 for x in range(num_files)]
+               for y in range(num_files)]
+    simil_mat = [[0 for x in range(num_files)]
+                 for y in range(num_files)]
+
+    with open(nrc_file) as file:
+        for i in range(0, num_files):
+            for j in range(0, num_files):
                 nrc_mat[i][j] = file.readline()[:-1]
 
-    for i in range(0, num_files_prev):
-        for j in range(i, num_files_prev):
+    for i in range(0, num_files):
+        for j in range(i, num_files):
             if min(float(nrc_mat[i][j]), float(nrc_mat[j][i])) < threshold:
                 simil_mat[i][j] = 1
+                # simil_mat[j][i] = 1
 
-    print(nrc_mat)
-    print(simil_mat)
+    return simil_mat
 
-if filter_nrc:
-    threshold = 1.7
-    cmd = 'rm -f nrc_filtered;' + \
-        'awk \'{ if ($2 < ' + str(threshold) + ') { print } }\' nrc ' + \
-        '>> nrc_filtered'
-    os.popen(cmd).read()
+
+if plot_simil_matrix:
+    #     for x in nrc_mat:
+    #         print(*x, sep="\t")
+    #     for x in simil_mat:
+    #         print(*x, sep=" ")
+    simil_mat = build_simil_matrix()
+    plt.matshow(simil_mat)
+    plt.show()
