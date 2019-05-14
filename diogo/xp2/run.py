@@ -3,17 +3,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 prepare_data = False
-compress = False
-plot_simil = True
+compress = True
+plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
-num_files = 10  # 3327
+num_files = 3327
 nrc_file = 'nrc'
 threshold = 1.8
-# nrc_mat = [[0 for x in range(num_files)]
-#            for y in range(num_files)]
-simil_mat = [[0 for x in range(num_files)]
-             for y in range(num_files)]
 
 if prepare_data:
     # Split reads
@@ -53,6 +49,7 @@ if compress:
 
 if plot_simil:
     def build_simil_matrix(nrc_mat):
+        simil_mat = [[0 for x in range(num_files)] for y in range(num_files)]
         for i in range(0, num_files):
             for j in range(i, num_files):
                 if i != j:
