@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 prepare_data = False
-compress = False
-plot_simil = True
+compress = True
+plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
-num_files = 10 #3327
+num_files = 3  # 3327
 nrc_file = 'nrc'
 threshold = 1.8
 
@@ -26,10 +26,10 @@ if prepare_data:
 
 if compress:
     first = 1
-    nrc_mat = [[0 for x in range(num_files)] for y in range(num_files)]
     if os.path.exists(nrc_file):
         os.remove(nrc_file)
 
+    out_file = open(nrc_file, "w")
     for i in range(first, num_files - first + 2):
         for j in range(first, num_files - first + 2):
             cmd = './geco -rm 6:1:0:0/0 -rm 10:10:1:0/0 -rm 14:50:1:3/10 ' + \
@@ -40,8 +40,9 @@ if compress:
                 for line in log_file:
                     line_list = line.split()
                     if len(line_list) > 5:
-                        nrc_mat[i-1][j-1] = line_list[5]
-    np.savetxt(nrc_file, nrc_mat, fmt="%s")
+                        out_file.write(str(line_list[5]) + "\t")
+        out_file.write("\n")
+    out_file.close()
 
     for file in ["log", "*.co"]:
         if os.path.exists(file):
@@ -73,4 +74,3 @@ if plot_simil:
     plt.matshow(simil_mat)
     plt.colorbar()
     plt.show()
-    
