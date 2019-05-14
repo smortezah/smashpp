@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 prepare_data = False
-compress = True
-plot_simil = False
+compress = False
+plot_simil = True
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
-num_files = 3327
+num_files = 10 #3327
 nrc_file = 'nrc'
 threshold = 1.8
 
@@ -66,8 +66,8 @@ if plot_simil:
     # for x in simil_mat:
     #     print(*x, sep=" ")
 
-    plt.matshow(simil_mat)
     # plt.matshow(nrc_mat)
+    plt.matshow(simil_mat)
     plt.colorbar()
     plt.show()
 
