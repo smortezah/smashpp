@@ -96,6 +96,7 @@ This example shows the distinction between a finite-context model and a substitu
 \paragraph{Cooperation of FCMs and STMMs}
 When FCMs and STMMs are in cooperation, the probability of the next symbol $s_i$ in an information source $S$, at position $i$, can be estimated as
 \begin{equation}
+  \label{eq.coop}
 P(s_i) = \sum_{m\in M_F} P_m(s_i|c_{k,\,i})\;w_{m,\,i} + \sum_{m\in M_S} P_m(s_i|{c'}_{k,\,i})\;{w'}_{m,\,i}, \quad\forall s_i\in S,~1\le i\le |S|,~1\le k\le i-1
 \end{equation}
 in which $M_F$ and $M_S$ denote sets of FCMs and STMMs, respectively, $P_m(s_i|c_{k,\,i})$ shows the probability of the next symbol estimated by the FCM, $P_m(s_i|{c'}_{k,\,i})$ represents this probability estimated by the STMM, and $w_{m\,i}$ and ${w'}_{m,\,i}$ are weights assigned to each model based on its performance. We have
@@ -231,7 +232,18 @@ where $p\ge m$ is a prime number and $a$ and $b$ are randomly chosen integers mo
 \end{figure}
 
 \subsection{Finding similar regions}
-Our goal is to find similar regions in reference and target files.
+In order to find similar regions in reference and target files, we use the ``per symbol information content'' to measure the similarity. This quantity can be calculated as
+\begin{equation}
+  \label{eq.inf.content}
+  I(s_i) = -\log_2 P(s_i)\quad \mathrm{bpb}, \quad\forall s_i\in S,~1\le i\le |S|
+\end{equation}
+in which $P(s_i)$ denotes the probability of the next symbol $s_i$ in the information source $S$, obtained by Equation~\ref{eq.coop}, and also ``bpb'' stands for bit per base. 
+
+The information content is the amount of information required to represent a symbol in the target file, based on the model of the reference file. The less the value of this measure is for two regions, the more amount of information is shared between them, and therefore, the more similar are the two regions. Note that a version of this measure has been introduced in~\cite{pratas2015alignment}, which employs a single FCM to calculate the probabilities. In this paper, however, we exploit a cooperation between multiple FCMs and STMMs for highly accurate calculation of such probabilities.
+
+The process of Finding similar regions in a reference and a target files is as the following: after creating the model of the reference, the target is compressed based on that model and the information content is calculated for each symbol. Then, the content of the whole target sequence is smoothed by Hann windowing function
+
+filtered by a predefined threshold, meaning that the regions with information content higher than the threshold are discarded
 
 Fig.~\ref{fig.simil}
 
