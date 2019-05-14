@@ -63,11 +63,11 @@ The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. \smas
 \end{figure}
 
 \subsection{Data modeling}
-\smashpp works on the basis of cooperation between finite-context models (FCMs) and substitutional tolerant Markov models (STMMs). Applying these models on various contexts, provides probability and weight values, illustrated in Fig.~\ref{fig.model}a, which are then mixed (by multiplication and addition, shown in Fig.~\ref{fig.model}b) to provide the final probability ($P$) of occurring an input symbol. The following subsections describe FCMs and STMMs in detail.
+\smashpp works on the basis of cooperation between finite-context models (FCMs) and substitutional tolerant Markov models (STMMs). Applying these models on various contexts provides probability and weight values, illustrated in Fig.~\ref{fig.model}a, which are then mixed (by multiplication and addition, shown in Fig.~\ref{fig.model}b) to provide the final probability ($P$) of occurring an input symbol. The following subsections describe FCMs and STMMs in detail.
 
 \begin{figure}[!h]
   \centering
-\includegraphics[width=.85\linewidth]{data_model.pdf}
+% \includegraphics[width=.85\linewidth]{data_model.pdf}
 \caption{model.}
 \label{fig.model}
 \end{figure}
@@ -154,7 +154,7 @@ The approximate counting is a method that employs probabilistic techniques to co
     \Statex
     \Function{\textsc{Query}}{$x$}
     \State $c\gets \mathrm{table}[x]$
-    \State \textbf{return} $2^x-1$
+    \State \textbf{return} $2^c-1$
     \EndFunction
   \end{algorithmic}
   \vspace{2mm}
