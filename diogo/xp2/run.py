@@ -66,17 +66,11 @@ if plot_simil:
     # for x in simil_mat:
     #     print(*x, sep=" ")
 
-    # plt.matshow(nrc_mat)
-    plt.matshow(simil_mat)
+    plt.matshow(nrc_mat)
     plt.colorbar()
     plt.show()
 
-
-
-# #%%
-# import matplotlib.pyplot as plt
-# import numpy as np
-# arr = np.arange(11068929).reshape([3327, 3327])
-# plt.matshow(arr)
-# plt.colorbar()
-# plt.show()
+    plt.matshow(simil_mat)
+    plt.colorbar()
+    plt.show()
+    
