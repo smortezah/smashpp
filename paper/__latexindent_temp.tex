@@ -1,9 +1,0 @@
-    \Function{Euclid}{$a,b$}\Comment{The g.c.d. of a and b}
-  \State $r\gets a\bmod b$
-  \While{$r\not=0$}\Comment{We have the answer if r is 0}
-  \State $a\gets b$
-  \State $b\gets r$
-  \State $r\gets a\bmod b$
-  \EndWhile\label{euclidendwhile}
-  \State \textbf{return} $b$\Comment{The gcd is b}
-  \EndFunction
