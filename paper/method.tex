@@ -232,40 +232,22 @@ where $p\ge m$ is a prime number and $a$ and $b$ are randomly chosen integers mo
 \end{figure}
 
 \subsection{Finding similar regions}
-In order to find similar regions in reference and target files, we use the ``per symbol information content'' to measure the similarity. This quantity can be calculated as
+To find similar regions in reference and target files, a quantity is required for measuring the similarity. We use ``per symbol information content'' for this purpose, which can be calculated as
 \begin{equation}
   \label{eq.inf.content}
   I(s_i) = -\log_2 P(s_i)\quad \mathrm{bpb}, \quad\forall s_i\in S,~1\le i\le |S|
 \end{equation}
-in which $P(s_i)$ denotes the probability of the next symbol $s_i$ in the information source $S$, obtained by Equation~\ref{eq.coop}, and also ``bpb'' stands for bit per base. 
+where $P(s_i)$ denotes the probability of the next symbol $s_i$ in the information source $S$, obtained by Equation~\ref{eq.coop}, and also ``bpb'' stands for bit per base. 
 
-The information content is the amount of information required to represent a symbol in the target file, based on the model of the reference file. The less the value of this measure is for two regions, the more amount of information is shared between them, and therefore, the more similar are the two regions. Note that a version of this measure has been introduced in~\cite{pratas2015alignment}, which employs a single FCM to calculate the probabilities. In this paper, however, we exploit a cooperation between multiple FCMs and STMMs for highly accurate calculation of such probabilities.
+The information content is the amount of information required to represent a symbol in the target sequence, based on the model of the reference sequence. The less the value of this measure is for two regions, the more amount of information is shared between them, and therefore, the more similar are the two regions. Note that a version of this measure has been introduced in~\cite{pratas2015alignment}, which employs a single FCM to calculate the probabilities. In this paper, however, we exploit a cooperation between multiple FCMs and STMMs for highly accurate calculation of such probabilities.
 
-The process of Finding similar regions in a reference and a target files is as the following: after creating the model of the reference, the target is compressed based on that model and the information content is calculated for each symbol. Then, the content of the whole target sequence is smoothed by Hann windowing function
-
-filtered by a predefined threshold, meaning that the regions with information content higher than the threshold are discarded
-
-Fig.~\ref{fig.simil}
+The procedure of finding similar regions in a reference and a target sequence, illustrated in Fig.~\ref{fig.simil}, is as follows: after creating the model of the reference, the target is compressed based on that model and the information content is calculated for each symbol in the target. Then, the content of the whole target sequence is smoothed by Hann window~\cite{blackman1959particular}, which is a discrete window function given by $w[n]=0.5-0.5\;\cos \left({\frac {2\pi n}{N}}\right)$, where $0\le n\le N$ and length of the window is $N+1$. Next, the smoothed information content is segmented considering a predefined threshold, meaning that the regions with the content greater than the threshold are filtered out. This is carried out for both regular and inverted repeat homologies and the result would be the regions in the target sequence that are similar to the reference sequence, Fig.~\ref{fig.simil}a. The described phase repeats for all of the target regions found, in the way that after creating the model for each region, the whole reference sequence is compressed to find those regions in the reference that are similar to each of the target regions, Fig.~\ref{fig.simil}b. The final result would have the form of Fig.~\ref{fig.simil}c.
 
 \begin{figure}[!h]
   \centering
 \includegraphics[width=.95\linewidth]{simil.pdf}
 \caption{simil.}
 \label{fig.simil}
-\end{figure}
-
-In order to smooth the profile information, we use Hann window~\cite{blackman1959particular}, which is a discrete window function given by
-\begin{equation}
-  \label{eq.hann}
-  w[n]=0.5-0.5\;\cos \left({\frac {2\pi n}{N}}\right)=\sin ^{2}\left({\frac {\pi n}{N}}\right),
-\end{equation}
-where $0\le n\le N$ and length of the window is $N+1$ (Fig.~\ref{fig.hann}).
-
-\begin{figure}[!h]
-\centering
-% \includegraphics[width=7cm]{hann.pdf}
-\caption{Hann window for 101 samples.}
-\label{fig.hann}
 \end{figure}
 
 \subsection{Computing complexities}
