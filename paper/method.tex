@@ -134,7 +134,7 @@ The FCMs and STMMs include, in fact, count values which need to be saved in memo
 The table of 64 bit counters, that is shown in Fig.~\ref{fig.struct}a, simply saves number of events for each context. The table of 32 bit counters saves in each position the number of times that the associated context is observed. When a counter reaches to the maximum value $2^{32}-1=4294967295$, all the counts will be renormalized by dividing by two, as shown in Fig.~\ref{fig.struct}b.
 
 The approximate counting is a method that employs probabilistic techniques to count large number of events, while using small amount of memory~\cite{morris1978counting}. Fig.~\ref{alg.approx} shows the algorithm for two major functions associated with this method, \textsc{Update} and \textsc{Query}. In order to update the counter, a pseudo-random number generator (PRNG) is used the number of times of the counter's current value to simulate flipping a coin. If it comes up 0/Heads each time or 1/Tails each time, the counter will be incremented. Fig.~\ref{fig.struct}c shows the difference between arithmetic and approximate counting, and also the values which are actually stored in memory. Note that since an approximate counter represents the actual count by an order of magnitude estimate, one only needs to save the exponent. For example, if the actual count is $8$, we store it in memory as $\log_2 8=3$.
-\begin{figure}[b]
+\begin{figure}[h]
   \centering
   \begin{tabular}{|c|}
     \hline
@@ -177,7 +177,7 @@ The hash function can be obtained by
 \end{equation}
 where $p\ge m$ is a prime number and $a$ and $b$ are randomly chosen integers modulo $p$ with $a\neq 0$.
 
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
   \begin{tabular}{|c|}
     \hline
