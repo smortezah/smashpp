@@ -93,10 +93,9 @@ STMMs can be used along with FCMs to modify the behavior of \smashpp in confront
 
 This example shows the distinction between a finite-context model and a substitutional tolerant Markov model. Assume, the current context at position $i$ is $c_{11,\,i}=\textrm{GGCTAACGTAC}$, and the number of occurrences of symbols saved in memory is $\textrm{A}=10$, $\textrm{C}=12$, $\textrm{G}=13$ and $\textrm{T}=11$. Also, the symbol to appear in the sequence is $\textrm{T}$. An FCM would consider the next context as $c_{11,\,i+1}=\textrm{GCTAACGTACT}$, while an STMM would consider it as ${c'}_{11,\,i+1}=\textrm{GCTAACGTACG}$, since the base $\textrm{G}$ is the most probable symbol, based on the number of occurrences stored in memory.
 
-\paragraph{Cooperation of FCMs and STMMs}
+\paragraph{Cooperation of FCMs and STMMs} \label{sec.coop}
 When FCMs and STMMs are in cooperation, the probability of the next symbol $s_i$ in an information source $S$, at position $i$, can be estimated as
-\begin{equation}
-  \label{eq.coop}
+\begin{equation} \label{eq.coop}
   P(s_i) = \sum_{m\in M_F} P_m(s_i|c_{k,\,i})\;w_{m,\,i} + \sum_{m\in M_S} P_m(s_i|{c'}_{k,\,i})\;{w'}_{m,\,i}, \quad\forall s_i\in S,~1\le i\le |S|,~1\le k\le i-1
 \end{equation}
 in which $M_F$ and $M_S$ denote sets of FCMs and STMMs, respectively, $P_m(s_i|c_{k,\,i})$ shows the probability of the next symbol estimated by the FCM, $P_m(s_i|{c'}_{k,\,i})$ represents this probability estimated by the STMM, and $w_{m\,i}$ and ${w'}_{m,\,i}$ are weights assigned to each model based on its performance. We have
@@ -253,12 +252,7 @@ The procedure of finding similar regions in a reference and a target sequence, i
 \subsection{Computing complexities}
 After finding the similar regions in reference and target sequences, we investigate redundancy in each region. The redundancy is inversely related to Kolmogorov complexity, meaning that the more complex a sequence is, the less redundant it will be~\cite{hosseini2018cryfa}. The Kolmogorov complexity, $K$, of a binary string $s$, of finite length, is the length of the smallest binary program $p$ that computes $s$ in a universal Turing machine and halts. In other words, $K(s)=|p|$ is the minimum number of bits required to computationally retrieve the string $s$~\cite{turing1936on,li2009an}.
 
-The Kolmogorov complexity is not computable, hence, an alternative is required to compute it approximately. It has been shown in the literature that a compression algorithm can be employed for this purpose~\cite{zenil2015two,antao2018kolmogorov,faloutsos2007on}.
-
-
-the complexity of these regions is calculated by means of reference-free compression.
-
-Kolmogorov
+The Kolmogorov complexity is not computable, hence, an alternative is required to compute it approximately. It has been shown in the literature that a compression algorithm can be employed for this purpose~\cite{zenil2015two,antao2018kolmogorov,faloutsos2007on}. In this paper, we employ a reference-free compressor to approximate the complexity and consequently, the redundancy of the founded similar regions in the reference and the target sequences. This compressor works based on cooperation of FCMs and STMMs, which is described in detail in Section~\ref{sec.coop}. Note that the difference between reference-based and reference-free version of such compressor is that in the former mode, a model is first created for the reference sequence and then, the target sequence is compressed based on that model, while in the latter mode, the model is progressively created at the time of compressing the target sequence.
 
 \subsection{The software}
 \label{subsec.software}
