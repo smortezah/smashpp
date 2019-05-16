@@ -202,14 +202,13 @@ Also, instead of considering the whole information content, the user is able to 
 
 For the purpose of segmenting the filtered information content, the average entropy of reference-based compression is used by default as the threshold, but the threshold can be altered by ``-th'' option.
 
-\smashpp is capable of finding even small similar regions in two sequences. However, there are some corner cases that the size of similar regions in reference and target are not balanced. \smashpp handles these cases using ``-rb'', ``-re'', ``-tb'' and ``-te'' options, that can resize the beginning and ending guards of reference and target regions, respectively.
+\smashpp is capable of finding even very small similar regions in two sequences. However, we have found experimentally that when it is running in a very sensitive mode, there might be some cases in which the size of similar regions in the reference and the target are not balanced. These cases can be handled by ``-rb'', ``-re'', ``-tb'' and ``-te'' options, that can resize the beginning and ending guards of reference and target regions, respectively.
 For example, if ``-tb 10'' is used, the first 10 bases in each target region will be ignored, which results in smaller regions.
-Note that when \smashpp wants to create the model of each target region to use it for compression of the reference
-% Note that using this option will affect the model that would be created 
+Note that when the guard sizes of target regions are increased, the models built from these regions would be slightly different than the original models; consequently, the sizes of reference regions that are detected as being similar to the ones from the target would be modified, as well. Therefore, changing the guard sizes of target regions will affect the sizes of reference regions.
 
--dp
+In the case of activating deep compression, by ``-dp'', changing the guard sizes of reference regions would affect the sizes of target regions, as well. Here, the deep compression means that similar regions in target and reference sequences are found in three phases instead of two, meaning that first, the model of the reference is built and the target is compressed based upon that model, second, the model of each detected region is built and the whole reference is compressed based on these models, and third, the model of each detected reference region is built and the corresponding target regions will be compressed based on that model.
 
-Triggering ``-nr'' makes the tool not to perform the reference-free compression, self-complexity computation.
+Triggering ``-nr'' makes the tool not to perform the reference-free compression (self-complexity computation).
 
 \smashpp accepts \fasta and \fastq files as input, in addition to sequences. In these cases, the input files are first converted to sequences and then processed further. It is possible to save these sequences by ``-sb'' option.
 When the information profile is obtained, \smashpp smoothens then removes it by default. However, it can be preserved by ``-sp'' option.
