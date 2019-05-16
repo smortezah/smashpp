@@ -8,51 +8,46 @@
 A fast tool to find and visualize rearrangements in DNA sequences.
 
 ## Install
-To install Smash++ on various operating systems, follow the instructions below. Note that a precompiled version is available for 64 bit operating systems, in the "bin/" directory.
+To install Smash++ on various operating systems, follow the instructions below. Note that the precompiled executables are available for 64 bit operating systems in the "bin/" directory.
 
 ### Conda
 
 
 ### Linux
-Install "git" and "cmake":
+* Install "git" and "cmake":
 ```bash
-sudo apt update
-sudo apt install git cmake
+  sudo apt update
+  sudo apt install git cmake
 ```
-
-Clone Smash++ and install it:
+* Clone Smash++ and install it:
 ```bash
-git clone https://github.com/smortezah/smashpp.git
-cd smashpp
-./install.sh
+  git clone https://github.com/smortezah/smashpp.git
+  cd smashpp
+  ./install.sh
 ```
 
 ### macOS
-Install "Homebrew", "git" and "cmake":
+* Install "Homebrew", "git" and "cmake":
 ```bash
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install git cmake
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  brew install git cmake
 ```
-
-Clone Smash++ and install it:
+* Clone Smash++ and install it:
 ```bash
-git clone https://github.com/smortezah/smashpp.git
-cd smashpp
-./install.sh
+  git clone https://github.com/smortezah/smashpp.git
+  cd smashpp
+  ./install.sh
 ```
 
 ### Windows
-Follow the steps bellow:
-* Download and install "CMake", e.g., from https://github.com/Kitware/CMake/releases/download/v3.14.4/cmake-3.14.4-win64-x64.msi. Make sure to add it to the system PATH. For example, if CMake is installed in "C:\Program Files", add "C:\Program Files\CMake\bin" to the system PATH.
-* Download and install ``mingw-w64'', e.g., from https://sourceforge.net/projects/mingw-w64/\linebreak files/latest/download. Make sure to add it to the system PATH. For example, if it is installed in ``C:\textbackslash mingw-w64'', add ``C:\textbackslash mingw-w64\textbackslash mingw64\textbackslash bin'' to the system PATH.
-* Download and install ``git'', from https://git-scm.com/download/win.
-* Clone \smashpp and install it:
-  \begin{code}[style=bash]
+* Download and install [CMake](https://github.com/Kitware/CMake/releases/download/v3.14.4/cmake-3.14.4-win64-x64.msi) and [mingw-w64](https://sourceforge.net/projects/mingw-w64/files/latest/download). Make sure to add them to the system PATH. For example, if CMake is installed in "C:\Program Files" and mingw-w64 is installed in "C:\mingw-w64", add "C:\Program Files\CMake\bin" and "C:\mingw-w64\mingw64\bin" to the system PATH.
+* Download and install [git](https://git-scm.com/download/win).
+* Clone  Smash++ and install it:
+```bat
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
   .\install.bat
-  \end{code}
-\end{itemize}
+```
 
 ## Run
 ```bash

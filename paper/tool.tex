@@ -1,58 +1,61 @@
 \clearpage
 \section{Tool availability and implementation}
 \label{sec.tool}
-\smashpp is implemented in \cpp language and is available at~\cite{web-smashpp}. This tool is able to find and visualize rearrangements in sequences, \fasta and \fastq files; although, it is highly recommended to use sequences as input. In the following sections, we describe installing and running \smashpp.
+\smashpp is implemented in \cpp language and is available at~\cite{web-smashpp}. This tool is able to find and visualize rearrangements in sequences, \fasta and \fastq files; although, it is highly recommended to use sequences as input. In the following sections, we describe installing and running the \smashpp tool.
 
 \subsection{Install}
-In order to install \smashpp on various operating systems, follow the instructions below. Note that a precompiled version is available for 64 bit Linux and macOS in the ``bin/'' directory.
+To install \smashpp on various operating systems, follow the instructions below. Note that the precompiled executables are available for 64 bit operating systems in the ``bin/'' directory.
 
 % \paragraph{Conda}
 % % todo
 
 \paragraph{Linux}
-Install ``git'' and ``cmake'':
+\begin{itemize}
+  \item Install ``git'' and ``cmake'':
 \begin{code}[style=bash]
 sudo apt update
 sudo apt install git cmake
 \end{code}
-Clone \smashpp and install it:
+\item Clone \smashpp and install it:
 \begin{code}[style=bash]
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
 ./install.sh
 \end{code}
+\end{itemize}
 
 \paragraph{macOS}
-Install ``Homebrew'', ``git'' and ``cmake'':
+\begin{itemize}
+    \item Install ``Homebrew'', ``git'' and ``cmake'':
 \begin{code}[style=bash]
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew install git cmake
 \end{code}
-Clone \smashpp and install it:
+\item Clone \smashpp and install it:
 \begin{code}[style=bash]
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
 ./install.sh
 \end{code}
+\end{itemize}
 
 \paragraph{Windows}
-Follow the steps bellow:
 \begin{itemize}
   \item Download and install ``CMake'', e.g., from https://github.com/Kitware/CMake/releases/\linebreak download/v3.14.4/cmake-3.14.4-win64-x64.msi. Make sure to add it to the system PATH. For example, if CMake is installed in ``C:\textbackslash Program Files'', add ``C:\textbackslash Program Files\textbackslash CMake\textbackslash bin'' to the system PATH.
   \item Download and install ``mingw-w64'', e.g., from https://sourceforge.net/projects/mingw-w64/\linebreak files/latest/download. Make sure to add it to the system PATH. For example, if it is installed in ``C:\textbackslash mingw-w64'', add ``C:\textbackslash mingw-w64\textbackslash mingw64\textbackslash bin'' to the system PATH.
   \item Download and install ``git'', from https://git-scm.com/download/win.
   \item Clone \smashpp and install it:
-  \begin{code}[style=bash]
-  git clone https://github.com/smortezah/smashpp.git
-  cd smashpp
-  .\install.bat
-  \end{code}
+\begin{code}[style=bash]
+git clone https://github.com/smortezah/smashpp.git
+cd smashpp
+.\install.bat
+\end{code}
 \end{itemize}
 
 \subsection{Run}
 A reference file and a target file are clearly mandatory to run \smashpp (without visualization). Running
 \begin{code}[style=bash]
-  ./smashpp
+./smashpp
 \end{code}
 provides the following guide:
 %\vskip2mm
