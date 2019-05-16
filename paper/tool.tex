@@ -6,106 +6,185 @@
 \subsection{Install}
 In order to install \smashpp on Linux, run the following commands:
 \begin{code}[style=bash]
-git clone https://github.com/smortezah/smashpp.git
-cd smashpp
-./install.sh
+  git clone https://github.com/smortezah/smashpp.git
+  cd smashpp
+  ./install.sh
 \end{code}
 
 \subsection{Run}
 A reference file and a target file are clearly mandatory to run \smashpp (without visualization). Running
 \begin{code}[style=bash]
-./smashpp
+  ./smashpp
 \end{code}
 provides the following guide:
 %\vskip2mm
+% \begin{code}[style=bash]
+%   SYNOPSIS
+%   ./smashpp  OPTIONS...  -r REF-FILE  -t TAR-FILE
+
+%   SAMPLE
+
+%   DESCRIPTION
+%   Mandatory arguments
+%   -r,  --ref FILE            reference file (Seq/Fasta/Fastq)
+%   -t,  --tar FILE            target file    (Seq/Fasta/Fastq)
+
+%   Options
+%   -v,  --verbose             more information
+%   -l,  --level INT           level of compression: [0, 5]
+%   -m,  --min   INT           min segment size: [1, 4294967295]
+%   -nr, --no-redun            do NOT compute self complexity
+%   -e,  --ent-n FLOAT         Entropy of 'N's: [0.0, 100.0]
+%   -n,  --nthr  INT           number of threads: [1, 8]
+%   -fs, --filter-scale S|M|L  scale of the filter:
+%   {S|small, M|medium, L|large}
+%   -w,  --filt_size INT           window size: [1, 4294967295]
+%   -wt, --filt_type INT/STRING    type of windowing function:
+%   {0|rectangular, 1|hamming, 2|hann,
+%   3|blackman, 4|triangular, 5|welch,
+%   6|sine, 7|nuttall}
+%   -d,  --step   INT          sampling steps
+%   -th, --thresh FLOAT        threshold: [0.0, 20.0]
+%   -sb, --save-seq            save sequence (input: Fasta/Fastq)
+%   -sp, --save-profile        save profile (*.prf)
+%   -sf, --save-filter         save filtered file (*.fil)
+%   -ss, --save-segment        save segmented files (*-s_i)
+%   -sa, --save-all            save profile, filetered and
+%   segmented files
+%   -h,  --help                usage guide
+%   -rm, --ref-model  k,[w,d,]ir,a,g/t,ir,a,g:...
+%   -tm, --tar-model  k,[w,d,]ir,a,g/t,ir,a,g:...
+%   parameters of models
+%   (INT) k:  context size
+%   (INT) w:  width of sketch in log2 form,
+%   e.g., set 10 for w=2^10=1024
+%   (INT) d:  depth of sketch
+%   (INT) ir: inverted repeat: {0, 1, 2}
+%   0: regular (not inverted)
+%   1: inverted, solely
+%   2: both regular and inverted
+%   (FLOAT) a:  estimator
+%   (FLOAT) g:  forgetting factor: [0.0, 1.0)
+%   (INT) t:  threshold (no. substitutions)
+% \end{code}
+
 \begin{code}[style=bash]
-SYNOPSIS                                                       
-  ./smashpp  OPTIONS...  -r REF-FILE  -t TAR-FILE              
-                                                               
-SAMPLE                                                         
-                                                               
-DESCRIPTION                                                    
-  Mandatory arguments                                          
-  -r,  --ref FILE            reference file (Seq/Fasta/Fastq)  
-  -t,  --tar FILE            target file    (Seq/Fasta/Fastq)  
-                                                               
-  Options                                                      
-  -v,  --verbose             more information                  
-  -l,  --level INT           level of compression: [0, 5]      
-  -m,  --min   INT           min segment size: [1, 4294967295] 
-  -nr, --no-redun            do NOT compute self complexity    
-  -e,  --ent-n FLOAT         Entropy of 'N's: [0.0, 100.0]     
-  -n,  --nthr  INT           number of threads: [1, 8]         
-  -fs, --filter-scale S|M|L  scale of the filter:              
-                             {S|small, M|medium, L|large}      
-  -w,  --filt_size INT           window size: [1, 4294967295]      
-  -wt, --filt_type INT/STRING    type of windowing function:       
-                             {0|rectangular, 1|hamming, 2|hann,
-                             3|blackman, 4|triangular, 5|welch,
-                             6|sine, 7|nuttall}                
-  -d,  --step   INT          sampling steps                    
-  -th, --thresh FLOAT        threshold: [0.0, 20.0]        
-  -sb, --save-seq            save sequence (input: Fasta/Fastq)
-  -sp, --save-profile        save profile (*.prf)              
-  -sf, --save-filter         save filtered file (*.fil)
-  -ss, --save-segment        save segmented files (*-s_i)      
-  -sa, --save-all            save profile, filetered and       
-                             segmented files                   
-  -h,  --help                usage guide                       
-  -rm, --ref-model  k,[w,d,]ir,a,g/t,ir,a,g:...                
-  -tm, --tar-model  k,[w,d,]ir,a,g/t,ir,a,g:...                
-                             parameters of models              
-                       (INT) k:  context size                  
-                       (INT) w:  width of sketch in log2 form, 
-                                 e.g., set 10 for w=2^10=1024  
-                       (INT) d:  depth of sketch               
-                       (INT) ir: inverted repeat: {0, 1, 2}    
-                                 0: regular (not inverted)     
-                                 1: inverted, solely           
-                                 2: both regular and inverted  
-                     (FLOAT) a:  estimator                     
-                     (FLOAT) g:  forgetting factor: [0.0, 1.0) 
-                       (INT) t:  threshold (no. substitutions)
+SYNOPSIS
+  ./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
+
+OPTIONS
+  Required:
+  -r  <FILE>         = reference file (Seq/FASTA/FASTQ)
+  -t  <FILE>         = target file    (Seq/FASTA/FASTQ)
+
+  Optional:
+  -l  <INT>          = level of compression: [0, 5]. Default -> 0
+  -m  <INT>          = min segment size: [1, 4294967295]     -> 50
+  -e  <FLOAT>        = entropy of 'N's: [0.0, 100.0]         -> 2.0
+  -n  <INT>          = number of threads: [1, 8]             -> 4
+  -f  <INT>          = filter size: [1, 4294967295]          -> 256
+  -ft <INT/STRING>   = filter type (windowing function):     -> hann
+                       {0|rectangular, 1|hamming, 2|hann,
+                       3|blackman, 4|triangular, 5|welch,
+                       6|sine, 7|nuttall}
+  -fs [S][M][L]      = filter scale:                         -> L
+                       {S|small, M|medium, L|large}
+  -d  <INT>          = sampling steps                        -> 1
+  -th <FLOAT>        = threshold: [0.0, 20.0]                -> 1.5
+  -rb <INT>          = ref beginning guard: [-32768, 32767]  -> 0
+  -re <INT>          = ref ending guard: [-32768, 32767]     -> 0
+  -tb <INT>          = tar beginning guard: [-32768, 32767]  -> 0
+  -te <INT>          = tar ending guard: [-32768, 32767]     -> 0
+  -dp                = deep compression                      -> no
+  -nr                = do NOT compute self complexity        -> no
+  -sb                = save sequence (input: FASTA/FASTQ)    -> no
+  -sp                = save profile (*.prf)                  -> no
+  -sf                = save filtered file (*.fil)            -> no
+  -ss                = save segmented files (*.s[i])         -> no
+  -sa                = save profile, filetered and           -> no
+                       segmented files
+  -rm k,[w,d,]ir,a,g/t,ir,a,g:...
+  -tm k,[w,d,]ir,a,g/t,ir,a,g:...
+                     = parameters of models
+                <INT>  k:  context size
+                <INT>  w:  width of sketch in log2 form,
+                           e.g., set 10 for w=2^10=1024
+                <INT>  d:  depth of sketch
+                <INT>  ir: inverted repeat: {0, 1, 2}
+                           0: regular (not inverted)
+                           1: inverted, solely
+                           2: both regular and inverted
+              <FLOAT>  a:  estimator
+              <FLOAT>  g:  forgetting factor: [0.0, 1.0)
+                <INT>  t:  threshold (no. substitutions)
+  -ll                = list of compression levels
+  -h                 = usage guide
+  -v                 = more information
+  --version          = show version
 \end{code}
 
-The arguments ``-r'' and ``-t'' are used to specify the reference and the target, respectively, which are highly recommended to have short names. Level of compression, that is an integer between 0 and 5, can be determined with ``-l''. By setting ``-m'' to an integer value, only those regions in the reference file that are bigger than that value can be considered for compression. Triggering ``-nr'' makes the tool not to perform the reference-free compression (self-complexity computation) part. 
+The arguments ``-r'' and ``-t'' are used to specify the reference and the target, respectively, which are highly recommended to have short names. Level of compression, that is an integer between 0 and 5, can be determined with ``-l''. By setting ``-m'' to an integer value, only those regions in the reference file that are bigger than that value can be considered for compression. Triggering ``-nr'' makes the tool not to perform the reference-free compression (self-complexity computation) part.
 
 In implementation of the reference-based compression, we have replaced `N' bases in the references and the targets with `A's and `T's, respectively. On reference-free compression, they are replaced with `A's, in both references and targets. If a user tends to replace `N' bases in a sequence with a normal distribution of `A', `C', `G' and `T's, he/she can employ GOOSE toolkit~\cite{web-goose}. Note that we have set the entropy of `N's to 2.0, by default, but it is possible for the user to set them to another value of interest, by ``-e'' option.
 
-Building different finite-context models can be done in the multi-threaded fashion, setting ``-n'' to an integer. To find similar regions in the reference and the target, information profile (obtained by compression) needs to be filtered, of which the scale can be set as S (small), M (medium) or L (large). Size of the window and type of the windowing function, described in~\ref{subsec.software}, can be set by ``-w'' and ``-wt'' options, respectively. Instead of considering the complete profile information, the user is able to make samples of it by steps of which size can be determined by ``-d''. For the purpose of segmenting the filtered information profile, the average entropy of reference-based compression is used as the threshold, by default. However, this threshold can be altered by ``-th'' option.
+Building different finite-context models can be done in the multi-threaded fashion, setting ``-n'' to an integer. To find similar regions in the reference and the target, information profile (obtained by compression) needs to be filtered, of which the scale can be set as S (small), M (medium) or L (large). Size of the window and type of the windowing function can be set by ``-w'' and ``-wt'' options, respectively. Besides Hann window that is used as default to filter the profile information, we have implemented several other window functions, including Blackman~\cite{blackman1959particular}, Hamming~\cite{tukey1949measuring}, Nuttall~\cite{nuttall1981some}, rectangular~\cite{oppenheim1999discrete}, sine~\cite{harris1978use}, triangular~\cite{bartlett1950periodogram} and Welch~\cite{welch1967use} windows. These functions are given by
+\begin{align}
+  w[n] & = 1,
+  \tag*{(rectangular)}                                                                                                                                        \\
+  w[n] & = 1-\left|\tfrac {n-N/2}{L/2}\right|, \quad L=N,
+  \tag*{(triangular/Bartlett)}                                                                                                                                \\
+  w[n] & = 1-\left(\tfrac {n-N/2}{N/2}\right)^{2},
+  \tag*{(Welch)}                                                                                                                                              \\
+  w[n] & = \sin \left(\tfrac {\pi n}{N}\right),
+  \tag*{(sine)}                                                                                                                                               \\
+  w[n] & = 0.54348-0.45652\;\cos \left(\tfrac {2\pi n}{N}\right),
+  \tag*{(Hamming)}                                                                                                                                            \\
+  w[n] & = 0.42659-0.49656\;\cos \left(\tfrac {2\pi n}{N}\right)+0.07685\;\cos \left(\tfrac {4\pi n}{N}\right),
+  \tag*{(Blackman)}                                                                                                                                           \\
+  w[n] & = 0.35577-0.48740\;\cos \left(\tfrac {2\pi n}{N}\right)+0.14423\;\cos \left(\tfrac {4\pi n}{N}\right)-0.01260\;\cos \left(\tfrac {6\pi n}{N}\right),
+  \tag*{(Nuttall)}                                                                                                                                            \\
+\end{align}
+and are plotted in Fig.~\ref{fig.filters}. Instead of considering the complete profile information, the user is able to make samples of it by steps of which size can be determined by ``-d''. For the purpose of segmenting the filtered information profile, the average entropy of reference-based compression is used as the threshold, by default. However, this threshold can be altered by ``-th'' option.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=.95\linewidth]{filters.pdf}
+  \caption{Window functions.}
+  \label{fig.filters}
+\end{figure}
 
 \smashpp accepts \fasta and \fastq files as input, in addition to sequences. In these cases, the input files are converted to sequences and then processed further. It is possible to save these sequences by ``-sb'' option.
 
-After obtaining the information profile, \smashpp filters it and then removes it, by default. However, it is possible to save the profile by ``-sp'' option. The same thing happens to the filtered file, i.e., it is segmented and then is removed. But, the user can use ``-sf'' to save the filtered file. Also, the segmented files can be saved using ``-ss''. The user can save all the information profile, filtered and segmented files, by triggering ``-sa'' option.
+After obtaining the information profile, \smashpp filters then removes it, by default. However, it is possible to save the profile by ``-sp'' option. The same thing happens to the filtered file, i.e., it is segmented and then is removed. But, the user can use ``-sf'' to save the filtered file. Also, the segmented files can be saved using ``-ss''. The user can save all the information profile, filtered and segmented files, by triggering ``-sa'' option.
 
 For the purpose of compression, either reference-based or reference-free, it is recommended to use ``-l'' option, since it configures the models automatically. However, using ``-rm'' and ``-tm'', the user would be able to manually configure the reference model, for reference-based compression, and the target model, for reference-free compression. Parameters of the models are described in detail in section~\ref{sec.methods}.
 
 Running \smashpp (without visualization), positions of the similar regions in the reference and the target, and also complexity of the regions is saved in a ``*.pos'' file. To visualize this file, one can type
 \begin{code}[style=bash]
-./smashpp -viz
+  ./smashpp -viz
 \end{code}
 which gives
 \begin{code}[style=bash]
-SYNOPSIS
+  SYNOPSIS
   ./smashpp -viz  OPTIONS...  -o SVG-FILE  POS-FILE
 
-SAMPLE
+  SAMPLE
 
-DESCRIPTION
+  DESCRIPTION
   Mandatory arguments:
   POS-FILE                 positions file, generated by
-                           Smash++ tool (*.pos)
+  Smash++ tool (*.pos)
 
   Options:
   -v,  --verbose           more information
   -o,  --out SVG-FILE      output image name (*.svg)
   -rn, --ref-name STRING   reference name shown on output. If name
-                           has space, use "s, e.g. "Seq label".
-                           Default: name in header of position file.
+  has space, use "s, e.g. "Seq label".
+  Default: name in header of position file.
   -tn, --tar-name STRING   target name shown on output
   -vv, --vertical          vertical view
   -nn, --no-nrc            do NOT show normalized
-                           relative compression (NRC)
+  relative compression (NRC)
   -nr, --no-redun          do NOT show self complexity
   -ni, --no-inv            do NOT show inverse maps
   -ng, --no-reg            do NOT show regular maps
@@ -115,7 +194,7 @@ DESCRIPTION
   -w,  --width    INT      width of the sequence: [15, 100]
   -s,  --space    INT      space between sequences: [15, 200]
   -f,  --mult     INT      multiplication factor for
-                           color ID: [1, 255]
+  color ID: [1, 255]
   -b,  --begin    INT      beginning of color ID: [0, 255]
   -rt, --ref-tick INT      reference tick: [1, 4294967295]
   -tt, --tar-tick INT      target tick: [1, 4294967295]
@@ -136,19 +215,19 @@ This section guides, step-by-step, employing \smashpp to find and visualize rear
 \subsubsection*{Install \smashpp and provide the required files}
 First, we install \smashpp:
 \begin{code}[style=bash]
-git clone https://github.com/smortezah/smashpp.git
-cd smashpp
-./install.sh
+  git clone https://github.com/smortezah/smashpp.git
+  cd smashpp
+  ./install.sh
 \end{code}
 Then, we copy \mono{smashpp} binary file into \mono{example/} directory and go to that directory:
 \begin{code}[style=bash]
-cp smashpp example/
-cd example/
+  cp smashpp example/
+  cd example/
 \end{code}
 In this directory, a 1000 byte reference sequence, \mono{ref}, and a 1000 byte target sequence, \mono{tar}, are provided. Running
 \begin{code}[style=bash]
-./smashpp -r refs -t tars -w 45 -l 3
-./smashpp -viz refs.tars.pos
+  ./smashpp -r refs -t tars -w 45 -l 3
+  ./smashpp -viz refs.tars.pos
 \end{code}
 results in Fig.~\ref{fig.example}, which is saved as ``map.svg''.
 
