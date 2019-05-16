@@ -8,6 +8,8 @@
 A fast tool to find and visualize rearrangements in DNA sequences.
 
 ## Install
+To install Smash++ on various operating systems, follow the instructions below. Note that a precompiled version is available for 64 bit operating systems, in the "bin/" directory.
+
 ### Conda
 
 
@@ -18,11 +20,11 @@ sudo apt update
 sudo apt install git cmake
 ```
 
-Clone Smash++ and make the project:
+Clone Smash++ and install it:
 ```bash
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
-./compile.sh
+./install.sh
 ```
 
 ### macOS
@@ -32,14 +34,25 @@ Install "Homebrew", "git" and "cmake":
 brew install git cmake
 ```
 
-Clone Smash++ and make the project:
+Clone Smash++ and install it:
 ```bash
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
-./compile.sh
+./install.sh
 ```
 
-Note that a precompiled version is available for 64 bit Linux and macOS in the `bin/` directory.
+### Windows
+Follow the steps bellow:
+* Download and install "CMake", e.g., from https://github.com/Kitware/CMake/releases/download/v3.14.4/cmake-3.14.4-win64-x64.msi. Make sure to add it to the system PATH. For example, if CMake is installed in "C:\Program Files", add "C:\Program Files\CMake\bin" to the system PATH.
+* Download and install ``mingw-w64'', e.g., from https://sourceforge.net/projects/mingw-w64/\linebreak files/latest/download. Make sure to add it to the system PATH. For example, if it is installed in ``C:\textbackslash mingw-w64'', add ``C:\textbackslash mingw-w64\textbackslash mingw64\textbackslash bin'' to the system PATH.
+* Download and install ``git'', from https://git-scm.com/download/win.
+* Clone \smashpp and install it:
+  \begin{code}[style=bash]
+  git clone https://github.com/smortezah/smashpp.git
+  cd smashpp
+  .\install.bat
+  \end{code}
+\end{itemize}
 
 ## Run
 ```bash
