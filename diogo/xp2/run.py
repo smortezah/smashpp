@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 prepare_data = False
-compress = True
-plot_simil = False
+compress = False
+plot_simil = True
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
-num_files = 3  # 3327
+num_files = 3327
 nrc_file = 'nrc'
 threshold = 1.8
 
