@@ -7,8 +7,9 @@ compress = False
 plot_simil = True
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
-num_files = 3327
-nrc_file = 'nrc'
+num_files = 255 # 3327
+nrc_file = 'nrc7'
+# nrc_file = 'nrc'
 threshold = 1.8
 
 if prepare_data:
