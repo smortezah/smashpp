@@ -177,7 +177,7 @@ There is in this directory a 1000 byte reference sequence, named "refs", and a 1
 ./smashpp -viz -p 1 -s 50 -w 15 refs.tars.pos
 ```
 results in the following image:
-![example](/example.svg)
+<p align=center><img src="./example.svg" width="80%"></p>
 
 <!-- ### Compare Smash++ with other methods
 In order for comparison, you might set the parameters in 
