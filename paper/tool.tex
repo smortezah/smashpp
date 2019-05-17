@@ -58,57 +58,6 @@ A reference file and a target file are clearly mandatory to run \smashpp (withou
 ./smashpp
 \end{code}
 provides the following guide:
-%\vskip2mm
-% \begin{code}[style=bash]
-%   SYNOPSIS
-%   ./smashpp  OPTIONS...  -r REF-FILE  -t TAR-FILE
-
-%   SAMPLE
-
-%   DESCRIPTION
-%   Mandatory arguments
-%   -r,  --ref FILE            reference file (Seq/Fasta/Fastq)
-%   -t,  --tar FILE            target file    (Seq/Fasta/Fastq)
-
-%   Options
-%   -v,  --verbose             more information
-%   -l,  --level INT           level of compression: [0, 5]
-%   -m,  --min   INT           min segment size: [1, 4294967295]
-%   -nr, --no-redun            do NOT compute self complexity
-%   -e,  --ent-n FLOAT         Entropy of 'N's: [0.0, 100.0]
-%   -n,  --nthr  INT           number of threads: [1, 8]
-%   -fs, --filter-scale S|M|L  scale of the filter:
-%   {S|small, M|medium, L|large}
-%   -w,  --filt_size INT           window size: [1, 4294967295]
-%   -wt, --filt_type INT/STRING    type of windowing function:
-%   {0|rectangular, 1|hamming, 2|hann,
-%   3|blackman, 4|triangular, 5|welch,
-%   6|sine, 7|nuttall}
-%   -d,  --step   INT          sampling steps
-%   -th, --thresh FLOAT        threshold: [0.0, 20.0]
-%   -sb, --save-seq            save sequence (input: Fasta/Fastq)
-%   -sp, --save-profile        save profile (*.prf)
-%   -sf, --save-filter         save filtered file (*.fil)
-%   -ss, --save-segment        save segmented files (*-s_i)
-%   -sa, --save-all            save profile, filetered and
-%   segmented files
-%   -h,  --help                usage guide
-%   -rm, --ref-model  k,[w,d,]ir,a,g/t,ir,a,g:...
-%   -tm, --tar-model  k,[w,d,]ir,a,g/t,ir,a,g:...
-%   parameters of models
-%   (INT) k:  context size
-%   (INT) w:  width of sketch in log2 form,
-%   e.g., set 10 for w=2^10=1024
-%   (INT) d:  depth of sketch
-%   (INT) ir: inverted repeat: {0, 1, 2}
-%   0: regular (not inverted)
-%   1: inverted, solely
-%   2: both regular and inverted
-%   (FLOAT) a:  estimator
-%   (FLOAT) g:  forgetting factor: [0.0, 1.0)
-%   (INT) t:  threshold (no. substitutions)
-% \end{code}
-
 \begin{code}[style=bash]
 SYNOPSIS
   ./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
@@ -204,9 +153,10 @@ For the purpose of segmenting the filtered information content, the average entr
 
 \smashpp is capable of finding even very small similar regions in two sequences. However, we have found experimentally that when it is running in a very sensitive mode, there might be some cases in which the size of similar regions in the reference and the target are not balanced. These cases can be handled by ``-rb'', ``-re'', ``-tb'' and ``-te'' options, that can resize the beginning and ending guards of reference and target regions, respectively.
 For example, if ``-tb 10'' is used, the first 10 bases in each target region will be ignored, which results in smaller regions.
-Note that when the guard sizes of target regions are increased, the models built from these regions would be slightly different than the original models; consequently, the sizes of reference regions that are detected as being similar to the ones from the target would be modified, as well. Therefore, changing the guard sizes of target regions will affect the sizes of reference regions.
+Note that when the guard sizes of target regions are increased, the models built from these regions would be slightly different than the original models; consequently, the sizes of reference regions that are detected as being similar to the ones from the target would be modified, as well. Therefore, changing the guard sizes of target regions will affect the sizes of reference regions. 
+In the case of activating deep compression, by ``-dp'', changing the guard sizes of reference regions would affect the sizes of target regions, as well.
 
-In the case of activating deep compression, by ``-dp'', changing the guard sizes of reference regions would affect the sizes of target regions, as well. Here, the deep compression means that similar regions in target and reference sequences are found in three phases instead of two, meaning that first, the model of the reference is built and the target is compressed based upon that model, second, the model of each detected region is built and the whole reference is compressed based on these models, and third, the model of each detected reference region is built and the corresponding target regions will be compressed based on that model.
+The ``deep compression'' means that similar regions in target and reference sequences are found in three phases instead of two: 1) the model of the reference is built and the target is compressed based upon that model, 2) the model of each detected region is built and the whole reference is compressed based on these models and 3) the model of each detected reference region is built and the corresponding target regions will be compressed based on that model.
 
 Triggering ``-nr'' makes the tool not to perform the reference-free compression (self-complexity computation).
 
@@ -219,49 +169,11 @@ The user can save all the information profile (content), filtered and segmented 
 For the purpose of compression, it is recommended to use ``-l'' option, since it configures the models automatically. However, using ``-rm'' and ``-tm'', the user would be able to manually configure the reference model, for reference-based compression, and the target model, for reference-free compression, respectively. Parameters of the models are described in detail in section~\ref{sec.methods}.
 Note that using ``-ll'' option, the list of parameters that would be chosen for each model automatically, will be shown.
 
-Running \smashpp (without visualization), positions of the similar regions in the reference and the target, and also complexity of the regions is saved in a ``*.pos'' file. This file can be visualized by
+Running \smashpp (without visualization), positions of the similar regions in reference and target sequences, and also complexity of the regions is saved in a *.pos file, that can be visualized by
 \begin{code}[style=bash]
-  ./smashpp -viz
+./smashpp -viz
 \end{code}
 which gives
-% \begin{code}[style=bash]
-%   SYNOPSIS
-%   ./smashpp -viz  OPTIONS...  -o SVG-FILE  POS-FILE
-
-%   SAMPLE
-
-%   DESCRIPTION
-%   Mandatory arguments:
-%   POS-FILE                 positions file, generated by
-%   Smash++ tool (*.pos)
-
-%   Options:
-%   -v,  --verbose           more information
-%   -o,  --out SVG-FILE      output image name (*.svg)
-%   -rn, --ref-name STRING   reference name shown on output. If name
-%   has space, use "s, e.g. "Seq label".
-%   Default: name in header of position file.
-%   -tn, --tar-name STRING   target name shown on output
-%   -vv, --vertical          vertical view
-%   -nn, --no-nrc            do NOT show normalized
-%   relative compression (NRC)
-%   -nr, --no-redun          do NOT show self complexity
-%   -ni, --no-inv            do NOT show inverse maps
-%   -ng, --no-reg            do NOT show regular maps
-%   -l,  --link     INT      type of the link between maps: [1, 6]
-%   -c,  --color    INT      color mode: [0, 2]
-%   -p,  --opacity  FLOAT    opacity: [0.0, 1.0]
-%   -w,  --width    INT      width of the sequence: [15, 100]
-%   -s,  --space    INT      space between sequences: [15, 200]
-%   -f,  --mult     INT      multiplication factor for
-%   color ID: [1, 255]
-%   -b,  --begin    INT      beginning of color ID: [0, 255]
-%   -rt, --ref-tick INT      reference tick: [1, 4294967295]
-%   -tt, --tar-tick INT      target tick: [1, 4294967295]
-%   -th, --tick-human 0|1    tick human readable: 0=false, 1=true
-%   -m,  --min      INT      minimum block size: [1, 4294967295]
-%   -h,  --help              usage guide
-% \end{code}
 \begin{code}[style=bash]
 SYNOPSIS
   ./smashpp -viz [OPTIONS]  -o <SVG-FILE>  <POS-FILE>
@@ -301,33 +213,39 @@ OPTIONS
   --version          = show version
 \end{code}
 
-The output of \smashpp visualizer is an ``SVG'' file, which its name is determined by ``-o'' option. By default, it is named ``map.svg''. Names of the reference and the target, which are going to be printed on the output image, can be altered by ``-rn'' and ``-tn'', respectively. They are by default the names written in the positions file. To have a vertical view of the image, instead of the default horizontal view, one can use ``-vv'' trigger.
+The output of \smashpp visualizer is an ``SVG'' file whose name is determined by ``-o'' option. By default, it is named ``map.svg''. 
+Names of the reference and the target, which are going to be printed on the output image, can be altered by ``-rn'' and ``-tn'', respectively. They are by default the names written in the positions file. 
 
-\smashpp performs reference-based and reference-free compressions to calculate the normalized relative compression (NRC) and redundancy (self complexity), respectively. If the user is not interested in showing them, he/she can turn them off by ``-nn'' and ``-nr'' triggers. In addition, \smashpp considers both regular and reverse complement maps by default in its calculations. Triggering ``-ni'' and ``-ng'' will stop showing inverted and regular maps, respectively.
+Options ``-l'', ``-c'', ``-p'', ``-w'', ``-s'', ``-f'' and ``-b'' can be used to change the appearance of the image.
 
-Options ``-l'', ``-c'', ``-p'', ``-w'', ``-s'', ``-f'' and ``-b'' can be used to change the appearance of the image. Assigning integers to ``-rt'' and ``-tt'' options will change the tick sizes of the reference and the target, respectively. \smashpp prints the sizes on axes in human readable format, e.g., 1K, 2M, etc. However, it can be triggered by ``-th'' option. Note that, here, 1K is equivalent to 1000 and not 1024. Finally, by setting ``-m'' to an integer value, only the regions that are bigger than that value will be illustrated.
+Assigning integers to ``-rt'' and ``-tt'' options will change the tick sizes of the reference and the target, respectively. \smashpp prints the sizes on axes in human readable format, e.g., 1K, 2M, etc. However, it can be triggered by ``-th'' option. Note that, here, 1K is equivalent to 1000 and not 1024, and so on. 
+
+By setting ``-m'' to an integer value, only the regions that are bigger than that value will be illustrated.
+To have a vertical view of the image, instead of the default horizontal view, one can use ``-vv'' trigger.
+
+\smashpp performs reference-based and reference-free compressions to calculate the normalized relative compression (NRC) and redundancy (self complexity), respectively. If the user is not interested in showing them, he/she can turn them off by ``-nn'' and ``-nr'' triggers. In addition, \smashpp considers by default both regular and reverse complement maps in its calculations. Triggering ``-ni'' and ``-ng'' will stop showing inverted and regular maps, respectively.
 
 \subsection{Example}
-This section guides, step-by-step, employing \smashpp to find and visualize rearrangements in a sample genomic data.
+This section guides step-by-step employing \smashpp to find and visualize rearrangements in a sample genomic data. Note that the commands can be run on Linux and macOS, however, they are similar in Windows.
 
 \subsubsection*{Install \smashpp and provide the required files}
-First, we install \smashpp:
+First, install \smashpp:
 \begin{code}[style=bash]
-  git clone https://github.com/smortezah/smashpp.git
-  cd smashpp
-  ./install.sh
+git clone https://github.com/smortezah/smashpp.git
+cd smashpp
+./install.sh
 \end{code}
-Then, we copy \mono{smashpp} binary file into \mono{example/} directory and go to that directory:
+Then, copy \mono{smashpp} executable file into \mono{example/} directory and go to that directory:
 \begin{code}[style=bash]
-  cp smashpp example/
-  cd example/
+cp smashpp example/
+cd example/
 \end{code}
-In this directory, a 1000 byte reference sequence, \mono{ref}, and a 1000 byte target sequence, \mono{tar}, are provided. Running
+There is a 1000 byte reference sequence, named \mono{ref}, and a 1000 byte target sequence, named \mono{tar}, in this directory. Running
 \begin{code}[style=bash]
-  ./smashpp -r refs -t tars -w 45 -l 3
-  ./smashpp -viz refs.tars.pos
+./smashpp -r refs -t tars -f 45 -l 3
+./smashpp -viz -p 1 -s 50 -w 15 refs.tars.pos
 \end{code}
-results in Fig.~\ref{fig.example}, which is saved as ``map.svg''.
+results in Fig.~\ref{fig.example}, which has been saved as ``map.svg''.
 
 \begin{figure}[!h]
   \includegraphics[width=\linewidth]{example.pdf}
