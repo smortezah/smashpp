@@ -10,7 +10,7 @@ A fast tool to find and visualize rearrangements in DNA sequences.
 ## Install
 To install Smash++ on various operating systems, follow the instructions below. Note that the precompiled executables are available for 64 bit operating systems in the "bin/" directory.
 
-### Conda
+<!-- ### Conda -->
 
 
 ### Linux
@@ -51,7 +51,7 @@ To install Smash++ on various operating systems, follow the instructions below. 
 
 ## Run
 ```bash
-./smashpp [OPTION]...  -r [REF_FILE] -t [TAR_FILE]
+./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
 ```
 For example,
 ```bash
@@ -65,112 +65,128 @@ To see the possible options for Smash++, type:
 ```bash
 ./smashpp
 ```
-which provides the following: **UPDATE** <!-- todo -->
+which provides the following:
 ```text
-NAME
-  Smash++ v19.01 - rearrangements finder
-
 SYNOPSIS
-  ./smashpp  OPTIONS...  -r REF-FILE  -t TAR-FILE
+  ./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
 
-SAMPLE
+OPTIONS
+  Required:
+  -r  <FILE>         = reference file (Seq/FASTA/FASTQ)
+  -t  <FILE>         = target file    (Seq/FASTA/FASTQ)
 
-DESCRIPTION
-  Mandatory arguments
-  -r,  --ref FILE            reference file (Seq/Fasta/Fastq)
-  -t,  --tar FILE            target file    (Seq/Fasta/Fastq)
-
-  Options
-  -v,  --verbose             more information
-  -l,  --level INT           level of compression: [0, 5]
-  -m,  --min   INT           min segment size: [1, 4294967295]
-  -nr, --no-redun            do NOT compute self complexity
-  -e,  --ent-n FLOAT         Entropy of 'N's: [0.0, 100.0]
-  -n,  --nthr  INT           number of threads: [1, 8]
-  -fs, --filter-scale S|M|L  scale of the filter:
-                             {S|small, M|medium, L|large}
-  -w,  --filt_size INT           window size: [1, 4294967295]
-  -wt, --filt_type INT/STRING    type of windowing function:
-                             {0|rectangular, 1|hamming, 2|hann,
-                             3|blackman, 4|triangular, 5|welch,
-                             6|sine, 7|nuttall}
-  -d,  --step   INT          sampling steps
-  -th, --thresh FLOAT        threshold: [0.0, 20.0]
-  -sp, --save-profile        save profile (*.prf)
-  -sf, --save-filter         save filtered file (*.fil)
-  -sb, --save-seq            save sequence (input: Fasta/Fastq)
-  -ss, --save-segment        save segmented files (*-s_i)
-  -sa, --save-all            save profile, filetered and
-                             segmented files
-  -h,  --help                usage guide
-  -rm, --ref-model  k,[w,d,]ir,a,g/t,ir,a,g:...
-  -tm, --tar-model  k,[w,d,]ir,a,g/t,ir,a,g:...
-                             parameters of models
-                       (INT) k:  context size
-                       (INT) w:  width of sketch in log2 form,
-                                 e.g., set 10 for w=2^10=1024
-                       (INT) d:  depth of sketch
-                       (INT) ir: inverted repeat: {0, 1, 2}
-                                 0: regular (not inverted)
-                                 1: inverted, solely
-                                 2: both regular and inverted
-                     (FLOAT) a:  estimator
-                     (FLOAT) g:  forgetting factor: [0.0, 1.0)
-                       (INT) t:  threshold (no. substitutions)
+  Optional:
+  -l  <INT>          = level of compression: [0, 5]. Default -> 0
+  -m  <INT>          = min segment size: [1, 4294967295]     -> 50
+  -e  <FLOAT>        = entropy of 'N's: [0.0, 100.0]         -> 2.0
+  -n  <INT>          = number of threads: [1, 8]             -> 4
+  -f  <INT>          = filter size: [1, 4294967295]          -> 256
+  -ft <INT/STRING>   = filter type (windowing function):     -> hann
+                       {0|rectangular, 1|hamming, 2|hann,
+                       3|blackman, 4|triangular, 5|welch,
+                       6|sine, 7|nuttall}
+  -fs [S][M][L]      = filter scale:                         -> L
+                       {S|small, M|medium, L|large}
+  -d  <INT>          = sampling steps                        -> 1
+  -th <FLOAT>        = threshold: [0.0, 20.0]                -> 1.5
+  -rb <INT>          = ref beginning guard: [-32768, 32767]  -> 0
+  -re <INT>          = ref ending guard: [-32768, 32767]     -> 0
+  -tb <INT>          = tar beginning guard: [-32768, 32767]  -> 0
+  -te <INT>          = tar ending guard: [-32768, 32767]     -> 0
+  -dp                = deep compression                      -> no
+  -nr                = do NOT compute self complexity        -> no
+  -sb                = save sequence (input: FASTA/FASTQ)    -> no
+  -sp                = save profile (*.prf)                  -> no
+  -sf                = save filtered file (*.fil)            -> no
+  -ss                = save segmented files (*.s[i])         -> no
+  -sa                = save profile, filetered and           -> no
+                       segmented files
+  -rm k,[w,d,]ir,a,g/t,ir,a,g:...
+  -tm k,[w,d,]ir,a,g/t,ir,a,g:...
+                     = parameters of models
+                <INT>  k:  context size
+                <INT>  w:  width of sketch in log2 form,
+                           e.g., set 10 for w=2^10=1024
+                <INT>  d:  depth of sketch
+                <INT>  ir: inverted repeat: {0, 1, 2}
+                           0: regular (not inverted)
+                           1: inverted, solely
+                           2: both regular and inverted
+              <FLOAT>  a:  estimator
+              <FLOAT>  g:  forgetting factor: [0.0, 1.0)
+                <INT>  t:  threshold (no. substitutions)
+  -ll                = list of compression levels
+  -h                 = usage guide
+  -v                 = more information
+  --version          = show version
 ```
 
 To see the options for Smash++ Visualizer, type:
 ```bash
 ./smashpp -viz
 ```
-which provides the following: **UPDATE** <!-- todo -->
+which provides the following:
 ```text
-NAME
-  Smash++ Visualizer v19.01 - Visualization of Samsh++ output
-
 SYNOPSIS
-  ./smashpp -viz  OPTION...  -o SVG-FILE  POS-FILE
+  ./smashpp -viz [OPTIONS]  -o <SVG-FILE>  <POS-FILE>
 
-SAMPLE
+OPTIONS
+  Required:
+  <POS-FILE>         = position file, generated by
+                       Smash++ tool (*.pos)
 
-DESCRIPTION
-  Mandatory arguments:
-  POS-FILE                   positions file, generated by
-                             Smash++ tool (*.pos)
-
-  Options:
-  -v,  --verbose             more information
-  -o,  --out SVG-FILE        output image name (*.svg)
-  -vv, --vertical            vertical view
-  -nn, --no-nrc              do NOT show normalized
-                             relative compression (NRC)
-  -nr, --no-redun            do NOT show self complexity
-  -ni, --no-inv              do NOT show inverse maps
-  -ng, --no-reg              do NOT show regular maps
-  -l,  --link     INT        type of the link between maps: [1, 6]
-  -c,  --color    INT        color mode: [0, 2]
-  -p,  --opacity  FLOAT      opacity: [0.0, 1.0]
-  -w,  --width    INT        width of the sequence: [15, 100]
-  -s,  --space    INT        space between sequences: [15, 200]
-  -f,  --mult     INT        multiplication factor for
-                             color ID: [1, 255]
-  -b,  --begin    INT        beginning of color ID: [0, 255]
-  -rt, --ref-tick INT        reference tick: [1, 4294967295]
-  -tt, --tar-tick INT        target tick: [1, 4294967295]
-  -m,  --min      INT        minimum block size: [1, 4294967295]
-  -h,  --help                usage guide
+  Optional:
+  -o  <SVG-FILE>     = output image name (*.svg)             -> map.svg
+  -rn <STRING>       = reference name shown on output. If it
+                       has space, use double quotes, e.g.
+                       "Seq label". Default: name in header
+                       of position file
+  -tn <STRING>       = target name shown on output
+  -l  <INT>          = type of the link between maps: [1, 6] -> 1
+  -c  <INT>          = color mode: [0, 1]                    -> 0
+  -p  <FLOAT>        = opacity: [0.0, 1.0]                   -> 0.9
+  -w  <INT>          = width of the sequence: [15, 100]      -> 16
+  -s  <INT>          = space between sequences: [15, 200]    -> 62
+  -f  <INT>          = multiplication factor for             -> 43
+                       color ID: [1, 255]
+  -b  <INT>          = beginning of color ID: [0, 255]       -> 0
+  -rt <INT>          = reference tick: [1, 4294967295]
+  -tt <INT>          = target tick: [1, 4294967295]
+  -th [0][1]         = tick human readable: 0=false, 1=true  -> 1
+  -m  <INT>          = minimum block size: [1, 4294967295]   -> 1
+  -vv                = vertical view                         -> no
+  -nn                = do NOT show normalized relative       -> no
+                       compression (NRC)
+  -nr                = do NOT show self complexity           -> no
+  -ni                = do NOT show inverse maps              -> no
+  -ng                = do NOT show regular maps              -> no
+  -h                 = usage guide
+  -v                 = more information
+  --version          = show version
 ```
 
 ### Example
+After installing Smash++, copy its executable file into "example/" directory and go to that directory:
+```bash
+cp smashpp example/
+cd example/
+```
+There is in this directory a 1000 byte reference sequence, named "refs", and a 1000 byte target sequence, named "tars". Running
+```bash
+./smashpp -r refs -t tars -f 45 -l 3
+./smashpp -viz -p 1 -s 50 -w 15 refs.tars.pos
+```
+results in the following image:
+![example](/example.svg)
 
-### Compare Smash++ with other methods
+<!-- ### Compare Smash++ with other methods
 In order for comparison, you might set the parameters in 
 "run.sh" bash script, then run it:
 ```bash
 ./run.sh
 ```
 With this script, you can download the datasets, install the dependencies, 
-install the other tools, run all the tools, and finally, visualize the results.
+install the other tools, run all the tools, and finally, visualize the results. -->
 
 ## Cite
 Please cite the following, if you use Smash++:
