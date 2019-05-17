@@ -14,7 +14,7 @@ The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. \smas
 \begin{figure}[!h]
   \centering
   \includegraphics[width=.85\linewidth]{data_model.pdf}
-  \caption{Data model for Smash++. (a) Smash++ is based on a cooperation between finite-context models (FCMs) and substitutional-tolerant Markov models (STMMs). Note that each STMM needs to be associated to an FCM. (b) For the purpose of compression, a number of probability and weight values, obtained from processing previous symbols, is employed to estimate the probability of the next input symbol.}
+  \caption{Data modelling by Smash++. (a) cooperation between finite-context models (FCMs) and substitutional-tolerant Markov models (STMMs). Note that each STMM needs to be associated with an FCM. (b) probability of an input symbol is estimated by employing the probability and weight values that have been obtained from processing previous symbols.}
   \label{fig.model}
 \end{figure}
 
@@ -72,7 +72,7 @@ The FCMs and STMMs include, in fact, count values which need to be saved in memo
 \begin{figure}[!h]
   \centering
   \includegraphics[height=.9\textheight]{data_struct.pdf}
-  \caption{data structure.}
+  \caption{The data structures used by Smash++ to store the models in memory. (a) table of 64 bit counters that uses up to 128 MB of memory, (b) table of 32 bit counters that consumes at most 960 MB of memory, (c) table of 8 bit approximate counters with memory usage of up to 1 GB and (d) Count-Min-Log sketch of 4 bit counters which consumes up to $\frac{1}{2} w\times d$ B of memory, e.g., if $w=, d=5$, it uses GB.}
   \label{fig.struct}
 \end{figure}
 
