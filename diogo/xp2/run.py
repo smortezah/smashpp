@@ -10,7 +10,7 @@ main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
 num_files = 3327
 ave_ent_file = 'ent'
 # threshold = 1.8
-threshold = 0.2  # in (0, 1]
+threshold = 0.22  # in (0, 1]
 ent_threshold = 8 * threshold
 
 if prepare_data:
