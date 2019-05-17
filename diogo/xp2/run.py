@@ -8,8 +8,10 @@ plot_simil = True
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
 num_files = 3327
-nrc_file = 'nrc'
-threshold = 1.95
+ave_ent_file = 'ent'
+# threshold = 1.8
+threshold = 0.2  # in (0, 1]
+ent_threshold = 8 * threshold
 
 if prepare_data:
     # Split reads
@@ -26,10 +28,10 @@ if prepare_data:
 
 if compress:
     first = 1
-    if os.path.exists(nrc_file):
-        os.remove(nrc_file)
+    if os.path.exists(ave_ent_file):
+        os.remove(ave_ent_file)
 
-    out_file = open(nrc_file, "w")
+    out_file = open(ave_ent_file, "w")
     for i in range(first, num_files - first + 2):
         for j in range(first, num_files - first + 2):
             cmd = './geco -rm 6:1:0:0/0 -rm 10:10:1:0/0 -rm 14:50:1:3/10 ' + \
@@ -54,12 +56,12 @@ if plot_simil:
         for i in range(0, num_files):
             for j in range(i, num_files):
                 if i != j:
-                    if min(nrc_mat[i][j], nrc_mat[j][i]) < threshold:
+                    if min(nrc_mat[i][j], nrc_mat[j][i]) < ent_threshold:
                         simil_mat[i][j] = 1
                         # simil_mat[j][i] = 1
         return simil_mat
 
-    nrc_mat = np.genfromtxt(nrc_file, dtype=float)
+    nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
     # for x in nrc_mat:
     #     print(*x, sep="\t")
 
@@ -70,7 +72,7 @@ if plot_simil:
     # plt.matshow(nrc_mat)
     # plt.colorbar()
     # # plt.show()
-    # plt.savefig('nrc_mat_'+threshold+'.pdf')
+    # plt.savefig('nrc_mat_'+str(threshold)+'.pdf')
 
     plt.matshow(simil_mat)
     plt.colorbar()
