@@ -7,10 +7,9 @@ compress = False
 plot_simil = True
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
-num_files = 255 # 3327
-nrc_file = 'nrc7'
-# nrc_file = 'nrc'
-threshold = 1.8
+num_files = 3327
+nrc_file = 'nrc'
+threshold = 1.95
 
 if prepare_data:
     # Split reads
@@ -68,10 +67,12 @@ if plot_simil:
     # for x in simil_mat:
     #     print(*x, sep=" ")
 
-    plt.matshow(nrc_mat)
-    plt.colorbar()
-    plt.show()
+    # plt.matshow(nrc_mat)
+    # plt.colorbar()
+    # # plt.show()
+    # plt.savefig('nrc_mat_'+threshold+'.pdf')
 
     plt.matshow(simil_mat)
     plt.colorbar()
-    plt.show()
+    # plt.show()
+    plt.savefig('simil.'+str(threshold)+'.pdf')
