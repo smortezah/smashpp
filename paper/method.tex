@@ -4,7 +4,7 @@ The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. \smas
 
 \begin{figure}[!h]
   \includegraphics[width=\linewidth]{schema.pdf}
-  \caption{The schema of Smash++.}
+  \caption{The schema of Smash++. The process of finding similar regions in reference and target sequences and also, computing redundancy in each region includes eight stages. Finally, Smash++ outputs a *.pos file that includes the positions of the similar regions, and can be then visualized, resulting in an SVG image.}
   \label{fig.schema}
 \end{figure}
 
@@ -14,7 +14,7 @@ The schema of the proposed method is illustrated in Fig.~\ref{fig.schema}. \smas
 \begin{figure}[!h]
   \centering
   \includegraphics[width=.85\linewidth]{data_model.pdf}
-  \caption{model.}
+  \caption{Data model for Smash++. It is based on a cooperation between finite-context models (FCMs) and substitutional-tolerant Markov models (STMMs). For the purpose of compression, a number of probability and weight values, obtained from processing previous symbols, is employed to estimate the probability of the next input symbol. Each STMM needs to be associated to an FCM.}
   \label{fig.model}
 \end{figure}
 
