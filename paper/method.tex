@@ -72,7 +72,7 @@ The FCMs and STMMs include, in fact, count values which need to be saved in memo
 \begin{figure}[!h]
   \centering
   \includegraphics[height=.9\textheight]{data_struct.pdf}
-  \caption{The data structures used by Smash++ to store the models in memory. (a) table of 64 bit counters that uses up to 128 MB of memory, (b) table of 32 bit counters that consumes at most 960 MB of memory, (c) table of 8 bit approximate counters with memory usage of up to 1 GB and (d) Count-Min-Log sketch of 4 bit counters which consumes up to $\frac{1}{2} w\times d$ B of memory, e.g., if $w=, d=5$, it uses GB.}
+  \caption{The data structures used by Smash++ to store the models in memory. (a) table of 64~bit counters that uses up to 128~MB of memory, (b) table of 32~bit counters that consumes at most 960~MB of memory, (c) table of 8~bit approximate counters with memory usage of up to 1~GB and (d) Count-Min-Log sketch of 4~bit counters which consumes up to $\frac{1}{2} w\times d$~B of memory, e.g., if $w=2^{30}$ and $d=4$, it uses 2~GB of memory.}
   \label{fig.struct}
 \end{figure}
 
@@ -191,7 +191,7 @@ The procedure of finding similar regions in a reference and a target sequence, i
 \begin{figure}[!h]
   \centering
   \includegraphics[width=.95\linewidth]{simil.pdf}
-  \caption{simil.}
+  \caption{Finding similar regions in reference and target sequences. Smash++ finds, first, the regions in the target that are similar to the reference, and then, finds the regions in the reference that are similar to the detected target regions. This procedure is performance for both regular and inverted homologies.}
   \label{fig.simil}
 \end{figure}
 
