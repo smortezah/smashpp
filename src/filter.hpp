@@ -34,14 +34,14 @@ class Filter {
 
   void set_filt_size(std::unique_ptr<Param>&);
   void show_info(std::unique_ptr<Param>&) const;
-  void make_window();
-  void make_hamming();
-  void make_hann();
-  void make_blackman();
-  void make_triangular();  // Bartlett window
-  void make_welch();
-  void make_sine();
-  void make_nuttall();
+  void make_window(uint32_t);
+  void make_hamming(uint32_t);
+  void make_hann(uint32_t);
+  void make_blackman(uint32_t);
+  void make_triangular(uint32_t);  // Bartlett window
+  void make_welch(uint32_t);
+  void make_sine(uint32_t);
+  void make_nuttall(uint32_t);
   void smooth_seg_win1(std::vector<PosRow>&, std::unique_ptr<Param>&, uint8_t);
   template <bool SaveFilter>
   void smooth_seg_rect(std::vector<PosRow>&, std::unique_ptr<Param>&, uint8_t);
