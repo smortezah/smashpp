@@ -86,9 +86,10 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
   const auto file_vals = [&](char c) {
     std::cerr << std::setw(2 * colWidth) << std::left;
     // const auto lacale = "en_US.UTF8";
+    // std::setlocale(LC_ALL, "en_US.UTF-8");
     switch (c) {
       case '1':
-        std::cerr.imbue(std::locale(lacale));
+        // std::cerr.imbue(std::locale(lacale));
         std::cerr << file_size(par->ref);
         break;
       // case 'r':  cerr<<par->ref; break;
@@ -96,7 +97,7 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
         std::cerr << par->refName;
         break;
       case '2':
-        std::cerr.imbue(std::locale(lacale));
+        // std::cerr.imbue(std::locale(lacale));
         std::cerr << file_size(par->tar);
         break;
       // case 't':  cerr<<par->tar; break;
