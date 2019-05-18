@@ -29,12 +29,13 @@ using prc_t = double;  // Precision type -- MUST be double
 static constexpr uint8_t CARDIN{4};  // CARDINALITY = Alphabet size
 static constexpr double DBLANK{-2.0};
 
-#ifdef __unix__
-// const auto lacale = "en_US.UTF8";
+// #ifdef __unix__
+// // const auto lacale = "en_US.UTF8";
 const auto lacale = "en_US.UTF-8";
-#elif _WIN32
-const auto lacale = "en_US";
-#endif
+// #elif _WIN32
+// const auto lacale = "en-US";
+// const auto lacale = "en_US";
+// #endif
 
 // Enum
 enum class Container {  // Data structure
