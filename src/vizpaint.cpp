@@ -155,9 +155,10 @@ inline void VizPaint::show_info(std::unique_ptr<VizParam>& p) const {
   };
   const auto file_vals = [&](char c) {
     std::cerr << std::setw(2 * colWidth) << std::left;
+    // const auto lacale = "en_US.UTF8";
     switch (c) {
       case '1':
-        std::cerr.imbue(std::locale("en_US.UTF8"));
+        std::cerr.imbue(std::locale(lacale));
         std::cerr << n_refBases;
         break;
       // case 'r':  cerr<<ref;  break;
@@ -165,7 +166,7 @@ inline void VizPaint::show_info(std::unique_ptr<VizParam>& p) const {
         std::cerr << file_name(ref);
         break;
       case '2':
-        std::cerr.imbue(std::locale("en_US.UTF8"));
+        std::cerr.imbue(std::locale(lacale));
         std::cerr << n_tarBases;
         break;
       // case 't':  cerr<<tar;  break;
