@@ -88,7 +88,8 @@ inline static uint8_t num_digits(uint64_t number) {
 template <typename T>
 inline static std::string thousands_sep(T number) {
   std::ostringstream ss;
-  ss.imbue(std::locale("en_US.UTF-8"));
+  // const auto lacale = "en_US.UTF8";
+  ss.imbue(std::locale(lacale));
   ss << number;
   return ss.str();
 }
