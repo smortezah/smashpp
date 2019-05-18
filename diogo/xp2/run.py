@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 prepare_data = False
-compress = False
-plot_simil = True
+find_simil_seqs = False
+find_simil_regions = True
+plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
 num_files = 3327
 ave_ent_file = 'ent'
-# threshold = 1.8
-threshold = 0.22  # in (0, 1]
+threshold = 0.225  # in (0, 1]
 ent_threshold = 8 * threshold
 
 if prepare_data:
@@ -26,7 +26,7 @@ if prepare_data:
             if os.path.exists(file):
                 os.remove(file)
 
-if compress:
+if find_simil_seqs:
     first = 1
     if os.path.exists(ave_ent_file):
         os.remove(ave_ent_file)
@@ -50,17 +50,36 @@ if compress:
         if os.path.exists(file):
             os.remove(file)
 
-if plot_simil:
-    def build_simil_matrix(nrc_mat):
-        simil_mat = [[0 for x in range(num_files)] for y in range(num_files)]
-        for i in range(0, num_files):
-            for j in range(i, num_files):
-                if i != j:
-                    if min(nrc_mat[i][j], nrc_mat[j][i]) < ent_threshold:
-                        simil_mat[i][j] = 1
-                        # simil_mat[j][i] = 1
-        return simil_mat
 
+def build_simil_matrix(nrc_mat):
+    simil_mat = [[0 for x in range(num_files)] for y in range(num_files)]
+    for i in range(0, num_files):
+        for j in range(i, num_files):
+            if i != j:
+                if min(nrc_mat[i][j], nrc_mat[j][i]) < ent_threshold:
+                    simil_mat[i][j] = 1
+                    # simil_mat[j][i] = 1
+    return simil_mat
+
+
+if find_simil_regions:
+    nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
+    simil_mat = build_simil_matrix(nrc_mat)
+    # num=0
+    for i in range(0, len(simil_mat)):
+        for j in range(i, len(simil_mat[0])):
+            if i != j and simil_mat[i][j] == 1:
+                # num+=1
+                ref = str(i + 1)
+                tar = str(j + 1)
+                cmd = './smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r ' + \
+                    ref + ' -t ' + tar + ' -th ' + \
+                    str(ent_threshold) + ' -m 13'
+                # str(ent_threshold) + ' -m 13 -rb 10 -re 5 -dp'
+                os.popen(cmd).read()
+    print(num)
+
+if plot_simil:
     nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
     # for x in nrc_mat:
     #     print(*x, sep="\t")
