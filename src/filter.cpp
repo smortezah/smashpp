@@ -159,7 +159,7 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
           ? smooth_seg_rect<true>(pos_out, par, round)
           : smooth_seg_rect<false>(pos_out, par, round);
     } else {
-      make_window();
+      // make_window(filt_size);
       (par->saveFilter || par->saveAll)
           ? smooth_seg_non_rect<true>(pos_out, par, round)
           : smooth_seg_non_rect<false>(pos_out, par, round);  // todo erroneous
@@ -230,84 +230,86 @@ void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out,
   profile.close();
 }
 
-inline void Filter::make_window() {
+inline void Filter::make_window(uint32_t filter_size) {
+  window.resize(filter_size);
+
   switch (filt_type) {
     case FilterType::hamming:
-      make_hamming();
+      make_hamming(filter_size);
       break;
     case FilterType::hann:
-      make_hann();
+      make_hann(filter_size);
       break;
     case FilterType::blackman:
-      make_blackman();
+      make_blackman(filter_size);
       break;
     case FilterType::triangular:
-      make_triangular();
+      make_triangular(filter_size);
       break;
     case FilterType::welch:
-      make_welch();
+      make_welch(filter_size);
       break;
     case FilterType::sine:
-      make_sine();
+      make_sine(filter_size);
       break;
     case FilterType::nuttall:
-      make_nuttall();
+      make_nuttall(filter_size);
       break;
     default:
       break;
   }
 }
 
-inline void Filter::make_hamming() {
-  if (filt_size == 1) error("The size of Hamming window must be greater than 1.");
+inline void Filter::make_hamming(uint32_t filter_size) {
+  if (filter_size == 1) error("The size of Hamming window must be greater than 1.");
   float num{0.f};
   uint32_t den{0};
-  if (is_odd(filt_size)) {
+  if (is_odd(filter_size)) {
     num = PI;
-    den = (filt_size - 1) >> 1u;
+    den = (filter_size - 1) >> 1u;
   } else {
     num = 2 * PI;
-    den = filt_size - 1;
+    den = filter_size - 1;
   }
 
-  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
+  for (auto n = (filter_size + 1) >> 1u, last = filter_size - 1; n--;)
     window[n] = window[last - n] =
         static_cast<float>(0.54 - 0.46 * std::cos(n * num / den));
 }
 
-inline void Filter::make_hann() {
-  if (filt_size == 1) error("The size of Hann window must be greater than 1.");
+inline void Filter::make_hann(uint32_t filter_size) {
+  if (filter_size == 1) error("The size of Hann window must be greater than 1.");
   float num{0.f};
   uint32_t den{0};
-  if (is_odd(filt_size)) {
+  if (is_odd(filter_size)) {
     num = PI;
-    den = (filt_size - 1) >> 1u;
+    den = (filter_size - 1) >> 1u;
   } else {
     num = 2 * PI;
-    den = filt_size - 1;
+    den = filter_size - 1;
   }
 
-  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
+  for (auto n = (filter_size + 1) >> 1u, last = filter_size - 1; n--;)
     window[n] = window[last - n] =
         static_cast<float>(0.5 * (1 - std::cos(n * num / den)));
 }
 
-inline void Filter::make_blackman() {
-  if (filt_size == 1) error("The size of Blackman window must be greater than 1.");
+inline void Filter::make_blackman(uint32_t filter_size) {
+  if (filter_size == 1) error("The size of Blackman window must be greater than 1.");
   float num1{0.f};
   float num2{0.f};
   uint32_t den{0};
-  if (is_odd(filt_size)) {
+  if (is_odd(filter_size)) {
     num1 = PI;
     num2 = 2 * PI;
-    den = (filt_size - 1) >> 1u;
+    den = (filter_size - 1) >> 1u;
   } else {
     num1 = 2 * PI;
     num2 = 4 * PI;
-    den = filt_size - 1;
+    den = filter_size - 1;
   }
 
-  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
+  for (auto n = (filter_size + 1) >> 1u, last = filter_size - 1; n--;)
     window[n] = window[last - n] =
         static_cast<float>(0.42 - 0.5 * std::cos(n * num1 / den) +
                            0.08 * std::cos(n * num2 / den));
@@ -316,66 +318,66 @@ inline void Filter::make_blackman() {
 }
 
 // Bartlett window:  w(n) = 1 - |(n - (N-1)/2) / (N-1)/2|
-inline void Filter::make_triangular() {
-  if (filt_size == 1)
+inline void Filter::make_triangular(uint32_t filter_size) {
+  if (filter_size == 1)
     error("The size of triangular window must be greater than 1.");
 
-  if (is_odd(filt_size)) {
-    const uint32_t den{(filt_size - 1) >> 1u};
-    for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
+  if (is_odd(filter_size)) {
+    const uint32_t den{(filter_size - 1) >> 1u};
+    for (auto n = (filter_size + 1) >> 1u, last = filter_size - 1; n--;)
       window[n] = window[last - n] =
           1 - std::fabs(static_cast<float>(n) / den - 1);
   } else {
     constexpr auto num{2.0f};
-    const uint32_t den{filt_size - 1};
-    for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
+    const uint32_t den{filter_size - 1};
+    for (auto n = (filter_size + 1) >> 1u, last = filter_size - 1; n--;)
       window[n] = window[last - n] = 1 - std::fabs(n * num / den - 1);
   }
 }
 
-inline void Filter::make_welch() {  // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
-  if (filt_size == 1) error("The size of Welch window must be greater than 1.");
+inline void Filter::make_welch(uint32_t filter_size) {  // w(n) = 1 - ((n - (N-1)/2) / (N-1)/2)^2
+  if (filter_size == 1) error("The size of Welch window must be greater than 1.");
 
-  if (is_odd(filt_size)) {
-    const uint32_t den{(filt_size - 1) >> 1u};
-    for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
+  if (is_odd(filter_size)) {
+    const uint32_t den{(filter_size - 1) >> 1u};
+    for (auto n = (filter_size + 1) >> 1u, last = filter_size - 1; n--;)
       window[n] = window[last - n] = float(1 - Power(float(n) / den - 1, 2));
   } else {
     constexpr auto num{2.0f};
-    const uint32_t den{filt_size - 1};
-    for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
+    const uint32_t den{filter_size - 1};
+    for (auto n = (filter_size + 1) >> 1u, last = filter_size - 1; n--;)
       window[n] = window[last - n] = float(1 - Power(n * num / den - 1, 2));
   }
 }
 
-inline void Filter::make_sine() {
-  if (filt_size == 1) error("The size of sine window must be greater than 1.");
+inline void Filter::make_sine(uint32_t filter_size) {
+  if (filter_size == 1) error("The size of sine window must be greater than 1.");
   constexpr float num{PI};
-  const uint32_t den{filt_size - 1};
+  const uint32_t den{filter_size - 1};
 
-  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
+  for (auto n = (filter_size + 1) >> 1u, last = filter_size - 1; n--;)
     window[n] = window[last - n] = std::sin(n * num / den);
 }
 
-inline void Filter::make_nuttall() {
-  if (filt_size == 1) error("The size of Nuttall window must be greater than 1.");
+inline void Filter::make_nuttall(uint32_t filter_size) {
+  if (filter_size == 1) error("The size of Nuttall window must be greater than 1.");
   float num1{0.f};
   float num2{0.f};
   float num3{0.f};
   uint32_t den{0};
-  if (is_odd(filt_size)) {
+  if (is_odd(filter_size)) {
     num1 = PI;
     num2 = 2 * PI;
     num3 = 3 * PI;
-    den = (filt_size - 1) >> 1u;
+    den = (filter_size - 1) >> 1u;
   } else {
     num1 = 2 * PI;
     num2 = 4 * PI;
     num3 = 6 * PI;
-    den = filt_size - 1;
+    den = filter_size - 1;
   }
 
-  for (auto n = (filt_size + 1) >> 1u, last = filt_size - 1; n--;)
+  for (auto n = (filter_size + 1) >> 1u, last = filter_size - 1; n--;)
     window[n] = window[last - n] = static_cast<float>(
         0.36 - 0.49 * std::cos(n * num1 / den) + 0.14 * cos(n * num2 / den) -
         0.01 * std::cos(n * num3 / den));
@@ -507,17 +509,21 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   auto sum{0.f};
   // uint64_t symsNo{0};
   auto entropy{0.f};
-  const auto half_wsize{filt_size >> 1u};
   std::vector<float> seq;
   seq.reserve(filt_size);
 
   // First value
-  for (auto i = half_wsize + 1; i-- && (prfF >> entropy);jump_lines()) {
+  // for (auto i = half_wsize + 1; i-- && (prfF >> entropy);jump_lines()) {
+  for (auto i = (filt_size >> 1u) + 1; i-- && (prfF >> entropy);jump_lines()) {
     const auto val{entropy};
     seq.push_back(val);
     sum += val;
     // show_progress(++symsNo, seg->totalSize, message);
   }
+
+  if (seq.size() <= (filt_size >> 1u)) filt_size = 2 * seq.size() + 1;
+  const auto half_wsize{filt_size >> 1u};
+
   auto filtered = sum / filt_size;
   // auto filtered = sum / seq.size();
   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
@@ -709,11 +715,11 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     else if (round == 1 || round == 3)
       seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
   }
-  const auto winBeg{std::begin(window)};
-  const auto winEnd{std::end(window)};
-  const auto half_wsize = (filt_size >> 1u);
-  // auto sWeight{std::accumulate(winBeg + half_wsize, winEnd, 0.f)};
-  auto sum_weights{std::accumulate(winBeg, winEnd, 0.f)};
+  // const auto winBeg{std::begin(window)};
+  // const auto winEnd{std::end(window)};
+  // const auto half_wsize = (filt_size >> 1u);
+  // // auto sWeight{std::accumulate(winBeg + half_wsize, winEnd, 0.f)};
+  // auto sum_weights{std::accumulate(winBeg, winEnd, 0.f)};
   // uint64_t symsNo{0};
   seg->totalSize = file_lines(profileName) / par->sampleStep;
   // const auto totalSize = (file_lines(profileName) / par->sampleStep) + 1;
@@ -727,10 +733,23 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   auto entropy{0.f};
   
   // First value
-  for (auto i = half_wsize + 1; i-- && (prfF >> entropy); jump_lines())
+  // for (auto i = half_wsize + 1; i-- && (prfF >> entropy); jump_lines())
+  for (auto i = (filt_size >> 1u) + 1; i-- && (prfF >> entropy); jump_lines())
     seq.push_back(entropy);
-  auto sum =
-      std::inner_product(winBeg + half_wsize, winEnd, std::begin(seq), 0.f);
+
+  if (seq.size() <= (filt_size >> 1u)) 
+    make_window(2 * seq.size() + 1);
+  else
+    make_window(filt_size);
+
+  const auto winBeg{std::begin(window)};
+  const auto winEnd{std::end(window)};
+  const auto half_wsize = (window.size() >> 1u);
+  auto sum_weights{std::accumulate(winBeg, winEnd, 0.f)};
+
+  auto sum = std::inner_product(std::begin(seq), std::end(seq),
+                                winBeg + half_wsize, 0.f);
+  // std::inner_product(winBeg + half_wsize, winEnd, std::begin(seq), 0.f);
   auto filtered = sum / sum_weights;
   // filtered = sum / sWeight;
   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
