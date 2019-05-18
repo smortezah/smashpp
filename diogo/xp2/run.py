@@ -66,7 +66,8 @@ if find_simil_regions:
     nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
     simil_mat = build_simil_matrix(nrc_mat)
     # num=0
-    for i in range(0, len(simil_mat)):
+    # for i in range(0, len(simil_mat)):
+    for i in range(0, 1):
         for j in range(i, len(simil_mat[0])):
             if i != j and simil_mat[i][j] == 1:
                 # num+=1
@@ -77,7 +78,7 @@ if find_simil_regions:
                     str(ent_threshold) + ' -m 13'
                 # str(ent_threshold) + ' -m 13 -rb 10 -re 5 -dp'
                 os.popen(cmd).read()
-    print(num)
+    # print(num)
 
 if plot_simil:
     nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
