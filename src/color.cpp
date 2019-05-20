@@ -22,6 +22,10 @@ inline std::string to_hex(const RGB& color) {
   return string_format("#%X%X%X", color.r, color.g, color.b);
 }
 
+inline std::string to_hex(const HSV& color) {
+  return to_hex(to_rgb(color));
+}
+
 inline RGB to_rgb(std::string color) {
   if (is_hex(color)) {
     return RGB(std::stoi(color.substr(1, 2), 0, 16 /*base*/),
