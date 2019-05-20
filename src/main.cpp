@@ -386,7 +386,8 @@ int main(int argc, char* argv[]) {
     } else {
       auto par = std::make_unique<Param>();
       par->parse(argc, argv);
-      run(par);
+      // run(par);
+      std::wcerr << "\e[1m" << "=[ REGULAR MODE ]=\n" << "\e[0m";
     }
 
     const auto t1{now()};
