@@ -12,27 +12,51 @@ namespace smashpp {
 static constexpr uint8_t TEXTWIDTH{65};
 
 inline std::string bold(const std::string& text) {
+#ifdef _WIN32
+  return text;
+#else
   return "\033[1m" + text + "\033[0m";
+#endif
 }
 
 inline std::string faint(const std::string& text) {
+#ifdef _WIN32
+  return text;
+#else
   return "\033[2m" + text + "\033[0m";
+#endif
 }
 
 inline std::string italic(const std::string& text) {
+#ifdef _WIN32
+  return text;
+#else
   return "\033[3m" + text + "\033[0m";
+#endif
 }
 
 inline std::string underline(const std::string& text) {
+#ifdef _WIN32
+  return text;
+#else
   return "\033[4m" + text + "\033[0m";
+#endif
 }
 
 inline std::string highlight(const std::string& text) {
+#ifdef _WIN32
+  return text;
+#else
   return "\033[7m" + text + "\033[0m";
+#endif
 }
 
 inline std::string bold_red(const std::string& text) {
+#ifdef _WIN32
+  return text;
+#else
   return "\033[1m\033[38;5;1m" + text + "\033[0m";
+#endif
 }
 
 #ifdef DEBUG
