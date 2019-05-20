@@ -40,11 +40,10 @@ example/*.s*
 Makefile
 0.*
 1.*
-smashpp.exe
-gdb.exe.stackdump
-smashpp.exe
 .Rproj.user
 smashpp.exe.stackdump
-smashpp.exe
 RefS.TarS.pos
 .vscode/settings.json
+
+smashpp
+smashpp.exe
