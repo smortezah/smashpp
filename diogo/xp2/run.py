@@ -4,13 +4,13 @@ import numpy as np
 
 prepare_data = False
 find_simil_seqs = False
-find_simil_regions = True
-plot_simil = False
+find_simil_regions = False
+plot_simil = True
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
 num_files = 3327
 ave_ent_file = 'ent'
-threshold = 0.225  # in (0, 1]
+threshold = 0.2  # in (0, 1]
 ent_threshold = 8 * threshold
 
 if prepare_data:
@@ -97,5 +97,5 @@ if plot_simil:
 
     plt.matshow(simil_mat)
     plt.colorbar()
-    # plt.show()
-    plt.savefig('simil.'+str(threshold)+'.pdf')
+    plt.show()
+    # plt.savefig('simil.'+str(threshold)+'.pdf')

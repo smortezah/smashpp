@@ -258,9 +258,7 @@ inline void VizPaint::set_page(bool vertical) {
 
 std::string VizPaint::rgb_color(uint32_t start) const {
   const auto hue{static_cast<uint8_t>(start * mult)};
-  HSV hsv(hue);
-  RGB rgb{to_rgb(hsv)};
-  return to_hex(rgb);
+  return to_hex(HSV(hue));
 }
 
 inline std::string VizPaint::nrc_color(double entropy,
