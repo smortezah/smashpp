@@ -65,20 +65,21 @@ def build_simil_matrix(nrc_mat):
 if find_simil_regions:
     nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
     simil_mat = build_simil_matrix(nrc_mat)
-    # num=0
+
+    smashpp_bin = ''
+    if os.name == 'posix':
+        smashpp_bin = './smashpp'
+    elif os.name == 'nt':
+        smashpp_bin = '.\smashpp.exe'
+
     # for i in range(0, len(simil_mat)):
     for i in range(0, 1):
         for j in range(i, len(simil_mat[0])):
             if i != j and simil_mat[i][j] == 1:
-                # num+=1
-                ref = str(i + 1)
-                tar = str(j + 1)
-                cmd = './smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r ' + \
-                    ref + ' -t ' + tar + ' -th ' + \
-                    str(ent_threshold) + ' -m 13'
-                # str(ent_threshold) + ' -m 13 -rb 10 -re 5 -dp'
+                cmd = smashpp_bin + ' -rm 11,0,1,0.95/8,0,1,0.9 -r ' + \
+                    str(i + 1) + ' -t ' + str(j + 1) + ' -f 200 -th ' + \
+                    str(ent_threshold) + ' -m 13 -rb 10 -re 5 -dp'
                 os.popen(cmd).read()
-    # print(num)
 
 if plot_simil:
     nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
