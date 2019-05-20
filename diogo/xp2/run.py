@@ -4,8 +4,8 @@ import numpy as np
 
 prepare_data = False
 find_simil_seqs = False
-find_simil_regions = False
-plot_simil = True
+find_simil_regions = True
+plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
 num_files = 3327
@@ -52,13 +52,16 @@ if find_simil_seqs:
 
 
 def build_simil_matrix(nrc_mat):
+    # num = 0
     simil_mat = [[0 for x in range(num_files)] for y in range(num_files)]
     for i in range(0, num_files):
         for j in range(i, num_files):
             if i != j:
                 if min(nrc_mat[i][j], nrc_mat[j][i]) < ent_threshold:
+                    # num += 1
                     simil_mat[i][j] = 1
                     # simil_mat[j][i] = 1
+    # print(num)
     return simil_mat
 
 
@@ -72,13 +75,12 @@ if find_simil_regions:
     elif os.name == 'nt':
         smashpp_bin = '.\smashpp.exe'
 
-    # for i in range(0, len(simil_mat)):
-    for i in range(0, 1):
+    for i in range(0, len(simil_mat)):
         for j in range(i, len(simil_mat[0])):
             if i != j and simil_mat[i][j] == 1:
                 cmd = smashpp_bin + ' -rm 11,0,1,0.95/8,0,1,0.9 -r ' + \
-                    str(i + 1) + ' -t ' + str(j + 1) + ' -f 200 -th ' + \
-                    str(ent_threshold) + ' -m 13 -rb 10 -re 5 -dp'
+                    str(i + 1) + ' -t ' + str(j + 1) + ' -f 50 -th ' + \
+                    str(ent_threshold) + ' -m 13 -rb 7 -re 3 -dp'
                 os.popen(cmd).read()
 
 if plot_simil:
