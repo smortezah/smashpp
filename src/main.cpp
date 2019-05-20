@@ -119,7 +119,7 @@ void write_pos_file_impl(const std::vector<OutRowAux>& out_aux) {
   const auto pos_file_name{gen_name(ref, tar, Format::position)};
   std::ofstream pos_file(pos_file_name);
 
-  // Header
+  // Head
   pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
            << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
            << std::to_string(file_size(tar)) << '\n';
@@ -127,8 +127,13 @@ void write_pos_file_impl(const std::vector<OutRowAux>& out_aux) {
   // Body
   for (auto row : out_aux) {
     // Left hand side
-    pos_file << row.pos2.beg_pos << '\t' << row.pos2.end_pos << '\t'
-             << row.pos2.ent << '\t' << row.pos2.self_ent << '\t';
+    if (row.pos2.beg_pos == 0 && row.pos2.end_pos == 0 && row.pos2.ent == 0 &&
+        row.pos2.self_ent == 0)
+      pos_file << DBLANK << '\t' << DBLANK << '\t' << DBLANK << '\t' << DBLANK
+               << '\t';
+    else
+      pos_file << row.pos2.beg_pos << '\t' << row.pos2.end_pos << '\t'
+               << row.pos2.ent << '\t' << row.pos2.self_ent << '\t';
 
     // Right hand side
     if (row.pos3.size() == 1) {
@@ -159,36 +164,36 @@ void make_write_pos_pair(const std::vector<PosRow>& left,
                          const std::vector<PosRow>& right3) {
   std::vector<OutRowAux> out_aux{std::vector<OutRowAux>()};
 
-  for (auto left_iter = std::begin(left), right1_iter = std::begin(right1);
-       left_iter != std::end(left); ++left_iter) {
-    for (; right1_iter != std::end(right1); ++right1_iter) {
-      auto seg_name{gen_name(right1_iter->run_num, right1_iter->ref,
-                             right1_iter->tar, Format::segment) +
-                    std::to_string(right1_iter->seg_num)};
-      if (left_iter->ref == seg_name) {
-        out_aux.push_back(OutRowAux(*left_iter, *right1_iter));
-        break;
+  if (left.empty()) {
+    for (const auto& row : right1) out_aux.push_back(OutRowAux(PosRow(), row));
+  } else {
+    for (const auto& row_left : left) {
+      for (const auto& row_right1 : right1) {
+        const auto seg_name{gen_name(row_right1.run_num, row_right1.ref,
+                                     row_right1.tar, Format::segment) +
+                            std::to_string(row_right1.seg_num)};
+        if (row_left.ref == seg_name) {
+          out_aux.push_back(OutRowAux(row_left, row_right1));
+          break;
+        }
       }
     }
-  }
 
-  if (right3.size() != 0) {
-    auto pos_iter = std::begin(out_aux);
-    for (auto right3_iter = std::begin(right3); right3_iter != std::end(right3);
-         ++right3_iter) {
-      for (; pos_iter != std::end(out_aux); ++pos_iter) {
-        auto seg_name{gen_name(pos_iter->pos2.run_num, pos_iter->pos2.ref,
-                               pos_iter->pos2.tar, Format::segment) +
-                      std::to_string(pos_iter->pos2.seg_num)};
-        if (right3_iter->ref == seg_name) {
-          pos_iter->pos3.push_back(*right3_iter);
+    for (const auto& row_right3 : right3) {
+      for (auto row_out_aux : out_aux) {
+        const auto seg_name{gen_name(row_out_aux.pos2.run_num,
+                                     row_out_aux.pos2.ref, row_out_aux.pos2.tar,
+                                     Format::segment) +
+                            std::to_string(row_out_aux.pos2.seg_num)};
+        if (row_right3.ref == seg_name) {
+          row_out_aux.pos3.push_back(row_right3);
           break;
         }
       }
     }
   }
 
-  write_pos_file_impl(out_aux);
+  if (!out_aux.empty()) write_pos_file_impl(out_aux);
 }
 
 void write_pos_file(const std::vector<PosRow>& pos_out) {
@@ -366,7 +371,7 @@ void run(std::unique_ptr<Param>& par) {
     remove_temp_seq(par);
   }  // Round 1
 
-  write_pos_file(pos_out);
+  if (!pos_out.empty()) write_pos_file(pos_out);
 }
 
 int main(int argc, char* argv[]) {
