@@ -7,10 +7,13 @@ ent_mat <- matrix(entropy, byrow=T, nrow=3327, ncol=3327)
 threshold <- 1.2
 ent_mat[ent_mat < threshold] <- threshold
 melted_ent_mat <- melt(ent_mat)
+data_below_thresh <- subset(melted_ent_mat, melted_ent_mat$value<=threshold)
+data_above_thresh <- subset(melted_ent_mat, melted_ent_mat$value>threshold)
 
 ggplot() +
-  geom_raster(data=melted_ent_mat, aes(x = Var1, y = Var2, fill=value)) +
+  geom_raster(data=data_above_thresh, aes(x = Var1, y = Var2, fill=value)) +
+  geom_raster(data=data_below_thresh, aes(x = Var1, y = Var2), fill='yellow') +
   labs(x="Mitochondrion", y="Mitochondrion") +
   # scale_fill_manual(name = 'fill', values = setNames(c(melted_ent_mat$value,'yellow'),c(T, F))) +
-  scale_fill_gradient(low="yellow", high="dark green") +
+  scale_fill_gradient(low="light green", high="dark green") +
   theme_bw()
