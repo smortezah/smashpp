@@ -8,7 +8,7 @@ diogo/xp2/*
 !diogo/xp2/goose-fasta2seq
 !diogo/xp2/goose-splitreads
 
-*.svg
+/*.svg
 !example.svg
 
 **/build
