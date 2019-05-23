@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# rm -fr build
-# mkdir build
+rm -fr build
+mkdir build
 cd build
-# cmake ../src
+cmake ../src
 make -j4
 mv smashpp ..
 cd ..

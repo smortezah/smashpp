@@ -313,6 +313,8 @@ void remove_temp_seq(std::unique_ptr<Param>& par) {
 }
 
 void prepare_data(std::unique_ptr<Param>& par) {
+  if (par->refType == FileType::seq && par->tarType == FileType::seq) return;
+
   std::cerr << bold("====[ PREPARE DATA ]==================================\n");
   
   // FASTA/FASTQ to seq
