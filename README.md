@@ -23,7 +23,7 @@ To install Smash++ on various operating systems, follow the instructions below. 
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
-  ./install.sh
+  sh install.sh
 ```
 
 ### macOS
@@ -36,7 +36,7 @@ To install Smash++ on various operating systems, follow the instructions below. 
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
-  ./install.sh
+  sh install.sh
 ```
 
 ### Windows
