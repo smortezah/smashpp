@@ -7,10 +7,8 @@ diogo/xp2/*
 !diogo/xp2/GeCo
 !diogo/xp2/goose-fasta2seq
 !diogo/xp2/goose-splitreads
-
 /*.svg
 !example.svg
-
 **/build
 .vscode/ipch
 **/*.blg
@@ -44,11 +42,11 @@ Makefile
 smashpp.exe.stackdump
 RefS.TarS.pos
 .vscode/settings.json
-
 smashpp
 smashpp.exe
 xp/mit.ent
 xp/.Rhistory
 xp/.RData
 aa.fasta.ab.fasta.pos
+M80517.1.seq.V01555.2.seq.pos
 M80517.1.seq.V01555.2.seq.pos
