@@ -144,6 +144,7 @@ class Param {
   auto print_filter_scale() const -> std::string;
 
  private:
+  void prepare_data();
   template <typename Iter>
   void parseModelsPars(Iter, Iter, std::vector<MMPar>&);
   void help() const;
