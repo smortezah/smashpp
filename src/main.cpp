@@ -291,15 +291,24 @@ void remove_temp_seg(std::unique_ptr<Param>& par, uint64_t seg_num) {
 }
 
 void remove_temp_seq(std::unique_ptr<Param>& par) {
-  if (!par->saveSeq) {
-    if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
+  if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
+    if (!par->saveSeq) {
       remove(par->ref.c_str());
-      rename((par->ref + LBL_BAK).c_str(), par->ref.c_str());
+    } else {
+      const std::string seq_name = file_name_no_ext(par->ref) + ".seq";
+      rename(par->ref.c_str(), seq_name.c_str());
     }
-    if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
+    rename((par->ref + LBL_BAK).c_str(), par->ref.c_str());
+  }
+
+  if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
+    if (!par->saveSeq) {
       remove(par->tar.c_str());
-      rename((par->tar + LBL_BAK).c_str(), par->tar.c_str());
+    } else {
+      const std::string seq_name = file_name_no_ext(par->tar) + ".seq";
+      rename(par->tar.c_str(), seq_name.c_str());
     }
+    rename((par->tar + LBL_BAK).c_str(), par->tar.c_str());
   }
 }
 
@@ -409,7 +418,7 @@ void run(std::unique_ptr<Param>& par) {
     par->ref = ref_round1;
     par->tar = tar_round1;
     remove_temp_seg(par, num_seg_round1);
-    remove_temp_seq(par);
+    // remove_temp_seq(par);
   }  // Round 1
 
   remove_temp_seq(par);
