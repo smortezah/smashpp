@@ -1,7 +1,7 @@
 library(ggplot2)
 library(reshape2)
 library(scales)
-library(dplyr)
+# library(dplyr)
 
 entropy <- scan("mit.ent", quiet = TRUE)
 ent_mat <- matrix(entropy, byrow=T, nrow=3327, ncol=3327)
@@ -9,8 +9,8 @@ threshold <- 1.6
 melted_ent_mat <- melt(ent_mat)
 
 ggplot(melted_ent_mat, aes(x= value)) +
-  geom_density() +
-  geom_vline(aes(xintercept=threshold), color="blue", linetype="dashed", size=1)
+  geom_histogram()
+
 
 # # melted_ent_mat <- melt(ent_mat) %>%
 # #   mutate(val_trimmed = case_when(
