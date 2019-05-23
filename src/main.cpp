@@ -303,12 +303,53 @@ void remove_temp_seq(std::unique_ptr<Param>& par) {
   }
 }
 
+void prepare_data(std::unique_ptr<Param>& par) {
+  std::cerr << bold("====[ PREPARE DATA ]==================================\n");
+  
+  // FASTA/FASTQ to seq
+  const auto convert_to_seq = [](std::string in, std::string out,
+                                 const FileType& type) {
+    std::string msg = "[+] " + italic(in) + " (FAST";
+    if (type == FileType::fasta)
+      msg += "A";
+    else if (type == FileType::fastq)
+      msg += "Q";
+    msg += ") -> " + italic(out) + " (seq) ";
+    std::cerr << msg << "...";
+    rename(in.c_str(), (in + LBL_BAK).c_str());
+    to_seq(in + LBL_BAK, in, type);
+    std::cerr << "\r" << msg << "finished.\n";
+  };
+
+  const std::string ref_no_ext = file_name_no_ext(par->refName);
+  const std::string tar_no_ext = file_name_no_ext(par->tarName);
+
+  if (par->refType == FileType::fasta)
+    convert_to_seq(par->refName, ref_no_ext, FileType::fasta);
+  else if (par->refType == FileType::fastq)
+    convert_to_seq(par->refName, ref_no_ext, FileType::fastq);
+  else if (par->refType != FileType::seq)
+    error("\"" + par->refName + "\" has unknown format.");
+
+  if (par->tarType == FileType::fasta)
+    convert_to_seq(par->tarName, tar_no_ext, FileType::fasta);
+  else if (par->tarType == FileType::fastq)
+    convert_to_seq(par->tarName, tar_no_ext, FileType::fastq);
+  else if (par->tarType != FileType::seq)
+    error("\"" + par->tarName + "\" has unknown format.");
+
+  std::cerr << '\n';
+}
+
 void run(std::unique_ptr<Param>& par) {
   std::string ref_round1 = par->ref;
   std::string tar_round1 = par->tar;
   auto filter = std::make_unique<Filter>();
   std::vector<PosRow> pos_out;
   uint64_t current_pos_row = 0;
+
+  // FASTA/FASTQ to seq, if applicable
+  prepare_data(par);
 
   // Round 1
   for (uint8_t run_num = 0; run_num != 2; ++run_num) {
@@ -371,6 +412,7 @@ void run(std::unique_ptr<Param>& par) {
     remove_temp_seq(par);
   }  // Round 1
 
+  remove_temp_seq(par);
   if (!pos_out.empty()) write_pos_file(pos_out);
 }
 
@@ -386,7 +428,7 @@ int main(int argc, char* argv[]) {
     } else {
       auto par = std::make_unique<Param>();
       par->parse(argc, argv);
-      // run(par);
+      run(par);
     }
 
     const auto t1{now()};

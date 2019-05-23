@@ -56,6 +56,13 @@ inline static std::string file_name(std::string str) {
   return str.substr(found + 1);
 }
 
+inline static std::string file_name_no_ext(std::string str) {
+  auto found = str.find_last_of("/\\");
+  const std::string file_name = str.substr(found + 1);
+  found = file_name.find_last_of(".");
+  return str.substr(0, found);
+}
+
 inline static uint64_t file_size(std::string name) {
   check_file(name);
   std::ifstream f(name, std::ifstream::ate | std::ifstream::binary);
