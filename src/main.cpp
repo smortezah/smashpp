@@ -330,20 +330,20 @@ void prepare_data(std::unique_ptr<Param>& par) {
     std::cerr << "\r" << msg << "finished.\n";
   };
 
-  const std::string ref_no_ext = file_name_no_ext(par->refName);
-  const std::string tar_no_ext = file_name_no_ext(par->tarName);
+  const std::string ref_seq = file_name_no_ext(par->refName) + ".seq";
+  const std::string tar_seq = file_name_no_ext(par->tarName) + ".seq";
 
   if (par->refType == FileType::fasta)
-    convert_to_seq(par->refName, ref_no_ext, FileType::fasta);
+    convert_to_seq(par->refName, ref_seq, FileType::fasta);
   else if (par->refType == FileType::fastq)
-    convert_to_seq(par->refName, ref_no_ext, FileType::fastq);
+    convert_to_seq(par->refName, ref_seq, FileType::fastq);
   else if (par->refType != FileType::seq)
     error("\"" + par->refName + "\" has unknown format.");
 
   if (par->tarType == FileType::fasta)
-    convert_to_seq(par->tarName, tar_no_ext, FileType::fasta);
+    convert_to_seq(par->tarName, tar_seq, FileType::fasta);
   else if (par->tarType == FileType::fastq)
-    convert_to_seq(par->tarName, tar_no_ext, FileType::fastq);
+    convert_to_seq(par->tarName, tar_seq, FileType::fastq);
   else if (par->tarType != FileType::seq)
     error("\"" + par->tarName + "\" has unknown format.");
 
