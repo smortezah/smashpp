@@ -386,7 +386,7 @@ int main(int argc, char* argv[]) {
     } else {
       auto par = std::make_unique<Param>();
       par->parse(argc, argv);
-      run(par);
+      // run(par);
     }
 
     const auto t1{now()};
