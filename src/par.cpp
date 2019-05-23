@@ -60,6 +60,7 @@ void Param::parse(int argc, char**& argv) {
         ref = *++i;
         check_file(ref);
         refName = file_name(ref);
+        refType = file_type(ref);
       } else {
         error("reference file not specified. Use \"-r <fileName>\".");
       }
@@ -68,6 +69,7 @@ void Param::parse(int argc, char**& argv) {
         tar = *++i;
         check_file(tar);
         tarName = file_name(tar);
+        tarType = file_type(tar);
       } else {
         error("target file not specified. Use \"-t <fileName>\".");
       }
@@ -223,58 +225,6 @@ void Param::parse(int argc, char**& argv) {
 
   keep_in_range(1ull, filt_size,
                 std::min(file_size(ref), file_size(tar)) / sampleStep);
-
-  prepare_data();
-  // // Fasta/Fastq to Seq
-  // auto convert_to_seq = [&](std::string f, const FileType& type) {
-  //   std::cerr << bold(
-  //       "====[ PREPARE DATA ]==================================\n");
-  //   std::cerr << "[+] Converting \"" << f<<"\" to \""<< 
-  //   rename(f.c_str(), (f + LBL_BAK).c_str());
-  //   to_seq(f + LBL_BAK, f, type);
-  // };
-  // refType = file_type(ref);
-  // if (refType == FileType::fasta)
-  //   convert_to_seq(ref, FileType::fasta);
-  // else if (refType == FileType::fastq)
-  //   convert_to_seq(ref, FileType::fastq);
-  // else if (refType != FileType::seq)
-  //   error("\"" + refName + "\" has unknown format.");
-
-  // tarType = file_type(tar);
-  // if (tarType == FileType::fasta)
-  //   convert_to_seq(tar, FileType::fasta);
-  // else if (tarType == FileType::fastq)
-  //   convert_to_seq(tar, FileType::fastq);
-  // else if (tarType != FileType::seq)
-  //   error("\"" + tarName + "\" has unknown format.");
-}
-
-void Param::prepare_data() {
-  // Fasta/Fastq to Seq
-  auto convert_to_seq = [&](std::string f, const FileType& type) {
-    std::cerr << bold(
-        "====[ PREPARE DATA ]==================================\n");
-    std::cerr << "[+] Converting \"" << f << "\" to \""
-              << rename(f.c_str(), (f + LBL_BAK).c_str());
-    to_seq(f + LBL_BAK, f, type);
-  };
-  
-  refType = file_type(ref);
-  if (refType == FileType::fasta)
-    convert_to_seq(ref, FileType::fasta);
-  else if (refType == FileType::fastq)
-    convert_to_seq(ref, FileType::fastq);
-  else if (refType != FileType::seq)
-    error("\"" + refName + "\" has unknown format.");
-
-  tarType = file_type(tar);
-  if (tarType == FileType::fasta)
-    convert_to_seq(tar, FileType::fasta);
-  else if (tarType == FileType::fastq)
-    convert_to_seq(tar, FileType::fastq);
-  else if (tarType != FileType::seq)
-    error("\"" + tarName + "\" has unknown format.");
 }
 
 template <typename Iter>
