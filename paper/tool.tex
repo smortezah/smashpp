@@ -53,6 +53,78 @@ cd smashpp
 \end{itemize}
 
 \subsection{Run \smashpp}
+Various options are provided with the interface of the proposed tool, which are described in Table~\ref{tab.options}.
+
+\begin{longtable}{lp{3cm}l}
+  \caption{Options.}
+  \label{tab.options} \\
+  \toprule
+  Flag & Input & Description \\
+  \midrule
+  \mono{-r} $^*$ & Seq/FASTA/FASTQ file & reference file. It is highly recommended to have short name. \\
+  \mono{-t} $^*$ & Seq/FASTA/FASTQ file  & target file. It is highly recommended to have short name. \\
+  \mono{-l} & integer in $[0, 5]$ & level of compression (default: 0). \\
+  \mono{-m} & integer in $[1, 2^{32}-1]$ & minimum segment size (default: 50). Only those regions in the reference file that are bigger than this value would be able to be considered for compression. \\
+  \mono{-e} & float in $[0.0, 100.0]$ & entropy of `N's (default: 2.0). In implementation of the reference-based compression, we have replaced `N' bases in the references and the targets with `A's and `T's, respectively. On reference-free compression, they are replaced with `A's, in both references and targets. If a user tends to replace `N' bases in a sequence with a normal distribution of `A', `C', `G' and `T's, he/she can employ GOOSE toolkit~\cite{web-goose}. \\
+  \mono{-n} & integer in $[1, 8]$ & number of threads (default: 4). Creating multiple finite-context models and substitutional-tolerant Markov models can be done in a multi-threaded fashion. \\
+  \mono{-f} & integer in $[1, 2^{32}-1]$ & filter size (default: 256). In the process of finding similar regions in the reference and the target sequences, the information content that would be obtained by compression needs to be filtered. \\
+  \mono{-ft} & integer/string in \{0$|$rectangular, 1$|$hamming, 2$|$hann, 3$|$blackman, 4$|$triangular, 5$|$welch, 6$|$sine, 7$|$nuttall\} & filter type/windowing function (default: hann). Besides Hann window that is used by default to smooth the information content (profile), we have implemented several other windowing functions: Blackman~\cite{blackman1959particular}, Hamming~\cite{tukey1949measuring}, Nuttall~\cite{nuttall1981some}, rectangular~\cite{oppenheim1999discrete}, sine~\cite{harris1978use}, triangular~\cite{bartlett1950periodogram} and Welch~\cite{welch1967use} windows. These functions are given by Equation~\ref{eq.filter} and are plotted in Fig.~\ref{fig.filters}.
+  \\
+  \mono{-fs} & char/string in \{S$|$small, M$|$medium, L$|$large\} & filter scale (default: large) \\
+  \mono{-d} & integer in $[1, 2^{64}-1]$ & sampling steps (default: 1). \\
+  \mono{-th} & float in $[0.0, 20.0]$ & threshold (default: 1.5).\\
+  \mono{-rb} & integer in $[-2^{15}, 2^{15}-1]$ & reference beginning guard (default: 0). \\
+  \mono{-re} & integer in $[-2^{15}, 2^{15}-1]$ & reference ending guard (default: 0). \\
+  \mono{-tb} & integer in $[-2^{15}, 2^{15}-1]$ & target beginning guard (default: 0). \\
+  \mono{-te}       & integer in $[-2^{15}, 2^{15}-1]$                                                                                             & target ending guard (default: 0)                                                                                                                                                                                                                          \\
+  \mono{-dp}       & --- $^\dagger$                                                                                                               & deep compression                                                                                                                                                                                                                                          \\
+  \mono{-nr}       & ---                                                                                                                          & do NOT compute self complexity                                                                                                                                                                                                                            \\
+  \mono{-sb}       & ---                                                                                                                          & save sequence (input: FASTA/FASTQ)                                                                                                                                                                                                                        \\
+  \mono{-sp}       & ---                                                                                                                          & save profile (*.prf)                                                                                                                                                                                                                                      \\
+  \mono{-sf}       & ---                                                                                                                          & save filtered file (*.fil)                                                                                                                                                                                                                                \\
+  \mono{-sf}       & ---                                                                                                                          & save segmented files (*.s$_i$)                                                                                                                                                                                                                            \\
+  \mono{-sa}       & ---                                                                                                                          & save profile, filetered and segmented files                                                                                                                                                                                                               \\
+  \mono{-rm}       & $k$,[$w$,$d$,]ir,$a$,$g$/$t$,ir,$a$,$g$:...                                                                                  & parameters of reference models (default: $14,0,0.005,0.95$):
+  $k$ (integer):  context size
+  $w$ (integer):  width of sketch in $\log_2$ form,
+  e.g., set 10 for $w=2^10=1024$
+  $d$ (integer):  depth of sketch
+  ir (integer in $\{0, 1, 2\}$): inverted repeat
+  0: regular (not inverted)
+  1: inverted, solely
+  2: both regular and inverted
+  $a$ (float $>0$):  estimator
+  $g$ (float in $[0.0, 1.0)$):  forgetting factor
+  $t$ (integer):  threshold (no. substitutions)
+  \\
+  \mono{-tm}       & $k$,[$w$,$d$,]ir,$a$,$g$/$t$,ir,$a$,$g$:...                                                                                  & parameters of target models (default: $14,0,0.005,0.95$)
+  \\
+  \mono{-ll}       & ---                                                                                                                          & save list of compression levels                                                                                                                                                                                                                           \\
+  \mono{-h}        & ---                                                                                                                          & usage guide                                                                                                                                                                                                                                               \\
+  \mono{-v}        & ---                                                                                                                          & more information (verbose)                                                                                                                                                                                                                                \\
+  \mono{--version} & ---                                                                                                                          & show version                                                                                                                                                                                                                                              \\
+  \bottomrule
+  \vspace{-2mm}
+  % $^*$ Mandatory, $^\dagger$ no input, $\times$ not used
+\end{longtable}
+
+\begin{align} \label{eq.filter}
+  w[n] & = 1,
+  \tag*{(rectangular)}                                                                                                                                        \\
+  w[n] & = 1-\left|\tfrac {n-N/2}{L/2}\right|, \quad L=N,
+  \tag*{(triangular/Bartlett)}                                                                                                                                \\
+  w[n] & = 1-\left(\tfrac {n-N/2}{N/2}\right)^{2},
+  \tag*{(Welch)}                                                                                                                                              \\
+  w[n] & = \sin \left(\tfrac {\pi n}{N}\right),
+  \tag*{(sine)}                                                                                                                                               \\
+  w[n] & = 0.54348-0.45652\;\cos \left(\tfrac {2\pi n}{N}\right),
+  \tag*{(Hamming)}                                                                                                                                            \\
+  w[n] & = 0.42659-0.49656\;\cos \left(\tfrac {2\pi n}{N}\right)+0.07685\;\cos \left(\tfrac {4\pi n}{N}\right),
+  \tag*{(Blackman)}                                                                                                                                           \\
+  w[n] & = 0.35577-0.48740\;\cos \left(\tfrac {2\pi n}{N}\right)+0.14423\;\cos \left(\tfrac {4\pi n}{N}\right)-0.01260\;\cos \left(\tfrac {6\pi n}{N}\right),
+  \tag*{(Nuttall)}                                                                                                                                            \\
+\end{align}
+
 A reference file and a target file are clearly mandatory to run \smashpp (without visualization). Running
 \begin{code}[style=bash]
 ./smashpp
@@ -188,7 +260,7 @@ and a body including:
   \item Average entropy of compressing the associated reference block considering this target block as the reference,
   \item Complexity of the detected target block, calculated by reference-free compression.
 \end{enumerate}
-As an example, the header of the following ``.pos'' file shows that the reference ``Ref'' and the target ``Tar'' are 5,000,000 bases long. The body shows that there is a block in the Ref, from the position 1250013 up to 2499988, which is similar to a block in the Tar, from the position 1250017 to 2499970. Average entropy of compressing the Tar block, using the Ref block as the reference, is 0.238067. This number is 0.26698 when the Ref block is compressed based on the model of the Tar block. Also, complexities of the Ref and the Tar blocks are 1.97158 and 1.98884, respectively.
+As an example, the header of the following ``.pos'' file shows that the reference ``Ref'' and the target ``Tar'' are 5,000,000 bases long. The body shows that there is a block in the Ref, from the position 1250013 up to 2499988, which is similar to a block in the Tar, from the position 1250017 to 2499970. Average entropy of compressing the Tar block, using the Ref block as reference, is 0.238067. This number is 0.26698 when the Ref block is compressed based on the model of the Tar block. Also, complexities of the Ref and the Tar blocks are 1.97158 and 1.98884, respectively.
 \begin{code}[style=bash]
 #SMASHPP Ref      5000000  Tar      5000000
 1250013	 2499988  0.26698  1.97158  1250017  2499970  0.238067 1.98884
