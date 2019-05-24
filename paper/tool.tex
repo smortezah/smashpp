@@ -9,7 +9,7 @@ To install \smashpp on various operating systems, follow the instructions below.
 % \paragraph{Conda}
 % % todo
 
-\paragraph{Linux}
+\subsubsection*{Linux}
 \begin{itemize}
   \item Install ``git'' and ``cmake'':
 \begin{code}[style=bash]
@@ -24,7 +24,7 @@ cd smashpp
 \end{code}
 \end{itemize}
 
-\paragraph{macOS}
+\subsubsection*{macOS}
 \begin{itemize}
     \item Install ``Homebrew'', ``git'' and ``cmake'':
 \begin{code}[style=bash]
@@ -39,7 +39,7 @@ cd smashpp
 \end{code}
 \end{itemize}
 
-\paragraph{Windows}
+\subsubsection*{Windows}
 \begin{itemize}
   \item Download and install ``CMake'', e.g., from https://github.com/Kitware/CMake/releases/\linebreak download/v3.14.4/cmake-3.14.4-win64-x64.msi. Make sure to add it to the system PATH. For example, if CMake is installed in ``C:\textbackslash Program Files'', add ``C:\textbackslash Program Files\textbackslash CMake\textbackslash bin'' to the system PATH.
   \item Download and install ``mingw-w64'', e.g., from https://sourceforge.net/projects/mingw-w64/\linebreak files/latest/download. Make sure to add it to the system PATH. For example, if it is installed in ``C:\textbackslash mingw-w64'', add ``C:\textbackslash mingw-w64\textbackslash mingw64\textbackslash bin'' to the system PATH.
@@ -52,7 +52,7 @@ cd smashpp
 \end{code}
 \end{itemize}
 
-\subsection{Run}
+\subsection{Run \smashpp}
 A reference file and a target file are clearly mandatory to run \smashpp (without visualization). Running
 \begin{code}[style=bash]
 ./smashpp
@@ -169,6 +169,33 @@ The user can save all the information profile (content), filtered and segmented 
 For the purpose of compression, it is recommended to use ``-l'' option, since it configures the models automatically. However, using ``-rm'' and ``-tm'', the user would be able to manually configure the reference model, for reference-based compression, and the target model, for reference-free compression, respectively. Parameters of the models are described in detail in section~\ref{sec.methods}.
 Note that using ``-ll'' option, the list of parameters that would be chosen for each model automatically, will be shown.
 
+By running \smashpp, positions of the similar regions in reference and target sequences, and also complexity of the regions is saved in a ``.pos'' file. This tab-separated file has a header including:
+\begin{enumerate}
+  \item The string ``\#SMASHPP'' as a specifier for the \smashpp tool,
+  \item The name of reference sequence,
+  \item The size of reference sequence,
+  \item The name of target sequence,
+  \item The size of target sequence,
+\end{enumerate}
+and a body including:
+\begin{enumerate}
+  \item Initial position of the reference sequence,
+  \item Final position of the reference sequence,
+  \item Average entropy of compressing the associated target block considering this reference block as the reference,
+  \item Complexity (average entropy) of the detected reference block, calculated by reference-free compression,
+  \item Initial position of the target sequence,
+  \item Final position of the target sequence,
+  \item Average entropy of compressing the associated reference block considering this target block as the reference,
+  \item Complexity of the detected target block, calculated by reference-free compression.
+\end{enumerate}
+As an example, the header of the following ``.pos'' file shows that the reference ``Ref'' and the target ``Tar'' are 5,000,000 bases long. The body shows that there is a block in the Ref, from the position 1250013 up to 2499988, which is similar to a block in the Tar, from the position 1250017 to 2499970. Average entropy of compressing the Tar block, using the Ref block as the reference, is 0.238067. This number is 0.26698 when the Ref block is compressed based on the model of the Tar block. Also, complexities of the Ref and the Tar blocks are 1.97158 and 1.98884, respectively.
+\begin{code}[style=bash]
+#SMASHPP Ref      5000000  Tar      5000000
+1250013	 2499988  0.26698  1.97158  1250017  2499970  0.238067 1.98884
+\end{code}
+
+
+\subsection{Run \smashpp visualizer}
 Running \smashpp (without visualization), positions of the similar regions in reference and target sequences, and also complexity of the regions is saved in a *.pos file, that can be visualized by
 \begin{code}[style=bash]
 ./smashpp -viz
