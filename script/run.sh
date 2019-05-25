@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 GET_GOOSE=0;
-DATASET_SYNTH=0;
+DATASET_SYNTH=1;
 DATASET_REAL=0;
 RUN=0;
 
@@ -86,19 +86,19 @@ if [[ $DATASET_SYNTH -eq 1 ]]; then
   # ./smashpp-inv-rep            r_b   t_d
   # cat t_a t_b t_c t_d > TarXL
 
-  # ### Mutated (Mut) sizes: ref:10.000.000, tar:10.000.000. Up to 40% of mutation
-  # rm -f RefMut TarMut
+  ### Mutated (Mut) sizes: ref:10.000.000, tar:10.000.000. Up to 40% of mutation
+  rm -f RefMut TarMut
   
-  # for i in {1..40}; do
-  #   ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 \
-  #     -ls 100 -n 2500 -s $i  r_$i
-  #   cat r_$i >> RefMut
+  for i in {1..100}; do
+    ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 \
+      -ls 100 -n 100 -s $i  r_$i
+    cat r_$i >> RefMut
 
-  #   ./goose-mutatedna -mr $(bc<<<"scale=2; $i/100") < r_$i > t_$i
-  #   cat t_$i >> TarMut
-  # done
+    ./goose-mutatedna -mr $(bc<<<"scale=2; $i/100") < r_$i > t_$i
+    cat t_$i >> TarMut
+  done
 
-  # rm r_* t_*
+  rm r_* t_*
 fi
 
 ### Get real dataset
