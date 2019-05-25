@@ -63,3 +63,10 @@ xp/dataset/sim/b.fasta
 xp/dataset/sim/a.fasta
 script/RefMut
 script/TarMut
+script/mori.backbone
+script/mori.bbcols
+script/mori.guide_tree
+script/mori
+script/r.sslist
+script/t.sslist
+xp/r.t.pos
