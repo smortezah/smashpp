@@ -66,6 +66,6 @@ if simulation:
         tar = 'TarMut'
         out = 'Mut.svg'
         execute(path_bin + smashpp_bin + ' -r ' + path_data +
-                ref + ' -t ' + path_data + tar + ' -th 1.5 -l 5 -f 5000')
+                ref + ' -t ' + path_data + tar + ' -th 2 -l 5 -f 15000 -m 7000')
         execute(path_bin + smashpp_bin + ' -viz -p 1 -b 2 -f 50 -o ' +
                 out + gen_par + ref + '.' + tar + '.pos')

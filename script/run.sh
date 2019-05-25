@@ -89,7 +89,7 @@ if [[ $DATASET_SYNTH -eq 1 ]]; then
   ### Mutated (Mut) sizes: ref:10.000.000, tar:10.000.000. Up to 40% of mutation
   rm -f RefMut TarMut
   
-  for i in {1..100}; do
+  for i in {1..50}; do
     ./goose-fastqsimulation -eh -eo -es -edb -rm 0 -f 0.25,0.25,0.25,0.25,0.0 \
       -ls 100 -n 100 -s $i  r_$i
     cat r_$i >> RefMut
