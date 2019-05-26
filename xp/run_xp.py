@@ -2,7 +2,8 @@ import os
 # import matplotlib.pyplot as plt
 # import numpy as np
 
-simulation = True
+make_dataset_synth = True
+simulation = False
 
 if os.name == 'posix':
     sep = '/'
@@ -14,6 +15,8 @@ smashpp_bin = '.' + sep + 'smashpp'
 def execute(cmd):
     os.popen(cmd).read()
 
+
+if make_dataset_synth:
 
 if simulation:
     path_data = 'dataset' + sep + 'sim' + sep
@@ -66,6 +69,6 @@ if simulation:
         tar = 'TarMut'
         out = 'Mut.svg'
         execute(path_bin + smashpp_bin + ' -r ' + path_data +
-                ref + ' -t ' + path_data + tar + ' -th 2 -l 5 -f 15000 -m 7000')
+                ref + ' -t ' + path_data + tar + ' -th 2 -l 5 -f 25000 -m 15000')
         execute(path_bin + smashpp_bin + ' -viz -p 1 -b 2 -f 50 -o ' +
                 out + gen_par + ref + '.' + tar + '.pos')
