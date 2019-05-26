@@ -19,7 +19,7 @@ diogo/xp2/*
 **/*.log
 **/*.out
 **/*.synctex.gz
-goose-*
+# goose-*
 *_bk
 GeCo
 gmon.out
@@ -50,23 +50,4 @@ xp/.RData
 aa.fasta.ab.fasta.pos
 M80517.1.seq.V01555.2.seq.pos
 M80517.1.seq.V01555.2.seq.pos
-xp/dataset/sim/rmut.fa.sslist
-xp/dataset/sim/mori.guide_tree
-xp/dataset/sim/mori.backbone
-xp/dataset/sim/mori.bbcols
-xp/dataset/sim/rmut.fa
-xp/dataset/sim/tmut.fa
-xp/dataset/sim/tmut.fa.sslist
-xp/dataset/sim/mori
-xp/dataset/sim/b.fasta.sslist
-xp/dataset/sim/b.fasta
-xp/dataset/sim/a.fasta
-script/RefMut
-script/TarMut
-script/mori.backbone
-script/mori.bbcols
-script/mori.guide_tree
-script/mori
-script/r.sslist
-script/t.sslist
 xp/r.t.pos
