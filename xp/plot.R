@@ -9,19 +9,19 @@ threshold <- 1.6
 melted_ent_mat <- melt(ent_mat)
 
 ggplot(melted_ent_mat, aes(x= value)) +
-  geom_histogram()
+  geom_density()
 
 
-# # melted_ent_mat <- melt(ent_mat) %>%
-# #   mutate(val_trimmed = case_when(
-# #     value <= threshold ~ threshold,
-# #     T ~ value
-# #   )) 
-# # 
-# # ggplot(melted_ent_mat, aes(x = Var1, y = Var2, fill = val_trimmed)) +
-# #   geom_raster() +
-# #   scale_fill_gradient(low="yellow", high="dark green")
-# 
+# melted_ent_mat <- melt(ent_mat) %>%
+#   mutate(val_trimmed = case_when(
+#     value <= threshold ~ threshold,
+#     T ~ value
+#   ))
+#
+# ggplot(melted_ent_mat, aes(x = Var1, y = Var2, fill = val_trimmed)) +
+#   geom_raster() +
+#   scale_fill_gradient(low="yellow", high="dark green")
+
 # ent_mat[ent_mat < threshold] <- threshold
 # melted_ent_mat <- melt(ent_mat)
 # # data_below_thresh <- subset(melted_ent_mat, melted_ent_mat$value<=threshold)
