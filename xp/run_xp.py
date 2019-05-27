@@ -145,7 +145,7 @@ if synth_mutation:  # sizes:  ref:1,000,000, tar:1,000,000. Up to 60%
 
     for i in range(1, 60+1):
         execute(goose_fastqsimulation + synth_common_par + ' -s ' + str(i) +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 100 r_' + str(i))
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10 r_' + str(i))
         append('r_' + str(i), path_data + 'RefMut')
 
         execute(goose_mutatedna + '-mr ' + str(i/100) +
@@ -199,6 +199,7 @@ if sim_mutation:
     tar = 'TarMut'
     out = 'Mut.svg'
     execute(smashpp + '-r ' + path_data + ref + ' -t ' +
-            path_data + tar + ' -th 2 -rm 14,0,0.2,0.95 -f 25000 -m 35000 -nr')
-    execute(smashpp + '-viz -p 1 -b 2 -f 50 -rt 50000 -tt 50000 ' +
+            path_data + tar + ' -th 2 -l 5 -f 150 -m 5000 -nr')
+        #     path_data + tar + ' -th 2 -rm 16,0,0.2,0.9:8,0,0.5,0.9 -f 150 -m 5000 -nr')
+    execute(smashpp + '-viz -p 1 -b 2 -f 50 -rt 5000 -tt 5000' +
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')

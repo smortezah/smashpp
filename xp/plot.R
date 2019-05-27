@@ -9,7 +9,7 @@ threshold <- 1.6
 melted_ent_mat <- melt(ent_mat)
 
 ggplot(melted_ent_mat, aes(x= value)) +
-  geom_density()
+  geom_density(fill='blue')
 
 
 # melted_ent_mat <- melt(ent_mat) %>%
