@@ -138,27 +138,27 @@ If you have a very wide table or figure, you can use \texttt{sidewaystable} or \
 If your table or figure is both wide and tall (so it wouldn't fit well in a single column with \texttt{sidewaystable} or \texttt{figure}), 
 you can use \verb|table| or \verb|figure| inside a \verb|landscape| environment for a full-page landscaped alternative. A page break will be inserted \emph{immediately before and after} the \verb|landscape| environment (Table \ref{tab:example:landscape}), so you'll need to carefully position it in a suitable location in your manuscript.
 
-\begin{figure}[bt!] %% preferably at bottom or top of column
-\centering
-\includegraphics[width=\linewidth]{example-image}
-\caption{An example figure}\label{fig:example}
-\end{figure}
+% \begin{figure}[bt!] %% preferably at bottom or top of column
+% \centering
+% \includegraphics[width=\linewidth]{example-image}
+% \caption{An example figure}\label{fig:example}
+% \end{figure}
 
-\begin{table}[bt!]
-\caption{An example table.}\label{tab:example}
-\begin{tabular}{l r l}
-\toprule
-Item & Quantity & Notes\\
-\midrule
-Widgets & 42 & Over-supplied\textsuperscript{*} \\
-Gadgets & 13 & Under-supplied \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\item This is a table note.
-\item \textsuperscript{*}Another note.
-\end{tablenotes}
-\end{table}
+% \begin{table}[bt!]
+% \caption{An example table.}\label{tab:example}
+% \begin{tabular}{l r l}
+% \toprule
+% Item & Quantity & Notes\\
+% \midrule
+% Widgets & 42 & Over-supplied\textsuperscript{*} \\
+% Gadgets & 13 & Under-supplied \\
+% \bottomrule
+% \end{tabular}
+% \begin{tablenotes}
+% \item This is a table note.
+% \item \textsuperscript{*}Another note.
+% \end{tablenotes}
+% \end{table}
 
 
 \subsection{Some Mathematics Sample}
@@ -183,12 +183,12 @@ The background section should be written in a way that is accessible to research
 
 A statement providing background and purpose for collection of these data should be presented for readers without specialist knowledge in that area. A brief description of the protocol for data collection, data curation and quality control, as well as potential uses should be included, as well as outlining how the data can be accessed if it is not deposited in our repository.
 
-\begin{figure*}%[b!]  %% Add a [b!] if you prefer the wide image to be at the bottm of the page
-\centering
-\includegraphics[width=.7\textwidth]{example-image}
-\caption{An example wide figure. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-}\label{fig:example:wide}
-\end{figure*}
+% \begin{figure*}%[b!]  %% Add a [b!] if you prefer the wide image to be at the bottm of the page
+% \centering
+% \includegraphics[width=.7\textwidth]{example-image}
+% \caption{An example wide figure. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+% }\label{fig:example:wide}
+% \end{figure*}
 
 
 \section{Analyses}
@@ -196,67 +196,67 @@ A statement providing background and purpose for collection of these data should
 This section should provide details of all of the experiments and analyses that are required to support the conclusions of the paper. The authors should make clear the goal of each analysis and state the basic findings.
 
 
-\begin{table*}[bt!]
-\caption{Automobile land speed records (GR 5-10)}\label{tab:example:wide}
-% Use "S" column identifier (from siunitx) to align on decimal point.
-% Use "L", "R" or "C" column identifier for auto-wrapping columns with tabularx.
-\begin{tabularx}{\linewidth}{S l l l r L}
-\toprule
-{Speed (mph)} & {Driver} & {Car} & {Engine} & {Date} & {Extra comments}\\
-\midrule
-407.447     & Craig Breedlove & Spirit of America          & GE J47    & 8/5/63  & (Just to demo a full-width table with auto-wrapping long lines) \\
-413.199     & Tom Green       & Wingfoot Express           & WE J46    & 10/2/64  \\
-434.22      & Art Arfons      & Green Monster              & GE J79    & 10/5/64  \\
-468.719     & Craig Breedlove & Spirit of America          & GE J79    & 10/13/64 \\
-526.277     & Craig Breedlove & Spirit of America          & GE J79    & 10/15/65 \\
-536.712     & Art Arfons      & Green Monster              & GE J79    & 10/27/65 \\
-555.127     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/2/65  \\
-576.553     & Art Arfons      & Green Monster              & GE J79    & 11/7/65  \\
-600.601     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/15/65 \\
-622.407     & Gary Gabelich   & Blue Flame                 & Rocket    & 10/23/70 \\
-633.468     & Richard Noble   & Thrust 2                   & RR RG 146 & 10/4/83  \\
-763.035     & Andy Green      & Thrust SSC                 & RR Spey   & 10/15/97\\
-\bottomrule
-\end{tabularx}
+% \begin{table*}[bt!]
+% \caption{Automobile land speed records (GR 5-10)}\label{tab:example:wide}
+% % Use "S" column identifier (from siunitx) to align on decimal point.
+% % Use "L", "R" or "C" column identifier for auto-wrapping columns with tabularx.
+% \begin{tabularx}{\linewidth}{S l l l r L}
+% \toprule
+% {Speed (mph)} & {Driver} & {Car} & {Engine} & {Date} & {Extra comments}\\
+% \midrule
+% 407.447     & Craig Breedlove & Spirit of America          & GE J47    & 8/5/63  & (Just to demo a full-width table with auto-wrapping long lines) \\
+% 413.199     & Tom Green       & Wingfoot Express           & WE J46    & 10/2/64  \\
+% 434.22      & Art Arfons      & Green Monster              & GE J79    & 10/5/64  \\
+% 468.719     & Craig Breedlove & Spirit of America          & GE J79    & 10/13/64 \\
+% 526.277     & Craig Breedlove & Spirit of America          & GE J79    & 10/15/65 \\
+% 536.712     & Art Arfons      & Green Monster              & GE J79    & 10/27/65 \\
+% 555.127     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/2/65  \\
+% 576.553     & Art Arfons      & Green Monster              & GE J79    & 11/7/65  \\
+% 600.601     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/15/65 \\
+% 622.407     & Gary Gabelich   & Blue Flame                 & Rocket    & 10/23/70 \\
+% 633.468     & Richard Noble   & Thrust 2                   & RR RG 146 & 10/4/83  \\
+% 763.035     & Andy Green      & Thrust SSC                 & RR Spey   & 10/15/97\\
+% \bottomrule
+% \end{tabularx}
 
-\begin{tablenotes}
-\item Source is from this website: \url{https://www.sedl.org/afterschool/toolkits/science/pdf/ast_sci_data_tables_sample.pdf}
-\end{tablenotes}
-\end{table*}
+% \begin{tablenotes}
+% \item Source is from this website: \url{https://www.sedl.org/afterschool/toolkits/science/pdf/ast_sci_data_tables_sample.pdf}
+% \end{tablenotes}
+% \end{table*}
 
 
 \section{Discussion}
 
 The discussion should spell out the major conclusions and interpretations of the work, including some explanation on the importance and relevance of the dataset and analysis. It should not be restatement of the analyses done and their basic conclusions. The discussion section can end with a concluding paragraph that clearly states the main conclusions of the research along with directions for future work. Summary illustrations can be included.
 
-\begin{sidewaystable}
-\caption{Automobile land speed records (GR 5-10). This is the same table as before, but rotated sideways.}
-\label{tab:example:sideways}
-% Use "S" column identifier (from siunitx) to align on decimal point.
-% Use "L", "R" or "C" column identifier for auto-wrapping columns with tabularx.
-\begin{tabularx}{\linewidth}{S l l l r L}
-\toprule
-{Speed (mph)} & {Driver} & {Car} & {Engine} & {Date} & {Extra comments}\\
-\midrule
-407.447     & Craig Breedlove & Spirit of America          & GE J47    & 8/5/63  & (Just to demo a full-width table with auto-wrapping long lines) \\
-413.199     & Tom Green       & Wingfoot Express           & WE J46    & 10/2/64  \\
-434.22      & Art Arfons      & Green Monster              & GE J79    & 10/5/64  \\
-468.719     & Craig Breedlove & Spirit of America          & GE J79    & 10/13/64 \\
-526.277     & Craig Breedlove & Spirit of America          & GE J79    & 10/15/65 \\
-536.712     & Art Arfons      & Green Monster              & GE J79    & 10/27/65 \\
-555.127     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/2/65  \\
-576.553     & Art Arfons      & Green Monster              & GE J79    & 11/7/65  \\
-600.601     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/15/65 \\
-622.407     & Gary Gabelich   & Blue Flame                 & Rocket    & 10/23/70 \\
-633.468     & Richard Noble   & Thrust 2                   & RR RG 146 & 10/4/83  \\
-763.035     & Andy Green      & Thrust SSC                 & RR Spey   & 10/15/97\\
-\bottomrule
-\end{tabularx}
+% \begin{sidewaystable}
+% \caption{Automobile land speed records (GR 5-10). This is the same table as before, but rotated sideways.}
+% \label{tab:example:sideways}
+% % Use "S" column identifier (from siunitx) to align on decimal point.
+% % Use "L", "R" or "C" column identifier for auto-wrapping columns with tabularx.
+% \begin{tabularx}{\linewidth}{S l l l r L}
+% \toprule
+% {Speed (mph)} & {Driver} & {Car} & {Engine} & {Date} & {Extra comments}\\
+% \midrule
+% 407.447     & Craig Breedlove & Spirit of America          & GE J47    & 8/5/63  & (Just to demo a full-width table with auto-wrapping long lines) \\
+% 413.199     & Tom Green       & Wingfoot Express           & WE J46    & 10/2/64  \\
+% 434.22      & Art Arfons      & Green Monster              & GE J79    & 10/5/64  \\
+% 468.719     & Craig Breedlove & Spirit of America          & GE J79    & 10/13/64 \\
+% 526.277     & Craig Breedlove & Spirit of America          & GE J79    & 10/15/65 \\
+% 536.712     & Art Arfons      & Green Monster              & GE J79    & 10/27/65 \\
+% 555.127     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/2/65  \\
+% 576.553     & Art Arfons      & Green Monster              & GE J79    & 11/7/65  \\
+% 600.601     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/15/65 \\
+% 622.407     & Gary Gabelich   & Blue Flame                 & Rocket    & 10/23/70 \\
+% 633.468     & Richard Noble   & Thrust 2                   & RR RG 146 & 10/4/83  \\
+% 763.035     & Andy Green      & Thrust SSC                 & RR Spey   & 10/15/97\\
+% \bottomrule
+% \end{tabularx}
 
-\begin{tablenotes}
-\item Source is from this website: \url{https://www.sedl.org/afterschool/toolkits/science/pdf/ast_sci_data_tables_sample.pdf}
-\end{tablenotes}
-\end{sidewaystable}
+% \begin{tablenotes}
+% \item Source is from this website: \url{https://www.sedl.org/afterschool/toolkits/science/pdf/ast_sci_data_tables_sample.pdf}
+% \end{tablenotes}
+% \end{sidewaystable}
 
 
 \section{Potential implications}
@@ -279,12 +279,12 @@ The schema of the proposed method is illustrated in Figure~\ref{fig.schema}. Sma
 \subsection{Data modeling}
 Smash++ works on the basis of cooperation between finite-context models (FCMs) and substitutional tolerant Markov models (STMMs). Applying these models on various contexts provides probability and weight values, illustrated in Figure~\ref{fig.model}a, which are then mixed (by multiplication and addition, shown in Figure~\ref{fig.model}b) to provide the final probability ($P$) of occurring an input symbol. The following subsections describe FCMs and STMMs in detail.
 
-\begin{figure}[!t]
+\begin{figure*}[!t]
   \centering
-  \includegraphics[width=\linewidth]{data_model.pdf}
+  \includegraphics[width=.7\linewidth]{data_model.pdf}
   \caption{Data modelling by Smash++. (a) cooperation between finite-context models (FCMs) and substitutional-tolerant Markov models (STMMs). Note that each STMM needs to be associated with an FCM. (b) probability of an input symbol is estimated by employing the probability and weight values that have been obtained from processing previous symbols.}
   \label{fig.model}
-\end{figure}
+\end{figure*}
 
 % \subsubsection*{Finite-context model (FCM)}
 % A finite-context model considers Markov property to estimate the probability of the next symbol in an information source, based on the past $k$ symbols (a context of size $k$)~\cite{sayood2017introduction,hosseini2019ac,pinho2013mfcompress}. Denoting the context as $c_{k,\,i} = s_{i-k} s_{i-k+1}\ldots s_{i-2} s_{i-1}$, the probability of the next symbol $s_i$ in an information source $S$, which is posed at $i$, can be estimated as
@@ -565,34 +565,34 @@ You may choose to use this section to include any relevant information about the
 %% Specify your .bib file name here, without the extension
 \bibliography{paper-refs}
 
-\begin{landscape}
-\begin{table}
-\caption{Automobile land speed records (GR 5-10). This is again the same table as before, but on a landscaped page. \textbf{Note that a hard page break is inserted immediately before and after \texttt{landscape}}, so you'll need to carefully position such an environment at a suitable location in your manuscript!}
-\label{tab:example:landscape}
-\begin{tabularx}{\linewidth}{S l l l r L}
-\toprule
-{Speed (mph)} & {Driver} & {Car} & {Engine} & {Date} & {Extra comments}\\
-\midrule
-407.447     & Craig Breedlove & Spirit of America          & GE J47    & 8/5/63  & (Just to demo a full-width table with auto-wrapping long lines) \\
-413.199     & Tom Green       & Wingfoot Express           & WE J46    & 10/2/64  \\
-434.22      & Art Arfons      & Green Monster              & GE J79    & 10/5/64  \\
-468.719     & Craig Breedlove & Spirit of America          & GE J79    & 10/13/64 \\
-526.277     & Craig Breedlove & Spirit of America          & GE J79    & 10/15/65 \\
-536.712     & Art Arfons      & Green Monster              & GE J79    & 10/27/65 \\
-555.127     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/2/65  \\
-576.553     & Art Arfons      & Green Monster              & GE J79    & 11/7/65  \\
-600.601     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/15/65 \\
-622.407     & Gary Gabelich   & Blue Flame                 & Rocket    & 10/23/70 \\
-633.468     & Richard Noble   & Thrust 2                   & RR RG 146 & 10/4/83  \\
-763.035     & Andy Green      & Thrust SSC                 & RR Spey   & 10/15/97\\
-\bottomrule
-\end{tabularx}
+% \begin{landscape}
+% \begin{table}
+% \caption{Automobile land speed records (GR 5-10). This is again the same table as before, but on a landscaped page. \textbf{Note that a hard page break is inserted immediately before and after \texttt{landscape}}, so you'll need to carefully position such an environment at a suitable location in your manuscript!}
+% \label{tab:example:landscape}
+% \begin{tabularx}{\linewidth}{S l l l r L}
+% \toprule
+% {Speed (mph)} & {Driver} & {Car} & {Engine} & {Date} & {Extra comments}\\
+% \midrule
+% 407.447     & Craig Breedlove & Spirit of America          & GE J47    & 8/5/63  & (Just to demo a full-width table with auto-wrapping long lines) \\
+% 413.199     & Tom Green       & Wingfoot Express           & WE J46    & 10/2/64  \\
+% 434.22      & Art Arfons      & Green Monster              & GE J79    & 10/5/64  \\
+% 468.719     & Craig Breedlove & Spirit of America          & GE J79    & 10/13/64 \\
+% 526.277     & Craig Breedlove & Spirit of America          & GE J79    & 10/15/65 \\
+% 536.712     & Art Arfons      & Green Monster              & GE J79    & 10/27/65 \\
+% 555.127     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/2/65  \\
+% 576.553     & Art Arfons      & Green Monster              & GE J79    & 11/7/65  \\
+% 600.601     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/15/65 \\
+% 622.407     & Gary Gabelich   & Blue Flame                 & Rocket    & 10/23/70 \\
+% 633.468     & Richard Noble   & Thrust 2                   & RR RG 146 & 10/4/83  \\
+% 763.035     & Andy Green      & Thrust SSC                 & RR Spey   & 10/15/97\\
+% \bottomrule
+% \end{tabularx}
 
-\begin{tablenotes}
-\item Source is from this website: \url{https://www.sedl.org/afterschool/toolkits/science/pdf/ast_sci_data_tables_sample.pdf}
-\end{tablenotes}
-\end{table}
-\end{landscape}
+% \begin{tablenotes}
+% \item Source is from this website: \url{https://www.sedl.org/afterschool/toolkits/science/pdf/ast_sci_data_tables_sample.pdf}
+% \end{tablenotes}
+% \end{table}
+% \end{landscape}
 
 
 
