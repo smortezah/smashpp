@@ -18,7 +18,7 @@ sim_small = False
 sim_medium = False
 sim_large = False
 sim_xlarge = False
-sim_mutation = True
+sim_mutation = False
 
 if os.name == 'posix':
     sep = '/'
@@ -199,7 +199,6 @@ if sim_mutation:
     tar = 'TarMut'
     out = 'Mut.svg'
     execute(smashpp + '-r ' + path_data + ref + ' -t ' +
-            path_data + tar + ' -th 2 -l 5 -f 150 -m 5000 -nr')
-        #     path_data + tar + ' -th 2 -rm 16,0,0.2,0.9:8,0,0.5,0.9 -f 150 -m 5000 -nr')
+            path_data + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
     execute(smashpp + '-viz -p 1 -b 2 -f 50 -rt 5000 -tt 5000' +
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
