@@ -15,6 +15,7 @@
 
 \usepackage{graphicx}
 \usepackage{siunitx}
+\usepackage{amsmath}
 
 %%% Flushend: You can add this package to automatically balance the final page, but if things go awry (e.g. section contents appearing out-of-order or entire blocks or paragraphs are coloured), remove it!
 % \usepackage{flushend}
@@ -307,46 +308,54 @@ STMMs can be used along with FCMs to modify the behavior of Smash++ in confronti
 
 This example shows the distinction between a finite-context model and a substitutional tolerant Markov model. Assume, the current context at position $i$ is $c_{11,\,i}=\textrm{GGCTAACGTAC}$, and the number of occurrences of symbols saved in memory is $\textrm{A}=10$, $\textrm{C}=12$, $\textrm{G}=13$ and $\textrm{T}=11$. Also, the symbol to appear in the sequence is $\textrm{T}$. An FCM would consider the next context as $c_{11,\,i+1}=\textrm{GCTAACGTACT}$, while an STMM would consider it as ${c'}_{11,\,i+1}=\textrm{GCTAACGTACG}$, since the base $\textrm{G}$ is the most probable symbol, based on the number of occurrences stored in memory.
 
-% \subsubsection*{Cooperation of FCMs and STMMs} \label{sec.coop}
-% When FCMs and STMMs are in cooperation, the probability of the next symbol $s_i$ in an information source $S$, at position $i$, can be estimated as
-% \begin{equation} \label{eq.coop}
-%   P(s_i) = \sum_{m\in M_F} P_m(s_i|c_{k,\,i})\;w_{m,\,i} + \sum_{m\in M_S} P_m(s_i|{c'}_{k,\,i})\;{w'}_{m,\,i}, \quad\forall s_i\in S,~1\le i\le |S|,~1\le k\le i-1
-% \end{equation}
-% in which $M_F$ and $M_S$ denote sets of FCMs and STMMs, respectively, $P_m(s_i|c_{k,\,i})$ shows the probability of the next symbol estimated by the FCM, $P_m(s_i|{c'}_{k,\,i})$ represents this probability estimated by the STMM, and $w_{m\,i}$ and ${w'}_{m,\,i}$ are weights assigned to each model based on its performance. We have
-% \begin{align}
-%   \forall m\in M_F: \quad & w_{m,\,i} \propto (w_{m,\,i-1})^{\gamma_m} P_m(s_i|c_{k+1,\,i-1}),
-%   \nonumber
-%   \\[1mm]
-%   \forall m\in M_S: \quad & {w'}_{m,\,i} \propto ({w'}_{m,\,i-1})^{{\gamma'}_m} P_m(s_i|{c'}_{k+1,\,i-1}),
-% \end{align}
-% where $\gamma_m$ and ${\gamma'}_m \in [0,1)$ are forgetting factors predefined for each model. Also,
-% \begin{equation}
-%   \sum_{m\in M_F} w_{m,\,i} + \sum_{m\in M_S} {w'}_{m,\,i} = 1.
-% \end{equation}
-% By experimenting different forgetting factors for models, we have found that higher factors should be assigned to models that have higher context-order sizes (less complexity) and vice versa. As an example, when the context size $k=6$, $\gamma_m~\mathrm{or}~{\gamma'}_m \simeq 0.9$ and when $k=18$, $\gamma_m~\mathrm{or}~{\gamma'}_m \simeq 0.95$ would be appropriate choices. These values show that forgetting factor and complexity of a model are inversely related.
+ \subsubsection*{Cooperation of FCMs and STMMs} \label{sec.coop}
+ When FCMs and STMMs are in cooperation, the probability of the next symbol $s_i$ in an information source $S$, at position $i$, can be estimated as
+ \begin{multline} \label{eq.coop}
+   P(s_i) = \sum_{m\in M_F} P_m(s_i|c_{k,\,i})\;w_{m,\,i} + \sum_{m\in M_S} P_m(s_i|{c'}_{k,\,i})\;{w'}_{m,\,i},\\
+   \forall s_i\in S,~1\le i\le |S|,~1\le k\le i-1,
+ \end{multline}
+ in which $M_F$ and $M_S$ denote sets of FCMs and STMMs, respectively, $P_m(s_i|c_{k,\,i})$ shows the probability of the next symbol estimated by the FCM, $P_m(s_i|{c'}_{k,\,i})$ represents this probability estimated by the STMM, and $w_{m\,i}$ and ${w'}_{m,\,i}$ are weights assigned to each model based on its performance. We have
+ \begin{align}
+   \forall m\in M_F: \quad & w_{m,\,i} \propto (w_{m,\,i-1})^{\gamma_m} P_m(s_i|c_{k+1,\,i-1}),
+   \nonumber
+   \\[1mm]
+   \forall m\in M_S: \quad & {w'}_{m,\,i} \propto ({w'}_{m,\,i-1})^{{\gamma'}_m} P_m(s_i|{c'}_{k+1,\,i-1}),
+ \end{align}
+ where $\gamma_m$ and ${\gamma'}_m \in [0,1)$ are forgetting factors predefined for each model. Also,
+ \begin{equation}
+   \sum_{m\in M_F} w_{m,\,i} + \sum_{m\in M_S} {w'}_{m,\,i} = 1.
+ \end{equation}
+ By experimenting different forgetting factors for models, we have found that higher factors should be assigned to models that have higher context-order sizes (less complexity) and vice versa. As an example, when the context size $k=6$, $\gamma_m~\mathrm{or}~{\gamma'}_m \simeq 0.9$ and when $k=18$, $\gamma_m~\mathrm{or}~{\gamma'}_m \simeq 0.95$ would be appropriate choices. These values show that forgetting factor and complexity of a model are inversely related.
 
-% \subsubsection*{Storing models in memory}
-% The FCMs and STMMs include, in fact, count values which need to be saved in memory. For this purpose, four different data structures have been employed considering the context-order size $k$, as follows:
-% \begin{equation*}
-%   \textrm{data structure} =
-%   \begin{cases}
-%     \textrm{table of 64 bit counters},               & 1 \leq k \leq 11 \\
-%     \textrm{table of 32 bit counters},               & k=12, 13         \\
-%     \textrm{table of 8 bit approximate counters},    & k=14             \\
-%     \textrm{Count-Min-Log sketch of 4 bit counters}. & k \ge 15
-%   \end{cases}
-% \end{equation*}
+ \subsubsection*{Storing models in memory}
+ The FCMs and STMMs include, in fact, count values which need to be saved in memory. For this purpose, four different data structures have been employed considering the context-order size $k$, as follows:
+ \begin{itemize}
+   \item table of 64 bit counters, for $k \in [1, 11]$,
+   \item table of 32 bit counters, for $k=\{12, 13\}$,
+   \item table of 8 bit approximate counters, for $k=14$, and
+   \item Count-Min-Log sketch of 4 bit counters, for $k \ge 15$.
+ \end{itemize}
 
-% \begin{figure}[!h]
-%   \centering
-%   \includegraphics[height=.9\textheight]{data_struct.pdf}
-%   \caption{The data structures used by Smash++ to store the models in memory. (a) table of 64~bit counters that uses up to 128~MB of memory, (b) table of 32~bit counters that consumes at most 960~MB of memory, (c) table of 8~bit approximate counters with memory usage of up to 1~GB and (d) Count-Min-Log sketch of 4~bit counters which consumes up to $\frac{1}{2} w\times d$~B of memory, e.g., if $w=2^{30}$ and $d=4$, it uses 2~GB of memory.}
-%   \label{fig.struct}
-% \end{figure}
+%  \begin{equation*}
+%    \textrm{data structure} =
+%    \begin{cases}
+%      \textrm{table of 64 bit counters},               & 1 \leq k \leq 11 \\
+%      \textrm{table of 32 bit counters},               & k=12, 13         \\
+%      \textrm{table of 8 bit approximate counters},    & k=14             \\
+%      \textrm{Count-Min-Log sketch of 4 bit counters}. & k \ge 15
+%    \end{cases}
+%  \end{equation*}
 
-% The table of 64 bit counters, that is shown in Figure~\ref{fig.struct}a, simply saves number of events for each context. The table of 32 bit counters saves in each position the number of times that the associated context is observed. When a counter reaches to the maximum value $2^{32}-1=4294967295$, all the counts will be renormalized by dividing by two, as shown in Figure~\ref{fig.struct}b.
+ \begin{figure*}[!h]
+   \centering
+   \includegraphics[height=.8\textwidth]{data_struct.pdf}
+   \caption{The data structures used by Smash++ to store the models in memory. (a) table of 64~bit counters that uses up to 128~MB of memory, (b) table of 32~bit counters that consumes at most 960~MB of memory, (c) table of 8~bit approximate counters with memory usage of up to 1~GB and (d) Count-Min-Log sketch of 4~bit counters which consumes up to $\frac{1}{2} w\times d$~B of memory, e.g., if $w=2^{30}$ and $d=4$, it uses 2~GB of memory.}
+   \label{fig.struct}
+ \end{figure*}
 
-% The approximate counting is a method that employs probabilistic techniques to count large number of events, while using small amount of memory~\cite{morris1978counting}. Figure~\ref{alg.approx} shows the algorithm for two major functions associated with this method, \textsc{Update} and \textsc{Query}. In order to update the counter, a pseudo-random number generator (PRNG) is used the number of times of the counter's current value to simulate flipping a coin. If it comes up 0/Heads each time or 1/Tails each time, the counter will be incremented. Figure~\ref{fig.struct}c shows the difference between arithmetic and approximate counting, and also the values which are actually stored in memory. Note that since an approximate counter represents the actual count by an order of magnitude estimate, one only needs to save the exponent. For example, if the actual count is $8$, we store it in memory as $\log_2 8=3$.
+ The table of 64 bit counters, that is shown in Figure~\ref{fig.struct}a, simply saves number of events for each context. The table of 32 bit counters saves in each position the number of times that the associated context is observed. When a counter reaches to the maximum value $2^{32}-1=4294967295$, all the counts will be renormalized by dividing by two, as shown in Figure~\ref{fig.struct}b.
+
+ The approximate counting is a method that employs probabilistic techniques to count large number of events, while using small amount of memory~\cite{morris1978counting}. Figure~\ref{alg.approx} shows the algorithm for two major functions associated with this method, \textsc{Update} and \textsc{Query}. In order to update the counter, a pseudo-random number generator (PRNG) is used the number of times of the counter's current value to simulate flipping a coin. If it comes up 0/Heads each time or 1/Tails each time, the counter will be incremented. Figure~\ref{fig.struct}c shows the difference between arithmetic and approximate counting, and also the values which are actually stored in memory. Note that since an approximate counter represents the actual count by an order of magnitude estimate, one only needs to save the exponent. For example, if the actual count is $8$, we store it in memory as $\log_2 8=3$.
 % \begin{figure}[h]
 %   \centering
 %   \begin{tabular}{|c|}
