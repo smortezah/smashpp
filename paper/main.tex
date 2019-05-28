@@ -41,7 +41,7 @@
 \authnote{\authfn{1}seyedmorteza@ua.pt; pratas@ua.pt; ap@ua.pt}
 
 %%% Paper category
-\papercat{Paper}
+\papercat{Technical note}
 
 %%% "Short" author for running page header
 \runningauthor{Hosseini et al.}
@@ -227,7 +227,7 @@ This section should provide details of all of the experiments and analyses that 
 % 763.035     & Andy Green      & Thrust SSC                 & RR Spey   & 10/15/97\\
 % \bottomrule
 % \end{tabularx}
-
+%
 % \begin{tablenotes}
 % \item Source is from this website: \url{https://www.sedl.org/afterschool/toolkits/science/pdf/ast_sci_data_tables_sample.pdf}
 % \end{tablenotes}
@@ -473,18 +473,54 @@ This example shows the distinction between a finite-context model and a substitu
 
  The procedure of finding similar regions in a reference and a target sequence, illustrated in Figure~\ref{fig.simil}, is as follows: after creating the model of the reference, the target is compressed based on that model and the information content is calculated for each symbol in the target. Then, the content of the whole target sequence is smoothed by Hann window~\cite{blackman1959particular}, which is a discrete window function given by $w[n]=0.5-0.5\;\cos \left({\frac {2\pi n}{N}}\right)$, where $0\le n\le N$ and length of the window is $N+1$. Next, the smoothed information content is segmented considering a predefined threshold, meaning that the regions with the content greater than the threshold are filtered out. This is carried out for both regular and inverted repeat homologies and at the end, the result would be the regions in the target sequence that are similar to the reference sequence (Figure~\ref{fig.simil}a). The described phase repeats for all of the target regions found, in the way that after creating the model for each region, the whole reference sequence is compressed to find those regions in the reference that are similar to each of the target regions (Figure~\ref{fig.simil}b). The final result would have the form of Figure~\ref{fig.simil}c.
 
- \begin{figure}[!h]
+ \begin{figure*}[!h]
    \centering
-   \includegraphics[width=.95\linewidth]{simil.pdf}
+   \includegraphics[width=.7\linewidth]{simil.pdf}
    \caption{Finding similar regions in reference and target sequences. Smash++ finds, first, the regions in the target that are similar to the reference, and then, finds the regions in the reference that are similar to the detected target regions. This procedure is performance for both regular and inverted homologies.}
    \label{fig.simil}
- \end{figure}
+ \end{figure*}
 
- \subsection{Computing complexities}
+ \subsection{Computing complexity}
  After finding the similar regions in reference and target sequences, we evaluate redundancy in each region, knowing that it is inversely related to Kolmogorov complexity, i.e., the more complex a sequence is, the less redundant it will be~\cite{hosseini2018cryfa}. The Kolmogorov complexity, $K$, of a binary string $s$, of finite length, is the length of the smallest binary program $p$ that computes $s$ in a universal Turing machine and halts. In other words, $K(s)=|p|$ is the minimum number of bits required to computationally retrieve the string $s$~\cite{turing1936on,li2009an}.
 
- The Kolmogorov complexity is not computable, hence, an alternative is required to compute it approximately. It has been shown in the literature that a compression algorithm can be employed for this purpose~\cite{zenil2015two,antao2018kolmogorov,faloutsos2007on}. In this paper, we employ a reference-free compressor to approximate the complexity and consequently, the redundancy of the founded similar regions in the reference and the target sequences. This compressor works based on cooperation of FCMs and STMMs, which is described in detail in Section~\ref{sec.coop}. Note that the difference between reference-based and reference-free version of such compressor is that in the former mode, a model is first created for the reference sequence and then, the target sequence is compressed based on that model, while in the latter mode, the model is progressively created at the time of compressing the target sequence.
+ The Kolmogorov complexity is not computable, hence, an alternative is required to compute it approximately. It has been shown in the literature that a compression algorithm can be employed for this purpose~\cite{zenil2015two,antao2018kolmogorov,faloutsos2007on}. In this paper, we employ a reference-free compressor to approximate the complexity and consequently, the redundancy of the founded similar regions in the reference and the target sequences. This compressor works based on cooperation of FCMs and STMMs, which has been previously described in detail. Note that the difference between reference-based and reference-free version of such compressor is that in the former mode, a model is first created for the reference sequence and then, the target sequence is compressed based on that model, while in the latter mode, the model is progressively created at the time of compressing the target sequence.
 
+
+\section{Experiments setup} \label{sec.experiment}
+
+
+\subsection{Datasets}
+
+\begin{table*}[h]
+  \caption{Datasets used in the experiments.}
+  \label{tab.dataset}
+  \begin{tabularx}{\linewidth}{lrlrX}
+    \toprule
+    Reference & \multicolumn{1}{l}{Length (base)} & Target & \multicolumn{1}{l}{Length (base)} & Description \\
+    \midrule
+    \multicolumn{5}{l}{Synthetic data -- generated by GOOSE~\ref{web-goose}} \\
+    \midrule
+    RefS & 1,000 & TarS & 1,000 &  RefS has four segments: I, II, III and IV. To build TarS, I and IV are inversely repeated, II is mutated 1\% and III is duplicated. Read lines are 50 base long. \\
+    RefM & 100,000 & TarM & 100,000 & For building TarM, segments I and III of RefM (out of total four) are duplicated, segment II is inversely repeated and segment IV is mutated 1\%. The length of read lines is 100. \\
+    RefL & 5,000,000 & TarL & 5,000,000 & \\
+    RefXL & 100,000,000 & TarXL & 100,000,000 & \\
+    RefMut & 60,000 & TarMut & 60,000 & \\
+    \midrule
+    Real data \\
+    \midrule
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+\section{Results} \label{sec.results}
+Smash++ and several other methods have been carried out on a collection of synthetic and real sequences. The machine used for the tests had an 8-core 3.40~GHz Intel\textsuperscript{\textregistered} Core{\texttrademark} i7-6700 CPU and 32~GB of RAM.
+
+\begin{figure*}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{synth.pdf}
+  \caption{synthetic.}
+  \label{fig.synth}
+\end{figure*}
 
 
 
@@ -526,7 +562,7 @@ A list of available scientific research data repositories can be found in \href{
 \section{Declarations}
 
 \subsection{List of abbreviations}
-CPU: central processing unit; FCM: finite-context model; RAM: random access memory; STMM: substitutional-tolerant Markov model;
+CMLS: Count-Min-Log Sketch; CPU: central processing unit; FCM: finite-context model; GB: gigabyte; GHz: gigahertz; KB: kilobyte; MB: megabyte; RAM: random access memory; PRNG: pseudo-random number generator; STMM: substitutional tolerant Markov model.
 
 \subsection{Ethical Approval (optional)}
 Manuscripts reporting studies involving human participants, human data or human tissue must:
