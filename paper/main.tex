@@ -279,33 +279,33 @@ The schema of the proposed method is illustrated in Figure~\ref{fig.schema}. Sma
 \subsection{Data modeling}
 Smash++ works on the basis of cooperation between finite-context models (FCMs) and substitutional tolerant Markov models (STMMs). Applying these models on various contexts provides probability and weight values, illustrated in Figure~\ref{fig.model}a, which are then mixed (by multiplication and addition, shown in Figure~\ref{fig.model}b) to provide the final probability ($P$) of occurring an input symbol. The following subsections describe FCMs and STMMs in detail.
 
-\begin{figure*}[!t]
+\begin{figure}[!t]
   \centering
-  \includegraphics[width=.7\linewidth]{data_model.pdf}
+  \includegraphics[width=\linewidth]{data_model.pdf}
   \caption{Data modelling by Smash++. (a) cooperation between finite-context models (FCMs) and substitutional-tolerant Markov models (STMMs). Note that each STMM needs to be associated with an FCM. (b) probability of an input symbol is estimated by employing the probability and weight values that have been obtained from processing previous symbols.}
   \label{fig.model}
-\end{figure*}
+\end{figure}
 
-% \subsubsection*{Finite-context model (FCM)}
-% A finite-context model considers Markov property to estimate the probability of the next symbol in an information source, based on the past $k$ symbols (a context of size $k$)~\cite{sayood2017introduction,hosseini2019ac,pinho2013mfcompress}. Denoting the context as $c_{k,\,i} = s_{i-k} s_{i-k+1}\ldots s_{i-2} s_{i-1}$, the probability of the next symbol $s_i$ in an information source $S$, which is posed at $i$, can be estimated as
-% \begin{equation} \label{eq.estimate}
-%   P_m(s_i|c_{k,\,i}) = \frac{N(s_i|c_{k,\,i})+\alpha}{N(c_{k,\,i})+ \alpha|\Theta|},
-% \end{equation}
-% in which $m$ stands for model (FCM in this case), $N(s_i|c_{k,\,i})$ shows the number of times that the information source has generated symbol~$s_i$ in the past, $|\Theta|$ denotes size of the alphabet~$\Theta$, $N(c_{k,\,i}) = \sum_{b \in \Theta} N(b|c_{k,\,i})$ represents the total number of events occurred for the context~$c_{k,\,i}$ and $\alpha$ allows to keep a balance between the maximum likelihood estimator and the uniform distribution. Eq.~\ref{eq.estimate} turns to the Laplace estimator, for $\alpha=1$, and also behaves as a maximum likelihood estimator, for large number of events~$i$~\cite{pratas2015alignment}.
+\subsubsection*{Finite-context model (FCM)}
+A finite-context model considers Markov property to estimate the probability of the next symbol in an information source, based on the past $k$ symbols (a context of size $k$)~\cite{sayood2017introduction,hosseini2019ac,pinho2013mfcompress}. Denoting the context as $c_{k,\,i} = s_{i-k} s_{i-k+1}\ldots s_{i-2} s_{i-1}$, the probability of the next symbol $s_i$ in an information source $S$, which is posed at $i$, can be estimated as
+\begin{equation} \label{eq.estimate}
+  P_m(s_i|c_{k,\,i}) = \frac{N(s_i|c_{k,\,i})+\alpha}{N(c_{k,\,i})+ \alpha|\Theta|},
+\end{equation}
+in which $m$ stands for model (FCM in this case), $N(s_i|c_{k,\,i})$ shows the number of times that the information source has generated symbol~$s_i$ in the past, $|\Theta|$ denotes size of the alphabet~$\Theta$, $N(c_{k,\,i}) = \sum_{b \in \Theta} N(b|c_{k,\,i})$ represents the total number of events occurred for the context~$c_{k,\,i}$ and $\alpha$ allows to keep a balance between the maximum likelihood estimator and the uniform distribution. Eq.~\ref{eq.estimate} turns to the Laplace estimator, for $\alpha=1$, and also behaves as a maximum likelihood estimator, for large number of events~$i$~\cite{pratas2015alignment}.
 
-% \subsubsection*{Substitutional tolerant Markov model (STMM)}
-% A substitutional tolerant Markov model~\cite{pratas2017substitutional} is a probabilistic-algorithmic model that assumes at each position, the next symbol in the information source is the symbol which has had the highest probability of occurrence in the past. This way, an STMM ignores the real next symbol in the source. Denoting the past $k$ symbols as $c_{k,\,i} = s_{i-k} s_{i-k+1}\ldots s_{i-2} s_{i-1}$, the probability of the next symbol $s_i$, can be estimated as
-% \begin{equation}
-%   P_m(s_i|{c'}_{k,\,i}) = \frac{N(s_i|{c'}_{k,\,i})+\alpha}{N({c'}_{k,\,i})+ \alpha|\Theta|},
-% \end{equation}
-% where $N$ represents the number of occurrences of symbols, that is saved in memory, and ${c'}_{k,\,i}$ is a copy of the context $c_{k,\,i}$ which is modified as
-% \begin{equation}
-%   {c'}_{k,\,i} = \argmax_{\forall b\in \Theta}{P_m(b|{c'}_{k,\,i})}.
-% \end{equation}
+ \subsubsection*{Substitutional tolerant Markov model (STMM)}
+ A substitutional tolerant Markov model~\cite{pratas2017substitutional} is a probabilistic-algorithmic model that assumes at each position, the next symbol in the information source is the symbol which has had the highest probability of occurrence in the past. This way, an STMM ignores the real next symbol in the source. Denoting the past $k$ symbols as $c_{k,\,i} = s_{i-k} s_{i-k+1}\ldots s_{i-2} s_{i-1}$, the probability of the next symbol $s_i$, can be estimated as
+ \begin{equation}
+   P_m(s_i|{c'}_{k,\,i}) = \frac{N(s_i|{c'}_{k,\,i})+\alpha}{N({c'}_{k,\,i})+ \alpha|\Theta|},
+ \end{equation}
+ where $N$ represents the number of occurrences of symbols, that is saved in memory, and ${c'}_{k,\,i}$ is a copy of the context $c_{k,\,i}$ which is modified as
+ \begin{equation}
+   {c'}_{k,\,i} = \mathop{\mathrm{arg\,max}}_{\forall b\in \Theta}{P_m(b|{c'}_{k,\,i})}.
+ \end{equation}
 
-% STMMs can be used along with FCMs to modify the behavior of Smash++ in confronting with nucleotide substitutions in genomic sequences. These models have the potential to be disabled, to reduce the number of mathematical calculations and consequently, increase the performance of the proposed method. Such operation is automatically performed using an array of size $k$ (the context size), named history, which preserves the past $k$ hits/misses. Seeing a symbol in the information source, the memory is checked for the symbol with the highest number of occurrences. If they are equal, a hit is saved in the history array; otherwise, a miss is inserted into the array. Before getting to store a hit/miss in the array, it is checked for the number of misses and in the case they are more than a predefined threshold $t$, the STMM will be disabled and also the history array will be reset. This process is performed for each symbol in the sequence.
+STMMs can be used along with FCMs to modify the behavior of Smash++ in confronting with nucleotide substitutions in genomic sequences. These models have the potential to be disabled, to reduce the number of mathematical calculations and consequently, increase the performance of the proposed method. Such operation is automatically performed using an array of size $k$ (the context size), named history, which preserves the past $k$ hits/misses. Seeing a symbol in the information source, the memory is checked for the symbol with the highest number of occurrences. If they are equal, a hit is saved in the history array; otherwise, a miss is inserted into the array. Before getting to store a hit/miss in the array, it is checked for the number of misses and in the case they are more than a predefined threshold $t$, the STMM will be disabled and also the history array will be reset. This process is performed for each symbol in the sequence.
 
-% This example shows the distinction between a finite-context model and a substitutional tolerant Markov model. Assume, the current context at position $i$ is $c_{11,\,i}=\textrm{GGCTAACGTAC}$, and the number of occurrences of symbols saved in memory is $\textrm{A}=10$, $\textrm{C}=12$, $\textrm{G}=13$ and $\textrm{T}=11$. Also, the symbol to appear in the sequence is $\textrm{T}$. An FCM would consider the next context as $c_{11,\,i+1}=\textrm{GCTAACGTACT}$, while an STMM would consider it as ${c'}_{11,\,i+1}=\textrm{GCTAACGTACG}$, since the base $\textrm{G}$ is the most probable symbol, based on the number of occurrences stored in memory.
+This example shows the distinction between a finite-context model and a substitutional tolerant Markov model. Assume, the current context at position $i$ is $c_{11,\,i}=\textrm{GGCTAACGTAC}$, and the number of occurrences of symbols saved in memory is $\textrm{A}=10$, $\textrm{C}=12$, $\textrm{G}=13$ and $\textrm{T}=11$. Also, the symbol to appear in the sequence is $\textrm{T}$. An FCM would consider the next context as $c_{11,\,i+1}=\textrm{GCTAACGTACT}$, while an STMM would consider it as ${c'}_{11,\,i+1}=\textrm{GCTAACGTACG}$, since the base $\textrm{G}$ is the most probable symbol, based on the number of occurrences stored in memory.
 
 % \subsubsection*{Cooperation of FCMs and STMMs} \label{sec.coop}
 % When FCMs and STMMs are in cooperation, the probability of the next symbol $s_i$ in an information source $S$, at position $i$, can be estimated as
