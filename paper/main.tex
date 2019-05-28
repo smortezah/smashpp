@@ -16,6 +16,14 @@
 \usepackage{graphicx}
 \usepackage{siunitx}
 \usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\algnewcommand{\Inputs}[1]{%
+  \State \textbf{Inputs:}
+  \Statex \hspace*{\algorithmicindent}\parbox[t]{.8\linewidth}{\raggedright #1}
+}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
 
 %%% Flushend: You can add this package to automatically balance the final page, but if things go awry (e.g. section contents appearing out-of-order or entire blocks or paragraphs are coloured), remove it!
 % \usepackage{flushend}
@@ -348,7 +356,7 @@ This example shows the distinction between a finite-context model and a substitu
 
  \begin{figure*}[!h]
    \centering
-   \includegraphics[height=.8\textwidth]{data_struct.pdf}
+   \includegraphics[width=.7\linewidth]{data_struct.pdf}
    \caption{The data structures used by Smash++ to store the models in memory. (a) table of 64~bit counters that uses up to 128~MB of memory, (b) table of 32~bit counters that consumes at most 960~MB of memory, (c) table of 8~bit approximate counters with memory usage of up to 1~GB and (d) Count-Min-Log sketch of 4~bit counters which consumes up to $\frac{1}{2} w\times d$~B of memory, e.g., if $w=2^{30}$ and $d=4$, it uses 2~GB of memory.}
    \label{fig.struct}
  \end{figure*}
@@ -356,126 +364,126 @@ This example shows the distinction between a finite-context model and a substitu
  The table of 64 bit counters, that is shown in Figure~\ref{fig.struct}a, simply saves number of events for each context. The table of 32 bit counters saves in each position the number of times that the associated context is observed. When a counter reaches to the maximum value $2^{32}-1=4294967295$, all the counts will be renormalized by dividing by two, as shown in Figure~\ref{fig.struct}b.
 
  The approximate counting is a method that employs probabilistic techniques to count large number of events, while using small amount of memory~\cite{morris1978counting}. Figure~\ref{alg.approx} shows the algorithm for two major functions associated with this method, \textsc{Update} and \textsc{Query}. In order to update the counter, a pseudo-random number generator (PRNG) is used the number of times of the counter's current value to simulate flipping a coin. If it comes up 0/Heads each time or 1/Tails each time, the counter will be incremented. Figure~\ref{fig.struct}c shows the difference between arithmetic and approximate counting, and also the values which are actually stored in memory. Note that since an approximate counter represents the actual count by an order of magnitude estimate, one only needs to save the exponent. For example, if the actual count is $8$, we store it in memory as $\log_2 8=3$.
-% \begin{figure}[h]
-%   \centering
-%   \begin{tabular}{|c|}
-%     \hline
-%     \begin{minipage}[t]{.5\linewidth}
-%       \vspace{0pt}
-%       \begin{algorithmic}[1]
-%         % \Require table of 8 bit counters
-%         \Function{\textsc{IncreaseDecision}}{$x$}
-%         \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
-%         \EndFunction
-%         \Statex
-%         \Function{\textsc{Update}}{$x$}
-%         \State $c\gets \mathrm{table}[x]$
-%         \If{$\textsc{IncreaseDecision($c$)}=\mathrm{True}$}
-%         \State $\mathrm{table}[x]\gets c+1$
-%         \EndIf
-%         \EndFunction
-%         \Statex
-%         \Function{\textsc{Query}}{$x$}
-%         \State $c\gets \mathrm{table}[x]$
-%         \State \textbf{return} $2^c-1$
-%         \EndFunction
-%       \end{algorithmic}
-%       \vspace{2mm}
-%     \end{minipage}
-%     \\ \hline
-%   \end{tabular}
-%   \caption{Approximate counting update and query.}
-%   \label{alg.approx}
-% \end{figure}
+ \begin{figure}[h]
+   \centering
+   \begin{tabular}{|c|}
+     \hline
+     \begin{minipage}[t]{.75\columnwidth}
+       \vspace{0pt}
+       \begin{algorithmic}[1]
+         % \Require table of 8 bit counters
+         \Function{\textsc{IncreaseDecision}}{$x$}
+         \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
+         \EndFunction
+         \Statex
+         \Function{\textsc{Update}}{$x$}
+         \State $c\gets \mathrm{table}[x]$
+         \If{$\textsc{IncreaseDecision($c$)}=\mathrm{True}$}
+         \State $\mathrm{table}[x]\gets c+1$
+         \EndIf
+         \EndFunction
+         \Statex
+         \Function{\textsc{Query}}{$x$}
+         \State $c\gets \mathrm{table}[x]$
+         \State \textbf{return} $2^c-1$
+         \EndFunction
+       \end{algorithmic}
+       \vspace{2mm}
+     \end{minipage}
+     \\ \hline
+   \end{tabular}
+   \caption{Approximate counting update and query.}
+   \label{alg.approx}
+ \end{figure}
 
-% The Count-Min-Log Sketch (CMLS) is a probabilistic data structure to save frequency of events in a table by means of a family of independent hash functions~\cite{pitel2015count}. The algorithm for updating and querying the counter is shown in Figure~\ref{alg.cmls}. In order to update the counter, its current value is hashed with $d$ independent hash functions. Then, a coin is flipped the number of times of the counter's current value, employing a pseudo-random number generator. If it comes up 0/Heads each time or 1/Tails each time, the minimum hashed values (out of $d$ values) will be updated, as shown in Figure~\ref{fig.struct}d.
+ The Count-Min-Log Sketch (CMLS) is a probabilistic data structure to save frequency of events in a table by means of a family of independent hash functions~\cite{pitel2015count}. The algorithm for updating and querying the counter is shown in Figure~\ref{alg.cmls}. In order to update the counter, its current value is hashed with $d$ independent hash functions. Then, a coin is flipped the number of times of the counter's current value, employing a pseudo-random number generator. If it comes up 0/Heads each time or 1/Tails each time, the minimum hashed values (out of $d$ values) will be updated, as shown in Figure~\ref{fig.struct}d.
 
-% The CMLS requires a family of pairwise independent hash functions
-% $H = \{h: U \to [m]\}$, in which each function $h$ maps some universe $U$ to $m$ bins.
-% To have this family, we use universal hashing by randomly selecting a hash function from a universal family in which $\forall x,y\in U,~x\neq y:~~P_{h\in H}[h(x)=h(y)]\leq \frac{1}{m}$.
-% The hash function can be obtained by
-% \begin{equation}
-%   h_{a,b}(x)=\left((ax+b)~\bmod p\right)~\bmod m,
-% \end{equation}
-% where $p\ge m$ is a prime number and $a$ and $b$ are randomly chosen integers modulo $p$ with $a\neq 0$.
+ The CMLS requires a family of pairwise independent hash functions
+ $H = \{h: U \to [m]\}$, in which each function $h$ maps some universe $U$ to $m$ bins.
+ To have this family, we use universal hashing by randomly selecting a hash function from a universal family in which $\forall x,y\in U,~x\neq y:~~P_{h\in H}[h(x)=h(y)]\leq \frac{1}{m}$.
+ The hash function can be obtained by
+ \begin{equation}
+   h_{a,b}(x)=\left((ax+b)~\bmod p\right)~\bmod m,
+ \end{equation}
+ where $p\ge m$ is a prime number and $a$ and $b$ are randomly chosen integers modulo $p$ with $a\neq 0$.
 
-% \begin{figure}[h]
-%   \centering
-%   \begin{tabular}{|c|}
-%     \hline
-%     \begin{minipage}[t]{.55\linewidth}
-%       \vspace{0pt}
-%       \begin{algorithmic}[1]
-%         \Require sketch width $w$, sketch depth $d$, $m$ bins, prime $p\ge m$, randomly chosen integers $a_{1..d}$ and $b_{1..d}$ modulo $p$ with $a\neq 0$
-%         % independent hash functions $h_{1..d}: U\to \{1..w\}$
-%         \Statex
-%         \Function{\textsc{Hash}}{$k, x$} \Comment{Universal hash family}
-%         \State \textbf{return} $\left((a_k x + b_k)~\bmod p\right)~\bmod m$
-%         \EndFunction
-%         \Statex
-%         \Function{\textsc{MinCount}}{$x$}
-%         \State $\mathrm{minimum}\gets 15$ \Comment{Biggest 4 bit number}
-%         \For{$k\gets 1\mathrm{\;to\;}d$}
-%         \State $h\gets \textsc{Hash}(k, x)$
-%         \If{$\mathrm{sketch}[k][h] < \mathrm{minimum}$}
-%         \State $\mathrm{minimum}\gets \mathrm{sketch}[k][h]$
-%         \EndIf
-%         \EndFor
-%         \State \textbf{return} $\mathrm{minimum}$
-%         \EndFunction
-%         \Statex
-%         \Function{\textsc{IncreaseDecision}}{$x$}
-%         \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
-%         \EndFunction
-%         \Statex
-%         \Function{\textsc{Update}}{$x$}
-%         \State $c\gets \textsc{MinCount}(x)$
-%         \If{$\textsc{IncreaseDecision($c$)}=\mathrm{True}$}
-%         \For{$k\gets 1\mathrm{\;to\;}d$}
-%         \State $h\gets \textsc{Hash}(k, x)$
-%         \If{$\mathrm{sketch}[k][h] = c$}
-%         \State $\mathrm{sketch}[k][h]\gets c+1$
-%         \EndIf
-%         \EndFor
-%         \EndIf
-%         \EndFunction
-%         \Statex
-%         \Function{\textsc{Query}}{$x$}
-%         \State $c\gets \textsc{MinCount}(x)$
-%         \State \textbf{return} $2^c-1$
-%         \EndFunction
-%       \end{algorithmic}
-%       \vspace{2mm}
-%     \end{minipage}
-%     \\ \hline
-%   \end{tabular}
-%   \caption{Count-Min-Log Sketch update and query.}
-%   \label{alg.cmls}
-% \end{figure}
+ \begin{figure}[h]
+   \centering
+   \begin{tabular}{|c|}
+     \hline
+     \begin{minipage}[t]{.8\columnwidth}
+       \vspace{0pt}
+       \begin{algorithmic}[1]
+         \Require sketch width $w$, sketch depth $d$, $m$ bins, prime $p\ge m$, randomly chosen integers $a_{1..d}$ and $b_{1..d}$ modulo $p$ with $a\neq 0$
+         % independent hash functions $h_{1..d}: U\to \{1..w\}$
+         \Statex
+         \Function{\textsc{Hash}}{$k, x$} \Comment{Universal hash family}
+         \State \textbf{return} $\left((a_k x + b_k)~\bmod p\right)~\bmod m$
+         \EndFunction
+         \Statex
+         \Function{\textsc{MinCount}}{$x$}
+         \State $\mathrm{minimum}\gets 15$ \Comment{Biggest 4 bit number}
+         \For{$k\gets 1\mathrm{\;to\;}d$}
+         \State $h\gets \textsc{Hash}(k, x)$
+         \If{$\mathrm{sketch}[k][h] < \mathrm{minimum}$}
+         \State $\mathrm{minimum}\gets \mathrm{sketch}[k][h]$
+         \EndIf
+         \EndFor
+         \State \textbf{return} $\mathrm{minimum}$
+         \EndFunction
+         \Statex
+         \Function{\textsc{IncreaseDecision}}{$x$}
+         \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
+         \EndFunction
+         \Statex
+         \Function{\textsc{Update}}{$x$}
+         \State $c\gets \textsc{MinCount}(x)$
+         \If{$\textsc{IncreaseDecision($c$)}=\mathrm{True}$}
+         \For{$k\gets 1\mathrm{\;to\;}d$}
+         \State $h\gets \textsc{Hash}(k, x)$
+         \If{$\mathrm{sketch}[k][h] = c$}
+         \State $\mathrm{sketch}[k][h]\gets c+1$
+         \EndIf
+         \EndFor
+         \EndIf
+         \EndFunction
+         \Statex
+         \Function{\textsc{Query}}{$x$}
+         \State $c\gets \textsc{MinCount}(x)$
+         \State \textbf{return} $2^c-1$
+         \EndFunction
+       \end{algorithmic}
+       \vspace{2mm}
+     \end{minipage}
+     \\ \hline
+   \end{tabular}
+   \caption{Count-Min-Log Sketch update and query.}
+   \label{alg.cmls}
+ \end{figure}
 
-% \subsection{Finding similar regions}
-% To find similar regions in reference and target files, a quantity is required for measuring the similarity. We use ``per symbol information content'' for this purpose, which can be calculated as
-% \begin{equation}
-%   \label{eq.inf.content}
-%   I(s_i) = -\log_2 P(s_i)\quad \mathrm{bpb}, \quad\forall s_i\in S,~1\le i\le |S|
-% \end{equation}
-% where $P(s_i)$ denotes the probability of the next symbol $s_i$ in the information source $S$, obtained by Equation~\ref{eq.coop}, and also ``bpb'' stands for bit per base.
+ \subsection{Finding similar regions}
+ To find similar regions in reference and target files, a quantity is required for measuring the similarity. We use ``per symbol information content'' for this purpose, which can be calculated as
+ \begin{equation}
+   \label{eq.inf.content}
+   I(s_i) = -\log_2 P(s_i)\quad \mathrm{bpb}, \quad\forall s_i\in S,~1\le i\le |S|
+ \end{equation}
+ where $P(s_i)$ denotes the probability of the next symbol $s_i$ in the information source $S$, obtained by Equation~\ref{eq.coop}, and also ``bpb'' stands for bit per base.
 
-% The information content is the amount of information required to represent a symbol in the target sequence, based on the model of the reference sequence. The less the value of this measure is for two regions, the more amount of information is shared between them, and therefore, the more similar are the two regions. Note that a version of this measure has been introduced in~\cite{pratas2015alignment}, which employs a single FCM to calculate the probabilities. In this paper, however, we exploit a cooperation between multiple FCMs and STMMs for highly accurate calculation of such probabilities.
+ The information content is the amount of information required to represent a symbol in the target sequence, based on the model of the reference sequence. The less the value of this measure is for two regions, the more amount of information is shared between them, and therefore, the more similar are the two regions. Note that a version of this measure has been introduced in~\cite{pratas2015alignment}, which employs a single FCM to calculate the probabilities. In this paper, however, we exploit a cooperation between multiple FCMs and STMMs for highly accurate calculation of such probabilities.
 
-% The procedure of finding similar regions in a reference and a target sequence, illustrated in Figure~\ref{fig.simil}, is as follows: after creating the model of the reference, the target is compressed based on that model and the information content is calculated for each symbol in the target. Then, the content of the whole target sequence is smoothed by Hann window~\cite{blackman1959particular}, which is a discrete window function given by $w[n]=0.5-0.5\;\cos \left({\frac {2\pi n}{N}}\right)$, where $0\le n\le N$ and length of the window is $N+1$. Next, the smoothed information content is segmented considering a predefined threshold, meaning that the regions with the content greater than the threshold are filtered out. This is carried out for both regular and inverted repeat homologies and at the end, the result would be the regions in the target sequence that are similar to the reference sequence (Figure~\ref{fig.simil}a). The described phase repeats for all of the target regions found, in the way that after creating the model for each region, the whole reference sequence is compressed to find those regions in the reference that are similar to each of the target regions (Figure~\ref{fig.simil}b). The final result would have the form of Figure~\ref{fig.simil}c.
+ The procedure of finding similar regions in a reference and a target sequence, illustrated in Figure~\ref{fig.simil}, is as follows: after creating the model of the reference, the target is compressed based on that model and the information content is calculated for each symbol in the target. Then, the content of the whole target sequence is smoothed by Hann window~\cite{blackman1959particular}, which is a discrete window function given by $w[n]=0.5-0.5\;\cos \left({\frac {2\pi n}{N}}\right)$, where $0\le n\le N$ and length of the window is $N+1$. Next, the smoothed information content is segmented considering a predefined threshold, meaning that the regions with the content greater than the threshold are filtered out. This is carried out for both regular and inverted repeat homologies and at the end, the result would be the regions in the target sequence that are similar to the reference sequence (Figure~\ref{fig.simil}a). The described phase repeats for all of the target regions found, in the way that after creating the model for each region, the whole reference sequence is compressed to find those regions in the reference that are similar to each of the target regions (Figure~\ref{fig.simil}b). The final result would have the form of Figure~\ref{fig.simil}c.
 
-% \begin{figure}[!h]
-%   \centering
-%   \includegraphics[width=.95\linewidth]{simil.pdf}
-%   \caption{Finding similar regions in reference and target sequences. Smash++ finds, first, the regions in the target that are similar to the reference, and then, finds the regions in the reference that are similar to the detected target regions. This procedure is performance for both regular and inverted homologies.}
-%   \label{fig.simil}
-% \end{figure}
+ \begin{figure}[!h]
+   \centering
+   \includegraphics[width=.95\linewidth]{simil.pdf}
+   \caption{Finding similar regions in reference and target sequences. Smash++ finds, first, the regions in the target that are similar to the reference, and then, finds the regions in the reference that are similar to the detected target regions. This procedure is performance for both regular and inverted homologies.}
+   \label{fig.simil}
+ \end{figure}
 
-% \subsection{Computing complexities}
-% After finding the similar regions in reference and target sequences, we evaluate redundancy in each region, knowing that it is inversely related to Kolmogorov complexity, i.e., the more complex a sequence is, the less redundant it will be~\cite{hosseini2018cryfa}. The Kolmogorov complexity, $K$, of a binary string $s$, of finite length, is the length of the smallest binary program $p$ that computes $s$ in a universal Turing machine and halts. In other words, $K(s)=|p|$ is the minimum number of bits required to computationally retrieve the string $s$~\cite{turing1936on,li2009an}.
+ \subsection{Computing complexities}
+ After finding the similar regions in reference and target sequences, we evaluate redundancy in each region, knowing that it is inversely related to Kolmogorov complexity, i.e., the more complex a sequence is, the less redundant it will be~\cite{hosseini2018cryfa}. The Kolmogorov complexity, $K$, of a binary string $s$, of finite length, is the length of the smallest binary program $p$ that computes $s$ in a universal Turing machine and halts. In other words, $K(s)=|p|$ is the minimum number of bits required to computationally retrieve the string $s$~\cite{turing1936on,li2009an}.
 
-% The Kolmogorov complexity is not computable, hence, an alternative is required to compute it approximately. It has been shown in the literature that a compression algorithm can be employed for this purpose~\cite{zenil2015two,antao2018kolmogorov,faloutsos2007on}. In this paper, we employ a reference-free compressor to approximate the complexity and consequently, the redundancy of the founded similar regions in the reference and the target sequences. This compressor works based on cooperation of FCMs and STMMs, which is described in detail in Section~\ref{sec.coop}. Note that the difference between reference-based and reference-free version of such compressor is that in the former mode, a model is first created for the reference sequence and then, the target sequence is compressed based on that model, while in the latter mode, the model is progressively created at the time of compressing the target sequence.
+ The Kolmogorov complexity is not computable, hence, an alternative is required to compute it approximately. It has been shown in the literature that a compression algorithm can be employed for this purpose~\cite{zenil2015two,antao2018kolmogorov,faloutsos2007on}. In this paper, we employ a reference-free compressor to approximate the complexity and consequently, the redundancy of the founded similar regions in the reference and the target sequences. This compressor works based on cooperation of FCMs and STMMs, which is described in detail in Section~\ref{sec.coop}. Note that the difference between reference-based and reference-free version of such compressor is that in the former mode, a model is first created for the reference sequence and then, the target sequence is compressed based on that model, while in the latter mode, the model is progressively created at the time of compressing the target sequence.
 
 
 
