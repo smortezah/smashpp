@@ -232,9 +232,8 @@ void Param::set_auto_model_par() {
   const uint32_t small{300 * 1024};        // 300 K
   const uint32_t medium{1024 * 1024};      // 1 M
   const uint32_t large{10 * 1024 * 1024};  // 10 M
-  std::array<std::string, 4> par{
-      "11,0,0.01,0.95", "13,0,0.008,0.95", "18,0,0.002,0.95:13,0,0.01,0.95",
-      "20,0,0.002,0.95/5,0,0.05,0.95:13,0,0.005,0.95"};
+  std::array<std::string, 4> par{"11,0,0.01,0.95", "13,0,0.008,0.95",
+                                 "18,0,0.002,0.95", "20,0,0.002,0.95"};
   std::string ref_par, tar_par;
 
   if (ref_size < small)
