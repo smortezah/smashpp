@@ -40,16 +40,14 @@ void Param::parse(int argc, char**& argv) {
     if (*i == "-h") {
       help();
       throw EXIT_SUCCESS;
-    } else if (*i == "-v") {
-      verbose = true;
     } else if (*i == "--version") {
       std::cerr << "Smash++ " << VERSION << "\n"
-                << "Maintained by Morteza Hosseini (seyedmorteza@ua.pt)"
-                << "\n"
+                << "Maintained by Morteza Hosseini (seyedmorteza@ua.pt)" << "\n"
                 << "Copyright (C) " << DEV_YEARS
-                << " IEETA, University of Aveiro."
-                << "\n";
+                << " IEETA, University of Aveiro." << "\n";
       throw EXIT_SUCCESS;
+    } else if (*i == "-v") {
+      verbose = true;
     } else if (*i == "-ll") {
       std::cerr << "Level  Model parameters" << '\n';
       for (size_t i = 0; i != LEVEL.size(); ++i)
@@ -74,9 +72,10 @@ void Param::parse(int argc, char**& argv) {
         error("target file not specified. Use \"-t <fileName>\".");
       }
     } else if (option_inserted(i, "-l")) {
+      man_level = true;
       level = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LVL, MAX_LVL, level, "Level", Interval::closed, "default",
+          MIN_LVL, MAX_LVL, 0, "Level", Interval::closed, "default",
           Problem::warning);
       range->assert(level);
     } else if (option_inserted(i, "-m")) {
@@ -152,7 +151,6 @@ void Param::parse(int argc, char**& argv) {
           filter_scale(cmd), is_filter_scale(cmd));
       set->assert(filterScale);
     } else if (option_inserted(i, "-rb")) {
-      // ref_beg_guard = static_cast<int16_t>(std::stoi(*++i));
       ref_guard->beg = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
@@ -160,7 +158,6 @@ void Param::parse(int argc, char**& argv) {
           Interval::closed, "default", Problem::warning);
       range->assert(ref_guard->beg);
     } else if (option_inserted(i, "-re")) {
-      // ref_end_guard = static_cast<int16_t>(std::stoi(*++i));
       ref_guard->end = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
@@ -168,7 +165,6 @@ void Param::parse(int argc, char**& argv) {
           Interval::closed, "default", Problem::warning);
       range->assert(ref_guard->end);
     } else if (option_inserted(i, "-tb")) {
-      // tar_beg_guard = static_cast<int16_t>(std::stoi(*++i));
       tar_guard->beg = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
@@ -176,7 +172,6 @@ void Param::parse(int argc, char**& argv) {
           Interval::closed, "default", Problem::warning);
       range->assert(tar_guard->beg);
     } else if (option_inserted(i, "-te")) {
-      // tar_end_guard = static_cast<int16_t>(std::stoi(*++i));
       tar_guard->end = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
@@ -211,9 +206,13 @@ void Param::parse(int argc, char**& argv) {
     error("reference file not specified. Use \"-r <fileName>\".");
 
   if (!man_rm && !man_tm) {
-    parseModelsPars(std::begin(LEVEL[level]), std::end(LEVEL[level]), refMs);
-    parseModelsPars(std::begin(REFFREE_LEVEL[level]),
-                    std::end(REFFREE_LEVEL[level]), tarMs);
+    if (!man_level) {
+      set_auto_model_par();
+    } else {
+      parseModelsPars(std::begin(LEVEL[level]), std::end(LEVEL[level]), refMs);
+      parseModelsPars(std::begin(REFFREE_LEVEL[level]),
+                      std::end(REFFREE_LEVEL[level]), tarMs);
+    }
   } else if (!man_rm && man_tm) {
     refMs = tarMs;
   } else if (man_rm && !man_tm) {
@@ -225,6 +224,39 @@ void Param::parse(int argc, char**& argv) {
 
   keep_in_range(1ull, filt_size,
                 std::min(file_size(ref), file_size(tar)) / sampleStep);
+}
+
+void Param::set_auto_model_par() {
+  const auto ref_size{file_size(ref)};
+  const auto tar_size{file_size(tar)};
+  const uint32_t small{300 * 1024};        // 300 K
+  const uint32_t medium{1024 * 1024};      // 1 M
+  const uint32_t large{10 * 1024 * 1024};  // 10 M
+  std::array<std::string, 4> par{
+      "11,0,0.01,0.95", "13,0,0.008,0.95", "18,0,0.002,0.95:13,0,0.01,0.95",
+      "20,0,0.002,0.95/5,0,0.05,0.95:13,0,0.005,0.95"};
+  std::string ref_par, tar_par;
+
+  if (ref_size < small)
+    ref_par = par[0];
+  else if (ref_size < medium)
+    ref_par = par[1];
+  else if (ref_size < large)
+    ref_par = par[2];
+  else
+    ref_par = par[3];
+
+  if (tar_size < small)
+    tar_par = par[0];
+  else if (tar_size < medium)
+    tar_par = par[1];
+  else if (tar_size < large)
+    tar_par = par[2];
+  else
+    tar_par = par[3];
+
+  parseModelsPars(std::begin(ref_par), std::end(ref_par), refMs);
+  parseModelsPars(std::begin(tar_par), std::end(tar_par), tarMs);
 }
 
 template <typename Iter>

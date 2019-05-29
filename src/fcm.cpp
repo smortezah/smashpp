@@ -230,14 +230,24 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   rmm_row("Gamma        (g)", 'g');
   botrule();  // cerr << '\n';
 
-  toprule();
-  rstmm_row("Ref Substituttional Model(s)", 'h');
-  midrule();
-  rstmm_row("No. Subst.   (t)", 't');
-  rstmm_row("Inv. repeat  (ir)", 'i');
-  rmm_row("Alpha        (a)", 'a');
-  rmm_row("Gamma        (g)", 'g');
-  botrule();  // cerr << '\n';
+  {
+    bool show_rstmm = false;
+    for (const auto& model : rMs)
+      if (model.child) {
+        show_rstmm = true;
+        break;
+      }
+    if (show_rstmm) {
+      toprule();
+      rstmm_row("Ref Substituttional Model(s)", 'h');
+      midrule();
+      rstmm_row("No. Subst.   (t)", 't');
+      rstmm_row("Inv. repeat  (ir)", 'i');
+      rmm_row("Alpha        (a)", 'a');
+      rmm_row("Gamma        (g)", 'g');
+      botrule();  // cerr << '\n';
+    }
+  }
 
   toprule();
   tmm_row("Tar Model(s)", 'm');
@@ -258,14 +268,24 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   rmm_row("Gamma        (g)", 'g');
   botrule();  // cerr << '\n';
 
-  toprule();
-  tstmm_row("Tar Substituttional Model(s)", 'h');
-  midrule();
-  rstmm_row("No. Subst.   (t)", 't');
-  tstmm_row("Inv. repeat  (ir)", 'i');
-  rmm_row("Alpha        (a)", 'a');
-  rmm_row("Gamma        (g)", 'g');
-  botrule();  // cerr << '\n';
+  {
+    bool show_tstmm = false;
+    for (const auto& model : tMs)
+      if (model.child) {
+        show_tstmm = true;
+        break;
+      }
+    if (show_tstmm) {
+      toprule();
+      tstmm_row("Tar Substituttional Model(s)", 'h');
+      midrule();
+      rstmm_row("No. Subst.   (t)", 't');
+      tstmm_row("Inv. repeat  (ir)", 'i');
+      rmm_row("Alpha        (a)", 'a');
+      rmm_row("Gamma        (g)", 'g');
+      botrule();  // cerr << '\n';
+    }
+  }
 
   if (!par->compress) {
     toprule();
