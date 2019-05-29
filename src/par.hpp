@@ -60,10 +60,8 @@ static constexpr uint64_t MAX_TICK{0xffffffff};
 
 class Param {
  public:
-  std::string ref;
-  std::string tar;
-  std::string refName;
-  std::string tarName;
+  std::string ref, tar;
+  std::string refName, tarName;
   std::string seq;
   bool verbose;
   uint8_t level;
@@ -74,17 +72,10 @@ class Param {
   FilterType filt_type;
   uint64_t sampleStep;
   float thresh;
-  bool manWSize;
-  bool manThresh;
-  bool manFilterScale;
+  bool man_level, manWSize, manThresh, manFilterScale;
   FilterScale filterScale;
-  bool saveSeq;
-  bool saveProfile;
-  bool saveFilter;
-  bool saveSegment;
-  bool saveAll;
-  FileType refType;
-  FileType tarType;
+  bool saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
+  FileType refType, tarType;
   bool showInfo;
   bool compress;
   bool filter;
@@ -92,8 +83,7 @@ class Param {
   uint32_t ID;
   bool noRedun;
   bool deep;
-  std::vector<MMPar> refMs;
-  std::vector<MMPar> tarMs;
+  std::vector<MMPar> refMs, tarMs;
   std::string message;
 
   struct TarGuard {
@@ -111,7 +101,6 @@ class Param {
 
   Param()  // Define Param::Param(){} in *.hpp => compile error
       : verbose(false),
-        level(0),
         segSize(50),
         entropyN(2.0),
         nthr(4),
@@ -144,6 +133,7 @@ class Param {
   auto print_filter_scale() const -> std::string;
 
  private:
+  void set_auto_model_par();
   template <typename Iter>
   void parseModelsPars(Iter, Iter, std::vector<MMPar>&);
   void help() const;
@@ -154,8 +144,7 @@ class VizParam {
   bool verbose;
   bool inverse;
   bool regular;
-  bool showNRC;
-  bool showRedun;
+  bool showNRC, showRedun;
   std::string image;
   uint8_t link;
   uint8_t colorMode;
@@ -167,12 +156,10 @@ class VizParam {
   uint32_t min;
   bool manMult;
   std::string posFile;
-  uint64_t refTick;
-  uint64_t tarTick;
+  uint64_t refTick, tarTick;
   bool tickHumanRead;
   bool vertical;
-  std::string refName;
-  std::string tarName;
+  std::string refName, tarName;
 
   VizParam()
       : verbose(false),

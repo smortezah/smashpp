@@ -207,6 +207,17 @@ void write_pos_file(const std::vector<PosRow>& pos_out) {
   make_write_pos_pair(left, right1, right3);
 }
 
+double quantize_ave_ent(double ave_ent) {
+  if (ave_ent < 0.5)
+    return 0.5;
+  else if (ave_ent < 1)
+    return 1;
+  else if (ave_ent < 1.5)
+    return 1.5;
+  else
+    return ave_ent;
+}
+
 uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
                    std::vector<PosRow>& pos_out, uint64_t& current_pos_row) {
   par->ID = run_num;
