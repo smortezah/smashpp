@@ -207,13 +207,15 @@ void write_pos_file(const std::vector<PosRow>& pos_out) {
   make_write_pos_pair(left, right1, right3);
 }
 
-double quantize_ave_ent(double ave_ent) {
+double quantize_ave_ent(double ave_ent) { //todo. improve impl
   if (ave_ent < 0.5)
     return 0.5;
   else if (ave_ent < 1)
     return 1;
   else if (ave_ent < 1.5)
     return 1.5;
+  else if (ave_ent < 2)
+    return 2;
   else
     return ave_ent;
 }
