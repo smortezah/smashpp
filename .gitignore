@@ -7,6 +7,9 @@ diogo/xp2/*
 !diogo/xp2/GeCo
 !diogo/xp2/goose-fasta2seq
 !diogo/xp2/goose-splitreads
+!diogo/xp2/unwrap.py
+!diogo/xp2/MT-CO1.fa
+!diogo/xp2/simil.*
 /*.svg
 !example.svg
 **/build
