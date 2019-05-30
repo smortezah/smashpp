@@ -4,7 +4,7 @@ if os.name == 'posix':
     sep = '/'
 elif os.name == 'nt':
     sep = '\\'
-smashpp = '..' + sep + 'smashpp '
+smashpp = '..' + sep + '..' + sep + 'smashpp '
 
 
 def execute(cmd):
@@ -15,7 +15,8 @@ ref_name = 'MT-CO1.fa'
 tar_list = ['1']
 
 for tar_name in tar_list:
-    # execute(smashpp + '-r ' + ref + ' -t ' + tar)
+    execute(smashpp + '-r ' + ref_name + ' -t ' +
+            tar_name + ' -m 100')
 
     pos_file = open(ref_name + '.' + tar_name + '.pos')
     pos_file.readline()  # Skip header
