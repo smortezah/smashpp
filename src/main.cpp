@@ -353,6 +353,45 @@ void prepare_data(std::unique_ptr<Param>& par) {
   std::cerr << '\n';
 }
 
+
+
+
+
+void multithread_run2(std::unique_ptr<Param>& par, std::string name_seg_round1,
+                      uint8_t run_num, std::vector<PosRow>& pos_out,
+                      uint64_t current_pos_row, std::string tar_round2, uint64_t i) {
+  if (!par->verbose)
+    std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
+
+  std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
+  // auto num_seg_round2 = run_round(par, 2, run_num, pos_out, current_pos_row);
+  // if (par->verbose) std::cerr << '\n';
+
+  // if (num_seg_round2 != 0) {
+  //   // Round 3
+  //   if (par->deep) {
+  //     if (par->verbose)
+  //       std::cerr << "    " << italic("Deep compression") << '\n';
+
+  //     const auto name_seg_round2{
+  //         gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+  //     par->tar = ref_round2;
+
+  //     for (uint64_t j = 0; j != num_seg_round2; ++j) {
+  //       par->ref = name_seg_round2 + std::to_string(j);
+  //       auto num_seg_round3 =
+  //           run_round(par, 3, run_num, pos_out, current_pos_row);
+  //       if (par->verbose) std::cerr << "\n";
+  //       remove_temp_seg(par, num_seg_round3);
+  //     }
+  //   }  // Round 3
+
+  //   par->ref = ref_round2;
+  //   par->tar = tar_round2;
+  //   remove_temp_seg(par, num_seg_round2);
+  // }
+}
+
 void run(std::unique_ptr<Param>& par) {
   std::string ref_round1 = par->ref;
   std::string tar_round1 = par->tar;
@@ -380,39 +419,54 @@ void run(std::unique_ptr<Param>& par) {
           gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
       std::string tar_round2 = par->tar = par->ref;
 
+      std::thread arrThr[par->nthr];
       for (uint64_t i = 0; i != num_seg_round1; ++i) {
-        if (!par->verbose)
-          std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
 
-        std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
-        auto num_seg_round2 =
-            run_round(par, 2, run_num, pos_out, current_pos_row);
-        if (par->verbose) std::cerr << '\n';
+        arrThr[i] = std::thread(multithread_run2, std::ref(par),
+                                name_seg_round1, run_num, std::ref(pos_out),
+                                current_pos_row, tar_round2, i);
+        // if (i % par->nthr == par->nthr - 1) {
+        //   for (auto& thr : arrThr)
+        //     if (thr.joinable()) thr.join();
+        // }
 
-        if (num_seg_round2 != 0) {
-          // Round 3
-          if (par->deep) {
-            if (par->verbose)
-              std::cerr << "    " << italic("Deep compression") << '\n';
 
-            const auto name_seg_round2{
-                gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-            par->tar = ref_round2;
+        //   if (!par->verbose)
+        //     std::cerr << "\r" << par->message << "segment " << i + 1 << "
+        //     ...";
 
-            for (uint64_t j = 0; j != num_seg_round2; ++j) {
-              par->ref = name_seg_round2 + std::to_string(j);
-              auto num_seg_round3 =
-                  run_round(par, 3, run_num, pos_out, current_pos_row);
-              if (par->verbose) std::cerr << "\n";
-              remove_temp_seg(par, num_seg_round3);
-            }
-          }  // Round 3
+        //   std::string ref_round2 = par->ref = name_seg_round1 +
+        //   std::to_string(i); auto num_seg_round2 =
+        //       run_round(par, 2, run_num, pos_out, current_pos_row);
+        //   if (par->verbose) std::cerr << '\n';
 
-          par->ref = ref_round2;
-          par->tar = tar_round2;
-          remove_temp_seg(par, num_seg_round2);
-        }
+        //   if (num_seg_round2 != 0) {
+        //     // Round 3
+        //     if (par->deep) {
+        //       if (par->verbose)
+        //         std::cerr << "    " << italic("Deep compression") << '\n';
+
+        //       const auto name_seg_round2{
+        //           gen_name(par->ID, ref_round2, tar_round2,
+        //           Format::segment)};
+        //       par->tar = ref_round2;
+
+        //       for (uint64_t j = 0; j != num_seg_round2; ++j) {
+        //         par->ref = name_seg_round2 + std::to_string(j);
+        //         auto num_seg_round3 =
+        //             run_round(par, 3, run_num, pos_out, current_pos_row);
+        //         if (par->verbose) std::cerr << "\n";
+        //         remove_temp_seg(par, num_seg_round3);
+        //       }
+        //     }  // Round 3
+
+        //     par->ref = ref_round2;
+        //     par->tar = tar_round2;
+        //     remove_temp_seg(par, num_seg_round2);
+        //   }
       }
+      for (auto& thr : arrThr)
+        if (thr.joinable()) thr.join();
 
       if (!par->verbose)
         std::cerr << "\r" << par->message << "all segments done.\n\n";
