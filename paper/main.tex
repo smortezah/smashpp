@@ -473,12 +473,13 @@ This example shows the distinction between a finite-context model and a substitu
 
  The procedure of finding similar regions in a reference and a target sequence, illustrated in Figure~\ref{fig.simil}, is as follows: after creating the model of the reference, the target is compressed based on that model and the information content is calculated for each symbol in the target. Then, the content of the whole target sequence is smoothed by Hann window~\cite{blackman1959particular}, which is a discrete window function given by $w[n]=0.5-0.5\;\cos \left({\frac {2\pi n}{N}}\right)$, where $0\le n\le N$ and length of the window is $N+1$. Next, the smoothed information content is segmented considering a predefined threshold, meaning that the regions with the content greater than the threshold are filtered out. This is carried out for both regular and inverted repeat homologies and at the end, the result would be the regions in the target sequence that are similar to the reference sequence (Figure~\ref{fig.simil}a). The described phase repeats for all of the target regions found, in the way that after creating the model for each region, the whole reference sequence is compressed to find those regions in the reference that are similar to each of the target regions (Figure~\ref{fig.simil}b). The final result would have the form of Figure~\ref{fig.simil}c.
 
- \begin{figure*}[!h]
+ \begin{figure}[!h]
    \centering
-   \includegraphics[width=.7\linewidth]{simil.pdf}
+   \includegraphics[width=\linewidth]{simil.pdf}
+  %  \includegraphics[width=.7\linewidth]{simil.pdf}
    \caption{Finding similar regions in reference and target sequences. Smash++ finds, first, the regions in the target that are similar to the reference, and then, finds the regions in the reference that are similar to the detected target regions. This procedure is performance for both regular and inverted homologies.}
    \label{fig.simil}
- \end{figure*}
+ \end{figure}
 
  \subsection{Computing complexity}
  After finding the similar regions in reference and target sequences, we evaluate redundancy in each region, knowing that it is inversely related to Kolmogorov complexity, i.e., the more complex a sequence is, the less redundant it will be~\cite{hosseini2018cryfa}. The Kolmogorov complexity, $K$, of a binary string $s$, of finite length, is the length of the smallest binary program $p$ that computes $s$ in a universal Turing machine and halts. In other words, $K(s)=|p|$ is the minimum number of bits required to computationally retrieve the string $s$~\cite{turing1936on,li2009an}.
