@@ -356,7 +356,8 @@ This example shows the distinction between a finite-context model and a substitu
 
  \begin{figure*}[!h]
    \centering
-   \includegraphics[width=.7\linewidth]{data_struct.pdf}
+   \includegraphics[width=\linewidth]{data_struct.pdf}
+  %  \includegraphics[width=.7\linewidth]{data_struct.pdf}
    \caption{The data structures used by Smash++ to store the models in memory. (a) table of 64~bit counters that uses up to 128~MB of memory, (b) table of 32~bit counters that consumes at most 960~MB of memory, (c) table of 8~bit approximate counters with memory usage of up to 1~GB and (d) Count-Min-Log sketch of 4~bit counters which consumes up to $\frac{1}{2} w\times d$~B of memory, e.g., if $w=2^{30}$ and $d=4$, it uses 2~GB of memory.}
    \label{fig.struct}
  \end{figure*}
