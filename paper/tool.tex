@@ -66,13 +66,13 @@ Various options are provided with the interface of the proposed tool, which are 
   Flag & Input & Description \\
   \midrule
   \multicolumn{3}{@{}l@{}}{\textit{Required}} \\
-  \cmidrule{1-2}
+  % \cmidrule{1-2}
   \mono{-r} & Seq/FASTA/FASTQ & Reference file. \\
   \mono{-t} & Seq/FASTA/FASTQ & Target file. \\
   && It is highly recommended to have short names. \\
   \midrule
   \multicolumn{3}{@{}l@{}}{\textit{Optional}} \\
-  \cmidrule{1-2}
+  % \cmidrule{1-2}
   \mono{-l} & Integer: $[0, 5]$\newline Default: 0 & Level of compression. \\
   \midrule
   \mono{-m} & Integer: $[1, 2^{32}-1]$\newline Default: 50 & Minimum segment size. Only those regions in the reference file that are bigger than this value would be able to be considered for compression. \\
