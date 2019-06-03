@@ -1,26 +1,18 @@
 ##########   D O   N O T   C H A N G E   ##########
 import os
 
-if os.name == 'posix':
-    sep = '/'
-    install_cmd = 'sh install.sh'
-elif os.name == 'nt':
-    sep = '\\'
-    install_cmd = '.' + sep + 'install'
+# if os.name == 'posix':
+#     sep = '/'
+# elif os.name == 'nt':
+#     sep = '\\'
 # current_dir = os.getcwd()
 # path_data = 'dataset' + sep + 'sim' + sep
 # path_bin = 'bin' + sep
 # goose_fastqsimulation = path_bin + 'goose-fastqsimulation '
 # goose_mutatedna = path_bin + 'goose-mutatedna '
-# smashpp = '..' + sep + 'smashpp '
+smashpp = '.' + sep + 'smashpp '
 # smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 # sim_common_par = ' -w 15 -s 60 -vv '
-
-num_example_str = input("Enter the number of example: ")
-if num_example_str:
-    num_example = int(num_example_str)
-else:
-    num_example = 1
 
 
 def execute(cmd):
@@ -37,16 +29,34 @@ def install_samshpp():
             'cp .\\smashpp.exe .\\example\\ -Force;'
     cmd += 'cd example'
     execute(cmd)
+
+
+# Input number of the example
+num_example_str = input("Enter the number of example: ")
+if num_example_str:
+    num_example = int(num_example_str)
+else:
+    num_example = 1
+
+viz_out = 'x' + num_example
+
+Print('Installing Smash++')
+install_samshpp()
 ###################################################
 
 
 # User settings (can be changed)
-reference = 'ref'
-target = 'tar'
+ref = 'ref'
+tar = 'tar'
 
 
 if num_example == 1:
-    print("hi")
+    print("===[ Example 1 ]====================================")
+    execute(smashpp + '-r ' + ref + ' -t ' + tar + ' -l 3 -f 45')
+    out = 'x1'
+    execute(smashpp + '-viz -p 1 -b 200 -f 70 -w 15 -s 60 -vv -o ' +
+            viz_out + ref + '.' + tar + '.pos')
+
 elif num_example == 2:
     print("bye")
 
