@@ -14,9 +14,23 @@ ave_ent_file = 'ent'
 threshold = 0.2  # in (0, 1]
 ent_threshold = 8 * threshold
 
+if os.name == 'posix':
+    sep = '/'
+elif os.name == 'nt':
+    sep = '\\'
+
+
+def execute(cmd):
+    os.popen(cmd).read()
+
+
 if prepare_data:
     # Extract DNA
-
+    # in_file = open(data_in_path + sep + 'NC_000834')
+    in_file = open('.\\Taxonomy_Chordata_NCBI\\NC_000834')
+    line = in_file.readline()
+    if line[2:8] == 'Sequence':
+        print(line)
 
     # # Split reads
     # cmd = './goose-splitreads < ' + main_file
