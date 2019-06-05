@@ -74,16 +74,15 @@ Keyword1; keyword 2; keyword 3 (Three to ten keywords representing the main cont
 \end{keypoints*}
 
 \section{Introduction}
-With ever-increasing development of high-throughput sequencing (HTS) technologies, a massive amount of genomic information is produced at much higher speed, better quality and lower cost than was possible before~\cite{reuter2015high}. Analyses of such information by means of computational solutions has led to the advancement of our understanding of biology and disease, over the past decade~\cite{villamor2019high,rego2019high}.
-
-% Computational solutions have facilitated analyzing this data deluge.
-% Computational approaches play a key role in analyzing this data deluge.
+With ever-increasing development of high-throughput sequencing (HTS) technologies, a massive amount of genomic information is produced at much higher speed, better quality and lower cost than was possible before~\cite{reuter2015high}. Analyses of such information has led to the advancement of our understanding of biology and disease, over the past decade~\cite{villamor2019high,rego2019high}. Computational solutions play a key role in dry-lab analysis of the deluge of HTS data by using efficient and fast algorithms.
 
 Genome rearrangements are mutations that alter the arrangement of genes on a genome, and usually occur in presence of errors in cell division following meiosis or mitosis. These structural abnormalities in chromosomes include, but are not limited to, deletions, duplications, translocations, inversions and insertions, and mostly occur as an accident in the sperm or egg cell, and hence are present in every cell of the body~\cite{hartmann2018genome,gardner2018gardner}.
 
 Study on chromosomal aberrations, which underlie many genetic diseases and cancer, is crucial for diagnostics, prognostics and targeted therapeutics~\cite{theisen2010disorders}. Examples of such diseases are Wolf–Hirschhorn syndrome (WHS), that is caused by a partial deletion from human chromosome location 4p16.3~\cite{dufke2000microdeletion}, Charcot–Marie–Tooth disease (CMT), that is most commonly caused by duplication of the gene encoding peripheral myelin protein 22 (PMP22) on human chromosome 17~\cite{timmerman1992peripheral}, and acute myeloid leukemia (AML), that may be caused by translocations between human chromosome 8 and 21~\cite{huang2006acute}.
 
+We present an alignment-free method that finds chromosomal rearrangements between two DNA sequences based on their information content, which is obtained by a data compression technique. This computational solution follows a combination of probabilistic and algorithmic approaches for having a quantitative definition of information, although it can be seen as more of a probabilistic one~\cite{hosseini2019ac}. The proposed method is implemented, under the name of Smash++, and is capable of finding and visualizing informationally similar regions in an SVG image.
 
+Smash++ is an improved version of Smash~\cite{pratas2015alignment}, featuring (1)~improved accuracy, that is using multiple context models to find fine-grained along with coarse-grained chromosomal rearrangements, (2)~presenting complexity (redundancy) and relative redundancy of informationally similar regions in DNA sequences, (3)~improved user interface (UI), both in command line and resulting SVG image, and (4)~improved performance, employing thread parallelism.
 
 
 \subsection{Figures and Tables}
@@ -511,7 +510,7 @@ A list of available scientific research data repositories can be found in \href{
 \section{Declarations}
 
 \subsection{List of abbreviations}
-AML:~acute myeloid leukemia; CMT:~Charcot–Marie–Tooth; CMLS:~Count-Min-Log Sketch; CPU:~central processing unit; FCM:~finite-context model; GB:~gigabyte; GHz:~gigahertz; HTS:~high-throughput sequencing; KB:~kilobyte; MB:~megabyte; RAM:~random access memory; PMP22:~peripheral myelin protein 22; PRNG:~pseudo-random number generator; STMM:~substitutional tolerant Markov model; WHS:~Wolf–Hirschhorn syndrome.
+AML:~acute myeloid leukemia; CMT:~Charcot–Marie–Tooth; CMLS:~Count-Min-Log Sketch; CPU:~central processing unit; FCM:~finite-context model; GB:~gigabyte; GHz:~gigahertz; HTS:~high-throughput sequencing; KB:~kilobyte; MB:~megabyte; RAM:~random access memory; PMP22:~peripheral myelin protein 22; PRNG:~pseudo-random number generator; STMM:~substitutional tolerant Markov model; UI:~user interface; WHS:~Wolf–Hirschhorn syndrome.
 
 
 \subsection{Ethical Approval (optional)}
