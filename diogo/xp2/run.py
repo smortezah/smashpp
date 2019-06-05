@@ -2,29 +2,33 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-prepare_data = False
+prepare_data = True
 find_simil_seqs = False
-find_simil_regions = True
+find_simil_regions = False
 plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
+data_in_path = 'Taxonomy_Chordata_NCBI_Diogo_06-05-2019'
 num_files = 3327
 ave_ent_file = 'ent'
 threshold = 0.2  # in (0, 1]
 ent_threshold = 8 * threshold
 
 if prepare_data:
-    # Split reads
-    cmd = './goose-splitreads < ' + main_file
-    os.popen(cmd).read()
+    # Extract DNA
 
-    # Convert fasta to seq
-    for file in os.listdir("."):
-        if file.endswith("fasta"):
-            cmd = './goose-fasta2seq < ' + file + ' > ' + file[3:-6]
-            os.popen(cmd).read()
-            if os.path.exists(file):
-                os.remove(file)
+
+    # # Split reads
+    # cmd = './goose-splitreads < ' + main_file
+    # os.popen(cmd).read()
+
+    # # Convert fasta to seq
+    # for file in os.listdir("."):
+    #     if file.endswith("fasta"):
+    #         cmd = './goose-fasta2seq < ' + file + ' > ' + file[3:-6]
+    #         os.popen(cmd).read()
+    #         if os.path.exists(file):
+    #             os.remove(file)
 
 if find_simil_seqs:
     first = 1
