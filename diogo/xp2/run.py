@@ -110,7 +110,7 @@ if find_simil_regions:
     nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
     simil_mat = build_simil_matrix(nrc_mat)
 
-    smashpp_bin = ''
+    # smashpp_bin = ''
     if os.name == 'posix':
         smashpp_bin = './smashpp'
     elif os.name == 'nt':
