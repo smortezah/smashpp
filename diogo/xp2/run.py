@@ -25,12 +25,35 @@ def execute(cmd):
 
 
 if prepare_data:
-    # Extract DNA
-    # in_file = open(data_in_path + sep + 'NC_000834')
-    in_file = open('.\\Taxonomy_Chordata_NCBI\\NC_000834')
-    line = in_file.readline()
-    if line[2:8] == 'Sequence':
-        print(line)
+    data_out_path = 'dataset'
+    if not os.path.exists(data_out_path):
+        os.mkdir(data_out_path)
+
+    print('Linearizing DNA reads ...', end="\r")
+    cox1_pos_file = open('COX1_pos', 'w+')
+    cox1_pos_file.write('Name' + '\t' + 'Organism' +
+                        '\t' + 'COX1_beg' + '\t' + 'COX1_end' + '\n')
+    for input_file_name in os.listdir(data_in_path):
+        in_file = open(data_in_path + sep + input_file_name)
+        for line in in_file:
+            if line[2:10].lower() == 'sequence':
+                sequence = line[15:-3]
+            if line[2:10].lower() == 'organism':
+                organism = line[15:-3]
+            if line[2:6].lower() == 'cox1':
+                line_separated = line.split(', ')
+                cox1_beg = line_separated[1][1:-1]
+                cox1_end = line_separated[2][1:-3]
+                break
+
+        seq_file = open(data_out_path + sep + input_file_name + '.seq', 'w')
+        seq_file.write(sequence[int(cox1_beg)-1:].upper())
+        seq_file.write(sequence[0:int(cox1_beg)-1].upper() + '\n')
+        seq_file.close()
+
+        cox1_pos_file.write(input_file_name + '\t' + organism +
+                            '\t' + cox1_beg + '\t' + cox1_end + '\n')
+    print('Linearizing DNA reads finished.')
 
     # # Split reads
     # cmd = './goose-splitreads < ' + main_file
