@@ -71,7 +71,7 @@ if find_simil_seqs:
     first = 1
     if os.path.exists(ave_ent_file):
         os.remove(ave_ent_file)
- 
+
     out_file = open(ave_ent_file, "w")
     for i in range(first, num_files - first + 2):
         for j in range(first, num_files - first + 2):
