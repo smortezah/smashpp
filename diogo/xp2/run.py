@@ -1,4 +1,5 @@
 import os
+import shutil
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -31,9 +32,12 @@ if prepare_data:
 
     group_list = ['Mammalia', 'Agnatha', 'Placodermes', 'Chondrichthyes',
                   'Actinopterygii', 'Sarcopterygii']
+    for group in group_list:
+        if not os.path.exists(data_out_path + sep + group.lower()):
+            os.mkdir(data_out_path + sep + group.lower())
 
     print('Linearizing DNA reads ...', end="\r")
-    cox1_pos_file = open('COX1_pos', 'w+')
+    cox1_pos_file = open('COX1_pos.tsv', 'w+')
     cox1_pos_file.write('Name' + '\t' + 'Group' + '\t' + 'Organism' +
                         '\t' + 'COX1_beg' + '\t' + 'COX1_end' + '\n')
     for input_file_name in os.listdir(data_in_path):
@@ -48,7 +52,7 @@ if prepare_data:
                 group = ''
                 for item in group_list:
                     if item.lower() in taxonomy:
-                        group = item.capitalize()
+                        group = item
                         break
             if line[2:6].lower() == 'cox1':
                 line_separated = line.split(', ')
@@ -56,10 +60,11 @@ if prepare_data:
                 cox1_end = line_separated[2][1:-3]
                 break
 
-        # seq_file = open(data_out_path + sep + input_file_name + '.seq', 'w')
-        # seq_file.write(sequence[int(cox1_beg)-1:].upper())
-        # seq_file.write(sequence[0:int(cox1_beg)-1].upper() + '\n')
-        # seq_file.close()
+        seq_file = open(data_out_path + sep + group.lower() +
+                        sep + input_file_name + '.seq', 'w')
+        seq_file.write(sequence[int(cox1_beg)-1:].upper())
+        seq_file.write(sequence[0:int(cox1_beg)-1].upper() + '\n')
+        seq_file.close()
 
         cox1_pos_file.write(input_file_name + '\t' + group + '\t' + organism +
                             '\t' + cox1_beg + '\t' + cox1_end + '\n')
