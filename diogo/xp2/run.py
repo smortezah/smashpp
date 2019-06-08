@@ -155,7 +155,7 @@ if plot_simil:
     # for x in nrc_mat:
     #     print(*x, sep="\t")
 
-    simil_mat = build_simil_matrix(nrc_mat, ent_threshold)
+    # simil_mat = build_simil_matrix(nrc_mat, ent_threshold)
     # # for x in simil_mat:
     # #     print(*x, sep=" ")
 
@@ -164,10 +164,24 @@ if plot_simil:
     # # # plt.show()
     # # plt.savefig('nrc_mat_'+str(threshold)+'.pdf')
 
-    plt.matshow(simil_mat)
-    plt.colorbar()
+    # plt.matshow(simil_mat)
+    # plt.colorbar()
     # plt.show()
     # plt.savefig('simil.'+str(threshold)+'.pdf')
+
+    def plot_subplot(threshold, axis):
+        axis.matshow(build_simil_matrix(nrc_mat, threshold))
+        axis.set_title("Threshold = " + str(threshold))
+        axis.xaxis.set_ticks_position('bottom')
+
+    fig, axes = plt.subplots(nrows=2, ncols=3)
+    plot_subplot(1.2, axes[0,0])
+    plot_subplot(1.3, axes[0,1])
+    plot_subplot(1.4, axes[0,2])
+    plot_subplot(1.5, axes[1,0])
+    plot_subplot(1.6, axes[1,1])
+    plot_subplot(1.7, axes[1,2])
+    plt.show()
 
 
 #%%
