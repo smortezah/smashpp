@@ -151,13 +151,11 @@ if find_simil_regions:
 if plot_simil:
     nrc_mat = np.genfromtxt(
         ave_ent_file + '_Chondrichthyes.tsv', skip_header=True)
-    plt.matshow(nrc_mat)
-    plt.show()
 
     # for x in nrc_mat:
     #     print(*x, sep="\t")
 
-    # simil_mat = build_simil_matrix(nrc_mat)
+    simil_mat = build_simil_matrix(nrc_mat)
     # # for x in simil_mat:
     # #     print(*x, sep=" ")
 
@@ -166,9 +164,9 @@ if plot_simil:
     # # # plt.show()
     # # plt.savefig('nrc_mat_'+str(threshold)+'.pdf')
 
-    # plt.matshow(simil_mat)
-    # plt.colorbar()
-    # plt.show()
+    plt.matshow(simil_mat)
+    plt.colorbar()
+    plt.show()
     # # plt.savefig('simil.'+str(threshold)+'.pdf')
 
 
