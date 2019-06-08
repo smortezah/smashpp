@@ -3,8 +3,8 @@ import shutil
 import matplotlib.pyplot as plt
 import numpy as np
 
-prepare_data = True
-find_simil_seqs = False
+prepare_data = False
+find_simil_seqs = True
 find_simil_regions = False
 plot_simil = False
 
@@ -14,6 +14,9 @@ num_files = 3327
 ave_ent_file = 'ent'
 threshold = 0.2  # in (0, 1]
 ent_threshold = 8 * threshold
+group_list = ['Mammalia', 'Agnatha', 'Placodermes', 'Chondrichthyes',
+              'Actinopterygii', 'Sarcopterygii']
+dataset_path = 'dataset'
 
 if os.name == 'posix':
     sep = '/'
@@ -26,15 +29,11 @@ def execute(cmd):
 
 
 if prepare_data:
-    data_out_path = 'dataset'
-    if not os.path.exists(data_out_path):
-        os.mkdir(data_out_path)
-
-    group_list = ['Mammalia', 'Agnatha', 'Placodermes', 'Chondrichthyes',
-                  'Actinopterygii', 'Sarcopterygii']
+    if not os.path.exists(dataset_path):
+        os.mkdir(dataset_path)
     for group in group_list:
-        if not os.path.exists(data_out_path + sep + group.lower()):
-            os.mkdir(data_out_path + sep + group.lower())
+        if not os.path.exists(dataset_path + sep + group.lower()):
+            os.mkdir(dataset_path + sep + group.lower())
 
     print('Linearizing DNA reads ...', end="\r")
     cox1_pos_file = open('COX1_pos.tsv', 'w+')
@@ -60,7 +59,7 @@ if prepare_data:
                 cox1_end = line_separated[2][1:-3]
                 break
 
-        seq_file = open(data_out_path + sep + group.lower() +
+        seq_file = open(dataset_path + sep + group.lower() +
                         sep + input_file_name + '.seq', 'w')
         seq_file.write(sequence[int(cox1_beg)-1:].upper())
         seq_file.write(sequence[0:int(cox1_beg)-1].upper() + '\n')
@@ -83,16 +82,17 @@ if prepare_data:
     #             os.remove(file)
 
 if find_simil_seqs:
-    first = 1
-    if os.path.exists(ave_ent_file):
-        os.remove(ave_ent_file)
+    out_file_name = ave_ent_file + '_Chondrichthyes.tsv'
+    if os.path.exists(out_file_name):
+        os.remove(out_file_name)
 
-    out_file = open(ave_ent_file, "w")
+    out_file = open(out_file_name, "w")
+    chondrichthyes_file_list = os.listdir(dataset_path + sep + 'chondrichthyes')
+    
     for i in range(first, num_files - first + 2):
         for j in range(first, num_files - first + 2):
-            cmd = './geco -rm 6:1:0:0/0 -rm 10:10:1:0/0 -rm 14:50:1:3/10 ' + \
-                '-c 30 -g 0.95 -r ' + str(i) + ' ' + str(j) + ' > log'
-            os.popen(cmd).read()
+            execute('./geco -rm 6:1:0:0/0 -rm 10:10:1:0/0 -rm 14:50:1:3/10 ' +
+                    '-c 30 -g 0.95 -r ' + str(i) + ' ' + str(j) + ' > log')
 
             with open('log', 'r') as log_file:
                 for line in log_file:
@@ -100,11 +100,33 @@ if find_simil_seqs:
                     if len(line_list) > 5:
                         out_file.write(str(line_list[5]) + "\t")
         out_file.write("\n")
-    out_file.close()
 
     for file in ["log", "*.co"]:
         if os.path.exists(file):
             os.remove(file)
+
+
+
+    # first = 1
+    # if os.path.exists(ave_ent_file):
+    #     os.remove(ave_ent_file)
+
+    # out_file = open(ave_ent_file, "w")
+    # for i in range(first, num_files - first + 2):
+    #     for j in range(first, num_files - first + 2):
+    #         execute('./geco -rm 6:1:0:0/0 -rm 10:10:1:0/0 -rm 14:50:1:3/10 ' +
+    #                 '-c 30 -g 0.95 -r ' + str(i) + ' ' + str(j) + ' > log')
+
+    #         with open('log', 'r') as log_file:
+    #             for line in log_file:
+    #                 line_list = line.split()
+    #                 if len(line_list) > 5:
+    #                     out_file.write(str(line_list[5]) + "\t")
+    #     out_file.write("\n")
+
+    # for file in ["log", "*.co"]:
+    #     if os.path.exists(file):
+    #         os.remove(file)
 
 
 def build_simil_matrix(nrc_mat):
