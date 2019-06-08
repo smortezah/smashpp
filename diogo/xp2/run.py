@@ -116,13 +116,13 @@ if find_simil_seqs:
             os.remove(file)
 
 
-def build_simil_matrix(nrc_mat):
+def build_simil_matrix(nrc_mat, threshold):
     # num = 0
     num_files = len(nrc_mat)
     simil_mat = [[0 for x in range(num_files)] for y in range(num_files)]
     for i in range(0, num_files):
         for j in range(i+1, num_files):
-            if min(nrc_mat[i][j], nrc_mat[j][i]) < ent_threshold:
+            if min(nrc_mat[i][j], nrc_mat[j][i]) < threshold:
                 # num += 1
                 simil_mat[i][j] = 1
                 # simil_mat[j][i] = 1
@@ -132,7 +132,7 @@ def build_simil_matrix(nrc_mat):
 
 if find_simil_regions:
     nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
-    simil_mat = build_simil_matrix(nrc_mat)
+    simil_mat = build_simil_matrix(nrc_mat, ent_threshold)
 
     # smashpp_bin = ''
     if os.name == 'posix':
@@ -155,7 +155,7 @@ if plot_simil:
     # for x in nrc_mat:
     #     print(*x, sep="\t")
 
-    simil_mat = build_simil_matrix(nrc_mat)
+    simil_mat = build_simil_matrix(nrc_mat, ent_threshold)
     # # for x in simil_mat:
     # #     print(*x, sep=" ")
 
@@ -166,8 +166,8 @@ if plot_simil:
 
     plt.matshow(simil_mat)
     plt.colorbar()
-    plt.show()
-    # # plt.savefig('simil.'+str(threshold)+'.pdf')
+    # plt.show()
+    # plt.savefig('simil.'+str(threshold)+'.pdf')
 
 
 #%%
