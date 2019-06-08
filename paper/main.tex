@@ -73,7 +73,9 @@ Keyword1; keyword 2; keyword 3 (Three to ten keywords representing the main cont
 \end{itemize}
 \end{keypoints*}
 
-\section{Background}
+\section{Findings}
+
+\subsection{Background}
 With ever-increasing development of high-throughput sequencing (HTS) technologies, a massive amount of genomic information is produced at much higher speed, better quality and lower cost than was possible before~\cite{reuter2015high}. Analyses of such information has led to the advancement of our understanding of biology and disease, over the past decade~\cite{villamor2019high,rego2019high}. Computational solutions play a key role in dry-lab analysis of the deluge of HTS data by using efficient and fast algorithms.
 
 Genome rearrangements are mutations that alter the arrangement of genes on a genome, and usually occur in presence of errors in cell division following meiosis or mitosis. These structural abnormalities in chromosomes include, but are not limited to, deletions, duplications, translocations, inversions and insertions, and mostly occur as an accident in the sperm or egg cell, and hence are present in every cell of the body~\cite{hartmann2018genome,gardner2018gardner}.
@@ -86,44 +88,49 @@ Smash++ is an improved version of Smash~\cite{pratas2015alignment}, featuring (1
 
 In the following sections we first describe the proposed method in detail, including data modelling, finding similar regions and computing complexity. Then, we describe the datasets that are used in different experiments and how they can be accessed. Next, we provide details of the experiments carried out on the datasets along with findings based on their analysis. Source codes are publicly available under GNU GPL v3 license and also, the datasets are available on public repositories for download and use. Finally, we provide conclusions and discussion.
 
+% \subsection{Newly added features}
+% \subsubsection{Illustrate relative redundancy}
+% Both SMASH and Smash++ use relative redundancy (information content), equation~\ref{eq.inf.content}, as a measure of similarity between pairs of DNA subsequences. However, Smash++ reports to the user this measurement in a graphical fashion. This provides the user with a convenient way to see, quantitatively, how much similar a subsequence is to another subsequence. Note that the relative redundancy value falls within the range $(0.0, 2.0]$, and it is reversely related to the similarity, meaning that the more similar are the two subsequences, the less is the value of relative redundancy; one can see it as a dis-similarity measure.
 
-% \section{Data Description}
-
-% A statement providing background and purpose for collection of these data should be presented for readers without specialist knowledge in that area. A brief description of the protocol for data collection, data curation and quality control, as well as potential uses should be included, as well as outlining how the data can be accessed if it is not deposited in our repository.
 
 
-% \section{Discussion}
+% % \section{Data Description}
 
-% The discussion should spell out the major conclusions and interpretations of the work, including some explanation on the importance and relevance of the dataset and analysis. It should not be restatement of the analyses done and their basic conclusions. The discussion section can end with a concluding paragraph that clearly states the main conclusions of the research along with directions for future work. Summary illustrations can be included.
+% % A statement providing background and purpose for collection of these data should be presented for readers without specialist knowledge in that area. A brief description of the protocol for data collection, data curation and quality control, as well as potential uses should be included, as well as outlining how the data can be accessed if it is not deposited in our repository.
 
-% \begin{sidewaystable}
-% \caption{Automobile land speed records (GR 5-10). This is the same table as before, but rotated sideways.}
-% \label{tab:example:sideways}
-% % Use "S" column identifier (from siunitx) to align on decimal point.
-% % Use "L", "R" or "C" column identifier for auto-wrapping columns with tabularx.
-% \begin{tabularx}{\linewidth}{S l l l r L}
-% \toprule
-% {Speed (mph)} & {Driver} & {Car} & {Engine} & {Date} & {Extra comments}\\
-% \midrule
-% 407.447     & Craig Breedlove & Spirit of America          & GE J47    & 8/5/63  & (Just to demo a full-width table with auto-wrapping long lines) \\
-% 413.199     & Tom Green       & Wingfoot Express           & WE J46    & 10/2/64  \\
-% 434.22      & Art Arfons      & Green Monster              & GE J79    & 10/5/64  \\
-% 468.719     & Craig Breedlove & Spirit of America          & GE J79    & 10/13/64 \\
-% 526.277     & Craig Breedlove & Spirit of America          & GE J79    & 10/15/65 \\
-% 536.712     & Art Arfons      & Green Monster              & GE J79    & 10/27/65 \\
-% 555.127     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/2/65  \\
-% 576.553     & Art Arfons      & Green Monster              & GE J79    & 11/7/65  \\
-% 600.601     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/15/65 \\
-% 622.407     & Gary Gabelich   & Blue Flame                 & Rocket    & 10/23/70 \\
-% 633.468     & Richard Noble   & Thrust 2                   & RR RG 146 & 10/4/83  \\
-% 763.035     & Andy Green      & Thrust SSC                 & RR Spey   & 10/15/97\\
-% \bottomrule
-% \end{tabularx}
 
-% \begin{tablenotes}
-% \item Source is from this website: \url{https://www.sedl.org/afterschool/toolkits/science/pdf/ast_sci_data_tables_sample.pdf}
-% \end{tablenotes}
-% \end{sidewaystable}
+% % % \section{Discussion}
+
+% % % The discussion should spell out the major conclusions and interpretations of the work, including some explanation on the importance and relevance of the dataset and analysis. It should not be restatement of the analyses done and their basic conclusions. The discussion section can end with a concluding paragraph that clearly states the main conclusions of the research along with directions for future work. Summary illustrations can be included.
+
+% % % \begin{sidewaystable}
+% % % \caption{Automobile land speed records (GR 5-10). This is the same table as before, but rotated sideways.}
+% % % \label{tab:example:sideways}
+% % % % Use "S" column identifier (from siunitx) to align on decimal point.
+% % % % Use "L", "R" or "C" column identifier for auto-wrapping columns with tabularx.
+% % % \begin{tabularx}{\linewidth}{S l l l r L}
+% % % \toprule
+% % % {Speed (mph)} & {Driver} & {Car} & {Engine} & {Date} & {Extra comments}\\
+% % % \midrule
+% % % 407.447     & Craig Breedlove & Spirit of America          & GE J47    & 8/5/63  & (Just to demo a full-width table with auto-wrapping long lines) \\
+% % % 413.199     & Tom Green       & Wingfoot Express           & WE J46    & 10/2/64  \\
+% % % 434.22      & Art Arfons      & Green Monster              & GE J79    & 10/5/64  \\
+% % % 468.719     & Craig Breedlove & Spirit of America          & GE J79    & 10/13/64 \\
+% % % 526.277     & Craig Breedlove & Spirit of America          & GE J79    & 10/15/65 \\
+% % % 536.712     & Art Arfons      & Green Monster              & GE J79    & 10/27/65 \\
+% % % 555.127     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/2/65  \\
+% % % 576.553     & Art Arfons      & Green Monster              & GE J79    & 11/7/65  \\
+% % % 600.601     & Craig Breedlove & Spirit of America, Sonic 1 & GE J79    & 11/15/65 \\
+% % % 622.407     & Gary Gabelich   & Blue Flame                 & Rocket    & 10/23/70 \\
+% % % 633.468     & Richard Noble   & Thrust 2                   & RR RG 146 & 10/4/83  \\
+% % % 763.035     & Andy Green      & Thrust SSC                 & RR Spey   & 10/15/97\\
+% % % \bottomrule
+% % % \end{tabularx}
+
+% % % \begin{tablenotes}
+% % % \item Source is from this website: \url{https://www.sedl.org/afterschool/toolkits/science/pdf/ast_sci_data_tables_sample.pdf}
+% % % \end{tablenotes}
+% % % \end{sidewaystable}
 
 
 \section{Methods} \label{sec.methods}
@@ -361,7 +368,7 @@ This example shows the distinction between a finite-context model and a substitu
     \midrule
     \bottomrule
   \end{tabularx}
-  
+
 \begin{tablenotes}
 \item \textsuperscript{*}\url{https://github.com/pratas/goose}
 \end{tablenotes}
