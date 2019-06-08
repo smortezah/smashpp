@@ -17,6 +17,7 @@ ent_threshold = 8 * threshold
 group_list = ['Mammalia', 'Agnatha', 'Placodermes', 'Chondrichthyes',
               'Actinopterygii', 'Sarcopterygii']
 dataset_path = 'dataset'
+geco = './GeCo '
 
 if os.name == 'posix':
     sep = '/'
@@ -82,30 +83,36 @@ if prepare_data:
     #             os.remove(file)
 
 if find_simil_seqs:
+    in_file_path = dataset_path + sep + 'chondrichthyes'
+    in_file_list = os.listdir(in_file_path)
+
     out_file_name = ave_ent_file + '_Chondrichthyes.tsv'
     if os.path.exists(out_file_name):
         os.remove(out_file_name)
-
     out_file = open(out_file_name, "w")
-    chondrichthyes_file_list = os.listdir(dataset_path + sep + 'chondrichthyes')
-    
-    for i in range(first, num_files - first + 2):
-        for j in range(first, num_files - first + 2):
-            execute('./geco -rm 6:1:0:0/0 -rm 10:10:1:0/0 -rm 14:50:1:3/10 ' +
-                    '-c 30 -g 0.95 -r ' + str(i) + ' ' + str(j) + ' > log')
+    for file in in_file_list:
+        out_file.write('\t' + file[:-4])
+    out_file.write('\n')
+
+    first = 0
+    for i in range(first, len(in_file_list)):
+        out_file.write(in_file_list[i][:-4] + '\t')
+        for j in range(first, len(in_file_list)):
+            ref = in_file_path + sep + in_file_list[i]
+            tar = in_file_path + sep + in_file_list[j]
+            execute(geco + '-rm 6:1:0:0/0 -rm 10:10:1:0/0 -rm 14:50:1:3/10 ' +
+                    '-c 30 -g 0.95 -r ' + ref + ' ' + tar + ' > log')
 
             with open('log', 'r') as log_file:
                 for line in log_file:
                     line_list = line.split()
                     if len(line_list) > 5:
-                        out_file.write(str(line_list[5]) + "\t")
-        out_file.write("\n")
+                        out_file.write(str(line_list[5]) + '\t')
+        out_file.write('\n')
 
     for file in ["log", "*.co"]:
         if os.path.exists(file):
             os.remove(file)
-
-
 
     # first = 1
     # if os.path.exists(ave_ent_file):
