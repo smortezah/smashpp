@@ -1,4 +1,4 @@
-#%%
+# %%
 import os
 import shutil
 import matplotlib.pyplot as plt
@@ -171,17 +171,19 @@ if plot_simil:
 
     def plot_subplot(threshold, axis):
         axis.matshow(build_simil_matrix(nrc_mat, threshold))
-        axis.set_title("Threshold = " + str(threshold))
+        axis.set_title("Thresh = " + str(threshold/8))
         axis.xaxis.set_ticks_position('bottom')
 
-    fig, axes = plt.subplots(nrows=2, ncols=3)
-    plot_subplot(1.2, axes[0,0])
-    plot_subplot(1.3, axes[0,1])
-    plot_subplot(1.4, axes[0,2])
-    plot_subplot(1.5, axes[1,0])
-    plot_subplot(1.6, axes[1,1])
-    plot_subplot(1.7, axes[1,2])
-    plt.show()
+    n_row = 2
+    n_col = 3
+    thresh = [[0.2, 0.5, 0.8], [1.1, 1.4, 1.7]]
+    fig, axes = plt.subplots(nrows=n_row, ncols=n_col)
+    plt.subplots_adjust(wspace=0.5, hspace=0.5)
+    for r in range(n_row):
+        for c in range(n_col):
+            plot_subplot(thresh[r][c], axes[r, c])
+    # plt.show()
+    plt.savefig('similarity_Chondrichthyes.pdf')
 
 
-#%%
+# %%
