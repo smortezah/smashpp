@@ -117,36 +117,39 @@ if find_simil_seqs:
 
 
 def build_simil_matrix(nrc_mat, threshold):
-    # num = 0
     num_files = len(nrc_mat)
     simil_mat = [[0 for x in range(num_files)] for y in range(num_files)]
     for i in range(0, num_files):
         for j in range(i+1, num_files):
             if min(nrc_mat[i][j], nrc_mat[j][i]) < threshold:
-                # num += 1
                 simil_mat[i][j] = 1
-                # simil_mat[j][i] = 1
-    # print(num)
     return simil_mat
 
 
 if find_simil_regions:
-    # nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
-    # simil_mat = build_simil_matrix(nrc_mat, ent_threshold)
+    threshold = 0.2
+    nrc_file = open(ave_ent_file + '_Chondrichthyes.tsv')
+    data_path = dataset_path + sep + 'Chondrichthyes'.lower() + sep
 
-    # # smashpp_bin = ''
-    # if os.name == 'posix':
-    #     smashpp_bin = './smashpp'
-    # elif os.name == 'nt':
-    #     smashpp_bin = '.\smashpp.exe'
+    header = nrc_file.readline().split()
+    nrc_file.seek(0)
+    nrc_mat = np.genfromtxt(nrc_file, skip_header=True,
+                            usecols=range(1, len(header) + 1))
+    simil_mat = build_simil_matrix(nrc_mat, threshold)
 
-    # for i in range(0, len(simil_mat)):
-    #     for j in range(i, len(simil_mat[0])):
-    #         if i != j and simil_mat[i][j] == 1:
-    #             cmd = smashpp_bin + ' -rm 11,0,1,0.95/8,0,1,0.9 -r ' + \
-    #                 str(i + 1) + ' -t ' + str(j + 1) + ' -f 50 -th ' + \
-    #                 str(ent_threshold) + ' -m 13 -rb 7 -re 3 -dp'
-    #             os.popen(cmd).read()
+    # smashpp_bin = ''
+    if os.name == 'posix':
+        smashpp_bin = './smashpp '
+    elif os.name == 'nt':
+        smashpp_bin = '.\smashpp.exe '
+
+    for i in range(0, len(simil_mat)):
+        for j in range(i+1, len(simil_mat)):
+            if simil_mat[i][j] == 1:
+                execute(smashpp_bin + '-rm 11,0,1,0.95/8,0,1,0.9 -r ' +
+                        data_path + header[i] + '.seq' + ' -t ' + data_path +
+                        header[j] + '.seq' + ' -f 50 -th ' +
+                        str(ent_threshold) + ' -m 13 -rb 7 -re 3 -dp')
 
 if plot_simil:
     nrc_mat = np.genfromtxt(
