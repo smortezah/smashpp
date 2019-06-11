@@ -6,8 +6,8 @@ import numpy as np
 
 prepare_data = False
 find_simil_seqs = False
-find_simil_regions = False
-plot_simil = True
+find_simil_regions = True
+plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
 data_in_path = 'Taxonomy_Chordata_NCBI_Diogo_06-05-2019'
@@ -131,22 +131,22 @@ def build_simil_matrix(nrc_mat, threshold):
 
 
 if find_simil_regions:
-    nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
-    simil_mat = build_simil_matrix(nrc_mat, ent_threshold)
+    # nrc_mat = np.genfromtxt(ave_ent_file, dtype=float)
+    # simil_mat = build_simil_matrix(nrc_mat, ent_threshold)
 
-    # smashpp_bin = ''
-    if os.name == 'posix':
-        smashpp_bin = './smashpp'
-    elif os.name == 'nt':
-        smashpp_bin = '.\smashpp.exe'
+    # # smashpp_bin = ''
+    # if os.name == 'posix':
+    #     smashpp_bin = './smashpp'
+    # elif os.name == 'nt':
+    #     smashpp_bin = '.\smashpp.exe'
 
-    for i in range(0, len(simil_mat)):
-        for j in range(i, len(simil_mat[0])):
-            if i != j and simil_mat[i][j] == 1:
-                cmd = smashpp_bin + ' -rm 11,0,1,0.95/8,0,1,0.9 -r ' + \
-                    str(i + 1) + ' -t ' + str(j + 1) + ' -f 50 -th ' + \
-                    str(ent_threshold) + ' -m 13 -rb 7 -re 3 -dp'
-                os.popen(cmd).read()
+    # for i in range(0, len(simil_mat)):
+    #     for j in range(i, len(simil_mat[0])):
+    #         if i != j and simil_mat[i][j] == 1:
+    #             cmd = smashpp_bin + ' -rm 11,0,1,0.95/8,0,1,0.9 -r ' + \
+    #                 str(i + 1) + ' -t ' + str(j + 1) + ' -f 50 -th ' + \
+    #                 str(ent_threshold) + ' -m 13 -rb 7 -re 3 -dp'
+    #             os.popen(cmd).read()
 
 if plot_simil:
     nrc_mat = np.genfromtxt(
