@@ -148,8 +148,12 @@ if find_simil_regions:
             if simil_mat[i][j] == 1:
                 execute(smashpp_bin + '-rm 11,0,1,0.95/8,0,1,0.9 -r ' +
                         data_path + header[i] + '.seq' + ' -t ' + data_path +
-                        header[j] + '.seq' + ' -f 50 -th ' +
-                        str(ent_threshold) + ' -m 13 -rb 7 -re 3 -dp')
+                        header[j] + '.seq' + ' -f 100 -th ' +
+                        str(ent_threshold) + ' -m 20 ')
+                # execute(smashpp_bin + '-rm 11,0,1,0.95/8,0,1,0.9 -r ' +
+                #         data_path + header[i] + '.seq' + ' -t ' + data_path +
+                #         header[j] + '.seq' + ' -f 50 -th ' +
+                #         str(ent_threshold) + ' -m 13 -rb 7 -re 3 -dp')
 
 if plot_simil:
     nrc_mat = np.genfromtxt(
