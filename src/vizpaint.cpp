@@ -336,42 +336,82 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
                                    const std::vector<Position>::iterator& e,
                                    std::unique_ptr<VizParam>& p) const {
   if (e->begRef != DBLANK) {
-    auto cylinder = std::make_unique<Cylinder>();
-    cylinder->width = seqWidth;
-    // cylinder->stroke_width = 3;//todo
-    cylinder->stroke_width = 0.75;
-    cylinder->fill_opacity = cylinder->stroke_opacity = p->opacity;
-    cylinder->height = get_point(e->endRef - e->begRef);
-    cylinder->stroke = shade(rgb_color(e->start));
+    auto rect = std::make_unique<Rectangle>();
+    rect->width = seqWidth;
+    rect->stroke_width = 0.75;
+    rect->fill_opacity = 
+      // rect->stroke_opacity = 
+      p->opacity;
+    rect->height = get_point(e->endRef - e->begRef);
+    rect->stroke = shade(rgb_color(e->start));
     if (p->vertical) {
-      cylinder->x = x;
-      cylinder->y = y + get_point(e->begRef);
+      rect->x = x;
+      rect->y = y + get_point(e->begRef);
     } else {
-      cylinder->x = x + get_point(e->begRef);
-      cylinder->y = y + seqWidth;
-      cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
-                            std::to_string(cylinder->y) + ")";
+      rect->x = x + get_point(e->begRef);
+      rect->y = y + seqWidth;
+      rect->transform = "rotate(-90 " + std::to_string(rect->x) + " " +
+                            std::to_string(rect->y) + ")";
     }
-    cylinder->id = std::to_string(cylinder->x) + std::to_string(cylinder->y);
-    cylinder->fill = seq_gradient(fPlot, rgb_color(e->start), cylinder->id);
-    cylinder->plot(fPlot);
+    rect->id = std::to_string(rect->x) + std::to_string(rect->y);
+    rect->fill = seq_gradient(fPlot, rgb_color(e->start), rect->id);
+    rect->plot(fPlot);
 
-    cylinder->stroke_width = 0.7;
-    if (p->showNRC) {
-      cylinder->id += "NRC";
-      cylinder->fill = periph_gradient(
-          fPlot, nrc_color(e->entRef, p->colorMode), cylinder->id);
-      cylinder->stroke = shade(nrc_color(e->entRef, p->colorMode), 0.96);
-      plot_periph(fPlot, cylinder, p->vertical, 'r', 0);
-    }
-    if (p->showRedun) {
-      cylinder->id += "Redun";
-      cylinder->fill = periph_gradient(
-          fPlot, redun_color(e->selfRef, p->colorMode), cylinder->id);
-      cylinder->stroke = shade(redun_color(e->selfRef, p->colorMode), 0.95);
-      plot_periph(fPlot, cylinder, p->vertical, 'r', uint8_t(p->showNRC));
-    }
+// auto cylinder = std::make_unique<Cylinder>();
+//     cylinder->stroke_width = 0.7;
+//     if (p->showNRC) {
+//       cylinder->id += "NRC";
+//       cylinder->fill = periph_gradient(
+//           fPlot, nrc_color(e->entRef, p->colorMode), cylinder->id);
+//       cylinder->stroke = shade(nrc_color(e->entRef, p->colorMode), 0.96);
+//       plot_periph(fPlot, cylinder, p->vertical, 'r', 0);
+//     }
+//     if (p->showRedun) {
+//       cylinder->id += "Redun";
+//       cylinder->fill = periph_gradient(
+//           fPlot, redun_color(e->selfRef, p->colorMode), cylinder->id);
+//       cylinder->stroke = shade(redun_color(e->selfRef, p->colorMode), 0.95);
+//       plot_periph(fPlot, cylinder, p->vertical, 'r', uint8_t(p->showNRC));
+//     }
   }
+  
+  // if (e->begRef != DBLANK) {
+  //   auto cylinder = std::make_unique<Cylinder>();
+  //   cylinder->width = seqWidth;
+  //   // cylinder->stroke_width = 3;//todo
+  //   cylinder->stroke_width = 0.75;
+  //   cylinder->fill_opacity = cylinder->stroke_opacity = p->opacity;
+  //   cylinder->height = get_point(e->endRef - e->begRef);
+  //   cylinder->stroke = shade(rgb_color(e->start));
+  //   if (p->vertical) {
+  //     cylinder->x = x;
+  //     cylinder->y = y + get_point(e->begRef);
+  //   } else {
+  //     cylinder->x = x + get_point(e->begRef);
+  //     cylinder->y = y + seqWidth;
+  //     cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
+  //                           std::to_string(cylinder->y) + ")";
+  //   }
+  //   cylinder->id = std::to_string(cylinder->x) + std::to_string(cylinder->y);
+  //   cylinder->fill = seq_gradient(fPlot, rgb_color(e->start), cylinder->id);
+  //   cylinder->plot(fPlot);
+
+  //   cylinder->stroke_width = 0.7;
+  //   if (p->showNRC) {
+  //     cylinder->id += "NRC";
+  //     cylinder->fill = periph_gradient(
+  //         fPlot, nrc_color(e->entRef, p->colorMode), cylinder->id);
+  //     cylinder->stroke = shade(nrc_color(e->entRef, p->colorMode), 0.96);
+  //     plot_periph(fPlot, cylinder, p->vertical, 'r', 0);
+  //   }
+  //   if (p->showRedun) {
+  //     cylinder->id += "Redun";
+  //     cylinder->fill = periph_gradient(
+  //         fPlot, redun_color(e->selfRef, p->colorMode), cylinder->id);
+  //     cylinder->stroke = shade(redun_color(e->selfRef, p->colorMode), 0.95);
+  //     plot_periph(fPlot, cylinder, p->vertical, 'r', uint8_t(p->showNRC));
+  //   }
+  // }
 }
 
 inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
