@@ -320,8 +320,11 @@ void Path::plot_shadow(std::ofstream& f, std::string shadowFill) {
 void Cylinder::plot(std::ofstream& f) const {
   auto path = std::make_unique<Path>();
   path->id = std::to_string(x) + std::to_string(y);
-  path->d = path->M(x, y) + path->v(height) +
-            path->a(width / 2, ry, 0, 0, 0, width, 0) + path->v(-height) +
+  // path->d = path->M(x, y) + path->v(height) +
+  //           path->a(width / 2, ry, 0, 0, 0, width, 0) + path->v(-height) +
+  //           path->a(width / 2, ry, 0, 0, 0 /*1*/, -width, 0) + path->z();
+  path->d = path->M(x, y+ry) + path->v(height-2*ry) +
+            path->a(width / 2, ry, 0, 0, 0, width, 0) + path->v(-height+2*ry) +
             path->a(width / 2, ry, 0, 0, 0 /*1*/, -width, 0) + path->z();
   path->fill = fill;
   path->fill_opacity = fill_opacity;
@@ -390,7 +393,9 @@ void Rectangle::plot(std::ofstream& f) const {
   if (rx != 0.0f) f << attr("rx", rx, true);
   f << attr("ry", ry, true) << attr("fill", fill)
     << attr("fill-opacity", fill_opacity, true) << attr("stroke", stroke)
-    << attr("stroke-width", stroke_width, true) << end_empty_elem();
+    << attr("stroke-width", stroke_width, true);
+  if (!transform.empty()) f << attr("transform", transform);
+  f << end_empty_elem();
 }
 
 std::string Polygon::point(float x, float y) const {

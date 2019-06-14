@@ -40,7 +40,7 @@ static constexpr auto OPAC{0.9f};
 static constexpr auto MIN_OPAC{0.0f};
 static constexpr auto MAX_OPAC{1.0f};
 static constexpr uint32_t WDTH{16};
-static constexpr uint32_t MIN_WDTH{15};
+static constexpr uint32_t MIN_WDTH{10};//todo 15
 static constexpr uint32_t MAX_WDTH{100};
 static constexpr uint32_t SPC{62};
 static constexpr uint32_t MIN_SPC{15};

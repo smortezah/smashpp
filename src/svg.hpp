@@ -227,6 +227,7 @@ class Rectangle : public SVG {
   float stroke_width;
   std::string fill;
   std::string stroke;
+  std::string transform;
 
   Rectangle() : rx(1.0f), ry(1.0f), fill_opacity(OPAC) {}
   void plot(std::ofstream&) const;
