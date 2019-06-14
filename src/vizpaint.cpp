@@ -1793,7 +1793,7 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
 
   auto path = std::make_unique<Path>();
   path->id = "rhs" + std::to_string(x) + std::to_string(y);
-  path->fill = path->stroke = "red";
+  path->fill = path->stroke = "white";
   path->fill_opacity = path->stroke_opacity = 1.0;
   path->stroke_width = cylinder->stroke_width;
 
@@ -1810,8 +1810,7 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   }
   // cylinder->stroke_dasharray = "8 3";
   path->stroke_dasharray = cylinder->stroke_dasharray;
-  // path->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
-  //                         std::to_string(cylinder->y) + ")";
+  path->transform = cylinder->transform;
   path->d =
       path->M(cylinder->x, cylinder->y + cylinder->height - cylinder->ry) +
       path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, cylinder->width, 0) +
@@ -1819,7 +1818,7 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
       path->v(-cylinder->ry) + path->z();
   path->plot(f);
   path->d =
-      path->M(cylinder->x+cylinder->width, cylinder->y + cylinder->ry) +
+      path->M(cylinder->x + cylinder->width, cylinder->y + cylinder->ry) +
       path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, -cylinder->width, 0) +
       path->v(-cylinder->ry) + path->h(cylinder->width) +
       path->v(cylinder->ry) + path->z();
@@ -1837,6 +1836,20 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
     cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
                           std::to_string(cylinder->y) + ")";
   }
+  path->stroke_dasharray = cylinder->stroke_dasharray;
+  path->transform = cylinder->transform;
+  path->d =
+      path->M(cylinder->x, cylinder->y + cylinder->height - cylinder->ry) +
+      path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, cylinder->width, 0) +
+      path->v(cylinder->ry) + path->h(-cylinder->width) +
+      path->v(-cylinder->ry) + path->z();
+  path->plot(f);
+  path->d =
+      path->M(cylinder->x + cylinder->width, cylinder->y + cylinder->ry) +
+      path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, -cylinder->width, 0) +
+      path->v(-cylinder->ry) + path->h(cylinder->width) +
+      path->v(cylinder->ry) + path->z();
+  path->plot(f);
   cylinder->plot(f);
 }
 
