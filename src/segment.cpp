@@ -24,19 +24,16 @@ void Segment::partition(std::vector<PosRow>& pos_out, float filtered) {
 }
 
 void Segment::finalize_partition(std::vector<PosRow>& pos_out) {
-  if (endPos != begPos) {
-    if (endPos - begPos >= minSize) {
-      ++nSegs;
+  if (endPos != begPos && endPos - begPos >= minSize) {
+    ++nSegs;
 
-      const auto beg = (static_cast<int64_t>(begPos - beg_guard) < 0)
-                           ? 0
-                           : begPos - beg_guard;
-      const auto end =
-          (endPos + end_guard > totalSize) ? totalSize : endPos + end_guard;
-      const auto ent = sumEnt / numEnt;
+    const auto beg =
+        (static_cast<int64_t>(begPos - beg_guard) < 0) ? 0 : begPos - beg_guard;
+    const auto end =
+        (endPos + end_guard > totalSize) ? totalSize : endPos + end_guard;
+    const auto ent = sumEnt / numEnt;
 
-      pos_out.push_back(PosRow(beg, end, ent));
-    }
+    pos_out.push_back(PosRow(beg, end, ent));
   }
 }
 
