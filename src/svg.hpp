@@ -202,7 +202,8 @@ class Cylinder : public SVG {
   std::string transform;
 
   Cylinder()
-      : ry(2.0f),
+      // : ry(2.0f),
+      : ry(5.f),//todo
         stroke_width(1.0f),
         fill_opacity(OPAC),
         stroke_opacity(1.0f),

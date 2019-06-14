@@ -332,13 +332,13 @@ inline void VizPaint::plot_background(std::ofstream& f) const {
   rect->plot(f);
 }
 
-// inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
 inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
                                    const std::vector<Position>::iterator& e,
                                    std::unique_ptr<VizParam>& p) const {
   if (e->begRef != DBLANK) {
     auto cylinder = std::make_unique<Cylinder>();
     cylinder->width = seqWidth;
+    // cylinder->stroke_width = 3;//todo
     cylinder->stroke_width = 0.75;
     cylinder->fill_opacity = cylinder->stroke_opacity = p->opacity;
     cylinder->height = get_point(e->endRef - e->begRef);
@@ -1747,7 +1747,8 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   auto cylinder = std::make_unique<Cylinder>();
   cylinder->width = seqWidth;
   cylinder->height = refSize;
-  cylinder->stroke_width = 1;
+  // cylinder->stroke_width = 1;
+  cylinder->stroke_width = 0.8;//todo
   if (vertical) {
     cylinder->x = x;
     cylinder->y = y;
