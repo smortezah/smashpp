@@ -125,8 +125,9 @@ void write_pos_file_impl(const std::vector<OutRowAux>& out_aux) {
            << std::to_string(file_size(tar)) << '\n';
 
   // Body
-  uint64_t left_beg, left_end, right_beg, right_end;
-  prc_t left_ent, left_self_ent, right_ent, right_self_ent;
+  uint64_t left_beg = 0, left_end = 0, right_beg = 0, right_end = 0;
+  prc_t left_ent = 0.0, left_self_ent = 0.0, right_ent = 0.0,
+        right_self_ent = 0.0;
 
   for (auto row : out_aux) {
     // Left hand side
