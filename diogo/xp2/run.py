@@ -135,7 +135,7 @@ def count_rearrange(file_name):
 
 
 if find_simil_regions:
-    threshold = 0.2
+    smash_threshold = 1.5
     nrc_file = open(ave_ent_file + '_Chondrichthyes.tsv')
     data_path = dataset_path + sep + 'Chondrichthyes'.lower() + sep
 
@@ -143,7 +143,7 @@ if find_simil_regions:
     nrc_file.seek(0)
     nrc_mat = np.genfromtxt(nrc_file, skip_header=True,
                             usecols=range(1, len(header) + 1))
-    simil_mat = build_simil_matrix(nrc_mat, threshold)
+    simil_mat = build_simil_matrix(nrc_mat, smash_threshold)
 
     # smashpp_bin = ''
     if os.name == 'posix':
@@ -154,22 +154,17 @@ if find_simil_regions:
     if not os.path.exists(result_path):
         os.mkdir(result_path)
 
-    rearrange_count_name = 'rearrange_count.tsv'
-    if os.path.exists(rearrange_count_name):
-        os.remove(rearrange_count_name)
-    rearrange_count = open(rearrange_count_name, 'w')
-
     rearrange_mat = [[0 for x in range(len(simil_mat))]
                      for y in range(len(simil_mat))]
 
     for i in range(0, len(simil_mat)):
         for j in range(i+1, len(simil_mat)):
             if simil_mat[i][j] == 1:
-                # execute(smashpp_bin +
-                #         '-r ' + data_path + header[i] + '.seq ' +
-                #         '-t ' + data_path + header[j] + '.seq ' +
-                #         '-rm 11,0,1,0.95/8,0,1,0.9 ' +
-                #         '-m 20 -f 20 -dp -th 1.8')
+                execute(smashpp_bin +
+                        '-r ' + data_path + header[i] + '.seq ' +
+                        '-t ' + data_path + header[j] + '.seq ' +
+                        '-rm 11,0,1,0.95/8,0,1,0.9 ' +
+                        '-m 20 -f 20 -dp -th 1.8')
                 # execute(smashpp_bin + '-rm 11,0,1,0.95/8,0,1,0.9 -r ' +
                 #         data_path + header[i] + '.seq' + ' -t ' + data_path +
                 #         header[j] + '.seq' + ' -f 50 -th ' +
@@ -178,16 +173,22 @@ if find_simil_regions:
                 pos_file_name = header[i] + '.seq.' + header[j] + '.seq.pos'
                 rearrange_mat[i][j] = count_rearrange(pos_file_name)
 
-                # if os.path.exists(result_path + sep + pos_file_name):
-                #     os.remove(result_path + sep + pos_file_name)
-                # shutil.move(pos_file_name, result_path)
+                if os.path.exists(result_path + sep + pos_file_name):
+                    os.remove(result_path + sep + pos_file_name)
+                shutil.move(pos_file_name, result_path)
 
-    np.savetxt(rearrange_count, header, delimiter='\t')
-    # rearrange_count.write(header)
-    # for i in range(len(header)+1):
-    #     rearrange_count.write(header[i] + '\t' + str(rearrange_mat[i]))
-
-    # plt.matshow(rearrange_mat)
+    rearrange_count_name = 'rearrange_count.tsv'
+    if os.path.exists(rearrange_count_name):
+        os.remove(rearrange_count_name)
+    with open(rearrange_count_name, 'w') as rearrange_count:
+        for i in range(len(header)):
+            rearrange_count.write('\t' + header[i])
+        rearrange_count.write('\n')
+        for i in range(len(header)):
+            rearrange_count.write(header[i])
+            for j in range(len(header)):
+                rearrange_count.write('\t' + str(rearrange_mat[i][j]))
+            rearrange_count.write('\n')
 
 if plot_simil:
     nrc_mat = np.genfromtxt(
