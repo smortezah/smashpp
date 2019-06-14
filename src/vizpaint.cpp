@@ -339,9 +339,9 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
     auto rect = std::make_unique<Rectangle>();
     rect->width = seqWidth;
     rect->stroke_width = 0.75;
-    rect->fill_opacity = 
-      // rect->stroke_opacity = 
-      p->opacity;
+    rect->fill_opacity =
+        // rect->stroke_opacity =
+        p->opacity;
     rect->height = get_point(e->endRef - e->begRef);
     rect->stroke = shade(rgb_color(e->start));
     if (p->vertical) {
@@ -351,30 +351,31 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
       rect->x = x + get_point(e->begRef);
       rect->y = y + seqWidth;
       rect->transform = "rotate(-90 " + std::to_string(rect->x) + " " +
-                            std::to_string(rect->y) + ")";
+                        std::to_string(rect->y) + ")";
     }
     rect->id = std::to_string(rect->x) + std::to_string(rect->y);
     rect->fill = seq_gradient(fPlot, rgb_color(e->start), rect->id);
     rect->plot(fPlot);
 
-// auto cylinder = std::make_unique<Cylinder>();
-//     cylinder->stroke_width = 0.7;
-//     if (p->showNRC) {
-//       cylinder->id += "NRC";
-//       cylinder->fill = periph_gradient(
-//           fPlot, nrc_color(e->entRef, p->colorMode), cylinder->id);
-//       cylinder->stroke = shade(nrc_color(e->entRef, p->colorMode), 0.96);
-//       plot_periph(fPlot, cylinder, p->vertical, 'r', 0);
-//     }
-//     if (p->showRedun) {
-//       cylinder->id += "Redun";
-//       cylinder->fill = periph_gradient(
-//           fPlot, redun_color(e->selfRef, p->colorMode), cylinder->id);
-//       cylinder->stroke = shade(redun_color(e->selfRef, p->colorMode), 0.95);
-//       plot_periph(fPlot, cylinder, p->vertical, 'r', uint8_t(p->showNRC));
-//     }
+    // auto cylinder = std::make_unique<Cylinder>();
+    //     cylinder->stroke_width = 0.7;
+    //     if (p->showNRC) {
+    //       cylinder->id += "NRC";
+    //       cylinder->fill = periph_gradient(
+    //           fPlot, nrc_color(e->entRef, p->colorMode), cylinder->id);
+    //       cylinder->stroke = shade(nrc_color(e->entRef, p->colorMode), 0.96);
+    //       plot_periph(fPlot, cylinder, p->vertical, 'r', 0);
+    //     }
+    //     if (p->showRedun) {
+    //       cylinder->id += "Redun";
+    //       cylinder->fill = periph_gradient(
+    //           fPlot, redun_color(e->selfRef, p->colorMode), cylinder->id);
+    //       cylinder->stroke = shade(redun_color(e->selfRef, p->colorMode),
+    //       0.95); plot_periph(fPlot, cylinder, p->vertical, 'r',
+    //       uint8_t(p->showNRC));
+    //     }
   }
-  
+
   // if (e->begRef != DBLANK) {
   //   auto cylinder = std::make_unique<Cylinder>();
   //   cylinder->width = seqWidth;
@@ -389,7 +390,8 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
   //   } else {
   //     cylinder->x = x + get_point(e->begRef);
   //     cylinder->y = y + seqWidth;
-  //     cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
+  //     cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " "
+  //     +
   //                           std::to_string(cylinder->y) + ")";
   //   }
   //   cylinder->id = std::to_string(cylinder->x) + std::to_string(cylinder->y);
@@ -1786,9 +1788,17 @@ inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity,
 inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   auto cylinder = std::make_unique<Cylinder>();
   cylinder->width = seqWidth;
-  cylinder->height = refSize;
   // cylinder->stroke_width = 1;
-  cylinder->stroke_width = 0.8;//todo
+  cylinder->stroke_width = 0.8;  // todo
+
+  auto path = std::make_unique<Path>();
+  path->id = "rhs" + std::to_string(x) + std::to_string(y);
+  path->fill = path->stroke = "red";
+  path->fill_opacity = path->stroke_opacity = 1.0;
+  path->stroke_width = cylinder->stroke_width;
+
+  // Reference
+  cylinder->height = refSize - cylinder->stroke_width / 2;
   if (vertical) {
     cylinder->x = x;
     cylinder->y = y;
@@ -1799,8 +1809,24 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
                           std::to_string(cylinder->y) + ")";
   }
   // cylinder->stroke_dasharray = "8 3";
+  path->stroke_dasharray = cylinder->stroke_dasharray;
+  // path->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
+  //                         std::to_string(cylinder->y) + ")";
+  path->d =
+      path->M(cylinder->x, cylinder->y + cylinder->height - cylinder->ry) +
+      path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, cylinder->width, 0) +
+      path->v(cylinder->ry) + path->h(-cylinder->width) +
+      path->v(-cylinder->ry) + path->z();
+  path->plot(f);
+  path->d =
+      path->M(cylinder->x+cylinder->width, cylinder->y + cylinder->ry) +
+      path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, -cylinder->width, 0) +
+      path->v(-cylinder->ry) + path->h(cylinder->width) +
+      path->v(cylinder->ry) + path->z();
+  path->plot(f);
   cylinder->plot(f);
 
+  // Target
   cylinder->height = tarSize;
   if (vertical) {
     cylinder->x = x + seqWidth + innerSpace;
