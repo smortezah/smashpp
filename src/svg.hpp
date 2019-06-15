@@ -8,6 +8,7 @@
 #include "par.hpp"
 #include "exception.hpp"
 #include "number.hpp"
+// #include "color.hpp"
 
 namespace smashpp {  
 static constexpr uint8_t PREC_VIZ{2};  // Precision
