@@ -5,7 +5,8 @@
 #include "svg.hpp"
 #include <algorithm>
 #include <fstream>
-#include "color.hpp"
+// #include "color.hpp"
+#include "color.cpp"
 #include "def.hpp"
 using namespace smashpp;
 
