@@ -6,7 +6,8 @@ import numpy as np
 
 prepare_data = False
 find_simil_seqs = False
-find_simil_regions = True
+find_simil_regions = False
+plot_rearrange_count = True
 plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
@@ -227,5 +228,10 @@ if plot_simil:
     # plt.show()
     plt.savefig('similarity_Chondrichthyes.pdf')
 
+if plot_rearrange_count:
+    rearrange_count_mat = np.genfromtxt(
+        'rearrange_count.tsv', skip_header=True)
+    plt.matshow(rearrange_count_mat)
+    plt.colorbar()
 
 # %%
