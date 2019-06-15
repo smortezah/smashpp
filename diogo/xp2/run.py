@@ -99,7 +99,7 @@ if find_simil_seqs:
 
     first = 0
     for i in range(first, len(in_file_list)):
-        out_file.write(in_file_list[i][:-4] + '\t')
+        out_file.write(in_file_list[i][:-4])
         for j in range(first, len(in_file_list)):
             ref = in_file_path + sep + in_file_list[i]
             tar = in_file_path + sep + in_file_list[j]
@@ -110,7 +110,7 @@ if find_simil_seqs:
                 for line in log_file:
                     line_list = line.split()
                     if len(line_list) > 5:
-                        out_file.write(str(line_list[5]) + '\t')
+                        out_file.write('\t' + str(line_list[5]))
         out_file.write('\n')
 
     for file in ["log", "*.co"]:
