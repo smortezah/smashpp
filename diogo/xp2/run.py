@@ -7,7 +7,7 @@ import numpy as np
 prepare_data = False
 find_simil_seqs = False
 find_simil_regions = False
-plot_rearrange_count = True
+plot_rearrange_count = False
 plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
