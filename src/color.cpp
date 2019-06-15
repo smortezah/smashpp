@@ -45,7 +45,7 @@ inline RGB to_rgb(std::string color) {
     else if (color == "blue")
       return RGB(0, 0, 255);
     else
-      error("color undefined");
+      error("color \"" + color + "\"undefined");
   }
   return RGB();
 }

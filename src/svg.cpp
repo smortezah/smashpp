@@ -2,11 +2,11 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
+#include "svg.hpp"
 #include <algorithm>
 #include <fstream>
-#include "svg.hpp"
-#include "def.hpp"
 #include "color.hpp"
+#include "def.hpp"
 using namespace smashpp;
 
 std::string SVG::attr(std::string name, float value, bool precise,
@@ -320,11 +320,9 @@ void Path::plot_shadow(std::ofstream& f, std::string shadowFill) {
 void Cylinder::plot(std::ofstream& f) const {
   auto path = std::make_unique<Path>();
   path->id = std::to_string(x) + std::to_string(y);
-  // path->d = path->M(x, y) + path->v(height) +
-  //           path->a(width / 2, ry, 0, 0, 0, width, 0) + path->v(-height) +
-  //           path->a(width / 2, ry, 0, 0, 0 /*1*/, -width, 0) + path->z();
-  path->d = path->M(x, y+ry) + path->v(height-2*ry) +
-            path->a(width / 2, ry, 0, 0, 0, width, 0) + path->v(-height+2*ry) +
+  path->d = path->M(x, y + ry) + path->v(height - 2 * ry) +
+            path->a(width / 2, ry, 0, 0, 0, width, 0) +
+            path->v(-height + 2 * ry) +
             path->a(width / 2, ry, 0, 0, 0 /*1*/, -width, 0) + path->z();
   path->fill = fill;
   path->fill_opacity = fill_opacity;
@@ -393,9 +391,43 @@ void Rectangle::plot(std::ofstream& f) const {
   if (rx != 0.0f) f << attr("rx", rx, true);
   f << attr("ry", ry, true) << attr("fill", fill)
     << attr("fill-opacity", fill_opacity, true) << attr("stroke", stroke)
-    << attr("stroke-width", stroke_width, true);
+    << attr("stroke-width", stroke_width, true)
+    << attr("stroke-opacity", stroke_opacity, true);
   if (!transform.empty()) f << attr("transform", transform);
   f << end_empty_elem();
+}
+
+void Rectangle::plot_ir(std::ofstream& f, std::string wave) {
+  plot(f);
+
+  // Plot pattern
+  auto pattern = std::make_unique<Pattern>();
+  pattern->id = wave + std::to_string(x) + std::to_string(y);
+  pattern->patternUnits = "userSpaceOnUse";
+  pattern->x = x;
+  pattern->y = y;
+  pattern->width = width;
+  pattern->height = 14;
+
+  auto path = std::make_unique<Path>();
+  path->stroke_width = 0.3 * pattern->height;
+  path->d = path->m(-path->stroke_width / 2,
+                    pattern->height - path->stroke_width / 2) +
+            path->l(pattern->width / 2 + path->stroke_width / 2,
+                    -pattern->height + path->stroke_width) +
+            path->l(pattern->width / 2 + path->stroke_width / 2,
+                    pattern->height - path->stroke_width);
+  // path->stroke_width = 1.3 * stroke_width;
+  // path->d = path->m(0, 0) +
+  //           path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
+  if (wave == "Wavy")
+    path->stroke = shade(stroke, 0.95);
+  else if (wave == "WavyWhite")
+    path->stroke = "white";
+  make_pattern(f, pattern, path);
+
+  fill = "url(#" + pattern->id + ")";
+  plot(f);
 }
 
 std::string Polygon::point(float x, float y) const {

@@ -225,12 +225,14 @@ class Rectangle : public SVG {
   float ry;
   float fill_opacity;
   float stroke_width;
+  float stroke_opacity;
   std::string fill;
   std::string stroke;
   std::string transform;
 
-  Rectangle() : rx(1.0f), ry(1.0f), fill_opacity(OPAC) {}
+  Rectangle() : rx(1.0f), ry(1.0f), fill_opacity(OPAC), stroke_opacity(1.0f) {}
   void plot(std::ofstream&) const;
+  void plot_ir(std::ofstream&, std::string = "Wavy");
 };
 
 class Polygon : public SVG {

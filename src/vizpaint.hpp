@@ -5,11 +5,11 @@
 #ifndef SMASHPP_VIZPAINT_HPP
 #define SMASHPP_VIZPAINT_HPP
 
+#include "color.cpp"
+#include "color.hpp"
 #include "def.hpp"
 #include "par.hpp"
 #include "svg.hpp"
-#include "color.hpp"
-#include "color.cpp"
 
 namespace smashpp {
 static const std::string FMT_N{"n"};  // Format - position of N files
@@ -145,6 +145,8 @@ class VizPaint {
                     std::unique_ptr<VizParam>&) const;
   void plot_seq_tar(std::ofstream&, const std::vector<Position>::iterator&,
                     std::unique_ptr<VizParam>&, bool) const;
+  void plot_periph(std::ofstream&, std::unique_ptr<Rectangle>&, bool, char,
+                   uint8_t) const;
   void plot_periph(std::ofstream&, std::unique_ptr<Cylinder>&, bool, char,
                    uint8_t) const;
   void plot_connector(std::ofstream&, const std::vector<Position>::iterator&,
@@ -182,4 +184,4 @@ class VizPaint {
 };
 }  // namespace smashpp
 
-#endif // SMASHPP_VIZPAINT_HPP
+#endif  // SMASHPP_VIZPAINT_HPP
