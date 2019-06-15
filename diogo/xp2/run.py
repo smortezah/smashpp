@@ -136,7 +136,7 @@ def count_rearrange(file_name):
 
 
 if find_simil_regions:
-    smash_threshold = 1.5
+    geco_threshold = 1.5
     nrc_file = open(ave_ent_file + '_Chondrichthyes.tsv')
     data_path = dataset_path + sep + 'Chondrichthyes'.lower() + sep
 
@@ -144,7 +144,7 @@ if find_simil_regions:
     nrc_file.seek(0)
     nrc_mat = np.genfromtxt(nrc_file, skip_header=True,
                             usecols=range(1, len(header) + 1))
-    simil_mat = build_simil_matrix(nrc_mat, smash_threshold)
+    simil_mat = build_simil_matrix(nrc_mat, geco_threshold)
 
     # smashpp_bin = ''
     if os.name == 'posix':
@@ -230,7 +230,7 @@ if plot_simil:
 
 if plot_rearrange_count:
     rearrange_count_mat = np.genfromtxt(
-        'rearrange_count.tsv', skip_header=True)
+        'rearrange_count_Chondrichthyes.tsv', skip_header=True)
     plt.matshow(rearrange_count_mat)
     plt.colorbar()
 

@@ -24,20 +24,21 @@ library(viridis)
 #   theme_bw() + theme(axis.text.x=element_text(angle=90, vjust=0.3))
 
 
-rearrange <- read.table("rearrange_count.tsv", header = TRUE)
+rearrange <- read.table("rearrange_count_Chondrichthyes.tsv", header = TRUE)
 rearrange_mat <- as.matrix(rearrange)
 melted_rearrange_mat <- melt(rearrange_mat)
 
 
 ggplot(melted_rearrange_mat, aes(x = Var2, y = Var1)) +
   geom_raster(aes(fill = value)) +
-  scale_fill_gradient(low="white", high="black") +
-  # scale_fill_viridis(direction = 1) +
+  # scale_fill_gradient(low="white", high="darkblue") +
+  scale_fill_viridis(direction = 1) +
   theme_bw() +
   ggtitle("Number of rearrangements in Chondrichthyes") +
   theme(axis.title.x = element_blank(), axis.title.y = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.3))
 
+ggsave("rearrange_count_Chondrichthyes.pdf", scale = 3)
 
 # ggplot(melted_ent_mat, aes(x = value)) +
 #   geom_density(fill = 'blue')
