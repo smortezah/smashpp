@@ -339,7 +339,7 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
     auto rect = std::make_unique<Rectangle>();
     rect->width = seqWidth;
     rect->stroke_width = 0.75;
-    rect->fill_opacity = /* rect->stroke_opacity = */ p->opacity;
+    rect->fill_opacity = rect->stroke_opacity = p->opacity;
     rect->height = get_point(e->endRef - e->begRef);
     rect->stroke = rect->fill;
     // rect->stroke = shade(rgb_color(e->start));
@@ -423,56 +423,56 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
                                    const std::vector<Position>::iterator& e,
                                    std::unique_ptr<VizParam>& p,
                                    bool inverted) const {
-  // auto rect = std::make_unique<Rectangle>();
-  // rect->width = seqWidth;
-  // rect->stroke_width = 0.75;
-  // rect->fill_opacity = /* rect->stroke_opacity = */ p->opacity;
-  // rect->height = get_point(abs(e->begTar - e->endTar));
-  // if (p->vertical) {
-  //   // cylinder->x = x + seqWidth + innerSpace;
-  //   // cylinder->y =
-  //   //     !inverted ? y + get_point(e->begTar) : y + get_point(e->endTar);
-  // } else {
-  //   rect->x = !inverted ? x + get_point(e->begTar) : x + get_point(e->endTar);
-  //   rect->y = y + 2 * seqWidth + innerSpace;
-  //   rect->transform = "rotate(-90 " + std::to_string(rect->x) + " " +
-  //                     std::to_string(rect->y) + ")";
-  // }
-  // rect->id = std::to_string(rect->x) + std::to_string(rect->y);
-  // if (e->begRef == DBLANK) {
-  //   // cylinder->fill = "black";
-  //   // cylinder->stroke = "white";
-  // } else {
-  //   rect->fill = seq_gradient(fPlot, rgb_color(e->start), rect->id);
-  //   rect->stroke = rect->fill;
-  //   // rect->stroke = shade(rgb_color(e->start));
-  // }
+  auto rect = std::make_unique<Rectangle>();
+  rect->width = seqWidth;
+  rect->stroke_width = 0.75;
+  rect->fill_opacity = rect->stroke_opacity = p->opacity;
+  rect->height = get_point(abs(e->begTar - e->endTar));
+  if (p->vertical) {
+    rect->x = x + seqWidth + innerSpace;
+    rect->y = !inverted ? y + get_point(e->begTar) : y + get_point(e->endTar);
+  } else {
+    rect->x = !inverted ? x + get_point(e->begTar) : x + get_point(e->endTar);
+    rect->y = y + 2 * seqWidth + innerSpace;
+    rect->transform = "rotate(-90 " + std::to_string(rect->x) + " " +
+                      std::to_string(rect->y) + ")";
+  }
+  rect->id = std::to_string(rect->x) + std::to_string(rect->y);
+  if (e->begRef == DBLANK) {
+    rect->fill = "black";
+    rect->stroke = "white";
+  } else {
+    rect->fill = seq_gradient(fPlot, rgb_color(e->start), rect->id);
+    rect->stroke = rect->fill;
+    // rect->stroke = shade(rgb_color(e->start));
+  }
 
-  // // if (!inverted) {
-  // rect->plot(fPlot);
-  // // } else {
-  // //   if (e->begRef == DBLANK)
-  // //     cylinder->plot_ir(fPlot, "#WavyWhite");
-  // //   else
-  // //     cylinder->plot_ir(fPlot);
-  // // }
+  if (!inverted) {
+    rect->plot(fPlot);
+  } else {
+    if (e->begRef == DBLANK)
+      rect->plot_ir(fPlot, "WavyWhite");
+    else
+      rect->plot_ir(fPlot, "Wavy", shade(rgb_color(e->start)));
+  }
 
-  // // cylinder->stroke_width = 0.7;
-  // // if (p->showNRC) {
-  // //   cylinder->id += "NRC";
-  // //   cylinder->fill = periph_gradient(fPlot, nrc_color(e->entTar,
-  // //   p->colorMode),
-  // //                                    cylinder->id);
-  // //   cylinder->stroke = shade(nrc_color(e->entTar, p->colorMode), 0.96);
-  // //   plot_periph(fPlot, cylinder, p->vertical, 't', 0);
-  // // }
-  // // if (p->showRedun) {
-  // //   cylinder->id += "Redun";
-  // //   cylinder->fill = periph_gradient(
-  // //       fPlot, redun_color(e->selfTar, p->colorMode), cylinder->id);
-  // //   cylinder->stroke = shade(redun_color(e->selfTar, p->colorMode), 0.95);
-  // //   plot_periph(fPlot, cylinder, p->vertical, 't', uint8_t(p->showNRC));
-  // // }
+  // rect->stroke_width = 0.7;
+  if (p->showNRC) {
+    rect->id += "NRC";
+    rect->fill =
+        periph_gradient(fPlot, nrc_color(e->entTar, p->colorMode), rect->id);
+    rect->stroke = rect->fill;
+    // rect->stroke = shade(nrc_color(e->entTar, p->colorMode), 0.96);
+    plot_periph(fPlot, rect, p->vertical, 't', 0);
+  }
+  if (p->showRedun) {
+    rect->id += "Redun";
+    rect->fill =
+        periph_gradient(fPlot, redun_color(e->selfTar, p->colorMode), rect->id);
+    rect->stroke = rect->fill;
+    // rect->stroke = shade(redun_color(e->selfTar, p->colorMode), 0.95);
+    plot_periph(fPlot, rect, p->vertical, 't', uint8_t(p->showNRC));
+  }
 }
 
 // // With Cylinder
@@ -509,7 +509,7 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
 //     cylinder->plot(fPlot);
 //   } else {
 //     if (e->begRef == DBLANK)
-//       cylinder->plot_ir(fPlot, "#WavyWhite");
+//       cylinder->plot_ir(fPlot, "WavyWhite");
 //     else
 //       cylinder->plot_ir(fPlot);
 //   }
@@ -557,7 +557,7 @@ inline void VizPaint::plot_periph(std::ofstream& f,
                            showNRC * (SPACE_TUNE + periphWidth));
   }
   rect->width = periphWidth;
-  rect->stroke_width *= 2;
+  rect->stroke_width *= 1.5;
   rect->ry /= 2;
   rect->plot(f);
 
@@ -608,7 +608,7 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
                                      bool ir) const {
   auto poly = std::make_unique<Polygon>();
   auto line = std::make_unique<Line>();
-  line->stroke_width = 1.5;
+  line->stroke_width = 1.0;
 
   switch (par->link) {
     case 1:
