@@ -398,7 +398,7 @@ void Rectangle::plot(std::ofstream& f) const {
   f << end_empty_elem();
 }
 
-void Rectangle::plot_ir(std::ofstream& f, std::string wave) {
+void Rectangle::plot_ir(std::ofstream& f, std::string wave, std::string pattern_stroke) {
   plot(f);
 
   // Plot pattern
@@ -422,7 +422,8 @@ void Rectangle::plot_ir(std::ofstream& f, std::string wave) {
   // path->d = path->m(0, 0) +
   //           path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
   if (wave == "Wavy")
-    path->stroke = shade(stroke, 0.95);
+    path->stroke = pattern_stroke;
+    // path->stroke = shade(stroke, 0.95);
   else if (wave == "WavyWhite")
     path->stroke = "white";
   make_pattern(f, pattern, path);

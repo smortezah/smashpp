@@ -233,7 +233,7 @@ class Rectangle : public SVG {
 
   Rectangle() : rx(1.0f), ry(1.0f), fill_opacity(OPAC), stroke_opacity(1.0f) {}
   void plot(std::ofstream&) const;
-  void plot_ir(std::ofstream&, std::string = "Wavy");
+  void plot_ir(std::ofstream&, std::string = "Wavy", std::string="");
 };
 
 class Polygon : public SVG {
