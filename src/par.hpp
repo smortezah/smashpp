@@ -42,8 +42,8 @@ static constexpr auto MAX_OPAC{1.0f};
 static constexpr uint32_t WDTH{10};
 static constexpr uint32_t MIN_WDTH{8};
 static constexpr uint32_t MAX_WDTH{100};
-static constexpr uint32_t SPC{62};
-static constexpr uint32_t MIN_SPC{15};
+static constexpr uint32_t SPC{40};
+static constexpr uint32_t MIN_SPC{5};
 static constexpr uint32_t MAX_SPC{200};
 static constexpr uint32_t MULT{43};  // 5 colors without overlapping
 static constexpr uint32_t MIN_MULT{1};
