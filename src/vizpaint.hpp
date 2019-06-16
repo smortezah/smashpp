@@ -73,8 +73,8 @@ struct PosPlot {
   PosPlot()
       : n_ranges(10),
         n_subranges(4),
-        minorTickSize(6),
-        majorTickSize(1.75 * minorTickSize),
+        minorTickSize(4), // 6
+        majorTickSize(1.5 * minorTickSize), // 1.75
         vertSkip(13),
         vertical(false),
         minorStrokeWidth(0.8f),

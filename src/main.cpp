@@ -165,8 +165,9 @@ void write_pos_file_impl(const std::vector<OutRowAux>& out_aux) {
       right_self_ent = row.pos1.self_ent;
     }
 
-    if (std::llabs(right_end - right_beg) < (left_end - left_beg) * 3 / 2 &&
-        std::llabs(right_end - right_beg) > (left_end - left_beg) / 2)
+    if (uint64_t(std::llabs(right_end - right_beg)) <
+            (left_end - left_beg) * 3 / 2 &&
+        uint64_t(std::llabs(right_end - right_beg)) > (left_end - left_beg) / 2)
       pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
                << left_self_ent << '\t' << right_beg << '\t' << right_end
                << '\t' << right_ent << '\t' << right_self_ent << '\n';
