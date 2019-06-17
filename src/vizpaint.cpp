@@ -889,7 +889,7 @@ inline void VizPaint::plot_legend_text_horiz(
 
   if (legend->showNRC && !legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width / 2;
-    if (legend->rect->width > 64) {
+    if (innerSpace > 55) {
       legend->text[1]->y = legend->rect->y - legend->labelShift +
                            VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative Redundancy";
@@ -916,7 +916,7 @@ inline void VizPaint::plot_legend_text_horiz(
     legend->text[1]->plot(f);
   } else if (legend->showNRC && legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width / 2;
-    if (legend->rect->width > 64) {
+    if (innerSpace > 55) {
       legend->text[1]->y = legend->rect->y - legend->labelShift +
                            VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative Redundancy";
@@ -962,14 +962,22 @@ inline void VizPaint::plot_legend_text_horiz(
   legend->text[0]->text_anchor = "start";
   legend->text[0]->Label = "2.0";
   legend->text[0]->plot(f);
-  // 0.5  1.0  1.5
-  for (uint8_t i = 1; i != 4; ++i) {
+  // [0.5  1.0  1.5] or [  1.0  ]
+  if (innerSpace < 25) {
     legend->text[0]->text_anchor = "middle";
-    legend->text[0]->x = legend->rect->x + legend->rect->width / 4 * i;
     legend->text[0]->y = legend->rect->y + legend->rect->height / 2;
-    if (legend->colorMode == 1 && i == 3) legend->text[0]->fill = "white";
-    legend->text[0]->Label = string_format("%.1f", i * 0.5);
+    legend->text[0]->x = legend->rect->x + legend->rect->width / 2;
+    legend->text[0]->Label = "1.0";
     legend->text[0]->plot(f);
+  } else {
+    for (uint8_t i = 1; i != 4; ++i) {
+      legend->text[0]->text_anchor = "middle";
+      legend->text[0]->y = legend->rect->y + legend->rect->height / 2;
+      legend->text[0]->x = legend->rect->x + legend->rect->width / 4 * i;
+      if (legend->colorMode == 1 && i == 3) legend->text[0]->fill = "white";
+      legend->text[0]->Label = string_format("%.1f", i * 0.5);
+      legend->text[0]->plot(f);
+    }
   }
 
   // for (auto& e : legend->text)
@@ -988,7 +996,13 @@ inline void VizPaint::plot_legend_path_horiz(
                        SPACE_TUNE + 0.5 * periphWidth;
     // Left wing
     if (lastPos.size() == 2) {
-      if (legend->rect->width > 64)
+      if (innerSpace < 20)
+        legend->path->d =
+            legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
+            legend->path->V(legend->text[1]->y - 8 -
+                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->H((X1RelRedun + X2RelRedun) / 2 - 25);
+      else if (innerSpace > 55)
         legend->path->d =
             legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
             legend->path->V(legend->text[1]->y -
@@ -1004,7 +1018,13 @@ inline void VizPaint::plot_legend_path_horiz(
       legend->path->plot(f);
     }
     // Right wing
-    if (legend->rect->width > 64)
+    if (innerSpace < 20)
+      legend->path->d =
+          legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
+          legend->path->V(legend->text[1]->y - 8 -
+                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->H((X1RelRedun + X2RelRedun) / 2 + 25);
+    else if (innerSpace > 55)
       legend->path->d =
           legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
           legend->path->V(legend->text[1]->y -
@@ -1046,7 +1066,13 @@ inline void VizPaint::plot_legend_path_horiz(
                        SPACE_TUNE + 0.5 * periphWidth;
     // Left wing
     if (lastPos.size() == 2) {
-      if (legend->rect->width > 64)
+      if (innerSpace < 20)
+        legend->path->d =
+            legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
+            legend->path->V(legend->text[1]->y - 8 -
+                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->H((X1RelRedun + X2RelRedun) / 2 - 25);
+      else if (innerSpace > 55)
         legend->path->d =
             legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
             legend->path->V(legend->text[1]->y -
@@ -1062,7 +1088,13 @@ inline void VizPaint::plot_legend_path_horiz(
       legend->path->plot(f);
     }
     // Right wing
-    if (legend->rect->width > 64)
+    if (innerSpace < 20)
+      legend->path->d =
+          legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
+          legend->path->V(legend->text[1]->y - 8 -
+                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->H((X1RelRedun + X2RelRedun) / 2 + 25);
+    else if (innerSpace > 55)
       legend->path->d =
           legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
           legend->path->V(legend->text[1]->y -
@@ -1198,21 +1230,37 @@ inline void VizPaint::plot_legend_path_vert(
                        SPACE_TUNE + 0.5 * periphWidth;
     // Top wing
     if (lastPos.size() == 2) {
-      legend->path->d =
-          legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
-          legend->path->H(legend->text[1]->x +
-                          VERT_MIDDLE * legend->text[1]->font_size) +
-          legend->path->V((Y1RelRedun + Y2RelRedun) / 2 - 47);
-      // legend->path->plot_shadow(f);
+      if (innerSpace < 31) {
+        legend->path->d =
+            legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
+            legend->path->H(legend->text[1]->x - legend->text[1]->font_size) +
+            legend->path->V(Y1RelRedun + TITLE_SPACE) +
+            legend->path->h(0.5 * legend->text[1]->font_size);
+      } else {
+        legend->path->d =
+            legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
+            legend->path->H(legend->text[1]->x +
+                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->V((Y1RelRedun + Y2RelRedun) / 2 - 47);
+        // legend->path->plot_shadow(f);
+      }
       legend->path->plot(f);
     }
     // Bottom wing
-    legend->path->d =
-        legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
-        legend->path->H(legend->text[1]->x +
-                        VERT_MIDDLE * legend->text[1]->font_size) +
-        legend->path->V((Y1RelRedun + Y2RelRedun) / 2 + 47);
-    // legend->path->plot_shadow(f);
+    if (innerSpace < 31) {
+      legend->path->d =
+          legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
+          legend->path->H(legend->text[1]->x - legend->text[1]->font_size) +
+          legend->path->V(Y2RelRedun - TITLE_SPACE) +
+          legend->path->h(0.5 * legend->text[1]->font_size);
+    } else {
+      legend->path->d =
+          legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
+          legend->path->H(legend->text[1]->x +
+                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->V((Y1RelRedun + Y2RelRedun) / 2 + 47);
+      // legend->path->plot_shadow(f);
+    }
     legend->path->plot(f);
   } else if (!legend->showNRC && legend->showRedun) {
     float Y1Redun = y - (TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth);
@@ -1242,21 +1290,37 @@ inline void VizPaint::plot_legend_path_vert(
                        SPACE_TUNE + 0.5 * periphWidth;
     // Top wing
     if (lastPos.size() == 2) {
-      legend->path->d =
-          legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
-          legend->path->H(legend->text[1]->x +
-                          VERT_MIDDLE * legend->text[1]->font_size) +
-          legend->path->V((Y1RelRedun + Y2RelRedun) / 2 - 47);
-      // legend->path->plot_shadow(f);
+      if (innerSpace < 31) {
+        legend->path->d =
+            legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
+            legend->path->H(legend->text[1]->x - legend->text[1]->font_size) +
+            legend->path->V(Y1RelRedun + TITLE_SPACE) +
+            legend->path->h(0.5 * legend->text[1]->font_size);
+      } else {
+        legend->path->d =
+            legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
+            legend->path->H(legend->text[1]->x +
+                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->V((Y1RelRedun + Y2RelRedun) / 2 - 47);
+        // legend->path->plot_shadow(f);
+      }
       legend->path->plot(f);
     }
     // Bottom wing
-    legend->path->d =
-        legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
-        legend->path->H(legend->text[1]->x +
-                        VERT_MIDDLE * legend->text[1]->font_size) +
-        legend->path->V((Y1RelRedun + Y2RelRedun) / 2 + 47);
-    // legend->path->plot_shadow(f);
+    if (innerSpace < 31) {
+      legend->path->d =
+          legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
+          legend->path->H(legend->text[1]->x - legend->text[1]->font_size) +
+          legend->path->V(Y2RelRedun - TITLE_SPACE) +
+          legend->path->h(0.5 * legend->text[1]->font_size);
+    } else {
+      legend->path->d =
+          legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
+          legend->path->H(legend->text[1]->x +
+                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->V((Y1RelRedun + Y2RelRedun) / 2 + 47);
+      // legend->path->plot_shadow(f);
+    }
     legend->path->plot(f);
 
     // Redundancy
