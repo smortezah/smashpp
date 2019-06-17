@@ -1233,9 +1233,10 @@ inline void VizPaint::plot_legend_path_vert(
       if (innerSpace < 31) {
         legend->path->d =
             legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
-            legend->path->H(legend->text[1]->x - legend->text[1]->font_size) +
+            legend->path->H(legend->text[1]->x -
+                            1.5 * legend->text[1]->font_size) +
             legend->path->V(Y1RelRedun + TITLE_SPACE) +
-            legend->path->h(0.5 * legend->text[1]->font_size);
+            legend->path->h(legend->text[1]->font_size);
       } else {
         legend->path->d =
             legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
@@ -1248,11 +1249,11 @@ inline void VizPaint::plot_legend_path_vert(
     }
     // Bottom wing
     if (innerSpace < 31) {
-      legend->path->d =
-          legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
-          legend->path->H(legend->text[1]->x - legend->text[1]->font_size) +
-          legend->path->V(Y2RelRedun - TITLE_SPACE) +
-          legend->path->h(0.5 * legend->text[1]->font_size);
+      legend->path->d = legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
+                        legend->path->H(legend->text[1]->x -
+                                        1.5 * legend->text[1]->font_size) +
+                        legend->path->V(Y2RelRedun - TITLE_SPACE) +
+                        legend->path->h(legend->text[1]->font_size);
     } else {
       legend->path->d =
           legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
@@ -1293,9 +1294,10 @@ inline void VizPaint::plot_legend_path_vert(
       if (innerSpace < 31) {
         legend->path->d =
             legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
-            legend->path->H(legend->text[1]->x - legend->text[1]->font_size) +
+            legend->path->H(legend->text[1]->x -
+                            1.5 * legend->text[1]->font_size) +
             legend->path->V(Y1RelRedun + TITLE_SPACE) +
-            legend->path->h(0.5 * legend->text[1]->font_size);
+            legend->path->h(legend->text[1]->font_size);
       } else {
         legend->path->d =
             legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
@@ -1308,11 +1310,11 @@ inline void VizPaint::plot_legend_path_vert(
     }
     // Bottom wing
     if (innerSpace < 31) {
-      legend->path->d =
-          legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
-          legend->path->H(legend->text[1]->x - legend->text[1]->font_size) +
-          legend->path->V(Y2RelRedun - TITLE_SPACE) +
-          legend->path->h(0.5 * legend->text[1]->font_size);
+      legend->path->d = legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
+                        legend->path->H(legend->text[1]->x -
+                                        1.5 * legend->text[1]->font_size) +
+                        legend->path->V(Y2RelRedun - TITLE_SPACE) +
+                        legend->path->h(legend->text[1]->font_size);
     } else {
       legend->path->d =
           legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
