@@ -391,8 +391,9 @@ void Rectangle::plot(std::ofstream& f) const {
     << attr("width", width, true) << attr("height", height, true);
   if (rx != 0.0f) f << attr("rx", rx, true);
   f << attr("ry", ry, true) << attr("fill", fill)
-    << attr("fill-opacity", fill_opacity, true) << attr("stroke", stroke)
-    << attr("stroke-width", stroke_width, true)
+    << attr("fill-opacity", fill_opacity, true);
+  if (!stroke.empty()) f << attr("stroke", stroke);
+  f << attr("stroke-width", stroke_width, true)
     << attr("stroke-opacity", stroke_opacity, true);
   if (!transform.empty()) f << attr("transform", transform);
   f << end_empty_elem();

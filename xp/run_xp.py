@@ -32,7 +32,7 @@ goose_mutatedna = path_bin + 'goose-mutatedna '
 smashpp = '..' + sep + 'smashpp '
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
-sim_common_par = ' -s 45 -vv '
+sim_common_par = ' -w 15 -s 60 -vv '
 # sim_common_par = ' -w 15 -s 60 -vv '
 
 
