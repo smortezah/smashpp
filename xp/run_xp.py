@@ -15,7 +15,7 @@ synth_mutation = False
 
 # Run simulation
 sim_small = False
-sim_medium = False
+sim_medium = True
 sim_large = False
 sim_xlarge = False
 sim_mutation = False
@@ -32,7 +32,8 @@ goose_mutatedna = path_bin + 'goose-mutatedna '
 smashpp = '..' + sep + 'smashpp '
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
-sim_common_par = ' -w 15 -s 60 -vv '
+sim_common_par = ' -s 45 -vv '
+# sim_common_par = ' -w 15 -s 60 -vv '
 
 
 def execute(cmd):
@@ -97,11 +98,27 @@ if synth_medium:  # sizes: ref:100,000, tar:100,000
             '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 138  r_d')
     cat(['r_a', 'r_b', 'r_c', 'r_d'], path_data + 'RefM')
 
-    execute(smashpp_inv_rep + 'r_b t_a')
-    copyfile('r_c', 't_b')
-    execute(goose_mutatedna + '-mr 0.01 < r_d > t_c')
-    copyfile('r_a', 't_d')
+    execute(smashpp_inv_rep + 'r_a t_d')
+    execute(goose_mutatedna + '-mr 0.90 < r_b > t_c')
+    copyfile('r_c', 't_a')
+    execute(goose_mutatedna + '-mr 0.03 < r_d > t_b')
     cat(['t_a', 't_b', 't_c', 't_d'], path_data + 'TarM')
+
+#     execute(goose_fastqsimulation + synth_common_par +
+#             '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 191  r_a')
+#     execute(goose_fastqsimulation + synth_common_par +
+#             '-f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 250 -s 608  r_b')
+#     execute(goose_fastqsimulation + synth_common_par +
+#             '-f 0.20,0.30,0.30,0.20,0.0 -ls 100 -n 250 -s 30  r_c')
+#     execute(goose_fastqsimulation + synth_common_par +
+#             '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 138  r_d')
+#     cat(['r_a', 'r_b', 'r_c', 'r_d'], path_data + 'RefM')
+
+#     execute(smashpp_inv_rep + 'r_b t_a')
+#     copyfile('r_c', 't_b')
+#     execute(goose_mutatedna + '-mr 0.01 < r_d > t_c')
+#     copyfile('r_a', 't_d')
+#     cat(['t_a', 't_b', 't_c', 't_d'], path_data + 'TarM')
 
 if synth_large:  # sizes: ref:5,000,000, tar:5,000,000
     execute(goose_fastqsimulation + synth_common_par +
@@ -171,10 +188,12 @@ if sim_medium:
     ref = 'RefM'
     tar = 'TarM'
     out = 'M.svg'
-    execute(smashpp + '-r ' + path_data +
-            ref + ' -t ' + path_data + tar + ' -l 3 -f 100')
-    execute(smashpp + '-viz -p 1 -b 50 -f 60 -o ' + out + sim_common_par +
-            ref + '.' + tar + '.pos')
+#     execute(smashpp + '-r ' + path_data +
+#             ref + ' -t ' + path_data + tar + ' -l 3 -f 100')
+    execute(smashpp + '-viz -p 1 -b 5 -f 55 -o ' + out +
+            sim_common_par + ref + '.' + tar + '.pos')
+#     execute(smashpp + '-viz -p 1 -b 50 -f 60 -o ' + out + sim_common_par +
+#             ref + '.' + tar + '.pos')
 
 if sim_large:
     ref = 'RefL'

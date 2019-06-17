@@ -5,8 +5,8 @@ project(smashpp)
 # set(CMAKE_C_COMPILER /usr/local/gcc-8.2/bin/gcc-8.2)
 # set(CMAKE_CXX_COMPILER /usr/local/gcc-8.2/bin/g++-8.2)
 
-set(CMAKE_C_COMPILER C:\\mingw-w64\\mingw64\\bin\\x86_64-w64-mingw32-gcc.exe)
-set(CMAKE_CXX_COMPILER C:\\mingw-w64\\mingw64\\bin\\x86_64-w64-mingw32-g++.exe)
+# set(CMAKE_C_COMPILER C:\\mingw-w64\\mingw64\\bin\\x86_64-w64-mingw32-gcc.exe)
+# set(CMAKE_CXX_COMPILER C:\\mingw-w64\\mingw64\\bin\\x86_64-w64-mingw32-g++.exe)
 # set(CMAKE_C_COMPILER C:\\mingw\\mingw64\\bin\\x86_64-w64-mingw32-gcc.exe)
 # set(CMAKE_CXX_COMPILER C:\\mingw\\mingw64\\bin\\x86_64-w64-mingw32-g++.exe)
 
