@@ -1,5 +1,5 @@
-REM rmdir /s /q build
-REM mkdir build
+rmdir /s /q build
+mkdir build
 cd build
 cmake -G "MinGW Makefiles" ..\src\
 mingw32-make -j4
