@@ -1,158 +1,158 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Morteza Hosseini, IEETA 2018-2019 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 290.000000 605.000000" >
-<rect x="0" y="0" width="290" height="605" rx="1" ry="1" fill="white" fill-opacity="0.9" stroke="white" stroke-width="0" />
-<line id="47.00000030.00000047.000000530.640015" x1="47" y1="30" x2="47" y2="530.64" stroke-width="1.28" stroke="black" />
-<text id="42.00000036.299999" x="42" y="36.3" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 265.000000 605.000000" >
+<rect x="0" y="0" width="265" height="605" rx="1" ry="1" fill="white" fill-opacity="0.9" stroke="white" stroke-width="0" stroke-opacity="1" />
+<line id="54.33333230.00000054.333332530.640015" x1="54.3333" y1="30" x2="54.3333" y2="530.64" stroke-width="1.28" stroke="black" />
+<text id="49.33333236.299999" x="49.3333" y="36.3" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 bp</text>
-<line id="47.00000030.63999957.00000030.639999" x1="47" y1="30.64" x2="57" y2="30.64" stroke-width="1.28" stroke="black" />
-<line id="47.00000040.41666853.00000040.416668" x1="47" y1="40.4167" x2="53" y2="40.4167" stroke-width="0.8" stroke="black" />
-<line id="47.00000050.83333253.00000050.833332" x1="47" y1="50.8333" x2="53" y2="50.8333" stroke-width="0.8" stroke="black" />
-<line id="47.00000061.25000053.00000061.250000" x1="47" y1="61.25" x2="53" y2="61.25" stroke-width="0.8" stroke="black" />
-<line id="47.00000071.66666457.00000071.666664" x1="47" y1="71.6667" x2="57" y2="71.6667" stroke-width="1.28" stroke="black" />
-<text id="42.00000074.816666" x="42" y="74.8167" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.33333230.63999960.33333230.639999" x1="54.3333" y1="30.64" x2="60.3333" y2="30.64" stroke-width="1.28" stroke="black" />
+<line id="54.33333240.41666858.33333240.416668" x1="54.3333" y1="40.4167" x2="58.3333" y2="40.4167" stroke-width="0.8" stroke="black" />
+<line id="54.33333250.83333258.33333250.833332" x1="54.3333" y1="50.8333" x2="58.3333" y2="50.8333" stroke-width="0.8" stroke="black" />
+<line id="54.33333261.25000058.33333261.250000" x1="54.3333" y1="61.25" x2="58.3333" y2="61.25" stroke-width="0.8" stroke="black" />
+<line id="54.33333271.66666460.33333271.666664" x1="54.3333" y1="71.6667" x2="60.3333" y2="71.6667" stroke-width="1.28" stroke="black" />
+<text id="49.33333274.816666" x="49.3333" y="74.8167" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 5 K</text>
-<line id="47.00000082.08333653.00000082.083336" x1="47" y1="82.0833" x2="53" y2="82.0833" stroke-width="0.8" stroke="black" />
-<line id="47.00000092.50000053.00000092.500000" x1="47" y1="92.5" x2="53" y2="92.5" stroke-width="0.8" stroke="black" />
-<line id="47.000000102.91666453.000000102.916664" x1="47" y1="102.917" x2="53" y2="102.917" stroke-width="0.8" stroke="black" />
-<line id="47.000000113.33333657.000000113.333336" x1="47" y1="113.333" x2="57" y2="113.333" stroke-width="1.28" stroke="black" />
-<text id="42.000000116.483337" x="42" y="116.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.33333282.08333658.33333282.083336" x1="54.3333" y1="82.0833" x2="58.3333" y2="82.0833" stroke-width="0.8" stroke="black" />
+<line id="54.33333292.50000058.33333292.500000" x1="54.3333" y1="92.5" x2="58.3333" y2="92.5" stroke-width="0.8" stroke="black" />
+<line id="54.333332102.91666458.333332102.916664" x1="54.3333" y1="102.917" x2="58.3333" y2="102.917" stroke-width="0.8" stroke="black" />
+<line id="54.333332113.33333660.333332113.333336" x1="54.3333" y1="113.333" x2="60.3333" y2="113.333" stroke-width="1.28" stroke="black" />
+<text id="49.333332116.483337" x="49.3333" y="116.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 10 K</text>
-<line id="47.000000123.75000053.000000123.750000" x1="47" y1="123.75" x2="53" y2="123.75" stroke-width="0.8" stroke="black" />
-<line id="47.000000134.16667253.000000134.166672" x1="47" y1="134.167" x2="53" y2="134.167" stroke-width="0.8" stroke="black" />
-<line id="47.000000144.58332853.000000144.583328" x1="47" y1="144.583" x2="53" y2="144.583" stroke-width="0.8" stroke="black" />
-<line id="47.000000155.00000057.000000155.000000" x1="47" y1="155" x2="57" y2="155" stroke-width="1.28" stroke="black" />
-<text id="42.000000158.149994" x="42" y="158.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332123.75000058.333332123.750000" x1="54.3333" y1="123.75" x2="58.3333" y2="123.75" stroke-width="0.8" stroke="black" />
+<line id="54.333332134.16667258.333332134.166672" x1="54.3333" y1="134.167" x2="58.3333" y2="134.167" stroke-width="0.8" stroke="black" />
+<line id="54.333332144.58332858.333332144.583328" x1="54.3333" y1="144.583" x2="58.3333" y2="144.583" stroke-width="0.8" stroke="black" />
+<line id="54.333332155.00000060.333332155.000000" x1="54.3333" y1="155" x2="60.3333" y2="155" stroke-width="1.28" stroke="black" />
+<text id="49.333332158.149994" x="49.3333" y="158.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 15 K</text>
-<line id="47.000000165.41667253.000000165.416672" x1="47" y1="165.417" x2="53" y2="165.417" stroke-width="0.8" stroke="black" />
-<line id="47.000000175.83332853.000000175.833328" x1="47" y1="175.833" x2="53" y2="175.833" stroke-width="0.8" stroke="black" />
-<line id="47.000000186.25000053.000000186.250000" x1="47" y1="186.25" x2="53" y2="186.25" stroke-width="0.8" stroke="black" />
-<line id="47.000000196.66667257.000000196.666672" x1="47" y1="196.667" x2="57" y2="196.667" stroke-width="1.28" stroke="black" />
-<text id="42.000000199.816666" x="42" y="199.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332165.41667258.333332165.416672" x1="54.3333" y1="165.417" x2="58.3333" y2="165.417" stroke-width="0.8" stroke="black" />
+<line id="54.333332175.83332858.333332175.833328" x1="54.3333" y1="175.833" x2="58.3333" y2="175.833" stroke-width="0.8" stroke="black" />
+<line id="54.333332186.25000058.333332186.250000" x1="54.3333" y1="186.25" x2="58.3333" y2="186.25" stroke-width="0.8" stroke="black" />
+<line id="54.333332196.66667260.333332196.666672" x1="54.3333" y1="196.667" x2="60.3333" y2="196.667" stroke-width="1.28" stroke="black" />
+<text id="49.333332199.816666" x="49.3333" y="199.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 20 K</text>
-<line id="47.000000207.08332853.000000207.083328" x1="47" y1="207.083" x2="53" y2="207.083" stroke-width="0.8" stroke="black" />
-<line id="47.000000217.50000053.000000217.500000" x1="47" y1="217.5" x2="53" y2="217.5" stroke-width="0.8" stroke="black" />
-<line id="47.000000227.91667253.000000227.916672" x1="47" y1="227.917" x2="53" y2="227.917" stroke-width="0.8" stroke="black" />
-<line id="47.000000238.33332857.000000238.333328" x1="47" y1="238.333" x2="57" y2="238.333" stroke-width="1.28" stroke="black" />
-<text id="42.000000241.483322" x="42" y="241.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332207.08332858.333332207.083328" x1="54.3333" y1="207.083" x2="58.3333" y2="207.083" stroke-width="0.8" stroke="black" />
+<line id="54.333332217.50000058.333332217.500000" x1="54.3333" y1="217.5" x2="58.3333" y2="217.5" stroke-width="0.8" stroke="black" />
+<line id="54.333332227.91667258.333332227.916672" x1="54.3333" y1="227.917" x2="58.3333" y2="227.917" stroke-width="0.8" stroke="black" />
+<line id="54.333332238.33332860.333332238.333328" x1="54.3333" y1="238.333" x2="60.3333" y2="238.333" stroke-width="1.28" stroke="black" />
+<text id="49.333332241.483322" x="49.3333" y="241.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 25 K</text>
-<line id="47.000000248.75000053.000000248.750000" x1="47" y1="248.75" x2="53" y2="248.75" stroke-width="0.8" stroke="black" />
-<line id="47.000000259.16665653.000000259.166656" x1="47" y1="259.167" x2="53" y2="259.167" stroke-width="0.8" stroke="black" />
-<line id="47.000000269.58334453.000000269.583344" x1="47" y1="269.583" x2="53" y2="269.583" stroke-width="0.8" stroke="black" />
-<line id="47.000000280.00000057.000000280.000000" x1="47" y1="280" x2="57" y2="280" stroke-width="1.28" stroke="black" />
-<text id="42.000000283.149994" x="42" y="283.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332248.75000058.333332248.750000" x1="54.3333" y1="248.75" x2="58.3333" y2="248.75" stroke-width="0.8" stroke="black" />
+<line id="54.333332259.16665658.333332259.166656" x1="54.3333" y1="259.167" x2="58.3333" y2="259.167" stroke-width="0.8" stroke="black" />
+<line id="54.333332269.58334458.333332269.583344" x1="54.3333" y1="269.583" x2="58.3333" y2="269.583" stroke-width="0.8" stroke="black" />
+<line id="54.333332280.00000060.333332280.000000" x1="54.3333" y1="280" x2="60.3333" y2="280" stroke-width="1.28" stroke="black" />
+<text id="49.333332283.149994" x="49.3333" y="283.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 30 K</text>
-<line id="47.000000290.41665653.000000290.416656" x1="47" y1="290.417" x2="53" y2="290.417" stroke-width="0.8" stroke="black" />
-<line id="47.000000300.83334453.000000300.833344" x1="47" y1="300.833" x2="53" y2="300.833" stroke-width="0.8" stroke="black" />
-<line id="47.000000311.25000053.000000311.250000" x1="47" y1="311.25" x2="53" y2="311.25" stroke-width="0.8" stroke="black" />
-<line id="47.000000321.66665657.000000321.666656" x1="47" y1="321.667" x2="57" y2="321.667" stroke-width="1.28" stroke="black" />
-<text id="42.000000324.816650" x="42" y="324.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332290.41665658.333332290.416656" x1="54.3333" y1="290.417" x2="58.3333" y2="290.417" stroke-width="0.8" stroke="black" />
+<line id="54.333332300.83334458.333332300.833344" x1="54.3333" y1="300.833" x2="58.3333" y2="300.833" stroke-width="0.8" stroke="black" />
+<line id="54.333332311.25000058.333332311.250000" x1="54.3333" y1="311.25" x2="58.3333" y2="311.25" stroke-width="0.8" stroke="black" />
+<line id="54.333332321.66665660.333332321.666656" x1="54.3333" y1="321.667" x2="60.3333" y2="321.667" stroke-width="1.28" stroke="black" />
+<text id="49.333332324.816650" x="49.3333" y="324.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 35 K</text>
-<line id="47.000000332.08334453.000000332.083344" x1="47" y1="332.083" x2="53" y2="332.083" stroke-width="0.8" stroke="black" />
-<line id="47.000000342.50000053.000000342.500000" x1="47" y1="342.5" x2="53" y2="342.5" stroke-width="0.8" stroke="black" />
-<line id="47.000000352.91665653.000000352.916656" x1="47" y1="352.917" x2="53" y2="352.917" stroke-width="0.8" stroke="black" />
-<line id="47.000000363.33334457.000000363.333344" x1="47" y1="363.333" x2="57" y2="363.333" stroke-width="1.28" stroke="black" />
-<text id="42.000000366.483337" x="42" y="366.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332332.08334458.333332332.083344" x1="54.3333" y1="332.083" x2="58.3333" y2="332.083" stroke-width="0.8" stroke="black" />
+<line id="54.333332342.50000058.333332342.500000" x1="54.3333" y1="342.5" x2="58.3333" y2="342.5" stroke-width="0.8" stroke="black" />
+<line id="54.333332352.91665658.333332352.916656" x1="54.3333" y1="352.917" x2="58.3333" y2="352.917" stroke-width="0.8" stroke="black" />
+<line id="54.333332363.33334460.333332363.333344" x1="54.3333" y1="363.333" x2="60.3333" y2="363.333" stroke-width="1.28" stroke="black" />
+<text id="49.333332366.483337" x="49.3333" y="366.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 40 K</text>
-<line id="47.000000373.75000053.000000373.750000" x1="47" y1="373.75" x2="53" y2="373.75" stroke-width="0.8" stroke="black" />
-<line id="47.000000384.16665653.000000384.166656" x1="47" y1="384.167" x2="53" y2="384.167" stroke-width="0.8" stroke="black" />
-<line id="47.000000394.58334453.000000394.583344" x1="47" y1="394.583" x2="53" y2="394.583" stroke-width="0.8" stroke="black" />
-<line id="47.000000405.00000057.000000405.000000" x1="47" y1="405" x2="57" y2="405" stroke-width="1.28" stroke="black" />
-<text id="42.000000408.149994" x="42" y="408.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332373.75000058.333332373.750000" x1="54.3333" y1="373.75" x2="58.3333" y2="373.75" stroke-width="0.8" stroke="black" />
+<line id="54.333332384.16665658.333332384.166656" x1="54.3333" y1="384.167" x2="58.3333" y2="384.167" stroke-width="0.8" stroke="black" />
+<line id="54.333332394.58334458.333332394.583344" x1="54.3333" y1="394.583" x2="58.3333" y2="394.583" stroke-width="0.8" stroke="black" />
+<line id="54.333332405.00000060.333332405.000000" x1="54.3333" y1="405" x2="60.3333" y2="405" stroke-width="1.28" stroke="black" />
+<text id="49.333332408.149994" x="49.3333" y="408.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 45 K</text>
-<line id="47.000000415.41665653.000000415.416656" x1="47" y1="415.417" x2="53" y2="415.417" stroke-width="0.8" stroke="black" />
-<line id="47.000000425.83334453.000000425.833344" x1="47" y1="425.833" x2="53" y2="425.833" stroke-width="0.8" stroke="black" />
-<line id="47.000000436.25000053.000000436.250000" x1="47" y1="436.25" x2="53" y2="436.25" stroke-width="0.8" stroke="black" />
-<line id="47.000000446.66665657.000000446.666656" x1="47" y1="446.667" x2="57" y2="446.667" stroke-width="1.28" stroke="black" />
-<text id="42.000000449.816650" x="42" y="449.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332415.41665658.333332415.416656" x1="54.3333" y1="415.417" x2="58.3333" y2="415.417" stroke-width="0.8" stroke="black" />
+<line id="54.333332425.83334458.333332425.833344" x1="54.3333" y1="425.833" x2="58.3333" y2="425.833" stroke-width="0.8" stroke="black" />
+<line id="54.333332436.25000058.333332436.250000" x1="54.3333" y1="436.25" x2="58.3333" y2="436.25" stroke-width="0.8" stroke="black" />
+<line id="54.333332446.66665660.333332446.666656" x1="54.3333" y1="446.667" x2="60.3333" y2="446.667" stroke-width="1.28" stroke="black" />
+<text id="49.333332449.816650" x="49.3333" y="449.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 50 K</text>
-<line id="47.000000457.08334453.000000457.083344" x1="47" y1="457.083" x2="53" y2="457.083" stroke-width="0.8" stroke="black" />
-<line id="47.000000467.50000053.000000467.500000" x1="47" y1="467.5" x2="53" y2="467.5" stroke-width="0.8" stroke="black" />
-<line id="47.000000477.91665653.000000477.916656" x1="47" y1="477.917" x2="53" y2="477.917" stroke-width="0.8" stroke="black" />
-<line id="47.000000488.33334457.000000488.333344" x1="47" y1="488.333" x2="57" y2="488.333" stroke-width="1.28" stroke="black" />
-<text id="42.000000491.483337" x="42" y="491.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332457.08334458.333332457.083344" x1="54.3333" y1="457.083" x2="58.3333" y2="457.083" stroke-width="0.8" stroke="black" />
+<line id="54.333332467.50000058.333332467.500000" x1="54.3333" y1="467.5" x2="58.3333" y2="467.5" stroke-width="0.8" stroke="black" />
+<line id="54.333332477.91665658.333332477.916656" x1="54.3333" y1="477.917" x2="58.3333" y2="477.917" stroke-width="0.8" stroke="black" />
+<line id="54.333332488.33334460.333332488.333344" x1="54.3333" y1="488.333" x2="60.3333" y2="488.333" stroke-width="1.28" stroke="black" />
+<text id="49.333332491.483337" x="49.3333" y="491.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 55 K</text>
-<line id="47.000000498.75000053.000000498.750000" x1="47" y1="498.75" x2="53" y2="498.75" stroke-width="0.8" stroke="black" />
-<line id="47.000000509.16665653.000000509.166656" x1="47" y1="509.167" x2="53" y2="509.167" stroke-width="0.8" stroke="black" />
-<line id="47.000000519.58331353.000000519.583313" x1="47" y1="519.583" x2="53" y2="519.583" stroke-width="0.8" stroke="black" />
-<line id="47.000000530.00000057.000000530.000000" x1="47" y1="530" x2="57" y2="530" stroke-width="1.28" stroke="black" />
-<text id="42.000000533.150024" x="42" y="533.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
+<line id="54.333332498.75000058.333332498.750000" x1="54.3333" y1="498.75" x2="58.3333" y2="498.75" stroke-width="0.8" stroke="black" />
+<line id="54.333332509.16665658.333332509.166656" x1="54.3333" y1="509.167" x2="58.3333" y2="509.167" stroke-width="0.8" stroke="black" />
+<line id="54.333332519.58331358.333332519.583313" x1="54.3333" y1="519.583" x2="58.3333" y2="519.583" stroke-width="0.8" stroke="black" />
+<line id="54.333332530.00000060.333332530.000000" x1="54.3333" y1="530" x2="60.3333" y2="530" stroke-width="1.28" stroke="black" />
+<text id="49.333332533.150024" x="49.3333" y="533.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 60 K</text>
-<line id="243.00000030.000000243.000000530.640015" x1="243" y1="30" x2="243" y2="530.64" stroke-width="1.28" stroke="black" />
-<text id="248.00000036.299999" x="248" y="36.3" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.66667230.000000210.666672530.640015" x1="210.667" y1="30" x2="210.667" y2="530.64" stroke-width="1.28" stroke="black" />
+<text id="215.66667236.299999" x="215.667" y="36.3" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 bp</text>
-<line id="243.00000030.639999233.00000030.639999" x1="243" y1="30.64" x2="233" y2="30.64" stroke-width="1.28" stroke="black" />
-<line id="243.00000040.416668237.00000040.416668" x1="243" y1="40.4167" x2="237" y2="40.4167" stroke-width="0.8" stroke="black" />
-<line id="243.00000050.833332237.00000050.833332" x1="243" y1="50.8333" x2="237" y2="50.8333" stroke-width="0.8" stroke="black" />
-<line id="243.00000061.250000237.00000061.250000" x1="243" y1="61.25" x2="237" y2="61.25" stroke-width="0.8" stroke="black" />
-<line id="243.00000071.666664233.00000071.666664" x1="243" y1="71.6667" x2="233" y2="71.6667" stroke-width="1.28" stroke="black" />
-<text id="248.00000074.816666" x="248" y="74.8167" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.66667230.639999204.66667230.639999" x1="210.667" y1="30.64" x2="204.667" y2="30.64" stroke-width="1.28" stroke="black" />
+<line id="210.66667240.416668206.66667240.416668" x1="210.667" y1="40.4167" x2="206.667" y2="40.4167" stroke-width="0.8" stroke="black" />
+<line id="210.66667250.833332206.66667250.833332" x1="210.667" y1="50.8333" x2="206.667" y2="50.8333" stroke-width="0.8" stroke="black" />
+<line id="210.66667261.250000206.66667261.250000" x1="210.667" y1="61.25" x2="206.667" y2="61.25" stroke-width="0.8" stroke="black" />
+<line id="210.66667271.666664204.66667271.666664" x1="210.667" y1="71.6667" x2="204.667" y2="71.6667" stroke-width="1.28" stroke="black" />
+<text id="215.66667274.816666" x="215.667" y="74.8167" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 5 K</text>
-<line id="243.00000082.083336237.00000082.083336" x1="243" y1="82.0833" x2="237" y2="82.0833" stroke-width="0.8" stroke="black" />
-<line id="243.00000092.500000237.00000092.500000" x1="243" y1="92.5" x2="237" y2="92.5" stroke-width="0.8" stroke="black" />
-<line id="243.000000102.916664237.000000102.916664" x1="243" y1="102.917" x2="237" y2="102.917" stroke-width="0.8" stroke="black" />
-<line id="243.000000113.333336233.000000113.333336" x1="243" y1="113.333" x2="233" y2="113.333" stroke-width="1.28" stroke="black" />
-<text id="248.000000116.483337" x="248" y="116.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.66667282.083336206.66667282.083336" x1="210.667" y1="82.0833" x2="206.667" y2="82.0833" stroke-width="0.8" stroke="black" />
+<line id="210.66667292.500000206.66667292.500000" x1="210.667" y1="92.5" x2="206.667" y2="92.5" stroke-width="0.8" stroke="black" />
+<line id="210.666672102.916664206.666672102.916664" x1="210.667" y1="102.917" x2="206.667" y2="102.917" stroke-width="0.8" stroke="black" />
+<line id="210.666672113.333336204.666672113.333336" x1="210.667" y1="113.333" x2="204.667" y2="113.333" stroke-width="1.28" stroke="black" />
+<text id="215.666672116.483337" x="215.667" y="116.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 10 K</text>
-<line id="243.000000123.750000237.000000123.750000" x1="243" y1="123.75" x2="237" y2="123.75" stroke-width="0.8" stroke="black" />
-<line id="243.000000134.166672237.000000134.166672" x1="243" y1="134.167" x2="237" y2="134.167" stroke-width="0.8" stroke="black" />
-<line id="243.000000144.583328237.000000144.583328" x1="243" y1="144.583" x2="237" y2="144.583" stroke-width="0.8" stroke="black" />
-<line id="243.000000155.000000233.000000155.000000" x1="243" y1="155" x2="233" y2="155" stroke-width="1.28" stroke="black" />
-<text id="248.000000158.149994" x="248" y="158.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672123.750000206.666672123.750000" x1="210.667" y1="123.75" x2="206.667" y2="123.75" stroke-width="0.8" stroke="black" />
+<line id="210.666672134.166672206.666672134.166672" x1="210.667" y1="134.167" x2="206.667" y2="134.167" stroke-width="0.8" stroke="black" />
+<line id="210.666672144.583328206.666672144.583328" x1="210.667" y1="144.583" x2="206.667" y2="144.583" stroke-width="0.8" stroke="black" />
+<line id="210.666672155.000000204.666672155.000000" x1="210.667" y1="155" x2="204.667" y2="155" stroke-width="1.28" stroke="black" />
+<text id="215.666672158.149994" x="215.667" y="158.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 15 K</text>
-<line id="243.000000165.416672237.000000165.416672" x1="243" y1="165.417" x2="237" y2="165.417" stroke-width="0.8" stroke="black" />
-<line id="243.000000175.833328237.000000175.833328" x1="243" y1="175.833" x2="237" y2="175.833" stroke-width="0.8" stroke="black" />
-<line id="243.000000186.250000237.000000186.250000" x1="243" y1="186.25" x2="237" y2="186.25" stroke-width="0.8" stroke="black" />
-<line id="243.000000196.666672233.000000196.666672" x1="243" y1="196.667" x2="233" y2="196.667" stroke-width="1.28" stroke="black" />
-<text id="248.000000199.816666" x="248" y="199.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672165.416672206.666672165.416672" x1="210.667" y1="165.417" x2="206.667" y2="165.417" stroke-width="0.8" stroke="black" />
+<line id="210.666672175.833328206.666672175.833328" x1="210.667" y1="175.833" x2="206.667" y2="175.833" stroke-width="0.8" stroke="black" />
+<line id="210.666672186.250000206.666672186.250000" x1="210.667" y1="186.25" x2="206.667" y2="186.25" stroke-width="0.8" stroke="black" />
+<line id="210.666672196.666672204.666672196.666672" x1="210.667" y1="196.667" x2="204.667" y2="196.667" stroke-width="1.28" stroke="black" />
+<text id="215.666672199.816666" x="215.667" y="199.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 20 K</text>
-<line id="243.000000207.083328237.000000207.083328" x1="243" y1="207.083" x2="237" y2="207.083" stroke-width="0.8" stroke="black" />
-<line id="243.000000217.500000237.000000217.500000" x1="243" y1="217.5" x2="237" y2="217.5" stroke-width="0.8" stroke="black" />
-<line id="243.000000227.916672237.000000227.916672" x1="243" y1="227.917" x2="237" y2="227.917" stroke-width="0.8" stroke="black" />
-<line id="243.000000238.333328233.000000238.333328" x1="243" y1="238.333" x2="233" y2="238.333" stroke-width="1.28" stroke="black" />
-<text id="248.000000241.483322" x="248" y="241.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672207.083328206.666672207.083328" x1="210.667" y1="207.083" x2="206.667" y2="207.083" stroke-width="0.8" stroke="black" />
+<line id="210.666672217.500000206.666672217.500000" x1="210.667" y1="217.5" x2="206.667" y2="217.5" stroke-width="0.8" stroke="black" />
+<line id="210.666672227.916672206.666672227.916672" x1="210.667" y1="227.917" x2="206.667" y2="227.917" stroke-width="0.8" stroke="black" />
+<line id="210.666672238.333328204.666672238.333328" x1="210.667" y1="238.333" x2="204.667" y2="238.333" stroke-width="1.28" stroke="black" />
+<text id="215.666672241.483322" x="215.667" y="241.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 25 K</text>
-<line id="243.000000248.750000237.000000248.750000" x1="243" y1="248.75" x2="237" y2="248.75" stroke-width="0.8" stroke="black" />
-<line id="243.000000259.166656237.000000259.166656" x1="243" y1="259.167" x2="237" y2="259.167" stroke-width="0.8" stroke="black" />
-<line id="243.000000269.583344237.000000269.583344" x1="243" y1="269.583" x2="237" y2="269.583" stroke-width="0.8" stroke="black" />
-<line id="243.000000280.000000233.000000280.000000" x1="243" y1="280" x2="233" y2="280" stroke-width="1.28" stroke="black" />
-<text id="248.000000283.149994" x="248" y="283.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672248.750000206.666672248.750000" x1="210.667" y1="248.75" x2="206.667" y2="248.75" stroke-width="0.8" stroke="black" />
+<line id="210.666672259.166656206.666672259.166656" x1="210.667" y1="259.167" x2="206.667" y2="259.167" stroke-width="0.8" stroke="black" />
+<line id="210.666672269.583344206.666672269.583344" x1="210.667" y1="269.583" x2="206.667" y2="269.583" stroke-width="0.8" stroke="black" />
+<line id="210.666672280.000000204.666672280.000000" x1="210.667" y1="280" x2="204.667" y2="280" stroke-width="1.28" stroke="black" />
+<text id="215.666672283.149994" x="215.667" y="283.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 30 K</text>
-<line id="243.000000290.416656237.000000290.416656" x1="243" y1="290.417" x2="237" y2="290.417" stroke-width="0.8" stroke="black" />
-<line id="243.000000300.833344237.000000300.833344" x1="243" y1="300.833" x2="237" y2="300.833" stroke-width="0.8" stroke="black" />
-<line id="243.000000311.250000237.000000311.250000" x1="243" y1="311.25" x2="237" y2="311.25" stroke-width="0.8" stroke="black" />
-<line id="243.000000321.666656233.000000321.666656" x1="243" y1="321.667" x2="233" y2="321.667" stroke-width="1.28" stroke="black" />
-<text id="248.000000324.816650" x="248" y="324.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672290.416656206.666672290.416656" x1="210.667" y1="290.417" x2="206.667" y2="290.417" stroke-width="0.8" stroke="black" />
+<line id="210.666672300.833344206.666672300.833344" x1="210.667" y1="300.833" x2="206.667" y2="300.833" stroke-width="0.8" stroke="black" />
+<line id="210.666672311.250000206.666672311.250000" x1="210.667" y1="311.25" x2="206.667" y2="311.25" stroke-width="0.8" stroke="black" />
+<line id="210.666672321.666656204.666672321.666656" x1="210.667" y1="321.667" x2="204.667" y2="321.667" stroke-width="1.28" stroke="black" />
+<text id="215.666672324.816650" x="215.667" y="324.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 35 K</text>
-<line id="243.000000332.083344237.000000332.083344" x1="243" y1="332.083" x2="237" y2="332.083" stroke-width="0.8" stroke="black" />
-<line id="243.000000342.500000237.000000342.500000" x1="243" y1="342.5" x2="237" y2="342.5" stroke-width="0.8" stroke="black" />
-<line id="243.000000352.916656237.000000352.916656" x1="243" y1="352.917" x2="237" y2="352.917" stroke-width="0.8" stroke="black" />
-<line id="243.000000363.333344233.000000363.333344" x1="243" y1="363.333" x2="233" y2="363.333" stroke-width="1.28" stroke="black" />
-<text id="248.000000366.483337" x="248" y="366.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672332.083344206.666672332.083344" x1="210.667" y1="332.083" x2="206.667" y2="332.083" stroke-width="0.8" stroke="black" />
+<line id="210.666672342.500000206.666672342.500000" x1="210.667" y1="342.5" x2="206.667" y2="342.5" stroke-width="0.8" stroke="black" />
+<line id="210.666672352.916656206.666672352.916656" x1="210.667" y1="352.917" x2="206.667" y2="352.917" stroke-width="0.8" stroke="black" />
+<line id="210.666672363.333344204.666672363.333344" x1="210.667" y1="363.333" x2="204.667" y2="363.333" stroke-width="1.28" stroke="black" />
+<text id="215.666672366.483337" x="215.667" y="366.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 40 K</text>
-<line id="243.000000373.750000237.000000373.750000" x1="243" y1="373.75" x2="237" y2="373.75" stroke-width="0.8" stroke="black" />
-<line id="243.000000384.166656237.000000384.166656" x1="243" y1="384.167" x2="237" y2="384.167" stroke-width="0.8" stroke="black" />
-<line id="243.000000394.583344237.000000394.583344" x1="243" y1="394.583" x2="237" y2="394.583" stroke-width="0.8" stroke="black" />
-<line id="243.000000405.000000233.000000405.000000" x1="243" y1="405" x2="233" y2="405" stroke-width="1.28" stroke="black" />
-<text id="248.000000408.149994" x="248" y="408.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672373.750000206.666672373.750000" x1="210.667" y1="373.75" x2="206.667" y2="373.75" stroke-width="0.8" stroke="black" />
+<line id="210.666672384.166656206.666672384.166656" x1="210.667" y1="384.167" x2="206.667" y2="384.167" stroke-width="0.8" stroke="black" />
+<line id="210.666672394.583344206.666672394.583344" x1="210.667" y1="394.583" x2="206.667" y2="394.583" stroke-width="0.8" stroke="black" />
+<line id="210.666672405.000000204.666672405.000000" x1="210.667" y1="405" x2="204.667" y2="405" stroke-width="1.28" stroke="black" />
+<text id="215.666672408.149994" x="215.667" y="408.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 45 K</text>
-<line id="243.000000415.416656237.000000415.416656" x1="243" y1="415.417" x2="237" y2="415.417" stroke-width="0.8" stroke="black" />
-<line id="243.000000425.833344237.000000425.833344" x1="243" y1="425.833" x2="237" y2="425.833" stroke-width="0.8" stroke="black" />
-<line id="243.000000436.250000237.000000436.250000" x1="243" y1="436.25" x2="237" y2="436.25" stroke-width="0.8" stroke="black" />
-<line id="243.000000446.666656233.000000446.666656" x1="243" y1="446.667" x2="233" y2="446.667" stroke-width="1.28" stroke="black" />
-<text id="248.000000449.816650" x="248" y="449.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672415.416656206.666672415.416656" x1="210.667" y1="415.417" x2="206.667" y2="415.417" stroke-width="0.8" stroke="black" />
+<line id="210.666672425.833344206.666672425.833344" x1="210.667" y1="425.833" x2="206.667" y2="425.833" stroke-width="0.8" stroke="black" />
+<line id="210.666672436.250000206.666672436.250000" x1="210.667" y1="436.25" x2="206.667" y2="436.25" stroke-width="0.8" stroke="black" />
+<line id="210.666672446.666656204.666672446.666656" x1="210.667" y1="446.667" x2="204.667" y2="446.667" stroke-width="1.28" stroke="black" />
+<text id="215.666672449.816650" x="215.667" y="449.817" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 50 K</text>
-<line id="243.000000457.083344237.000000457.083344" x1="243" y1="457.083" x2="237" y2="457.083" stroke-width="0.8" stroke="black" />
-<line id="243.000000467.500000237.000000467.500000" x1="243" y1="467.5" x2="237" y2="467.5" stroke-width="0.8" stroke="black" />
-<line id="243.000000477.916656237.000000477.916656" x1="243" y1="477.917" x2="237" y2="477.917" stroke-width="0.8" stroke="black" />
-<line id="243.000000488.333344233.000000488.333344" x1="243" y1="488.333" x2="233" y2="488.333" stroke-width="1.28" stroke="black" />
-<text id="248.000000491.483337" x="248" y="491.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672457.083344206.666672457.083344" x1="210.667" y1="457.083" x2="206.667" y2="457.083" stroke-width="0.8" stroke="black" />
+<line id="210.666672467.500000206.666672467.500000" x1="210.667" y1="467.5" x2="206.667" y2="467.5" stroke-width="0.8" stroke="black" />
+<line id="210.666672477.916656206.666672477.916656" x1="210.667" y1="477.917" x2="206.667" y2="477.917" stroke-width="0.8" stroke="black" />
+<line id="210.666672488.333344204.666672488.333344" x1="210.667" y1="488.333" x2="204.667" y2="488.333" stroke-width="1.28" stroke="black" />
+<text id="215.666672491.483337" x="215.667" y="491.483" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 55 K</text>
-<line id="243.000000498.750000237.000000498.750000" x1="243" y1="498.75" x2="237" y2="498.75" stroke-width="0.8" stroke="black" />
-<line id="243.000000509.166656237.000000509.166656" x1="243" y1="509.167" x2="237" y2="509.167" stroke-width="0.8" stroke="black" />
-<line id="243.000000519.583313237.000000519.583313" x1="243" y1="519.583" x2="237" y2="519.583" stroke-width="0.8" stroke="black" />
-<line id="243.000000530.000000233.000000530.000000" x1="243" y1="530" x2="233" y2="530" stroke-width="1.28" stroke="black" />
-<text id="248.000000533.150024" x="248" y="533.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<line id="210.666672498.750000206.666672498.750000" x1="210.667" y1="498.75" x2="206.667" y2="498.75" stroke-width="0.8" stroke="black" />
+<line id="210.666672509.166656206.666672509.166656" x1="210.667" y1="509.167" x2="206.667" y2="509.167" stroke-width="0.8" stroke="black" />
+<line id="210.666672519.583313206.666672519.583313" x1="210.667" y1="519.583" x2="206.667" y2="519.583" stroke-width="0.8" stroke="black" />
+<line id="210.666672530.000000204.666672530.000000" x1="210.667" y1="530" x2="204.667" y2="530" stroke-width="1.28" stroke="black" />
+<text id="215.666672533.150024" x="215.667" y="533.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 60 K</text>
 <defs id="" >
 <linearGradient id="grad100.00000030.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
@@ -160,112 +160,88 @@ bp</text>
 <stop offset="100%" stop-color="#3BA05D" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="100.00000030.000000" d="M 100,30
-v 356.642
-a 7.5,2 0 0,0 15,0
-v -356.642
-a 7.5,2 0 0,0 -15,0
-z
-" fill="url(#grad100.00000030.000000)" fill-opacity="1" stroke="#1D502E" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.75" />
-<ellipse cx="107.5" cy="30" rx="7.68" ry="2" stroke-width="0.3" fill-opacity="1" stroke-opacity="1" stroke="#1D502E" fill="url(#grad100.00000030.000000)" />
-<ellipse cx="107.5" cy="386.642" rx="7.68" ry="2" stroke-width="0.3" fill-opacity="1" stroke-opacity="1" stroke="#1D502E" fill="url(#grad100.00000030.000000)" />
+<rect x="100" y="30" width="10" height="356.642" rx="1" ry="1" fill="url(#grad100.00000030.000000)" fill-opacity="1" stroke="" stroke-width="0.75" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad100.00000030.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
 <stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="81.00000030.000000" d="M 81,30
-v 356.642
-a 2.5,1 0 0,0 5,0
-v -356.642
-a 2.5,1 0 0,0 -5,0
-z
-" fill="url(#grad100.00000030.000000NRC)" fill-opacity="1" stroke="#A60" stroke-opacity="1" stroke-linejoin="round" stroke-width="1.4" />
-<ellipse cx="83.5" cy="30" rx="2.836" ry="1" stroke-width="0.56" fill-opacity="1" stroke-opacity="1" stroke="#A60" fill="url(#grad100.00000030.000000NRC)" />
-<ellipse cx="83.5" cy="386.642" rx="2.836" ry="1" stroke-width="0.56" fill-opacity="1" stroke-opacity="1" stroke="#A60" fill="url(#grad100.00000030.000000NRC)" />
+<rect x="82.6667" y="30" width="3.33333" height="356.642" rx="1" ry="0.5" fill="url(#grad100.00000030.000000NRC)" fill-opacity="1" stroke="url(#grad100.00000030.000000NRC)" stroke-width="1.125" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad100.00000030.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
 <stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="70.00000030.000000" d="M 70,30
-v 356.642
-a 2.5,1 0 0,0 5,0
-v -356.642
-a 2.5,1 0 0,0 -5,0
-z
-" fill="url(#grad100.00000030.000000NRCRedun)" fill-opacity="1" stroke="#C80" stroke-opacity="1" stroke-linejoin="round" stroke-width="1.4" />
-<ellipse cx="72.5" cy="30" rx="2.836" ry="1" stroke-width="0.56" fill-opacity="1" stroke-opacity="1" stroke="#C80" fill="url(#grad100.00000030.000000NRCRedun)" />
-<ellipse cx="72.5" cy="386.642" rx="2.836" ry="1" stroke-width="0.56" fill-opacity="1" stroke-opacity="1" stroke="#C80" fill="url(#grad100.00000030.000000NRCRedun)" />
+<rect x="73.3333" y="30" width="3.33333" height="356.642" rx="1" ry="0.5" fill="url(#grad100.00000030.000000NRCRedun)" fill-opacity="1" stroke="url(#grad100.00000030.000000NRCRedun)" stroke-width="1.125" stroke-opacity="1" />
 <defs id="" >
-<linearGradient id="grad175.00000030.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad155.00000030.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#2C7845" stop-opacity="1" />
 <stop offset="100%" stop-color="#3BA05D" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="175.00000030.000000" d="M 175,30
-v 356.642
-a 7.5,2 0 0,0 15,0
-v -356.642
-a 7.5,2 0 0,0 -15,0
-z
-" fill="url(#grad175.00000030.000000)" fill-opacity="1" stroke="#1D502E" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.75" />
-<ellipse cx="182.5" cy="30" rx="7.68" ry="2" stroke-width="0.3" fill-opacity="1" stroke-opacity="1" stroke="#1D502E" fill="url(#grad175.00000030.000000)" />
-<ellipse cx="182.5" cy="386.642" rx="7.68" ry="2" stroke-width="0.3" fill-opacity="1" stroke-opacity="1" stroke="#1D502E" fill="url(#grad175.00000030.000000)" />
+<rect x="155" y="30" width="10" height="356.642" rx="1" ry="1" fill="url(#grad155.00000030.000000)" fill-opacity="1" stroke="url(#grad155.00000030.000000)" stroke-width="0.75" stroke-opacity="1" />
 <defs id="" >
-<linearGradient id="grad175.00000030.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad155.00000030.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
 <stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="204.00000030.000000" d="M 204,30
-v 356.642
-a 2.5,1 0 0,0 5,0
-v -356.642
-a 2.5,1 0 0,0 -5,0
-z
-" fill="url(#grad175.00000030.000000NRC)" fill-opacity="1" stroke="#A60" stroke-opacity="1" stroke-linejoin="round" stroke-width="1.4" />
-<ellipse cx="206.5" cy="30" rx="2.836" ry="1" stroke-width="0.56" fill-opacity="1" stroke-opacity="1" stroke="#A60" fill="url(#grad175.00000030.000000NRC)" />
-<ellipse cx="206.5" cy="386.642" rx="2.836" ry="1" stroke-width="0.56" fill-opacity="1" stroke-opacity="1" stroke="#A60" fill="url(#grad175.00000030.000000NRC)" />
+<rect x="179" y="30" width="3.33333" height="356.642" rx="1" ry="0.5" fill="url(#grad155.00000030.000000NRC)" fill-opacity="1" stroke="url(#grad155.00000030.000000NRC)" stroke-width="1.125" stroke-opacity="1" />
 <defs id="" >
-<linearGradient id="grad175.00000030.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad155.00000030.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="30%" stop-color="#CC9933" stop-opacity="1" />
 <stop offset="100%" stop-color="#ffaa00" stop-opacity="1" />
 </linearGradient>
 </defs>
-<path id="215.00000030.000000" d="M 215,30
-v 356.642
-a 2.5,1 0 0,0 5,0
-v -356.642
-a 2.5,1 0 0,0 -5,0
+<rect x="188.333" y="30" width="3.33333" height="356.642" rx="1" ry="0.5" fill="url(#grad155.00000030.000000NRCRedun)" fill-opacity="1" stroke="url(#grad155.00000030.000000NRCRedun)" stroke-width="1.125" stroke-opacity="1" />
+<polygon points="110,30 110,386.642 155,386.642 155,30 " fill="#3BA05D" stroke="#3BA05D" stroke-width="1" stroke-opacity="0.5" fill-opacity="0.5" />
+<path id="rhs100.00000030.000000" d="M 100,524.6
+a 5,5 0 0,0 10,0
+v 5
+h -10
+v -5
 z
-" fill="url(#grad175.00000030.000000NRCRedun)" fill-opacity="1" stroke="#C80" stroke-opacity="1" stroke-linejoin="round" stroke-width="1.4" />
-<ellipse cx="217.5" cy="30" rx="2.836" ry="1" stroke-width="0.56" fill-opacity="1" stroke-opacity="1" stroke="#C80" fill="url(#grad175.00000030.000000NRCRedun)" />
-<ellipse cx="217.5" cy="386.642" rx="2.836" ry="1" stroke-width="0.56" fill-opacity="1" stroke-opacity="1" stroke="#C80" fill="url(#grad175.00000030.000000NRCRedun)" />
-<polygon points="115,30 115,386.642 175,386.642 175,30 " fill="#3BA05D" stroke="#3BA05D" stroke-width="1" stroke-opacity="0.5" fill-opacity="0.5" />
-<path id="100.00000030.000000" d="M 100,30
-v 500
-a 7.5,2 0 0,0 15,0
-v -500
-a 7.5,2 0 0,0 -15,0
+" fill="white" fill-opacity="1" stroke="white" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.8" />
+<path id="rhs100.00000030.000000" d="M 110,35
+a 5,5 0 0,0 -10,0
+v -5
+h 10
+v 5
 z
-" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" />
-<ellipse cx="107.5" cy="30" rx="7.74" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
-<ellipse cx="107.5" cy="530" rx="7.74" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
-<path id="175.00000030.000000" d="M 175,30
-v 500
-a 7.5,2 0 0,0 15,0
-v -500
-a 7.5,2 0 0,0 -15,0
+" fill="white" fill-opacity="1" stroke="white" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.8" />
+<path id="100.00000030.000000" d="M 100,35
+v 489.6
+a 5,5 0 0,0 10,0
+v -489.6
+a 5,5 0 0,0 -10,0
 z
-" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" />
-<ellipse cx="182.5" cy="30" rx="7.74" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
-<ellipse cx="182.5" cy="530" rx="7.74" ry="2" stroke-width="0.4" fill-opacity="0.9" stroke-opacity="1" stroke="black" fill="none" />
-<text id="107.50000020.400000" x="107.5" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.8" />
+<path id="rhs100.00000030.000000" d="M 155,525
+a 5,5 0 0,0 10,0
+v 5
+h -10
+v -5
+z
+" fill="white" fill-opacity="1" stroke="white" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.8" />
+<path id="rhs100.00000030.000000" d="M 165,35
+a 5,5 0 0,0 -10,0
+v -5
+h 10
+v 5
+z
+" fill="white" fill-opacity="1" stroke="white" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.8" />
+<path id="155.00000030.000000" d="M 155,35
+v 490
+a 5,5 0 0,0 10,0
+v -490
+a 5,5 0 0,0 -10,0
+z
+" fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.8" />
+<text id="105.00000020.400000" x="105" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
 RefMut</text>
-<text id="182.50000020.400000" x="182.5" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+<text id="160.00000020.400000" x="160" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="10px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
 TarMut</text>
 <defs id="" >
 <linearGradient id="grad92.000000570.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
@@ -281,35 +257,37 @@ TarMut</text>
 <stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
 </linearGradient>
 </defs>
-<rect x="92" y="570" width="106" height="11" rx="2" ry="2" fill="url(#grad92.000000570.000000)" fill-opacity="0.9" stroke="black" stroke-width="0.5" />
-<text id="145.000000563.150024" x="145" y="563.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
-Relative Redundancy</text>
-<text id="145.000000594.150024" x="145" y="594.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+<rect x="92" y="570" width="81" height="11" rx="2" ry="2" fill="url(#grad92.000000570.000000)" fill-opacity="0.9" stroke="black" stroke-width="0.5" stroke-opacity="1" />
+<text id="132.500000553.150024" x="132.5" y="553.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+Relative</text>
+<text id="132.500000563.150024" x="132.5" y="563.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+Redundancy</text>
+<text id="132.500000594.150024" x="132.5" y="594.15" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
 Redundancy</text>
 <text id="88.000000575.500000" x="88" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="end" text-align="start" line-height="125%%" >
 0.0</text>
-<text id="202.000000575.500000" x="202" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
+<text id="177.000000575.500000" x="177" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 2.0</text>
-<text id="118.500000575.500000" x="118.5" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+<text id="112.250000575.500000" x="112.25" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
 0.5</text>
-<text id="145.000000575.500000" x="145" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+<text id="132.500000575.500000" x="132.5" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
 1.0</text>
-<text id="171.500000575.500000" x="171.5" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+<text id="152.750000575.500000" x="152.75" y="575.5" dy="2.8" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="8px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
 1.5</text>
-<path id="" d="M 83.5,386.642
-V 560
-H 95
+<path id="" d="M 84.3333,386.642
+V 555
+H 100.5
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
-<path id="" d="M 206.5,386.642
-V 560
-H 195
+<path id="" d="M 180.667,386.642
+V 555
+H 164.5
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
-<path id="" d="M 72.5,386.642
+<path id="" d="M 75,386.642
 V 591
-H 113
+H 100.5
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
-<path id="" d="M 217.5,386.642
+<path id="" d="M 190,386.642
 V 591
-H 177
+H 164.5
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="0.5" />
 </svg>
