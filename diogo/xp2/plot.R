@@ -2,7 +2,28 @@ library(ggplot2)
 library(reshape2)
 library(scales)
 # library(dplyr)
-library(viridis)
+
+rearrange <-
+  read.table("rearrange_count_Chondrichthyes.tsv", header = TRUE)
+rearrange_mat <- as.matrix(rearrange)
+melted_rearrange_mat <- melt(rearrange_mat)
+
+
+ggplot(melted_rearrange_mat, aes(x = Var2, y = Var1)) +
+  geom_raster(aes(fill = value)) +
+  # scale_fill_gradient2(low = "red", mid = "white",
+  #                      high = "blue", midpoint = 65, space = "Lab") +
+  scale_fill_gradientn(colours = hcl.colors(9, palette = "spectral", rev=TRUE)) +
+  theme_bw() +
+  ggtitle("Number of rearrangements in Chondrichthyes") +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(angle = 90, vjust = 0.3)
+  )
+
+# ggsave("rearrange_count_Chondrichthyes.pdf", scale = 3)
+
 
 # n_row_col <- 113
 # entropy <- scan("ent_Chondrichthyes.tsv", quiet = TRUE)
@@ -24,21 +45,6 @@ library(viridis)
 #   theme_bw() + theme(axis.text.x=element_text(angle=90, vjust=0.3))
 
 
-rearrange <- read.table("rearrange_count_Chondrichthyes.tsv", header = TRUE)
-rearrange_mat <- as.matrix(rearrange)
-melted_rearrange_mat <- melt(rearrange_mat)
-
-
-ggplot(melted_rearrange_mat, aes(x = Var2, y = Var1)) +
-  geom_raster(aes(fill = value)) +
-  # scale_fill_gradient(low="white", high="darkblue") +
-  scale_fill_viridis(direction = 1) +
-  theme_bw() +
-  ggtitle("Number of rearrangements in Chondrichthyes") +
-  theme(axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_text(angle = 90, vjust = 0.3))
-
-ggsave("rearrange_count_Chondrichthyes.pdf", scale = 3)
 
 # ggplot(melted_ent_mat, aes(x = value)) +
 #   geom_density(fill = 'blue')
@@ -53,21 +59,3 @@ ggsave("rearrange_count_Chondrichthyes.pdf", scale = 3)
 # ggplot(melted_ent_mat, aes(x = Var1, y = Var2, fill = val_trimmed)) +
 #   geom_raster() +
 #   scale_fill_gradient(low="yellow", high="dark green")
-
-# ent_mat[ent_mat < threshold] <- threshold
-# melted_ent_mat <- melt(ent_mat)
-# data_below_thresh <- subset(melted_ent_mat, melted_ent_mat$value<=threshold)
-# data_above_thresh <- subset(melted_ent_mat, melted_ent_mat$value>threshold)
-
-# ggplot() +
-#   geom_raster(data=data_above_thresh, aes(x = Var1, y = Var2, fill=value)) +
-#   geom_raster(data=data_below_thresh, aes(x = Var1, y = Var2), fill='yellow') +
-#   scale_fill_gradient(low="yellow", high="dark green") +
-#   labs(x="Mitochondrion", y="Mitochondrion") +
-#   theme_bw()
-
-# ggplot() +
-#   geom_raster(data=melted_ent_mat, aes(x = Var1, y = Var2, fill=value)) +
-#   scale_fill_gradient(low="yellow", high="dark green") +
-#   labs(x="Mitochondrion", y="Mitochondrion") +
-#   theme_bw()
