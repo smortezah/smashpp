@@ -32,7 +32,8 @@ if (plot_rearrange) {
   #   addgrid.col = "white",
   #   # cl.align = "l",
   # ) #+
-  ggplot(melted_rearrange_mat, aes(x = Var2, y = Var1)) +
+  # ggplot(melted_rearrange_mat, aes(x = Var2, y = Var1)) +
+  ggplot(melted_rearrange_mat, aes(x = Var1, y = Var2)) +
     geom_tile(aes(fill = value), colour = "white") +
     # geom_raster(aes(fill = value)) +
     coord_fixed() +
@@ -45,29 +46,47 @@ if (plot_rearrange) {
     # ) +
     # ggtitle("Chondrichthyes") +
     scale_fill_gradientn(
-      labels = c("1",
-                 "25",
-                 "50",
-                 "75",
-                 "100",
-                 "125"),
-      breaks = c(1,
-                 25,
-                 50,
-                 75,
-                 100,
-                 125),
+      # labels = c("1",
+      #            "25",
+      #            "50",
+      #            "75",
+      #            "100",
+      #            "125"),
+      labels = c("1", str(seq(10,130,10))
+                 # "20",
+                 # "40",
+                 # "60",
+                 # "80",
+                 # "100",
+                 # "120"
+                 ),
+      breaks = c(1, seq(10,130,10)
+                 # 20,
+                 # 40,
+                 # 60,
+                 # 80,
+                 # 100,
+                 # 120
+                 ),
+      # breaks = c(1,
+      #            25,
+      #            50,
+      #            75,
+      #            100,
+      #            125),
       guide = guide_colorbar(
         title = "No.\nrearrangements\n(Chondrichthyes)",
+        # title = "No. rearrangements\n(Chondrichthyes)",
         title.position = "top",
-        # title.hjust = 0.5
+        title.vjust = 1,
+        # label.position = "left"
       ),
       colours = hcl.colors(5, palette = "spectral", rev = TRUE),
       # values = rescale(c(0, 30, 40, 50, 90, 110, 125)),
       limits = c(1, 126),
       na.value = "white"
     ) +
-    scale_y_discrete(position = "right") +
+    scale_x_discrete(position = "top") +
     # theme_bw() +
     theme(
       axis.title.x = element_blank(),
@@ -78,13 +97,14 @@ if (plot_rearrange) {
       # legend.title = element_text(color = "white"),
       # legend.text = element_text(color = "white"),
       # legend.key.size = unit(0.5, "cm"),
-      legend.justification = c(0, 1),
-      legend.position = c(0, 1),
-      legend.key.height = unit(1.35, "cm")
-      # legend.key.width = unit(1.25, "cm")
+      legend.justification = c(1, 0),
+      legend.position = c(1, 0),
+      # legend.key.height = unit(1.25, "cm"),
+      legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
+      # legend.text.align = 1
     )
   
-  # ggsave("rearrange_count_Chondrichthyes.pdf", scale = 3)
+  ggsave("rearrange_count_Chondrichthyes.pdf", scale = 3)
 } else if (plot_nrc) {
   ent <- read.table("ent_Chondrichthyes.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
