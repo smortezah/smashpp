@@ -13,24 +13,25 @@ ggplot(melted_rearrange_mat, aes(x = Var2, y = Var1)) +
   geom_raster(aes(fill = value)) +
   # scale_fill_gradient2(low = "red", mid = "white",
   #                      high = "blue", midpoint = 65, space = "Lab") +
+  ggtitle("Chondrichthyes") +
   scale_fill_gradientn(
-    name="Experimental\nCondition",
+    guide = guide_colorbar(title = "Number of rearrangements", 
+                           title.position = "top"),
     colours = hcl.colors(9, palette = "spectral", rev = TRUE),
-    values = rescale(c(0, 20, 30, 50, 80, 125)),
+    # values = rescale(c(0, 30, 40, 50, 90, 110, 125)),
     # limits = c(0, 125)
   ) +
-  theme_bw() +
-  ggtitle("Number of rearrangements in Chondrichthyes") +
   scale_y_discrete(position = "right") +
+  theme_bw() +
   theme(
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
     axis.text.x = element_text(angle = 90, vjust = 0.3),
-    legend.direction="horizontal",
-    legend.justification=c(0,0),
+    legend.direction = "horizontal",
+    legend.justification = c(0, 0),
     legend.position = c(0, 0.8),
     legend.background = element_rect(fill = "transparent"),
-    # legend.title = element_blank(), # element_text(color = "white"),
+    legend.title = element_text(color = "white"),
     legend.text = element_text(color = "white"),
     legend.key.size = unit(0.5, "cm"),
     legend.key.width = unit(1.25, "cm")
