@@ -6,8 +6,8 @@ library(ggcorrplot)
 library(corrplot)
 library(factoextra)
 
-plot_rearrange <- TRUE
-plot_nrc <- FALSE
+plot_rearrange <- FALSE
+plot_nrc <- TRUE
 
 if (plot_rearrange) {
   rearrange <-
@@ -18,10 +18,10 @@ if (plot_rearrange) {
   
   top_row_mat <- as.matrix(rearrange_mat['NC_028344', ])
   top_row_mat <- subset(top_row_mat, top_row_mat != 0)
-  top_row_mat <- top_row_mat[order(top_row_mat[,1], decreasing = TRUE)]
-  # colnames(top_row_mat) <- c("NC_028344")
+  # top_row_mat <- top_row_mat[order(top_row_mat[,1], decreasing = TRUE)]
+  colnames(top_row_mat) <- c("NC_028344")
   # melted_top_row_mat <- melt(top_row_mat)
-
+  
   # corr <- round(cor(rearrange), 1)
   # res.dist <- get_dist(rearrange, method = "euclidean")
   # fviz_dist(res.dist, lab_size = 8)
@@ -40,16 +40,10 @@ if (plot_rearrange) {
   # ggplot(melted_rearrange_mat, aes(x = Var2, y = Var1)) +
   #   geom_tile(aes(fill = value), colour = "white") +
   ggplot() +
-    # geom_tile(
-    #   melted_rearrange_mat,
-    #   mapping = aes(x = Var2, y = Var1, fill = value),
-    #   colour = "white"
-    # ) +
     geom_tile(
-      melted_top_row_mat,
-      mapping = aes(x = Var1, y = Var2, fill = value),
-      colour = "white",
-      # na.rm = TRUE
+      melted_rearrange_mat,
+      mapping = aes(x = Var2, y = Var1, fill = value),
+      colour = "white"
     ) +
     # geom_raster(aes(fill = value)) +
     coord_fixed() +
@@ -62,11 +56,12 @@ if (plot_rearrange) {
     # ) +
     # ggtitle("Chondrichthyes") +
     scale_fill_gradientn(
-      # labels = c("1", str(seq(10,130,10))),
-      # breaks = c(1, seq(10,130,10)),
+      labels = c("1", seq(25, 125, 25)),
+      breaks = c(1, seq(25, 125, 25)),
       guide = guide_colorbar(
         title = "No.\nrearrangements\n(Chondrichthyes)",
         title.position = "top",
+        # title.hjust = 0,
         title.vjust = 1,
         # label.position = "left"
       ),
@@ -76,7 +71,7 @@ if (plot_rearrange) {
       na.value = "white"
     ) +
     # scale_x_discrete(position = "top") +
-    # scale_x_discrete(limit = c(rev(header))) +
+    scale_x_discrete(limit = c(rev(header))) +
     # theme_bw() +
     theme(
       axis.title.x = element_blank(),
@@ -90,23 +85,74 @@ if (plot_rearrange) {
       legend.justification = c(1, 1),
       legend.position = c(1, 1),
       # legend.key.height = unit(1.25, "cm"),
-      legend.key.height = unit(6.5, "cm"),
-      # Makes sense in scale=3
+      # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
       # legend.text.align = 1
     )
   
-  # ggsave("rearrange_count_Chondrichthyes.pdf", scale = 3)
+  ggsave("rearrange_count_Chondrichthyes.pdf", scale = 3)
 } else if (plot_nrc) {
   ent <- read.table("ent_Chondrichthyes.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
+  melted_ent_mat <- melt(ent_mat)
+  header <- colnames(ent_mat)
   corr <- round(cor(ent), 1)
   # p.mat <- cor_pmat(ent)
+  
+  ggcorrplot(corr,
+             hc.order = TRUE,
+             type = "upper",
+             outline.col = "white") +
+    # ggtitle("Chondrichthyes") +
+    # scale_fill_gradientn(
+    #   # labels = c("1", seq(25,125,25)),
+    #   # breaks = c(1, seq(25,125,25)),
+    #   # guide = guide_colorbar(
+    #   #   title = "No.\nrearrangements\n(Chondrichthyes)",
+    #   #   title.position = "top",
+    #   #   # title.hjust = 0,
+    #   #   title.vjust = 1,
+    #   #   # label.position = "left"
+    #   # ),
+    #   colours = hcl.colors(5, palette = "spectral", rev = TRUE),
+    #   # values = rescale(c(0, 30, 40, 50, 90, 110, 125)),
+    #   # limits = c(1, 126),
+    #   na.value = "white"
+    # ) +
+    scale_x_discrete(position = "top") +
+    # scale_x_discrete(limit = c(rev(header))) +
+    # theme_bw() +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.3),
+      # legend.direction = "horizontal",
+      # legend.background = element_rect(fill = "transparent"),
+      # legend.title = element_text(color = "white"),
+      # legend.text = element_text(color = "white"),
+      # legend.key.size = unit(0.5, "cm"),
+      legend.justification = c(1, 0.5),
+      legend.position = c(1, 0.5),
+      # legend.key.height = unit(1.25, "cm"),
+      # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
+      # legend.text.align = 1
+    )
+  
+  # corrplot(
+  #   corr,
+  #   type = "upper",
+  #   order = "hclust",
+  #   method = "color",
+  #   tl.col = "black",
+  #   addrect = 5,
+  #   addgrid.col = "white",
+  #   col = hcl.colors(9, palette = "spectral", rev = TRUE)
+  # )
+  
   # ggcorrplot(corr,
   #            hc.order = TRUE,
   #            type = "lower",
-  #            outline.col = "white") #+
-  # corrplot(corr, type = "upper", order = "hclust", method = "color", tl.col = "black", addrect = 5, col=hcl.colors(9, palette = "spectral", rev = TRUE)) #+
-  # ggtitle("Chondrichthyes") +
+  #            outline.col = "white") +
+  #   # ggtitle("Chondrichthyes") #+
   # # scale_fill_gradientn(
   # #   guide = guide_colorbar(
   # #     title = "Number of rearrangements",
@@ -118,7 +164,7 @@ if (plot_rearrange) {
   # #   limits = c(-1, 1)
   # # ) +
   # # scale_y_discrete(position = "right") +
-  # theme_bw() +
+  # # theme_bw() +
   # theme(
   #   axis.title.x = element_blank(),
   #   axis.title.y = element_blank(),
