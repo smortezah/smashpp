@@ -6,6 +6,8 @@ library(ggcorrplot)
 library(corrplot)
 library(factoextra)
 library(cluster)
+library(heatmaply)
+
 
 plot_rearrange <- FALSE
 plot_nrc_Chondrichthyes <- FALSE
@@ -198,6 +200,8 @@ if (plot_rearrange) {
     )
 } else if (cluster_Chondrichthyes) {
   ent <- read.table("ent_Chondrichthyes.tsv", header = TRUE)
+  # heatmaply(scale(ent), k_row = 4, k_col = 4)
+  
   # df<-data.frame(ent)
   # df <- scale(df)
   # d <- dist(df, method = "euclidean")
