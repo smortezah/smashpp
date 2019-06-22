@@ -5,10 +5,12 @@ library(scales)
 library(ggcorrplot)
 library(corrplot)
 library(factoextra)
+library(cluster)
 
 plot_rearrange <- FALSE
 plot_nrc_Chondrichthyes <- FALSE
-plot_nrc_Mammalia <- TRUE
+plot_nrc_Mammalia <- FALSE
+cluster_Chondrichthyes <- TRUE
 
 if (plot_rearrange) {
   rearrange <-
@@ -194,6 +196,29 @@ if (plot_rearrange) {
       # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
       # legend.text.align = 1
     )
+} else if (cluster_Chondrichthyes) {
+  ent <- read.table("ent_Chondrichthyes.tsv", header = TRUE)
+  # df<-data.frame(ent)
+  # df <- scale(df)
+  # d <- dist(df, method = "euclidean")
+  # hc1 <- hclust(d, method = "complete" )
+  # hc3 <- agnes(df, method = "ward")
+  # # pltree(hc3, cex = 0.6, hang = -1, main = "Dendrogram of agnes") 
+  # # plot(hc1, cex = 0.6, hang = -1)
+  # hc4 <- diana(df)
+  # # pltree(hc4, cex = 0.6, hang = -1, main = "Dendrogram of diana")
+  # 
+  # hc5 <- hclust(d, method = "ward.D2" )
+  # sub_grp <- cutree(hc5, k = 6)
+  # table(sub_grp)
+  # fviz_cluster(list(data = df, cluster = sub_grp))
+  
+  
+  # ent_mat <- as.matrix(ent)
+  # melted_ent_mat <- melt(ent_mat)
+  # header <- colnames(ent_mat)
+  # corr <- round(cor(ent), 1)
+  # # p.mat <- cor_pmat(ent)
 } else {
   # n_row_col <- 113
   # entropy <- scan("ent_Chondrichthyes.tsv", quiet = TRUE)
