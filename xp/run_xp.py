@@ -14,11 +14,11 @@ synth_xlarge = False
 synth_mutation = False
 
 # Run simulation
-sim_small = True
-sim_medium = True
-sim_large = True
-sim_xlarge = True
-sim_mutation = True
+sim_small = False
+sim_medium = False
+sim_large = False
+sim_xlarge = False
+sim_mutation = False
 
 if os.name == 'posix':
     sep = '/'
@@ -154,8 +154,8 @@ if sim_small:
     ref = 'RefS'
     tar = 'TarS'
     out = 'S.svg'
-#     execute(smashpp + '-r ' + path_data + ref +
-#             ' -t ' + path_data + tar + ' -l 3 -f 25')
+    execute(smashpp + '-r ' + path_data + ref +
+            ' -t ' + path_data + tar + ' -l 3 -f 25')
     execute(smashpp + '-viz -p 1 -b 5 -f 55 -rt 150 -tt 150 -th 0 ' +
             '-o ' + out + sim_common_par + ref + '.' + tar + '.pos')
 
@@ -163,8 +163,8 @@ if sim_medium:
     ref = 'RefM'
     tar = 'TarM'
     out = 'M.svg'
-#     execute(smashpp + '-r ' + path_data +
-#             ref + ' -t ' + path_data + tar + ' -l 3 -f 100')
+    execute(smashpp + '-r ' + path_data +
+            ref + ' -t ' + path_data + tar + ' -l 3 -f 100')
     execute(smashpp + '-viz -p 1 -b 5 -f 55 -o ' + out +
             sim_common_par + ref + '.' + tar + '.pos')
 
@@ -172,8 +172,8 @@ if sim_large:
     ref = 'RefL'
     tar = 'TarL'
     out = 'L.svg'
-#     execute(smashpp + '-r ' + path_data +
-#             ref + ' -t ' + path_data + tar + ' -l 3 -f 135')
+    execute(smashpp + '-r ' + path_data +
+            ref + ' -t ' + path_data + tar + ' -l 3 -f 135')
     execute(smashpp + '-viz -p 1 -b 5 -f 55 -o ' + out + sim_common_par +
             ref + '.' + tar + '.pos')
 
@@ -181,8 +181,8 @@ if sim_xlarge:
     ref = 'RefXL'
     tar = 'TarXL'
     out = 'XL.svg'
-#     execute(smashpp + '-r ' + path_data +
-#             ref + ' -t ' + path_data + tar + ' -l 3 -f 275')
+    execute(smashpp + '-r ' + path_data +
+            ref + ' -t ' + path_data + tar + ' -l 3 -f 275')
     execute(smashpp + '-viz -p 1 -m 20000000 -o ' + out + sim_common_par +
             ref + '.' + tar + '.pos')
 
@@ -190,7 +190,7 @@ if sim_mutation:
     ref = 'RefMut'
     tar = 'TarMut'
     out = 'Mut.svg'
-#     execute(smashpp + '-r ' + path_data + ref + ' -t ' +
-#             path_data + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
+    execute(smashpp + '-r ' + path_data + ref + ' -t ' +
+            path_data + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
     execute(smashpp + '-viz -p 1 -b 2 -f 50 -rt 5000 -tt 5000' +
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
