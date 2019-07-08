@@ -6,7 +6,7 @@ import numpy as np
 
 prepare_data = False
 find_simil_seqs = False
-find_simil_regions = False
+find_simil_regions = True
 plot_rearrange_count = False
 plot_simil = False
 
@@ -202,10 +202,12 @@ def count_rearrange(file_name):
 
 if find_simil_regions:
     geco_threshold = 1.5
-    Class = 'Chondrichthyes'
+    # Class = 'Chondrichthyes'
+    Class = 'Mammalia'
+    # Class = 'Actinopterygii'
     nrc_file = open(ave_ent_file + '_' + Class + '.tsv')
     data_path = dataset_path + sep + Class.lower() + sep
-    exe_param = '-rm 11,0,1,0.95/8,0,1,0.9 -m 20 -f 20 -dp -th 1.8'
+    exe_param = '-rm 11,0,1,0.95/8,0,1,0.9 -m 20 -f 20 -dp -th 1.8 '
 
     header = nrc_file.readline().split()
     nrc_file.seek(0)
