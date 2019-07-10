@@ -608,7 +608,8 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
                                      bool ir) const {
   auto poly = std::make_unique<Polygon>();
   auto line = std::make_unique<Line>();
-  line->stroke_width = 1.0;
+  // line->stroke_width = 1.0;
+  line->stroke_width = 0.1;
 
   switch (par->link) {
     case 1:
@@ -624,10 +625,10 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
             poly->point(x + get_point(e->endRef), y + seqWidth) +
             poly->point(x + get_point(e->endTar), y + seqWidth + innerSpace) +
             poly->point(x + get_point(e->begTar), y + seqWidth + innerSpace);
-      // poly->stroke = poly->fill = rgb_color(e->start);
-      poly->stroke = "";
-      poly->fill = rgb_color(e->start);
-      // poly->stroke_opacity = 
+      poly->stroke = poly->fill = rgb_color(e->start);
+      // poly->stroke = "";
+      // poly->fill = rgb_color(e->start);
+      poly->stroke_opacity = 
       poly->fill_opacity = 0.5 * par->opacity;
       poly->plot(fPlot);
       break;
