@@ -204,6 +204,6 @@ if e_coli_s_dysenteriae:
         tar = 's_dysenteriae_chr.seq'
         out = 'e_coli_s_dysenteriae.svg'
         execute(smashpp + '-r ' + path + ref + ' -t ' + path + tar +
-                ' -th 1.8 -rm 16,0,0.2,0.9 -f 500 -m 7500')
+                ' -th 1.8 -l 3 -f 275 -m 7500')
         # execute(smashpp + '-viz -p 1 -w 15 -s 60 -vv -o ' + out + ' ' +
         #         ref + '.' + tar + '.pos')
