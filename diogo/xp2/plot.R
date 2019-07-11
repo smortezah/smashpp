@@ -7,16 +7,20 @@ library(corrplot)
 library(factoextra)
 library(cluster)
 library(heatmaply)
+# theme_set(theme_bw())
 
 
-plot_rearrange <- FALSE
+plot_rearrange_Chondrichthyes <- FALSE
+plot_rearrange_Mammalia <- TRUE
 plot_nrc_Chondrichthyes <- FALSE
 plot_nrc_Mammalia <- FALSE
-cluster_Chondrichthyes <- TRUE
+cluster_Chondrichthyes <- FALSE
 
-if (plot_rearrange) {
+if (plot_rearrange_Chondrichthyes) {
+  in_file = "rearrange_count_Chondrichthyes.tsv"
+  out_file = "rearrange_count_Chondrichthyes.pdf"
   rearrange <-
-    read.table("rearrange_count_Chondrichthyes.tsv", header = TRUE)
+    read.table(in_file, header = TRUE)
   rearrange_mat <- as.matrix(rearrange)
   header <- colnames(rearrange_mat)
   melted_rearrange_mat <- melt(rearrange_mat)
@@ -50,7 +54,6 @@ if (plot_rearrange) {
       mapping = aes(x = Var2, y = Var1, fill = value),
       colour = "white"
     ) +
-    # geom_raster(aes(fill = value)) +
     coord_fixed() +
     # scale_fill_gradient2(
     #   low = "white",
@@ -66,7 +69,6 @@ if (plot_rearrange) {
       guide = guide_colorbar(
         title = "No.\nrearrangements\n(Chondrichthyes)",
         title.position = "top",
-        # title.hjust = 0,
         title.vjust = 1,
         # label.position = "left"
       ),
@@ -75,13 +77,11 @@ if (plot_rearrange) {
       limits = c(1, 126),
       na.value = "white"
     ) +
-    # scale_x_discrete(position = "top") +
     scale_x_discrete(limit = c(rev(header))) +
-    # theme_bw() +
     theme(
       axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
       axis.text.x = element_text(angle = 90, vjust = 0.3),
+      axis.title.y = element_blank(),
       # legend.direction = "horizontal",
       # legend.background = element_rect(fill = "transparent"),
       # legend.title = element_text(color = "white"),
@@ -94,7 +94,45 @@ if (plot_rearrange) {
       # legend.text.align = 1
     )
   
-  ggsave("rearrange_count_Chondrichthyes.pdf", scale = 3)
+  ggsave(out_file, height=20, width = 20)
+} else if (plot_rearrange_Mammalia) {
+  in_file = "rearrange_count_Mammalia.tsv"
+  out_file = "rearrange_count_Mammalia.pdf"
+  rearrange <-
+    read.table(in_file, header = TRUE)
+  rearrange_mat <- as.matrix(rearrange)
+  header <- colnames(rearrange_mat)
+  melted_rearrange_mat <- melt(rearrange_mat)
+
+  ggplot() +
+    geom_tile(
+      melted_rearrange_mat,
+      mapping = aes(x = Var2, y = Var1, fill = value),
+      colour = "white"
+    ) +
+    coord_fixed() +
+    scale_fill_gradientn(
+      labels = c("1", seq(50, 278, 50)),
+      breaks = c(1, seq(50, 278, 50)),
+      guide = guide_colorbar(
+        title = "No.\nrearrangements\n(Mammalia)",
+        title.position = "top",
+        title.vjust = 1,
+      ),
+      colours = hcl.colors(5, palette = "spectral", rev = TRUE),
+      limits = c(1, 279),
+      na.value = "white"
+    ) +
+    scale_x_discrete(limit = c(rev(header))) +
+    theme(
+      axis.title.x = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.3),
+      axis.title.y = element_blank(),
+      legend.justification = c(1, 1),
+      legend.position = c(1, 1)
+    )
+  
+  ggsave(out_file, height=49.9, width = 49.9)
 } else if (plot_nrc_Chondrichthyes) {
   ent <- read.table("ent_Chondrichthyes.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
