@@ -203,8 +203,8 @@ def count_rearrange(file_name):
 if find_simil_regions:
     geco_threshold = 1.5
     # Class = 'Chondrichthyes'
-    Class = 'Mammalia'
-    # Class = 'Actinopterygii'
+    # Class = 'Mammalia'
+    Class = 'Actinopterygii'
     nrc_file = open(ave_ent_file + '_' + Class + '.tsv')
     data_path = dataset_path + sep + Class.lower() + sep
     exe_param = '-rm 11,0,1,0.95/8,0,1,0.9 -m 20 -f 20 -dp -th 1.8 '
@@ -232,11 +232,6 @@ if find_simil_regions:
                 execute(smashpp_bin + exe_param +
                         '-r ' + data_path + header[i] + '.seq ' +
                         '-t ' + data_path + header[j] + '.seq ')
-
-                # execute(smashpp_bin + '-rm 11,0,1,0.95/8,0,1,0.9 -r ' +
-                #         data_path + header[i] + '.seq' + ' -t ' + data_path +
-                #         header[j] + '.seq' + ' -f 50 -th ' +
-                #         str(ent_threshold) + ' -m 13 -rb 7 -re 3 -dp')
 
                 pos_file_name = header[i] + '.seq.' + header[j] + '.seq.pos'
                 rearrange_mat[i][j] = count_rearrange(pos_file_name)
@@ -296,7 +291,8 @@ if plot_simil:
     plt.savefig('similarity_Chondrichthyes.pdf')
 
 if plot_rearrange_count:
+    Class = 'Mammalia'  # 'Chondrichthyes'  'Actinopterygii'
     rearrange_count_mat = np.genfromtxt(
-        'rearrange_count_Chondrichthyes.tsv', skip_header=True)
+        'rearrange_count_' + Class + '.tsv', skip_header=True)
     plt.matshow(rearrange_count_mat)
     plt.colorbar()
