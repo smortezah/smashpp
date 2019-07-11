@@ -608,8 +608,8 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
                                      bool ir) const {
   auto poly = std::make_unique<Polygon>();
   auto line = std::make_unique<Line>();
-  // line->stroke_width = 1.0;
-  line->stroke_width = 0.1;
+  poly->stroke_width = 0.3;
+  line->stroke_width = 1.0;
 
   switch (par->link) {
     case 1:
