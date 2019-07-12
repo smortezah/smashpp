@@ -655,6 +655,8 @@ void VizParam::parse(int argc, char**& argv) {
       inverse = false;
     } else if (*i == "-ng") {
       regular = false;
+    } else if (*i == "-n") {
+      showN = true;
     }
   }
   posFile = vArgs.back();
@@ -747,6 +749,8 @@ void VizParam::help() const {
   print_aligned("-ni", "", "=", "do NOT show inverse maps", "->", "no");
 
   print_aligned("-ng", "", "=", "do NOT show regular maps", "->", "no");
+
+  print_aligned("-n", "", "=", "show N bases", "->", "no");
   
   print_aligned("-h", "", "=", "usage guide");
 
