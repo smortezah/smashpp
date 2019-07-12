@@ -76,14 +76,13 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   }
   fPos.seekg(std::ios::beg);
 
-  plot_Ns(fPlot, p->opacity, p->vertical);
+  if (p->showN) plot_Ns(fPlot, p->opacity, p->vertical);
   plot_seq_borders(fPlot, p->vertical);
   plot_title(fPlot, ref, tar, p->vertical);
   plot_legend(fPlot, p, std::max(n_refBases, n_tarBases));
   print_log(n_regular, n_regularSolo, n_inverse, n_inverseSolo, n_ignored);
 
   svg->print_tailer(fPlot);
-
   fPos.close();
   fPlot.close();
 }
@@ -626,8 +625,6 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
             poly->point(x + get_point(e->endTar), y + seqWidth + innerSpace) +
             poly->point(x + get_point(e->begTar), y + seqWidth + innerSpace);
       poly->stroke = poly->fill = rgb_color(e->start);
-      // poly->stroke = "";
-      // poly->fill = rgb_color(e->start);
       poly->stroke_opacity = 
       poly->fill_opacity = 0.5 * par->opacity;
       poly->plot(fPlot);

@@ -145,6 +145,7 @@ class VizParam {
   bool inverse;
   bool regular;
   bool showNRC, showRedun;
+  bool showN;
   std::string image;
   uint8_t link;
   uint8_t colorMode;
@@ -167,6 +168,7 @@ class VizParam {
         regular(true),
         showNRC(true),
         showRedun(true),
+        showN(false),
         image("map.svg"),
         link(1),
         colorMode(0),
