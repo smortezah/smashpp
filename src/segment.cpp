@@ -26,8 +26,7 @@ void Segment::partition(std::vector<PosRow>& pos_out, float filtered) {
 void Segment::finalize_partition(std::vector<PosRow>& pos_out) {
   if (endPos != begPos) {
     // if (endPos != begPos && endPos - begPos >= minSize) {
-    if ((round == 1 && endPos - begPos >= minSize) || round == 2 ||
-        round == 3) {
+    if ((round == 1 && endPos - begPos >= minSize) || round != 1) {
       ++nSegs;
 
       const auto beg = (static_cast<int64_t>(begPos - beg_guard) < 0)
