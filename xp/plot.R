@@ -4,12 +4,12 @@ library(scales)
 # library(dplyr)
 
 table <- read.table("0.hs21.seq.pp21.seq.prf")
-df <- data.frame(table, x=1:10, y=table[1:10,])
-head(df)
+# df <- data.frame(table, x=1:10, y=table[1:10,])
+# head(df)
 
 
-# ggplot(df[1:10,], aes(y=df$V1)) + 
-#   geom_line()
+ggplot(table, aes(x=1:10, y=table[1:10,])) +
+  geom_line()
 
 
 # entropy <- scan("mit.ent", quiet = TRUE)
