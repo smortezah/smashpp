@@ -491,6 +491,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   auto seg = std::make_shared<Segment>();
   seg->thresh = par->thresh;
   seg->minSize = par->segSize;
+  seg->round = round;
   {
     uint8_t maxCtx = 0;
     for (const auto& e : par->refMs)
@@ -706,6 +707,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   auto seg = std::make_shared<Segment>();
   seg->thresh = par->thresh;
   seg->minSize = par->segSize;
+  seg->round = round;
   {
     uint8_t maxCtx = 0;
     for (const auto& e : par->refMs)

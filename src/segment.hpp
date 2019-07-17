@@ -23,6 +23,7 @@ class Segment {
   uint64_t numEnt;
   uint32_t minSize;
   uint64_t totalSize;
+  uint8_t round;
   int16_t beg_guard;
   int16_t end_guard;
 
@@ -35,7 +36,8 @@ class Segment {
         thresh(0),
         sumEnt(0),
         numEnt(0),
-        minSize(MIN_SSIZE) {}
+        minSize(MIN_SSIZE),
+        round(1) {}
 
   void partition(std::vector<PosRow>&, float);
   void finalize_partition(std::vector<PosRow>&);
