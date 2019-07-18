@@ -65,3 +65,8 @@ xp/r.t.pos
 paper/sup.synctex(busy)
 .vscode/settings.json
 xp/dataset
+xp/*x
+xp/*.inf
+xp/*.rev
+xp/*.ext
+xp/*.inf.fil

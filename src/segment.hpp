@@ -26,6 +26,7 @@ class Segment {
   uint8_t round;
   int16_t beg_guard;
   int16_t end_guard;
+  uint64_t sample_step;
 
   Segment()
       : begun(false),
@@ -37,7 +38,8 @@ class Segment {
         sumEnt(0),
         numEnt(0),
         minSize(MIN_SSIZE),
-        round(1) {}
+        round(1),
+        sample_step(1ull) {}
 
   void partition(std::vector<PosRow>&, float);
   void finalize_partition(std::vector<PosRow>&);
