@@ -148,10 +148,8 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
                         std::unique_ptr<Param>& par, uint8_t round,
                         uint64_t& current_pos_row) {
   if (par->verbose || round == 1) {
-    if (round == 3)
-      par->message = "    [+] Filtering " + italic(par->tarName) + " ";
-    else
-      par->message = "[+] Filtering " + italic(par->tarName) + " ";
+    par->message = (round == 3) ? "    " : "";
+    par->message += "[+] Filtering " + italic(par->tarName) + " ";
   }
 
   if (window.size() != 1) {
@@ -226,7 +224,7 @@ void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out,
   for (; profile >> filtered; jump_lines()) {
     if (par->saveFilter) filter_file << precision(PREC_FIL) << filtered << '\n';
     seg->partition(pos_out, filtered);
-    if (par->verbose) show_progress(++symsNo, seg->totalSize, message);
+    if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   }
 
   filter_file.close();
@@ -523,6 +521,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
     const auto val{entropy};
     seq.push_back(val);
     sum += val;
+    // if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
     // show_progress(++symsNo, seg->totalSize, message);
   }
 
@@ -544,6 +543,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
     seg->partition(pos_out, filtered);
+    // if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
     // show_progress(++symsNo, seg->totalSize, message);
   }
 
@@ -557,7 +557,8 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
     ++seg->pos;
     seg->partition(pos_out, filtered);
     seq[idx] = val;
-    idx = (idx + 1) % filt_size;
+    idx = (idx + 1) % filt_size;   
+    // if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
     // show_progress(++symsNo, seg->totalSize, message);
   }
   prfF.close();
@@ -571,10 +572,12 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
     ++seg->pos;
     seg->partition(pos_out, filtered);
     idx = (idx + 1) % filt_size;
+    // if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
     // show_progress(++symsNo, seg->totalSize, message);
   }
 
   seg->finalize_partition(pos_out);
+  // if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   // show_progress(++symsNo, seg->totalSize, message);
 
   filF.close();
@@ -728,7 +731,8 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   // // auto sWeight{std::accumulate(winBeg + half_wsize, winEnd, 0.f)};
   // auto sum_weights{std::accumulate(winBeg, winEnd, 0.f)};
   // uint64_t symsNo{0};
-  seg->totalSize = file_lines(profileName) / par->sampleStep;
+  // seg->totalSize = file_lines(profileName) / par->sampleStep;
+  seg->totalSize = file_lines(profileName);
   // const auto totalSize = (file_lines(profileName) / par->sampleStep) + 1;
   const auto jump_lines = [&]() {
     for (uint64_t i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
@@ -738,6 +742,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   std::vector<float> seq;
   seq.reserve(filt_size);
   auto entropy{0.f};
+  uint64_t symsNo{0};  // No. syms based on profile
   
   // First value
   // for (auto i = half_wsize + 1; i-- && (prfF >> entropy); jump_lines())
@@ -761,6 +766,8 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   // filtered = sum / sWeight;
   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
   seg->partition(pos_out, filtered);
+  ++symsNo;
+  if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   // show_progress(++symsNo, seg->totalSize, message);
 
   // Next half_wsize values
@@ -773,6 +780,8 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
     seg->partition(pos_out, filtered);
+    ++symsNo;
+    if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
     //   show_progress(++symsNo, seg->totalSize, message);
   }
 
@@ -787,7 +796,9 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     // filtered = sum / sWeight;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
-    seg->partition(pos_out, filtered);
+    seg->partition(pos_out, filtered);   
+    ++symsNo;
+    if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
     //   show_progress(++symsNo, seg->totalSize, message);
   }
   prfF.close();
@@ -808,9 +819,13 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
     seg->partition(pos_out, filtered);
+    ++symsNo;
+    if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
     //   show_progress(++symsNo, seg->totalSize, message);
   }
   seg->finalize_partition(pos_out);
+  ++symsNo;
+  if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   // show_progress(++symsNo, seg->totalSize, message);
 
   filF.close();

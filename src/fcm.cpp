@@ -327,10 +327,8 @@ inline void FCM::alloc_model() {
 
 void FCM::store(std::unique_ptr<Param>& par, uint8_t round) {
   if (round == 1 || par->verbose) {
-    if (round == 3)
-      par->message = "    [+] Building model";
-    else
-      par->message = "[+] Building model";
+    par->message = (round == 3) ? "    " : "";
+    par->message += "[+] Creating model";
     if (rMs.size() > 1) par->message += "s";
     par->message += " of ";
     par->message += tarSegMsg.empty()
@@ -540,7 +538,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
           sumEnt += entr;
           update_ctx_ir2(ctx, ctxIr, &prob_par);
         }
-        if (par->verbose) show_progress(symsNo, totalSize, message);
+        if (par->verbose) show_progress(symsNo, totalSize, par->message);
       }
     }
   }
@@ -638,7 +636,7 @@ inline void FCM::compress_n(std::unique_ptr<Param>& par) {
         ////        update_weights(begin(cp->w), begin(cp->probs),
         /// end(cp->probs));
         sumEnt += ent;
-        if (par->verbose) show_progress(symsNo, totalSize, message);
+        if (par->verbose) show_progress(symsNo, totalSize, par->message);
       }
     }
   }
@@ -888,7 +886,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
-        if (par->verbose) show_progress(symsNo, totalSize, message);
+        if (par->verbose) show_progress(symsNo, totalSize, par->message);
       }
     }
   }
@@ -983,7 +981,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
         ////        update_weights(begin(cp->w), begin(cp->probs),
         /// end(cp->probs));
         sumEnt += ent;
-        if (par->verbose) show_progress(symsNo, totalSize, message);
+        if (par->verbose) show_progress(symsNo, totalSize, par->message);
       }
     }
   }
