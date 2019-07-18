@@ -25,13 +25,9 @@ void Segment::partition(std::vector<PosRow>& pos_out, float filtered) {
 
 void Segment::finalize_partition(std::vector<PosRow>& pos_out) {
   if (endPos != begPos) {
-    // todo
-    // std::cerr << begPos << ' ' << endPos << '\n';
     begPos *= sample_step;
     endPos *= sample_step;
-    totalSize *= sample_step;
-    // todo
-    // std::cerr << begPos << ' ' << endPos << "\n\n";
+    // totalSize *= sample_step;
 
     // if (endPos != begPos && endPos - begPos >= minSize) {
     if ((round == 1 && endPos - begPos >= minSize) || round != 1) {
@@ -43,9 +39,6 @@ void Segment::finalize_partition(std::vector<PosRow>& pos_out) {
       const auto end =
           (endPos + end_guard > totalSize) ? totalSize : endPos + end_guard;
       const auto ent = sumEnt / numEnt;
-
-      // todo
-      std::cerr << beg << ' ' << end << '\n';
 
       pos_out.push_back(PosRow(beg, end, ent));
     }
