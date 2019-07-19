@@ -27,7 +27,7 @@ void Segment::finalize_partition(std::vector<PosRow>& pos_out) {
   if (endPos != begPos) {
     begPos *= sample_step;
     endPos *= sample_step;
-    // totalSize *= sample_step;
+    // totalSize *= sample_step;//todo
 
     // if (endPos != begPos && endPos - begPos >= minSize) {
     if ((round == 1 && endPos - begPos >= minSize) || round != 1) {
