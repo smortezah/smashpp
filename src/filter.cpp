@@ -149,8 +149,6 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out,
   if (par->verbose || round == 1) {
     par->message = (round == 3) ? "    " : "";
     par->message += "[+] Filtering " + italic(par->tarName) + " ";
-  } else {
-    // par->message = "[+] Compressing & Filtering " + italic(par->tarName) + " ";
   }
 
   if (window.size() != 1) {

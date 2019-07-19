@@ -54,14 +54,16 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   constexpr uint8_t lblWidth = 20;
   constexpr uint8_t colWidth = 8;
   constexpr uint8_t tblWidth =
-      52;  // static_cast<uint8_t>(lblWidth+Ms.size()*colWidth);
+      52;  // static_cast<uint8_t>(lblWidth + Ms.size()*colWidth);
 
   const auto rule = [](uint8_t n, std::string&& s) {
     for (auto i = n / s.size(); i--;) std::cerr << s;
     std::cerr << '\n';
   };
-  const auto toprule = [=]() { rule(tblWidth, "~"); };
-  const auto midrule = [=]() { rule(tblWidth, "~"); };
+  const auto toprule = [=]() {};
+  // const auto toprule = [=]() { rule(tblWidth, "~"); };
+  const auto midrule = [=]() { rule(tblWidth, "="); };
+  // const auto midrule = [=]() { rule(tblWidth, "~"); };
   const auto botrule = [=]() { rule(tblWidth, " "); };
   const auto label = [=](std::string s) {
     std::cerr << std::setw(lblWidth) << std::left << s;
@@ -212,7 +214,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   };
 
   toprule();
-  rmm_row("Ref Model(s)", 'm');
+  rmm_row(bold("Ref Model           "), 'm');
   midrule();
   rmm_row("Context size (k)", 'k');
   bool hasSketch{false};
@@ -239,7 +241,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
       }
     if (show_rstmm) {
       toprule();
-      rstmm_row("Ref Substituttional Model(s)", 'h');
+      rstmm_row(bold("Ref Substituttional Model           "), 'h');
       midrule();
       rstmm_row("No. Subst.   (t)", 't');
       rstmm_row("Inv. repeat  (ir)", 'i');
@@ -250,7 +252,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   }
 
   toprule();
-  tmm_row("Tar Model(s)", 'm');
+  tmm_row(bold("Tar Model           "), 'm');
   midrule();
   rmm_row("Context size (k)", 'k');
   hasSketch = false;
@@ -277,7 +279,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
       }
     if (show_tstmm) {
       toprule();
-      tstmm_row("Tar Substituttional Model(s)", 'h');
+      tstmm_row(bold("Tar Substituttional Model           "), 'h');
       midrule();
       rstmm_row("No. Subst.   (t)", 't');
       tstmm_row("Inv. repeat  (ir)", 'i');
@@ -289,7 +291,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
 
   if (!par->compress) {
     toprule();
-    filter_row("Filter & Segment", 'h');
+    filter_row(bold("Filter & Segment"), 'h');
     midrule();
     filter_row("Window function", 'f');
     if (par->manFilterScale) filter_row("Filter scale", 's');
@@ -299,7 +301,8 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   }
 
   toprule();
-  file_row("Files", "Name", "Size (B)");
+  file_row(bold("File                "), bold("Name            "),
+           bold("Size (B)"));
   midrule();
   file_row("Reference", "r", "1");
   file_row("Target", "t", "2");
