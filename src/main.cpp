@@ -446,7 +446,7 @@ void run(std::unique_ptr<Param>& par) {
         // }
 
         if (!par->verbose)
-          std::cerr << "\r" << par->message << "segment " << i + 1 << "... ";
+          std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
 
         std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
         auto num_seg_round2 =
