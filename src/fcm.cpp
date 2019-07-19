@@ -442,9 +442,11 @@ void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
     par->message = (round == 3) ? "    " : "";
     par->message += "[+] Compressing " + italic(par->tarName) + " ";
   } else {
-    if (round == 1)
+    if (round == 1) {
       par->message =
           "[+] Compressing & filtering " + italic(par->tarName) + " ";
+      std::cerr << par->message << "...";
+    }
   }
 
   if (rMs.size() == 1 && rTMsSize == 0)  // 1 MM
@@ -470,7 +472,7 @@ void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
               << "finished. Ave. entropy = " << fixed_precision(PREC_PRF)
               << aveEnt << " bps." << '\n';
   } else {
-    if (round == 1) std::cerr << par->message << "...";
+    // if (round == 1) std::cerr << "\r" << par->message << "...";
   }
 }
 
