@@ -113,7 +113,8 @@ struct OutRowAux {
   OutRowAux(PosRow pos2_, PosRow pos1_) : pos2(pos2_), pos1(pos1_) {}
 };
 
-void write_pos_file_impl(const std::vector<OutRowAux>& out_aux) {
+void write_pos_file_impl(const std::vector<OutRowAux>& out_aux,
+                         bool asym_region) {
   const auto ref{out_aux.front().pos1.ref};
   const auto tar{out_aux.front().pos1.tar};
   const auto pos_file_name{gen_name(ref, tar, Format::position)};
@@ -165,13 +166,19 @@ void write_pos_file_impl(const std::vector<OutRowAux>& out_aux) {
       right_self_ent = row.pos1.self_ent;
     }
 
-    // todo. Work on this condition
-    // if (uint64_t(std::llabs(right_end - right_beg)) <
-    //         (left_end - left_beg) * 1.5 &&
-    //     uint64_t(std::llabs(right_end - right_beg)) > (left_end - left_beg) / 2)
+    if (!asym_region) {
+      if (uint64_t(std::llabs(right_end - right_beg)) <
+              (left_end - left_beg) * 1.5 &&
+          uint64_t(std::llabs(right_end - right_beg)) >
+              (left_end - left_beg) / 2)
+        pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
+                 << left_self_ent << '\t' << right_beg << '\t' << right_end
+                 << '\t' << right_ent << '\t' << right_self_ent << '\n';
+    } else {
       pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
                << left_self_ent << '\t' << right_beg << '\t' << right_end
                << '\t' << right_ent << '\t' << right_self_ent << '\n';
+    }
   }
 
   pos_file.close();
@@ -179,7 +186,7 @@ void write_pos_file_impl(const std::vector<OutRowAux>& out_aux) {
 
 void make_write_pos_pair(const std::vector<PosRow>& left,
                          const std::vector<PosRow>& right1,
-                         const std::vector<PosRow>& right3) {
+                         const std::vector<PosRow>& right3, bool asym_region) {
   std::vector<OutRowAux> out_aux{std::vector<OutRowAux>()};
 
   if (left.empty()) {
@@ -211,10 +218,10 @@ void make_write_pos_pair(const std::vector<PosRow>& left,
     }
   }
 
-  if (!out_aux.empty()) write_pos_file_impl(out_aux);
+  if (!out_aux.empty()) write_pos_file_impl(out_aux, asym_region);
 }
 
-void write_pos_file(const std::vector<PosRow>& pos_out) {
+void write_pos_file(const std::vector<PosRow>& pos_out, bool asym_region) {
   std::vector<PosRow> left, right1, right3;
   for (const auto& row : pos_out) {
     if (row.round == 2) left.push_back(PosRow(row));
@@ -222,7 +229,7 @@ void write_pos_file(const std::vector<PosRow>& pos_out) {
     if (row.round == 3) right3.push_back(PosRow(row));
   }
 
-  make_write_pos_pair(left, right1, right3);
+  make_write_pos_pair(left, right1, right3, asym_region);
 }
 
 uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
@@ -491,7 +498,7 @@ void run(std::unique_ptr<Param>& par) {
   }  // Round 1
 
   remove_temp_seq(par);
-  if (!pos_out.empty()) write_pos_file(pos_out);
+  if (!pos_out.empty()) write_pos_file(pos_out, par->asym_region);
 }
 
 int main(int argc, char* argv[]) {

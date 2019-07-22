@@ -83,6 +83,7 @@ class Param {
   uint32_t ID;
   bool noRedun;
   bool deep;
+  bool asym_region;
   std::vector<MMPar> refMs, tarMs;
   std::string message;
 
@@ -123,6 +124,7 @@ class Param {
         ID(0),
         noRedun(false),
         deep(false),
+        asym_region(false),
         tar_guard(std::make_unique<TarGuard>()),
         ref_guard(std::make_unique<RefGuard>()) {}
 
