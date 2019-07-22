@@ -178,6 +178,8 @@ void Param::parse(int argc, char**& argv) {
           std::numeric_limits<int16_t>::max(), 0, "Target ending guard", Interval::closed,
           "default", Problem::warning);
       range->assert(tar_guard->end);
+    } else if (*i == "-ar") {
+      asym_region = true;
     } else if (*i == "-dp") {
       deep = true;
     } else if (*i == "-nr") {
@@ -400,6 +402,8 @@ void Param::help() const {
           std::to_string(std::numeric_limits<decltype(tar_guard->end)>::max()) +
           "]",
       "->", std::to_string(tar_guard->end));
+
+  print_aligned("-ar", "", "=", "consider asymmetric regions", "->", "no");
 
   print_aligned("-dp", "", "=", "deep compression", "->", "no");
 
