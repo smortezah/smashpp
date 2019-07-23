@@ -33,10 +33,10 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   // Set color number
   set_n_color(pos);
 
-//todo
-  for (const auto& p : pos) {
-    std::cerr << (int)p.n_color << '\n';
-  }
+// //todo
+//   for (const auto& p : pos) {
+//     std::cerr << (int)p.n_color << '\n';
+//   }
 
   // Plot
   uint64_t n_regular{0};
