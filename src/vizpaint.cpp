@@ -948,8 +948,8 @@ inline void VizPaint::plot_legend_text_horiz(
 
   // Numbers (measures)
   // 0.0
-  legend->text[0]->font_weight = "bold";
-  legend->text[0]->font_size = 8;
+  // legend->text[0]->font_weight = "bold";
+  legend->text[0]->font_size = 7.5;
   legend->text[0]->fill = "black";
   legend->text[0]->dy = VERT_MIDDLE * legend->text[0]->font_size;
   legend->text[0]->x = legend->rect->x - 4;
@@ -1188,8 +1188,8 @@ inline void VizPaint::plot_legend_text_vert(
 
   // Numbers (measures)
   // 0.0
-  legend->text[0]->font_weight = "bold";
-  legend->text[0]->font_size = 8;
+  // legend->text[0]->font_weight = "bold";
+  legend->text[0]->font_size = 7.5;
   legend->text[0]->fill = "black";
   legend->text[0]->text_anchor = "middle";
   // legend->text[0]->dominant_baseline = "middle";
