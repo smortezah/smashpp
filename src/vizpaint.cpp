@@ -30,6 +30,14 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   std::vector<Position> pos;
   plot_pos(fPlot, fPos, pos, p);
 
+  // Set color number
+  set_n_color(pos);
+
+//todo
+  for (const auto& p : pos) {
+    std::cerr << (int)p.n_color << '\n';
+  }
+
   // Plot
   uint64_t n_regular{0};
   uint64_t n_regularSolo{0};
@@ -293,7 +301,8 @@ inline std::string VizPaint::seq_gradient(std::ofstream& fPlot,
                                           std::string id) const {
   auto grad = std::make_unique<LinearGradient>();
   grad->id = "grad" + id;
-  grad->add_stop("30%", shade(color, 0.25));
+  grad->add_stop("0%", color);
+  grad->add_stop("50%", tint(color, 0.65));
   grad->add_stop("100%", color);
   grad->plot(fPlot);
 
@@ -2064,4 +2073,23 @@ inline void VizPaint::print_log(uint64_t n_regular, uint64_t n_regularSolo,
     std::cerr << "Ignored " << n_ignored << " region"
               << (n_ignored > 1 ? "s" : "") << ".\n";
   std::cerr << '\n';
+}
+
+void VizPaint::set_n_color(std::vector<Position>& pos) {
+  std::vector<std::pair<int64_t, int64_t>> tar_pos_history{};
+  uint8_t color_number = 0;
+
+  for (auto& p : pos) {
+    const auto tar_pos_pair = std::make_pair(p.begTar, p.endTar);
+    const auto found = std::find(std::begin(tar_pos_history),
+                                 std::end(tar_pos_history), tar_pos_pair);
+    if (found == std::end(tar_pos_history)){
+      tar_pos_history.push_back(tar_pos_pair);
+      p.n_color = ++color_number;
+    } else {
+      const auto n_color_idx = static_cast<int64_t>(
+          std::distance(std::begin(tar_pos_history), found));
+      p.n_color = pos[n_color_idx].n_color;
+    }
+  }
 }

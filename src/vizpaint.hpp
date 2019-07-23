@@ -30,6 +30,7 @@ struct Position {
   prc_t entTar;
   prc_t selfTar;
   uint64_t start;
+  uint8_t n_color;
 
   Position(int64_t br, int64_t er, prc_t nr, prc_t sr, int64_t bt, int64_t et,
            prc_t nt, prc_t st, uint64_t s)
@@ -41,7 +42,8 @@ struct Position {
         selfRef(sr),
         entTar(nt),
         selfTar(st),
-        start(s) {}
+        start(s),
+        n_color(1) {}
 };
 
 struct PosNode {
@@ -181,6 +183,7 @@ class VizPaint {
   void print_log(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t) const;
   // void print_pos (ofstream&, VizParam&, const vector<Position>&, uint64_t,
   // string&&);
+  void set_n_color(std::vector<Position>&);
 };
 }  // namespace smashpp
 
