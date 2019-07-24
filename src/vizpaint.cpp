@@ -473,7 +473,7 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
       rect->plot_ir(fPlot, "WavyWhite");
     else
       rect->plot_ir(fPlot, "Wavy",
-                    shade(make_color(e->n_color, p->tot_color), 0.1));
+                    shade(make_color(e->n_color, p->tot_color), 0.25));
     // rect->plot_ir(fPlot, "Wavy", shade(rgb_color(e->start)));
   }
 
