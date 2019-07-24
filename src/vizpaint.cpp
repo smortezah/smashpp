@@ -752,7 +752,7 @@ inline void VizPaint::plot_title(std::ofstream& f, std::string ref,
                                  std::string tar, bool vertical) const {
   auto text = std::make_unique<Text>();
   text->font_weight = "bold";
-  text->font_size = 10;
+  text->font_size = 9;
 
   if (vertical) {
     text->text_anchor = "middle";
@@ -907,7 +907,7 @@ inline void VizPaint::plot_legend_text_horiz(
   for (auto& e : legend->text) {
     e->text_anchor = "middle";
     // e->dominant_baseline = "middle";
-    e->font_size = 9;
+    e->font_size = 8;
   }
 
   if (legend->showNRC && !legend->showRedun) {
@@ -971,7 +971,7 @@ inline void VizPaint::plot_legend_text_horiz(
   // Numbers (measures)
   // 0.0
   // legend->text[0]->font_weight = "bold";
-  legend->text[0]->font_size = 7.5;
+  legend->text[0]->font_size = 7;
   legend->text[0]->fill = "black";
   legend->text[0]->dy = VERT_MIDDLE * legend->text[0]->font_size;
   legend->text[0]->x = legend->rect->x - 4;
@@ -1161,7 +1161,7 @@ inline void VizPaint::plot_legend_text_vert(
     std::ofstream& f, std::unique_ptr<LegendPlot>& legend) const {
   for (auto& e : legend->text) {
     e->text_anchor = "middle";
-    e->font_size = 9;
+    e->font_size = 8;
   }
 
   if (legend->showNRC && !legend->showRedun) {
@@ -1211,7 +1211,7 @@ inline void VizPaint::plot_legend_text_vert(
   // Numbers (measures)
   // 0.0
   // legend->text[0]->font_weight = "bold";
-  legend->text[0]->font_size = 7.5;
+  legend->text[0]->font_size = 7;
   legend->text[0]->fill = "black";
   legend->text[0]->text_anchor = "middle";
   // legend->text[0]->dominant_baseline = "middle";
@@ -1753,13 +1753,12 @@ inline void VizPaint::plot_pos_horizontal(
         (uint8_t(posPlot->showNRC) + uint8_t(posPlot->showRedun)) *
             (SPACE_TUNE + periphWidth) +
         posPlot->majorTickSize;
-  line->plot(f);
+  // line->plot(f);
 
   auto text = std::make_unique<Text>();
-  text->font_size = 9;
   // Print bp
   text->font_weight = "bold";
-  text->font_size = 10;
+  text->font_size = 8;
   text->text_anchor = "start";
   // text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
   text->x = line->x1;
@@ -1804,7 +1803,7 @@ inline void VizPaint::plot_pos_horizontal(
         text->y =
             line->y1 + posPlot->tickLabelSkip + VERT_BOTTOM * text->font_size;
       // text->font_size = (posPlot->n_bases < POW10[7]) ? 9 : 8.5;
-      text->font_size = 9;
+      text->font_size = 7;
       text->font_weight = "normal";
       text->text_anchor = "middle";
       // text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
@@ -1815,10 +1814,14 @@ inline void VizPaint::plot_pos_horizontal(
       // text->Label = thousands_sep(uint64_t(round(pos)));
       if (pos != 0.0f) text->plot(f);
     } else {  // Minor ticks
-      line->y2 = posPlot->plotRef ? line->y1 + posPlot->minorTickSize
-                                  : line->y1 - posPlot->minorTickSize;
+      // line->y2 = posPlot->plotRef ? line->y1 + posPlot->minorTickSize
+      //                             : line->y1 - posPlot->minorTickSize;
+      const auto temp = line->y1;
+      line->y1 = posPlot->plotRef ? line->y2 - posPlot->minorTickSize
+                                  : line->y2 + posPlot->minorTickSize;
       line->stroke_width = posPlot->minorStrokeWidth;
       line->plot(f);
+      line->y1 = temp;
     }
   }
 }
@@ -1850,12 +1853,12 @@ inline void VizPaint::plot_pos_vertical(
          static_cast<uint8_t>(posPlot->showRedun)) *
             (SPACE_TUNE + periphWidth) +
         posPlot->majorTickSize;
-  line->plot(f);
+  // line->plot(f);//todo
 
   auto text = std::make_unique<Text>();
   // Print bp
   text->font_weight = "bold";
-  text->font_size = 10;
+  text->font_size = 8;
   if (posPlot->plotRef) {
     text->text_anchor = "end";
     text->x = line->x1 - posPlot->tickLabelSkip;
@@ -1896,7 +1899,7 @@ inline void VizPaint::plot_pos_vertical(
       text->x = posPlot->plotRef ? line->x1 - posPlot->tickLabelSkip
                                  : line->x1 + posPlot->tickLabelSkip;
       text->y = line->y1 + VERT_MIDDLE * text->font_size;
-      text->font_size = 9;
+      text->font_size = 7;
       text->font_weight = "normal";
       text->text_anchor = posPlot->plotRef ? "end" : "start";
       // text->dominant_baseline = "middle";
@@ -1907,10 +1910,14 @@ inline void VizPaint::plot_pos_vertical(
       // text->Label = thousands_sep(uint64_t(round(pos)));
       if (pos != 0.0f) text->plot(f);
     } else {  // Minor ticks
-      line->x2 = posPlot->plotRef ? line->x1 + posPlot->minorTickSize
-                                  : line->x1 - posPlot->minorTickSize;
+      // line->x2 = posPlot->plotRef ? line->x1 + posPlot->minorTickSize
+      //                             : line->x1 - posPlot->minorTickSize;
+      const auto temp = line->x1;
+      line->x1 = posPlot->plotRef ? line->x2 - posPlot->minorTickSize
+                                  : line->x2 + posPlot->minorTickSize;
       line->stroke_width = posPlot->minorStrokeWidth;
       line->plot(f);
+      line->x1 = temp;
     }
   }
 }
@@ -1973,8 +1980,7 @@ inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity,
 inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   auto cylinder = std::make_unique<Cylinder>();
   cylinder->width = seqWidth;
-  // cylinder->stroke_width = 1;
-  cylinder->stroke_width = 0.8;  // todo
+  cylinder->stroke_width = 1;
 
   auto path = std::make_unique<Path>();
   path->id = "rhs" + std::to_string(x) + std::to_string(y);
