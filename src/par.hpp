@@ -154,9 +154,11 @@ class VizParam {
   float opacity;
   uint32_t width;
   uint32_t space;
+  uint8_t tot_color;
   uint32_t mult;
   uint32_t start;
   uint32_t min;
+  bool man_tot_color;
   bool manMult;
   std::string posFile;
   uint64_t refTick, tarTick;
@@ -177,9 +179,11 @@ class VizParam {
         opacity(OPAC),
         width(WDTH),
         space(SPC),
+        tot_color(1),
         mult(MULT),
         start(BEGN),
         min(MINP),
+        man_tot_color(false),
         manMult(false),
         refTick(0),
         tarTick(0),
