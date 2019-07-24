@@ -270,8 +270,8 @@ std::string VizPaint::rgb_color(uint32_t start) const {
 }
 
 std::string VizPaint::make_color(uint8_t n_color, uint8_t tot_color) const {
-  // const auto hue{static_cast<uint8_t>(n_color * 360 / (tot_color + 1))};
-  const auto hue{n_color * 360 / (tot_color + 1)};
+  const auto out_idx{map_interval<uint8_t>(1, n_color, 1, tot_color, n_color)};
+  const auto hue{static_cast<uint8_t>(out_idx * 360 / (tot_color + 1) + 15)};
   return to_hex(HSV(hue));
 }
 
@@ -460,8 +460,8 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
     rect->stroke = "white";
   } else {
     rect->fill =
-        // seq_gradient(fPlot, hsv_color(e->n_color, p->tot_color), rect->id);
-    rect->fill = seq_gradient(fPlot, rgb_color(e->start), rect->id);
+        seq_gradient(fPlot, make_color(e->n_color, p->tot_color), rect->id);
+    // rect->fill = seq_gradient(fPlot, rgb_color(e->start), rect->id);
     rect->stroke = rect->fill;
     // rect->stroke = shade(rgb_color(e->start));
   }
@@ -472,7 +472,9 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
     if (e->begRef == DBLANK)
       rect->plot_ir(fPlot, "WavyWhite");
     else
-      rect->plot_ir(fPlot, "Wavy", shade(rgb_color(e->start)));
+      rect->plot_ir(fPlot, "Wavy",
+                    shade(make_color(e->n_color, p->tot_color), 0.1));
+    // rect->plot_ir(fPlot, "Wavy", shade(rgb_color(e->start)));
   }
 
   // rect->stroke_width = 0.7;
@@ -644,7 +646,7 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
             poly->point(x + get_point(e->endRef), y + seqWidth) +
             poly->point(x + get_point(e->endTar), y + seqWidth + innerSpace) +
             poly->point(x + get_point(e->begTar), y + seqWidth + innerSpace);
-      poly->stroke = poly->fill = rgb_color(e->n_color);
+      poly->stroke = poly->fill = make_color(e->n_color, par->tot_color);
       // poly->stroke = poly->fill = rgb_color(e->start);
       poly->stroke_opacity = 
       poly->fill_opacity = 0.5 * par->opacity;
@@ -666,7 +668,7 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
                : x + get_point(e->begTar + (e->endTar - e->begTar) / 2.0);
         line->y2 = y + seqWidth + innerSpace;
       }
-      line->stroke = rgb_color(e->n_color);
+      line->stroke = make_color(e->n_color, par->tot_color);
       // line->stroke = rgb_color(e->start);
       line->plot(fPlot);
       break;
@@ -690,7 +692,7 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
       line->plot(fPlot);
       break;
     case 4:
-      line->stroke = rgb_color(e->n_color);
+      line->stroke = make_color(e->n_color, par->tot_color);
       // line->stroke = rgb_color(e->start);
       if (par->vertical) {
         line->x1 = x + seqWidth;

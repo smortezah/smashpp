@@ -141,6 +141,19 @@ inline static float tick_round(float lowerBound, float upperBound,
   float frac{tick / div};
   return round_frac(frac) * div;
 }
+
+template <typename Int>
+inline static Int map_interval(Int in_first, Int in_last, Int out_first,
+                               Int out_last, Int value) {
+  if (in_last == in_first)
+    return out_first;
+  else if (in_last == out_last && in_first == out_first)
+    return value;
+
+  const auto slope{
+      static_cast<double>((out_last - out_first) / (in_last - in_first))};
+  return std::round(out_first + slope * (value - in_first));
+}
 }  // namespace smashpp
 
 #endif  // SMASHPP_NUMBER_HPP
