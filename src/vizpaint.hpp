@@ -133,6 +133,7 @@ class VizPaint {
   void config(double, double, uint32_t);
   void set_page(bool);
   auto rgb_color(uint32_t) const -> std::string;
+  auto make_color(uint8_t, uint8_t) const -> std::string;
   auto nrc_color(double, uint32_t) const -> std::string;
   auto redun_color(double, uint32_t) const -> std::string;
   auto seq_gradient(std::ofstream&, std::string, std::string) const

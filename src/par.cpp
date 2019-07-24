@@ -608,6 +608,11 @@ void VizParam::parse(int argc, char**& argv) {
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_MINP, MAX_MINP, MINP, "Min", Interval::closed, "default", Problem::warning);
       range->assert(min);
+    } else if (option_inserted(i, "-tc")) {
+      man_tot_color = true;
+      auto val = std::stoi(*++i);
+      keep_in_range(1, val, 255);
+      tot_color = static_cast<uint8_t>(val);
     } else if (option_inserted(i, "-f")) {
       manMult = true;
       mult = static_cast<uint32_t>(std::stoul(*++i));
@@ -715,6 +720,11 @@ void VizParam::help() const {
                 "space between sequences: [" + std::to_string(MIN_SPC) + ", " +
                     std::to_string(MAX_SPC) + "]",
                 "->", std::to_string(space));
+
+  print_aligned("-tc", "INT", "=",
+                "total number of colors: [" + std::to_string(1) + ", " +
+                    std::to_string(255) + "]",
+                "->", std::to_string(1));
 
   print_aligned("-f", "INT", "=", "multiplication factor for", "->",
                 std::to_string(mult));
