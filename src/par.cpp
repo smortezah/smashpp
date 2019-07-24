@@ -613,17 +613,6 @@ void VizParam::parse(int argc, char**& argv) {
       auto val = std::stoi(*++i);
       keep_in_range(1, val, 255);
       tot_color = static_cast<uint8_t>(val);
-    } else if (option_inserted(i, "-f")) {
-      manMult = true;
-      mult = static_cast<uint32_t>(std::stoul(*++i));
-      auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_MULT, MAX_MULT, MULT, "Mult", Interval::closed, "default", Problem::warning);
-      range->assert(mult);
-    } else if (option_inserted(i, "-b")) {
-      start = static_cast<uint32_t>(std::stoul(*++i));
-      auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_BEGN, MAX_BEGN, BEGN, "Begin", Interval::closed, "default", Problem::warning);
-      range->assert(start);
     } else if (option_inserted(i, "-rt")) {
       refTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
@@ -725,17 +714,6 @@ void VizParam::help() const {
                 "total number of colors: [" + std::to_string(1) + ", " +
                     std::to_string(255) + "]",
                 "->", std::to_string(1));
-
-  print_aligned("-f", "INT", "=", "multiplication factor for", "->",
-                std::to_string(mult));
-  print_aligned("", "", "",
-                "color ID: [" + std::to_string(MIN_MULT) + ", " +
-                    std::to_string(MAX_MULT) + "]");
-
-  print_aligned("-b", "INT", "=",
-                "beginning of color ID: [" + std::to_string(MIN_BEGN) + ", " +
-                    std::to_string(MAX_BEGN) + "]",
-                "->", std::to_string(start));
 
   print_aligned("-rt", "INT", "=",
                 "reference tick: [" + std::to_string(MIN_TICK) + ", " +

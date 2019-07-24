@@ -29,7 +29,6 @@ struct Position {
   prc_t selfRef;
   prc_t entTar;
   prc_t selfTar;
-  uint64_t start;
   uint8_t n_color;
 
   Position(int64_t br, int64_t er, prc_t nr, prc_t sr, int64_t bt, int64_t et,
@@ -42,7 +41,6 @@ struct Position {
         selfRef(sr),
         entTar(nt),
         selfTar(st),
-        start(s),
         n_color(1) {}
 };
 

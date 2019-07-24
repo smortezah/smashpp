@@ -45,12 +45,6 @@ static constexpr uint32_t MAX_WDTH{100};
 static constexpr uint32_t SPC{40};
 static constexpr uint32_t MIN_SPC{5};
 static constexpr uint32_t MAX_SPC{200};
-static constexpr uint32_t MULT{43};  // 5 colors without overlapping
-static constexpr uint32_t MIN_MULT{1};
-static constexpr uint32_t MAX_MULT{255};
-static constexpr uint32_t BEGN{0};
-static constexpr uint32_t MIN_BEGN{0};
-static constexpr uint32_t MAX_BEGN{255};
 static constexpr uint32_t MINP{1};
 static constexpr uint32_t MIN_MINP{1};
 static constexpr uint32_t MAX_MINP{0xffffffff};  // 2^32 - 1
@@ -180,11 +174,11 @@ class VizParam {
         width(WDTH),
         space(SPC),
         tot_color(1),
-        mult(MULT),
-        start(BEGN),
+        // mult(MULT),
+        // start(BEGN),
         min(MINP),
         man_tot_color(false),
-        manMult(false),
+        // manMult(false),
         refTick(0),
         tarTick(0),
         tickHumanRead(true),
