@@ -461,9 +461,7 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
   } else {
     rect->fill =
         seq_gradient(fPlot, make_color(e->n_color, p->tot_color), rect->id);
-    // rect->fill = seq_gradient(fPlot, rgb_color(e->start), rect->id);
     rect->stroke = rect->fill;
-    // rect->stroke = shade(rgb_color(e->start));
   }
 
   if (!inverted) {
@@ -474,7 +472,6 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
     else
       rect->plot_ir(fPlot, "Wavy",
                     shade(make_color(e->n_color, p->tot_color), 0.25));
-    // rect->plot_ir(fPlot, "Wavy", shade(rgb_color(e->start)));
   }
 
   // rect->stroke_width = 0.7;
