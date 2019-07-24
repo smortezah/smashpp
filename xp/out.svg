@@ -134,15 +134,13 @@ bp</text>
 <rect x="100" y="420.663" width="10" height="102.121" rx="1" ry="1" fill="url(#grad100.000000420.662628)" fill-opacity="1" stroke-width="0.75" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad100.000000420.662628NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#66CC33" stop-opacity="1" />
-<stop offset="100%" stop-color="#55ff00" stop-opacity="1" />
+<stop offset="100%" stop-color="#00BAE0" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="82.6667" y="420.663" width="3.33333" height="102.121" rx="1" ry="0.5" fill="url(#grad100.000000420.662628NRC)" fill-opacity="1" stroke="url(#grad100.000000420.662628NRC)" stroke-width="1.125" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad100.000000420.662628NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
-<stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
+<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="73.3333" y="420.663" width="3.33333" height="102.121" rx="1" ry="0.5" fill="url(#grad100.000000420.662628NRCRedun)" fill-opacity="1" stroke="url(#grad100.000000420.662628NRCRedun)" stroke-width="1.125" stroke-opacity="1" />
@@ -156,15 +154,13 @@ bp</text>
 <rect x="150" y="409.583" width="10" height="25.5304" rx="1" ry="1" fill="url(#grad150.000000409.583435)" fill-opacity="1" stroke="url(#grad150.000000409.583435)" stroke-width="0.75" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad150.000000409.583435NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#99CC33" stop-opacity="1" />
-<stop offset="100%" stop-color="#aaff00" stop-opacity="1" />
+<stop offset="100%" stop-color="#C09B00" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="174" y="409.583" width="3.33333" height="25.5304" rx="1" ry="0.5" fill="url(#grad150.000000409.583435NRC)" fill-opacity="1" stroke="url(#grad150.000000409.583435NRC)" stroke-width="1.125" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad150.000000409.583435NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
-<stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
+<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="183.333" y="409.583" width="3.33333" height="25.5304" rx="1" ry="0.5" fill="url(#grad150.000000409.583435NRCRedun)" fill-opacity="1" stroke="url(#grad150.000000409.583435NRCRedun)" stroke-width="1.125" stroke-opacity="1" />
@@ -179,15 +175,13 @@ bp</text>
 <rect x="100" y="227.981" width="10" height="102.121" rx="1" ry="1" fill="url(#grad100.000000227.980698)" fill-opacity="1" stroke-width="0.75" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad100.000000227.980698NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#66CC33" stop-opacity="1" />
-<stop offset="100%" stop-color="#55ff00" stop-opacity="1" />
+<stop offset="100%" stop-color="#00BAE0" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="82.6667" y="227.981" width="3.33333" height="102.121" rx="1" ry="0.5" fill="url(#grad100.000000227.980698NRC)" fill-opacity="1" stroke="url(#grad100.000000227.980698NRC)" stroke-width="1.125" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad100.000000227.980698NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
-<stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
+<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="73.3333" y="227.981" width="3.33333" height="102.121" rx="1" ry="0.5" fill="url(#grad100.000000227.980698NRCRedun)" fill-opacity="1" stroke="url(#grad100.000000227.980698NRCRedun)" stroke-width="1.125" stroke-opacity="1" />
@@ -210,15 +204,13 @@ l 6.15,7.7
 <rect x="150" y="226.536" width="10" height="112.237" rx="1" ry="1" fill="url(#Wavy150.000000226.535583)" fill-opacity="1" stroke="url(#grad150.000000226.535583)" stroke-width="0.75" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad150.000000226.535583NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#99CC33" stop-opacity="1" />
-<stop offset="100%" stop-color="#aaff00" stop-opacity="1" />
+<stop offset="100%" stop-color="#FA62DB" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="174" y="226.536" width="3.33333" height="112.237" rx="1" ry="0.5" fill="url(#grad150.000000226.535583NRC)" fill-opacity="1" stroke="url(#grad150.000000226.535583NRC)" stroke-width="1.125" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad150.000000226.535583NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
-<stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
+<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="183.333" y="226.536" width="3.33333" height="112.237" rx="1" ry="0.5" fill="url(#grad150.000000226.535583NRCRedun)" fill-opacity="1" stroke="url(#grad150.000000226.535583NRCRedun)" stroke-width="1.125" stroke-opacity="1" />
@@ -233,15 +225,13 @@ l 6.15,7.7
 <rect x="100" y="30" width="10" height="86.7069" rx="1" ry="1" fill="url(#grad100.00000030.000000)" fill-opacity="1" stroke-width="0.75" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad100.00000030.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#66CC33" stop-opacity="1" />
-<stop offset="100%" stop-color="#55ff00" stop-opacity="1" />
+<stop offset="100%" stop-color="#00B0F6" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="82.6667" y="30" width="3.33333" height="86.7069" rx="1" ry="0.5" fill="url(#grad100.00000030.000000NRC)" fill-opacity="1" stroke="url(#grad100.00000030.000000NRC)" stroke-width="1.125" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad100.00000030.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
-<stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
+<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="73.3333" y="30" width="3.33333" height="86.7069" rx="1" ry="0.5" fill="url(#grad100.00000030.000000NRCRedun)" fill-opacity="1" stroke="url(#grad100.00000030.000000NRCRedun)" stroke-width="1.125" stroke-opacity="1" />
@@ -255,15 +245,13 @@ l 6.15,7.7
 <rect x="150" y="409.583" width="10" height="25.5304" rx="1" ry="1" fill="url(#grad150.000000409.583435)" fill-opacity="1" stroke="url(#grad150.000000409.583435)" stroke-width="0.75" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad150.000000409.583435NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#99CC33" stop-opacity="1" />
-<stop offset="100%" stop-color="#aaff00" stop-opacity="1" />
+<stop offset="100%" stop-color="#00BFC4" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="174" y="409.583" width="3.33333" height="25.5304" rx="1" ry="0.5" fill="url(#grad150.000000409.583435NRC)" fill-opacity="1" stroke="url(#grad150.000000409.583435NRC)" stroke-width="1.125" stroke-opacity="1" />
 <defs id="" >
 <linearGradient id="grad150.000000409.583435NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="30%" stop-color="#3333CC" stop-opacity="1" />
-<stop offset="100%" stop-color="#0000ff" stop-opacity="1" />
+<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="183.333" y="409.583" width="3.33333" height="25.5304" rx="1" ry="0.5" fill="url(#grad150.000000409.583435NRCRedun)" fill-opacity="1" stroke="url(#grad150.000000409.583435NRCRedun)" stroke-width="1.125" stroke-opacity="1" />
@@ -316,16 +304,26 @@ gga28.seq</text>
 mga30.seq</text>
 <defs id="" >
 <linearGradient id="grad92.000000570.007874" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="0%" stop-color="#0000ff" stop-opacity="1" />
-<stop offset="11%" stop-color="#00aaff" stop-opacity="1" />
-<stop offset="22%" stop-color="#00ffff" stop-opacity="1" />
-<stop offset="33%" stop-color="#00ffaa" stop-opacity="1" />
-<stop offset="44%" stop-color="#00ff55" stop-opacity="1" />
-<stop offset="55%" stop-color="#55ff00" stop-opacity="1" />
-<stop offset="66%" stop-color="#aaff00" stop-opacity="1" />
-<stop offset="77%" stop-color="#ffff00" stop-opacity="1" />
-<stop offset="88%" stop-color="#ffaa00" stop-opacity="1" />
-<stop offset="100%" stop-color="#ff0000" stop-opacity="1" />
+<stop offset="0%" stop-color="#F8766D" stop-opacity="1" />
+<stop offset="5%" stop-color="#EA8331" stop-opacity="1" />
+<stop offset="10%" stop-color="#D89000" stop-opacity="1" />
+<stop offset="15%" stop-color="#C09B00" stop-opacity="1" />
+<stop offset="21%" stop-color="#A3A500" stop-opacity="1" />
+<stop offset="26%" stop-color="#7CAE00" stop-opacity="1" />
+<stop offset="31%" stop-color="#39B600" stop-opacity="1" />
+<stop offset="36%" stop-color="#00BB4E" stop-opacity="1" />
+<stop offset="42%" stop-color="#00BF7D" stop-opacity="1" />
+<stop offset="47%" stop-color="#00C1A3" stop-opacity="1" />
+<stop offset="52%" stop-color="#00BFC4" stop-opacity="1" />
+<stop offset="57%" stop-color="#00BAE0" stop-opacity="1" />
+<stop offset="63%" stop-color="#00B0F6" stop-opacity="1" />
+<stop offset="68%" stop-color="#35A2FF" stop-opacity="1" />
+<stop offset="73%" stop-color="#9590FF" stop-opacity="1" />
+<stop offset="78%" stop-color="#C77CFF" stop-opacity="1" />
+<stop offset="84%" stop-color="#E76BF3" stop-opacity="1" />
+<stop offset="89%" stop-color="#FA62DB" stop-opacity="1" />
+<stop offset="94%" stop-color="#FF62BC" stop-opacity="1" />
+<stop offset="100%" stop-color="#FF6A98" stop-opacity="1" />
 </linearGradient>
 </defs>
 <rect x="92" y="570.008" width="76" height="11" rx="2" ry="2" fill="url(#grad92.000000570.007874)" fill-opacity="0.9" stroke="black" stroke-width="0.5" stroke-opacity="1" />

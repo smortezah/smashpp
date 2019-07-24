@@ -321,7 +321,8 @@ inline std::string VizPaint::periph_gradient(std::ofstream& fPlot,
                                              std::string id) const {
   auto grad = std::make_unique<LinearGradient>();
   grad->id = "grad" + id;
-  grad->add_stop("30%", tone(color, 0.4));
+  // grad->add_stop("0%", color);
+  // grad->add_stop("50%", shade(color, 0.5));
   grad->add_stop("100%", color);
   grad->plot(fPlot);
 
