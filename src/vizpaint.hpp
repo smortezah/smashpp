@@ -29,6 +29,7 @@ struct Position {
   prc_t selfRef;
   prc_t entTar;
   prc_t selfTar;
+  uint64_t start;
   uint8_t n_color;
 
   Position(int64_t br, int64_t er, prc_t nr, prc_t sr, int64_t bt, int64_t et,
@@ -41,6 +42,7 @@ struct Position {
         selfRef(sr),
         entTar(nt),
         selfTar(st),
+        start(s),
         n_color(1) {}
 };
 
@@ -73,12 +75,12 @@ struct PosPlot {
   PosPlot()
       : n_ranges(10),
         n_subranges(4),
-        minorTickSize(4), // 6
-        majorTickSize(1.5 * minorTickSize), // 1.75
+        minorTickSize(4),
+        majorTickSize(1.5 * minorTickSize),
         vertSkip(13),
         vertical(false),
-        minorStrokeWidth(0.8f),
-        majorStrokeWidth(1.6 * minorStrokeWidth) {}
+        minorStrokeWidth(0.5f),
+        majorStrokeWidth(1.5 * minorStrokeWidth) {}
 };
 
 struct LegendPlot {
