@@ -409,10 +409,12 @@ void Rectangle::plot_ir(std::ofstream& f, std::string wave, std::string pattern_
   pattern->x = x;
   pattern->y = y;
   pattern->width = width;
-  pattern->height = 14;
+  pattern->height = 12;
+  // pattern->height = 14;
 
   auto path = std::make_unique<Path>();
-  path->stroke_width = 0.3 * pattern->height;
+  path->stroke_width = 0.2 * pattern->height;
+  // path->stroke_width = 0.3 * pattern->height;
   path->d = path->m(-path->stroke_width / 2,
                     pattern->height - path->stroke_width / 2) +
             path->l(pattern->width / 2 + path->stroke_width / 2,
