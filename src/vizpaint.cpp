@@ -1012,7 +1012,7 @@ inline void VizPaint::plot_legend_path_horiz(
     std::ofstream& f, std::unique_ptr<LegendPlot>& legend) const {
   legend->path->stroke = "black";
   legend->path->stroke_width = 0.5;
-  // path->stroke_dasharray = "8 3";
+  legend->path->stroke_dasharray = "8 4";
 
   if (legend->showNRC && !legend->showRedun) {
     float X1RelRedun = x - (TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth);
@@ -1246,7 +1246,7 @@ inline void VizPaint::plot_legend_path_vert(
     std::ofstream& f, std::unique_ptr<LegendPlot>& legend) const {
   legend->path->stroke = "black";
   legend->path->stroke_width = 0.5;
-  // legend->path->stroke_dasharray = "8 3";
+  legend->path->stroke_dasharray = "8 4";
 
   if (legend->showNRC && !legend->showRedun) {
     float Y1RelRedun = y - (TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth);
