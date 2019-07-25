@@ -53,9 +53,9 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
     if (abs(e->endTar - e->begTar) <= p->min) {
       ++n_ignored;
       continue;
-    } else if (e->begRef != DBLANK && e->endRef - e->begRef <= p->min) {
-      ++n_ignored;
-      continue;
+    // } else if (e->begRef != DBLANK && e->endRef - e->begRef <= p->min) {
+    //   ++n_ignored;
+    //   continue;
     }
 
     if (e->begRef == DBLANK)
@@ -270,12 +270,10 @@ std::string VizPaint::rgb_color(uint32_t start) const {
 }
 
 std::string VizPaint::make_color(uint8_t n_color, uint8_t tot_color) const {
-  uint8_t out_idx = 1;
-  if(n_color>tot_color){
-    out_idx = map_interval<uint8_t>(1, n_color, 1, tot_color, n_color);
-  }else{
-    out_idx = n_color;
-  }
+  const auto out_idx =
+      (n_color > tot_color)
+          ? map_interval<uint8_t>(1, n_color, 1, tot_color, n_color)
+          : n_color;
   const auto hue{static_cast<uint8_t>(out_idx * 360 / (tot_color + 1) + 15)};
   return to_hex(HSV(hue));
 }
@@ -477,7 +475,7 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
       rect->plot_ir(fPlot, "WavyWhite");
     else
       rect->plot_ir(fPlot, "Wavy",
-                    shade(make_color(e->n_color, p->tot_color), 0.25));
+                    shade(make_color(e->n_color, p->tot_color), 0.33));
   }
 
   // rect->stroke_width = 0.7;
@@ -1504,44 +1502,20 @@ inline void VizPaint::make_posNode(const std::vector<Position>& pos,
   nodes.clear();
   nodes.reserve(2 * pos.size());
 
-  // if (type == "ref") {
-  //   for (auto e : pos)
-  //     if (abs(e.endTar - e.begTar) > par->min)
-  //       if (e.begRef == DBLANK || e.endRef - e.begRef > par->min)
-  //       nodes.push_back(PosNode(e.begRef, 'b', e.start));
-  //   for (auto e : pos)
-  //     if (abs(e.endTar - e.begTar) > par->min)
-  //       if (e.begRef == DBLANK || e.endRef - e.begRef > par->min)
-  //       nodes.push_back(PosNode(e.endRef, 'e', e.start));
-  // } else if (type == "tar") {
-  //   for (auto e : pos)
-  //     if (abs(e.endTar - e.begTar) > par->min)
-  //       if (e.begRef == DBLANK || e.endRef - e.begRef > par->min)
-  //         nodes.push_back(
-  //             PosNode(e.begTar, e.endTar > e.begTar ? 'b' : 'e', e.start));
-  //   for (auto e : pos)
-  //     if (abs(e.endTar - e.begTar) > par->min)
-  //       if (e.begRef == DBLANK || e.endRef - e.begRef > par->min)
-  //         nodes.push_back(
-  //             PosNode(e.endTar, e.endTar > e.begTar ? 'e' : 'b', e.start));
-  // }
-
-  if (type == "ref") {
-    for (auto e : pos)
-      if (abs(e.endTar - e.begTar) > par->min)
-        if (e.begRef == DBLANK || e.endRef - e.begRef > par->min) {
+  for (auto e : pos) {
+    // if (abs(e.endTar - e.begTar) > par->min) {
+      if (e.begRef == DBLANK || e.endRef - e.begRef > par->min) {
+        if (type == "ref") {
           nodes.push_back(PosNode(e.begRef, 'b', e.start));
           nodes.push_back(PosNode(e.endRef, 'e', e.start));
-        }
-  } else if (type == "tar") {
-    for (auto e : pos)
-      if (abs(e.endTar - e.begTar) > par->min)
-        if (e.begRef == DBLANK || e.endRef - e.begRef > par->min) {
+        } else if (type == "tar") {
           nodes.push_back(
               PosNode(e.begTar, e.endTar > e.begTar ? 'b' : 'e', e.start));
           nodes.push_back(
               PosNode(e.endTar, e.endTar > e.begTar ? 'e' : 'b', e.start));
         }
+      }
+    // }
   }
 
   std::sort(std::begin(nodes), std::end(nodes),
