@@ -271,7 +271,8 @@ std::string VizPaint::rgb_color(uint32_t start) const {
 
 std::string VizPaint::make_color(uint8_t n_color, uint8_t tot_color) const {
   const auto out_idx{map_interval<uint8_t>(1, n_color, 1, tot_color, n_color)};
-  const auto hue{static_cast<uint8_t>(out_idx * 360 / (tot_color + 1) + 15)};
+  const auto hue{static_cast<uint8_t>(out_idx * 255 / (tot_color + 1) + 15)};
+  // const auto hue{static_cast<uint8_t>(out_idx * 360 / (tot_color + 1) + 15)};
   return to_hex(HSV(hue));
 }
 
