@@ -31,13 +31,19 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   plot_pos(fPlot, fPos, pos, p);
 
   // Set color number
-  set_n_color(pos);
+  set_n_color(pos);//todo
 
   // Set total number of colors to be used
   if (!p->man_tot_color) {
     for (const auto& pos_line : pos)
       if (pos_line.n_color > p->tot_color) p->tot_color = pos_line.n_color;
   }
+
+
+
+  // for (auto e : pos) std::cerr <<"\n"<< (int)e.n_color;
+
+
 
   // Plot
   uint64_t n_regular{0};
