@@ -21,7 +21,7 @@ sim_xlarge = False
 sim_mutation = False
 
 # Run on real dataset
-e_coli_s_dysenteriae = True
+e_coli_s_dysenteriae = False
 
 if os.name == 'posix':
     sep = '/'
