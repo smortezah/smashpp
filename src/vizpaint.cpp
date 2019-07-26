@@ -41,7 +41,7 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
 
 
 
-  // for (auto e : pos) std::cerr <<"\n"<< (int)e.n_color;
+  for (auto e : pos) std::cerr <<"\n"<< (int)e.n_color;
 
 
 
@@ -2081,20 +2081,51 @@ inline void VizPaint::print_log(uint64_t n_regular, uint64_t n_regularSolo,
 }
 
 void VizPaint::set_n_color(std::vector<Position>& pos) {
-  std::vector<std::pair<int64_t, int64_t>> tar_pos_history{};
+  // struct History {
+  //   int64_t beg_tar;
+  //   int64_t end_tar;
+  //   uint8_t n_color;
+  // };
+  // std::vector<std::unique_ptr<History>> history{};
+  // uint8_t color_number = 0;
+
+  // for (uint64_t i = 0; i != pos.size();++i) {
+  //   history[i]->beg_tar = pos[i].begTar;
+  //   history[i]->end_tar = pos[i].endTar;
+  //   history[i]->n_color = pos[i].n_color;
+
+
+  //   const auto tar_pos_tuple = std::make_tuple(p.begTar, p.endTar);
+  //   const auto found = std::find(std::begin(tar_pos_history),
+  //                                std::end(tar_pos_history), tar_pos_tuple);
+  //   if (found == std::end(tar_pos_history)){
+  //     tar_pos_history.push_back(tar_pos_tuple);
+  //     p.n_color = ++color_number;
+  //   } else {
+  //     const auto n_color_idx = static_cast<int64_t>(
+  //         std::distance(std::begin(tar_pos_history), found));
+  //     p.n_color = color_number;
+  //     // p.n_color = pos[n_color_idx].n_color;
+  //   }
+  // }
+
+
+
+  std::vector<std::tuple<int64_t, int64_t, uint8_t>> tar_history{};
   uint8_t color_number = 0;
 
   for (auto& p : pos) {
-    const auto tar_pos_pair = std::make_pair(p.begTar, p.endTar);
-    const auto found = std::find(std::begin(tar_pos_history),
-                                 std::end(tar_pos_history), tar_pos_pair);
-    if (found == std::end(tar_pos_history)){
-      tar_pos_history.push_back(tar_pos_pair);
+    const auto tar_tuple = std::make_tuple(p.begTar, p.endTar, p.n_color);
+    const auto found =
+        std::find(std::begin(tar_history), std::end(tar_history), tar_tuple);
+    if (found == std::end(tar_history)) {
       p.n_color = ++color_number;
+      tar_history.push_back(std::make_tuple(p.begTar, p.endTar, p.n_color));
     } else {
-      const auto n_color_idx = static_cast<int64_t>(
-          std::distance(std::begin(tar_pos_history), found));
-      p.n_color = pos[n_color_idx].n_color;
+      //   const auto n_color_idx = static_cast<int64_t>(
+      //       std::distance(std::begin(tar_pos_history), found));
+      // p.n_color = pos[n_color_idx].n_color;
+      p.n_color = std::get<2>(*found);
     }
   }
 }
