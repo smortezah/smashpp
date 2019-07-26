@@ -650,7 +650,7 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
       poly->stroke = poly->fill = make_color(e->n_color, par->tot_color);
       // poly->stroke = poly->fill = rgb_color(e->start);
       poly->stroke_opacity = 
-      poly->fill_opacity = 0.5 * par->opacity;
+      poly->fill_opacity = 0.2 * par->opacity;
       poly->plot(fPlot);
       break;
     case 2:
