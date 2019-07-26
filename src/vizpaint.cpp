@@ -1836,20 +1836,22 @@ inline void VizPaint::plot_pos_vertical(
   // line->plot(f);//todo
 
   auto text = std::make_unique<Text>();
-  // Print bp
-  text->font_weight = "bold";
-  text->font_size = 8;
-  if (posPlot->plotRef) {
-    text->text_anchor = "end";
-    text->x = line->x1 - posPlot->tickLabelSkip;
-  } else {
-    text->text_anchor = "start";
-    text->x = line->x1 + posPlot->tickLabelSkip;
-  }
-  text->y = line->y1 + VERT_BOTTOM * 9 /*font size of pos labels*/;
-  // text->dominant_baseline = "middle";
-  text->Label = "bp";
-  text->plot(f);
+  text->font_size = 7;
+
+  // // Print bp
+  // // text->font_weight = "bold";
+  // if (posPlot->plotRef) {
+  //   text->text_anchor = "end";
+  //   text->x = line->x1 - posPlot->tickLabelSkip;
+  // } else {
+  //   text->text_anchor = "start";
+  //   text->x = line->x1 + posPlot->tickLabelSkip;
+  // }
+  // text->y = line->y1 + VERT_BOTTOM * 7 /*font size of pos labels*/;
+  // // text->dominant_baseline = "middle";
+  // text->Label = "0 b";
+  // // text->Label = "bp";
+  // text->plot(f);
 
   float majorTick{tick_round(0, posPlot->n_bases, posPlot->n_ranges)};
   if (posPlot->plotRef) {
@@ -1879,7 +1881,7 @@ inline void VizPaint::plot_pos_vertical(
       text->x = posPlot->plotRef ? line->x1 - posPlot->tickLabelSkip
                                  : line->x1 + posPlot->tickLabelSkip;
       text->y = line->y1 + VERT_MIDDLE * text->font_size;
-      text->font_size = 7;
+      // text->font_size = 7;
       text->font_weight = "normal";
       text->text_anchor = posPlot->plotRef ? "end" : "start";
       // text->dominant_baseline = "middle";
