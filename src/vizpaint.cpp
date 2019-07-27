@@ -1736,19 +1736,19 @@ inline void VizPaint::plot_pos_horizontal(
   // line->plot(f);
 
   auto text = std::make_unique<Text>();
-  // Print bp
-  text->font_weight = "bold";
-  text->font_size = 8;
-  text->text_anchor = "start";
-  // text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
-  text->x = line->x1;
-  if (posPlot->plotRef)
-    text->y = line->y1 - posPlot->tickLabelSkip;
-  else
-    text->y = line->y1 + posPlot->tickLabelSkip +
-              VERT_BOTTOM * 9 /*font-size of rest*/;
-  text->Label = "bp";
-  text->plot(f);
+  // // Print bp
+  // text->font_weight = "bold";
+  // text->font_size = 8;
+  // text->text_anchor = "start";
+  // // text->dominant_baseline = posPlot->plotRef ? "baseline" : "hanging";
+  // text->x = line->x1;
+  // if (posPlot->plotRef)
+  //   text->y = line->y1 - posPlot->tickLabelSkip;
+  // else
+  //   text->y = line->y1 + posPlot->tickLabelSkip +
+  //             VERT_BOTTOM * 9 /*font-size of rest*/;
+  // text->Label = "bp";
+  // text->plot(f);
 
   float majorTick{tick_round(0, posPlot->n_bases, posPlot->n_ranges)};
   if (posPlot->plotRef) {
@@ -1792,7 +1792,8 @@ inline void VizPaint::plot_pos_horizontal(
       else
         text->Label = std::to_string(uint64_t(std::round(pos)));
       // text->Label = thousands_sep(uint64_t(round(pos)));
-      if (pos != 0.0f) text->plot(f);
+      // if (pos != 0.0f) text->plot(f);
+      text->plot(f);
     } else {  // Minor ticks
       // line->y2 = posPlot->plotRef ? line->y1 + posPlot->minorTickSize
       //                             : line->y1 - posPlot->minorTickSize;
@@ -1890,7 +1891,8 @@ inline void VizPaint::plot_pos_vertical(
       else
         text->Label = std::to_string(uint64_t(std::round(pos)));
       // text->Label = thousands_sep(uint64_t(round(pos)));
-      if (pos != 0.0f) text->plot(f);
+      // if (pos != 0.0f) text->plot(f);
+      text->plot(f);
     } else {  // Minor ticks
       // line->x2 = posPlot->plotRef ? line->x1 + posPlot->minorTickSize
       //                             : line->x1 - posPlot->minorTickSize;

@@ -200,10 +200,10 @@ inline static std::string human_readable(uint64_t bytes,
 // Non-computer science
 inline static std::string human_readable_non_cs(uint64_t bytes,
                                                 uint8_t precision = 0) {
-  const uint64_t KB_div{POW10[3]};
-  const uint64_t MB_div{POW10[6]};
-  const uint64_t GB_div{POW10[9]};
-  const uint64_t TB_div{POW10[12]};
+  const uint64_t Kb_div{POW10[3]};
+  const uint64_t Mb_div{POW10[6]};
+  const uint64_t Gb_div{POW10[9]};
+  const uint64_t Tb_div{POW10[12]};
 
   const auto out = [=](std::string unit, uint64_t div) {
     if (static_cast<float>(bytes / div) == static_cast<float>(bytes) / div)
@@ -213,16 +213,16 @@ inline static std::string human_readable_non_cs(uint64_t bytes,
                            static_cast<float>(bytes) / div);
   };
 
-  if (bytes >= TB_div) {
-    return out("T", TB_div);
-  } else if (bytes >= GB_div && bytes < TB_div) {
-    return out("G", GB_div);
-  } else if (bytes >= MB_div && bytes < GB_div) {
-    return out("M", MB_div);
-  } else if (bytes >= KB_div && bytes < MB_div) {
-    return out("K", KB_div);
-  } else if (bytes < KB_div) {
-    return out("", 1);
+  if (bytes >= Tb_div) {
+    return out("Tb", Tb_div);
+  } else if (bytes >= Gb_div && bytes < Tb_div) {
+    return out("Gb", Gb_div);
+  } else if (bytes >= Mb_div && bytes < Gb_div) {
+    return out("Mb", Mb_div);
+  } else if (bytes >= Kb_div && bytes < Mb_div) {
+    return out("Kb", Kb_div);
+  } else if (bytes < Kb_div) {
+    return out("b", 1);
   }
 
   return "";
