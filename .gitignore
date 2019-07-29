@@ -64,14 +64,16 @@ M80517.1.seq.V01555.2.seq.pos
 xp/r.t.pos
 paper/sup.synctex(busy)
 .vscode/settings.json
-xp/dataset
-# !xp/dataset/permute/gga24_1M
+xp/dataset/bacteria
+xp/dataset/fungi
+xp/dataset/mammalia
+xp/dataset/bird/Gallus_gallus/*
+!xp/dataset/bird/Gallus_gallus/24
+xp/dataset/bird/Meleagris_gallopavo/*
+!xp/dataset/bird/Meleagris_gallopavo/26
 xp/*x
 xp/*.inf
 xp/*.rev
 xp/*.ext
 xp/*.inf.fil
 xp/hs21.seqpp21.seq.svg
-
-xp/gga28.seq
-xp/mga30.seq

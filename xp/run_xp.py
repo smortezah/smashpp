@@ -218,13 +218,13 @@ if gga24_mga26:
 
     tar = '26'
     path_tar = path_data_real + 'bird' + sep + \
-        'Meleagris\ gallopavo' + sep + tar  # + '.seq'
+        'Meleagris_gallopavo' + sep + tar  # + '.seq'
 
     if main:
         ref = '24'
         out = 'gga24_mga26.svg'
         path_ref = path_data_real + 'bird' + sep + \
-            'Gallus\ gallus' + sep + ref  # + '.seq'
+            'Gallus_gallus' + sep + ref  # + '.seq'
         execute(smashpp + '-r ' + path_ref + ' -t ' + path_tar +
                 ' -rm 20,0,0.001,0.9 -m 150000 -th 1.87 -d 6300 -f 100 -sf')
                 # ' -rm 20,0,0.001,0.9 -m 150000 -th 1.84 -d 4000 -f 270 -ar')
@@ -236,7 +236,7 @@ if gga24_mga26:
         out = 'gga24_mga26_perm1M.svg'
         main_in = '24'
         path_in = path_data_real + 'bird' + sep + \
-            'Gallus\ gallus' + sep + main_in  # + '.seq'
+            'Gallus_gallus' + sep + main_in  # + '.seq'
         path_ref = path_data_permute + ref  # + '.seq'
         # execute(goose_permuteseqbyblocks + ' -bs 1000000 -s 7 < ' +
         #         path_in + ' > ' + path_ref)
@@ -251,7 +251,7 @@ if gga24_mga26:
         out = 'gga24_mga26_perm500K.svg'
         main_in = '24'
         path_in = path_data_real + 'bird' + sep + \
-            'Gallus\ gallus' + sep + main_in  # + '.seq'
+            'Gallus_gallus' + sep + main_in  # + '.seq'
         path_ref = path_data_permute + ref  # + '.seq'
         execute(goose_permuteseqbyblocks + ' -bs 500000 -s 11 < ' +
                 path_in + ' > ' + path_ref)
