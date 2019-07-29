@@ -10,9 +10,9 @@ library(heatmaply)
 # theme_set(theme_bw())
 
 
-plot_rearrange_Chondrichthyes <- TRUE
+plot_rearrange_Chondrichthyes <- FALSE
 plot_rearrange_Mammalia <- FALSE
-plot_nrc_Chondrichthyes <- FALSE
+plot_nrc_Chondrichthyes <- TRUE
 plot_nrc_Mammalia <- FALSE
 cluster_Chondrichthyes <- FALSE
 
@@ -134,62 +134,103 @@ if (plot_rearrange_Chondrichthyes) {
   
   ggsave(out_file, height=49.9, width = 49.9)
 } else if (plot_nrc_Chondrichthyes) {
-  ent <- read.table("ent_Chondrichthyes.tsv", header = TRUE)
-  ent_mat <- as.matrix(ent)
-  melted_ent_mat <- melt(ent_mat)
-  header <- colnames(ent_mat)
-  corr <- round(cor(ent), 1)
-  # p.mat <- cor_pmat(ent)
+  # ent <- read.table("ent_Chondrichthyes.tsv", header = TRUE)
+  # ent_mat <- as.matrix(ent)
+  # melted_ent_mat <- melt(ent_mat)
+  # header <- colnames(ent_mat)
+  # corr <- round(cor(ent), 1)
+  # # p.mat <- cor_pmat(ent)
+  # 
+  # ggcorrplot(corr,
+  #            hc.order = TRUE,
+  #            type = "upper",
+  #            outline.col = "white") +
+  #   ggtitle("Chondrichthyes") +
+  #   # scale_fill_gradientn(
+  #   #   # labels = c("1", seq(25,125,25)),
+  #   #   # breaks = c(1, seq(25,125,25)),
+  #   #   # guide = guide_colorbar(
+  #   #   #   title = "No.\nrearrangements\n(Chondrichthyes)",
+  #   #   #   title.position = "top",
+  #   #   #   # title.hjust = 0,
+  #   #   #   title.vjust = 1,
+  #   #   #   # label.position = "left"
+  #   #   # ),
+  #   #   colours = hcl.colors(5, palette = "spectral", rev = TRUE),
+  #   #   # values = rescale(c(0, 30, 40, 50, 90, 110, 125)),
+  #   #   # limits = c(1, 126),
+  #   #   na.value = "white"
+  #   # ) +
+  #   scale_x_discrete(position = "top") +
+  #   # scale_x_discrete(limit = c(rev(header))) +
+  #   # theme_bw() +
+  #   theme(
+  #     axis.title.x = element_blank(),
+  #     axis.title.y = element_blank(),
+  #     axis.text.x = element_text(angle = 90, vjust = 0.3),
+  #     # legend.direction = "horizontal",
+  #     # legend.background = element_rect(fill = "transparent"),
+  #     # legend.title = element_text(color = "white"),
+  #     # legend.text = element_text(color = "white"),
+  #     # legend.key.size = unit(0.5, "cm"),
+  #     legend.justification = c(1, 0.5),
+  #     legend.position = c(1, 0.5),
+  #     # legend.key.height = unit(1.25, "cm"),
+  #     # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
+  #     # legend.text.align = 1
+  #   )
+  # 
+  # # corrplot(
+  # #   corr,
+  # #   type = "upper",
+  # #   order = "hclust",
+  # #   method = "color",
+  # #   tl.col = "black",
+  # #   addrect = 5,
+  # #   addgrid.col = "white",
+  # #   col = hcl.colors(9, palette = "spectral", rev = TRUE)
+  # # )
   
-  ggcorrplot(corr,
-             hc.order = TRUE,
-             type = "upper",
-             outline.col = "white") +
-    ggtitle("Chondrichthyes") +
-    # scale_fill_gradientn(
-    #   # labels = c("1", seq(25,125,25)),
-    #   # breaks = c(1, seq(25,125,25)),
-    #   # guide = guide_colorbar(
-    #   #   title = "No.\nrearrangements\n(Chondrichthyes)",
-    #   #   title.position = "top",
-    #   #   # title.hjust = 0,
-    #   #   title.vjust = 1,
-    #   #   # label.position = "left"
-    #   # ),
-    #   colours = hcl.colors(5, palette = "spectral", rev = TRUE),
-    #   # values = rescale(c(0, 30, 40, 50, 90, 110, 125)),
-    #   # limits = c(1, 126),
-    #   na.value = "white"
-    # ) +
-    scale_x_discrete(position = "top") +
-    # scale_x_discrete(limit = c(rev(header))) +
-    # theme_bw() +
+  
+  in_file = "ent_Chondrichthyes.tsv"
+  out_file = "ent_Chondrichthyes.pdf"
+  rearrange <-
+    read.table(in_file, header = TRUE)
+  rearrange_mat <- as.matrix(rearrange)
+  header <- colnames(rearrange_mat)
+  melted_rearrange_mat <- melt(rearrange_mat)
+  
+  ggplot() +
+    geom_tile(
+      melted_rearrange_mat,
+      mapping = aes(x = Var2, y = Var1, fill = value),
+      colour = "white"
+    ) +
+    coord_fixed() +
+    scale_fill_gradientn(
+      limits = c(0, 2),
+      # labels = c(seq(0, 2, 0.5)),
+      # breaks = c(seq(0, 2, 0.5)),
+      guide = guide_colorbar(
+        title = "Entropy of\nChondrichthyes",
+        title.position = "top",
+        title.vjust = 1,
+      ),
+      colours = hcl.colors(5, palette = "spectral", rev = FALSE),
+      na.value = "white"
+    ) +
+    scale_x_discrete(limit = c(rev(header))) +
     theme(
       axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
       axis.text.x = element_text(angle = 90, vjust = 0.3),
-      # legend.direction = "horizontal",
-      # legend.background = element_rect(fill = "transparent"),
-      # legend.title = element_text(color = "white"),
-      # legend.text = element_text(color = "white"),
-      # legend.key.size = unit(0.5, "cm"),
-      legend.justification = c(1, 0.5),
-      legend.position = c(1, 0.5),
-      # legend.key.height = unit(1.25, "cm"),
-      # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
-      # legend.text.align = 1
+      axis.title.y = element_blank(),
+      legend.key.height = unit(2,"cm"),
+      # legend.key.width = unit(0.75,"cm"),
+      # legend.justification = c(1, 1),
+      # legend.position = c(1, 1)
     )
   
-  # corrplot(
-  #   corr,
-  #   type = "upper",
-  #   order = "hclust",
-  #   method = "color",
-  #   tl.col = "black",
-  #   addrect = 5,
-  #   addgrid.col = "white",
-  #   col = hcl.colors(9, palette = "spectral", rev = TRUE)
-  # )
+  ggsave(out_file, width = 20, height = 19)
 } else if (plot_nrc_Mammalia) {
   ent <- read.table("ent_Mammalia.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
