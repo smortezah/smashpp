@@ -22,6 +22,7 @@ sim_mutation = False
 
 # Run on real dataset
 e_coli_s_dysenteriae = False
+gga24_mga26 = True
 
 if os.name == 'posix':
     sep = '/'
@@ -30,13 +31,15 @@ elif os.name == 'nt':
 current_dir = os.getcwd()
 path_data_sim = 'dataset' + sep + 'sim' + sep
 path_data_real = 'dataset' + sep
+path_data_permute = 'dataset' + sep + 'permute' + sep
 path_bin = 'bin' + sep
 goose_fastqsimulation = path_bin + 'goose-fastqsimulation '
 goose_mutatedna = path_bin + 'goose-mutatedna '
+goose_permuteseqbyblocks = path_bin + 'goose-permuteseqbyblocks'
 smashpp = '..' + sep + 'smashpp '
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
-sim_common_par = ' -w 15 -s 60 -vv '
+sim_common_par = ' -w 10 -s 19 -vv '
 
 
 def execute(cmd):
@@ -199,11 +202,42 @@ if sim_mutation:
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
 
 if e_coli_s_dysenteriae:
-        path = path_data_real + 'bacteria' + sep
-        ref = 'e_coli_O104_H4.seq'
-        tar = 's_dysenteriae_chr.seq'
-        out = 'e_coli_s_dysenteriae.svg'
-        execute(smashpp + '-r ' + path + ref + ' -t ' + path + tar +
-                ' -th 1.8 -l 3 -f 275 -m 7500')
-        # execute(smashpp + '-viz -p 1 -w 15 -s 60 -vv -o ' + out + ' ' +
-        #         ref + '.' + tar + '.pos')
+    path = path_data_real + 'bacteria' + sep
+    ref = 'e_coli_O104_H4.seq'
+    tar = 's_dysenteriae_chr.seq'
+    out = 'e_coli_s_dysenteriae.svg'
+    execute(smashpp + '-r ' + path + ref + ' -t ' + path + tar +
+            ' -th 1.8 -l 3 -f 275 -m 7500')
+    # execute(smashpp + '-viz -p 1 -w 15 -s 60 -vv -o ' + out + ' ' +
+    #         ref + '.' + tar + '.pos')
+
+if gga24_mga26:
+    main = True
+    permute_1M = False
+
+    tar = '26'
+    path_tar = path_data_real + 'bird' + sep + \
+        'Meleagris\ gallopavo' + sep + tar + '.seq'
+
+    if main:
+        ref = '24'
+        out = 'gga24_mga26.svg'
+        path_ref = path_data_real + 'bird' + sep + 'Gallus\ gallus' + sep + ref + '.seq'
+        execute(smashpp + '-r ' + path_ref + ' -t ' + path_tar +
+                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.84 -d 4000 -f 270 -ar')
+        execute(smashpp + '-viz -p 1 -l 6 ' + sim_common_par +
+                '-o ' + out + ' ' + ref + '.seq.' + tar + '.seq.pos')
+
+    if permute_1M:
+        ref = 'gga24_1M'
+        out = 'gga24_mga26_perm1M.svg'
+        main_in = '24'
+        path_in = path_data_real + 'bird' + sep + \
+            'Gallus\ gallus' + sep + main_in + '.seq'
+        path_ref = path_data_permute + ref + '.seq'
+        execute(goose_permuteseqbyblocks + ' -bs 1000000 -s 7 < ' +
+                path_in + ' > ' + path_ref)
+        # execute(smashpp + '-r ' + path_ref + ' -t ' + path_tar +
+        #         ' -rm 20,0,0.001,0.9 -m 150000 -th 1.84 -d 4000 -f 200 -ar -nr')
+        # execute(smashpp + '-viz -p 1 -l 6 ' + sim_common_par +
+        #         '-o ' + out + ' ' + ref + '.seq.' + tar + '.seq.pos')

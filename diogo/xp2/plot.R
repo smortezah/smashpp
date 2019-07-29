@@ -9,6 +9,12 @@ library(cluster)
 library(heatmaply)
 # theme_set(theme_bw())
 
+# install.packages("devtools")
+# devtools::install_github("rlbarter/superheat")
+library(superheat)
+
+# install.packages("pheatmap")
+library(pheatmap)
 
 plot_rearrange_Chondrichthyes <- FALSE
 plot_rearrange_Mammalia <- FALSE
@@ -23,7 +29,7 @@ if (plot_rearrange_Chondrichthyes) {
     read.table(in_file, header = TRUE)
   rearrange_mat <- as.matrix(rearrange)
   header <- colnames(rearrange_mat)
-  melted_rearrange_mat <- melt(rearrange_mat)
+  molten_rearrange_mat <- melt(rearrange_mat)
   
   top_row_mat <- as.matrix(rearrange_mat['NC_028344', ])
   top_row_mat <- subset(top_row_mat, top_row_mat != 0)
@@ -46,11 +52,11 @@ if (plot_rearrange_Chondrichthyes) {
   #   addgrid.col = "white",
   #   # cl.align = "l",
   # ) #+
-  # ggplot(melted_rearrange_mat, aes(x = Var2, y = Var1)) +
+  # ggplot(molten_rearrange_mat, aes(x = Var2, y = Var1)) +
   #   geom_tile(aes(fill = value), colour = "white") +
   ggplot() +
     geom_tile(
-      melted_rearrange_mat,
+      molten_rearrange_mat,
       mapping = aes(x = Var2, y = Var1, fill = value),
       colour = "white"
     ) +
@@ -94,7 +100,7 @@ if (plot_rearrange_Chondrichthyes) {
       # legend.text.align = 1
     )
   
-  ggsave(out_file, height=20, width = 20)
+  # ggsave(out_file, height=20, width = 20)
 } else if (plot_rearrange_Mammalia) {
   in_file = "rearrange_count_Mammalia.tsv"
   out_file = "rearrange_count_Mammalia.pdf"
@@ -102,11 +108,11 @@ if (plot_rearrange_Chondrichthyes) {
     read.table(in_file, header = TRUE)
   rearrange_mat <- as.matrix(rearrange)
   header <- colnames(rearrange_mat)
-  melted_rearrange_mat <- melt(rearrange_mat)
+  molten_rearrange_mat <- melt(rearrange_mat)
 
   ggplot() +
     geom_tile(
-      melted_rearrange_mat,
+      molten_rearrange_mat,
       mapping = aes(x = Var2, y = Var1, fill = value),
       colour = "white"
     ) +
@@ -191,6 +197,8 @@ if (plot_rearrange_Chondrichthyes) {
   # #   col = hcl.colors(9, palette = "spectral", rev = TRUE)
   # # )
   
+  # ggsave("mori", width = 20, height = 19)
+  
   
   in_file = "ent_Chondrichthyes.tsv"
   out_file = "ent_Chondrichthyes.pdf"
@@ -198,39 +206,56 @@ if (plot_rearrange_Chondrichthyes) {
     read.table(in_file, header = TRUE)
   rearrange_mat <- as.matrix(rearrange)
   header <- colnames(rearrange_mat)
-  melted_rearrange_mat <- melt(rearrange_mat)
+
+  # # row.order <- hclust(dist(rearrange))$order # clustering
+  # # col.order <- hclust(dist(t(rearrange)))$order
+  # # dat_new <- rearrange[row.order, col.order] # re-order matrix accoring to clustering
+  # # molten_rearrange_mat <- melt(as.matrix(dat_new)) # reshape into dataframe
+  # 
+  # molten_rearrange_mat <- melt(rearrange_mat)
+  # 
+  # ggplot() +
+  #   geom_tile(
+  #     molten_rearrange_mat,
+  #     mapping = aes(x = Var2, y = Var1, fill = value),
+  #     colour = "white"
+  #   ) +
+  #   coord_fixed() +
+  #   scale_fill_gradientn(
+  #     limits = c(0, 2),
+  #     # labels = c(seq(0, 2, 0.5)),
+  #     # breaks = c(seq(0, 2, 0.5)),
+  #     guide = guide_colorbar(
+  #       title = "Entropy of\nChondrichthyes",
+  #       title.position = "top",
+  #       title.vjust = 1,
+  #     ),
+  #     colours = hcl.colors(5, palette = "spectral", rev = FALSE),
+  #     na.value = "white"
+  #   ) +
+  #   scale_x_discrete(limit = c(rev(header))) +
+  #   theme(
+  #     axis.title.x = element_blank(),
+  #     axis.text.x = element_text(angle = 90, vjust = 0.3),
+  #     axis.title.y = element_blank(),
+  #     legend.key.height = unit(2,"cm"),
+  #     # legend.key.width = unit(0.75,"cm"),
+  #     # legend.justification = c(1, 1),
+  #     # legend.position = c(1, 1)
+  #   )
+
+  # ggsave(out_file, width = 20, height = 19)
   
-  ggplot() +
-    geom_tile(
-      melted_rearrange_mat,
-      mapping = aes(x = Var2, y = Var1, fill = value),
-      colour = "white"
-    ) +
-    coord_fixed() +
-    scale_fill_gradientn(
-      limits = c(0, 2),
-      # labels = c(seq(0, 2, 0.5)),
-      # breaks = c(seq(0, 2, 0.5)),
-      guide = guide_colorbar(
-        title = "Entropy of\nChondrichthyes",
-        title.position = "top",
-        title.vjust = 1,
-      ),
-      colours = hcl.colors(5, palette = "spectral", rev = FALSE),
-      na.value = "white"
-    ) +
-    scale_x_discrete(limit = c(rev(header))) +
-    theme(
-      axis.title.x = element_blank(),
-      axis.text.x = element_text(angle = 90, vjust = 0.3),
-      axis.title.y = element_blank(),
-      legend.key.height = unit(2,"cm"),
-      # legend.key.width = unit(0.75,"cm"),
-      # legend.justification = c(1, 1),
-      # legend.position = c(1, 1)
-    )
+  # superheat(rearrange_mat,
+  #           pretty.order.rows = TRUE,
+  #           pretty.order.cols = TRUE,
+  #           heat.pal = c("red", "white", "blue"),
+  #           left.label = 'variable')
   
-  ggsave(out_file, width = 20, height = 19)
+  pheatmap(rearrange_mat,
+           # cutree_rows = 5, 
+           # cutree_cols = 6
+           )
 } else if (plot_nrc_Mammalia) {
   ent <- read.table("ent_Mammalia.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
