@@ -1,0 +1,1 @@
+cat in | tr -d '\n' > out

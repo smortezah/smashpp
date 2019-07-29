@@ -65,6 +65,7 @@ xp/r.t.pos
 paper/sup.synctex(busy)
 .vscode/settings.json
 xp/dataset
+# !xp/dataset/permute/gga24_1M
 xp/*x
 xp/*.inf
 xp/*.rev
