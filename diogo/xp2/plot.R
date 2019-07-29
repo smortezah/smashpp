@@ -10,8 +10,8 @@ library(heatmaply)
 # theme_set(theme_bw())
 
 
-plot_rearrange_Chondrichthyes <- FALSE
-plot_rearrange_Mammalia <- TRUE
+plot_rearrange_Chondrichthyes <- TRUE
+plot_rearrange_Mammalia <- FALSE
 plot_nrc_Chondrichthyes <- FALSE
 plot_nrc_Mammalia <- FALSE
 cluster_Chondrichthyes <- FALSE
