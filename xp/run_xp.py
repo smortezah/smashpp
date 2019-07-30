@@ -212,9 +212,9 @@ if e_coli_s_dysenteriae:
     #         ref + '.' + tar + '.pos')
 
 if gga24_mga26:
-    main = True
+    main = False
     permute_1M = False
-    permute_500K = False
+    permute_500K = True
 
     tar = '26'
     path_tar = path_data_real + 'bird' + sep + \
@@ -226,7 +226,7 @@ if gga24_mga26:
         path_ref = path_data_real + 'bird' + sep + \
             'Gallus_gallus' + sep + ref  # + '.seq'
         execute(smashpp + '-r ' + path_ref + ' -t ' + path_tar +
-                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.87 -d 6300 -f 100 -sf')
+                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.9 -d 6000 -f 175 -sf -nr -ar')
                 # ' -rm 20,0,0.001,0.9 -m 150000 -th 1.84 -d 4000 -f 270 -ar')
         execute(smashpp + '-viz -p 1 -l 6 ' + sim_common_par +
                 '-o ' + out + ' ' + ref + '.' + tar + '.pos')
@@ -241,7 +241,7 @@ if gga24_mga26:
         # execute(goose_permuteseqbyblocks + ' -bs 1000000 -s 7 < ' +
         #         path_in + ' > ' + path_ref)
         execute(smashpp + '-r ' + path_ref + ' -t ' + path_tar +
-                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.8 -d 6300 -f 200 -ar -sf -nr')
+                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.9 -d 6000 -f 175 -ar -sf -nr')
                 # ' -rm 20,0,0.001,0.9 -m 150000 -th 1.84 -d 4000 -f 270 -ar -sf')
         execute(smashpp + '-viz -p 1 -l 6 ' + sim_common_par +
                 '-o ' + out + ' ' + ref + '.' + tar + '.pos')
@@ -256,6 +256,6 @@ if gga24_mga26:
         execute(goose_permuteseqbyblocks + ' -bs 500000 -s 11 < ' +
                 path_in + ' > ' + path_ref)
         execute(smashpp + '-r ' + path_ref + ' -t ' + path_tar +
-                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.84 -d 4000 -f 270 -ar -sf -nr')
+                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.9 -d 6000 -f 175 -ar -sf -nr')
         execute(smashpp + '-viz -p 1 -l 6 ' + sim_common_par +
                 '-o ' + out + ' ' + ref + '.' + tar + '.pos')
