@@ -23,7 +23,8 @@ plot_nrc_Mammalia <- FALSE
 cluster_Chondrichthyes <- FALSE
 
 if (plot_rearrange_Chondrichthyes) {
-  in_file = "rearrange_count_Chondrichthyes.tsv"
+  in_file = "rearrange_count_Chondrichthyes_symmetric.tsv"
+  # in_file = "rearrange_count_Chondrichthyes.tsv"
   out_file = "rearrange_count_Chondrichthyes.pdf"
   rearrange <-
     read.table(in_file, header = TRUE)
@@ -31,76 +32,89 @@ if (plot_rearrange_Chondrichthyes) {
   header <- colnames(rearrange_mat)
   molten_rearrange_mat <- melt(rearrange_mat)
   
-  top_row_mat <- as.matrix(rearrange_mat['NC_028344', ])
-  top_row_mat <- subset(top_row_mat, top_row_mat != 0)
-  # top_row_mat <- top_row_mat[order(top_row_mat[,1], decreasing = TRUE)]
-  colnames(top_row_mat) <- c("NC_028344")
-  # melted_top_row_mat <- melt(top_row_mat)
+  # top_row_mat <- as.matrix(rearrange_mat['NC_028344', ])
+  # top_row_mat <- subset(top_row_mat, top_row_mat != 0)
+  # # top_row_mat <- top_row_mat[order(top_row_mat[,1], decreasing = TRUE)]
+  # colnames(top_row_mat) <- c("NC_028344")
+  # # melted_top_row_mat <- melt(top_row_mat)
+  # 
+  # # corr <- round(cor(rearrange), 1)
+  # # res.dist <- get_dist(rearrange, method = "euclidean")
+  # # fviz_dist(res.dist, lab_size = 8)
+  # # res.hc <- hclust(res.dist, method = "ward.D2")
+  # # plot(res.hc, cex = 0.5)
+  # # corrplot(
+  # #   rearrange_mat[,1:40],
+  # #   is.corr = FALSE,
+  # #   type = "upper",
+  # #   method = "color",
+  # #   tl.col = "black",
+  # #   outline = TRUE,
+  # #   addgrid.col = "white",
+  # #   # cl.align = "l",
+  # # ) #+
+  # # ggplot(molten_rearrange_mat, aes(x = Var2, y = Var1)) +
+  # #   geom_tile(aes(fill = value), colour = "white") +
+  # ggplot() +
+  #   geom_tile(
+  #     molten_rearrange_mat,
+  #     mapping = aes(x = Var2, y = Var1, fill = value),
+  #     colour = "white"
+  #   ) +
+  #   coord_fixed() +
+  #   # scale_fill_gradient2(
+  #   #   low = "white",
+  #   #   mid = "lightblue",
+  #   #   high = "yellow",
+  #   #   midpoint = 63,
+  #   #   space = "Lab"
+  #   # ) +
+  #   # ggtitle("Chondrichthyes") +
+  #   scale_fill_gradientn(
+  #     labels = c("1", seq(25, 125, 25)),
+  #     breaks = c(1, seq(25, 125, 25)),
+  #     guide = guide_colorbar(
+  #       title = "No.\nrearrangements\n(Chondrichthyes)",
+  #       title.position = "top",
+  #       title.vjust = 1,
+  #       # label.position = "left"
+  #     ),
+  #     colours = hcl.colors(5, palette = "spectral", rev = TRUE),
+  #     # values = rescale(c(0, 30, 40, 50, 90, 110, 125)),
+  #     limits = c(1, 126),
+  #     na.value = "white"
+  #   ) +
+  #   scale_x_discrete(limit = c(rev(header))) +
+  #   theme(
+  #     axis.title.x = element_blank(),
+  #     axis.text.x = element_text(angle = 90, vjust = 0.3),
+  #     axis.title.y = element_blank(),
+  #     # legend.direction = "horizontal",
+  #     # legend.background = element_rect(fill = "transparent"),
+  #     # legend.title = element_text(color = "white"),
+  #     # legend.text = element_text(color = "white"),
+  #     # legend.key.size = unit(0.5, "cm"),
+  #     legend.justification = c(1, 1),
+  #     legend.position = c(1, 1),
+  #     # legend.key.height = unit(1.25, "cm"),
+  #     # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
+  #     # legend.text.align = 1
+  #   )
+  # 
+  # # ggsave(out_file, height=20, width = 20)
   
-  # corr <- round(cor(rearrange), 1)
-  # res.dist <- get_dist(rearrange, method = "euclidean")
-  # fviz_dist(res.dist, lab_size = 8)
-  # res.hc <- hclust(res.dist, method = "ward.D2")
-  # plot(res.hc, cex = 0.5)
-  # corrplot(
-  #   rearrange_mat[,1:40],
-  #   is.corr = FALSE,
-  #   type = "upper",
-  #   method = "color",
-  #   tl.col = "black",
-  #   outline = TRUE,
-  #   addgrid.col = "white",
-  #   # cl.align = "l",
-  # ) #+
-  # ggplot(molten_rearrange_mat, aes(x = Var2, y = Var1)) +
-  #   geom_tile(aes(fill = value), colour = "white") +
-  ggplot() +
-    geom_tile(
-      molten_rearrange_mat,
-      mapping = aes(x = Var2, y = Var1, fill = value),
-      colour = "white"
-    ) +
-    coord_fixed() +
-    # scale_fill_gradient2(
-    #   low = "white",
-    #   mid = "lightblue",
-    #   high = "yellow",
-    #   midpoint = 63,
-    #   space = "Lab"
-    # ) +
-    # ggtitle("Chondrichthyes") +
-    scale_fill_gradientn(
-      labels = c("1", seq(25, 125, 25)),
-      breaks = c(1, seq(25, 125, 25)),
-      guide = guide_colorbar(
-        title = "No.\nrearrangements\n(Chondrichthyes)",
-        title.position = "top",
-        title.vjust = 1,
-        # label.position = "left"
-      ),
-      colours = hcl.colors(5, palette = "spectral", rev = TRUE),
-      # values = rescale(c(0, 30, 40, 50, 90, 110, 125)),
-      limits = c(1, 126),
-      na.value = "white"
-    ) +
-    scale_x_discrete(limit = c(rev(header))) +
-    theme(
-      axis.title.x = element_blank(),
-      axis.text.x = element_text(angle = 90, vjust = 0.3),
-      axis.title.y = element_blank(),
-      # legend.direction = "horizontal",
-      # legend.background = element_rect(fill = "transparent"),
-      # legend.title = element_text(color = "white"),
-      # legend.text = element_text(color = "white"),
-      # legend.key.size = unit(0.5, "cm"),
-      legend.justification = c(1, 1),
-      legend.position = c(1, 1),
-      # legend.key.height = unit(1.25, "cm"),
-      # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
-      # legend.text.align = 1
-    )
   
-  # ggsave(out_file, height=20, width = 20)
+  # superheat(rearrange_mat,
+  #           pretty.order.rows = TRUE,
+  #           pretty.order.cols = TRUE,
+  #           heat.pal = c("red", "white", "blue"),
+  #           left.label = 'variable'
+  #           )
+  
+  pheatmap(rearrange_mat,
+           # cutree_rows = 5,
+           # cutree_cols = 6
+  )
 } else if (plot_rearrange_Mammalia) {
   in_file = "rearrange_count_Mammalia.tsv"
   out_file = "rearrange_count_Mammalia.pdf"
