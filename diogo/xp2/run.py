@@ -1,4 +1,3 @@
-# %%
 import os
 import shutil
 import matplotlib.pyplot as plt
@@ -6,8 +5,9 @@ import numpy as np
 
 prepare_data = False
 find_simil_seqs = False
-find_simil_regions = True
+find_simil_regions = False
 plot_rearrange_count = False
+make_rearrange_mat_symmetric = True
 plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
@@ -252,6 +252,36 @@ if find_simil_regions:
             for j in range(len(header)):
                 rearrange_count.write('\t' + str(rearrange_mat[i][j]))
             rearrange_count.write('\n')
+
+if make_rearrange_mat_symmetric:
+    Class = 'Chondrichthyes'
+    # Class = 'Mammalia'
+    # Class = 'Actinopterygii'
+    in_file = open('rearrange_count_' + Class + '.tsv')
+    out_file_name = 'rearrange_count_' + Class + '_symmetric.tsv'
+
+    header = in_file.readline().split()
+    in_file.seek(0)
+    rearrange_count = np.genfromtxt(in_file, skip_header=True, dtype=np.int64,
+                                    usecols=range(1, len(header) + 1))
+    length = len(rearrange_count)
+    for i in range(length):
+        for j in range(length):
+            if i > j:
+                rearrange_count[i][j] = rearrange_count[j][i]
+
+    if os.path.exists(out_file_name):
+        os.remove(out_file_name)
+    with open(out_file_name, 'w') as rearrange_count_symmetric:
+        for i in range(len(header)):
+            rearrange_count_symmetric.write('\t' + header[i])
+        rearrange_count_symmetric.write('\n')
+        for i in range(len(header)):
+            rearrange_count_symmetric.write(header[i])
+            for j in range(len(header)):
+                rearrange_count_symmetric.write(
+                    '\t' + str(rearrange_count[i][j]))
+            rearrange_count_symmetric.write('\n')
 
 if plot_simil:
     nrc_mat = np.genfromtxt(
