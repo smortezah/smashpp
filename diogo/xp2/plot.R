@@ -7,14 +7,14 @@ library(corrplot)
 library(factoextra)
 library(cluster)
 library(heatmaply)
+library(superheat)
+library(pheatmap)
+library(seriation)
 # theme_set(theme_bw())
 
-# install.packages("devtools")
-# devtools::install_github("rlbarter/superheat")
-library(superheat)
-
-# install.packages("pheatmap")
-library(pheatmap)
+library(devtools)
+# install_github("jokergoo/ComplexHeatmap")
+library(ComplexHeatmap)
 
 plot_rearrange_Chondrichthyes <- FALSE
 plot_rearrange_Mammalia <- FALSE
@@ -266,10 +266,30 @@ if (plot_rearrange_Chondrichthyes) {
   #           heat.pal = c("red", "white", "blue"),
   #           left.label = 'variable')
   
-  pheatmap(rearrange_mat,
-           # cutree_rows = 5, 
-           # cutree_cols = 6
-           )
+  # pheatmap(rearrange_mat,
+  #          # cutree_rows = 5,
+  #          # cutree_cols = 6
+  #          )
+  
+  # Heatmap(rearrange_mat,
+  #         )
+  
+  # o = seriate(max(rearrange_mat) - rearrange_mat, method = "BEA_TSP")
+  # Heatmap(max(rearrange_mat) - rearrange_mat, name = "mat", 
+  #         row_order = get_order(o, 1), column_order = get_order(o, 2))
+  
+  # o1 = seriate(dist(rearrange_mat), method = "TSP")
+  # o2 = seriate(dist(t(rearrange_mat)), method = "TSP")
+  # Heatmap(rearrange_mat, name = "mat", row_order = get_order(o1), column_order = get_order(o2))
+  
+  # o1 = seriate(dist(rearrange_mat), method = "GW")
+  # o2 = seriate(dist(t(rearrange_mat)), method = "GW")
+  # Heatmap(rearrange_mat, name = "mat", row_order = get_order(o1), column_order = get_order(o2))
+  
+  row.order <- hclust(dist(rearrange_mat))$order
+  col.order <- hclust(dist(t(rearrange_mat)))$order
+  Heatmap(rearrange_mat, name = "mat", row_order = row.order, column_order = col.order)
+  
 } else if (plot_nrc_Mammalia) {
   ent <- read.table("ent_Mammalia.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
