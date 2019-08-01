@@ -1200,27 +1200,27 @@ inline void FCM::miss_stmm(TmPar stmm) const {
 
 template <typename FreqIter, typename ProbParIter>
 inline prc_t FCM::prob(FreqIter fFirst, ProbParIter pp) const {
-  // return (*(fFirst + pp->numSym) + pp->alpha) /
-  //        std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha);
+  return (*(fFirst + pp->numSym) + pp->alpha) /
+         std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha);
 
   // const uint64_t aDen = 1 / pp->alpha;
-  const uint64_t aDen = 1000;
+  // // const uint64_t aDen = 1000;
 
-  uint64_t n0 = *(fFirst);
-  uint64_t n1 = *(fFirst + 1);
-  uint64_t n2 = *(fFirst + 2);
-  uint64_t n3 = *(fFirst + 3);
-  uint64_t n = *(fFirst + pp->numSym);
+  // uint64_t n0 = *(fFirst);
+  // uint64_t n1 = *(fFirst + 1);
+  // uint64_t n2 = *(fFirst + 2);
+  // uint64_t n3 = *(fFirst + 3);
+  // uint64_t n = *(fFirst + pp->numSym);
 
-  uint64_t freq0 = 1 + aDen * n0;
-  uint64_t freq1 = 1 + aDen * n1;
-  uint64_t freq2 = 1 + aDen * n2;
-  uint64_t freq3 = 1 + aDen * n3;
-  uint64_t freq_n = 1 + aDen * n;
+  // uint64_t freq0 = 1 + aDen * n0;
+  // uint64_t freq1 = 1 + aDen * n1;
+  // uint64_t freq2 = 1 + aDen * n2;
+  // uint64_t freq3 = 1 + aDen * n3;
+  // uint64_t freq_n = 1 + aDen * n;
 
-  uint64_t cumul = freq0 + freq1 + freq2 + freq3;
+  // uint64_t cumul = freq0 + freq1 + freq2 + freq3;
 
-  return (prc_t)freq_n / cumul;
+  // return (prc_t)freq_n / cumul;
 }
 
 inline prc_t FCM::entropy(prc_t P) const {
