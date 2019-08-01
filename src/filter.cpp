@@ -216,12 +216,13 @@ void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out,
   else if (round == 1 || round == 3)
     seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
 
-  seg->totalSize = file_lines(profile_name) / par->sampleStep;
+  // seg->totalSize = file_lines(profile_name) / par->sampleStep;
+  seg->totalSize = file_lines(profile_name);//todo
   auto filtered{0.f};
   uint64_t symsNo{0};
 
   for (; profile >> filtered; jump_lines()) {
-    if (par->saveFilter) filter_file << precision(PREC_FIL) << filtered << '\n';
+    if (par->saveFilter || par->saveAll) filter_file << precision(PREC_FIL) << filtered << '\n';
     seg->partition(pos_out, filtered);
     if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   }
