@@ -4,16 +4,16 @@ library(scales)
 # library(dplyr)
 library(factoextra)
 library(cluster)
-library(biclust)
+# library(biclust)
 # theme_set(theme_bw())
 
 library(devtools)
 # install_github("jokergoo/ComplexHeatmap")
 library(ComplexHeatmap)
 
-plot_rearrange_Chondrichthyes <- FALSE
+plot_rearrange_Chondrichthyes <- F
 plot_rearrange_Mammalia <- FALSE
-plot_nrc_Chondrichthyes <- TRUE
+plot_nrc_Chondrichthyes <- T
 plot_nrc_Mammalia <- FALSE
 cluster_Chondrichthyes <- FALSE
 
@@ -106,7 +106,7 @@ if (plot_rearrange_Chondrichthyes) {
   #           left.label = 'variable'
   #           )
   
-  pheatmap(rearrange_mat,
+  Heatmap(rearrange_mat,
            # cutree_rows = 5,
            # cutree_cols = 6
   )
@@ -209,23 +209,22 @@ if (plot_rearrange_Chondrichthyes) {
 #   # ggsave("mori", width = 20, height = 19)
   
   
-  in_file = "ent_Chondrichthyes.tsv"
-  out_file = "ent_Chondrichthyes.pdf"
-  rearrange <-
-    read.table(in_file, header = TRUE)
-  rearrange_mat <- as.matrix(rearrange)
-  header <- colnames(rearrange_mat)
+  # in_file = "ent_Chondrichthyes.tsv"
+  # out_file = "ent_Chondrichthyes.pdf"
+  # nrc <- read.table(in_file, header = TRUE)
+  # nrc_mat <- as.matrix(nrc)
+  # header <- colnames(nrc_mat)
   
-  # row.order <- hclust(dist(rearrange))$order # clustering
-  # col.order <- hclust(dist(t(rearrange)))$order
-  # # dat_new <- rearrange[row.order, col.order] # re-order matrix accoring to clustering
-  # # molten_rearrange_mat <- melt(as.matrix(dat_new)) # reshape into dataframe
+  # row.order <- hclust(dist(nrc))$order # clustering
+  # col.order <- hclust(dist(t(nrc)))$order
+  # # dat_new <- nrc[row.order, col.order] # re-order matrix accoring to clustering
+  # # molten_nrc_mat <- melt(as.matrix(dat_new)) # reshape into dataframe
   # 
-  # molten_rearrange_mat <- melt(rearrange_mat)
+  # molten_nrc_mat <- melt(nrc_mat)
   # 
   # ggplot() +
   #   geom_tile(
-  #     molten_rearrange_mat,
+  #     molten_nrc_mat,
   #     mapping = aes(x = Var2, y = Var1, fill = value),
   #     colour = "white"
   #   ) +
@@ -256,28 +255,61 @@ if (plot_rearrange_Chondrichthyes) {
   # ggsave(out_file, width = 20, height = 19)
 
   
-  row.order <- hclust(dist(rearrange_mat))$order
-  # row.order <- diana(dist(rearrange_mat))$order
-  # row.order <- agnes(dist(rearrange_mat))$order
-  col.order <- hclust(dist(t(rearrange_mat)))$order
-  # col.order <- diana(dist(t(rearrange_mat)))$order
-  # col.order <- agnes(dist(t(rearrange_mat)))$order
-  # .density = anno_density(rearrange_mat, type = "line", gp = gpar(col = "blue"))
+  # row.order <- hclust(dist(nrc_mat))$order
+  # col.order <- hclust(dist(t(nrc_mat)))$order
+  # row.order <- diana(dist(nrc_mat))$order
+  # col.order <- diana(dist(t(nrc_mat)))$order
+  # row.order <- agnes(dist(nrc_mat))$order
+  # col.order <- agnes(dist(t(nrc_mat)))$order
+  # .density = anno_density(nrc_mat, type = "line", gp = gpar(col = "blue"))
   # ha_mix_top = HeatmapAnnotation(density = .density)
-  # .violin = anno_density(rearrange_mat, type = "violin", gp = gpar(fill = "lightblue"), which = "row")
-  # .boxplot = anno_boxplot(rearrange_mat, which = "row")
+  # .violin = anno_density(nrc_mat, type = "violin", gp = gpar(fill = "lightblue"), which = "row")
+  # .boxplot = anno_boxplot(nrc_mat, which = "row")
   # ha_mix_right = HeatmapAnnotation(violin = .violin, bxplt = .boxplot, which = "row", width = unit(7, "cm"))
-  # Heatmap(rearrange_mat,
-  #         # name = "mat", 
-  #         row_order = row.order, column_order = col.order,
+  
+  # h <- Heatmap(nrc_mat)
+  # h1<-Heatmap(nrc_mat,
+  #         name = "NRC",
+  #         row_order = row_order(h), column_order = column_order(h),
+  #         # row_order = row.order, column_order = col.order,
   #         # top_annotation = ha_mix_top,
   #         # right_annotation = ha_mix_right
   #         )
+  # 
+  # 
+  # in_rearrange_file = "rearrange_count_Chondrichthyes_symmetric.tsv"
+  # rearrange_mat <- as.matrix(read.table(in_rearrange_file, header = TRUE))
+  # h2<-Heatmap(rearrange_mat,
+  #         name = "# rearrange",
+  #         row_order = row_order(h), column_order = column_order(h)
+  #         )
+  # 
+  # h1+h2
   
-  res <- biclust(rearrange_mat, method=BCPlaid(), verbose=FALSE)
-  # heatmapBC(x = rearrange_mat, bicResult = res)
-  drawHeatmap(rearrange_mat, res, 1)
   
+  
+  in_file = "ent_Actinopterygii.tsv"
+  nrc <- read.table(in_file, header = TRUE)
+  nrc_mat <- as.matrix(nrc)
+  
+  h <- Heatmap(nrc_mat)
+  h1<-Heatmap(nrc_mat,
+              name = "NRC",
+              row_order = row_order(h), column_order = column_order(h),
+              # row_order = row.order, column_order = col.order,
+              # top_annotation = ha_mix_top,
+              # right_annotation = ha_mix_right
+  )
+  
+  h1
+  # in_rearrange_file = "rearrange_count_Chondrichthyes_symmetric.tsv"
+  # rearrange_mat <- as.matrix(read.table(in_rearrange_file, header = TRUE))
+  # h2<-Heatmap(rearrange_mat,
+  #             name = "# rearrange",
+  #             row_order = row_order(h), column_order = column_order(h)
+  # )
+  # 
+  # h1+h2
 } else if (plot_nrc_Mammalia) {
   ent <- read.table("ent_Mammalia.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
