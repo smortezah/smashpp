@@ -2,14 +2,9 @@ library(ggplot2)
 library(reshape2)
 library(scales)
 # library(dplyr)
-library(ggcorrplot)
-library(corrplot)
 library(factoextra)
 library(cluster)
-library(heatmaply)
-library(superheat)
-library(pheatmap)
-library(seriation)
+library(biclust)
 # theme_set(theme_bw())
 
 library(devtools)
@@ -199,19 +194,19 @@ if (plot_rearrange_Chondrichthyes) {
   #     # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
   #     # legend.text.align = 1
   #   )
-  # 
-  # # corrplot(
-  # #   corr,
-  # #   type = "upper",
-  # #   order = "hclust",
-  # #   method = "color",
-  # #   tl.col = "black",
-  # #   addrect = 5,
-  # #   addgrid.col = "white",
-  # #   col = hcl.colors(9, palette = "spectral", rev = TRUE)
-  # # )
-  
-  # ggsave("mori", width = 20, height = 19)
+# 
+#   # corrplot(
+#   #   corr,
+#   #   type = "upper",
+#   #   order = "hclust",
+#   #   method = "color",
+#   #   tl.col = "black",
+#   #   addrect = 5,
+#   #   addgrid.col = "white",
+#   #   col = hcl.colors(9, palette = "spectral", rev = TRUE)
+#   # )
+#   
+#   # ggsave("mori", width = 20, height = 19)
   
   
   in_file = "ent_Chondrichthyes.tsv"
@@ -220,9 +215,9 @@ if (plot_rearrange_Chondrichthyes) {
     read.table(in_file, header = TRUE)
   rearrange_mat <- as.matrix(rearrange)
   header <- colnames(rearrange_mat)
-
-  # # row.order <- hclust(dist(rearrange))$order # clustering
-  # # col.order <- hclust(dist(t(rearrange)))$order
+  
+  # row.order <- hclust(dist(rearrange))$order # clustering
+  # col.order <- hclust(dist(t(rearrange)))$order
   # # dat_new <- rearrange[row.order, col.order] # re-order matrix accoring to clustering
   # # molten_rearrange_mat <- melt(as.matrix(dat_new)) # reshape into dataframe
   # 
@@ -259,36 +254,29 @@ if (plot_rearrange_Chondrichthyes) {
   #   )
 
   # ggsave(out_file, width = 20, height = 19)
-  
-  # superheat(rearrange_mat,
-  #           pretty.order.rows = TRUE,
-  #           pretty.order.cols = TRUE,
-  #           heat.pal = c("red", "white", "blue"),
-  #           left.label = 'variable')
-  
-  # pheatmap(rearrange_mat,
-  #          # cutree_rows = 5,
-  #          # cutree_cols = 6
-  #          )
-  
-  # Heatmap(rearrange_mat,
-  #         )
-  
-  # o = seriate(max(rearrange_mat) - rearrange_mat, method = "BEA_TSP")
-  # Heatmap(max(rearrange_mat) - rearrange_mat, name = "mat", 
-  #         row_order = get_order(o, 1), column_order = get_order(o, 2))
-  
-  # o1 = seriate(dist(rearrange_mat), method = "TSP")
-  # o2 = seriate(dist(t(rearrange_mat)), method = "TSP")
-  # Heatmap(rearrange_mat, name = "mat", row_order = get_order(o1), column_order = get_order(o2))
-  
-  # o1 = seriate(dist(rearrange_mat), method = "GW")
-  # o2 = seriate(dist(t(rearrange_mat)), method = "GW")
-  # Heatmap(rearrange_mat, name = "mat", row_order = get_order(o1), column_order = get_order(o2))
+
   
   row.order <- hclust(dist(rearrange_mat))$order
+  # row.order <- diana(dist(rearrange_mat))$order
+  # row.order <- agnes(dist(rearrange_mat))$order
   col.order <- hclust(dist(t(rearrange_mat)))$order
-  Heatmap(rearrange_mat, name = "mat", row_order = row.order, column_order = col.order)
+  # col.order <- diana(dist(t(rearrange_mat)))$order
+  # col.order <- agnes(dist(t(rearrange_mat)))$order
+  # .density = anno_density(rearrange_mat, type = "line", gp = gpar(col = "blue"))
+  # ha_mix_top = HeatmapAnnotation(density = .density)
+  # .violin = anno_density(rearrange_mat, type = "violin", gp = gpar(fill = "lightblue"), which = "row")
+  # .boxplot = anno_boxplot(rearrange_mat, which = "row")
+  # ha_mix_right = HeatmapAnnotation(violin = .violin, bxplt = .boxplot, which = "row", width = unit(7, "cm"))
+  # Heatmap(rearrange_mat,
+  #         # name = "mat", 
+  #         row_order = row.order, column_order = col.order,
+  #         # top_annotation = ha_mix_top,
+  #         # right_annotation = ha_mix_right
+  #         )
+  
+  res <- biclust(rearrange_mat, method=BCPlaid(), verbose=FALSE)
+  # heatmapBC(x = rearrange_mat, bicResult = res)
+  drawHeatmap(rearrange_mat, res, 1)
   
 } else if (plot_nrc_Mammalia) {
   ent <- read.table("ent_Mammalia.tsv", header = TRUE)
