@@ -28,6 +28,7 @@ class Table64 {
   auto count_empty() const -> uint64_t;  // Number of empty cells in the table
   auto max_tbl_val() const -> uint64_t;
   void print() const;
+  void print(std::string) const;
 #endif
 
  private:
