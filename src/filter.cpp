@@ -198,7 +198,7 @@ void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out,
   std::ofstream filter_file(filter_name);
 
   const auto jump_lines = [&]() {
-    for (uint64_t i = par->sampleStep - 1; i--;) ignore_this_line(profile);
+    for (uint64_t i = par->sampleStep; i--;) ignore_this_line(profile);
   };
 
   auto seg = std::make_shared<Segment>();
@@ -422,7 +422,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   // seq.reserve(filt_size + buff_size);  // Essential
 
   // const auto jump_lines = [&]() {
-  //   for (auto i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
+  //   for (auto i = par->sampleStep; i--;) ignore_this_line(prfF);
   // };
   // float entropy;
   // for (auto i = half_wsize + 1; i-- && (prfF >> entropy);) {
@@ -508,7 +508,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   seg->totalSize = file_lines(profileName); //todo
   // const auto totalSize = (file_lines(profileName) / par->sampleStep) + 1;
   const auto jump_lines = [&]() {
-    for (uint64_t i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
+    for (uint64_t i = par->sampleStep; i--;) ignore_this_line(prfF);
   };
 
   auto sum{0.f};
@@ -631,7 +631,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   // seq.reserve(filt_size + buff_size);  // Essential
 
   // const auto jump_lines = [&]() {
-  //   for (auto i = par->sampleStep - 1; i--;) ignore_this_line(prfF);
+  //   for (auto i = par->sampleStep; i--;) ignore_this_line(prfF);
   // };
   // float entropy;
   // for (auto i = half_wsize + 1; i-- && (prfF >> entropy);) {

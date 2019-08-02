@@ -73,9 +73,12 @@ xp/dataset/bird/Gallus_gallus/*
 !xp/dataset/bird/Gallus_gallus/24
 xp/dataset/bird/Meleagris_gallopavo/*
 !xp/dataset/bird/Meleagris_gallopavo/26
-xp/*x
-xp/*.inf
-xp/*.rev
-xp/*.ext
-xp/*.inf.fil
+**/*x
+**/*.inf
+**/*.rev
+**/*.ext
+**/*.inf.fil
 xp/hs21.seqpp21.seq.svg
+mori
+ref
+tar

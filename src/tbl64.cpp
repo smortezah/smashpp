@@ -51,4 +51,12 @@ void Table64::print() const {
     std::cerr << c << '\n';
   }
 }
+
+void Table64::print(std::string file_name) const {
+  std::ofstream of(file_name);
+  of << "Context\t Count\n";
+  uint32_t i{0};
+  for (const auto& c : tbl) of << i++ << '\t' << c << '\n';
+  of.close();
+}
 #endif

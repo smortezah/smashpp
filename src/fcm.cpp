@@ -367,11 +367,6 @@ inline void FCM::store_1(std::unique_ptr<Param>& par) {
       case Container::table_64:
         store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
                    tbl64_iter++);
-
-// todo
-        std::cerr << "\n table_64 \n";
-        // (*tbl64_iter)->print();
-
         break;
       case Container::table_32:
         store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
