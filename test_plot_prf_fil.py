@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 
+ref = 'NC_020611.seq'
+tar = 'NC_028344.seq'
+
 y0, y1 = [], []
 # for line0 in open('0.gga24_1M.26.fil', 'r'):
 # for line0 in open('0.24.26.fil', 'r'):
