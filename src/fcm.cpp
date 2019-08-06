@@ -1200,8 +1200,16 @@ inline void FCM::miss_stmm(TmPar stmm) const {
 
 template <typename FreqIter, typename ProbParIter>
 inline prc_t FCM::prob(FreqIter fFirst, ProbParIter pp) const {
-  return (*(fFirst + pp->numSym) + pp->alpha) /
-         std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha);
+  // return (*(fFirst + pp->numSym) + pp->alpha) /
+  //        std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha);
+
+
+  //todo
+  const prc_t num = *(fFirst + pp->numSym) + pp->alpha;
+  const prc_t den = std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha);
+  // if (num > den) std::cerr << '\n' << '\n' << num << ' ' << den;
+  return num / den;
+  
 
   // const uint64_t aDen = 1 / pp->alpha;
   // // const uint64_t aDen = 1000;
@@ -1256,10 +1264,21 @@ inline prc_t FCM::entropy(prc_t P) const {
 
 template <typename WIter, typename PIter>
 inline prc_t FCM::entropy(WIter wFirst, PIter PFirst, PIter PLast) const {
-  return std::log2(1 /
-                   inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0)));
+  // return std::log2(1 /
+  //                  inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0)));
   //  return -std::log2(
   //    inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0)));
+
+
+  
+//todo
+  const auto p = inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0));
+  // if (p > 1)
+  //   std::cerr << "\n"
+  //             << "p1=" << *PFirst << "  w1=" << *wFirst << "  p2=" << *PLast
+  //             << "  w2=" << *(wFirst + 1) << "   p=" << p;
+
+  return std::log2(1 /p);
 }
 
 // template <typename OutIter, typename InIter>
