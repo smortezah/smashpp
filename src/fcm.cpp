@@ -665,7 +665,7 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
     } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
-      prb = entropyN;
+      prb = 1.0 / std::pow(2.0, entropyN);
     }
     cp->probs.push_back(prb);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
@@ -679,7 +679,7 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
     } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
-      prb = entropyN;
+      prb = 1.0 / std::pow(2.0, entropyN);
     }
     cp->probs.push_back(prb);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
@@ -693,7 +693,7 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
     } else {
       cp->c = TAR_ALT_N;
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);
-      prb = entropyN;
+      prb = 1.0 / std::pow(2.0, entropyN);
     }
     cp->probs.push_back(prb);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
@@ -719,7 +719,7 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
       std::array<decltype((*cont)->query(0)), 4> f{};
       freqs_ir0(f, cont, cp->ppIt->l);
-      prb = entropyN;
+      prb = 1.0 / std::pow(2.0, entropyN);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     }
@@ -738,7 +738,7 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
-      prb = entropyN;
+      prb = 1.0 / std::pow(2.0, entropyN);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     }
@@ -757,7 +757,7 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir2(f, cont, cp->ppIt);
-      prb = entropyN;
+      prb = 1.0 / std::pow(2.0, entropyN);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     }
@@ -1007,7 +1007,7 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
       freqs_ir0(f, cont, cp->ppIt->l);
       prb = prob(begin(f), cp->ppIt);
     } else {
-      prb = entropyN;
+      prb = 1.0 / std::pow(2.0, entropyN);
     }
     cp->probs.push_back(prb);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
@@ -1020,7 +1020,7 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
-      prb = entropyN;
+      prb = 1.0 / std::pow(2.0, entropyN);
     }
     cp->probs.push_back(prb);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
@@ -1033,7 +1033,7 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
       freqs_ir2(f, cont, cp->ppIt);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
-      prb = entropyN;
+      prb = 1.0 / std::pow(2.0, entropyN);
     }
     cp->probs.push_back(prb);
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.gamma, prb);
@@ -1264,21 +1264,23 @@ inline prc_t FCM::entropy(prc_t P) const {
 
 template <typename WIter, typename PIter>
 inline prc_t FCM::entropy(WIter wFirst, PIter PFirst, PIter PLast) const {
-  // return std::log2(1 /
-  //                  inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0)));
+  return std::log2(1 /
+                   inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0)));
   //  return -std::log2(
   //    inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0)));
 
 
-  
-//todo
-  const auto p = inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0));
+  //todo
+  // const auto p = inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0));
+  // // if (*(PFirst + 1) > 1)
+  // // if (*PFirst!=2.0 && p > 1)
   // if (p > 1)
   //   std::cerr << "\n"
-  //             << "p1=" << *PFirst << "  w1=" << *wFirst << "  p2=" << *PLast
-  //             << "  w2=" << *(wFirst + 1) << "   p=" << p;
+  //             << "p1=" << *PFirst << "  w1=" << *wFirst
+  //             << "  p2=" << *(PFirst + 1) << "  w2=" << *(wFirst + 1)
+  //             << "   p=" << p;
 
-  return std::log2(1 /p);
+  // return std::log2(1 /p);
 }
 
 // template <typename OutIter, typename InIter>
