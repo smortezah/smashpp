@@ -7,16 +7,17 @@ regular = True
 both = False
 
 if regular:
-  y = []
-  xmax = 0
-  for line in open('0.' + ref + '.' + tar + '.fil', 'r'):
-    xmax += 1
-    values = [float(s) for s in line.split()]
-    y.append(values[0])
+  plt.plotfile('0.' + ref + '.' + tar + '.fil', linestyle="", marker="o")
+  # y = []
+  # xmax = 0
+  # for line in open('0.' + ref + '.' + tar + '.fil', 'r'):
+  #   xmax += 1
+  #   values = [float(s) for s in line.split()]
+  #   y.append(values[0])
 
-  plt.plot(y)
-  plt.hlines(threshold, 0, xmax)
-  plt.title('ir=0')
+  # plt.plot(y)
+  # plt.hlines(threshold, 0, xmax)
+  # plt.title('ir=0')
 
 if both:
   y0, y1 = [], []
