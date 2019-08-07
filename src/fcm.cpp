@@ -1200,15 +1200,8 @@ inline void FCM::miss_stmm(TmPar stmm) const {
 
 template <typename FreqIter, typename ProbParIter>
 inline prc_t FCM::prob(FreqIter fFirst, ProbParIter pp) const {
-  // return (*(fFirst + pp->numSym) + pp->alpha) /
-  //        std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha);
-
-
-  //todo
-  const prc_t num = *(fFirst + pp->numSym) + pp->alpha;
-  const prc_t den = std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha);
-  // if (num > den) std::cerr << '\n' << '\n' << num << ' ' << den;
-  return num / den;
+  return (*(fFirst + pp->numSym) + pp->alpha) /
+         std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha);
   
 
   // const uint64_t aDen = 1 / pp->alpha;
