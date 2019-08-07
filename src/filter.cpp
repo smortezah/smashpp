@@ -746,6 +746,10 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
 
   // First value
+  // if (prfF >> entropy)
+  //   for (auto i = (filt_size >> 1u) + 1; i--;) seq.push_back(entropy);
+  // for (auto i = (filt_size >> 1u); i-- && (prfF >> entropy); jump_lines())
+  //   seq.push_back(entropy);
   for (auto i = (filt_size >> 1u); i--;) seq.push_back(2.0);
   for (auto i = (filt_size >> 1u) + 1; i-- && (prfF >> entropy); jump_lines())
     seq.push_back(entropy);
@@ -778,10 +782,11 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   }
   prfF.close();
-  
+
   // Until half of the window goes outside the array
   for (auto i=half_wsize; i--;) {
     seq[idx] = 2.0;
+    // seq[idx] = entropy;
     idx = (idx + 1) % filt_size;
     sum = (std::inner_product(winBeg, winEnd - idx, seqBeg + idx, 0.f) +
            std::inner_product(winEnd - idx, winEnd, seqBeg, 0.f));
