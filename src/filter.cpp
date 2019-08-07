@@ -740,19 +740,17 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   auto entropy{0.f};
   uint64_t symsNo{0};  // No. syms based on profile
 
-
-
-
-
-
   // First value
   // if (prfF >> entropy)
   //   for (auto i = (filt_size >> 1u) + 1; i--;) seq.push_back(entropy);
   // for (auto i = (filt_size >> 1u); i-- && (prfF >> entropy); jump_lines())
   //   seq.push_back(entropy);
-  for (auto i = (filt_size >> 1u); i--;) seq.push_back(2.0);
-  for (auto i = (filt_size >> 1u) + 1; i-- && (prfF >> entropy); jump_lines())
-    seq.push_back(entropy);
+  {
+    auto i = (filt_size >> 1u) + 1;
+    for (; i-- && (prfF >> entropy); jump_lines()) seq.push_back(entropy);
+    auto num_ent_exist = (filt_size >> 1u) + 1 - i;
+    seq.insert(std::begin(seq), num_ent_exist - 1, 2.0);
+  }
 
   make_window(seq.size());
 
@@ -784,7 +782,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   prfF.close();
 
   // Until half of the window goes outside the array
-  for (auto i=half_wsize; i--;) {
+  for (auto i = half_wsize; i--;) {
     seq[idx] = 2.0;
     // seq[idx] = entropy;
     idx = (idx + 1) % filt_size;
@@ -793,7 +791,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     filtered = sum / sum_weights;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
-    seg->partition(pos_out, filtered);   
+    seg->partition(pos_out, filtered);
     if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   }
   seg->finalize_partition(pos_out);
@@ -801,13 +799,6 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
 
 
-
-
-
-
-
-
-  
   // // First value
   // // for (auto i = half_wsize + 1; i-- && (prfF >> entropy); jump_lines())
   // for (auto i = (filt_size >> 1u) + 1; i-- && (prfF >> entropy); jump_lines())
@@ -881,7 +872,6 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   // }
   // seg->finalize_partition(pos_out);
   // if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
-
 
 
 
