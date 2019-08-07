@@ -580,7 +580,8 @@ inline void VizPaint::plot_periph(std::ofstream& f,
   }
   rect->width = periphWidth;
   rect->stroke_width *= 1.5;
-  rect->ry /= 2;
+  // rect->ry /= 4;
+  rect->ry = 0.5;
   rect->plot(f);
 
   rect->x = mainOriginX;
