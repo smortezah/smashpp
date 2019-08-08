@@ -2,6 +2,8 @@ library(ggplot2)
 library(reshape2)
 library(scales)
 # library(dplyr)
+library(ggpubr)
+library(ggplotify)
 library(factoextra)
 library(cluster)
 # library(biclust)
@@ -10,6 +12,7 @@ library(cluster)
 library(devtools)
 # install_github("jokergoo/ComplexHeatmap")
 library(ComplexHeatmap)
+library(circlize)
 
 plot_rearrange_Chondrichthyes <- F
 plot_rearrange_Mammalia <- FALSE
@@ -288,28 +291,45 @@ if (plot_rearrange_Chondrichthyes) {
   
   
   
-  in_file = "ent_Actinopterygii.tsv"
+  # in_file = "ent_Actinopterygii.tsv"
+  in_file = "ent_Chondrichthyes.tsv"
   nrc <- read.table(in_file, header = TRUE)
   nrc_mat <- as.matrix(nrc)
   
-  h <- Heatmap(nrc_mat)
-  h1<-Heatmap(nrc_mat,
-              name = "NRC",
-              row_order = row_order(h), column_order = column_order(h),
-              # row_order = row.order, column_order = col.order,
-              # top_annotation = ha_mix_top,
-              # right_annotation = ha_mix_right
+  H <- Heatmap(nrc_mat)
+  a <- Heatmap(
+    nrc_mat,
+    row_order = row_order(H),
+    column_order = column_order(H),
+    row_names_side = c("left"),
+    name = "NRC",
+    col = colorRamp2(
+      breaks = seq(0, 2, 1),
+      colors = c('red', 'white', 'blue')
+    )
+    # row_order = row.order, column_order = col.order,
+    # top_annotation = ha_mix_top,
+    # right_annotation = ha_mix_right
   )
   
-  h1
-  # in_rearrange_file = "rearrange_count_Chondrichthyes_symmetric.tsv"
-  # rearrange_mat <- as.matrix(read.table(in_rearrange_file, header = TRUE))
-  # h2<-Heatmap(rearrange_mat,
-  #             name = "# rearrange",
-  #             row_order = row_order(h), column_order = column_order(h)
-  # )
-  # 
-  # h1+h2
+  in_rearrange_file = "old_rearrange_count_Chondrichthyes_symmetric.tsv"
+  rearrange_mat <-
+    as.matrix(read.table(in_rearrange_file, header = TRUE))
+  b <- Heatmap(
+    rearrange_mat,
+    row_order = row_order(H),
+    column_order = column_order(H),
+    name = "# rearrange",
+    col = colorRamp2(
+      breaks = seq(0, 150, 50),
+      colors = c('blue', 'white', 'red', 'red')
+    )
+  )
+  
+  draw(a+b)
+  
+  # ggarrange(as.grob(a), as.grob(b), labels = c('a', 'b'), nrow = 2)
+  # ggsave("mori.pdf", width=40, height = 20)
 } else if (plot_nrc_Mammalia) {
   ent <- read.table("ent_Mammalia.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
