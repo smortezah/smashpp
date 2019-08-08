@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 prepare_data = False
+numerate_dataset = False
+denumerate_dataset = False
 find_simil_seqs = False
 find_simil_regions = True
 plot_rearrange_count = False
@@ -84,6 +86,41 @@ if prepare_data:
     #         os.popen(cmd).read()
     #         if os.path.exists(file):
     #             os.remove(file)
+
+
+def numerate(Class):
+    data_path = dataset_path + sep + Class.lower() + sep
+    idx = 1
+    for file in os.listdir(data_path):
+        if idx < 10:
+            pre = '000'
+        elif idx < 100:
+            pre = '00'
+        elif idx < 1000:
+            pre = '0'
+        elif idx < 10000:
+            pre = ''
+
+        os.rename(data_path + file, data_path +
+                  pre + str(idx) + '_' + file)
+        idx += 1
+
+
+def denumerate(Class):
+    data_path = dataset_path + sep + Class.lower() + sep
+    for file in os.listdir(data_path):
+        os.rename(data_path + file, data_path + file[5:])
+
+
+if numerate_dataset:
+    numerate('Chondrichthyes')
+    numerate('Mammalia')
+    numerate('Actinopterygii')
+
+if denumerate_dataset:
+    denumerate('Chondrichthyes')
+    denumerate('Mammalia')
+    denumerate('Actinopterygii')
 
 if find_simil_seqs:
     # Actinopterygii
@@ -200,14 +237,11 @@ def count_rearrange(file_name):
     return i
 
 
-if find_simil_regions:
+def apply_smashpp(Class):
     geco_threshold = 1.5
-    Class = 'Chondrichthyes'
-    # Class = 'Mammalia'
-    # Class = 'Actinopterygii'
     nrc_file = open(ave_ent_file + '_' + Class + '.tsv')
     data_path = dataset_path + sep + Class.lower() + sep
-    exe_param = '-rm 11,0,1,0.95/8,0,1,0.9 -m 20 -f 25 -dp -th 1.8 '
+    exe_param = '-rm 11,0,1,0.95/8,0,1,0.9 -m 20 -f 100 -dp -th 1.8 '
 
     header = nrc_file.readline().split()
     nrc_file.seek(0)
@@ -223,9 +257,6 @@ if find_simil_regions:
     if not os.path.exists(result_path):
         os.mkdir(result_path)
 
-    rearrange_mat = [[0 for x in range(len(simil_mat))]
-                     for y in range(len(simil_mat))]
-
     rearrange_count_name = 'rearrange_count_' + Class + '.tsv'
     if os.path.exists(rearrange_count_name):
         os.remove(rearrange_count_name)
@@ -233,29 +264,36 @@ if find_simil_regions:
         for i in range(len(header)):
             rearrange_count.write('\t' + header[i])
         rearrange_count.write('\n')
+
         for i in range(len(header)):
             rearrange_count.write(header[i])
             for j in range(len(header)):
-
-                # for m in range(0, len(simil_mat)):
-                #     for n in range(m+1, len(simil_mat)):
-                if simil_mat[i][j] == 1:
-                    # execute(smashpp_bin + exe_param +
-                    #         '-r ' + data_path + header[i] + '.seq ' +
-                    #         '-t ' + data_path + header[j] + '.seq '
+                if simil_mat[i][j] == 0:
+                    rearrange_count.write('\t0')
+                elif simil_mat[i][j] == 1:
+                    execute(smashpp_bin + exe_param +
+                            '-r ' + data_path + header[i] + '.seq ' +
+                            '-t ' + data_path + header[j] + '.seq ')
 
                     pos_file_name = header[i] + \
                         '.seq.' + header[j] + '.seq.pos'
-                    rearrange_mat[i][j] = count_rearrange(
-                        pos_file_name)
-                    if os.path.exists(result_path + sep + pos_file_name):
-                                      os.remove(result_path +
-                                                sep + pos_file_name)
-                                      shutil.move(
-                                          pos_file_name, result_path)
+                    rearrange_count.write(
+                        '\t' + str(count_rearrange(pos_file_name)))
 
-                rearrange_count.write('\t' + str(rearrange_mat[i][j]))
-                rearrange_count.write('\n')
+                    if os.path.exists(result_path + sep + pos_file_name):
+                        os.remove(result_path + sep + pos_file_name)
+                    shutil.move(pos_file_name, result_path)
+            rearrange_count.write('\n')
+
+
+if find_simil_regions:
+    Class = 'Chondrichthyes'
+    # Class = 'Mammalia'
+    # Class = 'Actinopterygii'
+    
+    print('Finding similar regions in ' + Class)
+    apply_smashpp(Class)
+    print('Finished.')
 
 
 # if find_simil_regions:
