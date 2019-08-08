@@ -290,12 +290,14 @@ if (plot_rearrange_Chondrichthyes) {
   # h1+h2
   
   
+  class <- 'Chondrichthyes'
+  # class <- 'Mammalia'
+  # class <- 'Actinopterygii'
   
-  # in_file = "ent_Actinopterygii.tsv"
-  in_file = "ent_Chondrichthyes.tsv"
+  in_file = paste('ent_', class, '.tsv', sep='')
   nrc <- read.table(in_file, header = TRUE)
   nrc_mat <- as.matrix(nrc)
-  
+
   H <- Heatmap(nrc_mat)
   a <- Heatmap(
     nrc_mat,
@@ -306,13 +308,15 @@ if (plot_rearrange_Chondrichthyes) {
     col = colorRamp2(
       breaks = seq(0, 2, 1),
       colors = c('red', 'white', 'blue')
-    )
+    ),
+    column_title = paste("Normalized relative compression (NRC) in", class)
     # row_order = row.order, column_order = col.order,
     # top_annotation = ha_mix_top,
     # right_annotation = ha_mix_right
   )
-  
-  in_rearrange_file = "old_rearrange_count_Chondrichthyes_symmetric.tsv"
+
+  in_rearrange_file = paste('old_rearrange_count_', class, '_symmetric.tsv', 
+                            sep = '')
   rearrange_mat <-
     as.matrix(read.table(in_rearrange_file, header = TRUE))
   b <- Heatmap(
@@ -323,13 +327,13 @@ if (plot_rearrange_Chondrichthyes) {
     col = colorRamp2(
       breaks = seq(0, 150, 50),
       colors = c('blue', 'white', 'red', 'red')
-    )
+    ),
+    column_title = paste("Number of rearrangements in", class)
   )
-  
+
+  pdf(paste(class, ".pdf", sep=''), width = 40, height = 20)
   draw(a+b)
-  
-  # ggarrange(as.grob(a), as.grob(b), labels = c('a', 'b'), nrow = 2)
-  # ggsave("mori.pdf", width=40, height = 20)
+  dev.off()
 } else if (plot_nrc_Mammalia) {
   ent <- read.table("ent_Mammalia.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
