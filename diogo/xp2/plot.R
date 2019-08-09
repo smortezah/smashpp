@@ -307,7 +307,8 @@ if (plot_rearrange_Chondrichthyes) {
     name = "NRC",
     col = colorRamp2(
       breaks = seq(0, 2, 1),
-      colors = c('red', 'white', 'blue')
+      colors = c("#A71B4B", "#FEFDBE", "#584B9F")
+      # colors = c('red', 'white', 'blue')
     ),
     column_title = paste("Normalized relative compression (NRC) in", class)
     # row_order = row.order, column_order = col.order,
@@ -315,7 +316,7 @@ if (plot_rearrange_Chondrichthyes) {
     # right_annotation = ha_mix_right
   )
 
-  in_rearrange_file = paste('old_rearrange_count_', class, '_symmetric.tsv', 
+  in_rearrange_file = paste('rearrange_count_', class, '_symmetric.tsv', 
                             sep = '')
   rearrange_mat <-
     as.matrix(read.table(in_rearrange_file, header = TRUE))
@@ -325,15 +326,17 @@ if (plot_rearrange_Chondrichthyes) {
     column_order = column_order(H),
     name = "# rearrange",
     col = colorRamp2(
-      breaks = seq(0, 150, 50),
-      colors = c('blue', 'white', 'red', 'red')
+      breaks = seq(0, 50, 10),
+      # colors = c('blue', 'white', 'yellow', 'green', 'red')
+      colors = c("#584B9F", "#00B1B5", "#BAEEAE", "#FCDE85", "#ED820A", "#A71B4B")
+      # colors = hcl.colors(5, palette = "spectral", rev = TRUE)
     ),
     column_title = paste("Number of rearrangements in", class)
   )
 
-  pdf(paste(class, ".pdf", sep=''), width = 40, height = 20)
+  # pdf(paste(class, ".pdf", sep=''), width = 40, height = 20)
   draw(a+b)
-  dev.off()
+  # dev.off()
 } else if (plot_nrc_Mammalia) {
   ent <- read.table("ent_Mammalia.tsv", header = TRUE)
   ent_mat <- as.matrix(ent)
