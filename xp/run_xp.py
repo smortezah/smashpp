@@ -14,10 +14,10 @@ synth_xlarge = False
 synth_mutation = False
 
 # Run on simulated dataset
-sim_small = True
-sim_medium = False
-sim_large = False
-sim_xlarge = False
+sim_small = False
+sim_medium = True
+sim_large = True
+sim_xlarge = True
 sim_mutation = False
 
 # Run on real dataset
@@ -161,10 +161,8 @@ if sim_small:
     ref = 'RefS'
     tar = 'TarS'
     out = 'S.svg'
-#     execute(smashpp + '-r ' + path_data_sim + ref +
-#             ' -t ' + path_data_sim + tar + ' -l 3 -f 25')
-#     execute(smashpp + '-viz -p 1 -b 5 -f 55 -rt 150 -tt 150 -th 0 ' +
-#     execute(smashpp + '-viz -p 1 -rt 150 -tt 150 -th 0 ' +
+    execute(smashpp + '-r ' + path_data_sim + ref +
+            ' -t ' + path_data_sim + tar + ' -l 3 -f 25')
     execute(smashpp + '-viz -p 1 -rt 150 -tt 150 ' +
             '-o ' + out + sim_common_par + ref + '.' + tar + '.pos')
 
@@ -174,7 +172,6 @@ if sim_medium:
     out = 'M.svg'
     execute(smashpp + '-r ' + path_data_sim +
             ref + ' -t ' + path_data_sim + tar + ' -l 3 -f 100')
-#     execute(smashpp + '-viz -p 1 -b 5 -f 55 -o ' + out +
     execute(smashpp + '-viz -p 1 -o ' + out +
             sim_common_par + ref + '.' + tar + '.pos')
 
@@ -184,7 +181,7 @@ if sim_large:
     out = 'L.svg'
     execute(smashpp + '-r ' + path_data_sim +
             ref + ' -t ' + path_data_sim + tar + ' -l 3 -f 135')
-    execute(smashpp + '-viz -p 1 -b 5 -f 55 -o ' + out + sim_common_par +
+    execute(smashpp + '-viz -p 1 -o ' + out + sim_common_par +
             ref + '.' + tar + '.pos')
 
 if sim_xlarge:
@@ -202,7 +199,7 @@ if sim_mutation:
     out = 'Mut.svg'
     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
             path_data_sim + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
-    execute(smashpp + '-viz -p 1 -b 2 -f 50 -rt 5000 -tt 5000' +
+    execute(smashpp + '-viz -p 1 -rt 5000 -tt 5000' +
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
 
 if e_coli_s_dysenteriae:
