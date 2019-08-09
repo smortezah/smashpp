@@ -7,9 +7,9 @@ prepare_data = False
 numerate_dataset = False
 denumerate_dataset = False
 find_simil_seqs = False
-find_simil_regions = False
+find_simil_regions = True
 plot_rearrange_count = False
-make_rearrange_mat_symmetric = True
+make_rearrange_mat_symmetric = False
 plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
@@ -287,69 +287,14 @@ def apply_smashpp(Class):
 
 
 if find_simil_regions:
-    Class = 'Chondrichthyes'
-    # Class = 'Mammalia'
+    # Class = 'Chondrichthyes'
+    Class = 'Mammalia'
     # Class = 'Actinopterygii'
     
     print('Finding similar regions in ' + Class)
     apply_smashpp(Class)
     print('Finished.')
 
-
-# if find_simil_regions:
-#     geco_threshold = 1.5
-#     Class = 'Chondrichthyes'
-#     # Class = 'Mammalia'
-#     # Class = 'Actinopterygii'
-#     nrc_file = open(ave_ent_file + '_' + Class + '.tsv')
-#     data_path = dataset_path + sep + Class.lower() + sep
-#     exe_param = '-rm 11,0,1,0.95/8,0,1,0.9 -m 20 -f 25 -dp -th 1.8 '
-
-#     header = nrc_file.readline().split()
-#     nrc_file.seek(0)
-#     nrc_mat = np.genfromtxt(nrc_file, skip_header=True,
-#                             usecols=range(1, len(header) + 1))
-#     simil_mat = build_simil_matrix(nrc_mat, geco_threshold)
-
-#     if os.name == 'posix':
-#         smashpp_bin = '../../smashpp '
-#         # smashpp_bin = './smashpp '
-#     elif os.name == 'nt':
-#         smashpp_bin = '..\..\smashpp.exe '
-#         # smashpp_bin = '.\smashpp.exe '
-
-#     if not os.path.exists(result_path):
-#         os.mkdir(result_path)
-
-#     rearrange_mat = [[0 for x in range(len(simil_mat))]
-#                      for y in range(len(simil_mat))]
-
-#     for i in range(0, len(simil_mat)):
-#         for j in range(i+1, len(simil_mat)):
-#             if simil_mat[i][j] == 1:
-#                 execute(smashpp_bin + exe_param +
-#                         '-r ' + data_path + header[i] + '.seq ' +
-#                         '-t ' + data_path + header[j] + '.seq ')
-
-#                 pos_file_name = header[i] + '.seq.' + header[j] + '.seq.pos'
-#                 rearrange_mat[i][j] = count_rearrange(pos_file_name)
-
-#                 if os.path.exists(result_path + sep + pos_file_name):
-#                     os.remove(result_path + sep + pos_file_name)
-#                 shutil.move(pos_file_name, result_path)
-
-#     rearrange_count_name = 'rearrange_count_' + Class + '.tsv'
-#     if os.path.exists(rearrange_count_name):
-#         os.remove(rearrange_count_name)
-#     with open(rearrange_count_name, 'w') as rearrange_count:
-#         for i in range(len(header)):
-#             rearrange_count.write('\t' + header[i])
-#         rearrange_count.write('\n')
-#         for i in range(len(header)):
-#             rearrange_count.write(header[i])
-#             for j in range(len(header)):
-#                 rearrange_count.write('\t' + str(rearrange_mat[i][j]))
-#             rearrange_count.write('\n')
 
 if make_rearrange_mat_symmetric:
     Class = 'Chondrichthyes'
