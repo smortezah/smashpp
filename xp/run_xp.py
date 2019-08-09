@@ -14,7 +14,7 @@ synth_xlarge = False
 synth_mutation = False
 
 # Run on simulated dataset
-sim_small = False
+sim_small = True
 sim_medium = False
 sim_large = False
 sim_xlarge = False
@@ -22,7 +22,7 @@ sim_mutation = False
 
 # Run on real dataset
 e_coli_s_dysenteriae = False
-gga24_mga26 = True
+gga24_mga26 = False
 
 if os.name == 'posix':
     sep = '/'
@@ -39,7 +39,8 @@ goose_permuteseqbyblocks = path_bin + 'goose-permuteseqbyblocks'
 smashpp = '..' + sep + 'smashpp '
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
-sim_common_par = ' -w 10 -s 19 -vv '
+# sim_common_par = ' -w 10 -s 19 -vv '
+sim_common_par = ' -vv '
 
 
 def execute(cmd):
@@ -160,9 +161,11 @@ if sim_small:
     ref = 'RefS'
     tar = 'TarS'
     out = 'S.svg'
-    execute(smashpp + '-r ' + path_data_sim + ref +
-            ' -t ' + path_data_sim + tar + ' -l 3 -f 25')
-    execute(smashpp + '-viz -p 1 -b 5 -f 55 -rt 150 -tt 150 -th 0 ' +
+#     execute(smashpp + '-r ' + path_data_sim + ref +
+#             ' -t ' + path_data_sim + tar + ' -l 3 -f 25')
+#     execute(smashpp + '-viz -p 1 -b 5 -f 55 -rt 150 -tt 150 -th 0 ' +
+#     execute(smashpp + '-viz -p 1 -rt 150 -tt 150 -th 0 ' +
+    execute(smashpp + '-viz -p 1 -rt 150 -tt 150 ' +
             '-o ' + out + sim_common_par + ref + '.' + tar + '.pos')
 
 if sim_medium:
@@ -171,7 +174,8 @@ if sim_medium:
     out = 'M.svg'
     execute(smashpp + '-r ' + path_data_sim +
             ref + ' -t ' + path_data_sim + tar + ' -l 3 -f 100')
-    execute(smashpp + '-viz -p 1 -b 5 -f 55 -o ' + out +
+#     execute(smashpp + '-viz -p 1 -b 5 -f 55 -o ' + out +
+    execute(smashpp + '-viz -p 1 -o ' + out +
             sim_common_par + ref + '.' + tar + '.pos')
 
 if sim_large:
@@ -214,7 +218,7 @@ if e_coli_s_dysenteriae:
 if gga24_mga26:
     main = False
     permute_1M = False
-    permute_500K = True
+    permute_500K = False
 
     tar = '26'
     path_tar = path_data_real + 'bird' + sep + \
