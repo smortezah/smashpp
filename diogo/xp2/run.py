@@ -7,9 +7,9 @@ prepare_data = False
 numerate_dataset = False
 denumerate_dataset = False
 find_simil_seqs = False
-find_simil_regions = True
+find_simil_regions = False
 plot_rearrange_count = False
-make_rearrange_mat_symmetric = False
+make_rearrange_mat_symmetric = True
 plot_simil = False
 
 main_file = 'mtDNA_Chordata_3327_22-03-2019.fasta'
@@ -297,8 +297,8 @@ if find_simil_regions:
 
 
 if make_rearrange_mat_symmetric:
-    Class = 'Chondrichthyes'
-    # Class = 'Mammalia'
+    # Class = 'Chondrichthyes'
+    Class = 'Mammalia'
     # Class = 'Actinopterygii'
     in_file = open('rearrange_count_' + Class + '.tsv')
     out_file_name = 'rearrange_count_' + Class + '_symmetric.tsv'

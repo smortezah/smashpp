@@ -16,9 +16,62 @@ library(circlize)
 
 plot_rearrange_Chondrichthyes <- F
 plot_rearrange_Mammalia <- FALSE
-plot_nrc_Chondrichthyes <- T
-plot_nrc_Mammalia <- FALSE
+plot_nrc_Chondrichthyes <- F
+plot_nrc_Mammalia <- T
 cluster_Chondrichthyes <- FALSE
+
+plot.nrc.rearrange <- function(class, width, height, color_ramp2) {
+  nrc_file_name <- paste('ent_', class, '.tsv', sep = '')
+  nrc_mat <- as.matrix(read.table(nrc_file_name, header = TRUE))
+  
+  H <- Heatmap(nrc_mat)
+  
+  a <- Heatmap(
+    nrc_mat,
+    row_order = row_order(H),
+    column_order = column_order(H),
+    row_names_side = c("left"),
+    name = "NRC",
+    col = colorRamp2(
+      breaks = seq(0, 2, 1),
+      colors = c("#A71B4B", "#FEFDBE", "#584B9F")
+    ),
+    column_title = paste("Normalized relative compression (NRC) in", class)
+  )
+  
+  rearrange_file_name <- 
+    paste('rearrange_count_', class, '_symmetric.tsv', sep = '')
+  rearrange_mat <- as.matrix(read.table(rearrange_file_name, header = TRUE))
+  
+  if (missing(color_ramp2)){
+    b <- Heatmap(
+      rearrange_mat,
+      row_order = row_order(H),
+      column_order = column_order(H),
+      name = "# rearrange",
+      column_title = paste("Number of rearrangements in", class)
+    )
+  } else {
+    b <- Heatmap(
+      rearrange_mat,
+      row_order = row_order(H),
+      column_order = column_order(H),
+      name = "# rearrange",
+      col = color_ramp2,
+      # col = colorRamp2(
+      #   breaks = seq(0, 50, 10),
+      #   colors = c("#584B9F", "#00B1B5", "#BAEEAE", "#FCDE85", "#ED820A", "#A71B4B")
+      #   # colors = c('blue', 'white', 'yellow', 'green', 'red')
+      #   # colors = hcl.colors(5, palette = "spectral", rev = TRUE)
+      # ),
+      column_title = paste("Number of rearrangements in", class)
+    )
+  }
+  
+  pdf(paste(class, ".pdf", sep = ''), width = width, height = height)
+  draw(a + b)
+  dev.off()
+}
 
 if (plot_rearrange_Chondrichthyes) {
   in_file = "rearrange_count_Chondrichthyes_symmetric.tsv"
@@ -290,99 +343,67 @@ if (plot_rearrange_Chondrichthyes) {
   # h1+h2
   
   
-  class <- 'Chondrichthyes'
-  # class <- 'Mammalia'
-  # class <- 'Actinopterygii'
   
-  in_file = paste('ent_', class, '.tsv', sep='')
-  nrc <- read.table(in_file, header = TRUE)
-  nrc_mat <- as.matrix(nrc)
-
-  H <- Heatmap(nrc_mat)
-  a <- Heatmap(
-    nrc_mat,
-    row_order = row_order(H),
-    column_order = column_order(H),
-    row_names_side = c("left"),
-    name = "NRC",
-    col = colorRamp2(
-      breaks = seq(0, 2, 1),
-      colors = c("#A71B4B", "#FEFDBE", "#584B9F")
-      # colors = c('red', 'white', 'blue')
-    ),
-    column_title = paste("Normalized relative compression (NRC) in", class)
-    # row_order = row.order, column_order = col.order,
-    # top_annotation = ha_mix_top,
-    # right_annotation = ha_mix_right
-  )
-
-  in_rearrange_file = paste('rearrange_count_', class, '_symmetric.tsv', 
-                            sep = '')
-  rearrange_mat <-
-    as.matrix(read.table(in_rearrange_file, header = TRUE))
-  b <- Heatmap(
-    rearrange_mat,
-    row_order = row_order(H),
-    column_order = column_order(H),
-    name = "# rearrange",
-    col = colorRamp2(
+  color_ramp2 <- colorRamp2(
       breaks = seq(0, 50, 10),
-      # colors = c('blue', 'white', 'yellow', 'green', 'red')
-      colors = c("#584B9F", "#00B1B5", "#BAEEAE", "#FCDE85", "#ED820A", "#A71B4B")
-      # colors = hcl.colors(5, palette = "spectral", rev = TRUE)
-    ),
-    column_title = paste("Number of rearrangements in", class)
-  )
-
-  # pdf(paste(class, ".pdf", sep=''), width = 40, height = 20)
-  draw(a+b)
-  # dev.off()
+      colors = c("#584B9F", "#00B1B5", "#BAEEAE", "#FCDE85", "#ED820A", 
+                 "#A71B4B")
+      )
+  plot.nrc.rearrange('Chondrichthyes', 40, 20, color_ramp2)
 } else if (plot_nrc_Mammalia) {
-  ent <- read.table("ent_Mammalia.tsv", header = TRUE)
-  ent_mat <- as.matrix(ent)
-  melted_ent_mat <- melt(ent_mat)
-  header <- colnames(ent_mat)
-  corr <- round(cor(ent), 1)
-  # p.mat <- cor_pmat(ent)
+  color_ramp2 <- colorRamp2(
+    breaks = seq(0, 50, 10),
+    colors = c("#584B9F", "#00B1B5", "#BAEEAE", "#FCDE85", "#ED820A", 
+               "#A71B4B")
+  )
+  # plot.nrc.rearrange('Mammalia', 40, 20, color_ramp2)
+  plot.nrc.rearrange('Mammalia', 100, 50)
   
-  ggcorrplot(corr,
-             hc.order = TRUE,
-             type = "upper",
-             outline.col = "white") +
-    ggtitle("Mammalia") +
-    # scale_fill_gradientn(
-    #   # labels = c("1", seq(25,125,25)),
-    #   # breaks = c(1, seq(25,125,25)),
-    #   # guide = guide_colorbar(
-    #   #   title = "No.\nrearrangements\n(Chondrichthyes)",
-    #   #   title.position = "top",
-    #   #   # title.hjust = 0,
-    #   #   title.vjust = 1,
-    #   #   # label.position = "left"
-    #   # ),
-    #   colours = hcl.colors(5, palette = "spectral", rev = TRUE),
-  #   # values = rescale(c(0, 30, 40, 50, 90, 110, 125)),
-  #   # limits = c(1, 126),
-  #   na.value = "white"
-  # ) +
-  scale_x_discrete(position = "top") +
-    # scale_x_discrete(limit = c(rev(header))) +
-    # theme_bw() +
-    theme(
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.text.x = element_text(angle = 90, vjust = 0.3),
-      # legend.direction = "horizontal",
-      # legend.background = element_rect(fill = "transparent"),
-      # legend.title = element_text(color = "white"),
-      # legend.text = element_text(color = "white"),
-      # legend.key.size = unit(0.5, "cm"),
-      legend.justification = c(1, 0.5),
-      legend.position = c(1, 0.5),
-      # legend.key.height = unit(1.25, "cm"),
-      # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
-      # legend.text.align = 1
-    )
+  # ent <- read.table("ent_Mammalia.tsv", header = TRUE)
+  # ent_mat <- as.matrix(ent)
+  # melted_ent_mat <- melt(ent_mat)
+  # header <- colnames(ent_mat)
+  # corr <- round(cor(ent), 1)
+  # # p.mat <- cor_pmat(ent)
+  # 
+  # ggcorrplot(corr,
+  #            hc.order = TRUE,
+  #            type = "upper",
+  #            outline.col = "white") +
+  #   ggtitle("Mammalia") +
+  #   # scale_fill_gradientn(
+  #   #   # labels = c("1", seq(25,125,25)),
+  #   #   # breaks = c(1, seq(25,125,25)),
+  #   #   # guide = guide_colorbar(
+  #   #   #   title = "No.\nrearrangements\n(Chondrichthyes)",
+  #   #   #   title.position = "top",
+  #   #   #   # title.hjust = 0,
+  #   #   #   title.vjust = 1,
+  #   #   #   # label.position = "left"
+  #   #   # ),
+  #   #   colours = hcl.colors(5, palette = "spectral", rev = TRUE),
+  # #   # values = rescale(c(0, 30, 40, 50, 90, 110, 125)),
+  # #   # limits = c(1, 126),
+  # #   na.value = "white"
+  # # ) +
+  # scale_x_discrete(position = "top") +
+  #   # scale_x_discrete(limit = c(rev(header))) +
+  #   # theme_bw() +
+  #   theme(
+  #     axis.title.x = element_blank(),
+  #     axis.title.y = element_blank(),
+  #     axis.text.x = element_text(angle = 90, vjust = 0.3),
+  #     # legend.direction = "horizontal",
+  #     # legend.background = element_rect(fill = "transparent"),
+  #     # legend.title = element_text(color = "white"),
+  #     # legend.text = element_text(color = "white"),
+  #     # legend.key.size = unit(0.5, "cm"),
+  #     legend.justification = c(1, 0.5),
+  #     legend.position = c(1, 0.5),
+  #     # legend.key.height = unit(1.25, "cm"),
+  #     # legend.key.height = unit(6.5, "cm"), # Makes sense in scale=3
+  #     # legend.text.align = 1
+  #   )
 } else if (cluster_Chondrichthyes) {
   ent <- read.table("ent_Chondrichthyes.tsv", header = TRUE)
   # heatmaply(scale(ent), k_row = 4, k_col = 4)
