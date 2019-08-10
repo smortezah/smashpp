@@ -262,11 +262,8 @@ static const std::vector<std::string> REFFREE_LEVEL{
 
 static const std::vector<std::vector<std::string>> COLORSET{
     // #0
-    {"#F8766D", "#EA8331", "#D89000", "#C09B00", "#A3A500",
-     "#7CAE00", "#39B600", "#00BB4E", "#00BF7D", "#00C1A3",
-     "#00BFC4", "#00BAE0", "#00B0F6", "#35A2FF", "#9590FF",
-     "#C77CFF"},
-    ///  "#C77CFF", "#E76BF3", "#FA62DB", "#FF62BC", "#FF6A98"},
+    {"#F8766D", "#D89000", "#A3A500", "#39B600", "#00BF7D", "#00BFC4",
+     "#00B0F6", "#9590FF"},
     // {"#F8766D", "#D89000", "#A3A500", "#39B600", "#00BF7D", "#00BFC4",
     //  "#00B0F6", "#9590FF", "#E76BF3", "#FF62BC"},
     // {"#0000ff", "#00aaff", "#00ffff", "#00ffaa", "#00ff55", "#55ff00",
