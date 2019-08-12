@@ -12,7 +12,8 @@ y0, y1 = [], []
 # for line0 in open('0.1.seq.1.seq.fil', 'r'):
 # for line0 in open('0.2.seq.2.seq.fil', 'r'):
 # for line0 in open('0.4.seq.4.seq.fil', 'r'):
-for line0 in open('0.ref.tar.prf', 'r'):
+# for line0 in open('0.ref.tar.prf', 'r'):
+for line0 in open('0.gga24_1M.26.fil', 'r'):
     values0 = [float(s) for s in line0.split()]
     y0.append(values0[0])
 # for line1 in open('1.gga24_1M.26.fil', 'r'):
@@ -26,7 +27,8 @@ for line0 in open('0.ref.tar.prf', 'r'):
 # for line1 in open('1.1.seq.1.seq.fil', 'r'):
 # for line1 in open('1.2.seq.2.seq.fil', 'r'):
 # for line1 in open('1.4.seq.4.seq.fil', 'r'):
-for line1 in open('1.ref.tar.prf', 'r'):
+# for line1 in open('1.ref.tar.prf', 'r'):
+for line1 in open('1.gga24_1M.26.fil', 'r'):
     values1 = [float(s) for s in line1.split()]
     y1.append(values1[0])
 
