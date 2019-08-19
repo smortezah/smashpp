@@ -13,9 +13,6 @@ synth_large = False
 synth_xlarge = False
 synth_mutation = False
 
-# Download real dataset
-
-
 # Run on simulated dataset
 sim_small = False
 sim_medium = False
@@ -24,6 +21,7 @@ sim_xlarge = False
 sim_mutation = False
 
 # Run on real dataset
+S_cerevisiae_C_glabrata = True
 e_coli_s_dysenteriae = False
 gga24_mga26 = False
 
@@ -204,6 +202,15 @@ if sim_mutation:
             path_data_sim + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
     execute(smashpp + '-viz -p 1 -rt 5000 -tt 5000' +
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
+
+if S_cerevisiae_C_glabrata:
+        path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+        path_tar = path_data_real + 'fungi' + sep + 'Candida_glabrata' + sep
+        ref = '4.seq'
+        tar = 'K.seq'
+        out = 'S_cerevisiae_C_glabrata.svg'
+        execute(smashpp + '-r ' + path_ref + ref + ' -t ' + path_tar + tar + '  -l 2 -f 100')
+        execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
 if e_coli_s_dysenteriae:
     path = path_data_real + 'bacteria' + sep
