@@ -21,7 +21,9 @@ sim_xlarge = False
 sim_mutation = False
 
 # Run on real dataset
-S_cerevisiae_C_glabrata = True
+S_cerevisiae_C_glabrata = False
+K_lactis_E_gossypii = True
+
 e_coli_s_dysenteriae = False
 gga24_mga26 = False
 
@@ -210,6 +212,15 @@ if S_cerevisiae_C_glabrata:
         tar = 'K.seq'
         out = 'S_cerevisiae_C_glabrata.svg'
         execute(smashpp + '-r ' + path_ref + ref + ' -t ' + path_tar + tar + '  -l 5 -f 200 -ar -nr -v')
+        execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
+
+if K_lactis_E_gossypii:
+        path_ref = path_data_real + 'fungi' + sep + 'Kluyveromyces_lactis' + sep
+        path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
+        ref = 'C.seq'
+        tar = 'VI.seq'
+        out = 'K_lactis_E_gossypii.svg'
+        execute(smashpp + '-r ' + path_ref + ref + ' -t ' + path_tar + tar + '  -l 0 -f 150 -ar -nr -v')
         execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
 if e_coli_s_dysenteriae:
