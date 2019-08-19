@@ -241,7 +241,7 @@ def apply_smashpp(Class):
     geco_threshold = 1.5
     nrc_file = open(ave_ent_file + '_' + Class + '.tsv')
     data_path = dataset_path + sep + Class.lower() + sep
-    exe_param = '-rm 11,0,1,0.95/8,0,1,0.9 -m 20 -f 100 -dp -th 1.8 '
+    exe_param = '-rm 11,0,0.001,0.95/8,0,0.01,0.9 -m 20 -f 100 -dp -th 1.8 '
 
     header = nrc_file.readline().split()
     nrc_file.seek(0)
