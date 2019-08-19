@@ -209,7 +209,7 @@ if S_cerevisiae_C_glabrata:
         ref = '4.seq'
         tar = 'K.seq'
         out = 'S_cerevisiae_C_glabrata.svg'
-        execute(smashpp + '-r ' + path_ref + ref + ' -t ' + path_tar + tar + '  -rm 10,0,0.001,0.95/6,0,0.005,0.95 -f 100 -dp -nr ')
+        execute(smashpp + '-r ' + path_ref + ref + ' -t ' + path_tar + tar + '  -l 5 -f 200 -ar -nr -v')
         execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
 if e_coli_s_dysenteriae:
