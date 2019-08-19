@@ -32,6 +32,12 @@ inline void warning(std::string&& msg) {
   wrap_text(message);
   std::cerr << bold(message.substr(0, 8)) << message.substr(8) << '\n';
 }
+
+inline void exit(std::string&& msg) {
+  std::string message = std::move(msg);
+  wrap_text(message);
+  throw std::runtime_error(message + "\n");
+}
 }  // namespace smashpp
 
 #endif  // SMASHPP_EXCEPTION_HPP

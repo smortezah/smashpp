@@ -94,6 +94,9 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   svg->print_tailer(fPlot);
   fPos.close();
   fPlot.close();
+
+  if (n_regular + n_regularSolo + n_inverse + n_inverseSolo == 0)
+    remove((p->image).c_str());
 }
 
 inline void VizPaint::read_matadata(std::ifstream& fPos,
@@ -1711,7 +1714,7 @@ inline void VizPaint::plot_pos(std::ofstream& fPlot, std::ifstream& fPos,
                     : plot_pos_horizontal(fPlot, posPlot);
   // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
 
-  if (!plottable) error("not plottable positions.");
+  if (!plottable) exit("No plottable position.\n");
 }
 
 inline void VizPaint::plot_pos_horizontal(
@@ -2028,51 +2031,56 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
 inline void VizPaint::print_log(uint64_t n_regular, uint64_t n_regularSolo,
                                 uint64_t n_inverse, uint64_t n_inverseSolo,
                                 uint64_t n_ignored) const {
-  std::cerr << "Plotting finished.\n";
-  std::cerr << "Found ";
-
   // Count '+' signs needed
   uint8_t n_pluses{0};
   if (n_regular != 0) ++n_pluses;
   if (n_regularSolo != 0) ++n_pluses;
   if (n_inverse != 0) ++n_pluses;
   if (n_inverseSolo != 0) ++n_pluses;
-  --n_pluses;
 
-  if (n_regular != 0) {
-    std::cerr << n_regular << " regular";
-  }
   if (n_pluses != 0) {
-    std::cerr << " + ";
     --n_pluses;
-  }
-  if (n_regularSolo != 0) {
-    std::cerr << n_regularSolo << " solo regular";
-  }
-  if (n_pluses != 0) {
-    std::cerr << " + ";
-    --n_pluses;
-  }
-  if (n_inverse != 0) {
-    std::cerr << n_inverse << " inverted";
-  }
-  if (n_pluses != 0) {
-    std::cerr << " + ";
-    --n_pluses;
-  }
-  if (n_inverseSolo != 0) {
-    std::cerr << n_inverseSolo << " solo inverted";
-  }
+    std::cerr << "Plotting finished.\n";
+    std::cerr << "Found ";
 
-  std::cerr << " region"
-            << (n_regular + n_regularSolo + n_inverse + n_inverseSolo > 1 ? "s"
-                                                                          : "")
-            << ".\n";
+    if (n_regular != 0) {
+      std::cerr << n_regular << " regular";
+    }
+    if (n_pluses != 0) {
+      std::cerr << " + ";
+      --n_pluses;
+    }
+    if (n_regularSolo != 0) {
+      std::cerr << n_regularSolo << " solo regular";
+    }
+    if (n_pluses != 0) {
+      std::cerr << " + ";
+      --n_pluses;
+    }
+    if (n_inverse != 0) {
+      std::cerr << n_inverse << " inverted";
+    }
+    if (n_pluses != 0) {
+      std::cerr << " + ";
+      --n_pluses;
+    }
+    if (n_inverseSolo != 0) {
+      std::cerr << n_inverseSolo << " solo inverted";
+    }
 
-  if (n_ignored != 0)
-    std::cerr << "Ignored " << n_ignored << " region"
-              << (n_ignored > 1 ? "s" : "") << ".\n";
-  std::cerr << '\n';
+    std::cerr << " region"
+              << (n_regular + n_regularSolo + n_inverse + n_inverseSolo > 1
+                      ? "s"
+                      : "")
+              << ".\n";
+
+    if (n_ignored != 0)
+      std::cerr << "Ignored " << n_ignored << " region"
+                << (n_ignored > 1 ? "s" : "") << ".\n";
+    std::cerr << '\n';
+  } else {
+    exit("No plottable position.\n");
+  }
 }
 
 void VizPaint::set_n_color(std::vector<Position>& pos) {
