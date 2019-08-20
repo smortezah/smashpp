@@ -135,7 +135,7 @@ void write_pos_file_impl(const std::vector<OutRowAux>& out_aux,
     if (row.pos2.beg_pos == 0 && row.pos2.end_pos == 0 && row.pos2.ent == 0 &&
         row.pos2.self_ent == 0) {
       pos_file << DBLANK << '\t' << DBLANK << '\t' << DBLANK << '\t' << DBLANK
-               << '\t';
+               << '\n';
     } else {
       left_beg = row.pos2.beg_pos;
       left_end = row.pos2.end_pos;
@@ -170,14 +170,15 @@ void write_pos_file_impl(const std::vector<OutRowAux>& out_aux,
       if (uint64_t(std::llabs(right_end - right_beg)) <
               (left_end - left_beg) * 1.5 &&
           uint64_t(std::llabs(right_end - right_beg)) >
-              (left_end - left_beg) / 2)
+              (left_end - left_beg) * 0.5)
         pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
                  << left_self_ent << '\t' << right_beg << '\t' << right_end
                  << '\t' << right_ent << '\t' << right_self_ent << '\n';
     } else {
-      pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
-               << left_self_ent << '\t' << right_beg << '\t' << right_end
-               << '\t' << right_ent << '\t' << right_self_ent << '\n';
+      if (left_end != 0)
+        pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
+                 << left_self_ent << '\t' << right_beg << '\t' << right_end
+                 << '\t' << right_ent << '\t' << right_self_ent << '\n';
     }
   }
 
