@@ -220,7 +220,7 @@ if K_lactis_E_gossypii:
         ref = 'C.seq'
         tar = 'VI.seq'
         out = 'K_lactis_E_gossypii.svg'
-        execute(smashpp + '-r ' + path_ref + ref + ' -t ' + path_tar + tar + '  -l 1 -f 150 -ar -nr -v')
+        execute(smashpp + '-r ' + path_ref + ref + ' -t ' + path_tar + tar + '  -l 5 -f 150  -nr -v')
         execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
 if e_coli_s_dysenteriae:
