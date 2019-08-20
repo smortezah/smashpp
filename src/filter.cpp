@@ -518,21 +518,11 @@ inline void Filter::make_nuttall(uint32_t filter_size) {
 //   seq.reserve(filt_size);
 
 //   // First value
-//   // // for (auto i = half_wsize + 1; i-- && (prfF >> entropy);jump_lines()) {
-//   // for (auto i = (filt_size >> 1u) + 1; i-- && (prfF >> entropy); jump_lines()) {
-//   //   seq.push_back(entropy);
-//   //   sum += entropy;
-//   //   if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
-//   // }
-//   {
-//     auto i = (filt_size >> 1u) + 1;
-//     for (; i-- && (prfF >> entropy); jump_lines()) {
-//       seq.push_back(entropy);
-//       sum += entropy;
-//     }
-//     auto num_ent_exist = (filt_size >> 1u) + 1 - i;
-//     seq.insert(std::begin(seq), num_ent_exist - 1, 2.0);
-//     sum += (num_ent_exist - 1) * 2.0;
+//   // for (auto i = half_wsize + 1; i-- && (prfF >> entropy);jump_lines()) {
+//   for (auto i = (filt_size >> 1u) + 1; i-- && (prfF >> entropy); jump_lines()) {
+//     seq.push_back(entropy);
+//     sum += entropy;
+//     if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
 //   }
 
 //   if (seq.size() <= (filt_size >> 1u)) filt_size = 2 * seq.size() + 1;
@@ -640,37 +630,23 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
     sum += (num_ent_exist - 1) * 2.0;
   }
 
-  if (seq.size() <= (filt_size >> 1u)) filt_size = 2 * seq.size() + 1;
+  filt_size = seq.size();
   const auto half_wsize{filt_size >> 1u};
 
   auto filtered = sum / filt_size;
-  // auto filtered = sum / seq.size();
   if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
   seg->partition(pos_out, filtered);
-
-  // Next half_wsize values
-  for (auto i = half_wsize; i-- && (prfF >> entropy);jump_lines()) {
-    const auto val{entropy};
-    seq.push_back(val);
-    sum += val;
-    filtered = sum / filt_size;
-    // filtered = sum / seq.size();
-    if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
-    ++seg->pos;
-    seg->partition(pos_out, filtered);
-    if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
-  }
+  if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
 
   // The rest
   uint32_t idx{0};
-  for (; prfF >> entropy;jump_lines()) {
-    const auto val = entropy;
-    sum += val - seq[idx];
+  for (; prfF >> entropy; jump_lines()) {
+    sum += entropy - seq[idx];
     filtered = sum / filt_size;
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
     seg->partition(pos_out, filtered);
-    seq[idx] = val;
+    seq[idx] = entropy;
     idx = (idx + 1) % filt_size;   
     if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   }
@@ -680,14 +656,12 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   for (auto i = 1u; i != half_wsize + 1; ++i) {
     sum -= seq[idx];
     filtered = sum / filt_size;
-    // filtered = sum / (filt_size - i);
     if (SaveFilter) filF << precision(PREC_FIL) << filtered << '\n';
     ++seg->pos;
     seg->partition(pos_out, filtered);
     idx = (idx + 1) % filt_size;
     if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   }
-
   seg->finalize_partition(pos_out);
   if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
 
