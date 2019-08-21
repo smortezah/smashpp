@@ -21,6 +21,10 @@ sim_xlarge = False
 sim_mutation = False
 
 # Run on real dataset
+E_gossypii_I_S_cerevisiae_XVI = False
+
+S_cerevisiae_VIII_C_glabrata_XVI = False
+
 S_cerevisiae_C_glabrata = False
 K_lactis_E_gossypii = False
 K_lactis_F_E_gossypii_VI = False
@@ -207,6 +211,26 @@ if sim_mutation:
             path_data_sim + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
     execute(smashpp + '-viz -p 1 -rt 5000 -tt 5000' +
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
+
+if E_gossypii_I_S_cerevisiae_XVI:
+        path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
+        path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+        tar = 'I.seq'
+        ref = 'XVI.seq'
+        # out = 'S_cerevisiae_C_glabrata.svg'
+        execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
+                path_tar + tar + '  -l 0 -ar -f 200  -nr ')
+        execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
+
+if S_cerevisiae_VIII_C_glabrata_XVI:
+        path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+        path_tar = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+        ref = 'VIII.seq'
+        tar = 'XVI.seq'
+        # out = 'S_cerevisiae_C_glabrata.svg'
+        execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
+                path_tar + tar + '  -l 3 -f 500  -nr ')
+        execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
 if S_cerevisiae_C_glabrata:
         path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
