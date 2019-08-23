@@ -16,6 +16,7 @@ library(circlize)
 
 plot_nrc_rearrange_Chondrichthyes <- FALSE
 plot_nrc_rearrange_Mammalia <- FALSE
+plot_nrc_rearrange_Actinopterygii <- T
 
 plot.nrc.rearrange <- function(class, width, height,
                                rearange_breaks, rearrange_colors) {
@@ -83,5 +84,11 @@ if (plot_nrc_rearrange_Chondrichthyes) {
                      200,
                      100,
                      seq(0, 60, 20),
+                     hcl.colors(4, palette = "spectral", rev = TRUE))
+} else if (plot_nrc_rearrange_Actinopterygii) {
+  plot.nrc.rearrange('Actinopterygii',
+                     350,
+                     175,
+                     seq(0, 45, 15),
                      hcl.colors(4, palette = "spectral", rev = TRUE))
 }
