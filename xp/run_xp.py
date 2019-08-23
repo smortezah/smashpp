@@ -21,6 +21,8 @@ sim_xlarge = False
 sim_mutation = False
 
 # Run on real dataset
+X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = True
+
 E_gossypii_I_S_cerevisiae_XVI = False
 
 S_cerevisiae_VIII_C_glabrata_XVI = False
@@ -211,6 +213,16 @@ if sim_mutation:
             path_data_sim + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
     execute(smashpp + '-viz -p 1 -rt 5000 -tt 5000' +
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
+
+if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
+        path = path_data_real + 'fungi' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
+        ref = 'PXO99A.seq'
+        tar = 'MAFF_311018.seq'
+        # out = 'S_cerevisiae_C_glabrata.svg'
+        execute(smashpp + '-r ' + path + ref + ' -t ' +
+                path + tar + '  -l 0 -f 200  -nr ')
+        execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
+
 
 if E_gossypii_I_S_cerevisiae_XVI:
         path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
