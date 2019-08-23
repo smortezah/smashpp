@@ -220,9 +220,8 @@ if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
         tar = 'MAFF_311018.seq'
         # out = 'S_cerevisiae_C_glabrata.svg'
         execute(smashpp + '-r ' + path + ref + ' -t ' +
-                path + tar + '  -l 0 -f 200  -nr ')
-        execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
-
+                path + tar + ' -l 3 -th 1.7 -f 100 -m 100000 -d 1000 -nr  -sf')
+        execute(smashpp + '-viz -l 1 ' + ref + '.' + tar + '.pos')
 
 if E_gossypii_I_S_cerevisiae_XVI:
         path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep

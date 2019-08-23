@@ -87,8 +87,8 @@ if (plot_nrc_rearrange_Chondrichthyes) {
                      hcl.colors(4, palette = "spectral", rev = TRUE))
 } else if (plot_nrc_rearrange_Actinopterygii) {
   plot.nrc.rearrange('Actinopterygii',
-                     300,
-                     150,
+                     200,
+                     100,
                      seq(0, 45, 15),
                      hcl.colors(4, palette = "spectral", rev = TRUE))
 }
