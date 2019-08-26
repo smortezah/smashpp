@@ -263,8 +263,9 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
 
   // Filter and segment
   auto filter = std::make_unique<Filter>(par);
-  // if (!par->manThresh)
+  // if (!par->manThresh) 
   //   par->thresh = static_cast<float>(round_to_prec(models->aveEnt, 0.5));
+  //   // par->thresh = static_cast<float>(models->aveEnt);
   filter->smooth_seg(pos_out, par, round, current_pos_row);
 
   if (filter->nSegs == 0) {
