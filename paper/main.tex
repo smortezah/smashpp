@@ -154,7 +154,7 @@ Smash++ works on the basis of cooperation between finite-context models (FCMs) a
 \end{figure}
 
 \subsubsection*{Finite-context model (FCM)}
-A finite-context model considers Markov property to estimate the probability of the next symbol in an information source, based on the past $k$ symbols (a context of size $k$)~\cite{sayood2017introduction,hosseini2019ac,pinho2013mfcompress}. Denoting the context as $c_{k,\,i} = s_{i-k} s_{i-k+1}\ldots s_{i-2} s_{i-1}$, the probability of the next symbol $s_i$ in an information source $S$, which is posed at $i$, can be estimated as
+A finite-context model considers Markov property to estimate the probability of the next symbol in an information source, based on the past $k$ symbols (a context of size $k$)~\cite{hosseini2019ac,sayood2017introduction,pinho2013mfcompress}. Denoting the context as $c_{k,\,i} = s_{i-k} s_{i-k+1}\ldots s_{i-2} s_{i-1}$, the probability of the next symbol $s_i$ in an information source $S$, which is posed at $i$, can be estimated as
 \begin{equation} \label{eq.estimate}
   P_m(s_i|c_{k,\,i}) = \frac{N(s_i|c_{k,\,i})+\alpha}{N(c_{k,\,i})+ \alpha|\Theta|},
 \end{equation}
@@ -196,9 +196,9 @@ This example shows the distinction between a finite-context model and a substitu
  \subsubsection*{Storing models in memory}
  The FCMs and STMMs include, in fact, count values which need to be saved in memory. For this purpose, four different data structures have been employed considering the context-order size $k$, as follows:
  \begin{itemize}
-   \item table of 64 bit counters, for $k \in [1, 11]$,
-   \item table of 32 bit counters, for $k=\{12, 13\}$,
-   \item table of 8 bit approximate counters, for $k=14$, and
+   \item table of 64 bit counters, for $1\le k\le 11$,
+   \item table of 32 bit counters, for $k = 12, 13$,
+   \item table of 8 bit approximate counters, for $k = 14$, and
    \item Count-Min-Log sketch of 4 bit counters, for $k \ge 15$.
  \end{itemize}
 
@@ -231,7 +231,7 @@ This example shows the distinction between a finite-context model and a substitu
        \begin{algorithmic}[1]
          % \Require table of 8 bit counters
          \Function{\textsc{IncreaseDecision}}{$x$}
-         \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
+         \State \textbf{return} True with probability $1/2^x$, else False
          \EndFunction
          \Statex
          \Function{\textsc{Update}}{$x$}
@@ -258,7 +258,7 @@ This example shows the distinction between a finite-context model and a substitu
 
  The CMLS requires a family of pairwise independent hash functions
  $H = \{h: U \to [m]\}$, in which each function $h$ maps some universe $U$ to $m$ bins.
- To have this family, we use universal hashing by randomly selecting a hash function from a universal family in which $\forall x,y\in U,~x\neq y:~~P_{h\in H}[h(x)=h(y)]\leq \frac{1}{m}$.
+ To have this family, we use universal hashing by randomly selecting a hash function from a universal family in which $\forall x,y\in U,~x\neq y:~P_{h\in H}[h(x)=h(y)]\leq 1/m$.
  The hash function can be obtained by
  \begin{equation}
    h_{a,b}(x)=\left((ax+b)~\bmod p\right)~\bmod m,
@@ -291,7 +291,7 @@ This example shows the distinction between a finite-context model and a substitu
          \EndFunction
          \Statex
          \Function{\textsc{IncreaseDecision}}{$x$}
-         \State \textbf{return} True with probability $\frac{1}{2^x}$, else False
+         \State \textbf{return} True with probability $1/2^x$, else False
          \EndFunction
          \Statex
          \Function{\textsc{Update}}{$x$}
