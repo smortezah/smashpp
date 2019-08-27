@@ -218,10 +218,10 @@ if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
         path = path_data_real + 'fungi' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
         ref = 'PXO99A.seq'
         tar = 'MAFF_311018.seq'
-        main_par = ' -rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.65 -ar -sf '
+        main_par = ' -rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar '
         viz_par = ' -viz -l 6 -s 10 -w 8 -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" -o PXO99A_MAFF_311018.svg '
-        # execute(smashpp + main_par + ' -r ' + path + ref + ' -t ' +
-        #         path + tar)
+        execute(smashpp + main_par + ' -r ' + path + ref + ' -t ' +
+                path + tar)
         execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 if E_gossypii_I_S_cerevisiae_XVI:
