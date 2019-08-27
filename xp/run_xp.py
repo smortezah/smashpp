@@ -21,18 +21,15 @@ sim_xlarge = False
 sim_mutation = False
 
 # Run on real dataset
-X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = True
+X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 
 E_gossypii_I_S_cerevisiae_XVI = False
-
 S_cerevisiae_VIII_C_glabrata_XVI = False
-
 S_cerevisiae_C_glabrata = False
 K_lactis_E_gossypii = False
 K_lactis_F_E_gossypii_VI = False
 S_cerevisiae_5_C_glabrata_I = False
 S_cerevisiae_14_C_glabrata_J = False
-
 e_coli_s_dysenteriae = False
 gga24_mga26 = False
 
@@ -218,7 +215,7 @@ if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
         path = path_data_real + 'fungi' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
         ref = 'PXO99A.seq'
         tar = 'MAFF_311018.seq'
-        main_par = ' -rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar '
+        main_par = ' -rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar -dp '
         viz_par = ' -viz -l 6 -s 10 -w 8 -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" -o PXO99A_MAFF_311018.svg '
         execute(smashpp + main_par + ' -r ' + path + ref + ' -t ' +
                 path + tar)
