@@ -212,7 +212,7 @@ if sim_mutation:
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
-        path = path_data_real + 'fungi' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
+        path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
         ref = 'PXO99A.seq'
         tar = 'MAFF_311018.seq'
         main_par = ' -rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar -dp '
