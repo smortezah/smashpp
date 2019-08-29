@@ -23,6 +23,10 @@ sim_mutation = False
 # Run on real dataset
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 
+gga18_mga20 = True
+
+mga25_gga23 = False
+
 E_gossypii_I_S_cerevisiae_XVI = False
 S_cerevisiae_VIII_C_glabrata_XVI = False
 S_cerevisiae_C_glabrata = False
@@ -219,6 +223,28 @@ if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
         viz_par = ' -viz -l 6 -s 10 -w 8 -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" -o PXO99A_MAFF_311018.svg '
         execute(smashpp + main_par + ' -r ' + path + ref + ' -t ' +
                 path + tar)
+        execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+
+if mga25_gga23:
+        path_ref = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
+        path_tar = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
+        ref = '25.seq'
+        tar = '23.seq'
+        main_par = ' -rm 14,0,0.005,0.95 -f 150 -m 10000 -d 1250 -th 1.95 -ar -nr -sf '
+        viz_par = ' -viz -l 1 '
+        execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+                path_tar + tar)
+        execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+
+if gga18_mga20:
+        path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
+        path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
+        ref = '18.seq'
+        tar = '20.seq'
+        main_par = ' -l 3 -f 150 -m 10000 -d 3000 -v -th 1.95 -ar -nr -sf '
+        viz_par = ' -viz -l 1 '
+        execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+                path_tar + tar)
         execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 if E_gossypii_I_S_cerevisiae_XVI:
