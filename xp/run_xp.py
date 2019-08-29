@@ -237,12 +237,12 @@ if gga18_mga20:
         execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 if gga14_mga16:
-        path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
-        path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
-        ref = '14.seq'
-        tar = '16.seq'
-        main_par = ' -rm 14,0,0.005,0.95/5,0,1,0.95 -f 200 -m 500000 -d 3000 -th 1.85 -nr -sf -ar '
-        viz_par = ' -viz -l 1 -rn GGA14 -tn MGA16 -o GGA14_MGA16.svg '
+        path_tar = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
+        path_ref = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
+        tar = '14.seq'
+        ref = '16.seq'
+        main_par = ' -rm 14,0,0.005,0.95/3,0,0.05,0.95 -f 150 -m 200000 -d 3300 -th 1.95 -nr -sf '
+        viz_par = ' -viz -l 1 -tn GGA14 -rn MGA16 -o GGA14_MGA16.svg '
         execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
                 path_tar + tar)
         execute(smashpp + viz_par + ref + '.' + tar + '.pos')
