@@ -48,8 +48,6 @@ r
 t
 r-t.pos
 gprof2dot.py
-0.*
-RefS.TarS.pos
 example/*.pos
 example/*.s*
 Makefile
@@ -58,7 +56,6 @@ Makefile
 .Rproj.user
 smashpp.exe.stackdump
 RefS.TarS.pos
-.vscode/settings.json
 smashpp
 smashpp.exe
 xp/mit.ent
@@ -87,4 +84,3 @@ xp/hs21.seqpp21.seq.svg
 mori
 ref
 tar
-!install.sh
