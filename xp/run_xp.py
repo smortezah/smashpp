@@ -241,7 +241,7 @@ if gga14_mga16:
         path_ref = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
         tar = '14.seq'
         ref = '16.seq'
-        main_par = ' -rm 14,0,0.005,0.95/3,0,0.05,0.95 -f 150 -m 200000 -d 3300 -th 1.95 -nr -sf '
+        main_par = ' -rm 14,0,0.005,0.95/5,0,0.05,0.95 -f 150 -m 200000 -d 6000 -th 1.9 -nr -sf '
         viz_par = ' -viz -l 1 -tn GGA14 -rn MGA16 -o GGA14_MGA16.svg '
         execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
                 path_tar + tar)
