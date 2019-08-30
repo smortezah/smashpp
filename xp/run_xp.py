@@ -242,7 +242,7 @@ if gga13_mga15:
         path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
         ref = '13.seq'
         tar = '15.seq'
-        main_par = ' -rm 14,0,0.005,0.95/3,0,1,0.95 -f 150 -m 10000 -d 5000 -th 1.9 -nr -sf '
+        main_par = ' -rm 14,0,0.005,0.95/8,0,1,0.95 -f 150 -m 10000 -d 3500 -th 1.95 -nr -sf '
         viz_par = ' -viz -l 1 '
         execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
                 path_tar + tar)
