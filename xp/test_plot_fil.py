@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 
+name = '11.seq.13.seq.fil'
+
 y0, y1 = [], []
-for line0 in open('0.13.seq.15.seq.fil', 'r'):
+for line0 in open('0.'+name, 'r'):
     values0 = [float(s) for s in line0.split()]
     y0.append(values0[0])
-for line1 in open('1.13.seq.15.seq.fil', 'r'):
+for line1 in open('1.'+name, 'r'):
     values1 = [float(s) for s in line1.split()]
     y1.append(values1[0])
 
