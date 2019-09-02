@@ -49,6 +49,10 @@
 14 Mb</text>
 <line id="460.70269848.333328460.70269852.333328" x1="460.703" y1="48.3333" x2="460.703" y2="52.3333" stroke-width="0.5" stroke="black" />
 <line id="475.89932348.333328475.89932352.333328" x1="475.899" y1="48.3333" x2="475.899" y2="52.3333" stroke-width="0.5" stroke="black" />
+<line id="491.09597848.333328491.09597852.333328" x1="491.096" y1="48.3333" x2="491.096" y2="52.3333" stroke-width="0.5" stroke="black" />
+<line id="506.29263346.333328506.29263352.333328" x1="506.293" y1="46.3333" x2="506.293" y2="52.3333" stroke-width="0.75" stroke="black" />
+<text id="506.29263339.333328" x="506.293" y="39.3333" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="7px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
+16 Mb</text>
 <text id="18.500000225.566666" x="18.5" y="225.567" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="7px" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
 0 b</text>
 <line id="20.375000213.66667220.375000207.666672" x1="20.375" y1="213.667" x2="20.375" y2="207.667" stroke-width="0.75" stroke="black" />
@@ -96,143 +100,89 @@
 14 Mb</text>
 <line id="460.702698211.666672460.702698207.666672" x1="460.703" y1="211.667" x2="460.703" y2="207.667" stroke-width="0.5" stroke="black" />
 <line id="475.899323211.666672475.899323207.666672" x1="475.899" y1="211.667" x2="475.899" y2="207.667" stroke-width="0.5" stroke="black" />
-<line id="491.095978211.666672491.095978207.666672" x1="491.096" y1="211.667" x2="491.096" y2="207.667" stroke-width="0.5" stroke="black" />
-<line id="506.292633213.666672506.292633207.666672" x1="506.293" y1="213.667" x2="506.293" y2="207.667" stroke-width="0.75" stroke="black" />
-<text id="506.292633225.566666" x="506.293" y="225.567" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="7px" font-weight="normal" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
-16 Mb</text>
 <defs id="" >
-<linearGradient id="grad449.153229110.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="0%" stop-color="#713BA0" stop-opacity="1" />
-<stop offset="50%" stop-color="#CDBADD" stop-opacity="1" />
-<stop offset="100%" stop-color="#713BA0" stop-opacity="1" />
+<linearGradient id="grad280.288116110.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="0%" stop-color="#3B91A0" stop-opacity="1" />
+<stop offset="50%" stop-color="#BAD8DD" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B91A0" stop-opacity="1" />
 </linearGradient>
 </defs>
-<rect x="449.153" y="110" width="10" height="22.1871" rx="1" ry="1" fill="url(#grad449.153229110.000000)" fill-opacity="0.9" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 449.153229 110.000000)" />
+<rect x="280.288" y="110" width="10" height="170.202" rx="1" ry="1" fill="url(#grad280.288116110.000000)" fill-opacity="0.9" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 280.288116 110.000000)" />
 <defs id="" >
-<linearGradient id="grad449.153229110.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="100%" stop-color="#00B0F6" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="481.153" y="110" width="3.33333" height="22.1871" rx="1" ry="0.5" fill="url(#grad449.153229110.000000NRC)" fill-opacity="0.9" stroke="url(#grad449.153229110.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 449.153229 110.000000)" />
-<defs id="" >
-<linearGradient id="grad449.153229110.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="490.487" y="110" width="3.33333" height="22.1871" rx="1" ry="0.5" fill="url(#grad449.153229110.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad449.153229110.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 449.153229 110.000000)" />
-<defs id="" >
-<linearGradient id="grad460.398773160.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="0%" stop-color="#713BA0" stop-opacity="1" />
-<stop offset="50%" stop-color="#CDBADD" stop-opacity="1" />
-<stop offset="100%" stop-color="#713BA0" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="460.399" y="160" width="10" height="32.9767" rx="1" ry="1" fill="url(#grad460.398773160.000000)" fill-opacity="0.9" stroke="url(#grad460.398773160.000000)" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 460.398773 160.000000)" />
-<defs id="" >
-<linearGradient id="grad460.398773160.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="100%" stop-color="#00B0F6" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="435.065" y="160" width="3.33333" height="32.9767" rx="1" ry="0.5" fill="url(#grad460.398773160.000000NRC)" fill-opacity="0.9" stroke="url(#grad460.398773160.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 460.398773 160.000000)" />
-<defs id="" >
-<linearGradient id="grad460.398773160.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="425.732" y="160" width="3.33333" height="32.9767" rx="1" ry="0.5" fill="url(#grad460.398773160.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad460.398773160.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 460.398773 160.000000)" />
-<polygon points="449.153,110 471.34,110 493.375,150 460.399,150 " fill="#713BA0" stroke="#713BA0" stroke-width="0.3" stroke-opacity="0.18" fill-opacity="0.18" />
-<defs id="" >
-<linearGradient id="grad437.603790110.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="0%" stop-color="#A0803B" stop-opacity="1" />
-<stop offset="50%" stop-color="#DDD2BA" stop-opacity="1" />
-<stop offset="100%" stop-color="#A0803B" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="437.604" y="110" width="10" height="20.3635" rx="1" ry="1" fill="url(#grad437.603790110.000000)" fill-opacity="0.9" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 437.603790 110.000000)" />
-<defs id="" >
-<linearGradient id="grad437.603790110.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="100%" stop-color="#00B0F6" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="469.604" y="110" width="3.33333" height="20.3635" rx="1" ry="0.5" fill="url(#grad437.603790110.000000NRC)" fill-opacity="0.9" stroke="url(#grad437.603790110.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 437.603790 110.000000)" />
-<defs id="" >
-<linearGradient id="grad437.603790110.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="478.937" y="110" width="3.33333" height="20.3635" rx="1" ry="0.5" fill="url(#grad437.603790110.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad437.603790110.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 437.603790 110.000000)" />
-<defs id="" >
-<linearGradient id="grad442.314758160.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="0%" stop-color="#A0803B" stop-opacity="1" />
-<stop offset="50%" stop-color="#DDD2BA" stop-opacity="1" />
-<stop offset="100%" stop-color="#A0803B" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="442.315" y="160" width="10" height="18.9958" rx="1" ry="1" fill="url(#grad442.314758160.000000)" fill-opacity="0.9" stroke="url(#grad442.314758160.000000)" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 442.314758 160.000000)" />
-<defs id="" >
-<pattern id="Wavy442.314758160.000000" x="442.315" y="160" width="10" height="7" patternUnits="userSpaceOnUse" >
-<path id="" d="m -0.665,6.335
-l 5.665,-5.67
-l 5.665,5.67
-" fill="none" fill-opacity="0.9" stroke="#6B5527" stroke-opacity="1" stroke-linejoin="round" stroke-width="1.33" />
-</pattern>
-</defs>
-<rect x="442.315" y="160" width="10" height="18.9958" rx="1" ry="1" fill="url(#Wavy442.314758160.000000)" fill-opacity="0.9" stroke="url(#grad442.314758160.000000)" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 442.314758 160.000000)" />
-<defs id="" >
-<linearGradient id="grad442.314758160.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="100%" stop-color="#00B0F6" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="416.981" y="160" width="3.33333" height="18.9958" rx="1" ry="0.5" fill="url(#grad442.314758160.000000NRC)" fill-opacity="0.9" stroke="url(#grad442.314758160.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 442.314758 160.000000)" />
-<defs id="" >
-<linearGradient id="grad442.314758160.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="407.648" y="160" width="3.33333" height="18.9958" rx="1" ry="0.5" fill="url(#grad442.314758160.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad442.314758160.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 442.314758 160.000000)" />
-<polygon points="437.604,110 457.967,110 442.315,150 461.311,150 " fill="#A0803B" stroke="#A0803B" stroke-width="0.3" stroke-opacity="0.18" fill-opacity="0.18" />
-<defs id="" >
-<linearGradient id="grad20.000000110.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="0%" stop-color="#3BA068" stop-opacity="1" />
-<stop offset="50%" stop-color="#BADDCA" stop-opacity="1" />
-<stop offset="100%" stop-color="#3BA068" stop-opacity="1" />
-</linearGradient>
-</defs>
-<rect x="20" y="110" width="10" height="414.564" rx="1" ry="1" fill="url(#grad20.000000110.000000)" fill-opacity="0.9" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 20.000000 110.000000)" />
-<defs id="" >
-<linearGradient id="grad20.000000110.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad280.288116110.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="100%" stop-color="#00BFC4" stop-opacity="1" />
 </linearGradient>
 </defs>
-<rect x="52" y="110" width="3.33333" height="414.564" rx="1" ry="0.5" fill="url(#grad20.000000110.000000NRC)" fill-opacity="0.9" stroke="url(#grad20.000000110.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 20.000000 110.000000)" />
+<rect x="312.288" y="110" width="3.33333" height="170.202" rx="1" ry="0.5" fill="url(#grad280.288116110.000000NRC)" fill-opacity="0.9" stroke="url(#grad280.288116110.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 280.288116 110.000000)" />
 <defs id="" >
-<linearGradient id="grad20.000000110.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad280.288116110.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
 </linearGradient>
 </defs>
-<rect x="61.3333" y="110" width="3.33333" height="414.564" rx="1" ry="0.5" fill="url(#grad20.000000110.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad20.000000110.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 20.000000 110.000000)" />
+<rect x="321.621" y="110" width="3.33333" height="170.202" rx="1" ry="0.5" fill="url(#grad280.288116110.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad280.288116110.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 280.288116 110.000000)" />
 <defs id="" >
-<linearGradient id="grad31.853382160.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
-<stop offset="0%" stop-color="#3BA068" stop-opacity="1" />
-<stop offset="50%" stop-color="#BADDCA" stop-opacity="1" />
-<stop offset="100%" stop-color="#3BA068" stop-opacity="1" />
+<linearGradient id="grad20.243147160.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="0%" stop-color="#3B91A0" stop-opacity="1" />
+<stop offset="50%" stop-color="#BAD8DD" stop-opacity="1" />
+<stop offset="100%" stop-color="#3B91A0" stop-opacity="1" />
 </linearGradient>
 </defs>
-<rect x="31.8534" y="160" width="10" height="420.795" rx="1" ry="1" fill="url(#grad31.853382160.000000)" fill-opacity="0.9" stroke="url(#grad31.853382160.000000)" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 31.853382 160.000000)" />
+<rect x="20.2431" y="160" width="10" height="167.771" rx="1" ry="1" fill="url(#grad20.243147160.000000)" fill-opacity="0.9" stroke="url(#grad20.243147160.000000)" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 20.243147 160.000000)" />
 <defs id="" >
-<linearGradient id="grad31.853382160.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad20.243147160.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="100%" stop-color="#00BFC4" stop-opacity="1" />
 </linearGradient>
 </defs>
-<rect x="6.52005" y="160" width="3.33333" height="420.795" rx="1" ry="0.5" fill="url(#grad31.853382160.000000NRC)" fill-opacity="0.9" stroke="url(#grad31.853382160.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 31.853382 160.000000)" />
+<rect x="-5.09019" y="160" width="3.33333" height="167.771" rx="1" ry="0.5" fill="url(#grad20.243147160.000000NRC)" fill-opacity="0.9" stroke="url(#grad20.243147160.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 20.243147 160.000000)" />
 <defs id="" >
-<linearGradient id="grad31.853382160.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<linearGradient id="grad20.243147160.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
 </linearGradient>
 </defs>
-<rect x="-2.81329" y="160" width="3.33333" height="420.795" rx="1" ry="0.5" fill="url(#grad31.853382160.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad31.853382160.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 31.853382 160.000000)" />
-<polygon points="20,110 434.564,110 452.648,150 31.8534,150 " fill="#3BA068" stroke="#3BA068" stroke-width="0.3" stroke-opacity="0.18" fill-opacity="0.18" />
-<path id="rhs20.000000100.000000" d="M 20,563.182
+<rect x="-14.4235" y="160" width="3.33333" height="167.771" rx="1" ry="0.5" fill="url(#grad20.243147160.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad20.243147160.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 20.243147 160.000000)" />
+<polygon points="280.288,110 450.491,110 188.014,150 20.2431,150 " fill="#3B91A0" stroke="#3B91A0" stroke-width="0.3" stroke-opacity="0.18" fill-opacity="0.18" />
+<defs id="" >
+<linearGradient id="grad54.526775110.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="0%" stop-color="#A03B41" stop-opacity="1" />
+<stop offset="50%" stop-color="#DDBABC" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B41" stop-opacity="1" />
+</linearGradient>
+</defs>
+<rect x="54.5268" y="110" width="10" height="216.522" rx="1" ry="1" fill="url(#grad54.526775110.000000)" fill-opacity="0.9" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 54.526775 110.000000)" />
+<defs id="" >
+<linearGradient id="grad54.526775110.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="100%" stop-color="#00BFC4" stop-opacity="1" />
+</linearGradient>
+</defs>
+<rect x="86.5268" y="110" width="3.33333" height="216.522" rx="1" ry="0.5" fill="url(#grad54.526775110.000000NRC)" fill-opacity="0.9" stroke="url(#grad54.526775110.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 54.526775 110.000000)" />
+<defs id="" >
+<linearGradient id="grad54.526775110.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
+</linearGradient>
+</defs>
+<rect x="95.8601" y="110" width="3.33333" height="216.522" rx="1" ry="0.5" fill="url(#grad54.526775110.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad54.526775110.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 54.526775 110.000000)" />
+<defs id="" >
+<linearGradient id="grad191.661301160.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="0%" stop-color="#A03B41" stop-opacity="1" />
+<stop offset="50%" stop-color="#DDBABC" stop-opacity="1" />
+<stop offset="100%" stop-color="#A03B41" stop-opacity="1" />
+</linearGradient>
+</defs>
+<rect x="191.661" y="160" width="10" height="219.926" rx="1" ry="1" fill="url(#grad191.661301160.000000)" fill-opacity="0.9" stroke="url(#grad191.661301160.000000)" stroke-width="0.75" stroke-opacity="0.9" transform="rotate(-90 191.661301 160.000000)" />
+<defs id="" >
+<linearGradient id="grad191.661301160.000000NRC" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="100%" stop-color="#00BFC4" stop-opacity="1" />
+</linearGradient>
+</defs>
+<rect x="166.328" y="160" width="3.33333" height="219.926" rx="1" ry="0.5" fill="url(#grad191.661301160.000000NRC)" fill-opacity="0.9" stroke="url(#grad191.661301160.000000NRC)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 191.661301 160.000000)" />
+<defs id="" >
+<linearGradient id="grad191.661301160.000000NRCRedun" x1="0%" y1="0%" x2="100%" y2="0%" >
+<stop offset="100%" stop-color="#F8766D" stop-opacity="1" />
+</linearGradient>
+</defs>
+<rect x="156.995" y="160" width="3.33333" height="219.926" rx="1" ry="0.5" fill="url(#grad191.661301160.000000NRCRedun)" fill-opacity="0.9" stroke="url(#grad191.661301160.000000NRCRedun)" stroke-width="1.125" stroke-opacity="0.9" transform="rotate(-90 191.661301 160.000000)" />
+<polygon points="54.5268,110 271.049,110 411.587,150 191.661,150 " fill="#A03B41" stroke="#A03B41" stroke-width="0.3" stroke-opacity="0.18" fill-opacity="0.18" />
+<path id="rhs20.000000100.000000" d="M 20,604.5
 a 5,5 0 0,0 10,0
 v 5
 h -10
@@ -247,13 +197,13 @@ v 5
 z
 " fill="white" fill-opacity="1" stroke="white" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" transform="rotate(-90 20.000000 110.000000)" />
 <path id="20.000000110.000000" d="M 20,115
-v 448.182
+v 489.5
 a 5,5 0 0,0 10,0
-v -448.182
+v -489.5
 a 5,5 0 0,0 -10,0
 z
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" transform="rotate(-90 20.000000 110.000000)" />
-<path id="rhs20.000000100.000000" d="M 20,655
+<path id="rhs20.000000100.000000" d="M 20,613.682
 a 5,5 0 0,0 10,0
 v 5
 h -10
@@ -268,16 +218,16 @@ v 5
 z
 " fill="white" fill-opacity="1" stroke="white" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" transform="rotate(-90 20.000000 160.000000)" />
 <path id="20.000000160.000000" d="M 20,165
-v 490
+v 448.682
 a 5,5 0 0,0 10,0
-v -490
+v -448.682
 a 5,5 0 0,0 -10,0
 z
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" transform="rotate(-90 20.000000 160.000000)" />
 <text id="20.00000090.300003" x="20" y="90.3" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
-MGA16</text>
+14.seq</text>
 <text id="20.000000176.000000" x="20" y="176" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="start" text-align="start" line-height="125%%" >
-GGA14</text>
+16.seq</text>
 <defs id="" >
 <linearGradient id="grad560.00042778.000000" x1="0%" y1="100%" x2="0%" y2="0%" >
 <stop offset="0%" stop-color="#F8766D" stop-opacity="1" />
@@ -305,19 +255,19 @@ Redundancy</text>
 1.0</text>
 <text id="567.500427104.000000" x="567.5" y="104" dy="2.45" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="7px" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
 1.5</text>
-<path id="" d="M 471.34,76.3333
+<path id="" d="M 450.491,76.3333
 H 550
 V 83
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-dasharray="8 4" stroke-width="0.5" />
-<path id="" d="M 493.375,183.667
+<path id="" d="M 411.587,183.667
 H 550
 V 177
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-dasharray="8 4" stroke-width="0.5" />
-<path id="" d="M 471.34,67
+<path id="" d="M 450.491,67
 H 585
 V 100
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-dasharray="8 4" stroke-width="0.5" />
-<path id="" d="M 493.375,193
+<path id="" d="M 411.587,193
 H 585
 V 160
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-dasharray="8 4" stroke-width="0.5" />
