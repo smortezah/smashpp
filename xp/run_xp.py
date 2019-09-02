@@ -24,16 +24,14 @@ sim_mutation = False
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 gga18_mga20 = False
 
-gga7_mga7 = True
+gga7_mga7 = False
 
-gga14_mga16 = False
 gga8_mga10 = False
 
+gga14_mga16 = False
 gga6_mga8 = False
 gga9_mga11 = False
 gga11_mga13 = False
-gga13_mga15 = False
-mga25_gga23 = False
 E_gossypii_I_S_cerevisiae_XVI = False
 S_cerevisiae_VIII_C_glabrata_XVI = False
 S_cerevisiae_C_glabrata = False
@@ -288,22 +286,11 @@ if gga9_mga11:
         execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 if gga11_mga13:
-        path_tar = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
-        path_ref = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
-        ref = '13.seq'
-        tar = '11.seq'
-        main_par = ' -rm 14,0,0.005,0.95/5,0,1,0.95 -f 150 -m 400000 -d 4000 -th 1.8 -nr -sf '
-        viz_par = ' -viz -l 1 '
-        execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-                path_tar + tar)
-        execute(smashpp + viz_par + ref + '.' + tar + '.pos')
-
-if gga13_mga15:
         path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
         path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
-        ref = '13.seq'
-        tar = '15.seq'
-        main_par = ' -rm 14,0,0.005,0.95/8,0,1,0.95 -f 150 -m 10000 -d 3500 -th 1.95 -nr -sf '
+        ref = '11.seq'
+        tar = '13.seq'
+        main_par = ' -rm 14,0,0.005,0.95/5,0,1,0.95 -f 150 -m 400000 -d 4000 -th 1.8 -nr -sf '
         viz_par = ' -viz -l 1 '
         execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
                 path_tar + tar)
@@ -314,19 +301,8 @@ if gga14_mga16:
         path_ref = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
         tar = '14.seq'
         ref = '16.seq'
-        main_par = ' -rm 14,0,0.005,0.95/5,0,1,0.95 -f 150 -m 200000 -d 5000 -th 1.95 -e 100 -nr -sf '
-        viz_par = ' -viz -l 1 -tn GGA14 -rn MGA16 -o GGA14_MGA16.svg '
-        execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-                path_tar + tar)
-        execute(smashpp + viz_par + ref + '.' + tar + '.pos')
-
-if mga25_gga23:
-        path_ref = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
-        path_tar = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
-        ref = '25.seq'
-        tar = '23.seq'
-        main_par = ' -rm 14,0,0.005,0.95 -f 150 -m 10000 -d 1250 -th 1.95 -ar -nr -sf '
-        viz_par = ' -viz -l 1 '
+        main_par = ' -rm 14,0,0.005,0.95/5,0,1,0.95 -f 150 -m 300000 -d 5000 -th 1.95 -e 2 -nr -sf '
+        viz_par = ' -viz -l 1 -n -tn GGA14 -rn MGA16 -o GGA14_MGA16.svg '
         execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
                 path_tar + tar)
         execute(smashpp + viz_par + ref + '.' + tar + '.pos')
