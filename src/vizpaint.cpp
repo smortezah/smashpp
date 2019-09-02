@@ -1906,6 +1906,7 @@ inline void VizPaint::plot_pos_vertical(
   }
 }
 
+//todo. modify
 inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity,
                               bool vertical) const {
   save_n_pos(ref);

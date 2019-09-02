@@ -507,7 +507,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
             freqs_ir0(f, cont, prob_par.l);
             entr = entropy(prob(std::begin(f), &prob_par));
           } else {
-            c = TAR_ALT_N;
+            // c = TAR_ALT_N;//todo
             prob_par.config_ir0(c, ctx);
             entr = entropyN;
           }
@@ -521,7 +521,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
             freqs_ir1(f, cont, prob_par.shl, prob_par.r);
             entr = entropy(prob(std::begin(f), &prob_par));
           } else {
-            c = TAR_ALT_N;
+            // c = TAR_ALT_N;//todo
             prob_par.config_ir1(c, ctxIr);
             entr = entropyN;
           }
@@ -535,7 +535,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
             freqs_ir2(f, cont, &prob_par);
             entr = entropy(prob(begin(f), &prob_par));
           } else {
-            c = TAR_ALT_N;
+            // c = TAR_ALT_N;//todo
             prob_par.config_ir2(c, ctx, ctxIr);
             entr = entropyN;
           }
@@ -663,7 +663,7 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
       freqs_ir0(f, cont, cp->ppIt->l);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
-      cp->c = TAR_ALT_N;
+      // cp->c = TAR_ALT_N;//todo
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
       prb = 1.0 / std::pow(2.0, entropyN);
     }
@@ -677,7 +677,7 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
-      cp->c = TAR_ALT_N;
+      // cp->c = TAR_ALT_N;//todo
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
       prb = 1.0 / std::pow(2.0, entropyN);
     }
@@ -691,7 +691,7 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
       freqs_ir2(f, cont, cp->ppIt);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
-      cp->c = TAR_ALT_N;
+      // cp->c = TAR_ALT_N;//todo
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);
       prb = 1.0 / std::pow(2.0, entropyN);
     }
@@ -715,7 +715,7 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
-      cp->c = TAR_ALT_N;
+      // cp->c = TAR_ALT_N;//todo
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
       std::array<decltype((*cont)->query(0)), 4> f{};
       freqs_ir0(f, cont, cp->ppIt->l);
@@ -734,7 +734,7 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
-      cp->c = TAR_ALT_N;
+      // cp->c = TAR_ALT_N;//todo
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
@@ -753,7 +753,7 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
-      cp->c = TAR_ALT_N;
+      // cp->c = TAR_ALT_N;//todo
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
       std::array<decltype(2 * (*cont)->query(0)), 4> f{};
       freqs_ir2(f, cont, cp->ppIt);
