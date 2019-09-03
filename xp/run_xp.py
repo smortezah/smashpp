@@ -25,17 +25,15 @@ X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 gga18_mga20 = False
 gga14_mga16 = False
 
-gga11_mga13 = True
+S_cerevisiae_IV_C_glabrata_K = True
 
 E_gossypii_I_S_cerevisiae_XVI = False
 S_cerevisiae_VIII_C_glabrata_XVI = False
-S_cerevisiae_C_glabrata = False
 K_lactis_E_gossypii = False
 K_lactis_F_E_gossypii_VI = False
 S_cerevisiae_5_C_glabrata_I = False
 S_cerevisiae_14_C_glabrata_J = False
 e_coli_s_dysenteriae = False
-gga24_mga26 = False
 
 if os.name == 'posix':
     sep = '/'
@@ -247,17 +245,6 @@ if gga14_mga16:
                 path_tar + tar)
         execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
-if gga11_mga13:
-        path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
-        path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
-        ref = '8.seq'
-        tar = '10.seq'
-        main_par = ' -rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 150 -d 6000 -th 1.9 -e 2 -m 4000 -nr -sf '
-        viz_par = ' -viz -l 1 '
-        execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-                path_tar + tar)
-        execute(smashpp + viz_par + ref + '.' + tar + '.pos')
-
 if E_gossypii_I_S_cerevisiae_XVI:
         path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
         path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
@@ -278,14 +265,16 @@ if S_cerevisiae_VIII_C_glabrata_XVI:
                 path_tar + tar + '  -l 3 -f 500  -nr ')
         execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
-if S_cerevisiae_C_glabrata:
+if S_cerevisiae_IV_C_glabrata_K:
         path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
         path_tar = path_data_real + 'fungi' + sep + 'Candida_glabrata' + sep
-        ref = '4.seq'
+        ref = 'IV.seq'
         tar = 'K.seq'
-        out = 'S_cerevisiae_C_glabrata.svg'
-        execute(smashpp + '-r ' + path_ref + ref + ' -t ' + path_tar + tar + '  -l 5 -f 200 -ar -nr -v')
-        execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
+        main_par = ' -rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 275 -th 1.98 -e 2 -m 5000 -nr -sf '
+        viz_par = ' -viz -l 1 -o S_cerevisiae_IV_C_glabrata_K.svg '
+        execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+                path_tar + tar)
+        execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 if K_lactis_E_gossypii:
         path_ref = path_data_real + 'fungi' + sep + 'Kluyveromyces_lactis' + sep
@@ -332,51 +321,3 @@ if e_coli_s_dysenteriae:
             ' -th 1.8 -l 3 -f 275 -m 7500')
     # execute(smashpp + '-viz -p 1 -w 15 -s 60 -vv -o ' + out + ' ' +
     #         ref + '.' + tar + '.pos')
-
-if gga24_mga26:
-    main = False
-    permute_1M = False
-    permute_500K = False
-
-    tar = '26'
-    path_tar = path_data_real + 'bird' + sep + \
-        'Meleagris_gallopavo' + sep + tar  # + '.seq'
-
-    if main:
-        ref = '24'
-        out = 'gga24_mga26.svg'
-        path_ref = path_data_real + 'bird' + sep + \
-            'Gallus_gallus' + sep + ref  # + '.seq'
-        execute(smashpp + '-r ' + path_ref + ' -t ' + path_tar +
-                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.9 -d 5000 -f 100 -ar -nr')
-        execute(smashpp + '-viz -p 1 -l 6 ' + sim_common_par +
-                '-o ' + out + ' ' + ref + '.' + tar + '.pos')
-
-    if permute_1M:
-        ref = 'gga24_1M'
-        out = 'gga24_mga26_perm1M.svg'
-        main_in = '24'
-        path_in = path_data_real + 'bird' + sep + \
-            'Gallus_gallus' + sep + main_in  # + '.seq'
-        path_ref = path_data_permute + ref  # + '.seq'
-        # execute(goose_permuteseqbyblocks + ' -bs 1000000 -s 7 < ' +
-        #         path_in + ' > ' + path_ref)
-        execute(smashpp + '-r ' + path_ref + ' -t ' + path_tar +
-                # ' -rm 20,0,0.001,0.9 -m 150000 -th 1.9 -d 6000 -f 175 -ar -sf -nr')
-                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.84 -d 4000 -f 100 -ar -sf -nr')
-        execute(smashpp + '-viz -p 1 -l 6 ' + sim_common_par +
-                '-o ' + out + ' ' + ref + '.' + tar + '.pos')
-
-    if permute_500K:
-        ref = 'gga24_500K'
-        out = 'gga24_mga26_perm500K.svg'
-        main_in = '24'
-        path_in = path_data_real + 'bird' + sep + \
-            'Gallus_gallus' + sep + main_in  # + '.seq'
-        path_ref = path_data_permute + ref  # + '.seq'
-        execute(goose_permuteseqbyblocks + ' -bs 500000 -s 11 < ' +
-                path_in + ' > ' + path_ref)
-        execute(smashpp + '-r ' + path_ref + ' -t ' + path_tar +
-                ' -rm 20,0,0.001,0.9 -m 150000 -th 1.9 -d 6000 -f 175 -ar -sf -nr')
-        execute(smashpp + '-viz -p 1 -l 6 ' + sim_common_par +
-                '-o ' + out + ' ' + ref + '.' + tar + '.pos')
