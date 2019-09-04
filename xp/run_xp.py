@@ -25,8 +25,7 @@ X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 gga18_mga20 = False
 gga14_mga16 = False
 
-S_cerevisiae_IV_C_glabrata_K = True
-
+S_cerevisiae_IV_C_glabrata_K = False
 E_gossypii_I_S_cerevisiae_XVI = False
 S_cerevisiae_VIII_C_glabrata_XVI = False
 K_lactis_E_gossypii = False
