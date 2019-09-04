@@ -11,17 +11,24 @@
 namespace smashpp {
 static constexpr uint8_t MIN_THRD{1};
 static constexpr uint8_t MAX_THRD{8};
+static constexpr uint8_t THRD{4};
 static constexpr uint8_t MIN_LVL{0};
 static constexpr uint8_t MAX_LVL{5};
+static constexpr uint8_t LVL{0};
 static constexpr uint32_t MIN_SSIZE{1};
 static constexpr uint32_t MAX_SSIZE{0xffffffff};  // 2^32 - 1
+static constexpr uint32_t SSIZE{50};
 static constexpr prc_t MIN_ENTR_N{0.0};
 static constexpr prc_t MAX_ENTR_N{100.0};
+static constexpr prc_t ENTR_N{2.0};
 static constexpr uint32_t MIN_WS{1};
 static constexpr uint32_t MAX_WS{0xffffffff};  // 2^32 - 1
+static constexpr uint32_t WS{256};
 static constexpr auto FT{FilterType::hann};         // Window type -- filter
+static constexpr auto SAMPLE_STEP{100ull};
 static constexpr float MIN_THRSH{0};
 static constexpr float MAX_THRSH{20};
+static constexpr float THRSH{1.5};
 static constexpr uint8_t K_MAX_TBL64{11};   // Max ctx table 64     (128 MB mem)
 static constexpr uint8_t K_MAX_TBL32{13};   // Max ctx table 32     (1   GB mem)
 static constexpr uint8_t K_MAX_LGTBL8{14};  // Max ctx log table 8  (1   GB mem)
@@ -34,11 +41,12 @@ static constexpr int FILE_BUF{8 * 1024};  // 8K
 // Visualization
 static constexpr uint8_t MIN_LINK{1};
 static constexpr uint8_t MAX_LINK{6};
+static constexpr uint8_t LINK{1};
 static constexpr uint8_t MIN_COLOR{0};
 static constexpr uint8_t MAX_COLOR{1};
-static constexpr auto OPAC{0.9f};
 static constexpr auto MIN_OPAC{0.0f};
 static constexpr auto MAX_OPAC{1.0f};
+static constexpr auto OPAC{0.9f};
 static constexpr uint32_t WDTH{10};
 static constexpr uint32_t MIN_WDTH{8};
 static constexpr uint32_t MAX_WDTH{100};
@@ -96,13 +104,14 @@ class Param {
 
   Param()  // Define Param::Param(){} in *.hpp => compile error
       : verbose(false),
-        segSize(50),
-        entropyN(2.0),
-        nthr(4),
-        filt_size(256),
+        level(LVL),
+        segSize(SSIZE),
+        entropyN(ENTR_N),
+        nthr(THRD),
+        filt_size(WS),
         filt_type(FT),
-        sampleStep(1ull),
-        thresh(1.5),
+        sampleStep(SAMPLE_STEP),
+        thresh(THRSH),
         manWSize(false),
         manThresh(false),
         manFilterScale(false),
@@ -168,7 +177,7 @@ class VizParam {
         showRedun(true),
         showN(false),
         image("map.svg"),
-        link(1),
+        link(LINK),
         colorMode(0),
         opacity(OPAC),
         width(WDTH),
