@@ -12,6 +12,7 @@ synth_medium = False
 synth_large = False
 synth_xlarge = False
 synth_mutation = False
+synth_permute = True
 
 # Run on simulated dataset
 sim_small = False
@@ -25,6 +26,7 @@ X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 gga18_mga20 = False
 gga14_mga16 = False
 
+hs21_gg21 = False
 S_cerevisiae_IV_C_glabrata_K = False
 E_gossypii_I_S_cerevisiae_XVI = False
 S_cerevisiae_VIII_C_glabrata_XVI = False
@@ -161,6 +163,17 @@ if synth_mutation:  # sizes:  ref:1,000,000, tar:1,000,000. Up to 60%
                 ' < r_' + str(i) + ' > t_' + str(i))
         append('t_' + str(i), path_data_sim + 'TarMut')
 
+if synth_permute:  # sizes: ref:5,000,000, tar:5,000,000
+    execute(goose_fastqsimulation + synth_common_par +
+            '-f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 25000 -s 15801  r_a')
+    execute(goose_fastqsimulation + synth_common_par +
+            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 25000 -s 10  r_b')
+    cat(['r_a', 'r_b'], path_data_sim + 'RefL')
+
+    execute(smashpp_inv_rep + 'r_a t_b')
+    execute(goose_mutatedna + '-mr 0.02 < r_b > t_a')
+    cat(['t_a', 't_b'], path_data_sim + 'TarL')
+
 for file in os.listdir(current_dir):
     if file.startswith("r_"):
         os.remove(os.path.join(current_dir, file))
@@ -240,6 +253,17 @@ if gga14_mga16:
         tar = '16.seq'
         main_par = ' -rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 -e 1.95 -m 400000 -dp '
         viz_par = ' -viz -l 1 -p 1 -rn "GGA 14" -tn "MGA 16" -o GGA14_MGA16.svg '
+        execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+                path_tar + tar)
+        execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+
+if hs21_gg21:
+        path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
+        path_tar = path_data_real + 'mammalia' + sep + 'Gorilla_gorilla_gorilla' + sep
+        ref = '21.seq'
+        tar = '21.seq'
+        main_par = ' -rm 18,0,0.001,0.95/5,0,0.9,0.95 -f 150 -d 12000 -th 0.1 -e 2 -m 1000000 -nr -sf '
+        viz_par = ' -viz -l 1 '
         execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
                 path_tar + tar)
         execute(smashpp + viz_par + ref + '.' + tar + '.pos')
