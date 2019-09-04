@@ -75,13 +75,13 @@ void Param::parse(int argc, char**& argv) {
       man_level = true;
       level = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LVL, MAX_LVL, 0, "Level", Interval::closed, "default",
+          MIN_LVL, MAX_LVL, LVL, "Level", Interval::closed, "default",
           Problem::warning);
       range->assert(level);
     } else if (option_inserted(i, "-m")) {
       segSize = std::stoul(*++i);
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_SSIZE, MAX_SSIZE, segSize, "Minimum segment size", Interval::closed,
+          MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", Interval::closed,
           "default", Problem::warning);
       range->assert(segSize);
     } else if (option_inserted(i, "-rm")) {
@@ -102,14 +102,14 @@ void Param::parse(int argc, char**& argv) {
       manWSize = true;
       filt_size = static_cast<uint32_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_WS, MAX_WS, filt_size, "Filter size", Interval::closed, "default",
+          MIN_WS, MAX_WS, WS, "Filter size", Interval::closed, "default",
           Problem::warning);
       range->assert(filt_size);
     } else if (option_inserted(i, "-th")) {
       manThresh = true;
       thresh = std::stof(*++i);
       auto range = std::make_unique<ValRange<float>>(
-          MIN_THRSH, MAX_THRSH, thresh, "Threshold", Interval::open_closed,
+          MIN_THRSH, MAX_THRSH, THRSH, "Threshold", Interval::open_closed,
           "default", Problem::warning);
       range->assert(thresh);
     } else if (option_inserted(i, "-ft")) {
@@ -127,14 +127,14 @@ void Param::parse(int argc, char**& argv) {
     } else if (option_inserted(i, "-e")) {
       entropyN = static_cast<prc_t>(std::stod(*++i));
       auto range = std::make_unique<ValRange<prc_t>>(
-          MIN_ENTR_N, MAX_ENTR_N, entropyN, "Entropy of N bases", Interval::closed,
-          "default", Problem::warning);
+          MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases",
+          Interval::closed, "default", Problem::warning);
       range->assert(entropyN);
     } else if (option_inserted(i, "-n")) {
       nthr = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_THRD, MAX_THRD, nthr, "Number of threads", Interval::closed, "default",
-          Problem::warning);
+          MIN_THRD, MAX_THRD, THRD, "Number of threads", Interval::closed,
+          "default", Problem::warning);
       range->assert(nthr);
     } else if (option_inserted(i, "-d")) {
       sampleStep = std::stoull(*++i);
@@ -328,27 +328,27 @@ void Param::help() const {
   print_aligned("-l", "INT", "=",
                 "level of compression: [" + std::to_string(MIN_LVL) + ", " +
                     std::to_string(MAX_LVL) + "]. Default",
-                "->", std::to_string(level));
+                "->", std::to_string(LVL));
 
   print_aligned("-m", "INT", "=",
                 "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
                     std::to_string(MAX_SSIZE) + "]",
-                "->", std::to_string(segSize));
+                "->", std::to_string(SSIZE));
 
   print_aligned("-e", "FLOAT", "=",
                 "entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) +
                     ", " + string_format("%.1f", MAX_ENTR_N) + "]",
-                "->", string_format("%.1f", entropyN));
+                "->", string_format("%.1f", ENTR_N));
 
   print_aligned("-n", "INT", "=",
                 "number of threads: [" + std::to_string(MIN_THRD) + ", " +
                     std::to_string(MAX_THRD) + "]",
-                "->", std::to_string(nthr));
+                "->", std::to_string(THRD));
 
   print_aligned("-f", "INT", "=",
                 "filter size: [" + std::to_string(MIN_WS) + ", " +
                     std::to_string(MAX_WS) + "]",
-                "->", std::to_string(filt_size));
+                "->", std::to_string(WS));
 
   print_aligned("-ft", "INT/STRING", "=",
                 "filter type (windowing function):", "->", "hann");
@@ -360,12 +360,12 @@ void Param::help() const {
   print_aligned("", "", "", "{S|small, M|medium, L|large}");
 
   print_aligned("-d", "INT", "=", "sampling steps", "->",
-                std::to_string(sampleStep));
+                std::to_string(SAMPLE_STEP));
 
   print_aligned("-th", "FLOAT", "=",
                 "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
                     string_format("%.1f", MAX_THRSH) + "]",
-                "->", string_format("%.1f", thresh));
+                "->", string_format("%.1f", THRSH));
 
   print_aligned(
       "-rb", "INT", "=",
@@ -601,7 +601,7 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (option_inserted(i, "-l")) {
       link = static_cast<uint8_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LINK, MAX_LINK, link, "Link", Interval::closed, "default", Problem::warning);
+          MIN_LINK, MAX_LINK, LINK, "Link", Interval::closed, "default", Problem::warning);
       range->assert(link);
     } else if (option_inserted(i, "-m")) {
       min = static_cast<uint32_t>(std::stoul(*++i));

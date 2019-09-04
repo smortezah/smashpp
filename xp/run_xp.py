@@ -12,7 +12,7 @@ synth_medium = False
 synth_large = False
 synth_xlarge = False
 synth_mutation = False
-synth_permute = True
+synth_permute = False
 
 # Run on simulated dataset
 sim_small = False
@@ -20,6 +20,7 @@ sim_medium = False
 sim_large = False
 sim_xlarge = False
 sim_mutation = False
+sim_permute = True
 
 # Run on real dataset
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
@@ -163,16 +164,19 @@ if synth_mutation:  # sizes:  ref:1,000,000, tar:1,000,000. Up to 60%
                 ' < r_' + str(i) + ' > t_' + str(i))
         append('t_' + str(i), path_data_sim + 'TarMut')
 
-if synth_permute:  # sizes: ref:5,000,000, tar:5,000,000
+if synth_permute:  # sizes: ref:15,000,000, tar:15,000,000
     execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 25000 -s 15801  r_a')
+            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 50000 -s 15801  r_a')
     execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 25000 -s 10  r_b')
-    cat(['r_a', 'r_b'], path_data_sim + 'RefL')
+            '-f 0.2,0.2,0.3,0.3,0.0 -ls 100 -n 50000 -s 190  r_b')
+    execute(goose_fastqsimulation + synth_common_par +
+            '-f 0.3,0.3,0.2,0.2,0.0 -ls 100 -n 50000 -s 6461  r_c')
+    cat(['r_a', 'r_b', 'r_c'], path_data_sim + 'RefPerm')
 
-    execute(smashpp_inv_rep + 'r_a t_b')
-    execute(goose_mutatedna + '-mr 0.02 < r_b > t_a')
-    cat(['t_a', 't_b'], path_data_sim + 'TarL')
+    execute(goose_mutatedna + '-mr 0.02 < r_a > t_c')
+    execute(smashpp_inv_rep + 'r_b t_b')
+    execute(goose_mutatedna + '-mr 0.01 < r_c > t_a')
+    cat(['t_a', 't_b', 't_c'], path_data_sim + 'TarPerm')
 
 for file in os.listdir(current_dir):
     if file.startswith("r_"):
@@ -224,6 +228,19 @@ if sim_mutation:
             path_data_sim + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
     execute(smashpp + '-viz -p 1 -rt 5000 -tt 5000' +
             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
+
+if sim_permute:
+    ref = 'RefPerm'
+    tar = 'TarPerm'
+    out = 'Perm.svg'
+#     Original
+    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
+            path_data_sim + tar + ' -th 0.1  -f 0 -d 15000 -nr -sf')
+        #     path_data_sim + tar + ' -th 0.1 -rm 14,0,0.001,0.9 -f 0 -d 15000 -nr -sf')
+#     execute(smashpp + '-viz -p 1 -rt 3000000 -tt 3000000' +
+#             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
+
+        # Permutated: 
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
         path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep

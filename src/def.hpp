@@ -18,7 +18,7 @@
 namespace smashpp {
 // Version
 static const std::string SMASHPP{"SMASHPP"};
-static const std::string VERSION{"19.07"};
+static const std::string VERSION{"19.09"};
 static const std::string DEV_YEARS{"2018-2019"};
 
 // Typedef
