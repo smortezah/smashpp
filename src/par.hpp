@@ -44,21 +44,22 @@ static constexpr uint8_t MAX_LINK{6};
 static constexpr uint8_t LINK{1};
 static constexpr uint8_t MIN_COLOR{0};
 static constexpr uint8_t MAX_COLOR{1};
+static constexpr uint8_t COLOR{0};
 static constexpr auto MIN_OPAC{0.0f};
 static constexpr auto MAX_OPAC{1.0f};
 static constexpr auto OPAC{0.9f};
-static constexpr uint32_t WDTH{10};
 static constexpr uint32_t MIN_WDTH{8};
 static constexpr uint32_t MAX_WDTH{100};
-static constexpr uint32_t SPC{40};
+static constexpr uint32_t WDTH{10};
 static constexpr uint32_t MIN_SPC{5};
 static constexpr uint32_t MAX_SPC{200};
+static constexpr uint32_t SPC{40};
 static constexpr uint32_t MINP{1};
 static constexpr uint32_t MIN_MINP{1};
 static constexpr uint32_t MAX_MINP{0xffffffff};  // 2^32 - 1
-static constexpr uint64_t TICK{100};             // Major tick
 static constexpr uint64_t MIN_TICK{1};
 static constexpr uint64_t MAX_TICK{0xffffffff};
+static constexpr uint64_t TICK{100};             // Major tick
 
 class Param {
  public:
@@ -178,7 +179,7 @@ class VizParam {
         showN(false),
         image("map.svg"),
         link(LINK),
-        colorMode(0),
+        colorMode(COLOR),
         opacity(OPAC),
         width(WDTH),
         space(SPC),
