@@ -48,7 +48,7 @@ path_data_permute = 'dataset' + sep + 'permute' + sep
 path_bin = 'bin' + sep
 goose_fastqsimulation = path_bin + 'goose-fastqsimulation '
 goose_mutatedna = path_bin + 'goose-mutatedna '
-goose_permuteseqbyblocks = path_bin + 'goose-permuteseqbyblocks'
+goose_permuteseqbyblocks = path_bin + 'goose-permuteseqbyblocks '
 smashpp = '..' + sep + 'smashpp '
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
@@ -233,14 +233,16 @@ if sim_permute:
     ref = 'RefPerm'
     tar = 'TarPerm'
     out = 'Perm.svg'
-#     Original
-    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
-            path_data_sim + tar + ' -th 0.1  -f 0 -d 15000 -nr -sf')
-        #     path_data_sim + tar + ' -th 0.1 -rm 14,0,0.001,0.9 -f 0 -d 15000 -nr -sf')
+    # Original
+#     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
+#             tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 15000')
 #     execute(smashpp + '-viz -p 1 -rt 3000000 -tt 3000000' +
 #             sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
 
-        # Permutated: 
+    # Permutated
+    block_size = 5000000
+    execute(goose_permuteseqbyblocks + '-bs ' + block_size +
+            '-s 101 < ' + path_data_sim + ref + ' > ' + ref + block_size)
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
         path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
