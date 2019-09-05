@@ -630,7 +630,7 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (option_inserted(i, "-c")) {
       colorMode = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_COLOR, MAX_COLOR, colorMode, "Color", Interval::closed, "default",
+          MIN_COLOR, MAX_COLOR, COLOR, "Color", Interval::closed, "default",
           Problem::warning);
       range->assert(colorMode);
     } else if (option_inserted(i, "-w")) {
