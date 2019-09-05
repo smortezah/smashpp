@@ -84,3 +84,7 @@ xp/hs21.seqpp21.seq.svg
 mori
 ref
 tar
+# xp/dataset/sim/RefPerm1000000
+# xp/dataset/sim/RefPerm2000000
+xp/dataset/sim/RefPerm*
+xp/dataset/sim/TarPerm*
