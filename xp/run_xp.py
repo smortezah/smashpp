@@ -236,15 +236,15 @@ if sim_permute:
     #         sim_common_par + '-o Perm.svg ' + ref + '.' + tar + '.pos')
 
     # Permutated
-#     block_size = 2000000
-# ref_perm = ref + str(block_size)
+    block_size = 2000000
+ref_perm = ref + str(block_size)
 # execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
 #         '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
 # execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
 #         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000 -ar -dp ')
-# execute(smashpp + '-viz -l 6 ' +
-#         sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
-		
+execute(smashpp + '-viz -l 6 -p 1 -rn "Ref_perm_5Mb" -tn Tar ' +
+        sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+
 #     block_size = 1000000
 # ref_perm = ref + str(block_size)
 # execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
@@ -290,14 +290,14 @@ if sim_permute:
 # execute(smashpp + '-viz -l 6  ' +
 #         sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
-    block_size = 40
-ref_perm = ref + str(block_size)
-# execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#         '-s 564283 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-        path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 3000 -d 1 -ar -nr -sf ')
-execute(smashpp + '-viz -l 6  ' +
-        sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+#     block_size = 40
+# ref_perm = ref + str(block_size)
+# # execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+# #         '-s 564283 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+# execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
+#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 3000 -d 1 -ar -nr -sf ')
+# execute(smashpp + '-viz -l 6  ' +
+#         sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
         path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
