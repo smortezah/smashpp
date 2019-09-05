@@ -241,7 +241,7 @@ if sim_permute:
 # execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
 #         '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
 # execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000 -ar ')
+#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000 -ar -dp ')
 # execute(smashpp + '-viz -l 6 ' +
 #         sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 		
@@ -250,7 +250,7 @@ if sim_permute:
 # execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
 #         '-s 87562 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
 # execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 25 -d 10000 -ar ')
+#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 25 -d 10000 -ar -dp ')
 # execute(smashpp + '-viz -l 6 ' +
 #         sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
@@ -259,17 +259,26 @@ if sim_permute:
 # execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
 #         '-s 26562 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
 # execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 25 -d 10000 -ar ')
+#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 25 -d 10000 -ar -dp ')
 # execute(smashpp + '-viz -l 6 ' +
 #         sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
-    block_size = 10000
+#     block_size = 10000
+# ref_perm = ref + str(block_size)
+# # execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+# #         '-s 328914 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+# execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
+#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 75 -d 1500 -ar -dp ')
+# execute(smashpp + '-viz -l 6 -p 1 ' +
+#         sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+
+    block_size = 1000
 ref_perm = ref + str(block_size)
-# execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#         '-s 328914 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+        '-s 40956 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
 execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-        path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 200 -d 3000 -ar -nr -sf ')
-execute(smashpp + '-viz -l 6 ' +
+        path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 75 -d 1500 -ar -nr -sf ')
+execute(smashpp + '-viz -l 6  ' +
         sim_common_par + '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
