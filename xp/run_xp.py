@@ -229,49 +229,50 @@ if sim_mutation:
 if sim_permute:
     ref = 'RefPerm'
     tar = 'TarPerm'
-viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
-# Original
-# execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
-#         tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000')
-# execute(smashpp + '-viz -rn Ref -tn Tar ' + viz_par +
-#         '-o Perm.svg ' + ref + '.' + tar + '.pos')
+    viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
+
+    # Original
+    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
+            path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000')
+    execute(smashpp + '-viz -rn Ref -tn Tar ' + viz_par +
+            '-o Perm.svg ' + ref + '.' + tar + '.pos')
 
     # Permutated
-# block_size = 2000000
-# ref_perm = ref + str(block_size)
-# execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#         '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-# execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000 -ar -dp ')
-# execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#         '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+    block_size = 2000000
+    ref_perm = ref + str(block_size)
+    execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+            '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+    execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
+            tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000 -ar -dp ')
+    execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+            '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
-block_size = 200000
-ref_perm = ref + str(block_size)
-execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-        '-s 972652 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-        path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 40 -d 8000 -ar -dp ')
-execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-        '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+    block_size = 200000
+    ref_perm = ref + str(block_size)
+    execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+            '-s 972652 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+    execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
+            tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 40 -d 8000 -ar    -dp ')
+    execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+            '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
-# block_size = 10000
-# ref_perm = ref + str(block_size)
-# execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#         '-s 328914 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-# execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 75 -d 1500 -ar -dp ')
-# execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par + '-o ' + ref_perm +
-#         '.svg ' + ref_perm + '.' + tar + '.pos')
+    block_size = 10000
+    ref_perm = ref + str(block_size)
+    execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+            '-s 328914 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+    execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
+            path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 75 -d 1500 -ar    -dp ')
+    execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par + '-o ' + ref_perm +
+            '.svg ' + ref_perm + '.' + tar + '.pos')
 
-# block_size = 40
-# ref_perm = ref + str(block_size)
-# execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#         '-s 564283 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-# execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-#         path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 3000 -d 1 -ar -dp ')
-# execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#         '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+    block_size = 40
+    ref_perm = ref + str(block_size)
+    execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+            '-s 564283 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+    execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
+            tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 3000 -d 1 -ar -dp     ')
+    execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+            '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
 
 #     block_size = 1000000
