@@ -248,12 +248,11 @@ viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
 
 block_size = 200000
 ref_perm = ref + str(block_size)
-# execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#         '-s 972652 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+        '-s 972652 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
 execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-        path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 37 -d 9000 -ar -nr -sf ')
-# execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-execute(smashpp + '-viz -l 6 -s 30 -w 13 -p 0.8 -vv -rn Ref_perm -tn Tar ' + 
+        path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 40 -d 8000 -ar -dp ')
+execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
         '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
 # block_size = 10000
