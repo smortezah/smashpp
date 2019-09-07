@@ -20,7 +20,7 @@ sim_medium = False
 sim_large = False
 sim_xlarge = False
 sim_mutation = False
-sim_permute = True
+sim_permute = False
 
 # Run on real dataset
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
