@@ -219,7 +219,7 @@ if sim_xlarge:
 
 if sim_mutation:
     ref = 'RefMut'
-    tar = 'Tar'
+    tar = 'TarMut'
     out = 'Mut.svg'
     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
             path_data_sim + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
