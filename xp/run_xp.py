@@ -77,6 +77,11 @@ def append(file_in_name, file_out_name):
                 file_out.write(line)
 
 
+def remove_all_ext(directory, extension):
+        for item in os.listdir(directory):
+                if item.endswith(extension):
+                        os.remove(os.path.join(directory, item))
+
 if get_goose:
     # Remove goose/, goose-*
     for file in os.listdir(current_dir):
@@ -278,14 +283,18 @@ if sim_permute:
 
 if sim_permute_smash:
     ref = 'RefPerm'
-    tar = 'Tar'
+    tar = 'TarPerm'
     viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
 
     # Original
-#     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
-#             path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000')
-#     execute(smashpp + '-viz -rn Ref -tn Tar ' + viz_par +
-#             '-o Perm.svg ' + ref + '.' + tar + '.pos')
+#     copyfile(path_data_sim + ref, ref)
+#     copyfile(path_data_sim + tar, tar)
+#     execute(smash + ' -t 1.5 -c 14 -w 100 -d 10000 ' + ref + ' ' + tar)
+# #     execute(smashpp + '-viz -rn Ref -tn Tar ' + viz_par +
+# #             '-o Perm.svg ' + ref + '.' + tar + '.pos')
+# os.remove(ref)
+# os.remove(tar)
+remove_all_ext(current_dir, 'rev')
 
 #     # Permutated
 #     block_size = 2000000
