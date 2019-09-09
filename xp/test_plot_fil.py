@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-name = '18.seq.20.seq.fil'
+name = '18.seq.18.seq.fil'
 # name = 'RefPerm200000.TarPerm.fil'
 
 y0, y1 = [], []
