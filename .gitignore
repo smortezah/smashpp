@@ -75,7 +75,7 @@ xp/dataset/bird/Gallus_gallus/*
 !xp/dataset/bird/Gallus_gallus/24
 xp/dataset/bird/Meleagris_gallopavo/*
 !xp/dataset/bird/Meleagris_gallopavo/26
-**/*x
+**/*.sys*
 **/*.inf
 **/*.rev
 **/*.ext
