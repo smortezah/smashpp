@@ -1,5 +1,6 @@
 import os
 from shutil import copyfile
+from pathlib import Path
 # import matplotlib.pyplot as plt
 # import numpy as np
 
@@ -81,6 +82,12 @@ def remove_all_ext(directory, extension):
         for item in os.listdir(directory):
                 if item.endswith(extension):
                         os.remove(os.path.join(directory, item))
+
+
+def remove(dir, pattern):
+        for p in Path(dir).glob(pattern):
+                p.unlink()
+
 
 if get_goose:
     # Remove goose/, goose-*
@@ -284,7 +291,7 @@ if sim_permute:
 if sim_permute_smash:
     ref = 'RefPerm'
     tar = 'TarPerm'
-    viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
+#     viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
 
     # Original
 #     copyfile(path_data_sim + ref, ref)
@@ -294,44 +301,54 @@ if sim_permute_smash:
 # #             '-o Perm.svg ' + ref + '.' + tar + '.pos')
 # os.remove(ref)
 # os.remove(tar)
-remove_all_ext(current_dir, 'rev')
+# remove_all_ext(current_dir, 'ext')
+# remove_all_ext(current_dir, 'rev')
+# remove(current_dir, '*.sys*')
 
-#     # Permutated
+    # Permutated
 #     block_size = 2000000
 #     ref_perm = ref + str(block_size)
-#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#             '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-#     execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
-#             tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000 -ar -dp ')
-#     execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+#     copyfile(path_data_sim + ref_perm, ref_perm)
+#     copyfile(path_data_sim + tar, tar)
+#     execute(smash + ' -t 1.5 -c 14 -w 100 -d 10000 ' + ref_perm + ' ' + tar)
+#     os.remove(ref_perm)
+#     os.remove(tar)
+#     remove_all_ext(current_dir, 'ext')
+#     remove_all_ext(current_dir, 'rev')
+#     remove(current_dir, '*.sys*')
 
 #     block_size = 200000
 #     ref_perm = ref + str(block_size)
-#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#             '-s 972652 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-#     execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
-#             tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 40 -d 8000 -ar -dp ')
-#     execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+#     copyfile(path_data_sim + ref_perm, ref_perm)
+#     copyfile(path_data_sim + tar, tar)
+#     execute(smash + ' -t 1.5 -c 14 -w 100 -d 10000 ' + ref_perm + ' ' + tar)
+#     os.remove(ref_perm)
+#     os.remove(tar)
+#     remove_all_ext(current_dir, 'ext')
+#     remove_all_ext(current_dir, 'rev')
+#     remove(current_dir, '*.sys*')
 
 #     block_size = 10000
 #     ref_perm = ref + str(block_size)
-#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#             '-s 328914 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-#     execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' +
-#             path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 75 -d 1500 -ar -dp ')
-#     execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par + '-o ' + ref_perm +
-#             '.svg ' + ref_perm + '.' + tar + '.pos')
+#     copyfile(path_data_sim + ref_perm, ref_perm)
+#     copyfile(path_data_sim + tar, tar)
+#     execute(smash + ' -t 1.5 -c 14 -w 100 -d 10000 ' + ref_perm + ' ' + tar)
+#     os.remove(ref_perm)
+#     os.remove(tar)
+#     remove_all_ext(current_dir, 'ext')
+#     remove_all_ext(current_dir, 'rev')
+#     remove(current_dir, '*.sys*')
 
-#     block_size = 40
-#     ref_perm = ref + str(block_size)
-#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#             '-s 564283 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-#     execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
-#             tar + ' -th 1.5 -rm 14,0,0.001,0.9 -f 3000 -d 1 -ar -dp ')
-#     execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+    block_size = 40
+    ref_perm = ref + str(block_size)
+    copyfile(path_data_sim + ref_perm, ref_perm)
+    copyfile(path_data_sim + tar, tar)
+    execute(smash + ' -t 1.5 -c 14 -w 100 -d 10000 ' + ref_perm + ' ' + tar)
+    os.remove(ref_perm)
+    os.remove(tar)
+    remove_all_ext(current_dir, 'ext')
+    remove_all_ext(current_dir, 'rev')
+    remove(current_dir, '*.sys*')
 
 
 #     block_size = 1000000
