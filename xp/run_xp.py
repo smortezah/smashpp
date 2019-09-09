@@ -290,15 +290,15 @@ if sim_permute:
             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
 if real_permute:
-        path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
+        path_ref = path_data_real + 'mammalia' + sep + 'Pan_paniscus' + sep
         path_tar = path_data_real + 'mammalia' + sep + 'Pan_troglodytes' + sep
-        ref = '18.seq'
-        tar = '18.seq'
+        ref = '21.seq'
+        tar = '21.seq'
         viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
         
         # Original
         execute(smashpp + '-r ' + path_ref + ref + ' -t ' + path_tar +
-                tar + ' -th 1.3 -rm 20,0,0.001,0.9 -f 100 -d 74000 -nr -sf ')
+                tar + ' -th 1.3 -rm 20,0,0.001,0.9 -f 100 -d 33000 -nr -sf ')
         execute(smashpp + '-viz -rn Ref -tn Tar ' + viz_par +
                 '-o Perm_real.svg ' + ref + '.' + tar + '.pos')
 
