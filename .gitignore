@@ -74,13 +74,13 @@ xp/dataset/fungi/*
 xp/dataset/mammalia/Pan_paniscus
 xp/dataset/mammalia/Pan_troglodytes
 xp/dataset/mammalia/Gorilla_gorilla_gorilla
-xp/dataset/mammalia/Homo_sapiens/*
+xp/dataset/mammalia/Homo_sapiens
+xp/dataset/mammalia/Pan_troglodytes
+xp/dataset/bird/Gallus_gallus
+xp/dataset/bird/Meleagris_gallopavo
 !xp/dataset/mammalia/Homo_sapiens/18.seq
-xp/dataset/mammalia/Pan_troglodytes/*
 !xp/dataset/mammalia/Pan_troglodytes/18.seq
-xp/dataset/bird/Gallus_gallus/*
 !xp/dataset/bird/Gallus_gallus/24
-xp/dataset/bird/Meleagris_gallopavo/*
 !xp/dataset/bird/Meleagris_gallopavo/26
 **/*.sys*
 **/*.inf
