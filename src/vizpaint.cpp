@@ -315,7 +315,7 @@ inline std::string VizPaint::seq_gradient(std::ofstream& fPlot,
   auto grad = std::make_unique<LinearGradient>();
   grad->id = "grad" + id;
   grad->add_stop("0%", color);
-  grad->add_stop("50%", tint(color, 0.65));
+  grad->add_stop("50%", tint(color, 0.5));
   grad->add_stop("100%", color);
   grad->plot(fPlot);
 
