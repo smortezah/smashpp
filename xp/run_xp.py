@@ -181,18 +181,18 @@ if synth_mutation:  # sizes:  ref:1,000,000, tar:1,000,000. Up to 60%
 
 
 
-synth_permute = False
+# synth_permute = False
 
 if synth_permute:  # sizes: ref:15,000,000, tar:15,000,000
     execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 25000 -s 15801  r_a')
+            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 15801  r_a')
     execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.2,0.2,0.3,0.3,0.0 -ls 100 -n 25000 -s 190  r_b')
+            '-f 0.2,0.2,0.3,0.3,0.0 -ls 100 -n 10000 -s 190  r_b')
     execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.3,0.3,0.2,0.2,0.0 -ls 100 -n 25000 -s 8642  r_c')
+            '-f 0.3,0.3,0.2,0.2,0.0 -ls 100 -n 10000 -s 8642  r_c')
     cat(['r_a', 'r_b', 'r_c'], path_data_sim + 'RefPerm')
 
-    execute(goose_mutatedna + '-mr 0.05 < r_a > t_c')
+    execute(goose_mutatedna + '-mr 0.08 < r_a > t_c')
     execute(smashpp_inv_rep + 'r_b t_b')
     copyfile('r_c', 't_a')
     cat(['t_a', 't_b', 't_c'], path_data_sim + 'TarPerm')
@@ -257,14 +257,14 @@ if sim_permute:
     viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
 
     # Original
-#     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
-#             path_data_sim + tar + ' -th 1.5 -rm 14,0,0.001,0.95/5,0,0.99,0.95 -f 150 -d 10000 -nr -sf ')
-#     execute(smashpp + '-viz -rn Ref -tn Tar ' + viz_par +
-#             '-o Perm.svg ' + ref + '.' + tar + '.pos')
+    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
+            path_data_sim + tar + ' -th 1.8 -rm 14,0,0.001,0.95/5,0,0.9,0.95 -f 100 -d 3000 -nr -sf ')
+    execute(smashpp + '-viz -rn Ref -tn Tar ' + viz_par +
+            '-o Perm.svg ' + ref + '.' + tar + '.pos')
 
 #     copyfile(path_data_sim + ref, ref)
 #     copyfile(path_data_sim + tar, tar)
-#     execute(smash + ' -t 1.5 -c 14 -w 100 -d 9000 ' + ref + ' ' + tar)
+#     execute(smash + ' -t 1.95 -c 11 -w 100 -d 9000 ' + ref + ' ' + tar)
 #     os.remove(ref)
 #     os.remove(tar)
 #     remove_all_ext(current_dir, 'ext')
@@ -272,13 +272,13 @@ if sim_permute:
 #     remove(current_dir, '*.sys*')
 
     # Permutated
-    block_size = 30
+    block_size = 20
     ref_perm = ref + str(block_size)
 #     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
 #             '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
 #     copyfile(path_data_sim + ref_perm, ref_perm)
 #     copyfile(path_data_sim + tar, tar)
-#     execute(smash + ' -t 1.26 -c 14 -w 7000 -d 1 ' + ref_perm + ' ' + tar)
+#     execute(smash + ' -t 1.85 -c 14 -w 7000 -d 1 ' + ref_perm + ' ' + tar)
 #     os.remove(ref_perm)
 #     os.remove(tar)
 #     remove_all_ext(current_dir, 'ext')
@@ -286,9 +286,9 @@ if sim_permute:
 #     remove(current_dir, '*.sys*')
     
 #     execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
-#             tar + ' -th 2 -rm 14,0,0.001,0.95/5,0,0.9,0.95 -f 7000 -d 1 -ar -nr -sf ')
-    execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-            '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+#             tar + ' -th 1.85 -rm 14,0,0.001,0.95/5,0,0.99,0.95 -f 10000 -d 1 -ar -nr -sf ')
+#     execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
 #     block_size = 2000000
 #     ref_perm = ref + str(block_size)
