@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 # name = '21.seq.21.seq.fil'
-name = 'RefPerm.TarPerm.fil'
+name = 'RefPerm20.TarPerm.fil'
 
 y0, y1 = [], []
 for line0 in open('0.'+name, 'r'):
