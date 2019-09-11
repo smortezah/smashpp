@@ -14,9 +14,9 @@ library(devtools)
 library(ComplexHeatmap)
 library(circlize)
 
-plot_nrc_rearrange_Chondrichthyes <- FALSE
-plot_nrc_rearrange_Mammalia <- FALSE
-plot_nrc_rearrange_Actinopterygii <- T
+plot_nrc_rearrange_Chondrichthyes <- F
+plot_nrc_rearrange_Mammalia <- T
+plot_nrc_rearrange_Actinopterygii <- F
 
 plot.nrc.rearrange <- function(class, width, height,
                                rearange_breaks, rearrange_colors) {
