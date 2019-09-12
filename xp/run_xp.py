@@ -275,7 +275,7 @@ if sim_xlarge:
     out = 'XL.svg'
     viz_par = ' -viz -p 1 -l 1 -s 30 -w 13 -vv '
     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
-            path_data_sim + tar + ' -l 3 -d 100 -f 275 -nr ')
+            path_data_sim + tar + ' -l 3 -d 100 -f 275 -dp ')
     execute(smashpp + viz_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
 
 if sim_mutation:
