@@ -488,12 +488,13 @@ if sim_compare_smash:
     # Smash
     copyfile(path_data_sim + ref, ref)
     copyfile(path_data_sim + tar, tar)
-    execute(smash + ' -t 1.7 -c 14 -d 1 -w 10000 -m 1000 ' + ref + ' ' + tar)
+    execute(smash + ' -t 1.55 -c 14 -d 1 -w 100000 -m 1 -nd ' + ref + ' ' + tar)
     os.remove(ref)
     os.remove(tar)
     remove_all_ext(current_dir, 'ext')
     remove_all_ext(current_dir, 'rev')
-    remove(current_dir, '*.sys*')
+    remove_all_ext(current_dir, 'inf')
+    remove(current_dir, '*.sys*x')
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
