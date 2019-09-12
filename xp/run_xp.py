@@ -488,7 +488,7 @@ if sim_compare_smash:
     # Smash
     copyfile(path_data_sim + ref, ref)
     copyfile(path_data_sim + tar, tar)
-    execute(smash + ' -t 1.75 -c 14 -d 1 -w 5000 -m 1000 ' + ref + ' ' + tar)
+    execute(smash + ' -t 1.7 -c 14 -d 1 -w 10000 -m 1000 ' + ref + ' ' + tar)
     os.remove(ref)
     os.remove(tar)
     remove_all_ext(current_dir, 'ext')
