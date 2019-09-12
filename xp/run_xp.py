@@ -479,22 +479,22 @@ if sim_compare_smash:
     tar = 'TarMut_smash'
     viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
 
-    # # Smash++
-    # execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
-    #         path_data_sim + tar + ' -th 1.6 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 50 -nr -sf ')
-    # execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
-    #         '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
+    # Smash++
+    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
+            path_data_sim + tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 500 -d 100 -nr -sf ')
+    execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
+            '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
-    # Smash
-    copyfile(path_data_sim + ref, ref)
-    copyfile(path_data_sim + tar, tar)
-    execute(smash + ' -t 1.55 -c 14 -d 1 -w 100000 -m 1 -nd ' + ref + ' ' + tar)
-    os.remove(ref)
-    os.remove(tar)
-    remove_all_ext(current_dir, 'ext')
-    remove_all_ext(current_dir, 'rev')
-    remove_all_ext(current_dir, 'inf')
-    remove(current_dir, '*.sys*x')
+    # # Smash
+    # copyfile(path_data_sim + ref, ref)
+    # copyfile(path_data_sim + tar, tar)
+    # execute(smash + ' -t 1.55 -c 14 -d 1 -w 100000 -m 1 -nd ' + ref + ' ' + tar)
+    # os.remove(ref)
+    # os.remove(tar)
+    # remove_all_ext(current_dir, 'ext')
+    # remove_all_ext(current_dir, 'rev')
+    # remove_all_ext(current_dir, 'inf')
+    # remove(current_dir, '*.sys*x')
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
