@@ -14,7 +14,7 @@ synth_large = False
 synth_xlarge = False
 synth_mutation = False
 synth_permute = True
-synth_compare_smash = True
+synth_compare_smash = False
 
 # Run on simulated dataset
 sim_small = False
@@ -25,7 +25,7 @@ sim_mutation = False
 sim_permute = False
 real_permute = False
 sim_permute_smash = False
-sim_compare_smash = False
+sim_compare_smash = True
 
 # Run on real dataset
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
@@ -205,18 +205,19 @@ if synth_compare_smash:
     if os.path.exists(path_data_sim + "TarMut_smash"):
         os.remove(path_data_sim + "TarMut_smash")
 
-    for i in range(1, 9 + 1):
+    for i in range(0, 9 + 1):
         execute(goose_fastqsimulation + synth_common_par +
-            ' -s ' + str(i * 9 + 1) +
+            ' -s ' + str(i * 10 + 1) +
             '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_' + str(i))
         append('r_' + str(i), path_data_sim + 'RefMut_smash')
+    copyfile('r_0', 't_0')
+    for i in range(1, 9 + 1):
         execute(goose_mutatedna + '-mr ' + str(i/100) +
                 ' < r_' + str(i) + ' > t_' + str(i))
-
     for i in range(4, 6 + 1):
         execute(smashpp_inv_rep + 't_' + str(i) + ' t_' + str(i) + 'i')
 
-    for i in range(1, 3 + 1):
+    for i in range(0, 3 + 1):
         append('t_' + str(i), path_data_sim + 'TarMut_smash')
     for i in range(4, 6 + 1):
         append('t_' + str(i) + 'i', path_data_sim + 'TarMut_smash')
@@ -478,16 +479,16 @@ if sim_compare_smash:
     tar = 'TarMut_smash'
     viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
 
-#     # Smash++
-#     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
-#             path_data_sim + tar + ' -th 1.6 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 50 -nr -sf ')
-#     execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
-#             '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
+    # # Smash++
+    # execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
+    #         path_data_sim + tar + ' -th 1.6 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 50 -nr -sf ')
+    # execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
+    #         '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
     # Smash
     copyfile(path_data_sim + ref, ref)
     copyfile(path_data_sim + tar, tar)
-    execute(smash + ' -t 1.6 -c 14 -w 1000 -d 50 ' + ref + ' ' + tar)
+    execute(smash + ' -t 1.75 -c 14 -d 1 -w 5000 -m 1000 ' + ref + ' ' + tar)
     os.remove(ref)
     os.remove(tar)
     remove_all_ext(current_dir, 'ext')
