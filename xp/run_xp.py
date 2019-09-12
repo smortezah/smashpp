@@ -17,7 +17,7 @@ synth_permute = True
 synth_compare_smash = False
 
 # Run on simulated dataset
-sim_small = False
+sim_small = True
 sim_medium = False
 sim_large = False
 sim_xlarge = False
@@ -25,7 +25,7 @@ sim_mutation = False
 sim_permute = False
 real_permute = False
 sim_permute_smash = False
-sim_compare_smash = True
+sim_compare_smash = False
 
 # Run on real dataset
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
@@ -128,9 +128,9 @@ if synth_small:  # sizes: ref:1,500, tar:1,500
             '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 5 -s 15  r_c')
     cat(['r_a', 'r_b', 'r_c'], path_data_sim + 'RefS')
 
-    execute(goose_mutatedna + '-mr 0.02 < r_a > t_b')
-    execute(smashpp_inv_rep + 'r_b t_c')
-    copyfile('r_c', 't_a')
+    execute(smashpp_inv_rep + 'r_a t_c')
+    execute(goose_mutatedna + '-mr 0.02 < r_b > t_b')
+    execute(smashpp_inv_rep + 'r_c t_a')
     cat(['t_a', 't_b', 't_c'], path_data_sim + 'TarS')
 
 if synth_medium:  # sizes: ref:100,000, tar:100,000
@@ -247,7 +247,7 @@ if sim_small:
     tar = 'TarS'
     out = 'S.svg'
     execute(smashpp + '-r ' + path_data_sim + ref +
-            ' -t ' + path_data_sim + tar + ' -l 3 -f 25')
+            ' -t ' + path_data_sim + tar + ' -l 3 -d 1 -f 90 -sf -nr ')
     execute(smashpp + '-viz -p 1 -rt 150 -tt 150 ' +
             '-o ' + out + sim_common_par + ref + '.' + tar + '.pos')
 
@@ -493,7 +493,7 @@ if sim_compare_smash:
 
     # Smash++
     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
-            tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 10 -nr -sf ')
+            tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 10 -dp -sf ')
     execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
             '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
