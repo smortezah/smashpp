@@ -491,10 +491,10 @@ if sim_compare_smash:
     execute(smash + ' -t 1.55 -c 14 -d 1 -w 100000 -m 1 -nd ' + ref + ' ' + tar)
     os.remove(ref)
     os.remove(tar)
-    remove_all_ext(current_dir, 'ext')
-    remove_all_ext(current_dir, 'rev')
-    remove_all_ext(current_dir, 'inf')
-    remove(current_dir, '*.sys*x')
+    # remove_all_ext(current_dir, 'ext')
+    # remove_all_ext(current_dir, 'rev')
+    # remove_all_ext(current_dir, 'inf')
+    # remove(current_dir, '*.sys*x')
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
