@@ -92,6 +92,18 @@ def remove(dir, pattern):
         p.unlink()
 
 
+def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
+    copyfile(ref_main, ref)
+    copyfile(tar_main + tar, tar)
+    execute(smash + ' ' + par + ' ' + ref + ' ' + tar)
+    os.remove(ref)
+    os.remove(tar)
+    remove_all_ext(curr_dir, 'ext')
+    remove_all_ext(curr_dir, 'rev')
+    remove_all_ext(curr_dir, 'inf')
+    remove(curr_dir, '*.sys*x')
+
+
 if get_goose:
     # Remove goose/, goose-*
     for file in os.listdir(current_dir):
@@ -481,20 +493,14 @@ if sim_compare_smash:
 
     # Smash++
     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
-            tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 300 -d 100 -nr -sf ')
+            tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 10 -nr -sf ')
     execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
             '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
-    # # Smash
-    # copyfile(path_data_sim + ref, ref)
-    # copyfile(path_data_sim + tar, tar)
-    # execute(smash + ' -t 1.55 -c 14 -d 100 -w 100000 -m 1 -nd ' + ref + ' ' + tar)
-    # os.remove(ref)
-    # os.remove(tar)
-    # remove_all_ext(current_dir, 'ext')
-    # remove_all_ext(current_dir, 'rev')
-    # remove_all_ext(current_dir, 'inf')
-    # remove(current_dir, '*.sys*x')
+    # Smash
+    par = '-t 1.55 -c 14 -d 50 -w 100000 -m 1 -nd'
+    # run_smash(path_data_sim + ref, path_data_sim +
+    #           tar, ref, tar, par, current_dir)
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
