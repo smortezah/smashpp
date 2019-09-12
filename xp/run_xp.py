@@ -25,7 +25,7 @@ sim_mutation = False
 sim_permute = False
 real_permute = False
 sim_permute_smash = False
-sim_compare_smash = False
+sim_compare_smash = True
 
 # Run on real dataset
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
@@ -486,7 +486,7 @@ if sim_permute_smash:
 if sim_compare_smash:
     ref = 'RefMut_smash'
     tar = 'TarMut_smash'
-    viz_par = ' -l 1 -s 30 -w 13 -p 1 '
+    viz_par = ' -l 1 -w 13 -p 1 '
 
     # Smash++
     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
@@ -495,7 +495,7 @@ if sim_compare_smash:
             '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
     # Smash
-    par = '-t 1.55 -c 14 -d 50 -w 100000 -m 1 -nd'
+    # par = '-t 1.55 -c 14 -d 50 -w 100000 -m 1 -nd'
     # run_smash(path_data_sim + ref, path_data_sim +
     #           tar, ref, tar, par, current_dir)
 
