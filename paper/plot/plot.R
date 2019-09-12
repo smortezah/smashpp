@@ -1,11 +1,36 @@
 library(ggplot2)
+library(ggpubr)
 library(reshape2)
+theme_set(theme_bw())
 
+compare_smash <- T
 filters <- 0
 filters_scatter <- 0
-simil <- 1
+simil <- 0
 
-if (filters == 1) {
+if (compare_smash) {
+  mut.smashpp.ir0 <- read.table('0.RefMut_smash.TarMut_smash.fil')
+  mut.smashpp.ir1 <- read.table('1.RefMut_smash.TarMut_smash.fil')
+  df <- data.frame(ir0=mut.smashpp.ir0$V1, ir1=mut.smashpp.ir1$V1)
+  
+  a <- ggplot(data=mut.smashpp.ir0, aes(x=10*seq(1, 100001), y=mut.smashpp.ir0$V1)) +
+    geom_line() +
+    geom_point() +
+    ylab('Information content (bpb)') +
+    theme(axis.title.x=element_blank(),
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank())
+  
+  b <- ggplot(data=mut.smashpp.ir1, aes(x=10*seq(1, 100001), y=mut.smashpp.ir1$V1)) +
+    geom_line() +
+    geom_point() +
+    geom_hline(yintercept = 1.55, color='red') +
+    xlab('Base position') +
+    ylab('Information content (bpb)')
+
+  ggarrange(a, b, nrow = 2)
+  ggsave("compare_smash_mut.bmp", scale = 0.7)
+} else if (filters == 1) {
   N <- 100
   hann <- function(n) {
     0.5 - 0.5 * cos(2 * pi * n / N)
