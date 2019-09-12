@@ -20,8 +20,8 @@ synth_compare_smash = False
 sim_small = False
 sim_medium = False 
 sim_large = False
-sim_xlarge = True
-sim_mutation = False
+sim_xlarge = False
+sim_mutation = True
 sim_permute = False
 real_permute = False
 sim_permute_smash = False
@@ -282,10 +282,11 @@ if sim_mutation:
     ref = 'RefMut'
     tar = 'TarMut'
     out = 'Mut.svg'
+    viz_par = ' -viz -p 1 -l 1 -s 30 -w 13 -rt 5000 -tt 5000 -vv '
     execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
-            path_data_sim + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
-    execute(smashpp + '-viz -p 1 -rt 5000 -tt 5000' +
-            sim_common_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
+            path_data_sim + tar + ' -th 1.98 -l 3 -d 1 -f 25000 -m 10000 -ar -nr -sf ')
+            # path_data_sim + tar + ' -th 2 -rm 16,0,0.2,0.9 -f 25000 -m 15000')
+    execute(smashpp + viz_par + '-o ' + out + ' ' + ref + '.' + tar + '.pos')
 
 
 # sim_permute = False
