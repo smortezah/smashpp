@@ -477,18 +477,18 @@ if sim_permute_smash:
 if sim_compare_smash:
     ref = 'RefMut_smash'
     tar = 'TarMut_smash'
-    viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
+    viz_par = ' -l 1 -s 30 -w 13 -p 1 '
 
     # Smash++
-    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
-            path_data_sim + tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 500 -d 100 -nr -sf ')
+    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
+            tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 300 -d 100 -nr -sf ')
     execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
             '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
     # # Smash
     # copyfile(path_data_sim + ref, ref)
     # copyfile(path_data_sim + tar, tar)
-    # execute(smash + ' -t 1.55 -c 14 -d 1 -w 100000 -m 1 -nd ' + ref + ' ' + tar)
+    # execute(smash + ' -t 1.55 -c 14 -d 100 -w 100000 -m 1 -nd ' + ref + ' ' + tar)
     # os.remove(ref)
     # os.remove(tar)
     # remove_all_ext(current_dir, 'ext')
