@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 
 # name = '21.seq.21.seq.fil'
-name = 'RefMut_smash.TarMut_smash.fil'
+# name = 'RefMut_smash.TarMut_smash.fil'
+name = 'RefS.TarS.fil'
 
 y0, y1 = [], []
 for line0 in open('0.'+name, 'r'):
