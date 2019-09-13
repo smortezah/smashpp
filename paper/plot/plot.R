@@ -15,42 +15,46 @@ if (compare_smash) {
   mut.smash.ir1 <- read.table('TarMut_smash_inv.inf.fil')
   thresh <- 1.55
   thresh_color <- rgb(192/255, 0, 0)
+  line_thickness <- 0.75
 
   a <- ggplot(data=mut.smashpp.ir0, aes(x=10*seq(1, 100001), y=mut.smashpp.ir0$V1)) +
-    geom_line(size = 1) +
-    ylim(0, 2.1) +
-    geom_hline(yintercept = thresh, color=thresh_color) +
+    geom_line(size = line_thickness) +
+    ylim(0.15, 2.1) +
+    geom_hline(yintercept = thresh, color = thresh_color, size = line_thickness) +
+    annotate("text", x = 15000, y = 1.45, label = "thr", color = thresh_color) +
     ylab('Information content (bpb)') +
     theme(axis.title.x=element_blank(),
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank())
 
   b <- ggplot(data=mut.smashpp.ir1, aes(x=10*seq(1, 100001), y=mut.smashpp.ir1$V1)) +
-    geom_line(size = 0.75) +
-    ylim(0, 2.1) +
-    geom_hline(yintercept = thresh, color=thresh_color) +
+    geom_line(size = line_thickness) +
+    ylim(0.15, 2.1) +
+    geom_hline(yintercept = thresh, color = thresh_color, size = line_thickness) +
+    annotate("text", x = 15000, y = 1.45, label = "thr", color = thresh_color) +
     xlab('Base position') +
     ylab('Information content (bpb)')
   
-  
   c <- ggplot(data=mut.smash.ir0, aes(x=100*seq(1, 9901), y=mut.smash.ir0$V2)) +
-    geom_line() +
-    geom_hline(yintercept = thresh, color=thresh_color) +
-    ylim(1.2, 2.1) +
+    geom_line(size = line_thickness) +
+    geom_hline(yintercept = thresh, color = thresh_color, size = line_thickness) +
+    annotate("text", x = 15000, y = 1.45, label = "thr", color = thresh_color) +
+    ylim(0.15, 2.1) +
     ylab('Information content (bpb)') +
     theme(axis.title.x=element_blank(),
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank())
   
   d <- ggplot(data=mut.smash.ir1, aes(x=100*seq(1, 9901), y=mut.smash.ir1$V2)) +
-    geom_line() +
-    geom_hline(yintercept = thresh, color=thresh_color) +
-    ylim(1.2, 2.1) +
+    geom_line(size = line_thickness) +
+    geom_hline(yintercept = thresh, color = thresh_color, size = line_thickness) +
+    annotate("text", x = 15000, y = 1.45, label = "thr", color = thresh_color) +
+    ylim(0.15, 2.1) +
     xlab('Base position') +
     ylab('Information content (bpb)')
 
   ggarrange(a, c, b, d, nrow = 2, ncol = 2)
-  # ggsave("compare_smash_mut.bmp", scale = 0.7)
+  ggsave("compare_smash_mut.bmp", scale = 0.85)
 } else if (filters == 1) {
   N <- 100
   hann <- function(n) {
