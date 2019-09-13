@@ -92,15 +92,14 @@ def remove(dir, pattern):
         p.unlink()
 
 
-def run_smash(ref_main, tar_main, ref, tar, par, curr_dir, remove_rev=True):
+def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
     copyfile(ref_main, ref)
     copyfile(tar_main, tar)
     execute(smash + ' ' + par + ' ' + ref + ' ' + tar)
     os.remove(ref)
     os.remove(tar)
     remove_all_ext(curr_dir, 'ext')
-    if (remove_rev):
-        remove_all_ext(curr_dir, 'rev')
+    remove_all_ext(curr_dir, 'rev')
     remove_all_ext(curr_dir, 'inf')
     remove(curr_dir, '*.sys*x')
 
@@ -490,19 +489,13 @@ if sim_compare_smash:
     viz_par = ' -l 1 -w 13 -p 1 '
 
     # Smash++
-    # execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
-    #         tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 10 -dp -sf ')
-    # execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
-    #         '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
+    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
+            tar + ' -th 1.5 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 10 -dp -sf ')
+    execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
+            '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
     # Smash
-    # par = '-t 1.55 -c 14 -d 50 -w 100000 -m 1 -nd '
-    par = '-t 1.55 -c 14 -d 50 -w 10 -m 1 -nd -v '
-    run_smash(path_data_sim + ref, path_data_sim +
-              tar, ref, tar, par, current_dir)
-
-    # To generate information profile for the inv. repeat
-    # tar = 'TarMut_smash_inv'
+    # par = '-t 1.5 -c 14 -d 10 -w 1000 -m 1 -nd '
     # run_smash(path_data_sim + ref, path_data_sim +
     #           tar, ref, tar, par, current_dir)
 
