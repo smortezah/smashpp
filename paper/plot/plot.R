@@ -54,7 +54,7 @@ if (compare_smash) {
     ylab('Information content (bpb)')
 
   ggarrange(a, c, b, d, nrow = 2, ncol = 2)
-  ggsave("compare_smash_mut.bmp", scale = 0.85)
+  ggsave("compare_smash_mut.bmp", scale = 0.9)
 } else if (filters == 1) {
   N <- 100
   hann <- function(n) {

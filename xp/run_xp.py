@@ -25,7 +25,7 @@ sim_mutation = False
 sim_permute = False
 real_permute = False
 sim_permute_smash = False
-sim_compare_smash = False
+sim_compare_smash = True
 
 # Run on real dataset
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
@@ -490,10 +490,10 @@ if sim_compare_smash:
     viz_par = ' -l 1 -w 13 -p 1 '
 
     # Smash++
-    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
-            tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 10 -dp -sf ')
-    execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
-            '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
+    # execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
+    #         tar + ' -th 1.55 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 10 -dp -sf ')
+    # execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
+    #         '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
     # Smash
     par = '-t 1.55 -c 14 -d 50 -w 100000 -m 1 -nd'
@@ -501,9 +501,9 @@ if sim_compare_smash:
               tar, ref, tar, par, current_dir, False)
 
     # To generate information profile for the inv. repeat
-    tar = 'TarMut_smash_inv'
-    run_smash(path_data_sim + ref, path_data_sim +
-              tar, ref, tar, par, current_dir)
+    # tar = 'TarMut_smash_inv'
+    # run_smash(path_data_sim + ref, path_data_sim +
+    #           tar, ref, tar, par, current_dir)
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
