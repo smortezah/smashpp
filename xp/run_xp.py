@@ -496,7 +496,7 @@ if sim_compare_smash:
     #         '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
     # Smash
-    par = '-t 1.55 -c 14 -d 50 -w 100000 -m 1 -nd'
+    par = '-t 1.55 -c 14 -d 50 -w 100000 -m 1 -nd -v '
     run_smash(path_data_sim + ref, path_data_sim +
               tar, ref, tar, par, current_dir, False)
 
