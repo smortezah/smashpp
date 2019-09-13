@@ -25,7 +25,7 @@ sim_mutation = False
 sim_permute = False
 real_permute = False
 sim_permute_smash = False
-sim_compare_smash = True
+sim_compare_smash = False
 
 # Run on real dataset
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
@@ -92,14 +92,15 @@ def remove(dir, pattern):
         p.unlink()
 
 
-def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
+def run_smash(ref_main, tar_main, ref, tar, par, curr_dir, remove_rev=True):
     copyfile(ref_main, ref)
-    copyfile(tar_main + tar, tar)
+    copyfile(tar_main, tar)
     execute(smash + ' ' + par + ' ' + ref + ' ' + tar)
     os.remove(ref)
     os.remove(tar)
     remove_all_ext(curr_dir, 'ext')
-    remove_all_ext(curr_dir, 'rev')
+    if (remove_rev):
+        remove_all_ext(curr_dir, 'rev')
     remove_all_ext(curr_dir, 'inf')
     remove(curr_dir, '*.sys*x')
 
@@ -495,9 +496,14 @@ if sim_compare_smash:
             '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
     # Smash
-    # par = '-t 1.55 -c 14 -d 50 -w 100000 -m 1 -nd'
-    # run_smash(path_data_sim + ref, path_data_sim +
-    #           tar, ref, tar, par, current_dir)
+    par = '-t 1.55 -c 14 -d 50 -w 100000 -m 1 -nd'
+    run_smash(path_data_sim + ref, path_data_sim +
+              tar, ref, tar, par, current_dir, False)
+
+    # To generate information profile for the inv. repeat
+    tar = 'TarMut_smash_inv'
+    run_smash(path_data_sim + ref, path_data_sim +
+              tar, ref, tar, par, current_dir)
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep

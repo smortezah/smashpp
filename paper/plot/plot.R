@@ -11,25 +11,46 @@ simil <- 0
 if (compare_smash) {
   mut.smashpp.ir0 <- read.table('0.RefMut_smash.TarMut_smash.fil')
   mut.smashpp.ir1 <- read.table('1.RefMut_smash.TarMut_smash.fil')
-  df <- data.frame(ir0=mut.smashpp.ir0$V1, ir1=mut.smashpp.ir1$V1)
-  
+  mut.smash.ir0 <- read.table('TarMut_smash.inf.fil')
+  mut.smash.ir1 <- read.table('TarMut_smash_inv.inf.fil')
+  thresh <- 1.55
+  thresh_color <- rgb(192/255, 0, 0)
+
   a <- ggplot(data=mut.smashpp.ir0, aes(x=10*seq(1, 100001), y=mut.smashpp.ir0$V1)) +
+    geom_line(size = 1) +
+    ylim(0, 2.1) +
+    geom_hline(yintercept = thresh, color=thresh_color) +
+    ylab('Information content (bpb)') +
+    theme(axis.title.x=element_blank(),
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank())
+
+  b <- ggplot(data=mut.smashpp.ir1, aes(x=10*seq(1, 100001), y=mut.smashpp.ir1$V1)) +
+    geom_line(size = 0.75) +
+    ylim(0, 2.1) +
+    geom_hline(yintercept = thresh, color=thresh_color) +
+    xlab('Base position') +
+    ylab('Information content (bpb)')
+  
+  
+  c <- ggplot(data=mut.smash.ir0, aes(x=100*seq(1, 9901), y=mut.smash.ir0$V2)) +
     geom_line() +
-    geom_point() +
+    geom_hline(yintercept = thresh, color=thresh_color) +
+    ylim(1.2, 2.1) +
     ylab('Information content (bpb)') +
     theme(axis.title.x=element_blank(),
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank())
   
-  b <- ggplot(data=mut.smashpp.ir1, aes(x=10*seq(1, 100001), y=mut.smashpp.ir1$V1)) +
+  d <- ggplot(data=mut.smash.ir1, aes(x=100*seq(1, 9901), y=mut.smash.ir1$V2)) +
     geom_line() +
-    geom_point() +
-    geom_hline(yintercept = 1.55, color='red') +
+    geom_hline(yintercept = thresh, color=thresh_color) +
+    ylim(1.2, 2.1) +
     xlab('Base position') +
     ylab('Information content (bpb)')
 
-  ggarrange(a, b, nrow = 2)
-  ggsave("compare_smash_mut.bmp", scale = 0.7)
+  ggarrange(a, c, b, d, nrow = 2, ncol = 2)
+  # ggsave("compare_smash_mut.bmp", scale = 0.7)
 } else if (filters == 1) {
   N <- 100
   hann <- function(n) {
