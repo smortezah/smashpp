@@ -2,6 +2,8 @@
 diogo/experiment1/*
 diogo/xp2/*
 diogo/Taxonomy_Chordata_NCBI_Diogo_06-05-2019
+!diogo/xp2/top.R
+!diogo/xp2/top.txt
 !diogo/xp2/COX1_pos.tsv
 !diogo/xp2/ent
 !diogo/xp2/ent_Chondrichthyes.tsv

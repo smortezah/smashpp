@@ -1,0 +1,25 @@
+Chondrichthyes				
+ref.accession	ref.name	tar.accession	tar.name	no.rearrange
+NC_029493	Nebrius ferrugineus	NC_021768	Glyphis glyphis	44
+NC_021443	Alopias superciliosus	NC_021615	Heterodontus zebra	42
+NC_024102	Gymnura poecilura	NC_026210	Taeniura lymma	41
+NC_029493	Nebrius ferrugineus	NC_025520	Carcharhinus longimanus	41
+NC_024937	Zapteryx exasperata	NC_027182	Pristis pectinata	41
+				
+				
+Mammalia				
+ref.accession	ref.name	tar.accession	tar.name	no.rearrange	
+NC_025568	Myotis davidii	NC_029422	Myotis muricola	59
+NC_024041	Lepus townsendii	NC_001913	Oryctolagus cuniculus	58
+NC_022474	Eptesicus serotinus	NC_029422	Myotis muricola	57
+NC_024040	Lepus timidus	NC_001913	Oryctolagus cuniculus	57
+NC_025559	Neomys fodiens	NC_025278	Sorex cylindricauda	55
+				
+				
+Actinopterygii				
+ref.accession	ref.name	tar.accession	tar.name	no.rearrange	
+NC_027169	Sinocyclocheilus anshuiensis	NC_008680	Vaillantella maassi	48
+NC_020096	Puntius semifasciolatus	NC_008671	Chromobotia macracanthus	46
+NC_022950	Henicorhynchus lineatus	NC_029385	Lefua costata	46
+NC_008658	Pethia ticto	NC_022943	Labeo pierrei	46
+NC_028182	Symphysodon aequifasciata	NC_012737	Lutjanus sebae	46
