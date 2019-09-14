@@ -21,7 +21,6 @@ if (compare_smash) {
 
   a <- ggplot(data=mut.smashpp.ir0, aes(x=10*seq(1, 100001))) +
     geom_ribbon(aes(ymax = thresh, ymin = pmin(thresh, mut.smashpp.ir0$V1)), fill = thresh_color, alpha = alpha) +
-    geom_area(aes(y=1, fill = seq(1, 100001))) +
     geom_line(aes(y=mut.smashpp.ir0$V1), size = line_thickness) +
     geom_hline(yintercept = thresh, color = thresh_color, size = line_thickness) +
     scale_y_continuous(breaks = c(0.0, 0.5, 1, 1.55, 2), labels = c("0.0", "0.5", "1.0", "thr\n1.5", "2.0"), limits = c(0, 2.1)) +
