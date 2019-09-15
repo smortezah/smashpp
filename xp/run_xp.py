@@ -484,20 +484,27 @@ if sim_permute_smash:
     remove(current_dir, '*.sys*')
 
 if sim_compare_smash:
+    a = False
+    b = True
+
     ref = 'RefMut_smash'
     tar = 'TarMut_smash'
     viz_par = ' -l 1 -w 13 -p 1 '
 
-    # Smash++
-    execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' + path_data_sim +
-            tar + ' -th 1.5 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 1000 -d 10 -dp -sf ')
-    execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' + viz_par +
-            '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
+    if (a):
+        # Smash++
+        execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
+                path_data_sim + tar + ' -th 1.5 -l 3 -f 1000 -d 10 -dp -sf ')
+        execute(smashpp + '-viz -rn Ref -tn Tar -rt 100000 -tt 100000 ' +
+                viz_par + '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
-    # Smash
-    # par = '-t 1.5 -c 14 -d 10 -w 1000 -m 1 -nd '
-    # run_smash(path_data_sim + ref, path_data_sim +
-    #           tar, ref, tar, par, current_dir)
+        # Smash
+        par = '-t 1.5 -c 14 -d 10 -w 1000 -m 1 -nd '
+        run_smash(path_data_sim + ref, path_data_sim + tar, ref, tar, par, current_dir)
+
+    if (b):
+        # Smash++
+        # Smash
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
