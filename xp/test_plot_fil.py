@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 # name = '21.seq.21.seq.fil'
-name = 'RefMut_smash.TarMut_smash.fil'
+name = 'RefComp_b1000.TarComp_b.fil'
 # name = 'RefS.TarS.fil'
 # name = 'RefM.TarM.fil'
 # name = 'RefMut.TarMut.fil'

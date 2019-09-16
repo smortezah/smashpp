@@ -14,7 +14,8 @@ synth_large = False
 synth_xlarge = False
 synth_mutation = False
 synth_permute = False
-synth_compare_smash = False
+synth_compare_smash_a = False
+synth_compare_smash_b = False
 
 # Run on simulated dataset
 sim_small = False
@@ -193,9 +194,6 @@ if synth_mutation:  # sizes:  ref:1,000,000, tar:1,000,000. Up to 60%
                 ' < r_' + str(i) + ' > t_' + str(i))
         append('t_' + str(i), path_data_sim + 'TarMut')
 
-
-synth_permute = False
-
 if synth_permute:  # sizes: ref:15,000,000, tar:15,000,000
     execute(goose_fastqsimulation + synth_common_par +
             '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 15801  r_a')
@@ -211,7 +209,7 @@ if synth_permute:  # sizes: ref:15,000,000, tar:15,000,000
     copyfile('r_c', 't_a')
     cat(['t_a', 't_b', 't_c'], path_data_sim + 'TarPerm')
 
-if synth_compare_smash:
+if synth_compare_smash_a:
     if os.path.exists(path_data_sim + "RefMut_smash"):
         os.remove(path_data_sim + "RefMut_smash")
     if os.path.exists(path_data_sim + "TarMut_smash"):
@@ -235,6 +233,22 @@ if synth_compare_smash:
         append('t_' + str(i) + 'i', path_data_sim + 'TarMut_smash')
     for i in range(7, 9 + 1):
         append('t_' + str(i), path_data_sim + 'TarMut_smash')
+
+if synth_compare_smash_b:
+    if os.path.exists(path_data_sim + "RefComp_b"):
+        os.remove(path_data_sim + "RefComp_b")
+    if os.path.exists(path_data_sim + "TarComp_b"):
+        os.remove(path_data_sim + "TarComp_b")
+
+    execute(goose_fastqsimulation + synth_common_par +
+            ' -s 6483 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_a')
+    execute(goose_fastqsimulation + synth_common_par +
+            ' -s 98102 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_b')
+    cat(['r_a', 'r_b'], path_data_sim + 'RefComp_b')
+
+    execute(goose_mutatedna + '-mr 0.02 < r_a > t_b')
+    execute(smashpp_inv_rep + 'r_b t_a')
+    cat(['t_a', 't_b'], path_data_sim + 'TarComp_b')
 
 for file in os.listdir(current_dir):
     if file.startswith("r_"):
@@ -487,11 +501,12 @@ if sim_compare_smash:
     a = False
     b = True
 
-    ref = 'RefMut_smash'
-    tar = 'TarMut_smash'
     viz_par = ' -l 1 -w 13 -p 1 '
 
     if (a):
+        ref = 'RefMut_smash'
+        tar = 'TarMut_smash'
+
         # Smash++
         execute(smashpp + '-r ' + path_data_sim + ref + ' -t ' +
                 path_data_sim + tar + ' -th 1.5 -l 3 -f 1000 -d 10 -dp -sf ')
@@ -500,11 +515,40 @@ if sim_compare_smash:
 
         # Smash
         par = '-t 1.5 -c 14 -d 10 -w 1000 -m 1 -nd '
-        run_smash(path_data_sim + ref, path_data_sim + tar, ref, tar, par, current_dir)
+        run_smash(path_data_sim + ref, path_data_sim +
+                  tar, ref, tar, par, current_dir)
 
     if (b):
+        ref = 'RefComp_b'
+        tar = 'TarComp_b'
+
+        block_size = 1000
+        ref_perm = ref + str(block_size)
+        execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+                '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+
         # Smash++
+        # execute(smashpp + ' -r ' + path_data_sim + ref + ' -t ' +
+        #         path_data_sim + tar + ' -th 1.0 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 95 -d 20 -nr -sf ')
+
+        execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
+                tar + ' -th 1.5 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 95 -d 20 -nr -sf -ar -m 1 ')
+        execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+                '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+
         # Smash
+        par = '-t 1.5 -c 14 -d 20 -w 300 -m 1 -nd '
+        # run_smash(path_data_sim + ref, path_data_sim +
+        #           tar, ref, tar, par, current_dir)
+        
+        # copyfile(path_data_sim + ref_perm, ref_perm)
+        # copyfile(path_data_sim + tar, tar)
+        # execute(smash + par + ref_perm + ' ' + tar)
+        # os.remove(ref_perm)
+        # os.remove(tar)
+        # remove_all_ext(current_dir, 'ext')
+        # remove_all_ext(current_dir, 'rev')
+        # remove(current_dir, '*.sys*x')
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
