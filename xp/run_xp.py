@@ -501,7 +501,7 @@ if sim_compare_smash:
     a = False
     b = True
 
-    viz_par = ' -l 1 -w 13 -p 1 '
+    viz_par = ' -l 1 -w 13 -p 1 -vv '
 
     if (a):
         ref = 'RefMut_smash'
@@ -519,27 +519,30 @@ if sim_compare_smash:
                   tar, ref, tar, par, current_dir)
 
     if (b):
-        ref = 'RefComp_b'
-        tar = 'TarComp_b'
+        path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+        path_tar = path_data_real + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
+        ref = 'VII.seq'
+        tar = '7.seq'
 
         block_size = 1000
         ref_perm = ref + str(block_size)
-        execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-                '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
+        # execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+        #         '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
 
         # Smash++
-        # execute(smashpp + ' -r ' + path_data_sim + ref + ' -t ' +
-        #         path_data_sim + tar + ' -th 1.0 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 95 -d 20 -nr -sf ')
+        execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
+                path_tar + tar + ' -th 1.95 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 555 -d 112 -nr -sf ')
+        execute(smashpp + '-viz ' + viz_par + ref + '.' + tar + '.pos')
 
-        execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
-                tar + ' -th 1.5 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 95 -d 20 -nr -sf -ar -m 1 ')
-        execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-                '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+        # execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
+        #         tar + ' -th 1.5 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 95 -d 20 -nr -sf -ar -m 1 ')
+        # execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+        #         '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
         # Smash
-        par = '-t 1.5 -c 14 -d 20 -w 300 -m 1 -nd '
-        # run_smash(path_data_sim + ref, path_data_sim +
-        #           tar, ref, tar, par, current_dir)
+        par = '-t 1.95 -c 14 -d 112 -w 555 -m 2000 -nd '
+        run_smash(path_ref + ref, path_tar +
+                  tar, ref, tar, par, current_dir)
         
         # copyfile(path_data_sim + ref_perm, ref_perm)
         # copyfile(path_data_sim + tar, tar)
