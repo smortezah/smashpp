@@ -71,7 +71,11 @@ xp/r.t.pos
 paper/sup.synctex(busy)
 .vscode/settings.json
 xp/dataset/bacteria
-xp/dataset/fungi/*
+xp/dataset/fungi/Saccharomyces_paradoxus/**
+xp/dataset/fungi/Saccharomyces_cerevisiae/**
+xp/dataset/fungi/Kluyveromyces_lactis/**
+xp/dataset/fungi/Eremothecium_gossypii/**
+xp/dataset/fungi/Candida_glabrata/**
 !xp/dataset/fungi/Xanthomonas_oryzae_pv_oryzae
 xp/dataset/mammalia/Pan_paniscus/*
 xp/dataset/mammalia/Pan_troglodytes/*
@@ -85,6 +89,8 @@ xp/dataset/bird/Meleagris_gallopavo/*
 !xp/dataset/mammalia/Pan_paniscus/21.seq
 !xp/dataset/bird/Gallus_gallus/24
 !xp/dataset/bird/Meleagris_gallopavo/26
+!xp/dataset/fungi/Saccharomyces_cerevisiae/VII.seq
+!xp/dataset/fungi/Saccharomyces_paradoxus/7.seq
 **/*.sys*
 **/*.inf
 **/*.rev
@@ -94,7 +100,5 @@ xp/hs21.seqpp21.seq.svg
 mori
 ref
 tar
-# xp/dataset/sim/RefPerm1000000
-# xp/dataset/sim/RefPerm2000000
 xp/dataset/sim/RefPerm*
 xp/dataset/sim/TarPerm*
