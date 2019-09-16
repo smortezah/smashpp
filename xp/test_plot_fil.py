@@ -1,10 +1,6 @@
 import matplotlib.pyplot as plt
 
-# name = '21.seq.21.seq.fil'
-name = 'RefComp_b1000.TarComp_b.fil'
-# name = 'RefS.TarS.fil'
-# name = 'RefM.TarM.fil'
-# name = 'RefMut.TarMut.fil'
+name = 'VII.seq.7.seq.fil'
 
 y0, y1 = [], []
 for line0 in open('0.'+name, 'r'):
