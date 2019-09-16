@@ -525,12 +525,12 @@ if sim_compare_smash:
         tar = '7.seq'
 
         # Smash++
-        execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
-                path_tar + tar + ' -th 1.8 -l 3 -f 475 -d 100 -dp -sf -ar ')
-        execute(smashpp + '-viz ' + viz_par + ref + '.' + tar + '.pos')
+        # execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
+        #         path_tar + tar + ' -th 1.8 -l 3 -f 475 -d 100 -dp -ar ')
+        # execute(smashpp + '-viz ' + viz_par + ref + '.' + tar + '.pos')
 
         # Smash
-        par = '-t 1.8 -c 14 -d 200 -w 16000 -m 1 -nd '
+        par = '-t 1.8 -c 14 -d 100 -w 15000 -m 1 -nd '
         # run_smash(path_ref + ref, path_tar + tar, ref, tar, par, current_dir)
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
