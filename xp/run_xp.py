@@ -527,31 +527,31 @@ if sim_compare_smash:
         block_size = 1000
         ref_perm = ref + str(block_size)
         # execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-        #         '-s 165604 < ' + path_data_sim + ref + ' > ' + path_data_sim + ref_perm)
-
+        #         '-s 165604 < ' + path_ref + ref + ' > ' + path_ref + ref_perm)
+ 
         # Smash++
-        execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
-                path_tar + tar + ' -th 1.95 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 555 -d 112 -nr -sf ')
-        execute(smashpp + '-viz ' + viz_par + ref + '.' + tar + '.pos')
+        # execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
+        #         path_tar + tar + ' -th 1.95 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 500 -d 50 -nr -sf -m 1000 ')
+        # execute(smashpp + '-viz ' + viz_par + ref + '.' + tar + '.pos')
 
-        # execute(smashpp + '-r ' + path_data_sim + ref_perm + ' -t ' + path_data_sim +
-        #         tar + ' -th 1.5 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 95 -d 20 -nr -sf -ar -m 1 ')
+        # execute(smashpp + '-r ' + path_ref + ref_perm + ' -t ' + path_tar +
+        #         tar + ' -th 1.95 -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 500 -d 50 -nr -sf -ar -m 1000 ')
         # execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
         #         '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
         # Smash
-        par = '-t 1.95 -c 14 -d 112 -w 555 -m 2000 -nd '
-        run_smash(path_ref + ref, path_tar +
-                  tar, ref, tar, par, current_dir)
+        par = '-t 1.95 -c 14 -d 50 -w 500 -m 1000 -nd '
+        # run_smash(path_ref + ref, path_tar +
+        #           tar, ref, tar, par, current_dir)
         
-        # copyfile(path_data_sim + ref_perm, ref_perm)
-        # copyfile(path_data_sim + tar, tar)
-        # execute(smash + par + ref_perm + ' ' + tar)
-        # os.remove(ref_perm)
-        # os.remove(tar)
-        # remove_all_ext(current_dir, 'ext')
-        # remove_all_ext(current_dir, 'rev')
-        # remove(current_dir, '*.sys*x')
+        copyfile(path_ref + ref_perm, ref_perm)
+        copyfile(path_tar + tar, tar)
+        execute(smash + par + ref_perm + ' ' + tar)
+        os.remove(ref_perm)
+        os.remove(tar)
+        remove_all_ext(current_dir, 'ext')
+        remove_all_ext(current_dir, 'rev')
+        remove(current_dir, '*.sys*x')
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
