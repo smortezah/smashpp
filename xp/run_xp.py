@@ -14,8 +14,7 @@ synth_large = False
 synth_xlarge = False
 synth_mutation = False
 synth_permute = False
-synth_compare_smash_a = False
-synth_compare_smash_b = False
+synth_compare_smash = False
 
 # Run on simulated dataset
 sim_small = False
@@ -26,7 +25,7 @@ sim_mutation = False
 sim_permute = False
 real_permute = False
 sim_permute_smash = False
-sim_compare_smash = True
+sim_compare_smash = False
 
 # Run on real dataset
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
@@ -209,46 +208,50 @@ if synth_permute:  # sizes: ref:15,000,000, tar:15,000,000
     copyfile('r_c', 't_a')
     cat(['t_a', 't_b', 't_c'], path_data_sim + 'TarPerm')
 
-if synth_compare_smash_a:
-    if os.path.exists(path_data_sim + "RefMut_smash"):
-        os.remove(path_data_sim + "RefMut_smash")
-    if os.path.exists(path_data_sim + "TarMut_smash"):
-        os.remove(path_data_sim + "TarMut_smash")
+if synth_compare_smash:
+    a = True
+    b = True
 
-    for i in range(0, 9 + 1):
+    if (a):
+        if os.path.exists(path_data_sim + "RefMut_smash"):
+            os.remove(path_data_sim + "RefMut_smash")
+        if os.path.exists(path_data_sim + "TarMut_smash"):
+            os.remove(path_data_sim + "TarMut_smash")
+
+        for i in range(0, 9 + 1):
+            execute(goose_fastqsimulation + synth_common_par +
+                    ' -s ' + str(i * 10 + 1) +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_' + str(i))
+            append('r_' + str(i), path_data_sim + 'RefMut_smash')
+        copyfile('r_0', 't_0')
+        for i in range(1, 9 + 1):
+            execute(goose_mutatedna + '-mr ' + str(i/100) +
+                    ' < r_' + str(i) + ' > t_' + str(i))
+        for i in range(4, 6 + 1):
+            execute(smashpp_inv_rep + 't_' + str(i) + ' t_' + str(i) + 'i')
+
+        for i in range(0, 3 + 1):
+            append('t_' + str(i), path_data_sim + 'TarMut_smash')
+        for i in range(4, 6 + 1):
+            append('t_' + str(i) + 'i', path_data_sim + 'TarMut_smash')
+        for i in range(7, 9 + 1):
+            append('t_' + str(i), path_data_sim + 'TarMut_smash')
+
+    if (b):
+        if os.path.exists(path_data_sim + "RefComp_b"):
+            os.remove(path_data_sim + "RefComp_b")
+        if os.path.exists(path_data_sim + "TarComp_b"):
+            os.remove(path_data_sim + "TarComp_b")
+
         execute(goose_fastqsimulation + synth_common_par +
-            ' -s ' + str(i * 10 + 1) +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_' + str(i))
-        append('r_' + str(i), path_data_sim + 'RefMut_smash')
-    copyfile('r_0', 't_0')
-    for i in range(1, 9 + 1):
-        execute(goose_mutatedna + '-mr ' + str(i/100) +
-                ' < r_' + str(i) + ' > t_' + str(i))
-    for i in range(4, 6 + 1):
-        execute(smashpp_inv_rep + 't_' + str(i) + ' t_' + str(i) + 'i')
+                ' -s 6483 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                ' -s 98102 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_b')
+        cat(['r_a', 'r_b'], path_data_sim + 'RefComp_b')
 
-    for i in range(0, 3 + 1):
-        append('t_' + str(i), path_data_sim + 'TarMut_smash')
-    for i in range(4, 6 + 1):
-        append('t_' + str(i) + 'i', path_data_sim + 'TarMut_smash')
-    for i in range(7, 9 + 1):
-        append('t_' + str(i), path_data_sim + 'TarMut_smash')
-
-if synth_compare_smash_b:
-    if os.path.exists(path_data_sim + "RefComp_b"):
-        os.remove(path_data_sim + "RefComp_b")
-    if os.path.exists(path_data_sim + "TarComp_b"):
-        os.remove(path_data_sim + "TarComp_b")
-
-    execute(goose_fastqsimulation + synth_common_par +
-            ' -s 6483 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_a')
-    execute(goose_fastqsimulation + synth_common_par +
-            ' -s 98102 -f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_b')
-    cat(['r_a', 'r_b'], path_data_sim + 'RefComp_b')
-
-    execute(goose_mutatedna + '-mr 0.02 < r_a > t_b')
-    execute(smashpp_inv_rep + 'r_b t_a')
-    cat(['t_a', 't_b'], path_data_sim + 'TarComp_b')
+        execute(goose_mutatedna + '-mr 0.02 < r_a > t_b')
+        execute(smashpp_inv_rep + 'r_b t_a')
+        cat(['t_a', 't_b'], path_data_sim + 'TarComp_b')
 
 for file in os.listdir(current_dir):
     if file.startswith("r_"):
@@ -498,7 +501,7 @@ if sim_permute_smash:
     remove(current_dir, '*.sys*')
 
 if sim_compare_smash:
-    a = False
+    a = True
     b = True
 
     viz_par = ' -l 1 -w 13 -p 1 '
@@ -527,14 +530,14 @@ if sim_compare_smash:
         tar_new = 'Sp' + tar
 
         # Smash++
-        # execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
-        #         path_tar + tar + ' -th 1.85 -l 3 -f 370 -d 100 -nr -ar -sf ')
+        execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
+                path_tar + tar + ' -th 1.85 -l 3 -f 370 -d 100 -nr -ar -sf ')
         execute(smashpp + '-viz -rn Sc.VII -tn Sp.VII ' + viz_par +
                 '-o Sc_Sp_smash.svg ' + ref + '.' + tar + '.pos')
 
         # Smash
         par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
-        # run_smash(path_ref + ref, path_tar + tar, ref_new, tar_new, par, current_dir)
+        run_smash(path_ref + ref, path_tar + tar, ref_new, tar_new, par, current_dir)
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
