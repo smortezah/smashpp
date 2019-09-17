@@ -499,7 +499,7 @@ if sim_permute_smash:
 
 if sim_compare_smash:
     a = False
-    b = False
+    b = True
 
     viz_par = ' -l 1 -w 13 -p 1 '
 
@@ -514,7 +514,7 @@ if sim_compare_smash:
                 viz_par + '-o Mut_smash.svg ' + ref + '.' + tar + '.pos')
 
         # Smash
-        par = '-t 1.7 -c 14 -d 10 -w 5000 -m 1 '
+        par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
         run_smash(path_data_sim + ref, path_data_sim +
                   tar, ref, tar, par, current_dir)
 
