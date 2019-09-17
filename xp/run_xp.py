@@ -527,8 +527,8 @@ if sim_compare_smash:
         tar_new = 'Sp' + tar
 
         # Smash++
-        execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
-                path_tar + tar + ' -th 1.85 -l 3 -f 325 -d 100 -nr -ar -sf ')
+        # execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
+        #         path_tar + tar + ' -th 1.85 -l 3 -f 370 -d 100 -nr -ar -sf ')
         execute(smashpp + '-viz -rn Sc.VII -tn Sp.VII ' + viz_par +
                 '-o Sc_Sp_smash.svg ' + ref + '.' + tar + '.pos')
 
