@@ -522,16 +522,19 @@ if sim_compare_smash:
         path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
         path_tar = path_data_real + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
         ref = 'VII.seq'
-        tar = '7.seq'
+        ref_new = 'Sc' + ref
+        tar = 'VII.seq'
+        tar_new = 'Sp' + tar
 
         # Smash++
-        # execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
-        #         path_tar + tar + ' -th 1.8 -l 3 -f 475 -d 100 -dp -ar ')
-        # execute(smashpp + '-viz ' + viz_par + ref + '.' + tar + '.pos')
+        execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
+                path_tar + tar + ' -th 1.85 -l 3 -f 325 -d 100 -nr -ar -sf ')
+        execute(smashpp + '-viz -rn Sc.VII -tn Sp.VII ' + viz_par +
+                '-o Sc_Sp_smash.svg ' + ref + '.' + tar + '.pos')
 
         # Smash
-        par = '-t 1.8 -c 14 -d 100 -w 15000 -m 1 -nd '
-        # run_smash(path_ref + ref, path_tar + tar, ref, tar, par, current_dir)
+        par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
+        # run_smash(path_ref + ref, path_tar + tar, ref_new, tar_new, par, current_dir)
 
 if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
     path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
