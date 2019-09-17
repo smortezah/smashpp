@@ -14,7 +14,7 @@ if (compare_smash) {
   mut.smashpp.ir1 <- read.table('1.RefMut_smash.TarMut_smash.fil')
   mut.smash.ir0 <- read.table('TarMut_smash.inf.fil')
   mut.smash.ir1 <- read.table('TarMut_smash.rev.inf.fil')
-  thresh <- 1.55
+  thresh <- 1.7
   thresh_color <- rgb(192/255, 0, 0)
   line_thickness <- 0.75
   alpha <- 0.15
@@ -23,7 +23,7 @@ if (compare_smash) {
     geom_ribbon(aes(ymax = thresh, ymin = pmin(thresh, mut.smashpp.ir0$V1)), fill = thresh_color, alpha = alpha) +
     geom_line(aes(y=mut.smashpp.ir0$V1), size = line_thickness) +
     geom_hline(yintercept = thresh, color = thresh_color, size = line_thickness) +
-    scale_y_continuous(breaks = c(0.0, 0.5, 1, 1.55, 2), labels = c("0.0", "0.5", "1.0", "thr\n1.5", "2.0"), limits = c(0, 2.1)) +
+    scale_y_continuous(breaks = c(0.0, 0.5, 1, 1.5, thresh, 2), labels = c("0.0", "0.5", "1.0", "1.5", "thr", "2.0"), limits = c(0, 2.1)) +
     ylab('Information content (bpb)') +
     ggtitle('Regular') +
     theme(axis.title.x=element_blank(),
@@ -34,27 +34,27 @@ if (compare_smash) {
     geom_ribbon(aes(ymax = thresh, ymin = pmin(thresh, mut.smashpp.ir1$V1)), fill = thresh_color, alpha = alpha) +
     geom_line(aes(y=mut.smashpp.ir1$V1), size = line_thickness) +
     geom_hline(yintercept = thresh, color = thresh_color, size = line_thickness) +
-    scale_y_continuous(breaks = c(0.0, 0.5, 1, 1.55, 2), labels = c("0.0", "0.5", "1.0", "thr\n1.5", "2.0"), limits = c(0, 2.1)) +
+    scale_y_continuous(breaks = c(0.0, 0.5, 1, 1.5, thresh, 2), labels = c("0.0", "0.5", "1.0", "1.5", "thr", "2.0"), limits = c(0, 2.1)) +
     xlab('Base position') +
     ylab('Information content (bpb)') +
     ggtitle('Inv. repeat')
 
-  c <- ggplot(data=mut.smash.ir0, aes(x=100*seq(1, 9901))) +
+  c <- ggplot(data=mut.smash.ir0, aes(x=10*seq(1, 100000))) +
     geom_ribbon(aes(ymax = thresh, ymin = pmin(thresh, mut.smash.ir0$V2)), fill = thresh_color, alpha = alpha) +
     geom_line(aes(y=mut.smash.ir0$V2), size = line_thickness) +
     geom_hline(yintercept = thresh, color = thresh_color, size = line_thickness) +
-    scale_y_continuous(breaks = c(0.0, 0.5, 1, 1.55, 2), labels = c("0.0", "0.5", "1.0", "thr\n1.5", "2.0"), limits = c(0, 2.1)) +
+    scale_y_continuous(breaks = c(0.0, 0.5, 1, 1.5, thresh, 2), labels = c("0.0", "0.5", "1.0", "1.5", "thr", "2.0"), limits = c(0, 2.1)) +
     ylab('Information content (bpb)') +
     ggtitle('Regular') +
     theme(axis.title.x=element_blank(),
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank())
   
-  d <- ggplot(data=mut.smash.ir1, aes(x=100*seq(1, 9901))) +
+  d <- ggplot(data=mut.smash.ir1, aes(x=10*seq(1, 100000))) +
     geom_ribbon(aes(ymax = thresh, ymin = pmin(thresh, mut.smash.ir1$V2)), fill = thresh_color, alpha = alpha) +
     geom_line(aes(y=mut.smash.ir1$V2), size = line_thickness) +
     geom_hline(yintercept = thresh, color = thresh_color, size = line_thickness) +
-    scale_y_continuous(breaks = c(0.0, 0.5, 1, 1.55, 2), labels = c("0.0", "0.5", "1.0", "thr\n1.5", "2.0"), limits = c(0, 2.1)) +
+    scale_y_continuous(breaks = c(0.0, 0.5, 1, 1.5, thresh, 2), labels = c("0.0", "0.5", "1.0", "1.5", "thr", "2.0"), limits = c(0, 2.1)) +
     xlab('Base position') +
     ylab('Information content (bpb)') +
     ggtitle('Inv. repeat')
@@ -62,7 +62,7 @@ if (compare_smash) {
   ggarrange(ggarrange(a, b, ncol = 1, heights = c(1, 1.2)),
             ggarrange(c, d, ncol = 1, heights = c(1, 1.2)),
             ncol = 1)
-  # ggsave("compare_smash_mut.bmp", height = 8.5)
+  ggsave("compare_smash_mut.bmp", height = 8.5)
 } else if (filters == 1) {
   N <- 100
   hann <- function(n) {
