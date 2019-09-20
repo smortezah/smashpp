@@ -31,6 +31,7 @@ sim_compare_smash = False
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 gga18_mga20 = False
 gga14_mga16 = False
+hsX_mmX = True
 
 hs21_gg21 = False
 S_cerevisiae_IV_C_glabrata_K = False
@@ -548,6 +549,17 @@ if gga14_mga16:
     tar = '16.seq'
     main_par = ' -rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 -e 1.95 -m 400000 -dp '
     viz_par = ' -viz -l 1 -p 1 -rn "GGA 14" -tn "MGA 16" -o GGA14_MGA16.svg '
+    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+            path_tar + tar)
+    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+
+if hsX_mmX:
+    path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
+    path_tar = path_data_real + 'mammalia' + sep + 'Mus_musculus' + sep
+    ref = 'X.seq'
+    tar = 'X.seq'
+    main_par = ' -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 100 -d 150000 -th 1.8 -m 5000000 -nr -sf '
+    viz_par = ' -viz '
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
