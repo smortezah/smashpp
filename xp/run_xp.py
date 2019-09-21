@@ -1,6 +1,7 @@
 import os
 from shutil import copyfile
 from pathlib import Path
+import timeit
 # import matplotlib.pyplot as plt
 # import numpy as np
 
@@ -31,7 +32,11 @@ sim_compare_smash = False
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 gga18_mga20 = False
 gga14_mga16 = False
-hsX_rnX = True
+hsX_rnX = False
+
+# Benchmark times
+bench_time = True
+
 
 hs21_gg21 = False
 S_cerevisiae_IV_C_glabrata_K = False
@@ -563,6 +568,90 @@ if hsX_rnX:
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import atexit
+# from time import time, strftime, localtime
+# from datetime import timedelta
+
+# def secondsToStr(elapsed=None):
+#     if elapsed is None:
+#         return strftime("%Y-%m-%d %H:%M:%S", localtime())
+#     else:
+#         return str(timedelta(seconds=elapsed))
+
+# def log(s, elapsed=None):
+#     line = "="*40
+#     print(line)
+#     print(secondsToStr(), '-', s)
+#     if elapsed:
+#         print("Elapsed time:", elapsed)
+#     print(line)
+#     print()
+
+# def endlog():
+#     end = time()
+#     elapsed = end-start
+#     log("End Program", secondsToStr(elapsed))
+
+# start = time()
+# atexit.register(endlog)
+# # log("Start Program")
+
+
+
+
+
+
+
+import time
+import functools
+
+
+def timer(func):
+    """Print the runtime of the decorated function"""
+    @functools.wraps(func)
+    def wrapper_timer(*args, **kwargs):
+        start_time = time.perf_counter()
+        value = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        run_time = end_time - start_time
+        print(f"{run_time:.0f}")
+        # print(f"Finished {func.__name__!r} in {run_time:.2f} secs")
+        return value
+    return wrapper_timer
+
+
+
+if bench_time:
+    # sim_small = True
+    ref = path_data_sim + 'RefS'
+    tar = path_data_sim + 'TarS'
+    # size = os.path.getsize(ref) + os.path.getsize(tar)
+
+
+    @timer
+    def waste_some_time():
+        # execute(smashpp + '-r ' + ref + ' -t ' + tar + ' -l 3 -d 1 -f 100 -dp > log')
+        for _ in range(100000000):
+            a = _ / 34
+            
+            
+        
+    
+
+    waste_some_time()
 
 if hs21_gg21:
     path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
