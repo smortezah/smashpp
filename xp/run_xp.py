@@ -31,7 +31,7 @@ sim_compare_smash = False
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 gga18_mga20 = False
 gga14_mga16 = False
-hsX_mmX = True
+hsX_rnX = True
 
 hs21_gg21 = False
 S_cerevisiae_IV_C_glabrata_K = False
@@ -553,12 +553,12 @@ if gga14_mga16:
             path_tar + tar)
     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
-if hsX_mmX:
-    path_tar = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
-    path_ref = path_data_real + 'mammalia' + sep + 'Mus_musculus' + sep
+if hsX_rnX:
+    path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
+    path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
     ref = 'X.seq'
     tar = 'X.seq'
-    main_par = ' -rm 18,0,0.001,0.95:8,0,0.001,0.95 -f 1000 -d 10000 -th 1.95 -m 100000 -nr -sf '
+    main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 800 -d 30000 -th 1.9 -m 100000 -nr -sf '
     viz_par = ' -viz '
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
