@@ -554,11 +554,11 @@ if gga14_mga16:
     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 if hsX_mmX:
-    path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
-    path_tar = path_data_real + 'mammalia' + sep + 'Mus_musculus' + sep
+    path_tar = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
+    path_ref = path_data_real + 'mammalia' + sep + 'Mus_musculus' + sep
     ref = 'X.seq'
     tar = 'X.seq'
-    main_par = ' -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 100 -d 150000 -th 1.8 -m 5000000 -nr -sf '
+    main_par = ' -rm 18,0,0.001,0.95:8,0,0.001,0.95 -f 1000 -d 10000 -th 1.95 -m 100000 -nr -sf '
     viz_par = ' -viz '
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
