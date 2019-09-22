@@ -265,9 +265,12 @@ if run_synthetic:
 
 if bench:
     # Synthetic
+    bench_synth_small = True
+    
     start_time = time.perf_counter()
 
-    run_synth_small()
+    if bench_synth_small:
+        run_synth_small()
     
     end_time = time.perf_counter()
     mori = f"{end_time - start_time:.0f}"
