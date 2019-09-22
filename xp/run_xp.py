@@ -1,7 +1,6 @@
-import os
+import os, time
 from shutil import copyfile
 from pathlib import Path
-import timeit
 # import matplotlib.pyplot as plt
 # import numpy as np
 
@@ -18,6 +17,8 @@ synth_mutation = False
 synth_compare_smash = False
 
 # Run on simulated dataset
+run_synthetic = True
+
 sim_small = False
 sim_medium = False
 sim_large = False
@@ -33,9 +34,6 @@ X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 gga18_mga20 = False
 gga14_mga16 = False
 hsX_rnX = False
-
-# Benchmark times
-bench_time = True
 
 
 hs21_gg21 = False
@@ -108,6 +106,13 @@ def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
     remove_all_ext(curr_dir, 'rev')
     remove_all_ext(curr_dir, 'inf')
     remove(curr_dir, '*.sys*x')
+
+
+def run_smashpp(path_ref, path_tar, ref_name, tar_name, par_main, par_viz):
+    execute(smashpp + ' -r ' + path_ref + ref_name + ' -t ' +
+            path_tar + tar_name + ' ' + par_main)
+    execute(smashpp + ' -viz ' + par_viz + ' ' +
+            ref_name + '.' + tar_name + '.pos')
 
 
 if get_goose:
@@ -245,6 +250,30 @@ for file in os.listdir(current_dir):
     if file.startswith("t_"):
         os.remove(os.path.join(current_dir, file))
 
+
+def run_synth_small():
+    ref_name = 'RefS'
+    tar_name = 'TarS'
+    par_main = '-l 3 -d 1 -f 100 -dp'
+    par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -o S.svg'
+    run_smashpp(path_data_sim+ref_name, path_data_sim +
+                tar_name, ref_name, tar_name, par_main, par_viz)
+
+
+if run_synthetic:
+    run_synth_small()
+
+if bench:
+    # Synthetic
+    start_time = time.perf_counter()
+
+    run_synth_small()
+    
+    end_time = time.perf_counter()
+    mori = f"{end_time - start_time:.0f}"
+    print(mori)
+
+
 if sim_small:
     ref = 'RefS'
     tar = 'TarS'
@@ -253,7 +282,7 @@ if sim_small:
     execute(smashpp + '-r ' + path_data_sim + ref +
             ' -t ' + path_data_sim + tar + ' -l 3 -d 1 -f 100 -dp ')
     execute(smashpp + viz_par + ' -o ' + out + ' ' + ref + '.' + tar + '.pos')
-
+    
 if sim_medium:
     ref = 'RefM'
     tar = 'TarM'
@@ -568,90 +597,6 @@ if hsX_rnX:
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
-
-
-
-
-
-
-
-
-
-
-
-
-
-# import atexit
-# from time import time, strftime, localtime
-# from datetime import timedelta
-
-# def secondsToStr(elapsed=None):
-#     if elapsed is None:
-#         return strftime("%Y-%m-%d %H:%M:%S", localtime())
-#     else:
-#         return str(timedelta(seconds=elapsed))
-
-# def log(s, elapsed=None):
-#     line = "="*40
-#     print(line)
-#     print(secondsToStr(), '-', s)
-#     if elapsed:
-#         print("Elapsed time:", elapsed)
-#     print(line)
-#     print()
-
-# def endlog():
-#     end = time()
-#     elapsed = end-start
-#     log("End Program", secondsToStr(elapsed))
-
-# start = time()
-# atexit.register(endlog)
-# # log("Start Program")
-
-
-
-
-
-
-
-import time
-import functools
-
-
-def timer(func):
-    """Print the runtime of the decorated function"""
-    @functools.wraps(func)
-    def wrapper_timer(*args, **kwargs):
-        start_time = time.perf_counter()
-        value = func(*args, **kwargs)
-        end_time = time.perf_counter()
-        run_time = end_time - start_time
-        print(f"{run_time:.0f}")
-        # print(f"Finished {func.__name__!r} in {run_time:.2f} secs")
-        return value
-    return wrapper_timer
-
-
-
-if bench_time:
-    # sim_small = True
-    ref = path_data_sim + 'RefS'
-    tar = path_data_sim + 'TarS'
-    # size = os.path.getsize(ref) + os.path.getsize(tar)
-
-
-    @timer
-    def waste_some_time():
-        # execute(smashpp + '-r ' + ref + ' -t ' + tar + ' -l 3 -d 1 -f 100 -dp > log')
-        for _ in range(100000000):
-            a = _ / 34
-            
-            
-        
-    
-
-    waste_some_time()
 
 if hs21_gg21:
     path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
