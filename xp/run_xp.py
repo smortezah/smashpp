@@ -14,9 +14,6 @@ run = False  # Run on synthetic and real dataset
 # # sim_permute_smash = False
 
 
-X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
-gga18_mga20 = False
-gga14_mga16 = False
 hsX_rnX = False
 
 # hs21_gg21 = False
@@ -30,7 +27,7 @@ hsX_rnX = False
 # e_coli_s_dysenteriae = False
 
 # Benchmark
-bench = True
+bench = False
 
 if os.name == 'posix':
     sep = '/'
@@ -63,6 +60,21 @@ synth_mutate_ref_name = 'RefMut'
 synth_mutate_tar_name = 'TarMut'
 synth_comp_smash_ref_name = 'RefComp'
 synth_comp_smash_tar_name = 'TarComp'
+real_PXO99A_MAFF_ref_name = 'PXO99A.seq'
+real_PXO99A_MAFF_tar_name = 'MAFF_311018.seq'
+real_PXO99A_MAFF_path_ref = path_data_real + 'bacteria' + \
+    sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
+real_PXO99A_MAFF_path_tar = real_PXO99A_MAFF_path_ref
+real_gga18_mga20_ref_name = '18.seq'
+real_gga18_mga20_tar_name = '20.seq'
+real_gga18_mga20_path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
+real_gga18_mga20_path_tar = path_data_real + \
+    'bird' + sep + 'Meleagris_gallopavo' + sep
+real_gga14_mga16_ref_name = '14.seq'
+real_gga14_mga16_tar_name = '16.seq'
+real_gga14_mga16_path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
+real_gga14_mga16_path_tar = path_data_real + \
+    'bird' + sep + 'Meleagris_gallopavo' + sep
 
 
 def execute(cmd):
@@ -319,38 +331,38 @@ def run_synth_comp_smash():
     # run_smash(path_ref + ref, path_tar + tar,
     #           ref_new, tar_new, par, current_dir)
 
+
 def run_real_PXO99A_MAFF():
-    path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
-    ref = 'PXO99A.seq'
-    tar = 'MAFF_311018.seq'
-    main_par = ' -rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar -dp '
-    viz_par = ' -viz -l 6 -s 10 -w 8 -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" -o PXO99A_MAFF_311018.svg '
-    execute(smashpp + main_par + ' -r ' + path + ref + ' -t ' +
-            path + tar)
-    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+    par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar -dp'
+    par_viz = '-l 6 -s 10 -w 8 -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" -o PXO99A_MAFF_311018.svg'
+    run_smashpp(real_PXO99A_MAFF_path_ref, real_PXO99A_MAFF_path_tar,
+                real_PXO99A_MAFF_ref_name, real_PXO99A_MAFF_tar_name, par_main, par_viz)
 
-if gga18_mga20:
-    path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
-    path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
-    ref = '18.seq'
-    tar = '20.seq'
-    main_par = ' -rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 -th 1.9 -dp '
-    viz_par = ' -viz -l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" -o GGA18_MGA20.svg '
+
+def run_real_gga18_mga20():
+    par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 -th 1.9 -dp'
+    par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" -o GGA18_MGA20.svg'
+    run_smashpp(real_gga18_mga20_path_ref, real_gga18_mga20_path_tar,
+                real_gga18_mga20_ref_name, real_gga18_mga20_tar_name, par_main, par_viz)
+
+
+def run_real_gga14_mga16():
+    par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 -e 1.95 -m 400000 -dp'
+    par_viz = '-l 1 -p 1 -rn "GGA 14" -tn "MGA 16" -o GGA14_MGA16.svg'
+    run_smashpp(real_gga14_mga16_path_ref, real_gga14_mga16_path_tar,
+                real_gga14_mga16_ref_name, real_gga14_mga16_tar_name, par_main, par_viz)
+
+
+if hsX_rnX:
+    path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
+    path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
+    ref = 'X.seq'
+    tar = 'X.seq'
+    main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 800 -d 30000 -th 1.9 -m 100000 -nr -sf '
+    viz_par = ' -viz '
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
-
-if gga14_mga16:
-    path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
-    path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
-    ref = '14.seq'
-    tar = '16.seq'
-    main_par = ' -rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 -e 1.95 -m 400000 -dp '
-    viz_par = ' -viz -l 1 -p 1 -rn "GGA 14" -tn "MGA 16" -o GGA14_MGA16.svg '
-    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-            path_tar + tar)
-    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
-
 
 if run:
     # Synthetic
@@ -363,20 +375,24 @@ if run:
 
     # Real
     run_real_PXO99A_MAFF()
+    run_real_gga18_mga20()
+    run_real_gga14_mga16()
 
 if bench:
     bench_result = []  # name, size, time
     
     # Synthetic
-    bench_synth_small = False
-    bench_synth_medium = False
-    bench_synth_large = False
-    bench_synth_xlarge = False
-    bench_synth_mutate = False
-    bench_synth_comp_smash = False
+    bench_synth_small = True
+    bench_synth_medium = True
+    bench_synth_large = True
+    bench_synth_xlarge = True
+    bench_synth_mutate = True
+    bench_synth_comp_smash = True
 
     # Real
-    bench_real = False
+    bench_real_PXO99A_MAFF = True
+    bench_real_gga18_mga20 = True
+    bench_real_gga14_mga16 = True
     
     if bench_synth_small:
         name = 'synth_small'
@@ -438,21 +454,38 @@ if bench:
         elapsed = f"{end_time - start_time:.0f}"
         bench_result.append([name, size, int(elapsed)])
 
-    # if bench_real:
+    if bench_real_PXO99A_MAFF:
+        name = 'real_PXO99A_MAFF'
+        size = os.path.getsize(real_PXO99A_MAFF_path_ref + real_PXO99A_MAFF_ref_name) + \
+            os.path.getsize(real_PXO99A_MAFF_path_tar +
+                            real_PXO99A_MAFF_tar_name)
+        start_time = time.perf_counter()
+        run_real_PXO99A_MAFF()
+        end_time = time.perf_counter()
+        elapsed = f"{end_time - start_time:.0f}"
+        bench_result.append([name, size, int(elapsed)])
 
+    if bench_real_gga18_mga20:
+        name = 'real_gga18_mga20'
+        size = os.path.getsize(real_gga18_mga20_path_ref + real_gga18_mga20_ref_name) + \
+            os.path.getsize(real_gga18_mga20_path_tar +
+                            real_gga18_mga20_tar_name)
+        start_time = time.perf_counter()
+        run_real_gga18_mga20()
+        end_time = time.perf_counter()
+        elapsed = f"{end_time - start_time:.0f}"
+        bench_result.append([name, size, int(elapsed)])
 
-    print(bench_result)
-
-if hsX_rnX:
-    path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
-    path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
-    ref = 'X.seq'
-    tar = 'X.seq'
-    main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 800 -d 30000 -th 1.9 -m 100000 -nr -sf '
-    viz_par = ' -viz '
-    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-            path_tar + tar)
-    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+    if bench_real_gga14_mga16:
+        name = 'real_gga14_mga16'
+        size = os.path.getsize(real_gga14_mga16_path_ref + real_gga14_mga16_ref_name) + \
+            os.path.getsize(real_gga14_mga16_path_tar +
+                            real_gga14_mga16_tar_name)
+        start_time = time.perf_counter()
+        run_real_gga14_mga16()
+        end_time = time.perf_counter()
+        elapsed = f"{end_time - start_time:.0f}"
+        bench_result.append([name, size, int(elapsed)])
 
 # if sim_permute:
 #     ref = 'RefPerm'
