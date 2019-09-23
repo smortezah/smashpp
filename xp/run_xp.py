@@ -4,37 +4,30 @@ from pathlib import Path
 # import matplotlib.pyplot as plt
 # import numpy as np
 
-# Get dependencies
-get_goose = False
+get_goose = False  # Get dependencies
+make_synth_data = False  # Make synthetic dataset
 
-# Make synthetic dataset
-make_synthetic = False
-
-# synth_permute = False
-
-# Run on synthetic dataset
-run_synthetic = False
+run = False  # Run on synthetic and real dataset
 
 # sim_permute = False
 # real_permute = False
 # # sim_permute_smash = False
 
-# Run on real dataset
+
 X_oryzae_pv_oryzae_PXO99A_MAFF_311018 = False
 gga18_mga20 = False
 gga14_mga16 = False
 hsX_rnX = False
 
-
-hs21_gg21 = False
-S_cerevisiae_IV_C_glabrata_K = False
-E_gossypii_I_S_cerevisiae_XVI = False
-S_cerevisiae_VIII_C_glabrata_XVI = False
-K_lactis_E_gossypii = False
-K_lactis_F_E_gossypii_VI = False
-S_cerevisiae_5_C_glabrata_I = False
-S_cerevisiae_14_C_glabrata_J = False
-e_coli_s_dysenteriae = False
+# hs21_gg21 = False
+# S_cerevisiae_IV_C_glabrata_K = False
+# E_gossypii_I_S_cerevisiae_XVI = False
+# S_cerevisiae_VIII_C_glabrata_XVI = False
+# K_lactis_E_gossypii = False
+# K_lactis_F_E_gossypii_VI = False
+# S_cerevisiae_5_C_glabrata_I = False
+# S_cerevisiae_14_C_glabrata_J = False
+# e_coli_s_dysenteriae = False
 
 # Benchmark
 bench = True
@@ -242,7 +235,7 @@ def make_synth_compare_smash():  # sizes: ref:1,000,000, tar:1,000,000
         append('t_' + str(i), path_data_synth + 'TarComp')
 
 
-if make_synthetic:
+if make_synth_data:
     make_synth_small()
     make_synth_medium()
     make_synth_large()
@@ -250,21 +243,6 @@ if make_synthetic:
     make_synth_mutate()
     make_synth_compare_smash()
 
-
-# if synth_permute:  # sizes: ref:15,000,000, tar:15,000,000
-#     execute(goose_fastqsimulation + synth_common_par +
-#             '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 15801  r_a')
-#     execute(goose_fastqsimulation + synth_common_par +
-#             '-f 0.2,0.2,0.3,0.3,0.0 -ls 100 -n 10000 -s 190  r_b')
-#     execute(goose_fastqsimulation + synth_common_par +
-#             '-f 0.3,0.3,0.2,0.2,0.0 -ls 100 -n 10000 -s 8642  r_c')
-#     cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
-
-# #     execute(goose_mutatedna + '-mr 0.03 < r_a > t_c')
-#     copyfile('r_a', 't_c')
-#     execute(smashpp_inv_rep + 'r_b t_b')
-#     copyfile('r_c', 't_a')
-#     cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
 
 for file in os.listdir(current_dir):
     if file.startswith("r_"):
@@ -308,7 +286,7 @@ def run_synth_mutate():
                 synth_mutate_tar_name, par_main, par_viz)
 
 
-def run_synth_compare_smash():
+def run_synth_comp_smash():
     # Smash++
     par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -dp -sf'
     par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 -o Mut_smash.svg'
@@ -341,13 +319,50 @@ def run_synth_compare_smash():
     # run_smash(path_ref + ref, path_tar + tar,
     #           ref_new, tar_new, par, current_dir)
 
-if run_synthetic:
+def run_real_PXO99A_MAFF():
+    path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
+    ref = 'PXO99A.seq'
+    tar = 'MAFF_311018.seq'
+    main_par = ' -rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar -dp '
+    viz_par = ' -viz -l 6 -s 10 -w 8 -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" -o PXO99A_MAFF_311018.svg '
+    execute(smashpp + main_par + ' -r ' + path + ref + ' -t ' +
+            path + tar)
+    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+
+if gga18_mga20:
+    path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
+    path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
+    ref = '18.seq'
+    tar = '20.seq'
+    main_par = ' -rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 -th 1.9 -dp '
+    viz_par = ' -viz -l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" -o GGA18_MGA20.svg '
+    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+            path_tar + tar)
+    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+
+if gga14_mga16:
+    path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
+    path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
+    ref = '14.seq'
+    tar = '16.seq'
+    main_par = ' -rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 -e 1.95 -m 400000 -dp '
+    viz_par = ' -viz -l 1 -p 1 -rn "GGA 14" -tn "MGA 16" -o GGA14_MGA16.svg '
+    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+            path_tar + tar)
+    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+
+
+if run:
+    # Synthetic
     run_synth_small()
     run_synth_medium()
     run_synth_large()
     run_synth_xlarge()
     run_synth_mutate()
-    run_synth_compare_smash()
+    run_synth_comp_smash()
+
+    # Real
+    run_real_PXO99A_MAFF()
 
 if bench:
     bench_result = []  # name, size, time
@@ -358,9 +373,10 @@ if bench:
     bench_synth_large = False
     bench_synth_xlarge = False
     bench_synth_mutate = False
+    bench_synth_comp_smash = False
 
     # Real
-    bench_real = True
+    bench_real = False
     
     if bench_synth_small:
         name = 'synth_small'
@@ -412,7 +428,31 @@ if bench:
         elapsed = f"{end_time - start_time:.0f}"
         bench_result.append([name, size, int(elapsed)])
 
+    if bench_synth_comp_smash:
+        name = 'synth_comp_smash'
+        size = os.path.getsize(path_data_synth + synth_comp_smash_ref_name) + \
+            os.path.getsize(path_data_synth + synth_comp_smash_tar_name)
+        start_time = time.perf_counter()
+        run_synth_comp_smash()
+        end_time = time.perf_counter()
+        elapsed = f"{end_time - start_time:.0f}"
+        bench_result.append([name, size, int(elapsed)])
+
+    # if bench_real:
+
+
     print(bench_result)
+
+if hsX_rnX:
+    path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
+    path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
+    ref = 'X.seq'
+    tar = 'X.seq'
+    main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 800 -d 30000 -th 1.9 -m 100000 -nr -sf '
+    viz_par = ' -viz '
+    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+            path_tar + tar)
+    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 # if sim_permute:
 #     ref = 'RefPerm'
@@ -610,137 +650,94 @@ if bench:
 # #     remove_all_ext(current_dir, 'rev')
 # #     remove(current_dir, '*.sys*')
 
-if X_oryzae_pv_oryzae_PXO99A_MAFF_311018:
-    path = path_data_real + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
-    ref = 'PXO99A.seq'
-    tar = 'MAFF_311018.seq'
-    main_par = ' -rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar -dp '
-    viz_par = ' -viz -l 6 -s 10 -w 8 -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" -o PXO99A_MAFF_311018.svg '
-    execute(smashpp + main_par + ' -r ' + path + ref + ' -t ' +
-            path + tar)
-    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+# if hs21_gg21:
+#     path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
+#     path_tar = path_data_real + 'mammalia' + sep + 'Gorilla_gorilla_gorilla' + sep
+#     ref = '21.seq'
+#     tar = '21.seq'
+#     main_par = ' -rm 18,0,0.001,0.95/5,0,0.9,0.95 -f 150 -d 12000 -th 0.1 -e 2 -m 1000000 -nr -sf '
+#     viz_par = ' -viz -l 1 '
+#     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+#             path_tar + tar)
+#     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
-if gga18_mga20:
-    path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
-    path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
-    ref = '18.seq'
-    tar = '20.seq'
-    main_par = ' -rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 -th 1.9 -dp '
-    viz_par = ' -viz -l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" -o GGA18_MGA20.svg '
-    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-            path_tar + tar)
-    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+# if E_gossypii_I_S_cerevisiae_XVI:
+#     path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
+#     path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+#     tar = 'I.seq'
+#     ref = 'XVI.seq'
+#     # out = 'S_cerevisiae_C_glabrata.svg'
+#     execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
+#             path_tar + tar + '  -l 0 -ar -f 200  -nr ')
+#     execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
-if gga14_mga16:
-    path_ref = path_data_real + 'bird' + sep + 'Gallus_gallus' + sep
-    path_tar = path_data_real + 'bird' + sep + 'Meleagris_gallopavo' + sep
-    ref = '14.seq'
-    tar = '16.seq'
-    main_par = ' -rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 -e 1.95 -m 400000 -dp '
-    viz_par = ' -viz -l 1 -p 1 -rn "GGA 14" -tn "MGA 16" -o GGA14_MGA16.svg '
-    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-            path_tar + tar)
-    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+# if S_cerevisiae_VIII_C_glabrata_XVI:
+#     path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+#     path_tar = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+#     ref = 'VIII.seq'
+#     tar = 'XVI.seq'
+#     # out = 'S_cerevisiae_C_glabrata.svg'
+#     execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
+#             path_tar + tar + '  -l 3 -f 500  -nr ')
+#     execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
-if hsX_rnX:
-    path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
-    path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
-    ref = 'X.seq'
-    tar = 'X.seq'
-    main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 800 -d 30000 -th 1.9 -m 100000 -nr -sf '
-    viz_par = ' -viz '
-    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-            path_tar + tar)
-    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+# if S_cerevisiae_IV_C_glabrata_K:
+#     path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+#     path_tar = path_data_real + 'fungi' + sep + 'Candida_glabrata' + sep
+#     ref = 'IV.seq'
+#     tar = 'K.seq'
+#     main_par = ' -rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 275 -th 1.98 -e 2 -m 5000 -nr -sf '
+#     viz_par = ' -viz -l 1 -o S_cerevisiae_IV_C_glabrata_K.svg '
+#     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+#             path_tar + tar)
+#     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
-if hs21_gg21:
-    path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
-    path_tar = path_data_real + 'mammalia' + sep + 'Gorilla_gorilla_gorilla' + sep
-    ref = '21.seq'
-    tar = '21.seq'
-    main_par = ' -rm 18,0,0.001,0.95/5,0,0.9,0.95 -f 150 -d 12000 -th 0.1 -e 2 -m 1000000 -nr -sf '
-    viz_par = ' -viz -l 1 '
-    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-            path_tar + tar)
-    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+# if K_lactis_E_gossypii:
+#     path_ref = path_data_real + 'fungi' + sep + 'Kluyveromyces_lactis' + sep
+#     path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
+#     ref = 'C.seq'
+#     tar = 'VI.seq'
+#     out = 'K_lactis_E_gossypii.svg'
+#     execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
+#             path_tar + tar + '  -l 5 -f 150  -nr -v')
+#     execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
-if E_gossypii_I_S_cerevisiae_XVI:
-    path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
-    path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-    tar = 'I.seq'
-    ref = 'XVI.seq'
-    # out = 'S_cerevisiae_C_glabrata.svg'
-    execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
-            path_tar + tar + '  -l 0 -ar -f 200  -nr ')
-    execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
+# if K_lactis_F_E_gossypii_VI:
+#     path_ref = path_data_real + 'fungi' + sep + 'Kluyveromyces_lactis' + sep
+#     path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
+#     ref = 'F.seq'
+#     tar = 'VI.seq'
+#     out = 'K_lactis_E_gossypii.svg'
+#     execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
+#             path_tar + tar + '  -l 3 -f 150  -nr -v')
+#     execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
-if S_cerevisiae_VIII_C_glabrata_XVI:
-    path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-    path_tar = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-    ref = 'VIII.seq'
-    tar = 'XVI.seq'
-    # out = 'S_cerevisiae_C_glabrata.svg'
-    execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
-            path_tar + tar + '  -l 3 -f 500  -nr ')
-    execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
+# if S_cerevisiae_5_C_glabrata_I:
+#     path_tar = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+#     path_ref = path_data_real + 'fungi' + sep + 'Candida_glabrata' + sep
+#     tar = '5.seq'
+#     ref = 'I.seq'
+#     out = 'S_cerevisiae_C_glabrata.svg'
+#     execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
+#             path_tar + tar + '  -l 5 -f 50  -nr -v')
+#     execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
-if S_cerevisiae_IV_C_glabrata_K:
-    path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-    path_tar = path_data_real + 'fungi' + sep + 'Candida_glabrata' + sep
-    ref = 'IV.seq'
-    tar = 'K.seq'
-    main_par = ' -rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 275 -th 1.98 -e 2 -m 5000 -nr -sf '
-    viz_par = ' -viz -l 1 -o S_cerevisiae_IV_C_glabrata_K.svg '
-    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-            path_tar + tar)
-    execute(smashpp + viz_par + ref + '.' + tar + '.pos')
+# if S_cerevisiae_14_C_glabrata_J:
+#     path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+#     path_tar = path_data_real + 'fungi' + sep + 'Candida_glabrata' + sep
+#     ref = '14.seq'
+#     tar = 'J.seq'
+#     out = 'S_cerevisiae_C_glabrata.svg'
+#     execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
+#             path_tar + tar + '  -l 5 -f 50  -nr -v')
+#     execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
 
-if K_lactis_E_gossypii:
-    path_ref = path_data_real + 'fungi' + sep + 'Kluyveromyces_lactis' + sep
-    path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
-    ref = 'C.seq'
-    tar = 'VI.seq'
-    out = 'K_lactis_E_gossypii.svg'
-    execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
-            path_tar + tar + '  -l 5 -f 150  -nr -v')
-    execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
-
-if K_lactis_F_E_gossypii_VI:
-    path_ref = path_data_real + 'fungi' + sep + 'Kluyveromyces_lactis' + sep
-    path_tar = path_data_real + 'fungi' + sep + 'Eremothecium_gossypii' + sep
-    ref = 'F.seq'
-    tar = 'VI.seq'
-    out = 'K_lactis_E_gossypii.svg'
-    execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
-            path_tar + tar + '  -l 3 -f 150  -nr -v')
-    execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
-
-if S_cerevisiae_5_C_glabrata_I:
-    path_tar = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-    path_ref = path_data_real + 'fungi' + sep + 'Candida_glabrata' + sep
-    tar = '5.seq'
-    ref = 'I.seq'
-    out = 'S_cerevisiae_C_glabrata.svg'
-    execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
-            path_tar + tar + '  -l 5 -f 50  -nr -v')
-    execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
-
-if S_cerevisiae_14_C_glabrata_J:
-    path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-    path_tar = path_data_real + 'fungi' + sep + 'Candida_glabrata' + sep
-    ref = '14.seq'
-    tar = 'J.seq'
-    out = 'S_cerevisiae_C_glabrata.svg'
-    execute(smashpp + '-r ' + path_ref + ref + ' -t ' +
-            path_tar + tar + '  -l 5 -f 50  -nr -v')
-    execute(smashpp + '-viz ' + ref + '.' + tar + '.pos')
-
-if e_coli_s_dysenteriae:
-    path = path_data_real + 'bacteria' + sep
-    ref = 'e_coli_O104_H4.seq'
-    tar = 's_dysenteriae_chr.seq'
-    out = 'e_coli_s_dysenteriae.svg'
-    execute(smashpp + '-r ' + path + ref + ' -t ' + path + tar +
-            ' -th 1.8 -l 3 -f 275 -m 7500')
-    # execute(smashpp + '-viz -p 1 -w 15 -s 60 -vv -o ' + out + ' ' +
-    #         ref + '.' + tar + '.pos')
+# if e_coli_s_dysenteriae:
+#     path = path_data_real + 'bacteria' + sep
+#     ref = 'e_coli_O104_H4.seq'
+#     tar = 's_dysenteriae_chr.seq'
+#     out = 'e_coli_s_dysenteriae.svg'
+#     execute(smashpp + '-r ' + path + ref + ' -t ' + path + tar +
+#             ' -th 1.8 -l 3 -f 275 -m 7500')
+#     # execute(smashpp + '-viz -p 1 -w 15 -s 60 -vv -o ' + out + ' ' +
+#     #         ref + '.' + tar + '.pos')
