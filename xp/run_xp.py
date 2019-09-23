@@ -17,7 +17,7 @@ synth_mutation = False
 synth_compare_smash = False
 
 # Run on simulated dataset
-run_synthetic = True
+run_synthetic = False
 
 sim_small = False
 sim_medium = False
@@ -46,6 +46,9 @@ S_cerevisiae_5_C_glabrata_I = False
 S_cerevisiae_14_C_glabrata_J = False
 e_coli_s_dysenteriae = False
 
+# Benchmark
+bench = True
+
 if os.name == 'posix':
     sep = '/'
 elif os.name == 'nt':
@@ -64,6 +67,11 @@ smash = path_bin + 'smash '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
 # sim_common_par = ' -w 10 -s 19 -vv '
 sim_common_par = ' -vv '
+
+synth_small_ref_name = 'RefS'
+synth_small_tar_name = 'TarS'
+synth_medium_ref_name = 'RefM'
+synth_medium_tar_name = 'TarM'
 
 
 def execute(cmd):
@@ -256,7 +264,7 @@ def run_synth_small():
     tar_name = 'TarS'
     par_main = '-l 3 -d 1 -f 100 -dp'
     par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -o S.svg'
-    run_smashpp(path_data_sim+ref_name, path_data_sim +
+    run_smashpp(path_data_sim + ref_name, path_data_sim +
                 tar_name, ref_name, tar_name, par_main, par_viz)
 
 
@@ -264,18 +272,33 @@ if run_synthetic:
     run_synth_small()
 
 if bench:
+    bench_table = []
+    
     # Synthetic
     bench_synth_small = True
+    bench_synth_medium = True
     
-    start_time = time.perf_counter()
-
     if bench_synth_small:
-        run_synth_small()
-    
-    end_time = time.perf_counter()
-    mori = f"{end_time - start_time:.0f}"
-    print(mori)
+        name = 'synth_small'
+        size = os.path.getsize(path_data_sim + synth_small_ref_name) + \
+            os.path.getsize(path_data_sim + synth_small_tar_name)
+        start_time = time.perf_counter()
+    #     run_synth_small()
+        end_time = time.perf_counter()
+        elapsed = f"{end_time - start_time:.0f}"
+        bench_table.append([name, size, int(elapsed)])
 
+    if bench_synth_medium:
+        name = 'synth_medium'
+        size = os.path.getsize(path_data_sim + synth_small_ref_name) + \
+            os.path.getsize(path_data_sim + synth_small_tar_name)
+        start_time = time.perf_counter()
+    #     run_synth_small()
+        end_time = time.perf_counter()
+        elapsed = f"{end_time - start_time:.0f}"
+        bench_table.append([name, size, int(elapsed)])
+
+    print(bench_table)
 
 if sim_small:
     ref = 'RefS'
