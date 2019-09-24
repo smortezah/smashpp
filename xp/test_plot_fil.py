@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-name = 'X.seq.X.seq.fil'
+name = '10.seq.17.seq.fil'
 
 y0, y1 = [], []
 for line0 in open('0.'+name, 'r'):
