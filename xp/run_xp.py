@@ -14,7 +14,9 @@ run = False  # Run on synthetic and real dataset
 # # sim_permute_smash = False
 
 
-hsX_rnX = False
+# todo
+REAL = True
+
 
 # hs21_gg21 = False
 # S_cerevisiae_IV_C_glabrata_K = False
@@ -353,12 +355,12 @@ def run_real_gga14_mga16():
                 real_gga14_mga16_ref_name, real_gga14_mga16_tar_name, par_main, par_viz)
 
 
-if hsX_rnX:
+if REAL:
     path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
     path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
     ref = 'X.seq'
     tar = 'X.seq'
-    main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 800 -d 30000 -th 1.9 -m 100000 -nr -sf '
+    main_par = ' -rm 18,0,0.001,0.95/3,0,0.001,0.95 -f 1500 -d 10000 -th 1.9 -m 100000 -nr -sf '
     viz_par = ' -viz '
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
@@ -486,6 +488,10 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.0f}"
         bench_result.append([name, size, int(elapsed)])
+
+    # todo. save result into file
+
+
 
 # if sim_permute:
 #     ref = 'RefPerm'
