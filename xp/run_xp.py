@@ -358,9 +358,9 @@ def run_real_gga14_mga16():
 if REAL:
     path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
     path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
-    ref = 'X.seq'
-    tar = 'X.seq'
-    main_par = ' -rm 18,0,0.001,0.95/3,0,0.001,0.95 -f 1500 -d 10000 -th 1.9 -m 100000 -nr -sf '
+    ref = '17.seq'
+    tar = '11.seq'
+    main_par = ' -rm 18,0,0.001,0.95/3,0,0.001,0.95 -f 1000 -d 12000 -th 1.9 -m 100000 -nr -sf '
     viz_par = ' -viz '
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
