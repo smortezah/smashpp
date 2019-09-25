@@ -363,9 +363,9 @@ if REAL:
     path_tar = path_data_real + 'mammalia' + sep + 'Sus_scrofa' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
-    ref = '12.seq'
-    tar = '11.seq'
-    main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 200 -d 10000 -th 0.1 -m 100000 -nr -sf '
+    ref = '6.seq'
+    tar = '8.seq'
+    main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 500 -d 20000 -th 0.1 -m 100000 -nr -sf '
     viz_par = ' -viz '
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
