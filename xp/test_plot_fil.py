@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+# name = '16.seq.11.seq.fil'
 name = '10.seq.17.seq.fil'
 
 y0, y1 = [], []
