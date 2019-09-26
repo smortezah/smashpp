@@ -1,4 +1,4 @@
-import os, time
+import os, time, csv, psutil
 from shutil import copyfile
 from pathlib import Path
 # import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ run = False  # Run on synthetic and real dataset
 
 
 # todo
-REAL = False
+REAL = True
 
 
 # hs21_gg21 = False
@@ -29,7 +29,7 @@ REAL = False
 # e_coli_s_dysenteriae = False
 
 # Benchmark
-bench = True
+bench = False
 
 if os.name == 'posix':
     sep = '/'
@@ -366,8 +366,8 @@ if REAL:
     # path_tar = path_data_real + 'mammalia' + sep + 'Sus_scrofa' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
-    ref = 'X.seq'
-    tar = 'X.seq'
+    ref = '2.seq'
+    tar = '8.seq'
     main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 30000 -d 10 -th 0.1 -m 100000 -nr -sf '
     viz_par = ' -viz '
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
@@ -413,6 +413,9 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.0f}"
         bench_result.append([name, size, int(elapsed)])
+
+        process = psutil.Process()
+        print(process.memory_info().rss)  # in bytes 
 
     # if bench_synth_medium:
     #     name = 'synth_medium'
@@ -497,9 +500,9 @@ if bench:
     #     elapsed = f"{end_time - start_time:.0f}"
     #     bench_result.append([name, size, int(elapsed)])
 
-    # todo. save result into file
-
-
+    # with open('bench.csv', 'w') as bench_file:
+    #     writer = csv.writer(bench_file)
+    #     writer.writerows(bench_result)
 
 # if sim_permute:
 #     ref = 'RefPerm'
