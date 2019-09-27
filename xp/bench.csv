@@ -1,1 +1,2 @@
-synth_small,3000,16.56,32.34
+name,size,time,memory
+synth_small,3000,0.00,10
