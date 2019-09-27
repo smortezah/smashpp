@@ -1,6 +1,7 @@
 import os, time, csv, psutil
 from shutil import copyfile
 from pathlib import Path
+from memory_profiler import memory_usage
 # import matplotlib.pyplot as plt
 # import numpy as np
 
@@ -15,7 +16,7 @@ run = False  # Run on synthetic and real dataset
 
 
 # todo
-REAL = True
+REAL = False
 
 
 # hs21_gg21 = False
@@ -29,7 +30,7 @@ REAL = True
 # e_coli_s_dysenteriae = False
 
 # Benchmark
-bench = False
+bench = True
 
 if os.name == 'posix':
     sep = '/'
@@ -409,13 +410,12 @@ if bench:
         size = os.path.getsize(path_data_synth + synth_small_ref_name) + \
             os.path.getsize(path_data_synth + synth_small_tar_name)
         start_time = time.perf_counter()
-        # run_synth_small()
+        memory = memory_usage(run_synth_small)
         end_time = time.perf_counter()
-        elapsed = f"{end_time - start_time:.0f}"
-        bench_result.append([name, size, int(elapsed)])
-
-        process = psutil.Process()
-        print(process.memory_info().rss)  # in bytes 
+        elapsed = f"{end_time - start_time:.2f}"
+        max_memory = f"{max(memory):.2f}"
+        bench_result.append([name, size, elapsed, max_memory])
+        # bench_result.append([name, size, int(elapsed), memory])
 
     # if bench_synth_medium:
     #     name = 'synth_medium'
@@ -500,9 +500,9 @@ if bench:
     #     elapsed = f"{end_time - start_time:.0f}"
     #     bench_result.append([name, size, int(elapsed)])
 
-    # with open('bench.csv', 'w') as bench_file:
-    #     writer = csv.writer(bench_file)
-    #     writer.writerows(bench_result)
+    with open('bench.csv', 'w') as bench_file:
+        writer = csv.writer(bench_file)
+        writer.writerows(bench_result)
 
 # if sim_permute:
 #     ref = 'RefPerm'
