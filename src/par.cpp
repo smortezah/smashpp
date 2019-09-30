@@ -653,6 +653,8 @@ void VizParam::parse(int argc, char**& argv) {
       inverse = false;
     } else if (*i == "-ng") {
       regular = false;
+    } else if (*i == "-stat") {
+      stat = true;
     } else if (*i == "-n") {
       showN = true;
     }
@@ -744,6 +746,8 @@ void VizParam::help() const {
 
   print_aligned("-n", "", "=", "show N bases", "->", "no");
   
+  print_aligned("-stat", "", "=", "save stats (*.csv)", "->", "stat.csv");
+
   print_aligned("-h", "", "=", "usage guide");
 
   print_aligned("-v", "", "=", "more information");

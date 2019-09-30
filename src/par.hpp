@@ -37,6 +37,7 @@ static constexpr uint8_t D{5};              // Depth of CML sketch
 static const std::string LBL_BAK{"_bk"};    // Label  - backup files
 static const std::string POS_HDR{"#" + SMASHPP};  // Hdr of pos file
 static constexpr int FILE_BUF{8 * 1024};  // 8K
+static const std::string IMAGE{"map.svg"};
 
 // Visualization
 static constexpr uint8_t MIN_LINK{1};
@@ -169,6 +170,7 @@ class VizParam {
   bool tickHumanRead;
   bool vertical;
   std::string refName, tarName;
+  bool stat;
 
   VizParam()
       : verbose(false),
@@ -177,7 +179,7 @@ class VizParam {
         showNRC(true),
         showRedun(true),
         showN(false),
-        image("map.svg"),
+        image(IMAGE),
         link(LINK),
         colorMode(COLOR),
         opacity(OPAC),
@@ -192,7 +194,8 @@ class VizParam {
         refTick(0),
         tarTick(0),
         tickHumanRead(true),
-        vertical(false) {}
+        vertical(false),
+        stat(false) {}
 
   void parse(int, char**&);
 

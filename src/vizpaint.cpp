@@ -89,7 +89,8 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   plot_seq_borders(fPlot, p->vertical);
   plot_title(fPlot, ref, tar, p->vertical);
   plot_legend(fPlot, p, std::max(n_refBases, n_tarBases));
-  print_log(n_regular, n_regularSolo, n_inverse, n_inverseSolo, n_ignored);
+  print_log(p->stat, p->image, n_regular, n_regularSolo, n_inverse,
+            n_inverseSolo, n_ignored);
 
   svg->print_tailer(fPlot);
   fPos.close();
@@ -2029,9 +2030,25 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   cylinder->plot(f);
 }
 
-inline void VizPaint::print_log(uint64_t n_regular, uint64_t n_regularSolo,
+inline void VizPaint::print_log(bool stat, std::string image,
+                                uint64_t n_regular, uint64_t n_regularSolo,
                                 uint64_t n_inverse, uint64_t n_inverseSolo,
                                 uint64_t n_ignored) const {
+  if (stat) {
+    std::string stat_file_name = STAT_NAME;
+    if (image != IMAGE) {
+      std::string temp = image;
+      temp.erase(std::end(temp) - 4, std::end(temp));
+      stat_file_name = temp + ".csv";
+    }
+
+    std::ofstream stat_file(stat_file_name);
+    stat_file << "Regular,RegularSolo,Inverted,InvertedSolo,Ignored\n";
+    stat_file << n_regular << ',' << n_regularSolo << ',' << n_inverse << ','
+              << n_inverseSolo << ',' << n_ignored;
+    stat_file.close();
+  }
+
   // Count '+' signs needed
   uint8_t n_pluses{0};
   if (n_regular != 0) ++n_pluses;
