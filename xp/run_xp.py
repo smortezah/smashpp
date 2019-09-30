@@ -399,7 +399,7 @@ if bench:
     bench_synth_medium = False
     bench_synth_large = False
     bench_synth_xlarge = False
-    bench_synth_mutate = True
+    bench_synth_mutate = False
     bench_synth_comp_smash = False
 
     # Real
