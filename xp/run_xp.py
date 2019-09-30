@@ -16,7 +16,7 @@ run = False  # Run on synthetic and real dataset
 
 
 # todo
-REAL = True
+REAL = False
 
 
 # hs21_gg21 = False
@@ -63,6 +63,8 @@ synth_mutate_ref_name = 'RefMut'
 synth_mutate_tar_name = 'TarMut'
 synth_comp_smash_ref_name = 'RefComp'
 synth_comp_smash_tar_name = 'TarComp'
+real_comp_smash_ref_name = 'VII.seq'
+real_comp_smash_tar_name = 'VII.seq'
 real_PXO99A_MAFF_ref_name = 'PXO99A.seq'
 real_PXO99A_MAFF_tar_name = 'MAFF_311018.seq'
 real_PXO99A_MAFF_path_ref = path_data_real + 'bacteria' + \
@@ -302,37 +304,37 @@ def run_synth_mutate():
 
 
 def run_synth_comp_smash():
-    # Smash++
-    par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -dp -sf'
-    par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 -o Mut_smash.svg'
-    run_smashpp(path_data_synth, path_data_synth, synth_comp_smash_ref_name,
-                synth_comp_smash_tar_name, par_main, par_viz)
+    a = True
+    b = True
+    
+    if a:
+        # Smash++
+        par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -dp -sf'
+        par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 -o     CompSmash.svg'
+        run_smashpp(path_data_synth, path_data_synth, synth_comp_smash_ref_name,
+                    synth_comp_smash_tar_name, par_main, par_viz)
 
-    # Smash
-    par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
-    run_smash(path_data_synth + synth_comp_smash_ref_name, path_data_synth + synth_comp_smash_tar_name, synth_comp_smash_ref_name, synth_comp_smash_tar_name, par, current_dir)
+        # Smash
+        par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
+        run_smash(path_data_synth + synth_comp_smash_ref_name, path_data_synth + synth_comp_smash_tar_name,
+                  synth_comp_smash_ref_name, synth_comp_smash_tar_name, par, current_dir)
 
-    # # b
-    # viz_par = ' -l 1 -w 13 -p 1 '
-    # ref = 'RefComp'
-    # tar = 'TarComp'
-    # path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-    # path_tar = path_data_real + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
-    # ref = 'VII.seq'
-    # ref_new = 'Sc' + ref
-    # tar = 'VII.seq'
-    # tar_new = 'Sp' + tar
+    if b:
+        path_ref = path_data_real + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+        path_tar = path_data_real + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
 
-    # # Smash++
-    # execute(smashpp + ' -r ' + path_ref + ref + ' -t ' +
-    #         path_tar + tar + ' -th 1.85 -l 3 -f 370 -d 100 -ar -dp -sf ')
-    # execute(smashpp + '-viz -rn Sc.VII -tn Sp.VII ' + viz_par +
-    #         '-o Sc_Sp_smash.svg ' + ref + '.' + tar + '.pos')
+        # Smash++
+        par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -dp -sf'
+        par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -o Sc_Sp_smash.svg'
+        run_smashpp(path_ref, path_tar, real_comp_smash_ref_name,
+                    real_comp_smash_tar_name, par_main, par_viz)
 
-    # # Smash
-    # par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
-    # run_smash(path_ref + ref, path_tar + tar,
-    #           ref_new, tar_new, par, current_dir)
+        # Smash
+        par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
+        ref_new_smash = 'Sc' + real_comp_smash_ref_name
+        tar_new_smash = 'Sp' + real_comp_smash_tar_name
+        run_smash(path_ref + real_comp_smash_ref_name, path_tar +
+                  real_comp_smash_tar_name, ref_new_smash, tar_new_smash, par, current_dir)
 
 
 def run_real_PXO99A_MAFF():
@@ -509,7 +511,7 @@ if bench:
 
     with open('bench.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
-        writer.writerow(['name', 'size', 'time', 'memory'])
+        writer.writerow(['name', 'size(B)', 'time(s)', 'memory(MB)'])
         writer.writerows(bench_result)
 
 # if sim_permute:
