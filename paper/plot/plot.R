@@ -3,6 +3,7 @@ library(ggpubr)
 library(grid)
 library(reshape2)
 library(scales)
+library(viridis)
 theme_set(theme_bw())
 
 compare_smash_a <- F
@@ -206,34 +207,38 @@ if (compare_smash_a) {
   large <- read.csv('L.csv')
   xlarge <- read.csv('XL.csv')
   mutate <- read.csv('Mut.csv')
-  # PXO99A.MAFF.311018 <- read.csv('PXO99A_MAFF_311018.csv')
-  # GGA18.MGA20 <- read.csv('GGA18_MGA20.csv')
-  # GGA14.MGA16 <- read.csv('GGA14_MGA16.csv')
+  PXO99A.MAFF.311018 <- read.csv('PXO99A_MAFF_311018.csv')
+  GGA18.MGA20 <- read.csv('GGA18_MGA20.csv')
+  GGA14.MGA16 <- read.csv('GGA14_MGA16.csv')
 
-  stat <- rbind(small, medium, large, xlarge, mutate #, 
-                # PXO99A.MAFF.311018,
-                # GGA18.MGA20, GGA14.MGA16
-                )
-  bench <- cbind(bench.file, stat)
-  
-  time.plot <- ggplot(
-    bench,
-    aes(
-      x = Size.B / (1024),
-      y = Time.s / (Regular + RegularSolo + Inverted + InvertedSolo),
-      # size = Regular + RegularSolo + Inverted + InvertedSolo,
-      color = as.factor(Size.B)
-    )
-  ) +
-    geom_point(size=4) +
-    geom_text(aes(label=Name), hjust=0.5, vjust=-1, size=3.5) +
-    scale_x_continuous(trans = log10_trans(),
-                     breaks = trans_breaks("log10", function(x) 10^x),
-                     labels = trans_format("log10", math_format(10^.x))) +
+  stat <- rbind(small, medium, large, xlarge, mutate, PXO99A.MAFF.311018, 
+                GGA18.MGA20, GGA14.MGA16)
+  Num.reg <- stat$Regular + stat$RegularSolo + stat$Inverted + stat$InvertedSolo
+  bench <- cbind(bench.file, Num.reg)
+
+  time.plot <- ggplot(bench,
+                      aes(
+                        x = Size.B / (1024),
+                        y = Time.s / Num.reg,
+                        # size = Num.reg,
+                        color = Num.reg
+                      )) +
+    geom_point(size = 4) +
+    geom_text(aes(label = Name),
+              hjust = 0.5,
+              vjust = 1.5,
+              size = 3.5,
+    ) +
+    scale_x_continuous(
+      trans = log10_trans(),
+      breaks = trans_breaks("log10", function(x) 10 ^ x),
+      labels = trans_format("log10", math_format(10 ^ .x))
+    ) +
+    coord_trans(x="log10") +
     xlab('Size (KB)') +
-    ylab('Time (sec)') +
+    ylab('Time (sec)') #+
     # labs(color = 'Size') +
-    theme(legend.position = 'none')
+    # theme(legend.position = 'none')
   
   time.plot
 } else if (filters == 1) {
