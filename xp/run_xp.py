@@ -408,7 +408,8 @@ if bench:
     bench_real_gga14_mga16 = True
     
     if bench_synth_small:
-        name = 'synth_small'
+        name = 'Small'
+        cat = 'Synthetic'
         size = os.path.getsize(path_data_synth + synth_small_ref_name) + \
             os.path.getsize(path_data_synth + synth_small_tar_name)
         start_time = time.perf_counter()
@@ -416,10 +417,11 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.2f}"
         max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, size, elapsed, max_memory])
+        bench_result.append([name, cat, size, elapsed, max_memory])
 
     if bench_synth_medium:
-        name = 'synth_medium'
+        name = 'Medium'
+        cat = 'Synthetic'
         size = os.path.getsize(path_data_synth + synth_medium_ref_name) + \
             os.path.getsize(path_data_synth + synth_medium_tar_name)
         start_time = time.perf_counter()
@@ -427,10 +429,11 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.0f}"
         max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, size, elapsed, max_memory])
+        bench_result.append([name, cat, size, elapsed, max_memory])
 
     if bench_synth_large:
-        name = 'synth_large'
+        name = 'Large'
+        cat = 'Synthetic'
         size = os.path.getsize(path_data_synth + synth_large_ref_name) + \
             os.path.getsize(path_data_synth + synth_large_tar_name)
         start_time = time.perf_counter()
@@ -438,10 +441,11 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.2f}"
         max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, size, elapsed, max_memory])
+        bench_result.append([name, cat, size, elapsed, max_memory])
 
     if bench_synth_xlarge:
-        name = 'synth_xlarge'
+        name = 'XLarge'
+        cat = 'Synthetic'
         size = os.path.getsize(path_data_synth + synth_xlarge_ref_name) + \
             os.path.getsize(path_data_synth + synth_xlarge_tar_name)
         start_time = time.perf_counter()
@@ -449,10 +453,11 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.0f}"
         max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, size, elapsed, max_memory])
+        bench_result.append([name, cat, size, elapsed, max_memory])
 
     if bench_synth_mutate:
-        name = 'synth_mutate'
+        name = 'Mutate'
+        cat = 'Synthetic'
         size = os.path.getsize(path_data_synth + synth_mutate_ref_name) + \
             os.path.getsize(path_data_synth + synth_mutate_tar_name)
         start_time = time.perf_counter()
@@ -460,10 +465,11 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.0f}"
         max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, size, elapsed, max_memory])
+        bench_result.append([name, cat, size, elapsed, max_memory])
 
     if bench_synth_comp_smash:
-        name = 'synth_comp_smash'
+        name = 'Comp_Smash'
+        cat = 'Synthetic'
         size = os.path.getsize(path_data_synth + synth_comp_smash_ref_name) + \
             os.path.getsize(path_data_synth + synth_comp_smash_tar_name)
         start_time = time.perf_counter()
@@ -471,10 +477,11 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.0f}"
         max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, size, elapsed, max_memory])
+        bench_result.append([name, cat, size, elapsed, max_memory])
 
     if bench_real_PXO99A_MAFF:
-        name = 'real_PXO99A_MAFF'
+        name = 'PXO99A_MAFF'
+        cat = 'Real'
         size = os.path.getsize(real_PXO99A_MAFF_path_ref + real_PXO99A_MAFF_ref_name) + \
             os.path.getsize(real_PXO99A_MAFF_path_tar +
                             real_PXO99A_MAFF_tar_name)
@@ -483,10 +490,11 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.0f}"
         max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, size, elapsed, max_memory])
+        bench_result.append([name, cat, size, elapsed, max_memory])
 
     if bench_real_gga18_mga20:
-        name = 'real_gga18_mga20'
+        name = 'GGA18_MGA20'
+        cat = 'Real'
         size = os.path.getsize(real_gga18_mga20_path_ref + real_gga18_mga20_ref_name) + \
             os.path.getsize(real_gga18_mga20_path_tar +
                             real_gga18_mga20_tar_name)
@@ -495,10 +503,11 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.0f}"
         max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, size, elapsed, max_memory])
+        bench_result.append([name, cat, size, elapsed, max_memory])
 
     if bench_real_gga14_mga16:
-        name = 'real_gga14_mga16'
+        name = 'GGA14_MGA16'
+        cat = 'Real'
         size = os.path.getsize(real_gga14_mga16_path_ref + real_gga14_mga16_ref_name) + \
             os.path.getsize(real_gga14_mga16_path_tar +
                             real_gga14_mga16_tar_name)
@@ -507,11 +516,11 @@ if bench:
         end_time = time.perf_counter()
         elapsed = f"{end_time - start_time:.0f}"
         max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, size, elapsed, max_memory])
+        bench_result.append([name, cat, size, elapsed, max_memory])
 
     with open('bench.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
-        writer.writerow(['name', 'size(B)', 'time(s)', 'memory(MB)'])
+        writer.writerow(['name', 'cat', 'size.B', 'time.s', 'memory.MB'])
         writer.writerows(bench_result)
 
 # if sim_permute:

@@ -7,6 +7,7 @@ theme_set(theme_bw())
 
 compare_smash_a <- F
 compare_smash_b <- F
+bench <- T
 filters <- F
 filters_scatter <- F
 simil <- F
@@ -198,6 +199,8 @@ if (compare_smash_a) {
             ggarrange(c, d, ncol = 1, heights = c(1, 1.2)),
             ncol = 1)
   ggsave("compare_smash_Sc_Sp.bmp", height = 8.5)
+} else if (bench) {
+  bench <- read.csv('bench.csv')
 } else if (filters == 1) {
   N <- 100
   hann <- function(n) {
