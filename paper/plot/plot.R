@@ -200,15 +200,39 @@ if (compare_smash_a) {
             ncol = 1)
   ggsave("compare_smash_Sc_Sp.bmp", height = 8.5)
 } else if (bench) {
-  bench <- read.csv('bench.csv')
+  bench.file <- read.csv('bench.csv')
+  small <- read.csv('S.csv')
+  medium <- read.csv('M.csv')
+  large <- read.csv('L.csv')
+  # xlarge <- read.csv('XL.csv')
+  # mutate <- read.csv('Mut.csv')
+  # PXO99A.MAFF.311018 <- read.csv('PXO99A_MAFF_311018.csv')
+  # GGA18.MGA20 <- read.csv('GGA18_MGA20.csv')
+  # GGA14.MGA16 <- read.csv('GGA14_MGA16.csv')
+
+  stat <- rbind(small, medium, large)
+  # stat <- rbind(small, medium, large, xlarge, mutate, PXO99A.MAFF.311018, 
+  #               GGA18.MGA20, GGA14.MGA16)
+  bench <- cbind(bench.file, stat)
   
-  time.plot <- ggplot(bench, aes(x=size.B/(1024), y=time.s)) +
-    geom_point() +
+  time.plot <- ggplot(
+    bench,
+    aes(
+      x = Size.B / (1024),
+      y = Time.s / (Regular + RegularSolo + Inverted + InvertedSolo),
+      # size = Regular + RegularSolo + Inverted + InvertedSolo,
+      color = as.factor(Size.B)
+    )
+  ) +
+    geom_point(size=4) +
+    geom_text(aes(label=Name), hjust=0.5, vjust=-1, size=3.5) +
     scale_x_continuous(trans = log10_trans(),
                      breaks = trans_breaks("log10", function(x) 10^x),
                      labels = trans_format("log10", math_format(10^.x))) +
     xlab('Size (KB)') +
-    ylab('Time (sec)')
+    ylab('Time (sec)') +
+    # labs(color = 'Size') +
+    theme(legend.position = 'none')
   
   time.plot
 } else if (filters == 1) {

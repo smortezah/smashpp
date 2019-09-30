@@ -2045,7 +2045,7 @@ inline void VizPaint::print_log(bool stat, std::string image,
     std::ofstream stat_file(stat_file_name);
     stat_file << "Regular,RegularSolo,Inverted,InvertedSolo,Ignored\n";
     stat_file << n_regular << ',' << n_regularSolo << ',' << n_inverse << ','
-              << n_inverseSolo << ',' << n_ignored;
+              << n_inverseSolo << ',' << n_ignored << '\n';
     stat_file.close();
   }
 
