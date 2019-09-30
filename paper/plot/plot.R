@@ -201,6 +201,16 @@ if (compare_smash_a) {
   ggsave("compare_smash_Sc_Sp.bmp", height = 8.5)
 } else if (bench) {
   bench <- read.csv('bench.csv')
+  
+  time.plot <- ggplot(bench, aes(x=size.B/(1024), y=time.s)) +
+    geom_point() +
+    scale_x_continuous(trans = log10_trans(),
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x))) +
+    xlab('Size (KB)') +
+    ylab('Time (sec)')
+  
+  time.plot
 } else if (filters == 1) {
   N <- 100
   hann <- function(n) {
