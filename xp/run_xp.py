@@ -30,7 +30,7 @@ REAL = False
 # e_coli_s_dysenteriae = False
 
 # Benchmark
-bench = False
+bench = True
 
 if os.name == 'posix':
     sep = '/'
@@ -270,35 +270,35 @@ for file in os.listdir(current_dir):
 
 def run_synth_small():
     par_main = '-l 3 -d 1 -f 100 -dp'
-    par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -o S.svg'
+    par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -stat -o S.svg'
     run_smashpp(path_data_synth, path_data_synth, synth_small_ref_name,
                 synth_small_tar_name, par_main, par_viz)
 
 
 def run_synth_medium():
     par_main = '-l 3 -d 100 -f 50 -dp'
-    par_viz = '-p 1 -l 1 -w 13 -vv -o M.svg'
+    par_viz = '-p 1 -l 1 -w 13 -vv -stat -o M.svg'
     run_smashpp(path_data_synth, path_data_synth, synth_medium_ref_name,
                 synth_medium_tar_name, par_main, par_viz)
 
 
 def run_synth_large():
     par_main = '-l 3 -d 100 -f 135 -dp'
-    par_viz = '-p 1 -l 1 -w 13 -vv -o L.svg'
+    par_viz = '-p 1 -l 1 -w 13 -vv -stat -o L.svg'
     run_smashpp(path_data_synth, path_data_synth, synth_large_ref_name,
                 synth_large_tar_name, par_main, par_viz)
 
 
 def run_synth_xlarge():
     par_main = '-l 3 -d 100 -f 275 -dp'
-    par_viz = '-p 1 -l 1 -w 13 -vv -o XL.svg'
+    par_viz = '-p 1 -l 1 -w 13 -vv -stat -o XL.svg'
     run_smashpp(path_data_synth, path_data_synth, synth_xlarge_ref_name,
                 synth_xlarge_tar_name, par_main, par_viz)
 
 
 def run_synth_mutate():
     par_main = '-th 1.97 -l 3 -d 600 -f 100 -m 15000 -dp'
-    par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -vv -o Mut.svg'
+    par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -vv -stat -o Mut.svg'
     run_smashpp(path_data_synth, path_data_synth, synth_mutate_ref_name,
                 synth_mutate_tar_name, par_main, par_viz)
 
@@ -310,7 +310,7 @@ def run_synth_comp_smash():
     if a:
         # Smash++
         par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -dp -sf'
-        par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 -o     CompSmash.svg'
+        par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 -stat -o CompSmash.svg'
         run_smashpp(path_data_synth, path_data_synth, synth_comp_smash_ref_name,
                     synth_comp_smash_tar_name, par_main, par_viz)
 
@@ -325,7 +325,7 @@ def run_synth_comp_smash():
 
         # Smash++
         par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -dp -sf'
-        par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -o Sc_Sp_smash.svg'
+        par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat -o Sc_Sp_smash.svg'
         run_smashpp(path_ref, path_tar, real_comp_smash_ref_name,
                     real_comp_smash_tar_name, par_main, par_viz)
 
@@ -339,21 +339,21 @@ def run_synth_comp_smash():
 
 def run_real_PXO99A_MAFF():
     par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar -dp'
-    par_viz = '-l 6 -s 10 -w 8 -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" -o PXO99A_MAFF_311018.svg'
+    par_viz = '-l 6 -s 10 -w 8 -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" -stat -o PXO99A_MAFF_311018.svg'
     run_smashpp(real_PXO99A_MAFF_path_ref, real_PXO99A_MAFF_path_tar,
                 real_PXO99A_MAFF_ref_name, real_PXO99A_MAFF_tar_name, par_main, par_viz)
 
 
 def run_real_gga18_mga20():
     par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 -th 1.9 -dp'
-    par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" -o GGA18_MGA20.svg'
+    par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" -stat -o GGA18_MGA20.svg'
     run_smashpp(real_gga18_mga20_path_ref, real_gga18_mga20_path_tar,
                 real_gga18_mga20_ref_name, real_gga18_mga20_tar_name, par_main, par_viz)
 
 
 def run_real_gga14_mga16():
     par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 -e 1.95 -m 400000 -dp'
-    par_viz = '-l 1 -p 1 -rn "GGA 14" -tn "MGA 16" -o GGA14_MGA16.svg'
+    par_viz = '-l 1 -p 1 -rn "GGA 14" -tn "MGA 16" -stat -o GGA14_MGA16.svg'
     run_smashpp(real_gga14_mga16_path_ref, real_gga14_mga16_path_tar,
                 real_gga14_mga16_ref_name, real_gga14_mga16_tar_name, par_main, par_viz)
 
@@ -398,14 +398,14 @@ if bench:
     bench_synth_small = True
     bench_synth_medium = True
     bench_synth_large = True
-    bench_synth_xlarge = True
-    bench_synth_mutate = True
-    bench_synth_comp_smash = True
+    bench_synth_xlarge = False
+    bench_synth_mutate = False
+    bench_synth_comp_smash = False
 
     # Real
-    bench_real_PXO99A_MAFF = True
-    bench_real_gga18_mga20 = True
-    bench_real_gga14_mga16 = True
+    bench_real_PXO99A_MAFF = False
+    bench_real_gga18_mga20 = False
+    bench_real_gga14_mga16 = False
     
     if bench_synth_small:
         name = 'Small'

@@ -55,7 +55,13 @@
         "cinttypes": "cpp",
         "typeindex": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "algorithm": "cpp",
+        "iterator": "cpp",
+        "memory_resource": "cpp",
+        "random": "cpp",
+        "string": "cpp",
+        "bit": "cpp"
     },
     "latex-workshop.latexindent.path": "C:\\Program Files\\MiKTeX 2.9\\miktex\\bin\\x64\\latexindent.exe",
     "latex-workshop.intellisense.package.enabled": true,

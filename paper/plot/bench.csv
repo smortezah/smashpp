@@ -1,4 +1,4 @@
 name,cat,size.B,time.s,memory.MB
-Small,Synthetic,3000,18.02,32.39
-Medium,Synthetic,200000,13,32.44
-Large,Synthetic,10000000,43.5,32.44
+Small,Synthetic,3000,17.76,32.38
+Medium,Synthetic,200000,14,32.43
+Large,Synthetic,10000000,42.11,32.43

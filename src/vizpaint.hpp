@@ -19,6 +19,7 @@ static constexpr auto SPACE_TUNE{6.0f};
 static constexpr auto TITLE_SPACE{16.0f};
 static constexpr auto VERT_MIDDLE{0.35f};
 static constexpr auto VERT_BOTTOM{0.7f};
+static const std::string STAT_NAME{"stat.csv"};
 
 struct Position {
   int64_t begRef;
@@ -181,7 +182,8 @@ class VizPaint {
   void plot_pos_vertical(std::ofstream&, std::unique_ptr<PosPlot>&) const;
   void plot_Ns(std::ofstream&, float, bool) const;
   void plot_seq_borders(std::ofstream&, bool) const;
-  void print_log(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t) const;
+  void print_log(bool, std::string, uint64_t, uint64_t, uint64_t, uint64_t,
+                 uint64_t) const;
   // void print_pos (ofstream&, VizParam&, const vector<Position>&, uint64_t,
   // string&&);
   void set_n_color(std::vector<Position>&);
