@@ -520,7 +520,7 @@ if bench:
 
     with open('bench.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
-        writer.writerow(['name', 'cat', 'size.B', 'time.s', 'memory.MB'])
+        writer.writerow(['Name', 'Cat', 'Size.B', 'Time.s', 'Memory.MB'])
         writer.writerows(bench_result)
 
 # if sim_permute:
