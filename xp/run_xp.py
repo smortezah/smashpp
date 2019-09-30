@@ -398,7 +398,7 @@ if bench:
     bench_synth_small = True
     bench_synth_medium = True
     bench_synth_large = True
-    bench_synth_xlarge = False
+    bench_synth_xlarge = True
     bench_synth_mutate = False
     bench_synth_comp_smash = False
 
