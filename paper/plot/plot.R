@@ -204,13 +204,13 @@ if (compare_smash_a) {
   small <- read.csv('S.csv')
   medium <- read.csv('M.csv')
   large <- read.csv('L.csv')
-  # xlarge <- read.csv('XL.csv')
+  xlarge <- read.csv('XL.csv')
   # mutate <- read.csv('Mut.csv')
   # PXO99A.MAFF.311018 <- read.csv('PXO99A_MAFF_311018.csv')
   # GGA18.MGA20 <- read.csv('GGA18_MGA20.csv')
   # GGA14.MGA16 <- read.csv('GGA14_MGA16.csv')
 
-  stat <- rbind(small, medium, large)
+  stat <- rbind(small, medium, large, xlarge)
   # stat <- rbind(small, medium, large, xlarge, mutate, PXO99A.MAFF.311018, 
   #               GGA18.MGA20, GGA14.MGA16)
   bench <- cbind(bench.file, stat)
