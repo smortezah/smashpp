@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
-name = '2.seq.8.seq.fil'
-# name = '13.seq.1.seq.fil'
+# name = 'X.seq.X.seq.fil'
+name = '11.seq.21.seq.fil'
 
 y0, y1 = [], []
 for line0 in open('0.'+name, 'r'):
