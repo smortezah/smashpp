@@ -397,8 +397,8 @@ if REAL:
     main_par = ' -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 700 -d 13500 ' + \
         '-th 1.85 -m 5000 -nr -sf -ar '
     viz_par = ' -viz '
-    # execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
-    #         path_tar + tar)
+    execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
+            path_tar + tar)
     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 if run:
