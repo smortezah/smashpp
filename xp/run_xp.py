@@ -379,21 +379,23 @@ def run_real_gga14_mga16():
 
 
 if REAL:
-    # path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
+    path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
     # path_ref = path_data_real + 'mammalia' + sep + 'Mus_musculus' + sep
     # path_ref = path_data_real + 'mammalia' + sep + \
     #     'Monodelphis_domestica' + sep
-    path_ref = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep
+    # path_ref = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep
     # path_ref = path_data_real + 'mammalia' + sep + 'Sus_scrofa' + sep
     # path_ref = path_data_real + 'mammalia' + sep + 'Ovis_aries' + sep
-    path_tar = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep
+    # path_tar = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep
+    # path_tar = path_data_real + 'mammalia' + sep + 'Ovis_aries' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Sus_scrofa' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
-    ref = '11.seq'
-    tar = '21.seq'
-    main_par = ' -rm 18,0,0.001,0.95/5,0,0.001,0.95 -f 300 -d 10000 ' + \
-        '-th 0.1 -m 100000 -nr -sf '
+    path_tar = path_data_real + 'mammalia' + sep + 'Pan_troglodytes' + sep
+    ref = '16.seq'
+    tar = '16.seq'
+    main_par = ' -rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 500 -d 1000 ' + \
+        '-th 1.8 -m 10000 -nr -sf -ar '
     viz_par = ' -viz '
     execute(smashpp + main_par + ' -r ' + path_ref + ref + ' -t ' +
             path_tar + tar)
