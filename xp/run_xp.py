@@ -406,8 +406,8 @@ if REAL:
     path_tar = path_data_real + 'mammalia' + sep + 'Pan_troglodytes' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep + \
     #     'UMD3.1' + sep
-    # path_tar = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Ovis_aries' + sep
+    # path_tar = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Sus_scrofa' + sep
     ref = '12.seq'
