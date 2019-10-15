@@ -314,7 +314,7 @@ def run_synth_mutate():
                 synth_mutate_tar_name, par_main, par_viz)
 
 
-def run_synth_comp_smash():
+def run_comp_smash():
     a = True
     b = True
 
@@ -426,13 +426,15 @@ if run:
     run_synth_large()
     run_synth_xlarge()
     run_synth_mutate()
-    run_synth_comp_smash()
 
     # Real
     run_real_PXO99A_MAFF()
     run_real_gga18_mga20()
     run_real_gga14_mga16()
     run_real_hs12_pt12()
+
+    # Compare with Smash. Synthetic & Real
+    run_comp_smash()
 
 if bench:
     bench_result = []  # name, size, time, memory
@@ -443,12 +445,13 @@ if bench:
     bench_synth_large = False
     bench_synth_xlarge = False
     bench_synth_mutate = False
-    bench_synth_comp_smash = False
+    bench_comp_smash = False
 
     # Real
     bench_real_PXO99A_MAFF = False
     bench_real_gga18_mga20 = False
     bench_real_gga14_mga16 = False
+    bench_real_hs12_pt12 = False
 
     if bench_synth_small:
         name = 'Small'
@@ -510,18 +513,6 @@ if bench:
         max_memory = f"{max(memory):.2f}"
         bench_result.append([name, cat, size, elapsed, max_memory])
 
-    if bench_synth_comp_smash:
-        name = 'Comp_Smash'
-        cat = 'Synthetic'
-        size = os.path.getsize(path_data_synth + synth_comp_smash_ref_name) + \
-            os.path.getsize(path_data_synth + synth_comp_smash_tar_name)
-        start_time = time.perf_counter()
-        memory = memory_usage(run_synth_comp_smash)
-        end_time = time.perf_counter()
-        elapsed = f"{end_time - start_time:.0f}"
-        max_memory = f"{max(memory):.2f}"
-        bench_result.append([name, cat, size, elapsed, max_memory])
-
     if bench_real_PXO99A_MAFF:
         name = 'PXO99A_MAFF'
         cat = 'Real'
@@ -566,6 +557,33 @@ if bench:
         elapsed = f"{end_time - start_time:.0f}"
         max_memory = f"{max(memory):.2f}"
         bench_result.append([name, cat, size, elapsed, max_memory])
+
+    if bench_real_hs12_pt12:
+        name = 'HS12_PT12'
+        cat = 'Real'
+        size = \
+            os.path.getsize(real_hs12_pt12_path_ref +
+                            real_hs12_pt12_ref_name) + \
+            os.path.getsize(real_hs12_pt12_path_tar +
+                            real_hs12_pt12_tar_name)
+        start_time = time.perf_counter()
+        memory = memory_usage(run_real_hs12_pt12)
+        end_time = time.perf_counter()
+        elapsed = f"{end_time - start_time:.0f}"
+        max_memory = f"{max(memory):.2f}"
+        bench_result.append([name, cat, size, elapsed, max_memory])
+
+    # if bench_comp_smash:
+    #     name = 'Comp_Smash'
+    #     cat = 'Synthetic'
+    #     size = os.path.getsize(path_data_synth + synth_comp_smash_ref_name) + \
+    #         os.path.getsize(path_data_synth + synth_comp_smash_tar_name)
+    #     start_time = time.perf_counter()
+    #     memory = memory_usage(run_comp_smash)
+    #     end_time = time.perf_counter()
+    #     elapsed = f"{end_time - start_time:.0f}"
+    #     max_memory = f"{max(memory):.2f}"
+    #     bench_result.append([name, cat, size, elapsed, max_memory])
 
     with open('bench.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
