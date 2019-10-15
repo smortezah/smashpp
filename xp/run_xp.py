@@ -11,7 +11,7 @@ from memory_profiler import memory_usage
 get_goose = False  # Get dependencies
 make_synth_data = False  # Make synthetic dataset
 
-run = True  # Run on synthetic and real dataset
+run = False  # Run on synthetic and real dataset
 
 # sim_permute = False
 # real_permute = False
