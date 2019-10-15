@@ -85,6 +85,12 @@ real_gga14_mga16_path_ref = path_data_real + 'bird' + sep + \
     'Gallus_gallus' + sep
 real_gga14_mga16_path_tar = path_data_real + 'bird' + sep + \
     'Meleagris_gallopavo' + sep
+real_hs12_pt12_path_ref = path_data_real + 'mammalia' + sep + \
+    'Homo_sapiens' + sep
+real_hs12_pt12_path_tar = path_data_real + 'mammalia' + sep + \
+    'Pan_troglodytes' + sep
+real_hs12_pt12_ref_name = '12.seq'
+real_hs12_pt12_tar_name = '12.seq'
 
 
 def execute(cmd):
@@ -381,8 +387,8 @@ def run_real_gga14_mga16():
 def run_real_hs12_pt12():
     par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000 -dp'
     par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" -stat -o HS12_PT12.svg'
-    run_smashpp(real_gga14_mga16_path_ref, real_gga14_mga16_path_tar,
-                real_gga14_mga16_ref_name, real_gga14_mga16_tar_name,
+    run_smashpp(real_hs12_pt12_path_ref, real_hs12_pt12_path_tar,
+                real_hs12_pt12_ref_name, real_hs12_pt12_tar_name,
                 par_main, par_viz)
 
 
