@@ -408,8 +408,8 @@ if REAL:
     #     'UMD3.1' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Ovis_aries' + sep
-    # path_tar = path_data_real + 'mammalia' + sep + 'Sus_scrofa' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
+    # path_tar = path_data_real + 'mammalia' + sep + 'Sus_scrofa' + sep
     ref = '12.seq'
     tar = '12.seq'
     main_par = ' -rm 16,0,0.001,0.95/3,0,0.001,0.95 -f 200 ' + \
