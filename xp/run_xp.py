@@ -11,7 +11,7 @@ from memory_profiler import memory_usage
 get_goose = False  # Get dependencies
 make_synth_data = False  # Make synthetic dataset
 
-run = False  # Run on synthetic and real dataset
+run = True  # Run on synthetic and real dataset
 
 # sim_permute = False
 # real_permute = False
@@ -19,7 +19,7 @@ run = False  # Run on synthetic and real dataset
 
 
 # todo
-REAL = True
+REAL = False
 
 
 # hs21_gg21 = False
@@ -378,6 +378,14 @@ def run_real_gga14_mga16():
                 par_main, par_viz)
 
 
+def run_real_hs12_pt12():
+    par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000 -dp'
+    par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" -stat -o HS12_PT12.svg'
+    run_smashpp(real_gga14_mga16_path_ref, real_gga14_mga16_path_tar,
+                real_gga14_mga16_ref_name, real_gga14_mga16_tar_name,
+                par_main, par_viz)
+
+
 if REAL:
     path_ref = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
     # path_ref = path_data_real + 'mammalia' + sep + 'Mus_musculus' + sep
@@ -407,18 +415,19 @@ if REAL:
     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 if run:
-    # Synthetic
-    run_synth_small()
-    run_synth_medium()
-    run_synth_large()
-    run_synth_xlarge()
-    run_synth_mutate()
-    run_synth_comp_smash()
+    # # Synthetic
+    # run_synth_small()
+    # run_synth_medium()
+    # run_synth_large()
+    # run_synth_xlarge()
+    # run_synth_mutate()
+    # run_synth_comp_smash()
 
-    # Real
-    run_real_PXO99A_MAFF()
-    run_real_gga18_mga20()
-    run_real_gga14_mga16()
+    # # Real
+    # run_real_PXO99A_MAFF()
+    # run_real_gga18_mga20()
+    # run_real_gga14_mga16()
+    run_real_hs12_pt12()
 
 if bench:
     bench_result = []  # name, size, time, memory
