@@ -421,18 +421,18 @@ if REAL:
     execute(smashpp + viz_par + ref + '.' + tar + '.pos')
 
 if run:
-    # # Synthetic
-    # run_synth_small()
-    # run_synth_medium()
-    # run_synth_large()
-    # run_synth_xlarge()
-    # run_synth_mutate()
-    # run_synth_comp_smash()
+    # Synthetic
+    run_synth_small()
+    run_synth_medium()
+    run_synth_large()
+    run_synth_xlarge()
+    run_synth_mutate()
+    run_synth_comp_smash()
 
-    # # Real
-    # run_real_PXO99A_MAFF()
-    # run_real_gga18_mga20()
-    # run_real_gga14_mga16()
+    # Real
+    run_real_PXO99A_MAFF()
+    run_real_gga18_mga20()
+    run_real_gga14_mga16()
     run_real_hs12_pt12()
 
 if bench:
