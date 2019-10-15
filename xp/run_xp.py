@@ -401,18 +401,17 @@ if REAL:
     # path_ref = path_data_real + 'mammalia' + sep + 'Sus_scrofa' + sep
     # path_ref = path_data_real + 'mammalia' + sep + 'Ovis_aries' + sep
     # path_ref = path_data_real + 'mammalia' + sep + 'Ovis_aries' + sep + \
-        # 'v3.1' + sep
+    #     'v3.1' + sep
+    # path_tar = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep + \
     #     'UMD3.1' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Bos_taurus' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Ovis_aries' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Sus_scrofa' + sep
-    # path_tar = path_data_real + 'mammalia' + sep + 'Homo_sapiens' + sep
     # path_tar = path_data_real + 'mammalia' + sep + 'Rattus_norvegicus' + sep
     path_tar = path_data_real + 'mammalia' + sep + 'Pan_troglodytes' + sep
     ref = '12.seq'
     tar = '12.seq'
-    # main_par = ' -rm 14,0,0.001,0.95/3,0,0.001,0.95:2,0,0.001,0.95 -f 500 ' + \
     main_par = ' -rm 16,0,0.001,0.95/3,0,0.001,0.95 -f 200 ' + \
         '-d 20000 -th 0.1 -m 100000 -nr -sf '
     viz_par = ' -viz -vv '
