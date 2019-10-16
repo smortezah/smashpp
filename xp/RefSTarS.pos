@@ -1,0 +1,6 @@
+TARGET	0	457	1004	0-regular
+REFERENCE	0	457	1004	0-regular
+TARGET	0	1	553	1-inverted
+REFERENCE	0	956	1499	0-regular
+TARGET	0	957	1499	1-inverted
+REFERENCE	0	1	552	0-regular
