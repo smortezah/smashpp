@@ -30,8 +30,6 @@ smashpp = '..' + sep + 'smashpp '
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 smash = path_bin + 'smash '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
-# sim_common_par = ' -w 10 -s 19 -vv '
-sim_common_par = ' -vv '
 
 synth_small_ref_name = 'RefS'
 synth_small_tar_name = 'TarS'
