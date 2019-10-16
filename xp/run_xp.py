@@ -8,14 +8,11 @@ from memory_profiler import memory_usage
 
 get_goose = False  # Get dependencies
 make_synth_data = False  # Make synthetic dataset
-
 run = False  # Run on synthetic and real dataset
+bench = False  # Benchmark
 
 # sim_permute = False
 # sim_permute_smash = False
-
-# Benchmark
-bench = True
 
 if os.name == 'posix':
     sep = '/'
