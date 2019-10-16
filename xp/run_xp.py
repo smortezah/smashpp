@@ -408,18 +408,18 @@ if bench:
                   current_dir)
 
     # Synthetic
-    bench_synth_small = False
-    bench_synth_medium = False
-    bench_synth_large = False
-    bench_synth_xlarge = False
-    bench_synth_mutate = False
+    bench_synth_small = True
+    bench_synth_medium = True
+    bench_synth_large = True
+    bench_synth_xlarge = True
+    bench_synth_mutate = True
     bench_comp_smash = False
 
     # Real
-    bench_real_PXO99A_MAFF = False
-    bench_real_gga18_mga20 = False
-    bench_real_gga14_mga16 = False
-    bench_real_hs12_pt12 = False
+    bench_real_PXO99A_MAFF = True
+    bench_real_gga18_mga20 = True
+    bench_real_gga14_mga16 = True
+    bench_real_hs12_pt12 = True
 
     def run_bench(func, name, cat, size):
         start_time = time.perf_counter()
