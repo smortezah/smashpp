@@ -142,7 +142,7 @@
 <defs id="" >
 <linearGradient id="grad100.000000459.392487" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#3B41A0" stop-opacity="1" />
-<stop offset="50%" stop-color="#BABCDD" stop-opacity="1" />
+<stop offset="50%" stop-color="#9DA0CF" stop-opacity="1" />
 <stop offset="100%" stop-color="#3B41A0" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -162,7 +162,7 @@
 <defs id="" >
 <linearGradient id="grad150.000000451.287140" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#3B41A0" stop-opacity="1" />
-<stop offset="50%" stop-color="#BABCDD" stop-opacity="1" />
+<stop offset="50%" stop-color="#9DA0CF" stop-opacity="1" />
 <stop offset="100%" stop-color="#3B41A0" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -183,7 +183,7 @@
 <defs id="" >
 <linearGradient id="grad100.000000428.306122" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#A03B94" stop-opacity="1" />
-<stop offset="50%" stop-color="#DDBAD9" stop-opacity="1" />
+<stop offset="50%" stop-color="#CF9DC9" stop-opacity="1" />
 <stop offset="100%" stop-color="#A03B94" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -203,7 +203,7 @@
 <defs id="" >
 <linearGradient id="grad150.000000213.943619" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#A03B94" stop-opacity="1" />
-<stop offset="50%" stop-color="#DDBAD9" stop-opacity="1" />
+<stop offset="50%" stop-color="#CF9DC9" stop-opacity="1" />
 <stop offset="100%" stop-color="#A03B94" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -233,7 +233,7 @@ l 5.665,5.67
 <defs id="" >
 <linearGradient id="grad100.000000251.704987" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#A0613B" stop-opacity="1" />
-<stop offset="50%" stop-color="#DDC7BA" stop-opacity="1" />
+<stop offset="50%" stop-color="#CFB09D" stop-opacity="1" />
 <stop offset="100%" stop-color="#A0613B" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -253,7 +253,7 @@ l 5.665,5.67
 <defs id="" >
 <linearGradient id="grad150.000000272.874237" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#A0613B" stop-opacity="1" />
-<stop offset="50%" stop-color="#DDC7BA" stop-opacity="1" />
+<stop offset="50%" stop-color="#CFB09D" stop-opacity="1" />
 <stop offset="100%" stop-color="#A0613B" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -283,7 +283,7 @@ l 5.665,5.67
 <defs id="" >
 <linearGradient id="grad100.000000220.141815" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#3BA084" stop-opacity="1" />
-<stop offset="50%" stop-color="#BADDD3" stop-opacity="1" />
+<stop offset="50%" stop-color="#9DCFC1" stop-opacity="1" />
 <stop offset="100%" stop-color="#3BA084" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -303,7 +303,7 @@ l 5.665,5.67
 <defs id="" >
 <linearGradient id="grad150.000000245.983566" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#3BA084" stop-opacity="1" />
-<stop offset="50%" stop-color="#BADDD3" stop-opacity="1" />
+<stop offset="50%" stop-color="#9DCFC1" stop-opacity="1" />
 <stop offset="100%" stop-color="#3BA084" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -324,7 +324,7 @@ l 5.665,5.67
 <defs id="" >
 <linearGradient id="grad100.00000033.432850" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#69A03B" stop-opacity="1" />
-<stop offset="50%" stop-color="#CADDBA" stop-opacity="1" />
+<stop offset="50%" stop-color="#B4CF9D" stop-opacity="1" />
 <stop offset="100%" stop-color="#69A03B" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -344,7 +344,7 @@ l 5.665,5.67
 <defs id="" >
 <linearGradient id="grad150.00000030.000000" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#69A03B" stop-opacity="1" />
-<stop offset="50%" stop-color="#CADDBA" stop-opacity="1" />
+<stop offset="50%" stop-color="#B4CF9D" stop-opacity="1" />
 <stop offset="100%" stop-color="#69A03B" stop-opacity="1" />
 </linearGradient>
 </defs>
@@ -405,9 +405,9 @@ a 5,5 0 0,0 -10,0
 z
 " fill="none" fill-opacity="0.9" stroke="black" stroke-opacity="1" stroke-linejoin="round" stroke-width="1" />
 <text id="105.00000020.400000" x="105" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
-GGA18</text>
+GGA 18</text>
 <text id="155.00000020.400000" x="155" y="20.4" dominant-baseline="" baseline-shift="" alignment-baseline="" font-size="9px" font-weight="bold" font-family="Helvetica,Arial" font-variant="normal" text-anchor="middle" text-align="start" line-height="125%%" >
-MGA20</text>
+MGA 20</text>
 <defs id="" >
 <linearGradient id="grad92.000000570.000671" x1="0%" y1="0%" x2="100%" y2="0%" >
 <stop offset="0%" stop-color="#F8766D" stop-opacity="1" />
