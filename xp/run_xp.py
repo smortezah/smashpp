@@ -8,7 +8,7 @@ from memory_profiler import memory_usage
 
 get_goose = False  # Get dependencies
 make_synth_data = False  # Make synthetic dataset
-run = False  # Run on synthetic and real dataset
+run = True  # Run on synthetic and real dataset
 bench = False  # Benchmark
 
 # sim_permute = False
@@ -113,8 +113,8 @@ def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
 
 
 def run_smashpp(path_ref, path_tar, ref_name, tar_name, par_main, par_viz):
-    execute(smashpp + ' -r ' + path_ref + ref_name + ' -t ' +
-            path_tar + tar_name + ' ' + par_main)
+    # execute(smashpp + ' -r ' + path_ref + ref_name + ' -t ' +
+    #         path_tar + tar_name + ' ' + par_main)
     execute(smashpp + ' -viz ' + par_viz + ' ' +
             ref_name + '.' + tar_name + '.pos')
 
@@ -333,15 +333,6 @@ def run_comp_smash():
                   ref_new_smash, tar_new_smash, par, current_dir)
 
 
-def run_real_PXO99A_MAFF():
-    par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar -dp'
-    par_viz = '-l 6 -s 10 -w 8 -p 1 -rt 500000 ' + \
-        '-rn PXO99A -tn "MAFF 311018" -stat -o PXO99A_MAFF_311018.svg'
-    run_smashpp(real_PXO99A_MAFF_path_ref, real_PXO99A_MAFF_path_tar,
-                real_PXO99A_MAFF_ref_name, real_PXO99A_MAFF_tar_name,
-                par_main, par_viz)
-
-
 def run_real_gga18_mga20():
     par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 ' + \
         '-th 1.9 -dp'
@@ -355,7 +346,8 @@ def run_real_gga18_mga20():
 def run_real_gga14_mga16():
     par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 ' + \
         '-e 1.95 -m 400000 -dp'
-    par_viz = '-l 1 -p 1 -rn "GGA 14" -tn "MGA 16" -stat -o GGA14_MGA16.svg'
+    par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" -stat ' + \
+        '-rt 1500000 -tt 1500000 -o GGA14_MGA16.svg'
     run_smashpp(real_gga14_mga16_path_ref, real_gga14_mga16_path_tar,
                 real_gga14_mga16_ref_name, real_gga14_mga16_tar_name,
                 par_main, par_viz)
@@ -363,28 +355,38 @@ def run_real_gga14_mga16():
 
 def run_real_hs12_pt12():
     par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000 -dp'
-    par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" -stat -o HS12_PT12.svg'
+    par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" -stat ' + \
+        '-rt 10000000 -tt 10000000 -o HS12_PT12.svg'
     run_smashpp(real_hs12_pt12_path_ref, real_hs12_pt12_path_tar,
                 real_hs12_pt12_ref_name, real_hs12_pt12_tar_name,
                 par_main, par_viz)
 
 
+def run_real_PXO99A_MAFF():
+    par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar -dp'
+    par_viz = '-l 6 -vv -s 10 -w 8 -p 1 -rt 500000 ' + \
+        '-rn PXO99A -tn "MAFF 311018" -stat -o PXO99A_MAFF_311018.svg'
+    run_smashpp(real_PXO99A_MAFF_path_ref, real_PXO99A_MAFF_path_tar,
+                real_PXO99A_MAFF_ref_name, real_PXO99A_MAFF_tar_name,
+                par_main, par_viz)
+
+
 if run:
-    # Synthetic
-    run_synth_small()
-    run_synth_medium()
-    run_synth_large()
-    run_synth_xlarge()
-    run_synth_mutate()
+    # # Synthetic
+    # run_synth_small()
+    # run_synth_medium()
+    # run_synth_large()
+    # run_synth_xlarge()
+    # run_synth_mutate()
 
     # Real
-    run_real_PXO99A_MAFF()
-    run_real_gga18_mga20()
-    run_real_gga14_mga16()
+    # run_real_gga18_mga20()
+    # run_real_gga14_mga16()
     run_real_hs12_pt12()
+    # run_real_PXO99A_MAFF()
 
-    # Compare with Smash. Synthetic & Real
-    run_comp_smash()
+    # # Compare with Smash. Synthetic & Real
+    # run_comp_smash()
 
 if bench:
     bench_result = []  # Name, Category, Size, Time, Memory
