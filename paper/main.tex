@@ -32,10 +32,11 @@
 
 %%% Use the \authfn to add symbols for additional footnotes, if any. 1 is reserved for correspondence emails; then continuing with 2 etc for contributions.
 \author[1,\authfn{1}]{Morteza Hosseini}
-\author[2,\authfn{1}]{Diogo Pratas}
+\author[2,3,\authfn{1}]{Diogo Pratas}
 \author[2,\authfn{1}]{Armando J. Pinho}
 
 \affil[1,2]{IEETA/DETI, University of Aveiro, Portugal}
+\affil[3]{Department of Virology, University of Helsinki, Finland}
 
 %%% Author Notes
 \authnote{\authfn{1}seyedmorteza@ua.pt; pratas@ua.pt; ap@ua.pt}
@@ -214,7 +215,7 @@ This example shows the distinction between a finite-context model and a substitu
 
  \begin{figure*}[!h]
    \centering
-   \includegraphics[width=.85\linewidth]{fig/data_struct.pdf}
+   \includegraphics[width=.87\linewidth]{fig/data_struct.pdf}
    \caption{The data structures used by Smash++ to store the models in memory. (a) table of 64~bit counters that uses up to 128~MB of memory, (b) table of 32~bit counters that consumes at most 960~MB of memory, (c) table of 8~bit approximate counters with memory usage of up to 1~GB and (d) Count-Min-Log sketch of 4~bit counters which consumes up to $\frac{1}{2} w\times d$~B of memory, e.g., if $w=2^{30}$ and $d=4$, it uses 2~GB of memory.}
    \label{fig.struct}
  \end{figure*}
@@ -398,7 +399,6 @@ This example shows the distinction between a finite-context model and a substitu
     ScVII & Fungi & 1,090,940 & NC\_001139 -- \textit{Saccharomyces cerevisiae} S288C chromosome VII. \\
     SpVII & Fungi & 1,105,967 & CP020299 -- \textit{Saccharomyces paradoxus} strain UFRJ50816 chromosome VII. \\
     \midrule
-    \cmidrule{1-1}
     RefS & Synthetic & 1,500 & It consists of three segments of 500~base size. \\
     TarS & Synthetic & 1,500 & To build TarS, segment~I is mutated~2\%, II is inversely repeated and III is duplicated. \\
     \midrule
