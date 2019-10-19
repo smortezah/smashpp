@@ -113,8 +113,8 @@ def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
 
 
 def run_smashpp(path_ref, path_tar, ref_name, tar_name, par_main, par_viz):
-    # execute(smashpp + ' -r ' + path_ref + ref_name + ' -t ' +
-    #         path_tar + tar_name + ' ' + par_main)
+    execute(smashpp + ' -r ' + path_ref + ref_name + ' -t ' +
+            path_tar + tar_name + ' ' + par_main)
     execute(smashpp + ' -viz ' + par_viz + ' ' +
             ref_name + '.' + tar_name + '.pos')
 
@@ -375,7 +375,7 @@ if run:
     # # Synthetic
     # run_synth_small()
     # run_synth_medium()
-    # run_synth_large()
+    run_synth_large()
     # run_synth_xlarge()
     # run_synth_mutate()
 
@@ -383,7 +383,7 @@ if run:
     # run_real_gga18_mga20()
     # run_real_gga14_mga16()
     # run_real_hs12_pt12()
-    run_real_PXO99A_MAFF()
+    # run_real_PXO99A_MAFF()
 
     # # Compare with Smash. Synthetic & Real
     # run_comp_smash()

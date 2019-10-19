@@ -428,7 +428,7 @@ void run(std::unique_ptr<Param>& par) {
   prepare_data(par);
 
   // Round 1
-  for (uint8_t run_num = 0; run_num != 2; ++run_num) {
+  for (uint8_t run_num = 0; run_num < 2; ++run_num) {
     auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
 
     // Round 2: old ref = new tar & old tar segments = new refs
@@ -445,7 +445,9 @@ void run(std::unique_ptr<Param>& par) {
       std::string tar_round2 = par->tar = par->ref;
 
       // std::thread arrThr[par->nthr];
-      for (uint64_t i = 0; i != num_seg_round1; ++i) {
+      //todo
+      // #pragma omp parallel for
+      for (uint64_t i = 0; i < num_seg_round1; ++i) {
         // arrThr[i % par->nthr] = std::thread(
         //     multithread_run2, std::ref(par), name_seg_round1, run_num,
         //     pos_out, current_pos_row, tar_round2, i);
@@ -471,8 +473,10 @@ void run(std::unique_ptr<Param>& par) {
             const auto name_seg_round2{
                 gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
             par->tar = ref_round2;
-
-            for (uint64_t j = 0; j != num_seg_round2; ++j) {
+            
+            //todo
+            // #pragma omp parallel for
+            for (uint64_t j = 0; j < num_seg_round2; ++j) {
               par->ref = name_seg_round2 + std::to_string(j);
               auto num_seg_round3 =
                   run_round(par, 3, run_num, pos_out, current_pos_row);
