@@ -94,6 +94,7 @@
 #include <iomanip>  // setw, setprecision
 #include <iostream>
 #include <thread>
+#include "clean.hpp"
 #include "container.hpp"
 #include "fcm.hpp"
 #include "filter.hpp"
@@ -103,7 +104,6 @@
 #include "segment.hpp"
 #include "string.hpp"
 #include "time.hpp"
-#include "clean.hpp"
 #include "vizpaint.hpp"
 using namespace smashpp;
 
@@ -167,10 +167,12 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
 #pragma omp parallel for ordered
     for (uint64_t i = 0; i < filter->nSegs; ++i) {
 #pragma omp ordered
-      if (!par->verbose && round == 1)
-        std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
+      {
+        if (!par->verbose && round == 1)
+          std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
 
-      par->seq = seg + std::to_string(i);
+        par->seq = seg + std::to_string(i);
+      }
       models->self_compress(par, i, round);
     }
 
@@ -290,6 +292,7 @@ void run(std::unique_ptr<Param>& par) {
           std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
 
         std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
+
         auto num_seg_round2 =
             run_round(par, 2, run_num, pos_out, current_pos_row);
 #pragma omp ordered
