@@ -5,11 +5,12 @@
 #ifndef SMASHPP_FILE_HPP
 #define SMASHPP_FILE_HPP
 
-#include <iterator>
 #include <algorithm>
 #include <fstream>
-#include "par.hpp"
+#include <iterator>
 #include "exception.hpp"
+#include "par.hpp"
+// #include "naming.hpp"
 
 namespace smashpp {
 static constexpr float PI{3.14159265f};
@@ -46,7 +47,7 @@ inline static bool file_is_empty(std::string name) {
 
   for (char c; f.get(c) && !foundChar;)
     if (c != ' ' && c != '\n' && c != '\t') foundChar = true;
-    
+
   f.close();
   return !foundChar;
 }
@@ -74,7 +75,7 @@ inline static uint64_t file_lines(std::string name) {
   f.unsetf(
       std::ios_base::skipws);  // New lines will be skipped unless we stop it
   return static_cast<uint64_t>(std::count(std::istream_iterator<char>(f),
-                                     std::istream_iterator<char>(), '\n'));
+                                          std::istream_iterator<char>(), '\n'));
 }
 
 // Must be inline

@@ -5,7 +5,6 @@
 #ifndef SMASHPP_OUTPUT_HPP
 #define SMASHPP_OUTPUT_HPP
 
-// #include "def.hpp"
 #include "naming.hpp"
 
 namespace smashpp {
