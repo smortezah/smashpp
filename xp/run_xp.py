@@ -373,9 +373,9 @@ def run_real_PXO99A_MAFF():
 
 if run:
     # # Synthetic
-    # run_synth_small()
+    run_synth_small()
     # run_synth_medium()
-    run_synth_large()
+    # run_synth_large()
     # run_synth_xlarge()
     # run_synth_mutate()
 
