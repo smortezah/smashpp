@@ -27,15 +27,15 @@ class CMLS4 {  // Count-min-log sketch, 4 bits per counter
 #endif
 
  private:
-  uint64_t w;                       // Width of sketch
-  uint8_t d;                        // Depth of sketch
-  uint8_t uhashShift;               // Universal hash shift(G-M). (a*x+b)>>(G-M)
-  std::vector<uint64_t> ab;         // Coefficients of hash functions
-  std::vector<uint8_t> sk;          // Sketch
-  uint64_t tot;                     // Total # elements, so far
+  uint64_t w;                // Width of sketch
+  uint8_t d;                 // Depth of sketch
+  uint8_t uhashShift;        // Universal hash shift(G-M). (a*x+b)>>(G-M)
+  std::vector<uint64_t> ab;  // Coefficients of hash functions
+  std::vector<uint8_t> sk;   // Sketch
+  uint64_t tot;              // Total # elements, so far
 
   auto read_cell(uint64_t) const -> uint8_t;  // Read each cell of the sketch
-  void set_a_b();   // Set coeffs a, b of hash fns (a*x+b) %P %w
+  void set_a_b();  // Set coeffs a, b of hash fns (a*x+b) %P %w
   auto hash(uint8_t, uint64_t) const
       -> uint64_t;  // MUST provide pairwise independence
   auto min_log_ctr(uint64_t) const
@@ -74,7 +74,7 @@ static constexpr uint8_t CTR[512]{
     1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 0,  1,  2,  3,
     4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 0,  1,  2,  3,  4,  5,  6,
     7,  8,  9,  10, 11, 12, 13, 14, 15};
-    
+
 static constexpr uint8_t INC_CTR[512]{
     16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,
     31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,

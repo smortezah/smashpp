@@ -10,7 +10,6 @@
 #include <iterator>
 #include "exception.hpp"
 #include "par.hpp"
-// #include "naming.hpp"
 
 namespace smashpp {
 static constexpr float PI{3.14159265f};
