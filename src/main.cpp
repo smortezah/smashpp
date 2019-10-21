@@ -98,141 +98,14 @@
 #include "fcm.hpp"
 #include "filter.hpp"
 #include "naming.hpp"
+#include "output.hpp"
 #include "par.hpp"
 #include "segment.hpp"
 #include "string.hpp"
 #include "time.hpp"
+#include "clean.hpp"
 #include "vizpaint.hpp"
-#include "output.hpp"//todo
 using namespace smashpp;
-
-// struct OutRowAux {
-//   PosRow pos2;
-//   PosRow pos1;
-//   std::vector<PosRow> pos3;
-//   OutRowAux() = default;
-//   OutRowAux(PosRow pos2_, PosRow pos1_) : pos2(pos2_), pos1(pos1_) {}
-// };
-
-// void write_pos_file_impl(const std::vector<OutRowAux>& out_aux,
-//                          bool asym_region) {
-//   const auto ref{out_aux.front().pos1.ref};
-//   const auto tar{out_aux.front().pos1.tar};
-//   const auto pos_file_name{gen_name(ref, tar, Format::position)};
-//   std::ofstream pos_file(pos_file_name);
-
-//   // Head
-//   pos_file << POS_HDR << '\t' << file_name(ref) << '\t'
-//            << std::to_string(file_size(ref)) << '\t' << file_name(tar) << '\t'
-//            << std::to_string(file_size(tar)) << '\n';
-
-//   // Body
-//   uint64_t left_beg = 0, left_end = 0, right_beg = 0, right_end = 0;
-//   prc_t left_ent = 0.0, left_self_ent = 0.0, right_ent = 0.0,
-//         right_self_ent = 0.0;
-
-//   for (auto row : out_aux) {
-//     // Left hand side
-//     if (row.pos2.beg_pos == 0 && row.pos2.end_pos == 0 && row.pos2.ent == 0 &&
-//         row.pos2.self_ent == 0) {
-//       pos_file << DBLANK << '\t' << DBLANK << '\t' << DBLANK << '\t' << DBLANK
-//                << '\n';
-//     } else {
-//       left_beg = row.pos2.beg_pos;
-//       left_end = row.pos2.end_pos;
-//       left_ent = row.pos2.ent;
-//       left_self_ent = row.pos2.self_ent;
-//     }
-
-//     // Right hand side
-//     if (row.pos3.size() == 1) {
-//       if (row.pos3.front().run_num == 0) {
-//         right_beg = row.pos1.beg_pos + row.pos3.front().beg_pos;
-//         right_end = row.pos1.beg_pos + row.pos3.front().end_pos;
-//       } else if (row.pos3.front().run_num == 1) {
-//         right_beg = row.pos1.beg_pos + row.pos3.front().end_pos;
-//         right_end = row.pos1.beg_pos + row.pos3.front().beg_pos;
-//       }
-//       right_ent = row.pos3.front().ent;
-//       right_self_ent = row.pos3.front().self_ent;
-//     } else {
-//       if (row.pos1.run_num == 0) {
-//         right_beg = row.pos1.beg_pos;
-//         right_end = row.pos1.end_pos;
-//       } else if (row.pos1.run_num == 1) {
-//         right_beg = row.pos1.end_pos;
-//         right_end = row.pos1.beg_pos;
-//       }
-//       right_ent = row.pos1.ent;
-//       right_self_ent = row.pos1.self_ent;
-//     }
-
-//     if (!asym_region) {
-//       if (uint64_t(std::llabs(right_end - right_beg)) <
-//               (left_end - left_beg) * 1.5 &&
-//           uint64_t(std::llabs(right_end - right_beg)) >
-//               (left_end - left_beg) * 0.5)
-//         pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
-//                  << left_self_ent << '\t' << right_beg << '\t' << right_end
-//                  << '\t' << right_ent << '\t' << right_self_ent << '\n';
-//     } else {
-//       if (left_end != 0)
-//         pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
-//                  << left_self_ent << '\t' << right_beg << '\t' << right_end
-//                  << '\t' << right_ent << '\t' << right_self_ent << '\n';
-//     }
-//   }
-
-//   pos_file.close();
-// }
-
-// void make_write_pos_pair(const std::vector<PosRow>& left,
-//                          const std::vector<PosRow>& right1,
-//                          const std::vector<PosRow>& right3, bool asym_region) {
-//   std::vector<OutRowAux> out_aux{std::vector<OutRowAux>()};
-
-//   if (left.empty()) {
-//     for (const auto& row : right1) out_aux.push_back(OutRowAux(PosRow(), row));
-//   } else {
-//     for (const auto& row_left : left) {
-//       for (const auto& row_right1 : right1) {
-//         const auto seg_name{gen_name(row_right1.run_num, row_right1.ref,
-//                                      row_right1.tar, Format::segment) +
-//                             std::to_string(row_right1.seg_num)};
-//         if (row_left.ref == seg_name) {
-//           out_aux.push_back(OutRowAux(row_left, row_right1));
-//           break;
-//         }
-//       }
-//     }
-
-//     for (const auto& row_right3 : right3) {
-//       for (auto row_out_aux : out_aux) {
-//         const auto seg_name{gen_name(row_out_aux.pos2.run_num,
-//                                      row_out_aux.pos2.ref, row_out_aux.pos2.tar,
-//                                      Format::segment) +
-//                             std::to_string(row_out_aux.pos2.seg_num)};
-//         if (row_right3.ref == seg_name) {
-//           row_out_aux.pos3.push_back(row_right3);
-//           break;
-//         }
-//       }
-//     }
-//   }
-
-//   if (!out_aux.empty()) write_pos_file_impl(out_aux, asym_region);
-// }
-
-// void write_pos_file(const std::vector<PosRow>& pos_out, bool asym_region) {
-//   std::vector<PosRow> left, right1, right3;
-//   for (const auto& row : pos_out) {
-//     if (row.round == 2) left.push_back(PosRow(row));
-//     if (row.round == 1) right1.push_back(PosRow(row));
-//     if (row.round == 3) right3.push_back(PosRow(row));
-//   }
-
-//   make_write_pos_pair(left, right1, right3, asym_region);
-// }
 
 uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
                    std::vector<PosRow>& pos_out, uint64_t& current_pos_row) {
@@ -264,7 +137,7 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
 
   // Filter and segment
   auto filter = std::make_unique<Filter>(par);
-  // if (!par->manThresh) 
+  // if (!par->manThresh)
   //   par->thresh = static_cast<float>(round_to_prec(models->aveEnt, 0.5));
   //   // par->thresh = static_cast<float>(models->aveEnt);
   filter->smooth_seg(pos_out, par, round, current_pos_row);
@@ -291,7 +164,9 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.reserve(filter->nSegs);
-    for (uint64_t i = 0; i != filter->nSegs; ++i) {
+#pragma omp parallel for ordered
+    for (uint64_t i = 0; i < filter->nSegs; ++i) {
+#pragma omp ordered
       if (!par->verbose && round == 1)
         std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
 
@@ -311,35 +186,35 @@ uint64_t run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
   return filter->nSegs;
 }
 
-void remove_temp_seg(std::unique_ptr<Param>& par, uint64_t seg_num) {
-  const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
+// void remove_temp_seg(std::unique_ptr<Param>& par, uint64_t seg_num) {
+//   const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
 
-  for (uint64_t i = 0; i != seg_num; ++i)
-    if (!par->saveAll && !par->saveSegment)
-      remove((seg + std::to_string(i)).c_str());
-}
+//   for (uint64_t i = 0; i != seg_num; ++i)
+//     if (!par->saveAll && !par->saveSegment)
+//       remove((seg + std::to_string(i)).c_str());
+// }
 
-void remove_temp_seq(std::unique_ptr<Param>& par) {
-  if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
-    if (!par->saveSeq) {
-      remove(par->ref.c_str());
-    } else {
-      const std::string seq_name = file_name_no_ext(par->ref) + ".seq";
-      rename(par->ref.c_str(), seq_name.c_str());
-    }
-    rename((par->ref + LBL_BAK).c_str(), par->ref.c_str());
-  }
+// void remove_temp_seq(std::unique_ptr<Param>& par) {
+//   if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
+//     if (!par->saveSeq) {
+//       remove(par->ref.c_str());
+//     } else {
+//       const std::string seq_name = file_name_no_ext(par->ref) + ".seq";
+//       rename(par->ref.c_str(), seq_name.c_str());
+//     }
+//     rename((par->ref + LBL_BAK).c_str(), par->ref.c_str());
+//   }
 
-  if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
-    if (!par->saveSeq) {
-      remove(par->tar.c_str());
-    } else {
-      const std::string seq_name = file_name_no_ext(par->tar) + ".seq";
-      rename(par->tar.c_str(), seq_name.c_str());
-    }
-    rename((par->tar + LBL_BAK).c_str(), par->tar.c_str());
-  }
-}
+//   if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
+//     if (!par->saveSeq) {
+//       remove(par->tar.c_str());
+//     } else {
+//       const std::string seq_name = file_name_no_ext(par->tar) + ".seq";
+//       rename(par->tar.c_str(), seq_name.c_str());
+//     }
+//     rename((par->tar + LBL_BAK).c_str(), par->tar.c_str());
+//   }
+// }
 
 void prepare_data(std::unique_ptr<Param>& par) {
   if (par->refType == FileType::seq && par->tarType == FileType::seq) return;
@@ -381,43 +256,6 @@ void prepare_data(std::unique_ptr<Param>& par) {
   std::cerr << '\n';
 }
 
-// void multithread_run2(std::unique_ptr<Param>& par, std::string
-// name_seg_round1,
-//                       uint8_t run_num, std::vector<PosRow> pos_out,
-//                       uint64_t current_pos_row, std::string tar_round2,
-//                       uint64_t i) {
-//   if (!par->verbose)
-//     std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
-
-//   std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
-//   auto num_seg_round2 = run_round(par, 2, run_num, pos_out, current_pos_row);
-//   if (par->verbose) std::cerr << '\n';
-
-//   if (num_seg_round2 != 0) {
-//     // Round 3
-//     if (par->deep) {
-//       if (par->verbose)
-//         std::cerr << "    " << italic("Deep compression") << '\n';
-
-//       const auto name_seg_round2{
-//           gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-//       par->tar = ref_round2;
-
-//       for (uint64_t j = 0; j != num_seg_round2; ++j) {
-//         par->ref = name_seg_round2 + std::to_string(j);
-//         auto num_seg_round3 =
-//             run_round(par, 3, run_num, pos_out, current_pos_row);
-//         if (par->verbose) std::cerr << "\n";
-//         remove_temp_seg(par, num_seg_round3);
-//       }
-//     }  // Round 3
-
-//     par->ref = ref_round2;
-//     par->tar = tar_round2;
-//     remove_temp_seg(par, num_seg_round2);
-//   }
-// }
-
 void run(std::unique_ptr<Param>& par) {
   std::string ref_round1 = par->ref;
   std::string tar_round1 = par->tar;
@@ -445,42 +283,35 @@ void run(std::unique_ptr<Param>& par) {
           gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
       std::string tar_round2 = par->tar = par->ref;
 
-      // std::thread arrThr[par->nthr];
-      //todo
-      // #pragma omp parallel for
+#pragma omp parallel for ordered
       for (uint64_t i = 0; i < num_seg_round1; ++i) {
-        // arrThr[i % par->nthr] = std::thread(
-        //     multithread_run2, std::ref(par), name_seg_round1, run_num,
-        //     pos_out, current_pos_row, tar_round2, i);
-        // if (i % par->nthr == par->nthr - 1) {
-        //   for (auto& thr : arrThr)
-        //     if (thr.joinable()) thr.join();
-        // }
-
+#pragma omp ordered
         if (!par->verbose)
           std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
 
         std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
         auto num_seg_round2 =
             run_round(par, 2, run_num, pos_out, current_pos_row);
+#pragma omp ordered
         if (par->verbose) std::cerr << '\n';
 
         if (num_seg_round2 != 0) {
           // Round 3
           if (par->deep) {
+#pragma omp ordered
             if (par->verbose)
               std::cerr << "    " << italic("Deep compression") << '\n';
 
             const auto name_seg_round2{
                 gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
             par->tar = ref_round2;
-            
-            //todo
-            // #pragma omp parallel for
+
+#pragma omp parallel for ordered
             for (uint64_t j = 0; j < num_seg_round2; ++j) {
               par->ref = name_seg_round2 + std::to_string(j);
               auto num_seg_round3 =
                   run_round(par, 3, run_num, pos_out, current_pos_row);
+#pragma omp ordered
               if (par->verbose) std::cerr << "\n";
               remove_temp_seg(par, num_seg_round3);
             }
@@ -491,8 +322,6 @@ void run(std::unique_ptr<Param>& par) {
           remove_temp_seg(par, num_seg_round2);
         }
       }
-      // for (auto& thr : arrThr)
-      //   if (thr.joinable()) thr.join();
 
       if (!par->verbose)
         std::cerr << "\r" << par->message << "all segments done.\n\n";
