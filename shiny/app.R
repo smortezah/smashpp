@@ -6,7 +6,7 @@ ui <- fluidPage(sidebarLayout(
     textInput(
       inputId = "command",
       label = "Compilation",
-      value = "g++ -g -O0 -std=c++17 -pthread -Wall ..\\src\\par.cpp 
+      value = "g++ -g -O3 -std=c++17 -pthread -Wall ..\\src\\par.cpp 
       ..\\src\\fcm.cpp ..\\src\\tbl64.cpp ..\\src\\tbl32.cpp ..\\src\\cmls4.cpp 
       ..\\src\\logtbl8.cpp ..\\src\\filter.cpp ..\\src\\segment.cpp 
       ..\\src\\color.cpp ..\\src\\svg.cpp ..\\src\\vizpaint.cpp 
