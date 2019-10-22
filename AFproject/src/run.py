@@ -3,8 +3,8 @@ import shutil
 import numpy as np
 
 find_simil_seqs = True
-make_nrc_ave = False
-make_Phylip_distance_matrix = False
+make_nrc_ave = True
+make_Phylip_distance_matrix = True
 
 if os.name == 'posix':
     sep = '/'
@@ -51,8 +51,8 @@ if find_simil_seqs:
             ref = in_file_path + in_file_list[i]
             tar = in_file_path + in_file_list[j]
             # MUST NOT use '-v' option with GeCo
-            execute(geco + '-rm 4:10:0:0/0 -rm 8:100:0:2/0 ' +
-                    '-rm 14:1000:1:3/10 -rm 18:1000:1:3/10 ' +
+            execute(geco + '-rm 4:1000:1:0/0 ' +
+                    '-rm 14:1000:0:3/10 ' +
                     '-c 30 -g 0.95 -r ' + ref + ' ' + tar + ' > log')
 
             log_file = open('log', 'r')
@@ -67,6 +67,7 @@ if find_simil_seqs:
             if os.path.exists(tar + '.co'):
                 os.remove(tar + '.co')
         out_file.write('\n')
+    out_file.close()
 
     if os.path.exists('log'):
         os.remove('log')
@@ -107,6 +108,7 @@ if make_nrc_ave:
         for j in range(len(header)):
             nrc_ave_file.write('\t' + str(nrc_ave[i][j]))
         nrc_ave_file.write('\n')
+    nrc_ave_file.close()
     print('Finished.')
 
 if make_Phylip_distance_matrix:
@@ -136,4 +138,5 @@ if make_Phylip_distance_matrix:
         for j in range(len(header)):
             nrc_Phylip.write('\t' + str(mat[i][j]))
         nrc_Phylip.write('\n')
+    nrc_Phylip.close()
     print('Finished.')
