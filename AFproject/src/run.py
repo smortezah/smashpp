@@ -2,9 +2,9 @@ import os
 import shutil
 import numpy as np
 
-find_simil_seqs = False
+find_simil_seqs = True
 make_nrc_ave = False
-make_Phylip_distance_matrix = 
+make_Phylip_distance_matrix = False
 
 if os.name == 'posix':
     sep = '/'
@@ -51,7 +51,8 @@ if find_simil_seqs:
             ref = in_file_path + in_file_list[i]
             tar = in_file_path + in_file_list[j]
             # MUST NOT use '-v' option with GeCo
-            execute(geco + '-rm 4:10:0:0/0 -rm 8:100:0:2/0 -rm 14:1000:1:3/10 -rm 18:1000:1:3/10 ' +
+            execute(geco + '-rm 4:10:0:0/0 -rm 8:100:0:2/0 ' +
+                    '-rm 14:1000:1:3/10 -rm 18:1000:1:3/10 ' +
                     '-c 30 -g 0.95 -r ' + ref + ' ' + tar + ' > log')
 
             log_file = open('log', 'r')
@@ -118,7 +119,7 @@ if make_Phylip_distance_matrix:
     nrc_Phylip_name = 'nrc.phy'
     if os.path.exists(result_path + nrc_Phylip_name):
         os.remove(result_path + nrc_Phylip_name)
-        
+
     num_files = len(nrc_mat)
     mat = [[0 for x in range(num_files)] for y in range(num_files)]
     for i in range(0, num_files):
