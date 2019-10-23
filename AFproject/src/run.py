@@ -51,8 +51,8 @@ if find_simil_seqs:
             ref = in_file_path + in_file_list[i]
             tar = in_file_path + in_file_list[j]
             # MUST NOT use '-v' option with GeCo
-            execute(geco + '-rm 4:1000:1:0/0 ' +
-                    '-rm 14:1000:0:3/10 ' +
+            execute(geco + '-rm 4:1000:1:0/0 -rm 8:1000:1:0/0 ' +
+                    '-rm 14:1000:1:3/10 -rm 18:1000:1:5/10 ' +
                     '-c 30 -g 0.95 -r ' + ref + ' ' + tar + ' > log')
 
             log_file = open('log', 'r')
