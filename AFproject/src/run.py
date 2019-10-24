@@ -104,11 +104,12 @@ def write_nrc_ave_file(file_name, header, matrix):
             file.write('\n')
 
 
-def header(file):
-    # Considering the first cell empty
-    return file.readline()[:-1].split(",")[1:]
-    # Otherwise
-    # return file.readline()[:-1].split(",")
+def header(file_name):
+    with open(file_name) as file:
+        # Considering the first cell empty
+        return file.readline()[:-1].split(",")[1:]
+        # Otherwise
+        # return file.readline()[:-1].split(",")
 
 
 if find_simil_seqs:
