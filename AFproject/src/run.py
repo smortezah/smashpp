@@ -2,16 +2,18 @@ import os
 import shutil
 import numpy as np
 import csv
+import timeit
 
 find_simil_seqs = True
 make_nrc_ave = True
 make_Phylip_distance_matrix = True
 
 # MUST NOT use '-v' option
-compress_param = ' -rm 4:1000:1:30:0.85/0:1000:0.8 ' + \
-    ' -rm 8:1000:0:30:0.85/1:1000:0.8 -rm 12:1000:0:30:0.9/2:1000:0.8 ' + \
-    ' -rm 14:1000:0:30:0.9/2:1000:0.8 -rm 16:1000:0:30:0.95/3:1000:0.8 ' + \
-    ' -rm 18:1000:0:30:0.95/4:1000:0.8 '
+compress_param = ' -rm 4:1000:1:30:0.85/0:1000:0.8 '
+# compress_param = ' -rm 4:1000:1:30:0.85/0:1000:0.8 ' + \
+#     ' -rm 8:1000:0:30:0.85/1:1000:0.8 -rm 12:1000:0:30:0.9/2:1000:0.8 ' + \
+#     ' -rm 14:1000:0:30:0.9/2:1000:0.8 -rm 16:1000:0:30:0.95/3:1000:0.8 ' + \
+#     ' -rm 18:1000:0:30:0.95/4:1000:0.8 '
 # compress_param = ' -rm 4:1000:1:0/0 -rm 8:1000:1:0/0 -rm 14:1000:1:3/10 ' + \
 #     ' -rm 18:1000:1:5/10 -c 30 - g 0.95 '
 
@@ -82,13 +84,43 @@ def nrc_from_log_file(log_file_name):
     return NRC
 
 
+def now():
+    return timeit.default_timer()
+
+
+def message_finished(elapsed_time):
+    return f'finished in {elapsed_time:.0f} seconds'
+
+
+def write_nrc_ave_file(file_name, header, matrix):
+    with open(file_name, "w") as file:
+        for i in range(len(header)):
+            file.write(',' + header[i])
+        file.write('\n')
+        for i in range(len(header)):
+            file.write(header[i])
+            for j in range(len(header)):
+                file.write(',' + str(matrix[i][j]))
+            file.write('\n')
+
+
+def header(file):
+    # Considering the first cell empty
+    return file.readline()[:-1].split(",")[1:]
+    # Otherwise
+    # return file.readline()[:-1].split(",")
+
+
 if find_simil_seqs:
+    start_time = now()
+
     remove_file_if_exist('log')
     remove_files_end_with(path_dataset, '.co')
     create_dir_if_not_exit(path_result)
     grant_permission(path_bin)
 
-    print('Finding similar sequences ...')
+    message = 'Finding similar sequences '
+    print(message + '...', end='')
     in_file_path = path_dataset
     in_file_list = os.listdir(in_file_path)
     out_file_name = nrc_file_name
@@ -115,10 +147,15 @@ if find_simil_seqs:
                 remove_file_if_exist(tar + '.co')
             out_file.write('\n')
     remove_file_if_exist('log')
-    print('Finished.')
+
+    finish_time = now()
+    print('\r' + message + message_finished(finish_time - start_time))
 
 if make_nrc_ave:
-    print('Making NRC average ...')
+    start_time = now()
+    message = 'Making NRC average matrix '
+    print(message + '...', end='')
+
     with open(path_result + nrc_file_name) as nrc_file:
         header = nrc_file.readline()[:-1].split(",")[1:]
         nrc_file.seek(0)
@@ -126,19 +163,16 @@ if make_nrc_ave:
                                 usecols=range(1, len(header) + 1))
     remove_file_if_exist(path_result + nrc_ave_file_name)
     nrc_ave = ave_matrix(nrc_mat)
-    with open(path_result + nrc_ave_file_name, "w") as nrc_ave_file:
-        for i in range(len(header)):
-            nrc_ave_file.write(',' + header[i])
-        nrc_ave_file.write('\n')
-        for i in range(len(header)):
-            nrc_ave_file.write(header[i])
-            for j in range(len(header)):
-                nrc_ave_file.write(',' + str(nrc_ave[i][j]))
-            nrc_ave_file.write('\n')
-    print('Finished.')
+    write_nrc_ave_file(path_result + nrc_ave_file_name, header, nrc_ave)
+
+    finish_time = now()
+    print('\r' + message + message_finished(finish_time - start_time))
 
 if make_Phylip_distance_matrix:
-    print('Making Phylip distance matrix ...')
+    start_time = now()
+    message = 'Making Phylip distance matrix '
+    print(message + '...', end='')
+
     with open(path_result + 'nrc_ave.csv') as nrc_ave, \
             open(path_result + 'dist.phy', 'w') as dist:
         reader = csv.reader(nrc_ave)
@@ -149,4 +183,6 @@ if make_Phylip_distance_matrix:
         writer = csv.writer(dist, delimiter='\t')
         writer.writerow(["", num_seqs])
         writer.writerows(data)
-    print('Finished.')
+
+    finish_time = now()
+    print('\r' + message + message_finished(finish_time - start_time))
