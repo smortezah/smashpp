@@ -44,7 +44,7 @@ if find_simil_seqs:
         if file.endswith('.co'):
             os.remove(dataset_path + file)
     create_dir_if_not_exit(result_path)
-    # execute('sudo chmod -R 777 ' + bin_path)
+    execute('sudo chmod -R 777 ' + bin_path)
 
     in_file_path = dataset_path
     in_file_list = os.listdir(in_file_path)
