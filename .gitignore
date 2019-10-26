@@ -84,8 +84,10 @@ xp/dataset/bird/Meleagris_gallopavo/**
 !xp/dataset/bird/Gallus_gallus/24
 !xp/dataset/bird/Meleagris_gallopavo/26
 .Rproj.user
-AFproject/assembled-plants
-AFproject/assembled-ecoli
-AFproject/dataset
-AFproject/mori
-AFproject/protein-low-ident
+xp/HS12_PT12_mauve
+xp/HS12_PT12_mauve.backbone
+xp/HS12_PT12_mauve.bbcols
+xp/PXO99A_MAFF311018_mauve
+xp/PXO99A_MAFF311018_mauve.backbone
+xp/PXO99A_MAFF311018_mauve.bbcols
+xp/PXO99A_MAFF311018_mauve.guide_tree
