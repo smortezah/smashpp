@@ -41,6 +41,8 @@ synth_xlarge_ref_name = 'RefXL'
 synth_xlarge_tar_name = 'TarXL'
 synth_mutate_ref_name = 'RefMut'
 synth_mutate_tar_name = 'TarMut'
+synth_mutate_100_ref_name = 'RefMut100'
+synth_mutate_100_tar_name = 'TarMut100'
 synth_comp_smash_ref_name = 'RefComp'
 synth_comp_smash_tar_name = 'TarComp'
 real_comp_smash_ref_name = 'VII.seq'
@@ -214,6 +216,22 @@ def make_synth_mutate():  # sizes: ref:60,000, tar:60,000. Mutation up to 60%
         append('t_' + str(i), path_data_synth + 'TarMut')
 
 
+def make_synth_mutate_100():  # sizes: ref:100,000, tar:100,000. Mutate <= 100%
+    if os.path.exists(path_data_synth + "RefMut100"):
+        os.remove(path_data_synth + "RefMut100")
+    if os.path.exists(path_data_synth + "TarMut100"):
+        os.remove(path_data_synth + "TarMut100")
+
+    for i in range(1, 100+1):
+        execute(goose_fastqsimulation + synth_common_par + ' -s ' + str(i) +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10 r_' + str(i))
+        append('r_' + str(i), path_data_synth + 'RefMut100')
+
+        execute(goose_mutatedna + '-mr ' + str(i/100) +
+                ' < r_' + str(i) + ' > t_' + str(i))
+        append('t_' + str(i), path_data_synth + 'TarMut100')
+
+
 def make_synth_compare_smash():  # sizes: ref:1,000,000, tar:1,000,000
     if os.path.exists(path_data_synth + "RefComp"):
         os.remove(path_data_synth + "RefComp")
@@ -246,6 +264,7 @@ if make_synth_data:
     make_synth_large()
     make_synth_xlarge()
     make_synth_mutate()
+    make_synth_mutate_100()
     make_synth_compare_smash()
 
 
@@ -289,6 +308,13 @@ def run_synth_mutate():
     par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -vv -stat -o Mut.svg'
     run_smashpp(path_data_synth, path_data_synth, synth_mutate_ref_name,
                 synth_mutate_tar_name, par_main, par_viz)
+
+
+def run_synth_mutate_100():
+    par_main = '-th 1.95 -l 3 -d 1000 -f 100 -m 15000 -dp'
+    par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -stat -o Mut_100.svg'
+    run_smashpp(path_data_synth, path_data_synth, synth_mutate_100_ref_name,
+                synth_mutate_100_tar_name, par_main, par_viz)
 
 
 def run_comp_smash():
@@ -373,11 +399,12 @@ def run_real_PXO99A_MAFF():
 
 if run:
     # Synthetic
-    run_synth_small()
+    # run_synth_small()
     # run_synth_medium()
     # run_synth_large()
     # run_synth_xlarge()
     # run_synth_mutate()
+    run_synth_mutate_100()
 
     # Real
     # run_real_gga18_mga20()
