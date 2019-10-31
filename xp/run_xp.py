@@ -8,7 +8,7 @@ from memory_profiler import memory_usage
 
 get_goose = False  # Get dependencies
 make_synth_data = False  # Make synthetic dataset
-run = True  # Run on synthetic and real dataset
+run = False  # Run on synthetic and real dataset
 bench = False  # Benchmark
 
 # sim_permute = False
@@ -41,8 +41,6 @@ synth_xlarge_ref_name = 'RefXL'
 synth_xlarge_tar_name = 'TarXL'
 synth_mutate_ref_name = 'RefMut'
 synth_mutate_tar_name = 'TarMut'
-synth_mutate_100_ref_name = 'RefMut100'
-synth_mutate_100_tar_name = 'TarMut100'
 synth_comp_smash_ref_name = 'RefComp'
 synth_comp_smash_tar_name = 'TarComp'
 real_comp_smash_ref_name = 'VII.seq'
@@ -85,10 +83,9 @@ def cat(file_in_names, file_out_name):
 
 
 def append(file_in_name, file_out_name):
-    with open(file_out_name, 'a') as file_out:
-        with open(file_in_name) as file_in:
-            for line in file_in:
-                file_out.write(line)
+    with open(file_in_name) as file_in, open(file_out_name, 'a') as file_out:
+        for line in file_in:
+            file_out.write(line)
 
 
 def remove_all_ext(directory, extension):
@@ -310,13 +307,6 @@ def run_synth_mutate():
                 synth_mutate_tar_name, par_main, par_viz)
 
 
-def run_synth_mutate_100():
-    par_main = '-th 1.95 -l 3 -d 1000 -f 100 -m 15000 -dp'
-    par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -stat -o Mut_100.svg'
-    run_smashpp(path_data_synth, path_data_synth, synth_mutate_100_ref_name,
-                synth_mutate_100_tar_name, par_main, par_viz)
-
-
 def run_comp_smash():
     a = True
     b = True
@@ -399,21 +389,20 @@ def run_real_PXO99A_MAFF():
 
 if run:
     # Synthetic
-    # run_synth_small()
-    # run_synth_medium()
-    # run_synth_large()
-    # run_synth_xlarge()
-    # run_synth_mutate()
-    run_synth_mutate_100()
+    run_synth_small()
+    run_synth_medium()
+    run_synth_large()
+    run_synth_xlarge()
+    run_synth_mutate()
 
     # Real
-    # run_real_gga18_mga20()
-    # run_real_gga14_mga16()
-    # run_real_hs12_pt12()
-    # run_real_PXO99A_MAFF()
+    run_real_gga18_mga20()
+    run_real_gga14_mga16()
+    run_real_hs12_pt12()
+    run_real_PXO99A_MAFF()
 
-    # # Compare with Smash. Synthetic & Real
-    # run_comp_smash()
+    # Compare with Smash. Synthetic & Real
+    run_comp_smash()
 
 if bench:
     bench_result = []  # Name, Category, Size, Time, Memory
