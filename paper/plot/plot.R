@@ -244,19 +244,21 @@ if (compare_smash_a) {
   time.plot
 } else if (filters == 1) {
   N <- 100
-  hann <- function(n) {
-    0.5 - 0.5 * cos(2 * pi * n / N)
+  rectangular <- function(n) {
+    1
   }
   hamming <- function(n) {
     0.54 - 0.46 * cos(2 * pi * n / N)
+  }
+  hann <- function(n) {
+    0.5 - 0.5 * cos(2 * pi * n / N)
   }
   blackman <- function(n) {
     0.42 - 0.5 * cos(2 * pi * n / N) +
       0.08 * cos(4 * pi * n / N)
   }
-  nuttall <- function(n) {
-    0.36 - 0.49 * cos(2 * pi * n / N) +
-      0.14 * cos(4 * pi * n / N) - 0.01 * cos(6 * pi * n / N)
+  triangular <- function(n) {
+    1 - abs((n - N / 2) / (N / 2))
   }
   welch <- function(n) {
     1 - ((n - N / 2) / (N / 2)) ^ 2
@@ -264,49 +266,44 @@ if (compare_smash_a) {
   sine <- function(n) {
     sin(pi * n / N)
   }
-  triangular <- function(n) {
-    1 - abs((n - N / 2) / (N / 2))
+  nuttall <- function(n) {
+    0.36 - 0.49 * cos(2 * pi * n / N) +
+      0.14 * cos(4 * pi * n / N) - 0.01 * cos(6 * pi * n / N)
   }
-  rectangular <- function(n) {
-    1
-  }
-  
   
   x <- seq(0, N)
   df <-
     data.frame(
       Samples = x,
-      hann = hann(x),
+      rectangular = rectangular(x),
       hamming = hamming(x),
+      hann = hann(x),
       blackman = blackman(x),
-      nuttall = nuttall(x),
+      triangular = triangular(x),
       welch = welch(x),
       sine = sine(x),
-      triangular = triangular(x),
-      rectangular = rectangular(x)
+      nuttall = nuttall(x)
     )
   df <- melt(df, id.vars = "Samples")
-  df$name <-
-    as.factor(rep(
-      c(
-        "Hann",
-        "Hamming",
-        "Blackman",
-        "Nuttall",
-        "Welch",
-        "Sine",
-        "Triangular",
-        "Rectangular"
-      ),
-      each = length(x)
-    ))
+  name.order <- c(
+    "Rectangular",
+    "Hamming",
+    "Hann",
+    "Blackman",
+    "Triangular",
+    "Welch",
+    "Sine",
+    "Nuttall"
+  )
+  df$name <- factor(rep(name.order, each = length(x)), levels = name.order)
   
   ggplot(df, aes(x = Samples, y = value)) +
     geom_area(aes(color = variable, fill = variable)) +
-    facet_wrap(~ name, nrow = 2) +
+    facet_wrap( ~ name, nrow = 2) +
     ylab("Amplitude") +
-    theme_bw() +
     theme(legend.position = "none")
+  
+  ggsave("filters.pdf")
 } else if (filters_scatter == 1) {
   index <- 1:1000
   blackman <- read.table("blackman.fil")
@@ -375,7 +372,6 @@ if (compare_smash_a) {
                 ) +
                   xlab("Base") +
                   ylab("Entropy") +
-                  theme_bw() +
                   theme(legend.position = "none")
 } else if (simil == 1) {
   # index<-1:1000
@@ -415,7 +411,6 @@ if (compare_smash_a) {
   #   geom_ribbon(data=subset(df, value<=1.5),aes(ymin = value, ymax = 1.5), fill = "gray", alpha = .5) +
   #   xlab("Base") +
   #   ylab("Entropy") +
-  #   theme_bw() +
   #   theme(legend.position = "none")
   #
   # plt1
