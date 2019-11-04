@@ -115,13 +115,15 @@
 \clearpage
 \section{Tool availability and implementation}
 \label{sec.tool}
-\smashpp is implemented in \cpp language and is publicly available at~\cite{web-smashpp} under GNU GPL~v3 license. This tool is able to find and visualize rearrangements in DNA sequences, \fasta and \fastq files; although, it is highly recommended to use as input bare sequences, i.e., without header or quality scores. In the following sections, we describe installing and running the \smashpp tool.
+\smashpp is implemented in \cpp language and is publicly available at~\cite{web-smashpp}, under GNU GPL~v3 license. This tool is able to find and visualize rearrangements in a pair of DNA sequences. It is recommended to use as input bare sequences, i.e., without header or quality scores, although, \fasta and \fastq formats are also supported. In the following sections, we describe installing and running the \smashpp tool.
 
 \subsection{Install}
 To install \smashpp on various operating systems, follow the instructions below. Note that the precompiled executables are available for 64 bit operating systems in the ``bin/'' directory.
 
-% \paragraph{Conda}
-% % todo
+\subsubsection*{Conda}
+\begin{code}[style=bash]
+  conda install -c cobilab smashpp
+\end{code}
 
 \subsubsection*{Linux}
 \begin{itemize}
@@ -173,7 +175,7 @@ Various options are provided with the interface of the proposed tool, which are 
 \end{code}
 
 \begin{small}
-\begin{tabularx}{\linewidth}{@{}lp{2.95cm}X@{}}
+\begin{tabularx}{\linewidth}{@{}lp{2.9cm}X@{}}
   \caption{Options provided by \smashpp interface.}
   \label{tab.options} \\
   \toprule
@@ -182,69 +184,74 @@ Various options are provided with the interface of the proposed tool, which are 
   \multicolumn{3}{@{}l@{}}{\textit{Required}} \\
   \mono{-r} & Seq/FASTA/FASTQ & Reference file. \\
   \mono{-t} & Seq/FASTA/FASTQ & Target file. \\
-  && It is highly recommended to have short names. \\
+  && It is recommended to have short names. \\
   \midrule
   \multicolumn{3}{@{}l@{}}{\textit{Optional}} \\
-  \mono{-l} & Integer: $[0, 5]$\newline Default: 0 & Level of compression. \\
+  \mono{-l} & Integer: $[0, 6]$\newline Default: 3 & Level of compression. \\
   \midrule
-  \mono{-m} & Integer: $[1, 2^{32}-1]$\newline Default: 50 & Minimum segment size. Only those regions in the reference file that are bigger than this value would be able to be considered for compression. \\
+  \mono{-m} & Integer: $[1, 2^{32}-1]$\newline Default: 50 & Minimum segment size. Only the regions that have greater sizes than this value would be considered for compression. \\
   \midrule
-  \mono{-e} & Float: $[0.0, 100.0]$\newline Default: 2.0 & Entropy of `N's. In implementation of the reference-based compression, we have replaced `N' bases in the references and the targets with `A's and `T's, respectively. On reference-free compression, they are replaced with `A's, in both references and targets. If a user tends to replace `N' bases in a sequence with a normal distribution of `A', `C', `G' and `T's, he/she can employ GOOSE toolkit~\cite{web-goose}. \\
+  \mono{-e} & Float: $[0.0, 100.0]$\newline Default: 2.0 & Entropy of `N' bases. In implementation of the reference-based compression, we replace `N's in references and targets with `A's and `T's, respectively. On reference-free compression, we replace them with `A's, in both references and targets. If a user tends to replace `N' bases in a sequence with a normal distribution of `A', `C', `G' and `T's, he/she can employ GOOSE toolkit~\cite{web-goose}. \\
   \midrule
-  \mono{-n} & Integer: $[1, 8]$\newline Default: 4 & Number of threads. Creating multiple finite-context models and substitutional-tolerant Markov models can be done in a multi-threaded fashion. \\
+  \mono{-n} & Integer: $[1, 255]$\newline Default: 4 & Number of threads. Creating multiple finite-context models and substitution-tolerant Markov models can be done in a multi-threaded fashion. \\
   \midrule
   \mono{-f} & Integer: $[1, 2^{32}-1]$\newline Default: 256 & Filter size. In the process of finding similar regions in the reference and the target sequences, the information content that would be obtained by compression needs to be filtered. \\
   \midrule
-  \mono{-ft} & Integer or String:\newline \{0$\,|\,$rectangular, 1$\,|\,$hamming, 2$\,|\,$hann, 3$\,|\,$blackman, 4$\,|\,$triangular, 5$\,|\,$welch, 6$\,|\,$sine, 7$\,|\,$nuttall\}\newline Default: hann & Filter type (windowing function). Besides Hann window that is used by default to smooth the information content (profile), we have implemented several other windowing functions: Blackman~\cite{blackman1959particular}, Hamming~\cite{tukey1949measuring}, Nuttall~\cite{nuttall1981some}, rectangular~\cite{oppenheim1999discrete}, sine~\cite{harris1978use}, triangular~\cite{bartlett1950periodogram} and Welch~\cite{welch1967use} windows. These functions are given by Equation~\ref{eq.filter} and are plotted in Fig.~\ref{fig.filters}. \\
+  \mono{-ft} & Integer or String:\newline \{0/rectangular, 1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch, 6/sine, 7/nuttall\}\newline Default: hann & Filter type (windowing function). Besides Hann window that is used by default to smooth the information content (profile), we have implemented several other windowing functions: Blackman~\cite{blackman1959particular}, Hamming~\cite{tukey1949measuring}, Nuttall~\cite{nuttall1981some}, rectangular~\cite{oppenheim1999discrete}, sine~\cite{harris1978use}, triangular~\cite{bartlett1950periodogram} and Welch~\cite{welch1967use} windows. These functions are given by Equation~\ref{eq.filter} and are plotted in Fig.~\ref{fig.filters}. \\
   \midrule
-  \mono{-fs} & Char or String:\newline \{S$\,|\,$small, M$\,|\,$medium, L$\,|\,$large\}\newline Default: large & Filter scale. Automatically chooses filter size. \\
+  \mono{-fs} & Char or String:\newline \{S/small, M/medium, L/large\}
+  % \newline Default: large
+   & Filter scale. It automatically chooses filter size. \\
   \midrule
   \mono{-d} & Integer: $[1, 2^{64}-1]$\newline Default: 1 & Sampling steps. Instead of considering the whole information content, this option can be used to make samples of it. \\
   \midrule
-  \mono{-th} & Float: $[0.0, 20.0]$\newline Default: 1.5 & threshold. For the purpose of segmenting the filtered information content, the average entropy of reference-based compression is used by default as the threshold, but the threshold can be altered by this option. \\
+  \mono{-th} & Float: $[0.0, 20.0]$\newline Default: 1.5 & Threshold for entropy. This option can be used for segmenting the filtered information content. \\
+  % For the purpose of segmenting the filtered information content, the average entropy of reference-based compression is used by default as the threshold, but the threshold can be altered by this option. \\
   \midrule
   \mono{-rb} & Integer: $[-2^{15}, 2^{15}-1]$ & Reference beginning guard. \\
   \mono{-re} & Integer: $[-2^{15}, 2^{15}-1]$ & Reference ending guard. \\
   \mono{-tb} & Integer: $[-2^{15}, 2^{15}-1]$ & Target beginning guard. \\
   \mono{-te} & Integer: $[-2^{15}, 2^{15}-1]$ & Target ending guard. \\
-  & Default: 0 & \smashpp is capable of finding even very small similar regions in two sequences. However, we have found experimentally that when it is running in a very sensitive mode, there might be some cases in which the size of similar regions in the reference and the target are not balanced. These cases can be handled by ``-rb'', ``-re'', ``-tb'' and ``-te'' options, that can resize the beginning and ending guards of reference and target regions, respectively. For example, if ``-tb 10'' is used, the first 10 bases in each target region will be ignored, which results in smaller regions. Note that when the guard sizes of target regions are increased, the models built from these regions would be slightly different than the original models; consequently, the sizes of reference regions that are detected as being similar to the ones from the target would be modified, as well. Therefore, changing the guard sizes of target regions will affect the sizes of reference regions. In the case of activating deep compression, by ``-dp'', changing the guard sizes of reference regions would affect the sizes of target regions, as well. \\
+  & Default: 0 & \smashpp is capable of finding even very small similar regions in two sequences. However, we have found experimentally that when it is running in a very sensitive mode, there might be some cases in which the size of similar regions in the reference and the target are not balanced. These cases can be handled by ``-rb'', ``-re'', ``-tb'' and ``-te'' options, that can resize the beginning and ending guards of reference and target regions, respectively. For example, if ``-tb 10'' is used, the first 10 bases in each target region will be discarded, which results in smaller regions. Note that when the guard sizes of target regions are increased, the models built from these regions would be slightly different than the original models; consequently, the sizes of reference regions that are detected as being similar to the ones from the target would be modified, as well. Therefore, changing the guard sizes of target regions will affect the sizes of reference regions. In the case of activating deep compression, by ``-dp'', changing the guard sizes of reference regions would affect the sizes of target regions, as well. \\
   \midrule
-  \mono{-dp} & --- & Deep compression. The ``deep compression'' means that similar regions in target and reference sequences are found in three phases instead of two: 1) the model of the reference is built and the target is compressed based upon that model, 2) the model of each detected region is built and the whole reference is compressed based on these models and 3) the model of each detected reference region is built and the corresponding target regions will be compressed based on that model. \\
+  \mono{-ar} & --- & Consider asymmetric regions. It makes \smashpp not to balance the similar reference and target regions. \\
+  \midrule
+  \mono{-dp} & --- & Deep compression. It means that similar regions in target and reference sequences are found in three phases, instead of two: 1)~the model of the reference is built and the target is compressed based upon that model, 2)~the model of each detected region is built and the whole reference is compressed based on these models and 3)~the model of each detected reference region is built and the corresponding target regions will be compressed based on that model. \\
   \midrule
   \mono{-nr} & --- & Do not compute self complexity. It makes the tool not to perform the reference-free compression (self-complexity computation). \\
   \midrule
-  \mono{-sb} & --- & Save sequence (input: FASTA/FASTQ). \smashpp accepts \fasta and \fastq files as input, in addition to sequences. In these cases, the input files are first converted to sequences and then processed further. It is possible to save these sequences by this option. \\
+  \mono{-sb} & --- & Save sequence (input: FASTA/FASTQ). \smashpp accepts as input \fasta and \fastq files, in addition to bare sequences. In these cases, the input files are first converted to sequences and then processed further. It is possible to save these sequences by this option. \\
   \midrule
-  \mono{-sp} & --- & Save profile, *.prf. When the information profile is obtained, \smashpp smoothens then removes it by default. However, it can be preserved by this option. \\
+  \mono{-sp} & --- & Save profile, *.prf. When the information profile is obtained, \smashpp smoothens then removes it, by default; however, it can be preserved by this option. \\
   \midrule
   \mono{-sf} & --- & Save filtered file, *.fil. The filtered profile is segmented then removed, by default; however, it can be preserved by this option. \\
   \midrule
   \mono{-ss} & --- & Save segmented files, *.s$_i$. \\
   \midrule
-  \mono{-sa} & --- & Save profile, filtered and segmented files. \\
+  \mono{-sa} & --- & Save all generated files, including profile, filtered and segmented files. \\
   \midrule
   \mono{-rm} & $k$,[$w$,$d$,]ir,$\alpha$,$\gamma$/$t$,ir,$\alpha$,$\gamma$:... & Parameters of reference models. \\
   \mono{-tm} & $k$,[$w$,$d$,]ir,$\alpha$,$\gamma$/$t$,ir,$\alpha$,$\gamma$:... & Parameters of target models: \\
-& Default: $14,0,0.005,0.95$ & \begin{minipage} [t] {9cm}
+& Default: \scalebox{0.8}{$14,0,0.001,0.95/5,0,0.001,0.95$} & \begin{minipage} [t] {9cm}
   \begin{itemize}
     \item $k$ (integer $>1$): context size,
-    \item $w$ (integer $<2^{64}-1$): sketch width in $\log_2$ form, e.g., set 10 for $w=2^{10}=1024$,
-    \item $d$ (integer $>0$): sketch depth,
+    \item $w$ (integer $<2^{64}-1$): Count-Min-Log sketch width in $\log_2$ form, e.g., set 10 for $w=2^{10}=1024$,
+    \item $d$ (integer $>0$): Count-Min-Log sketch depth,
     \item ir (integer: \{0, 1, 2\}): inverted repeat, including 0:~regular (not inverted), 1:~inverted solely, and 2:~both regular and inverted,
     \item $\alpha$ (float $>0$): estimator,
     \item $\gamma$ (float: $[0.0, 1.0)$): forgetting factor,
     \item $t$ (integer $>0$): threshold (number of substitutions).
   \end{itemize}
 \end{minipage} \\
-  && It is recommended for compression to use ``-l'' option, since it configures the models automatically. However, using ``-rm'' and ``-tm'', the user would be able to manually configure the reference model, for reference-based compression, and the target model, for reference-free compression, respectively. Parameters of the models are described in detail in section~\ref{sec.methods}. \\
+  && It is recommended for compression to use ``-l'' option, since it configures the models automatically. However, using ``-rm'' and ``-tm'', the user would be able to manually configure the reference model, for reference-based compression, and the target model, for reference-free compression, respectively. Parameters of models are described in detail in the section ``Methods'' of the main paper. \\
   \midrule
-  \mono{-ll} & --- & Show list of parameters that would be chosen automatically for each model. \\
+  \mono{-ll} & --- & List of compression levels. It shows the list of parameters that would be chosen automatically for each model. \\
   \midrule
   \mono{-h} & --- & Usage guide. \\
   \midrule
   \mono{-v} & --- & More information (verbose). \\
   \midrule
-  \multicolumn{2}{@{}l}{\mono{--version}} & Show version. \\
+  \multicolumn{2}{@{}l}{\mono{--version}} & Show the version. \\
   \bottomrule
 \end{tabularx}
 \end{small}
