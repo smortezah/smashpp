@@ -219,6 +219,8 @@ if find_simil_seqs:
     #     if os.path.exists(file):
     #         os.remove(file)
 
+    out_file.close()
+
 
 def build_simil_matrix(nrc_mat, threshold):
     num_files = len(nrc_mat)
