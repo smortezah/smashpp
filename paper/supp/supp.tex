@@ -197,7 +197,7 @@ Various options are provided with the interface of the proposed tool, which are 
   \midrule
   \mono{-f} & Integer: $[1, 2^{32}-1]$\newline Default: 256 & Filter size. In the process of finding similar regions in the reference and the target sequences, the information content that would be obtained by compression needs to be filtered. \\
   \midrule
-  \mono{-ft} & Integer or String:\newline \{0/rectangular, 1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch, 6/sine, 7/nuttall\}\newline Default: hann & Filter type (windowing function). Besides Hann window that is used by default to smooth the information content (profile), we have implemented several other windowing functions: Blackman~\cite{blackman1959particular}, Hamming~\cite{tukey1949measuring}, Nuttall~\cite{nuttall1981some}, rectangular~\cite{oppenheim1999discrete}, sine~\cite{harris1978use}, triangular~\cite{bartlett1950periodogram} and Welch~\cite{welch1967use} windows. These functions are given by Equation~\ref{eq.filter} and are plotted in Fig.~\ref{fig.filters}. \\
+  \mono{-ft} & Integer or String:\newline \{0/rectangular, 1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch, 6/sine, 7/nuttall\}\newline Default: hann & Filter type (windowing function). Besides Hann window that is used by default to smooth the information content (profile), we have implemented several other windowing functions: Blackman~\cite{blackman1959particular}, Hamming~\cite{tukey1949measuring}, Nuttall~\cite{nuttall1981some}, rectangular~\cite{oppenheim1999discrete}, sine~\cite{harris1978use}, triangular~\cite{bartlett1950periodogram} and Welch~\cite{welch1967use} windows. These functions along with Hann function are given by Equation~\ref{eq.filter} and are plotted in Fig.~\ref{fig.filters}. \\
   \midrule
   \mono{-fs} & Char or String:\newline \{S/small, M/medium, L/large\}
   % \newline Default: large
@@ -258,19 +258,21 @@ Various options are provided with the interface of the proposed tool, which are 
 
 \begin{align}
   w[n] & = 1,
-  \tag*{(rectangular)}                                                                                                                                        \\
-  w[n] & = 1-\left|\tfrac {n-N/2}{L/2}\right|, \quad L=N,
-  \tag*{(triangular/Bartlett)}                                                                                                                                \\
-  w[n] & = 1-\left(\tfrac {n-N/2}{N/2}\right)^{2},
-  \tag*{(Welch)}                                                                                                                                              \\
-  w[n] & = \sin \left(\tfrac {\pi n}{N}\right),
-  \tag*{(sine)}                                                                                                                                               \\
+  \tag*{\small(rectangular)} \\
   w[n] & = 0.54348-0.45652\;\cos \left(\tfrac {2\pi n}{N}\right),
-  \tag*{(Hamming)}                                                                                                                                            \\
+  \tag*{\small(Hamming)} \\
+  w[n] & = \sin^2 \left(\tfrac {\pi n}{N}\right),
+  \tag*{\small(Hann)} \\
   w[n] & = 0.42659-0.49656\;\cos \left(\tfrac {2\pi n}{N}\right)+0.07685\;\cos \left(\tfrac {4\pi n}{N}\right),
-  \tag*{(Blackman)}                                                                                                                                           \\
+  \tag*{\small(Blackman)} \\
+  w[n] & = 1-\left|\tfrac {n-N/2}{N/2}\right|,
+  \tag*{\small(triangular/Bartlett)} \\
+  w[n] & = 1-\left(\tfrac {n-N/2}{N/2}\right)^{2},
+  \tag*{\small(Welch)} \\
+  w[n] & = \sin \left(\tfrac {\pi n}{N}\right),
+  \tag*{\small(sine)} \\
   w[n] & = 0.35577-0.48740\;\cos \left(\tfrac {2\pi n}{N}\right)+0.14423\;\cos \left(\tfrac {4\pi n}{N}\right)-0.01260\;\cos \left(\tfrac {6\pi n}{N}\right),
-  \tag*{(Nuttall)}                                                                                                                                            \\
+  \tag*{\small(Nuttall)} \\
   \label{eq.filter}
 \end{align}
 \begin{figure}[!h]

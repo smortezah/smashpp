@@ -8,8 +8,8 @@ theme_set(theme_bw())
 
 compare_smash_a <- F
 compare_smash_b <- F
-bench <- T
-filters <- F
+bench <- F
+filters <- T
 filters_scatter <- F
 simil <- F
 
