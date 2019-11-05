@@ -35,7 +35,7 @@ static constexpr uint8_t K_MAX_LGTBL8{14};  // Max ctx log table 8  (1   GB mem)
 static constexpr uint64_t W{2 << 29ull};    // Width of CML sketch
 static constexpr uint8_t D{5};              // Depth of CML sketch
 static const std::string LBL_BAK{"_bk"};    // Label  - backup files
-static const std::string POS_HDR{"#" + SMASHPP};  // Hdr of pos file
+static const std::string POS_WATERMARK{"##SMASH++"};  // Hdr of pos file
 static constexpr int FILE_BUF{8 * 1024};  // 8K
 static const std::string IMAGE{"map.svg"};
 
@@ -90,6 +90,7 @@ class Param {
   bool asym_region;
   std::vector<MMPar> refMs, tarMs;
   std::string message;
+  std::string param_list;
 
   struct TarGuard {
     int16_t beg;

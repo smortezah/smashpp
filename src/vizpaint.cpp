@@ -108,7 +108,7 @@ inline void VizPaint::read_matadata(std::ifstream& fPos,
   if (!p->refName.empty()) ref = p->refName;
   if (!p->tarName.empty()) tar = p->tarName;
 
-  if (watermark != POS_HDR) error("unknown file format for positions.");
+  if (watermark != POS_WATERMARK) error("unknown file format for positions.");
 }
 
 inline void VizPaint::show_info(std::unique_ptr<VizParam>& p) const {

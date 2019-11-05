@@ -27,6 +27,11 @@ void Param::parse(int argc, char**& argv) {
   for (int i = 0; i != argc; ++i)
     vArgs.push_back(static_cast<std::string>(argv[i]));
 
+  // Save the list of parameters for writing into position file
+  for (auto iter = std::begin(vArgs) + 1; iter != std::end(vArgs); ++iter)
+    param_list += *iter + ' ';
+  param_list.pop_back();
+
   auto option_inserted = [&](auto iter, std::string name) -> bool {
     return (iter + 1 <= std::end(vArgs)) && (*iter == name);
   };
