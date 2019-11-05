@@ -24,14 +24,13 @@ void PositionFile::write_pos_file_impl(const std::vector<OutRowAux>& out_aux,
         right_self_ent = 0.0;
 
   pos_file << "#RefBeg\tRefEnd\tRefRelRedun\tRefRedun\t"
-              "TarBeg\tTarEnd\tTarRelRedun\tTarRedun\n";
-  // "TarBeg\tTarEnd\tTarRelRedun\tTarRedun\tInv\n";
+              "TarBeg\tTarEnd\tTarRelRedun\tTarRedun\tInv\n";
   for (auto row : out_aux) {
     // Left hand side
     if (row.pos2.beg_pos == 0 && row.pos2.end_pos == 0 && row.pos2.ent == 0 &&
         row.pos2.self_ent == 0) {
       pos_file << DBLANK << '\t' << DBLANK << '\t' << DBLANK << '\t' << DBLANK
-               << '\n';
+               << '\t' << "F" << '\n';
     } else {
       left_beg = row.pos2.beg_pos;
       left_end = row.pos2.end_pos;
@@ -62,21 +61,30 @@ void PositionFile::write_pos_file_impl(const std::vector<OutRowAux>& out_aux,
       right_self_ent = row.pos1.self_ent;
     }
 
+    auto publish = [](auto left_beg, auto left_end, auto left_ent,
+                      auto left_self_ent, auto right_beg, auto right_end,
+                      auto right_ent, auto right_self_ent) -> std::string {
+      std::ostringstream oss;
+      oss << left_beg << '\t' << left_end << '\t'
+          << fixed_precision(PREC_POS, left_ent) << '\t'
+          << fixed_precision(PREC_POS, left_self_ent) << '\t' << right_beg
+          << '\t' << right_end << '\t' << fixed_precision(PREC_POS, right_ent)
+          << '\t' << fixed_precision(PREC_POS, right_self_ent) << '\t'
+          << (right_beg < right_end ? "F" : "T") << '\n';
+      return oss.str();
+    };
+
     if (!asym_region) {
       if (uint64_t(std::llabs(right_end - right_beg)) <
               (left_end - left_beg) * 1.5 &&
           uint64_t(std::llabs(right_end - right_beg)) >
               (left_end - left_beg) * 0.5)
-        pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
-                 << left_self_ent << '\t' << right_beg << '\t' << right_end
-                 << '\t' << right_ent << '\t' << right_self_ent << '\t'
-                 << (right_beg < right_end ? "F" : "T") << '\n';
+        pos_file << publish(left_beg, left_end, left_ent, left_self_ent,
+                            right_beg, right_end, right_ent, right_self_ent);
     } else {
       if (left_end != 0)
-        pos_file << left_beg << '\t' << left_end << '\t' << left_ent << '\t'
-                 << left_self_ent << '\t' << right_beg << '\t' << right_end
-                 << '\t' << right_ent << '\t' << right_self_ent << '\t'
-                 << (right_beg < right_end ? "F" : "T") << '\n';
+        pos_file << publish(left_beg, left_end, left_ent, left_self_ent,
+                            right_beg, right_end, right_ent, right_self_ent);
     }
   }
 

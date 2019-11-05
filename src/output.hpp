@@ -8,6 +8,8 @@
 #include "naming.hpp"
 
 namespace smashpp {
+static constexpr uint8_t PREC_POS{4};  // Precision
+
 struct OutRowAux {
   PosRow pos2;
   PosRow pos1;

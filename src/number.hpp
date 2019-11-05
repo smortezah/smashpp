@@ -67,19 +67,26 @@ inline static void keep_in_range(MinVal min, Val& val, MaxVal max) {
     val = max;
 }
 
-template <typename T>
-inline static std::string precision(T value) {
+template <class T, class U>
+inline static std::string precision(T prec, U value) {
   std::ostringstream oss;
-  oss << std::setprecision(value);
+  oss << std::setprecision(prec) << value;
   return oss.str();
 }
 
-template <typename T>
-inline static std::string fixed_precision(T value) {
+template <class T, class U>
+inline static std::string fixed_precision(T prec, U value) {
   std::ostringstream oss;
-  oss << std::fixed << std::setprecision(value);
+  oss << std::fixed << std::setprecision(prec) << value;
   return oss.str();
 }
+
+// template <typename T>
+// inline static std::string fixed_precision(T value) {
+//   std::ostringstream oss;
+//   oss << std::fixed << std::setprecision(value);
+//   return oss.str();
+// }
 
 inline static uint8_t num_digits(uint64_t number) {
   return number == 0 ? 1 : std::log10(static_cast<double>(number)) + 1;
