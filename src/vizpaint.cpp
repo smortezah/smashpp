@@ -30,74 +30,74 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   std::vector<Position> pos;
   plot_pos(fPlot, fPos, pos, p);
 
-  // // Set color number
-  // set_n_color(pos);
+  // Set color number
+  set_n_color(pos);
 
-  // // Set total number of colors to be used
-  // if (!p->man_tot_color) {
-  //   for (const auto& pos_line : pos)
-  //     if (pos_line.n_color > p->tot_color) p->tot_color = pos_line.n_color;
-  // }
+  // Set total number of colors to be used
+  if (!p->man_tot_color) {
+    for (const auto& pos_line : pos)
+      if (pos_line.n_color > p->tot_color) p->tot_color = pos_line.n_color;
+  }
 
-  // // Plot
-  // uint64_t n_regular{0};
-  // uint64_t n_regularSolo{0};
-  // uint64_t n_inverse{0};
-  // uint64_t n_inverseSolo{0};
-  // uint64_t n_ignored{0};
-  // std::sort(
-  //     std::begin(pos), std::end(pos),
-  //     [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
+  // Plot
+  uint64_t n_regular{0};
+  uint64_t n_regularSolo{0};
+  uint64_t n_inverse{0};
+  uint64_t n_inverseSolo{0};
+  uint64_t n_ignored{0};
+  std::sort(
+      std::begin(pos), std::end(pos),
+      [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
 
-  // for (auto e = std::begin(pos); e != std::end(pos); ++e) {
-  //   if (abs(e->endTar - e->begTar) <= p->min) {
-  //     ++n_ignored;
-  //     continue;
-  //   // } else if (e->begRef != DBLANK && e->endRef - e->begRef <= p->min) {
-  //   //   ++n_ignored;
-  //   //   continue;
-  //   }
+  for (auto e = std::begin(pos); e != std::end(pos); ++e) {
+    if (abs(e->endTar - e->begTar) <= p->min) {
+      ++n_ignored;
+      continue;
+    // } else if (e->begRef != DBLANK && e->endRef - e->begRef <= p->min) {
+    //   ++n_ignored;
+    //   continue;
+    }
 
-  //   if (e->begRef == DBLANK)
-  //     e->endTar > e->begTar ? ++n_regularSolo : ++n_inverseSolo;
+    if (e->begRef == DBLANK)
+      e->endTar > e->begTar ? ++n_regularSolo : ++n_inverseSolo;
 
-  //   if (e->endTar > e->begTar) {
-  //     if (p->regular) {
-  //       plot_seq_ref(fPlot, e, p);
-  //       plot_seq_tar(fPlot, e, p, false /*ir*/);
+    if (e->endTar > e->begTar) {
+      if (p->regular) {
+        plot_seq_ref(fPlot, e, p);
+        plot_seq_tar(fPlot, e, p, false /*ir*/);
 
-  //       if (e->begRef != DBLANK) {
-  //         plot_connector(fPlot, e, p, false /*ir*/);
-  //         ++n_regular;
-  //       }
-  //     }
-  //   } else {
-  //     if (p->inverse) {
-  //       plot_seq_ref(fPlot, e, p);
-  //       plot_seq_tar(fPlot, e, p, true /*ir*/);
+        if (e->begRef != DBLANK) {
+          plot_connector(fPlot, e, p, false /*ir*/);
+          ++n_regular;
+        }
+      }
+    } else {
+      if (p->inverse) {
+        plot_seq_ref(fPlot, e, p);
+        plot_seq_tar(fPlot, e, p, true /*ir*/);
 
-  //       if (e->begRef != DBLANK) {
-  //         plot_connector(fPlot, e, p, true /*ir*/);
-  //         ++n_inverse;
-  //       }
-  //     }
-  //   }
-  // }
-  // fPos.seekg(std::ios::beg);
+        if (e->begRef != DBLANK) {
+          plot_connector(fPlot, e, p, true /*ir*/);
+          ++n_inverse;
+        }
+      }
+    }
+  }
+  fPos.seekg(std::ios::beg);
 
-  // if (p->showN) plot_Ns(fPlot, p->opacity, p->vertical);
-  // plot_seq_borders(fPlot, p->vertical);
-  // plot_title(fPlot, ref, tar, p->vertical);
-  // plot_legend(fPlot, p, std::max(n_refBases, n_tarBases));
-  // print_log(p->stat, p->image, n_regular, n_regularSolo, n_inverse,
-  //           n_inverseSolo, n_ignored);
+  if (p->showN) plot_Ns(fPlot, p->opacity, p->vertical);
+  plot_seq_borders(fPlot, p->vertical);
+  plot_title(fPlot, ref, tar, p->vertical);
+  plot_legend(fPlot, p, std::max(n_refBases, n_tarBases));
+  print_log(p->stat, p->image, n_regular, n_regularSolo, n_inverse,
+            n_inverseSolo, n_ignored);
 
-  // svg->print_tailer(fPlot);
-  // fPos.close();
-  // fPlot.close();
+  svg->print_tailer(fPlot);
+  fPos.close();
+  fPlot.close();
 
-  // if (n_regular + n_regularSolo + n_inverse + n_inverseSolo == 0)
-  //   remove((p->image).c_str());
+  if (n_regular + n_regularSolo + n_inverse + n_inverseSolo == 0)
+    remove((p->image).c_str());
 }
 
 inline void VizPaint::read_matadata(std::ifstream& fPos,
@@ -118,7 +118,9 @@ inline void VizPaint::read_matadata(std::ifstream& fPos,
   ref = split(12);
   n_refBases = std::stoull(split(8));
   tar = split(4);
-  n_tarBases = std::stoull(split(8));
+  auto info_n_tarBases = split(8, '\n');
+  info_n_tarBases.pop_back();
+  n_tarBases = std::stoull(info_n_tarBases);
   std::getline(fPos, titles);
 
   if (!p->refName.empty()) ref = p->refName;
@@ -1501,11 +1503,12 @@ inline void VizPaint::save_n_pos(std::string filePath) const {
 inline void VizPaint::read_pos(std::ifstream& fPos, std::vector<Position>& pos,
                                std::unique_ptr<VizParam>& par) const {
   double nr, nt, sr, st;
-  std::string inv;
+  char inv;
+
   for (int64_t br, er, bt, et;
        fPos >> br >> er >> nr >> sr >> bt >> et >> nt >> st >> inv;
        ++par->start)
-    pos.push_back(Position(br, er, nr, sr, bt, et, nt, st, par->start));
+    pos.push_back(Position(br, er, nr, sr, bt, et, nt, st, inv, par->start));
 
   if (sr == DBLANK && st == DBLANK) par->showRedun = false;
 
@@ -1711,29 +1714,29 @@ inline void VizPaint::plot_pos(std::ofstream& fPlot, std::ifstream& fPos,
                                std::vector<Position>& pos,
                                std::unique_ptr<VizParam>& p) {
   read_pos(fPos, pos, p);
-  // auto posPlot = std::make_unique<PosPlot>();
-  // posPlot->vertical = p->vertical;
-  // posPlot->showNRC = p->showNRC;
-  // posPlot->showRedun = p->showRedun;
-  // posPlot->refTick = p->refTick;
-  // posPlot->tarTick = p->tarTick;
-  // posPlot->tickHumanRead = p->tickHumanRead;
+  auto posPlot = std::make_unique<PosPlot>();
+  posPlot->vertical = p->vertical;
+  posPlot->showNRC = p->showNRC;
+  posPlot->showRedun = p->showRedun;
+  posPlot->refTick = p->refTick;
+  posPlot->tarTick = p->tarTick;
+  posPlot->tickHumanRead = p->tickHumanRead;
 
-  // make_posNode(pos, p, "ref");
-  // posPlot->n_bases = n_refBases;
-  // posPlot->plotRef = true;
-  // posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
-  //                   : plot_pos_horizontal(fPlot, posPlot);
-  // // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
+  make_posNode(pos, p, "ref");
+  posPlot->n_bases = n_refBases;
+  posPlot->plotRef = true;
+  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
+                    : plot_pos_horizontal(fPlot, posPlot);
+  // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "ref");
 
-  // make_posNode(pos, p, "tar");
-  // posPlot->n_bases = n_tarBases;
-  // posPlot->plotRef = false;
-  // posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
-  //                   : plot_pos_horizontal(fPlot, posPlot);
-  // // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
+  make_posNode(pos, p, "tar");
+  posPlot->n_bases = n_tarBases;
+  posPlot->plotRef = false;
+  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
+                    : plot_pos_horizontal(fPlot, posPlot);
+  // print_pos(fPlot, p, pos, max(n_refBases,n_tarBases), "tar");
 
-  // if (!plottable) exit("No plottable position.\n");
+  if (!plottable) exit("No plottable position.\n");
 }
 
 inline void VizPaint::plot_pos_horizontal(
