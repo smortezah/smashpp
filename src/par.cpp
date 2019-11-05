@@ -49,7 +49,7 @@ void Param::parse(int argc, char**& argv) {
     } else if (*i == "-v") {
       verbose = true;
     } else if (*i == "-ll") {
-      std::cerr << "Level  Model parameters" << '\n';
+      std::cerr << "Level Model parameters" << '\n';
       for (size_t i = 0; i != LEVEL.size(); ++i)
         std::cerr << "[ " << i << " ]  " << LEVEL[i] << '\n';
       throw EXIT_SUCCESS;
@@ -352,12 +352,13 @@ void Param::help() const {
 
   print_aligned("-ft", "INT/STRING", "=",
                 "filter type (windowing function):", "->", "hann");
-  print_aligned("", "", "", "{0|rectangular, 1|hamming, 2|hann,");
-  print_aligned("", "", "", "3|blackman, 4|triangular, 5|welch,");
-  print_aligned("", "", "", "6|sine, 7|nuttall}");
+  print_aligned("", "", "", "{0/rectangular, 1/hamming, 2/hann,");
+  print_aligned("", "", "", "3/blackman, 4/triangular, 5/welch,");
+  print_aligned("", "", "", "6/sine, 7/nuttall}");
 
-  print_aligned("-fs", "[S][M][L]", "=", "filter scale:", "->", "L");
-  print_aligned("", "", "", "{S|small, M|medium, L|large}");
+  print_aligned("-fs", "[S][M][L]", "=", "filter scale");
+  // print_aligned("-fs", "[S][M][L]", "=", "filter scale:", "->", "L");
+  print_aligned("", "", "", "{S/small, M/medium, L/large}");
 
   print_aligned("-d", "INT", "=", "sampling steps", "->",
                 std::to_string(SAMPLE_STEP));
@@ -714,8 +715,7 @@ void VizParam::help() const {
 
   print_aligned("-tc", "INT", "=",
                 "total number of colors: [" + std::to_string(1) + ", " +
-                    std::to_string(255) + "]",
-                "->", std::to_string(1));
+                    std::to_string(255) + "]");
 
   print_aligned("-rt", "INT", "=",
                 "reference tick: [" + std::to_string(MIN_TICK) + ", " +

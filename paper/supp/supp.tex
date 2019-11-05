@@ -201,7 +201,7 @@ Various options are provided with the interface of the proposed tool, which are 
   \midrule
   \mono{-fs} & Char or String:\newline \{S/small, M/medium, L/large\}
   % \newline Default: large
-   & Filter scale. It automatically chooses filter size. \\
+   & Filter scale. It automatically chooses filter size. If a user does not use this flag, the ``-f'' flag will handle the filtering size.  \\
   \midrule
   \mono{-d} & Integer: $[1, 2^{64}-1]$\newline Default: 1 & Sampling steps. Instead of considering the whole information content, this option can be used to make samples of it. \\
   \midrule
@@ -348,7 +348,7 @@ The visualizer provides various options that are described in Table~\ref{tab.opt
     \midrule
     \mono{-s} & Integer: $[5, 200]$\newline Default: 40 & Space between sequences. \\
     \midrule
-    \mono{-tc} & Integer: $[1, 255]$\newline Default: 40 & Total number of colors in the map, which is automatically chosen by default. \\
+    \mono{-tc} & Integer: $[1, 255]$ & Total number of colors in the map, which is automatically chosen by default. \\
     \midrule
     % \mono{-f} & Integer: $[1, 255]$\newline Default: 43 & Multiplication factor for color ID. \\
     % \midrule
