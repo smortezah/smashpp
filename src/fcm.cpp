@@ -471,9 +471,8 @@ void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
     compress_n(par);
 
   if (par->verbose) {
-    std::cerr << "\r" << par->message
-              << "finished. Ave. entropy = " << fixed_precision(PREC_PRF)
-              << aveEnt << " bps." << '\n';
+    std::cerr << "\r" << par->message << "finished. Ave. entropy = "
+              << fixed_precision(PREC_PRF, aveEnt) << " bps." << '\n';
   } else {
     // if (round == 1) std::cerr << "\r" << par->message << "...";
   }
@@ -511,7 +510,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
             prob_par.config_ir0(c, ctx);
             entr = entropyN;
           }
-          prf_file << precision(PREC_PRF) << entr << '\n';
+          prf_file << precision(PREC_PRF, entr) << '\n';
           sumEnt += entr;
           update_ctx_ir0(ctx, &prob_par);
         } else if (rMs[0].ir == 1) {
@@ -525,7 +524,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
             prob_par.config_ir1(c, ctxIr);
             entr = entropyN;
           }
-          prf_file << precision(PREC_PRF) << entr << '\n';
+          prf_file << precision(PREC_PRF, entr) << '\n';
           sumEnt += entr;
           update_ctx_ir1(ctxIr, &prob_par);
         } else if (rMs[0].ir == 2) {
@@ -539,7 +538,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
             prob_par.config_ir2(c, ctx, ctxIr);
             entr = entropyN;
           }
-          prf_file << precision(PREC_PRF) << entr << '\n';
+          prf_file << precision(PREC_PRF, entr) << '\n';
           sumEnt += entr;
           update_ctx_ir2(ctx, ctxIr, &prob_par);
         }
@@ -635,7 +634,7 @@ inline void FCM::compress_n(std::unique_ptr<Param>& par) {
 
         const auto ent = entropy(std::begin(cp->w), std::begin(cp->probs),
                                  std::end(cp->probs));
-        prf_file << precision(PREC_PRF) << ent << '\n';
+        prf_file << precision(PREC_PRF, ent) << '\n';
         normalize(std::begin(cp->w), std::begin(cp->wNext),
                   std::end(cp->wNext));
         ////        update_weights(begin(cp->w), begin(cp->probs),
@@ -799,8 +798,8 @@ void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID,
 
   if (par->verbose)
     std::cerr << "\r" << message
-              << "done. Ave. entropy = " << fixed_precision(PREC_PRF)
-              << selfEnt[ID] << " bps." << '\n';
+              << "done. Ave. entropy = " << fixed_precision(PREC_PRF, selfEnt[ID])
+              << " bps." << '\n';
 }
 
 inline void FCM::self_compress_alloc() {
@@ -860,7 +859,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
           } else {
             entr = entropyN;
           }
-          // cout << precision(PREC_PRF) << entr << '\n';
+          // cout << precision(PREC_PRF, entr) << '\n';
           sumEnt += entr;
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir0(ctx, &pp);
@@ -873,7 +872,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
           } else {
             entr = entropyN;
           }
-          // cout << precision(PREC_PRF) << entr << '\n';
+          // cout << precision(PREC_PRF, entr) << '\n';
           sumEnt += entr;
           (*cont)->update((pp.revNumSym << pp.shl) | pp.r);
           update_ctx_ir1(ctxIr, &pp);
@@ -886,7 +885,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
           } else {
             entr = entropyN;
           }
-          // cout << precision(PREC_PRF) << entr << '\n';
+          // cout << precision(PREC_PRF, entr) << '\n';
           sumEnt += entr;
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
@@ -980,7 +979,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
 
         const auto ent = entropy(std::begin(cp->w), std::begin(cp->probs),
                                  std::end(cp->probs));
-        // cout << precision(PREC_PRF) << ent << '\n';
+        // cout << precision(PREC_PRF, ent) << '\n';
         normalize(std::begin(cp->w), std::begin(cp->wNext),
                   std::end(cp->wNext));
         ////        update_weights(begin(cp->w), begin(cp->probs),
