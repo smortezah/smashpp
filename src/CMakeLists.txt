@@ -24,6 +24,7 @@ add_executable(smashpp
   logtbl8.cpp
   filter.cpp
   segment.cpp
+  output.cpp
   color.cpp
   svg.cpp
   vizpaint.cpp

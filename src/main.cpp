@@ -337,7 +337,17 @@ void run(std::unique_ptr<Param>& par) {
   }  // Round 1
 
   remove_temp_seq(par);
-  if (!pos_out.empty()) write_pos_file(pos_out, par->asym_region);
+  if (!pos_out.empty()) {
+    auto pos_file = std::make_unique<PositionFile>();
+    pos_file->param_list = par->param_list;
+    pos_file->info->ref = file_name(par->ref);
+    pos_file->info->ref_size = file_size(par->ref);
+    pos_file->info->tar = file_name(par->tar);
+    pos_file->info->tar_size = file_size(par->tar);
+    pos_file->name =
+        gen_name(pos_file->info->ref, pos_file->info->tar, Format::position);
+    pos_file->write_pos_file(pos_out, par->asym_region);
+  }
 }
 
 int main(int argc, char* argv[]) {
