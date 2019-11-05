@@ -10,11 +10,11 @@
 
 namespace smashpp {
 static constexpr uint8_t MIN_THRD{1};
-static constexpr uint8_t MAX_THRD{8};
+static constexpr uint8_t MAX_THRD{255};
 static constexpr uint8_t THRD{4};
 static constexpr uint8_t MIN_LVL{0};
-static constexpr uint8_t MAX_LVL{5};
-static constexpr uint8_t LVL{0};
+static constexpr uint8_t MAX_LVL{6};
+static constexpr uint8_t LVL{3};
 static constexpr uint32_t MIN_SSIZE{1};
 static constexpr uint32_t MAX_SSIZE{0xffffffff};  // 2^32 - 1
 static constexpr uint32_t SSIZE{50};

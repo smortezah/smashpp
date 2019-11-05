@@ -18,7 +18,7 @@
 namespace smashpp {
 // Version
 static const std::string SMASHPP{"SMASHPP"};
-static const std::string VERSION{"19.10"};
+static const std::string VERSION{"19.11"};
 static const std::string DEV_YEARS{"2018-2019"};
 
 // Typedef
@@ -245,9 +245,9 @@ static const std::vector<std::string> LEVEL{
     "14,0,0.005,0.95:6,0,0.1,0.95",                               // Level 2
     "14,0,0.001,0.95/5,0,0.001,0.95",                             // Level 3
     "18,0,0.002,0.95/3,0,0.02,0.95:13,0,0.01,0.95:6,0,0.1,0.95",  // Level 4
-    "20,0,0.002,0.95/5,0,0.05,0.95:14,0,0.005,0.95/3,0,1,0.95:"
-    "8,0,0.1,0.95:4,0,1,0.95",  // Level 5
     "16,0,0.002,0.95/8,0,0.1,0.95:14,0,0.005,0.95/5,0,1,0.95:"
+    "8,0,0.1,0.95:4,0,1,0.95",  // Level 5
+    "20,0,0.002,0.95/5,0,0.05,0.95:14,0,0.005,0.95/3,0,1,0.95:"
     "8,0,0.1,0.95:4,0,1,0.95"  // Level 6
 };
 static const std::vector<std::string> REFFREE_LEVEL{LEVEL};
