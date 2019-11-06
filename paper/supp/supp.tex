@@ -215,11 +215,13 @@ Various options are provided with the interface of the proposed tool, which are 
   \mono{-re} & Integer: $[-2^{15}, 2^{15}-1]$ & Reference ending guard. \\
   \mono{-tb} & Integer: $[-2^{15}, 2^{15}-1]$ & Target beginning guard. \\
   \mono{-te} & Integer: $[-2^{15}, 2^{15}-1]$ & Target ending guard. \\
-  & \default{0} & \smashpp is capable of finding even very small similar regions in two sequences. However, we have found experimentally that when it is running in a very sensitive mode, there might be some cases in which the size of similar regions in the reference and the target are not balanced. These cases can be handled by ``-rb'', ``-re'', ``-tb'' and ``-te'' options, that can resize the beginning and ending guards of reference and target regions, respectively. For example, if ``-tb 10'' is used, the first 10 bases in each target region will be discarded, which results in smaller regions. Note that when the guard sizes of target regions are increased, the models built from these regions would be slightly different than the original models; consequently, the sizes of reference regions that are detected as being similar to the ones from the target would be modified, as well. Therefore, changing the guard sizes of target regions will affect the sizes of reference regions. In the case of activating deep compression, by ``-dp'', changing the guard sizes of reference regions would affect the sizes of target regions, as well. \\
+  & \default{0} & \smashpp is capable of finding even very small similar regions in two sequences. However, we have found experimentally that when it is running in a very sensitive mode, there might be some cases in which the size of similar regions in the reference and the target are not balanced. These cases can be handled by ``-rb'', ``-re'', ``-tb'' and ``-te'' options, by resizing the beginning and ending guards of reference and target regions, respectively. For example, if ``-tb 10'' is used, the first 10 bases in each target region will be discarded, which results in smaller regions. Note that when the guard sizes of target regions are increased, the models built from these regions would be slightly different than the original models; consequently, the sizes of reference regions that are detected as being similar to the ones from the target would be altered. Therefore, changing the guard sizes of target regions will affect the sizes of reference regions. 
+  % In the case of activating deep compression, by ``-dp'', changing the guard sizes of reference regions would affect the sizes of target regions, as well.
+  The same thing happens for the sizes of target regions, when the guard sizes of reference regions are changed. \\
   \midrule
   \mono{-ar} & N/A & Consider asymmetric regions. It makes \smashpp not to balance the similar reference and target regions. \\
-  \midrule
-  \mono{-dp} & N/A & Deep compression. It means that similar regions in target and reference sequences are found in three phases, instead of two: 1)~the model of the reference is built and the target is compressed based upon that model, 2)~the model of each detected region is built and the whole reference is compressed based on these models and 3)~the model of each detected reference region is built and the corresponding target regions will be compressed based on that model. \\
+  % \midrule
+  % \mono{-dp} & N/A & Deep compression. It means that similar regions in target and reference sequences are found in three phases, instead of two: 1)~the reference model is built and the target is compressed based upon that model, 2)~the model of each detected region is built and the whole reference is compressed based on those models and 3)~the model of each detected reference region is built and the corresponding target regions will be compressed based on that model. \\
   \midrule
   \mono{-nr} & N/A & Do not compute self complexity. It makes the tool not to perform the reference-free compression (self-complexity computation). \\
   \midrule
@@ -428,9 +430,8 @@ GTTCATATTTAGTAAGAACGGGTGACCGAGGAGCTAAATCAGGGACTATGTAAAATTAGAGATCTAAGGATAGTAGCACC
 ATGGATCGAACTCCGCCATGGTTTGGTGTCGATGCCATTGGCGTCACCGTGCTGATAGCCAAATC
 \end{verbatim}
 Running
-{\color{red}{
 \begin{code}[style=bash]
-./smashpp -d 1 -dp -fs S -l 3 -r ref -t tar
+./smashpp -r ref -t tar
 ./smashpp -viz -vv -o example.svg ref.tar.pos
 \end{code}
 results in Fig.~\ref{fig.example}.
@@ -440,7 +441,6 @@ results in Fig.~\ref{fig.example}.
   \caption{An example of running \smashpp on two 1000 base sequences. (a) the position file and (b) output of the visualizer. One similar region in regular mode and another similar region in inverted mode are detected.}
   \label{fig.example}
 \end{figure}
-}}
 
 \clearpage
 %\balance

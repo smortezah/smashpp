@@ -130,7 +130,8 @@ class Param {
         showInfo(true),
         ID(0),
         noRedun(false),
-        deep(false),
+        deep(true),
+        // deep(false),
         asym_region(false),
         tar_guard(std::make_unique<TarGuard>()),
         ref_guard(std::make_unique<RefGuard>()) {}

@@ -76,7 +76,8 @@ elif num_example == 2:
 #         ref = str(idx_ref)
 #         tar = str(idx_tar)
 #         cmd = './smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r ' + ref + \
-#             ' -t ' + tar + ' -th 1.8 -m 60 -rb 15 -re 5 -dp'
+#             ' -t ' + tar + ' -th 1.8 -m 60 -rb 15 -re 5'
+##             ' -t ' + tar + ' -th 1.8 -m 60 -rb 15 -re 5 -dp'
 #         os.popen(cmd).read()
 
 

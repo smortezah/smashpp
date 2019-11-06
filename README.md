@@ -93,7 +93,6 @@ OPTIONS
   -re <INT>          = ref ending guard: [-32768, 32767]     -> 0
   -tb <INT>          = tar beginning guard: [-32768, 32767]  -> 0
   -te <INT>          = tar ending guard: [-32768, 32767]     -> 0
-  -dp                = deep compression                      -> no
   -nr                = do NOT compute self complexity        -> no
   -sb                = save sequence (input: FASTA/FASTQ)    -> no
   -sp                = save profile (*.prf)                  -> no
