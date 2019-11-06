@@ -1,17 +1,1 @@
-\begin{align}
-  w[n] & = 1,
-  \tag*{\small(rectangular)}                                                                                                                                        \\
-  w[n] & = 1-\left|\tfrac {n-N/2}{L/2}\right|, \quad L=N,
-  \tag*{\small(triangular/Bartlett)}                                                                                                                                \\
-  w[n] & = 1-\left(\tfrac {n-N/2}{N/2}\right)^{2},
-  \tag*{\small(Welch)}                                                                                                                                              \\
-  w[n] & = \sin \left(\tfrac {\pi n}{N}\right),
-  \tag*{\small(sine)}                                                                                                                                               \\
-  w[n] & = 0.54348-0.45652\;\cos \left(\tfrac {2\pi n}{N}\right),
-  \tag*{\small(Hamming)}                                                                                                                                            \\
-  w[n] & = 0.42659-0.49656\;\cos \left(\tfrac {2\pi n}{N}\right)+0.07685\;\cos \left(\tfrac {4\pi n}{N}\right),
-  \tag*{\small(Blackman)}                                                                                                                                           \\
-  w[n] & = 0.35577-0.48740\;\cos \left(\tfrac {2\pi n}{N}\right)+0.14423\;\cos \left(\tfrac {4\pi n}{N}\right)-0.01260\;\cos \left(\tfrac {6\pi n}{N}\right),
-  \tag*{\small(Nuttall)}                                                                                                                                            \\
-  \label{eq.filter}
-\end{align}
+\newcommand*{\highlight}[1]{\tikz[baseline=(X.base)] \node[fill=lightgray] (X) {#1};}

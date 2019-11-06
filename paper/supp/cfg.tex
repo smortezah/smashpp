@@ -43,11 +43,12 @@
 
 %%%%%  Color
 \usepackage{xcolor}
-%\newcommand*{\highlight}[1]{\textcolor{red}{\textbf{#1}}}
-\newcommand*{\highlight}[1]{\textcolor{red!90!black}{#1}}
+% \newcommand*{\highlight}[1]{\textcolor{red!90!black}{#1}}
 %\usepackage{easyReview}
-%\usepackage{soul}  % Highlight command \hl
-%\newcommand{\highlight}[1]{\hl{#1}}
+% \usepackage{soul}  % Highlight command \hl
+% \DeclareRobustCommand{\highlight}[1]{{\sethlcolor{lightgray}\hl{#1}}}
+% \newcommand*{\highlight}[1]{\tikz[baseline=(X.base)] \node[fill=lightgray] (X) {#1};}
+\DeclareRobustCommand{\highlight}[1]{\colorbox{lightgray!30}{#1}}
 
 
 %%%%%  Figures path
