@@ -144,6 +144,7 @@ void Param::parse(int argc, char**& argv) {
           "default", Problem::warning);
       range->assert(nthr);
     } else if (option_inserted(i, "-d")) {
+      manSampleStep = true;
       sampleStep = std::stoull(*++i);
       if (sampleStep == 0) sampleStep = 1ull;
     } else if (option_inserted(i, "-fs")) {
@@ -230,6 +231,11 @@ void Param::parse(int argc, char**& argv) {
 
   manFilterScale = !manThresh;
   manFilterScale = !manWSize;
+
+  if (!manSampleStep) {
+    const auto min_ref_tar = std::min(file_size(ref), file_size(tar));
+    sampleStep = static_cast<uint64_t>(std::ceil(min_ref_tar / 5000.0));
+  }
 
   keep_in_range(1ull, filt_size,
                 std::min(file_size(ref), file_size(tar)) / sampleStep);
