@@ -25,7 +25,7 @@ static constexpr uint32_t MIN_WS{1};
 static constexpr uint32_t MAX_WS{0xffffffff};  // 2^32 - 1
 static constexpr uint32_t WS{256};
 static constexpr auto FT{FilterType::hann};         // Window type -- filter
-static constexpr auto SAMPLE_STEP{100ull};
+static constexpr auto SAMPLE_STEP{1ull};
 static constexpr float MIN_THRSH{0};
 static constexpr float MAX_THRSH{20};
 static constexpr float THRSH{1.5};
@@ -76,7 +76,7 @@ class Param {
   FilterType filt_type;
   uint64_t sampleStep;
   float thresh;
-  bool man_level, manWSize, manThresh, manFilterScale;
+  bool man_level, manWSize, manThresh, manSampleStep, manFilterScale;
   FilterScale filterScale;
   bool saveSeq, saveProfile, saveFilter, saveSegment, saveAll;
   FileType refType, tarType;
@@ -117,6 +117,7 @@ class Param {
         thresh(THRSH),
         manWSize(false),
         manThresh(false),
+        manSampleStep(false),
         manFilterScale(false),
         filterScale(FilterScale::m),
         saveSeq(false),

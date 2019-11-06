@@ -81,13 +81,6 @@ inline static std::string fixed_precision(T prec, U value) {
   return oss.str();
 }
 
-// template <typename T>
-// inline static std::string fixed_precision(T value) {
-//   std::ostringstream oss;
-//   oss << std::fixed << std::setprecision(value);
-//   return oss.str();
-// }
-
 inline static uint8_t num_digits(uint64_t number) {
   return number == 0 ? 1 : std::log10(static_cast<double>(number)) + 1;
 }

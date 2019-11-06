@@ -32,6 +32,7 @@ class Filter {
     Position(uint64_t b, uint64_t e) : beg(b), end(e) {}
   };
 
+  void set_sample_step_size(std::unique_ptr<Param>&);
   void set_filt_size(std::unique_ptr<Param>&);
   void show_info(std::unique_ptr<Param>&) const;
   void make_window(uint32_t);
