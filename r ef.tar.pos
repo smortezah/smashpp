@@ -1,0 +1,6 @@
+##SMASH++
+##PARAM=<-r r ef -t tar -l 0 -d 1 -f 10 -th 5>
+##INFO=<Ref=r ef,RefSize=16000,Tar=tar,TarSize=16000>
+#RBeg	REnd	RRelRdn	RRdn	TBeg	TEnd	TRelRdn	TRdn	Inv
+0	16000	2.0006	2.0000	0	16000	2.0005	2.0000	F
+0	16000	2.0000	2.0000	16000	0	2.0000	2.0000	T

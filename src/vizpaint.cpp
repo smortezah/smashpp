@@ -107,7 +107,7 @@ inline void VizPaint::read_matadata(std::ifstream& fPos,
   std::string info_ref, info_ref_size, info_tar, info_tar_size;
   std::string titles;
 
-  auto split = [&](auto pos, char delim = ' ') -> std::string {
+  auto split = [&](auto pos, char delim = ',') -> std::string {
     std::string str;
     std::getline(fPos, str, delim);
     return str.substr(pos);

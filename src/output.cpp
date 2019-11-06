@@ -14,17 +14,16 @@ void PositionFile::write_pos_file_impl(const std::vector<OutRowAux>& out_aux,
   pos_file << "##PARAM=<" << param_list << ">\n";
   pos_file << "##INFO=<"
            << "Ref=" << info->ref
-           << " RefSize=" << std::to_string(info->ref_size)
-           << " Tar=" << info->tar
-           << " TarSize=" << std::to_string(info->tar_size) << ">\n";
+           << ",RefSize=" << std::to_string(info->ref_size)
+           << ",Tar=" << info->tar
+           << ",TarSize=" << std::to_string(info->tar_size) << ">\n";
 
   // Body
   uint64_t left_beg = 0, left_end = 0, right_beg = 0, right_end = 0;
   prc_t left_ent = 0.0, left_self_ent = 0.0, right_ent = 0.0,
         right_self_ent = 0.0;
 
-  pos_file << "#RefBeg\tRefEnd\tRefRelRedun\tRefRedun\t"
-              "TarBeg\tTarEnd\tTarRelRedun\tTarRedun\tInv\n";
+  pos_file << "#RBeg\tREnd\tRRelRdn\tRRdn\tTBeg\tTEnd\tTRelRdn\tTRdn\tInv\n";
   for (auto row : out_aux) {
     // Left hand side
     if (row.pos2.beg_pos == 0 && row.pos2.end_pos == 0 && row.pos2.ent == 0 &&
