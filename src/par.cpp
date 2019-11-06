@@ -188,8 +188,8 @@ void Param::parse(int argc, char**& argv) {
       range->assert(tar_guard->end);
     } else if (*i == "-ar") {
       asym_region = true;
-    } else if (*i == "-dp") {
-      deep = true;
+    // } else if (*i == "-dp") {
+    //   deep = true;
     } else if (*i == "-nr") {
       noRedun = true;
     } else if (*i == "-sb") {
@@ -414,7 +414,7 @@ void Param::help() const {
   print_align(bold("-ar"), delim_descr1, "consider asymmetric regions",
               delim_def, "no");
 
-  print_align(bold("-dp"), delim_descr1, "deep compression", delim_def, "no");
+  // print_align(bold("-dp"), delim_descr1, "deep compression", delim_def, "no");
 
   print_align(bold("-nr"), delim_descr1, "do NOT compute self complexity",
               delim_def, "no");

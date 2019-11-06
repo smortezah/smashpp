@@ -1,7 +1,0 @@
-##SMASH++
-##PARAM=<-l 3 -d 1 -nr -f 100 -r xp/dataset/sim/RefS -t xp/dataset/sim/TarS -sf>
-##INFO=<Ref=RefS,RefSize=1500,Tar=TarS,TarSize=1500>
-#RBeg	REnd	RRelRdn	RRdn	TBeg	TEnd	TRelRdn	TRdn	Inv
-502	1004	0.3432	0.0000	501	1004	0.3426	0.0000	F
-1000	1500	0.1270	0.0000	507	0	0.1250	0.0000	T
-1	505	0.1256	0.0000	1500	1001	0.1072	0.0000	T
