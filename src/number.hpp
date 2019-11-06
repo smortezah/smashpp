@@ -10,6 +10,8 @@
 #include "file.hpp"
 
 namespace smashpp {
+void error(std::string&&);  // To avoid circular dependency
+
 template <typename Input>
 inline static bool is_uint8_t(const Input& in) {
   return typeid(in) == typeid(uint8_t);

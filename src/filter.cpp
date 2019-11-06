@@ -19,11 +19,6 @@ Filter::Filter(std::unique_ptr<Param>& par)
   if ((par->filter || par->segment) && par->verbose) show_info(par);
 }
 
-inline void Filter::set_sample_step_size(std::unique_ptr<Param>& par) {
-  const auto min_ref_tar = std::min(file_size(par->ref), file_size(par->tar));
-  par->sampleStep = static_cast<uint64_t>(std::ceil(min_ref_tar / 5000.0));
-}
-
 inline void Filter::set_filt_size(std::unique_ptr<Param>& par) {
   if (par->manFilterScale) {
     // const auto biggest = std::min(file_size(par->tar), file_size(par->ref));
