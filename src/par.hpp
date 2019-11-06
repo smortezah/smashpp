@@ -23,7 +23,7 @@ static constexpr prc_t MAX_ENTR_N{100.0};
 static constexpr prc_t ENTR_N{2.0};
 static constexpr uint32_t MIN_WS{1};
 static constexpr uint32_t MAX_WS{0xffffffff};  // 2^32 - 1
-static constexpr uint32_t WS{256};
+static constexpr uint32_t WS{100};
 static constexpr auto FT{FilterType::hann};         // Window type -- filter
 static constexpr auto SAMPLE_STEP{1ull};
 static constexpr float MIN_THRSH{0};

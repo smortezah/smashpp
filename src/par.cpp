@@ -229,8 +229,7 @@ void Param::parse(int argc, char**& argv) {
     tarMs = refMs;
   }
 
-  manFilterScale = !manThresh;
-  manFilterScale = !manWSize;
+  //// manFilterScale = !manThresh;
 
   if (!manSampleStep) {
     const auto min_ref_tar = std::min(file_size(ref), file_size(tar));
