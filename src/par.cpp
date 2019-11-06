@@ -2,15 +2,15 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
 
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <memory>
 #include "par.hpp"
+#include <algorithm>
+#include <fstream>
+#include <memory>
+#include <vector>
 #include "assert.hpp"
+#include "container.hpp"
 #include "def.hpp"
 #include "exception.hpp"
-#include "container.hpp"
 #include "file.hpp"
 #include "mdlpar.hpp"
 #include "print.hpp"
@@ -47,9 +47,11 @@ void Param::parse(int argc, char**& argv) {
       throw EXIT_SUCCESS;
     } else if (*i == "--version") {
       std::cerr << "Smash++ " << VERSION << "\n"
-                << "Maintained by Morteza Hosseini (seyedmorteza@ua.pt)" << "\n"
+                << "Maintained by Morteza Hosseini (seyedmorteza@ua.pt)"
+                << "\n"
                 << "Copyright (C) " << DEV_YEARS
-                << " IEETA, University of Aveiro." << "\n";
+                << " IEETA, University of Aveiro."
+                << "\n";
       throw EXIT_SUCCESS;
     } else if (*i == "-v") {
       verbose = true;
@@ -180,8 +182,8 @@ void Param::parse(int argc, char**& argv) {
       tar_guard->end = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
-          std::numeric_limits<int16_t>::max(), 0, "Target ending guard", Interval::closed,
-          "default", Problem::warning);
+          std::numeric_limits<int16_t>::max(), 0, "Target ending guard",
+          Interval::closed, "default", Problem::warning);
       range->assert(tar_guard->end);
     } else if (*i == "-ar") {
       asym_region = true;
@@ -316,166 +318,174 @@ void Param::help() const {
   print_line("");
 
   print_title("OPTIONS");
-  print_line(italic("Required")+":");
+  print_line(italic("Required") + ":");
 
-  print_align(bold("-r"), "FILE", delim_descr1, "reference file (Seq/FASTA/FASTQ)");
+  print_align(bold("-r"), "FILE", delim_descr1,
+              "reference file (Seq/FASTA/FASTQ)");
 
-  print_align(bold("-t"), "FILE", delim_descr1, "target file    (Seq/FASTA/FASTQ)");
+  print_align(bold("-t"), "FILE", delim_descr1,
+              "target file    (Seq/FASTA/FASTQ)");
   print_line("");
 
-  print_line(italic("Optional")+":");
+  print_line(italic("Optional") + ":");
   print_align(bold("-l"), "INT", delim_descr1,
-                "level of compression: [" + std::to_string(MIN_LVL) + ", " +
-                    std::to_string(MAX_LVL) + "]. Default",
-                delim_def, std::to_string(LVL));
+              "level of compression: [" + std::to_string(MIN_LVL) + ", " +
+                  std::to_string(MAX_LVL) + "]. Default",
+              delim_def, std::to_string(LVL));
 
   print_align(bold("-m"), "INT", delim_descr1,
-                "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
-                    std::to_string(MAX_SSIZE) + "]",
-                delim_def, std::to_string(SSIZE));
+              "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
+                  std::to_string(MAX_SSIZE) + "]",
+              delim_def, std::to_string(SSIZE));
 
   print_align(bold("-e"), "FLOAT", delim_descr1,
-                "entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) +
-                    ", " + string_format("%.1f", MAX_ENTR_N) + "]",
-                delim_def, string_format("%.1f", ENTR_N));
+              "entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) + ", " +
+                  string_format("%.1f", MAX_ENTR_N) + "]",
+              delim_def, string_format("%.1f", ENTR_N));
 
   print_align(bold("-n"), "INT", delim_descr1,
-                "number of threads: [" + std::to_string(MIN_THRD) + ", " +
-                    std::to_string(MAX_THRD) + "]",
-                delim_def, std::to_string(THRD));
+              "number of threads: [" + std::to_string(MIN_THRD) + ", " +
+                  std::to_string(MAX_THRD) + "]",
+              delim_def, std::to_string(THRD));
 
   print_align(bold("-f"), "INT", delim_descr1,
-                "filter size: [" + std::to_string(MIN_WS) + ", " +
-                    std::to_string(MAX_WS) + "]",
-                delim_def, std::to_string(WS));
+              "filter size: [" + std::to_string(MIN_WS) + ", " +
+                  std::to_string(MAX_WS) + "]",
+              delim_def, std::to_string(WS));
 
   print_align(bold("-ft"), "INT/STRING", delim_descr1,
-                "filter type (windowing function):", delim_def, "hann");
+              "filter type (windowing function):", delim_def, "hann");
   print_align("", delim_descr2, "{0/rectangular, 1/hamming, 2/hann,");
-  print_align("", "", "", "3/blackman, 4/triangular, 5/welch,");
-  print_align("", "", "", "6/sine, 7/nuttall}");
+  print_align("", delim_descr2, "3/blackman, 4/triangular, 5/welch,");
+  print_align("", delim_descr2, "6/sine, 7/nuttall}");
 
-  // print_align("-fs", "[S][M][L]", delim_descr1, "filter scale");
-  // // print_align("-fs", "[S][M][L]", delim_descr1, "filter scale:", delim_def, "L");
-  // print_align("", "", "", "{S/small, M/medium, L/large}");
+  print_align(bold("-fs"), "[S][M][L]", delim_descr1, "filter scale");
+  print_align("", delim_descr2, "{S/small, M/medium, L/large}");
 
-  // print_align("-d", "INT", delim_descr1, "sampling steps", delim_def,
-  //               std::to_string(SAMPLE_STEP));
+  print_align(bold("-d"), "INT", delim_descr1, "sampling steps", delim_def,
+              std::to_string(SAMPLE_STEP));
 
-  // print_align("-th", "FLOAT", delim_descr1,
-  //               "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
-  //                   string_format("%.1f", MAX_THRSH) + "]",
-  //               delim_def, string_format("%.1f", THRSH));
+  print_align(bold("-th"), "FLOAT", delim_descr1,
+              "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
+                  string_format("%.1f", MAX_THRSH) + "]",
+              delim_def, string_format("%.1f", THRSH));
 
-  // print_align(
-  //     "-rb", "INT", delim_descr1,
-  //     "ref beginning guard: [" +
-  //         std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::min()) +
-  //         ", " +
-  //         std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::max()) +
-  //         "]",
-  //     delim_def, std::to_string(ref_guard->beg));
+  print_align(
+      bold("-rb"), "INT", delim_descr1,
+      "ref beginning guard: [" +
+          std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::min()) +
+          ", " +
+          std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::max()) +
+          "]",
+      delim_def, std::to_string(ref_guard->beg));
 
-  // print_align(
-  //     "-re", "INT", delim_descr1,
-  //     "ref ending guard: [" +
-  //         std::to_string(std::numeric_limits<decltype(ref_guard->end)>::min()) +
-  //         ", " +
-  //         std::to_string(std::numeric_limits<decltype(ref_guard->end)>::max()) +
-  //         "]",
-  //     delim_def, std::to_string(ref_guard->end));
+  print_align(
+      bold("-re"), "INT", delim_descr1,
+      "ref ending guard: [" +
+          std::to_string(std::numeric_limits<decltype(ref_guard->end)>::min()) +
+          ", " +
+          std::to_string(std::numeric_limits<decltype(ref_guard->end)>::max()) +
+          "]",
+      delim_def, std::to_string(ref_guard->end));
 
-  // print_align(
-  //     "-tb", "INT", delim_descr1,
-  //     "tar beginning guard: [" +
-  //         std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::min()) +
-  //         ", " +
-  //         std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::max()) +
-  //         "]",
-  //     delim_def, std::to_string(tar_guard->beg));
+  print_align(
+      bold("-tb"), "INT", delim_descr1,
+      "tar beginning guard: [" +
+          std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::min()) +
+          ", " +
+          std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::max()) +
+          "]",
+      delim_def, std::to_string(tar_guard->beg));
 
-  // print_align(
-  //     "-te", "INT", delim_descr1,
-  //     "tar ending guard: [" +
-  //         std::to_string(std::numeric_limits<decltype(tar_guard->end)>::min()) +
-  //         ", " +
-  //         std::to_string(std::numeric_limits<decltype(tar_guard->end)>::max()) +
-  //         "]",
-  //     delim_def, std::to_string(tar_guard->end));
+  print_align(
+      bold("-te"), "INT", delim_descr1,
+      "tar ending guard: [" +
+          std::to_string(std::numeric_limits<decltype(tar_guard->end)>::min()) +
+          ", " +
+          std::to_string(std::numeric_limits<decltype(tar_guard->end)>::max()) +
+          "]",
+      delim_def, std::to_string(tar_guard->end));
 
-  // print_align("-ar", "", delim_descr1, "consider asymmetric regions", delim_def, "no");
+  print_align(bold("-ar"), delim_descr1, "consider asymmetric regions",
+              delim_def, "no");
 
-  // print_align("-dp", "", delim_descr1, "deep compression", delim_def, "no");
+  print_align(bold("-dp"), delim_descr1, "deep compression", delim_def, "no");
 
-  // print_align("-nr", "", delim_descr1, "do NOT compute self complexity", delim_def, "no");
+  print_align(bold("-nr"), delim_descr1, "do NOT compute self complexity",
+              delim_def, "no");
 
-  // print_align("-sb", "", delim_descr1, "save sequence (input: FASTA/FASTQ)", delim_def,
-  //               "no");
+  print_align(bold("-sb"), delim_descr1, "save sequence (input: FASTA/FASTQ)",
+              delim_def, "no");
 
-  // print_align("-sp", "", delim_descr1, "save profile (*.prf)", delim_def, "no");
+  print_align(bold("-sp"), delim_descr1, "save profile (*.prf)", delim_def,
+              "no");
 
-  // print_align("-sf", "", delim_descr1, "save filtered file (*.fil)", delim_def, "no");
+  print_align(bold("-sf"), delim_descr1, "save filtered file (*.fil)",
+              delim_def, "no");
 
-  // print_align("-ss", "", delim_descr1, "save segmented files (*.s[i])", delim_def, "no");
+  print_align(bold("-ss"), delim_descr1, "save segmented files (*.s[i])",
+              delim_def, "no");
 
-  // print_align("-sa", "", delim_descr1, "save profile, filetered and", delim_def, "no");
-  // print_align("", "", "", "segmented files");
+  print_align(bold("-sa"), delim_descr1, "save profile, filetered and",
+              delim_def, "no");
+  print_align("", delim_descr2, "segmented files");
 
-  // print_line(bold("-rm") + " " + italic("k") + ",[" + italic("w") + "," +
-  //            italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +
-  //            italic("t") + ",ir," + italic("a") + "," + italic("g") + ":...");
+  print_line(bold("-rm") + " " + italic("k") + ",[" + italic("w") + "," +
+             italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +
+             italic("t") + ",ir," + italic("a") + "," + italic("g") + ":...");
 
-  // print_line(bold("-tm") + " " + italic("k") + ",[" + italic("w") + "," +
-  //            italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +
-  //            italic("t") + ",ir," + italic("a") + "," + italic("g") + ":...");
+  print_line(bold("-tm") + " " + italic("k") + ",[" + italic("w") + "," +
+             italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +
+             italic("t") + ",ir," + italic("a") + "," + italic("g") + ":...");
 
-  // print_align("", "", delim_descr1, "parameters of models");
+  print_align("", delim_descr1, "parameters of models");
 
-  // print_align_right_left("", "INT", "", italic("k") + ":  context size");
+  print_align_model("INT", delim_descr2, italic("k") + ":", "context size");
 
-  // print_align_right_left("", "INT", "",
-  //                          italic("w") + ":  width of sketch in log2 form,");
-  // print_align_right_left("", "", "", "    e.g., set 10 for w=2^10=1024");
+  print_align_model("INT", delim_descr2, italic("w") + ":",
+                    "width of sketch in log2 form,");
+  print_align_model("", delim_descr2, "", "e.g., set 10 for w=2^10=1024");
 
-  // print_align_right_left("", "INT", "", italic("d") + ":  depth of sketch");
+  print_align_model("INT", delim_descr2, italic("d") + ":", "depth of sketch");
 
-  // print_align_right_left("", "INT", "", "ir: inverted repeat: {0, 1, 2}");
-  // print_align_right_left("", "", "", "    0: regular (not inverted)");
-  // print_align_right_left("", "", "", "    1: inverted, solely");
-  // print_align_right_left("", "", "", "    2: both regular and inverted");
+  print_align_model("INT", delim_descr2, "ir:", "inverted repeat: {0, 1, 2}");
+  print_align_model("", delim_descr2, "", "0: regular (not inverted)");
+  print_align_model("", delim_descr2, "", "1: inverted, solely");
+  print_align_model("", delim_descr2, "", "2: both regular and inverted");
 
-  // print_align_right_left("", "FLOAT", "", italic("a") + ":  estimator");
+  print_align_model("FLOAT", delim_descr2, italic("a") + ":", "estimator");
 
-  // print_align_right_left("", "FLOAT", "",
-  //                          italic("g") + ":  forgetting factor: [0.0, 1.0)");
+  print_align_model("FLOAT", delim_descr2, italic("g") + ":",
+                    "forgetting factor: [0.0, 1.0)");
 
-  // print_align_right_left("", "INT", "",
-  //                          italic("t") + ":  threshold (no. substitutions)");
+  print_align_model("INT", delim_descr2, italic("t") + ":",
+                    "threshold (no. substitutions)");
 
-  // print_align("-ll", "", delim_descr1, "list of compression levels");
+  print_align(bold("-ll"), delim_descr1, "list of compression levels");
 
-  // print_align("-h", "", delim_descr1, "usage guide");
+  print_align(bold("-h"), delim_descr1, "usage guide");
 
-  // print_align("-v", "", delim_descr1, "more information");
+  print_align(bold("-v"), delim_descr1, "more information");
 
-  // print_line(bold("--version") + "          = show version");
+  print_align(bold("--version"), delim_descr1, "show version");
+  print_line("");
 
-  // std::cerr << '\n';
+  print_title("AUTHOR");
+  print_align("Morteza Hosseini", delim_descr2, "seyedmorteza@ua.pt");
+  print_line("");
 
-  // print_title("AUTHOR");
-  // print_align("Morteza Hosseini", "seyedmorteza@ua.pt");
-  // std::cerr << '\n';
+  print_title("SAMPLE");
+  print_line("./smashpp -r ref -t tar -l 0 -m 1000");
+  print_line("");
 
-  // print_title("SAMPLE");
-  // print_line("./smashpp -r ref -t tar -l 3 -f 50");
-  // std::cerr << '\n';
-
-  // // // title("COPYRIGHT");
-  // // // line("Copyright (C) " + DEV_YEARS +
-  // // //      ", IEETA, University of Aveiro. You may  ");
-  // // // line("redistribute copies of this Free software under the terms of the");
-  // // // line("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
-  // // // line("There is NO WARRANTY, to the extent permitted by law.");
+  // // title("COPYRIGHT");
+  // // line("Copyright (C) " + DEV_YEARS +
+  // //      ", IEETA, University of Aveiro. You may  ");
+  // // line("redistribute copies of this Free software under the terms of
+  // the");
+  // // line("GPL v3 (General Public License)
+  // <www.gnu.org/licenses/gpl.html>.");
+  // // line("There is NO WARRANTY, to the extent permitted by law.");
 }
 
 FilterType Param::win_type(std::string t) const {
@@ -601,12 +611,14 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (option_inserted(i, "-l")) {
       link = static_cast<uint8_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LINK, MAX_LINK, LINK, "Link", Interval::closed, "default", Problem::warning);
+          MIN_LINK, MAX_LINK, LINK, "Link", Interval::closed, "default",
+          Problem::warning);
       range->assert(link);
     } else if (option_inserted(i, "-m")) {
       min = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_MINP, MAX_MINP, MINP, "Min", Interval::closed, "default", Problem::warning);
+          MIN_MINP, MAX_MINP, MINP, "Min", Interval::closed, "default",
+          Problem::warning);
       range->assert(min);
     } else if (option_inserted(i, "-tc")) {
       man_tot_color = true;
@@ -616,14 +628,14 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (option_inserted(i, "-rt")) {
       refTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
-          MIN_TICK, MAX_TICK, TICK, "Tick hop for reference", Interval::closed, "default",
-          Problem::warning);
+          MIN_TICK, MAX_TICK, TICK, "Tick hop for reference", Interval::closed,
+          "default", Problem::warning);
       range->assert(refTick);
     } else if (option_inserted(i, "-tt")) {
       tarTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
-          MIN_TICK, MAX_TICK, TICK, "Tick hop for target", Interval::closed, "default",
-          Problem::warning);
+          MIN_TICK, MAX_TICK, TICK, "Tick hop for target", Interval::closed,
+          "default", Problem::warning);
       range->assert(tarTick);
     } else if (option_inserted(i, "-th")) {
       tickHumanRead = (std::stoi(*++i) != 0);
@@ -636,12 +648,14 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (option_inserted(i, "-w")) {
       width = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_WDTH, MAX_WDTH, WDTH, "Width", Interval::closed, "default", Problem::warning);
+          MIN_WDTH, MAX_WDTH, WDTH, "Width", Interval::closed, "default",
+          Problem::warning);
       range->assert(width);
     } else if (option_inserted(i, "-s")) {
       space = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_SPC, MAX_SPC, SPC, "Space", Interval::closed, "default", Problem::warning);
+          MIN_SPC, MAX_SPC, SPC, "Space", Interval::closed, "default",
+          Problem::warning);
       range->assert(space);
     } else if (*i == "-nn") {
       showNRC = false;
