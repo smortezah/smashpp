@@ -121,61 +121,15 @@ void print_align(std::string arg, std::string type,
   std::cerr << default_val << '\n';
 }
 
-// // 3 columns: arg, desciption, default
-// void print_aligned_3(std::string arg, const std::string& description,
-// std::string default_val="", std::string delim_description="=",std::string
-// delim_default = "") {
-//   std::cerr << "  ";
-//   std::cerr << std::left << std::setw(19) << arg;
-//   std::cerr << std::left << std::setw(2) << delim_description;
-//   std::cerr << std::left << std::setw(38) << description;
-//   std::cerr << std::left << std::setw(3) << delim_default;
-//   std::cerr << default_val << '\n';
-// }
-
-// // 4 columns: arg, type, desciption, default
-// void print_aligned_4(std::string arg, std::string type, const std::string&
-// description, std::string default_val="", std::string
-// delim_description="=",std::string delim_default = "") {
-//   std::cerr << "  ";
-//   std::cerr << std::left << std::setw(12) << arg;
-//   std::cerr << std::left << std::setw(15)
-//             << ((type.empty() || type[0] == '[') ? type : "<" + type + ">");
-//   std::cerr << std::left << std::setw(2) << delim_description;
-//   std::cerr << std::left << std::setw(38) << description;
-//   std::cerr << std::left << std::setw(3) << delim_default;
-//   std::cerr << default_val << '\n';
-// }
-
-// // 6 columns
-// void print_aligned(std::string arg, std::string type,
-//                    std::string delim_description,
-//                    const std::string& description,
-//                    std::string delim_default = "",
-//                    std::string default_val = "") {
-//   std::cerr << "  ";
-//   std::cerr << std::left << std::setw(13) << bold(arg);
-//   std::cerr << std::left << std::setw(15)
-//             << ((type.empty() || type[0] == '[') ? type : "<" + type + ">");
-//   std::cerr << std::left << std::setw(2) << delim_description;
-//   std::cerr << std::left << std::setw(38) << description;
-//   std::cerr << std::left << std::setw(3) << delim_default;
-//   std::cerr << default_val << '\n';
-// }
-
-void print_aligned_right_left(std::string arg, std::string type,
-                              std::string delim_description,
-                              const std::string& description,
-                              std::string delim_default = "",
-                              std::string default_val = "") {
+void print_align_model(std::string type, std::string delim_par, std::string par,
+                       const std::string& description) {
   std::cerr << "  ";
-  std::cerr << std::left << std::setw(12) << bold(arg);
-  std::cerr << std::right << std::setw(15)
+  std::cerr << std::right << std::setw(19)
             << ((type.empty() || type[0] == '[') ? type : "<" + type + ">");
-  std::cerr << std::left << std::setw(2) << delim_description;
-  std::cerr << std::left << std::setw(38) << description;
-  std::cerr << std::left << std::setw(3) << delim_default;
-  std::cerr << default_val << '\n';
+  std::cerr << std::left << std::setw(2) << delim_par;
+  std::cerr << std::left << std::setw((par.substr(0, 4) == "\033[3m") ? 12 : 4)
+            << par;
+  std::cerr << std::left << std::setw(38) << description << '\n';
 }
 }  // namespace smashpp
 
