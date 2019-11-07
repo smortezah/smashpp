@@ -1,4 +1,4 @@
-# cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.9)
 project(smashpp)
 
 if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
@@ -15,7 +15,8 @@ endif()
 # set(CMAKE_C_COMPILER C:\\mingw\\mingw64\\bin\\x86_64-w64-mingw32-gcc.exe)
 # set(CMAKE_CXX_COMPILER C:\\mingw\\mingw64\\bin\\x86_64-w64-mingw32-g++.exe)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -fopenmp -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fbranch-target-load-optimize -fforce-addr -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fbranch-target-load-optimize -fforce-addr -march=native")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -fopenmp -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fbranch-target-load-optimize -fforce-addr -march=native")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -Wall -O0 -g")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -pg") # mem prof
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -fopenmp -D_GLIBCXX_PARALLEL")
@@ -40,4 +41,9 @@ add_executable(smashpp
 
 #add_executable(excule_N src/excludeN.cpp)
 
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+target_compile_features(smashpp PRIVATE cxx_std_17)
+
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(smashpp PRIVATE OpenMP::OpenMP_CXX)
+endif()
