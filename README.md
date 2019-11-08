@@ -10,7 +10,10 @@ A fast tool to find and visualize rearrangements in DNA sequences.
 ## Install
 To install Smash++ on various operating systems, follow the instructions below. Note that the precompiled executables are available for 64 bit operating systems in the "bin/" directory.
 
-<!-- ### Conda -->
+### Conda
+```bash
+conda install -c cobilab smashpp
+```
 
 
 ### Linux
@@ -23,7 +26,7 @@ To install Smash++ on various operating systems, follow the instructions below. 
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
-  sh install.sh
+  ./install.sh
 ```
 
 ### macOS
@@ -36,7 +39,7 @@ To install Smash++ on various operating systems, follow the instructions below. 
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
-  sh install.sh
+  ./install.sh
 ```
 
 ### Windows
@@ -57,7 +60,7 @@ For example,
 ```bash
 ./smashpp -r ref -t tar
 ```
-It is highly recommended to choose short names for reference and target 
+It is recommended to choose short names for reference and target 
 sequences.
 
 ### Options
@@ -76,23 +79,24 @@ OPTIONS
   -t  <FILE>         = target file    (Seq/FASTA/FASTQ)
 
   Optional:
-  -l  <INT>          = level of compression: [0, 5]. Default -> 0
+  -l  <INT>          = level of compression: [0, 6]. Default -> 3
   -m  <INT>          = min segment size: [1, 4294967295]     -> 50
   -e  <FLOAT>        = entropy of 'N's: [0.0, 100.0]         -> 2.0
-  -n  <INT>          = number of threads: [1, 8]             -> 4
-  -f  <INT>          = filter size: [1, 4294967295]          -> 256
+  -n  <INT>          = number of threads: [1, 255]           -> 4
+  -f  <INT>          = filter size: [1, 4294967295]          -> 100
   -ft <INT/STRING>   = filter type (windowing function):     -> hann
-                       {0|rectangular, 1|hamming, 2|hann,
-                       3|blackman, 4|triangular, 5|welch,
-                       6|sine, 7|nuttall}
-  -fs [S][M][L]      = filter scale:                         -> L
-                       {S|small, M|medium, L|large}
+                       {0/rectangular, 1/hamming, 2/hann,
+                       3/blackman, 4/triangular, 5/welch,
+                       6/sine, 7/nuttall}
+  -fs [S][M][L]      = filter scale:
+                       {S/small, M/medium, L/large}
   -d  <INT>          = sampling steps                        -> 1
   -th <FLOAT>        = threshold: [0.0, 20.0]                -> 1.5
   -rb <INT>          = ref beginning guard: [-32768, 32767]  -> 0
   -re <INT>          = ref ending guard: [-32768, 32767]     -> 0
   -tb <INT>          = tar beginning guard: [-32768, 32767]  -> 0
   -te <INT>          = tar ending guard: [-32768, 32767]     -> 0
+  -ar                = consider asymmetric regions           -> no
   -nr                = do NOT compute self complexity        -> no
   -sb                = save sequence (input: FASTA/FASTQ)    -> no
   -sp                = save profile (*.prf)                  -> no
@@ -118,6 +122,12 @@ OPTIONS
   -h                 = usage guide
   -v                 = more information
   --version          = show version
+
+AUTHOR
+  Morteza Hosseini     seyedmorteza@ua.pt
+
+SAMPLE
+  ./smashpp -r ref -t tar -l 0 -m 1000
 ```
 
 To see the options for Smash++ Visualizer, type:
@@ -135,33 +145,39 @@ OPTIONS
                        Smash++ tool (*.pos)
 
   Optional:
-  -o  <SVG-FILE>     = output image name (*.svg)             -> map.svg
+  -o  <SVG-FILE>     = output image name (*.svg).    Default -> map.svg
   -rn <STRING>       = reference name shown on output. If it
-                       has space, use double quotes, e.g.
+                       has spaces, use double quotes, e.g.
                        "Seq label". Default: name in header
                        of position file
   -tn <STRING>       = target name shown on output
   -l  <INT>          = type of the link between maps: [1, 6] -> 1
   -c  <INT>          = color mode: [0, 1]                    -> 0
   -p  <FLOAT>        = opacity: [0.0, 1.0]                   -> 0.9
-  -w  <INT>          = width of the sequence: [15, 100]      -> 16
-  -s  <INT>          = space between sequences: [15, 200]    -> 62
-  -f  <INT>          = multiplication factor for             -> 43
-                       color ID: [1, 255]
-  -b  <INT>          = beginning of color ID: [0, 255]       -> 0
+  -w  <INT>          = width of the sequence: [8, 100]       -> 10
+  -s  <INT>          = space between sequences: [5, 200]     -> 40
+  -tc <INT>          = total number of colors: [1, 255]
   -rt <INT>          = reference tick: [1, 4294967295]
   -tt <INT>          = target tick: [1, 4294967295]
   -th [0][1]         = tick human readable: 0=false, 1=true  -> 1
   -m  <INT>          = minimum block size: [1, 4294967295]   -> 1
   -vv                = vertical view                         -> no
-  -nn                = do NOT show normalized relative       -> no
-                       compression (NRC)
-  -nr                = do NOT show self complexity           -> no
+  -nrr               = do NOT show relative redundancy       -> no
+                       (relative complexity)
+  -nr                = do NOT show redunadancy               -> no
   -ni                = do NOT show inverse maps              -> no
   -ng                = do NOT show regular maps              -> no
+  -n                 = show 'N' bases                        -> no
+  -stat              = save stats (*.csv)                    -> stat.csv
   -h                 = usage guide
   -v                 = more information
   --version          = show version
+
+AUTHOR
+  Morteza Hosseini     seyedmorteza@ua.pt
+
+SAMPLE
+  ./smashpp -viz -vv -o simil.svg ref.tar.pos
 ```
 
 ### Example
@@ -170,13 +186,11 @@ After installing Smash++, copy its executable file into "example/" directory and
 cp smashpp example/
 cd example/
 ```
-There is in this directory a 1000 byte reference sequence, named "refs", and a 1000 byte target sequence, named "tars". Running
+There is in this directory two 1000 base sequences, the reference sequence named "ref", and the target sequence, named "tar". Now, run Smash++ and the visualizer:
 ```bash
-./smashpp -r refs -t tars -f 45 -l 3
-./smashpp -viz -p 1 -s 50 -w 15 refs.tars.pos
+./smashpp -r ref -t tar
+./smashpp -viz -o example.svg ref.tar.pos
 ```
-results in the following image:
-<p align=center><img src="./example.svg" width="80%"></p>
 
 <!-- ### Compare Smash++ with other methods
 In order for comparison, you might set the parameters in 
