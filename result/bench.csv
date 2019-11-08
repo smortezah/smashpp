@@ -1,0 +1,9 @@
+Name,Cat,Size.B,Time.s,Memory.MB
+Small,Synthetic,3000,17.88,32.38
+Medium,Synthetic,200000,13,32.43
+Large,Synthetic,10000000,41.94,32.43
+XLarge,Synthetic,200000000,796,32.45
+Mutate,Synthetic,120000,3,17.52
+PXO99A_MAFF,Real,10324186,107,17.54
+GGA18_MGA20,Real,22419393,82,17.61
+GGA14_MGA16,Real,31542564,96,17.64
