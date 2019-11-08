@@ -65,7 +65,7 @@ struct PosPlot {
   uint16_t vertSkip;
   uint16_t tickLabelSkip;
   bool vertical;
-  bool showNRC;
+  bool showRelRedun;
   bool showRedun;
   bool plotRef;
   uint64_t refTick;
@@ -87,7 +87,7 @@ struct PosPlot {
 };
 
 struct LegendPlot {
-  bool showNRC;
+  bool showRelRedun;
   bool showRedun;
   bool vertical;
   int64_t maxWidth;

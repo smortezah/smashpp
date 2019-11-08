@@ -154,7 +154,7 @@ class VizParam {
   bool verbose;
   bool inverse;
   bool regular;
-  bool showNRC, showRedun;
+  bool showRelRedun, showRedun;
   bool showN;
   std::string image;
   uint8_t link;
@@ -179,7 +179,7 @@ class VizParam {
       : verbose(false),
         inverse(true),
         regular(true),
-        showNRC(true),
+        showRelRedun(true),
         showRedun(true),
         showN(false),
         image(IMAGE),

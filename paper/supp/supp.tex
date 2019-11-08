@@ -12,10 +12,7 @@
 
 %%%%  Page margins
 \usepackage{geometry}
-%\geometry{left=25mm, right=20mm, top=30mm, bottom=20mm}
-%\geometry{left=32mm, right=29mm, top=35mm, bottom=23mm}
-\geometry{left=36mm, right=32mm, top=35mm, bottom=30mm}
-%\geometry{left=15mm, right=15mm, top=25mm, bottom=20mm}
+\geometry{left=33mm, right=30mm, top=30mm, bottom=30mm}
 %\setlength{\columnsep}{4.5mm}
 
 %%%% Configuration for plotting
@@ -152,69 +149,11 @@
 \usepackage{textcomp}
 
 %%%%%  User-defined commands
+\newcommand*{\mono}[1]{\lstinline|#1|}
 \newcommand*{\method}[1]{\text{#1}\xspace}
 \newcommand*{\smashpp}   {\method{Smash++}}
-\newcommand*{\gzip}      {\method{gzip}}
-\newcommand*{\Gzip}      {\method{gzip}}
-\newcommand*{\bzip}      {\method{bzip2}}
-\newcommand*{\Bzip}      {\method{bzip2}}
-\newcommand*{\mfcompress}{\method{MFCompress}}
-\newcommand*{\Mfcompress}{\method{MFCompress}}
-\newcommand*{\deliminate}{\method{DELIMINATE}}
-\newcommand*{\Deliminate}{\method{DELIMINATE}}
-\newcommand*{\fqzcomp}   {\method{fqzcomp}}
-\newcommand*{\Fqzcomp}   {\method{Fqzcomp}}
-\newcommand*{\quip}      {\method{Quip}}
-\newcommand*{\Quip}      {\method{Quip}}
-\newcommand*{\dsrc}      {\method{DSRC~2}}
-\newcommand*{\Dsrc}      {\method{DSRC~2}}
-\newcommand*{\fqc}       {\method{FQC}}
-\newcommand*{\Fqc}       {\method{FQC}}
-\newcommand*{\aes}		   {\method{AES}}
-\newcommand*{\Aes}		   {\method{AES}}
-\newcommand*{\aescrypt}  {\method{AES~Crypt}}
-\newcommand*{\Aescrypt}  {\method{AES~Crypt}}
-\newcommand*{\szip}      {\method{7zip}}
-\newcommand*{\cmake}     {\method{cmake}}
-\newcommand*{\Cmake}     {\method{Cmake}}
-\newcommand*{\xs}		     {\method{XS}}
-\newcommand*{\Xs}		     {\method{XS}}
-\newcommand*{\goose}	   {\method{GOOSE}}
-\newcommand*{\Goose}	   {\method{GOOSE}}
 \newcommand*{\fasta}     {FASTA\xspace}
-\newcommand*{\Fasta}     {FASTA\xspace}
 \newcommand*{\fastq}     {FASTQ\xspace}
-\newcommand*{\Fastq}     {FASTQ\xspace}
-\newcommand*{\sam}       {SAM\xspace}
-\newcommand*{\Sam}       {SAM\xspace}
-\newcommand*{\bam}       {BAM\xspace}
-\newcommand*{\Bam}       {BAM\xspace}
-\newcommand*{\sambam}    {SAM/BAM\xspace}
-\newcommand*{\Sambam}    {SAM/BAM\xspace}
-\newcommand*{\vcf}       {VCF\xspace}
-\newcommand*{\Vcf}       {VCF\xspace}
-\newcommand*{\linux}     {Linux\xspace}
-\newcommand*{\Linux}     {Linux\xspace}
-\newcommand*{\windows}   {Windows\xspace}
-\newcommand*{\Windows}   {Windows\xspace}
-\newcommand*{\macos}     {macOS\xspace}
-\newcommand*{\Macos}     {macOS\xspace}
-\newcommand*{\xor}       {XOR\xspace}
-
-\newcommand*{\sym}[1]{\text{#1}\xspace}
-\newcommand*{\symA}      {\sym{A}}
-\newcommand*{\symC}      {\sym{C}}
-\newcommand*{\symG}      {\sym{G}}
-\newcommand*{\symT}      {\sym{T}}
-\newcommand*{\symN}      {\sym{N}}
-\newcommand*{\symX}      {\sym{X}}
-
-\newcommand*{\ascii}     {\mbox{ASCII}\xspace}
-
-\newcommand*{\mono}[1]{\lstinline|#1|}
-\newcommand*{\lang}[1]{\mono{#1}\xspace}
-\newcommand*{\cpp}       {\lang{C++}}
-\newcommand*{\bash}      {\lang{bash}}
 
 %%%%%  User-defined environments
 \lstnewenvironment{code}[1][]
@@ -229,35 +168,46 @@
 \fancyhead{}    % clear all header fields
 \fancyfoot{}    % clear all footer fields
 \fancyhead[L]{\textsf{\nouppercase\rightmark}}
+% \fancyhead[L]{}
 \fancyhead[R]{\thepage}
 \setlength{\headsep}{20pt}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-%%% Title page
-\begin{titlepage}
-  \centering
-  \vspace*{10mm}
-  % \includegraphics[width=2.8cm]{logo.png} \\[10mm]
-  \Large\textsc{Supplementary Material for} \\[5mm]
-  \huge\textbf{Smash++: finding rearrangements} \\[12mm]
-  \Large Morteza Hosseini\textsuperscript{1}, Diogo Pratas\textsuperscript{1,2}, Armando J. Pinho\textsuperscript{1} \\[6mm]
-  \normalsize \textsuperscript{1}IEETA/DETI, University of Aveiro, Portugal \\[1mm]
-  \textsuperscript{2}Department of Virology, University of Helsinki, Finland \\[4mm]
-  {\ttfamily\{seyedmorteza,pratas,ap\}@ua.pt}
+% %%% Title page
+% \begin{titlepage}
+%   \centering
+%   \vspace*{10mm}
+%   % \includegraphics[width=2.8cm]{logo.png} \\[10mm]
+%   \Large\textsc{Supplementary Material for} \\[5mm]
+%   \huge\textbf{Smash++: finding rearrangements} \\[12mm]
+%   \Large Morteza Hosseini\textsuperscript{1}, Diogo Pratas\textsuperscript{1,2}, Armando J. Pinho\textsuperscript{1} \\[6mm]
+%   \normalsize \textsuperscript{1}IEETA/DETI, University of Aveiro, Portugal \\[1mm]
+%   \textsuperscript{2}Department of Virology, University of Helsinki, Finland \\[4mm]
+%   {\ttfamily\{seyedmorteza,pratas,ap\}@ua.pt}
   
-  \vspace{\fill}
-  \thispagestyle{empty}
-  \raggedright
-  \setstretch{1.2}
-  \normalsize\tableofcontents
-\end{titlepage}
+%   % \vspace{\fill}
+%   % \thispagestyle{empty}
+%   % \raggedright
+%   % \setstretch{1.2}
+%   % \normalsize\tableofcontents
+% \end{titlepage}
+
+\begin{center}
+  \Large\textsc{Supplementary Material for} \\[1mm]
+  \huge\textbf{Smash++: finding rearrangements} \\[6mm]
+  \Large Morteza Hosseini\textsuperscript{1}, Diogo Pratas\textsuperscript{1,2}, Armando J. Pinho\textsuperscript{1} \\[2mm]
+  \normalsize \textsuperscript{1}IEETA/DETI, University of Aveiro, Portugal, \textsuperscript{2}Dept. of Virology, University of Helsinki, Finland \\
+  {\ttfamily\{seyedmorteza,pratas,ap\}@ua.pt}
+\end{center}
 
 \defaultLineSpace    		%%% Line spacing
 
-\clearpage
-\section{GGA 18 compared to MGA 20}
+\section{\smashpp compared with other methods}
+The results of running \smashpp and other methods on real dataset is shown in Figures~\ref{fig.supp.GGA18.MGA20},~\ref{fig.supp.GGA14.MGA16},~\ref{fig.supp.HS12.PT12} and~\ref{fig.supp.PXO99A.MAFF_311018}.
+
 \begin{figure}[!h]
   \centering
   \includegraphics[width=.85\linewidth]{fig/GGA18_MGA20.pdf}
@@ -270,52 +220,43 @@
   \label{fig.supp.GGA18.MGA20}
 \end{figure}
 
-\clearpage
-\section{GGA 14 compared to MGA 16}
-\begin{figure}[!h]
+\begin{figure}[p]
   \centering
   \includegraphics[width=.85\linewidth]{fig/GGA14_MGA16.pdf}
   \caption{\textit{G.~gallus} chromosome~14 compared to \textit{M.~gallopavo} chromosome~16.
-   (a)~Smash++, employing an FCM and an STMM with $k=14$ and~5, respectively. The blocks smaller than 400~Kb are discarded;
-   (b)~progressiveMauve, with LCB weight of~27424;
-   (c)~adopted from \cite{zhang2011comparative}. The box shows an inversion rearrangement; 
-   (d)~SynBrowser, with the resolution of~150~Kb.
-  }
+  (a)~Smash++, employing an FCM and an STMM with $k=14$ and~5, respectively. The blocks smaller than 400~Kb are discarded;
+  (b)~progressiveMauve, with LCB weight of~27424;
+  (c)~adopted from \cite{zhang2011comparative}. The box shows an inversion rearrangement; 
+  (d)~SynBrowser, with the resolution of~150~Kb.}
   \label{fig.supp.GGA14.MGA16}
 \end{figure}
 
-\clearpage
-\section{HS 12 compared to PT 12}
-\begin{figure}[!h]
+\begin{figure}[p]
   \centering
-  \includegraphics[width=.75\linewidth]{fig/HS12_PT12.pdf}
+  \includegraphics[width=.76\linewidth]{fig/HS12_PT12.pdf}
   \caption{Comparison of \textit{H.~sapiens} chromosome~12 and \textit{P.~troglodytes} chromosome~12.
-   (a)~Smash++, with $k=14$ used by an FCM. The blocks smaller than 100~Kb are discarded;
-   (b)~progressiveMauve, with LCB weight of~55186;
-   (c)~Cinteny~\cite{sinha2007cinteny}, with minimum length of synteny block $=1~$Kb, maximum gap between adjacent markers $=5~$Mb and minimum number of markers $=1$;
-   (d)~SynBrowser, with the resolution of~150~Kb;
-   (e)~D-Genies~\cite{cabanettes2018d}, in ``strong precision'' mode.
-  }
+  (a)~Smash++, with $k=14$ used by an FCM. The blocks smaller than 100~Kb are discarded;
+  (b)~progressiveMauve, with LCB weight of~55186;
+  (c)~Cinteny~\cite{sinha2007cinteny}, with minimum length of synteny block $=1~$Kb, maximum gap between adjacent markers $=5~$Mb and minimum number of markers $=1$;
+  (d)~SynBrowser, with the resolution of~150~Kb;
+  (e)~D-Genies~\cite{cabanettes2018d}, in ``strong precision'' mode.}
   \label{fig.supp.HS12.PT12}
 \end{figure}
 
-\clearpage
-\section{PXO99A compared to MAFF 311018}
-\begin{figure}[!h]
+\begin{figure}[p]
   \centering
-  \includegraphics[width=\linewidth]{fig/PXO99A_MAFF311018.pdf}
-    \caption{Pair-wise comparison of PXO99A and MAFF 311018.
-     (a)~Smash++, with k=13 used by an FCM. The blocks smaller than 10~Kb are discarded. In order to make the figure clearer, the shaded paths for connecting corresponding regions are not drawn;
-     (b)~progressiveMauve, with LCB weight of~3926;
-     (c)~adopted from~\cite{salzberg2008genome}, which employs an alignment-based method to obtain this dot plot. The blue and red colors shows regions of PXO99A that align to the same or opposite strand of MAFF 311018, respectively.
-    }
-    \label{fig.supp.PXO99A.MAFF_311018}
+  \includegraphics[width=.85\linewidth]{fig/PXO99A_MAFF311018.pdf}
+  \caption{Pair-wise comparison of PXO99A and MAFF 311018.
+  (a)~Smash++, with k=13 used by an FCM. The blocks smaller than 10~Kb are discarded. In order to make the figure clearer, the shaded paths for connecting corresponding regions are not drawn;
+  (b)~progressiveMauve, with LCB weight of~3926;
+  (c)~adopted from~\cite{salzberg2008genome}, which employs an alignment-based method to obtain this dot plot. The blue and red colors shows regions of PXO99A that align to the same or opposite strand of MAFF 311018, respectively.}
+  \label{fig.supp.PXO99A.MAFF_311018}
 \end{figure}
 
 \clearpage
-\section{Tool availability and implementation}
+\section{Software manual}
 \label{sec.tool}
-\smashpp is implemented in \cpp language and is publicly available at~\cite{web-smashpp}, under GNU GPL~v3 license. This tool is able to find and visualize rearrangements in a pair of DNA sequences. It is recommended to use as input bare sequences, i.e., without header or quality scores, although, \fasta and \fastq formats are also supported. In the following sections, we describe installing and running the \smashpp tool.
+\smashpp is implemented in C++ language and is publicly available at~\cite{web-smashpp}, under GNU GPL~v3 license. This tool is able to find and visualize rearrangements in a pair of DNA sequences. It is recommended to use as input bare sequences, i.e., without header or quality scores, although, \fasta and \fastq formats are also supported. In the following sections, we describe installing and running the \smashpp tool.
 
 \subsection{Install}
 To install \smashpp on various operating systems, follow the instructions below. Note that the precompiled executables are available for 64 bit operating systems in the ``bin/'' directory.
@@ -368,14 +309,15 @@ cd smashpp
 \end{code}
 \end{itemize}
 
-\subsection{Run \smashpp}
+\subsection{Run}
 Various options are provided with the interface of the proposed tool, which are described in Table~\ref{tab.options}. The commands for running \smashpp have the form of the following:
 \begin{code}[style=bash]
 ./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
 \end{code}
 
-\DeclareRobustCommand{\default}[1]{\hspace*{0mm}\colorbox{lightgray!30}{\footnotesize Default: #1}}
-\DeclareRobustCommand{\defaultbox}[1]{\colorbox{lightgray!30}{\footnotesize #1}}
+\colorlet{colorHighlight}{lightgray!20}
+\DeclareRobustCommand{\default}[1]{\hspace*{0mm}\colorbox{colorHighlight}{\footnotesize Default: #1}}
+\DeclareRobustCommand{\defaultbox}[1]{\colorbox{colorHighlight}{\footnotesize #1}}
 
 \begin{small}
 \begin{tabularx}{\linewidth}{@{}lp{2.9cm}X@{}}
@@ -415,7 +357,8 @@ Various options are provided with the interface of the proposed tool, which are 
   \mono{-re} & Integer: $[-2^{15}, 2^{15}-1]$ & Reference ending guard. \\
   \mono{-tb} & Integer: $[-2^{15}, 2^{15}-1]$ & Target beginning guard. \\
   \mono{-te} & Integer: $[-2^{15}, 2^{15}-1]$ & Target ending guard. \\
-  & \default{0} & \smashpp is capable of finding even very small similar regions in two sequences. However, we have found experimentally that when it is running in a very sensitive mode, there might be some cases in which the size of similar regions in the reference and the target are not balanced. These cases can be handled by ``-rb'', ``-re'', ``-tb'' and ``-te'' options, by resizing the beginning and ending guards of reference and target regions, respectively. For example, if ``-tb 10'' is used, the first 10 bases in each target region will be discarded, which results in smaller regions. Note that when the guard sizes of target regions are increased, the models built from these regions would be slightly different than the original models; consequently, the sizes of reference regions that are detected as being similar to the ones from the target would be altered. Therefore, changing the guard sizes of target regions will affect the sizes of reference regions. 
+  & \default{0} & \smashpp is capable of finding even very small similar regions in two sequences. However, we have found experimentally that when it is running in a very sensitive mode, there might be some cases in which the size of similar regions in the reference and the target are not balanced. These cases can be handled by ``-rb'', ``-re'', ``-tb'' and ``-te'' options, by resizing the beginning and ending guards of reference and target regions, respectively. For example, if ``-tb 10'' is used, the first 10 bases in each target region will be discarded, which results in smaller regions.\linebreak \\ 
+  & & Note that when the guard sizes of target regions are increased, the models built from these regions would be slightly different than the original models; consequently, the sizes of reference regions that are detected as being similar to the ones from the target would be altered. Therefore, changing the guard sizes of target regions will affect the sizes of reference regions. 
   % In the case of activating deep compression, by ``-dp'', changing the guard sizes of reference regions would affect the sizes of target regions, as well.
   The same thing happens for the sizes of target regions, when the guard sizes of reference regions are changed. \\
   \midrule
@@ -484,7 +427,7 @@ Various options are provided with the interface of the proposed tool, which are 
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=.9\linewidth]{fig/filters.pdf}
+  \includegraphics[width=.8\linewidth]{fig/filters.pdf}
   \caption{Various windowing functions embedded in \smashpp.}
   \label{fig.filters}
 \end{figure}
@@ -518,7 +461,7 @@ As an example, the header of the following ``.pos'' file shows that \smashpp was
 20000  30000  1.2367   1.9777  40000  30000  1.2545   1.9888  T
 \end{code}
 
-\subsection{Run \smashpp visualizer}
+\subsection{Run visualizer}
 The position file obtained by \smashpp can be visualized by
 \begin{code}[style=bash]
 ./smashpp -viz
@@ -566,8 +509,8 @@ The visualizer provides various options that are described in Table~\ref{tab.opt
     \midrule
     \mono{-vv} & N/A & Vertical view of the output image. \\
     \midrule
-    \mono{-nn} & N/A & Do not show normalized relative compression (NRC). \\
-    \mono{-nr} & N/A & Do not show redundancy (self complexity). \\
+    \mono{-nrr} & N/A & Do not show relative redundancy (relative complexity). \\
+    \mono{-nr} & N/A & Do not show redundancy (complexity). \\
     && \smashpp performs reference-based and reference-free compressions to calculate the NRC and redundancy, respectively. If a user does not tend to show them, he/she can turn them off by ``-nn'' and ``-nr'' triggers. \\
     \midrule
     \mono{-ni} & N/A & Do not show inverse maps. \\

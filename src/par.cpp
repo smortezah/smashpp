@@ -662,20 +662,20 @@ void VizParam::parse(int argc, char**& argv) {
           MIN_SPC, MAX_SPC, SPC, "Space", Interval::closed, "default",
           Problem::warning);
       range->assert(space);
-    } else if (*i == "-nn") {
-      showNRC = false;
-    } else if (*i == "-vv") {
-      vertical = true;
+    } else if (*i == "-nrr") {
+      showRelRedun = false;
     } else if (*i == "-nr") {
       showRedun = false;
     } else if (*i == "-ni") {
       inverse = false;
     } else if (*i == "-ng") {
       regular = false;
-    } else if (*i == "-stat") {
-      stat = true;
     } else if (*i == "-n") {
       showN = true;
+    } else if (*i == "-vv") {
+      vertical = true;
+    } else if (*i == "-stat") {
+      stat = true;
     }
   }
   posFile = vArgs.back();
@@ -757,11 +757,11 @@ void VizParam::help() const {
 
   print_align(bold("-vv"), delim_descr1, "vertical view", delim_def, "no");
 
-  print_align(bold("-nn"), delim_descr1, "do NOT show normalized relative",
+  print_align(bold("-nrr"), delim_descr1, "do NOT show relative redundancy",
               delim_def, "no");
-  print_align("", delim_descr2, "compression (NRC)");
+  print_align("", delim_descr2, "(relative complexity)");
 
-  print_align(bold("-nr"), delim_descr1, "do NOT show self complexity",
+  print_align(bold("-nr"), delim_descr1, "do NOT show redunadancy",
               delim_def, "no");
 
   print_align(bold("-ni"), delim_descr1, "do NOT show inverse maps", delim_def,
