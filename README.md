@@ -203,7 +203,7 @@ install the other tools, run all the tools, and finally, visualize the results. 
 
 ## Cite
 Please cite the following, if you use Smash++:
-* In process ...
+* In progress ...
 
 ## Releases
 * [Release](https://github.com/smortezah/smashpp/releases) 1: .
