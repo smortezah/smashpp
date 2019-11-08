@@ -5,12 +5,13 @@ Morteza Hosseini, Diogo Pratas, Armando J. Pinho
 Copyright (C) 2018-2019, IEETA/DETI, University of Aveiro, Portugal
 '''
 
-##########################################################################
-############   USER CAN CHANGE HERE BY SWITCHING False/True   ############
-### Resolve dependencies
+'''
+USER CAN CHANGE HERE BY SWITCHING False/True
+'''
+# Resolve dependencies
 GET_GOOSE = False
 
-### Make synthetic dataset
+# Make synthetic dataset
 MAKE_SYNTH_SMALL = True
 MAKE_SYNTH_MEDIUM = False
 MAKE_SYNTH_LARGE = False
@@ -18,33 +19,25 @@ MAKE_SYNTH_XLARGE = False
 MAKE_SYNTH_MUTATE = False
 MAKE_SYNTH_COMPARE_SMASH = False
 
-### Run
-# Synthetic data
+# Run
 RUN_SYNTH_SMALL = True
 RUN_SYNTH_MEDIUM = False
 RUN_SYNTH_LARGE = False
 RUN_SYNTH_XLARGE = False
 RUN_SYNTH_MUTATE = False
-
-# Real data
 RUN_REAL_GGA18_MGA20 = False
 RUN_REAL_GGA14_MGA16 = False
 RUN_REAL_HS12_PT12 = False
 RUN_REAL_PXO99A_MAFF311018 = False
+RUN_COMP_SMASH_SYNTH = False  # Compare to Smash on synthetic data
+RUN_COMP_SMASH_REAL = False  # Compare to Smash on real data
 
-# Compare with Smash tool
-RUN_COMP_SMASH_SYNTH = False
-RUN_COMP_SMASH_REAL = False
-
-### Benchmark
-# Synthetic data
+# Benchmark
 BENCH_SYNTH_SMALL = False
 BENCH_SYNTH_MEDIUM = False
 BENCH_SYNTH_LARGE = False
 BENCH_SYNTH_XLARGE = False
 BENCH_SYNTH_MUTATE = False
-
-# Real data
 BENCH_REAL_GGA18_MGA20 = False
 BENCH_REAL_GGA14_MGA16 = False
 BENCH_REAL_HS12_PT12 = False
@@ -52,10 +45,11 @@ BENCH_REAL_PXO99A_MAFF = False
 
 # synth_permute = False
 # synth_permute_smash = False
-##########################################################################
 
 
-#########################     G E N E R A L     ##########################
+'''
+General
+'''
 import os
 import time
 import csv
@@ -159,7 +153,9 @@ def remove(dir, pattern):
         p.unlink()
 
 
-#####################     RESOLVE DEPENDENCIES     #######################
+'''
+Resolve dependencies
+'''
 if GET_GOOSE:
     remove_all_start(current_dir, "goose-")
     remove_path("goose")
@@ -169,8 +165,12 @@ if GET_GOOSE:
             'cp goose-fastqsimulation goose-mutatedna ../..')
 
 
-####################     MAKE SYNTHETIC DATASET     ######################
+'''
+Make synthetic dataset
+'''
 # os.popen('sudo chmod 777 smashpp-inv-rep').read()
+
+
 def make_synth_small():  # Sizes: ref:1,500, tar:1,500
     execute(goose_fastqsimulation + synth_common_par +
             '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 5 -s 201  r_a')
@@ -298,7 +298,9 @@ remove_all_start(current_dir, "r_")
 remove_all_start(current_dir, "t_")
 
 
-#############################     RUN     ################################
+'''
+Run
+'''
 def run_synth_small():
     par_main = '-l 3 -d 1 -f 100'
     par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -stat -o S.svg'
@@ -424,7 +426,7 @@ def run_comp_Smash_real():
     ref_new_smash = 'Sc' + real_comp_smash_ref_name
     tar_new_smash = 'Sp' + real_comp_smash_tar_name
     run_smash(path_ref + real_comp_smash_ref_name,
-              path_tar + real_comp_smash_tar_name, ref_new_smash, 
+              path_tar + real_comp_smash_tar_name, ref_new_smash,
               tar_new_smash, par, current_dir)
 
 
@@ -462,7 +464,9 @@ if RUN_COMP_SMASH_REAL:
     run_comp_Smash_real()
 
 
-##########################     BENCHMARK     #############################
+'''
+Benchmark
+'''
 bench_result = []  # Name, Category, Size, Time, Memory
 
 
