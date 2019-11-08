@@ -68,5 +68,5 @@ mauve/mauve_snapshot_2015-02-13/Mauve
 mauve/mauve_snapshot_2015-02-13/Mauve.jar
 mauve/mauve_snapshot_2015-02-13/README
 
-dataset/mammalia/Homo_sapiens/**
-dataset/mammalia/Pan_troglodytes/**
+experiment/dataset/mammalia/Homo_sapiens/**
+experiment/dataset/mammalia/Pan_troglodytes/**
