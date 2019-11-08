@@ -6,6 +6,8 @@ from shutil import copyfile
 from pathlib import Path
 from memory_profiler import memory_usage
 
+##########################################################################
+#######################   USER CAN CHANGE THESE   ########################
 '''Resolve dependencies'''
 resolve_dep = False
 
@@ -17,6 +19,7 @@ bench = False  # Benchmark
 
 # sim_permute = False
 # sim_permute_smash = False
+##########################################################################
 
 if os.name == 'posix':
     sep = '/'
