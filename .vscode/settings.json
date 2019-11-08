@@ -1,8 +1,8 @@
 {
     "python.pythonPath": "C:\\Users\\mori\\Miniconda3\\python.exe",
     "python.linting.enabled": true,
-    "python.linting.pycodestyleEnabled": true,
-    "python.linting.pylintEnabled": false,
+    "python.linting.pycodestyleEnabled": false,
+    "python.linting.pylintEnabled": true,
     "files.associations": {
         "array": "cpp",
         "*.tcc": "cpp",

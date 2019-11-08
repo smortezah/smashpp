@@ -1,6 +1,0 @@
-##SMASH++
-##PARAM=<-r example/ref -t example/tar>
-##INFO=<Ref=ref,RefSize=1000,Tar=tar,TarSize=1000>
-#RBeg	REnd	RRelRdn	RRdn	TBeg	TEnd	TRelRdn	TRdn	Inv
-0	510	0.5108	2.0000	497	1000	0.5120	2.0000	F
-498	1000	0.1518	2.0000	508	0	0.1551	2.0000	T
