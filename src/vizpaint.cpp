@@ -399,7 +399,7 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
     // rect->fill = seq_gradient(fPlot, rgb_color(e->start), rect->id);
     rect->plot(fPlot);
 
-    if (p->showNRC) {
+    if (p->showRelRedun) {
       rect->id += "NRC";
       rect->fill =
           periph_gradient(fPlot, nrc_color(e->entRef, p->colorMode), rect->id);
@@ -413,7 +413,7 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
                                    rect->id);
       rect->stroke = rect->fill;
       // rect->stroke = shade(redun_color(e->selfRef, p->colorMode), 0.95);
-      plot_periph(fPlot, rect, p->vertical, 'r', uint8_t(p->showNRC));
+      plot_periph(fPlot, rect, p->vertical, 'r', uint8_t(p->showRelRedun));
     }
   }
 }
@@ -445,7 +445,7 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
 //     cylinder->plot(fPlot);
 
 //     cylinder->stroke_width = 0.7;
-//     if (p->showNRC) {
+//     if (p->showRelRedun) {
 //       cylinder->id += "NRC";
 //       cylinder->fill = periph_gradient(
 //           fPlot, nrc_color(e->entRef, p->colorMode), cylinder->id);
@@ -457,7 +457,7 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
 //       cylinder->fill = periph_gradient(
 //           fPlot, redun_color(e->selfRef, p->colorMode), cylinder->id);
 //       cylinder->stroke = shade(redun_color(e->selfRef, p->colorMode), 0.95);
-//       plot_periph(fPlot, cylinder, p->vertical, 'r', uint8_t(p->showNRC));
+//       plot_periph(fPlot, cylinder, p->vertical, 'r', uint8_t(p->showRelRedun));
 //     }
 //   }
 // }
@@ -501,7 +501,7 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
   }
 
   // rect->stroke_width = 0.7;
-  if (p->showNRC) {
+  if (p->showRelRedun) {
     rect->id += "NRC";
     rect->fill =
         periph_gradient(fPlot, nrc_color(e->entTar, p->colorMode), rect->id);
@@ -515,7 +515,7 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
         periph_gradient(fPlot, redun_color(e->selfTar, p->colorMode), rect->id);
     rect->stroke = rect->fill;
     // rect->stroke = shade(redun_color(e->selfTar, p->colorMode), 0.95);
-    plot_periph(fPlot, rect, p->vertical, 't', uint8_t(p->showNRC));
+    plot_periph(fPlot, rect, p->vertical, 't', uint8_t(p->showRelRedun));
   }
 }
 
@@ -559,7 +559,7 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
 //   }
 
 //   cylinder->stroke_width = 0.7;
-//   if (p->showNRC) {
+//   if (p->showRelRedun) {
 //     cylinder->id += "NRC";
 //     cylinder->fill = periph_gradient(fPlot, nrc_color(e->entTar,
 //     p->colorMode),
@@ -572,14 +572,14 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
 //     cylinder->fill = periph_gradient(
 //         fPlot, redun_color(e->selfTar, p->colorMode), cylinder->id);
 //     cylinder->stroke = shade(redun_color(e->selfTar, p->colorMode), 0.95);
-//     plot_periph(fPlot, cylinder, p->vertical, 't', uint8_t(p->showNRC));
+//     plot_periph(fPlot, cylinder, p->vertical, 't', uint8_t(p->showRelRedun));
 //   }
 // }
 
 inline void VizPaint::plot_periph(std::ofstream& f,
                                   std::unique_ptr<Rectangle>& rect,
                                   bool vertical, char RefTar,
-                                  uint8_t showNRC) const {
+                                  uint8_t showRelRedun) const {
   const auto mainOriginX{rect->x};
   const auto mainWidth{rect->width};
   const auto mainStrokeWidth{rect->stroke_width};
@@ -588,17 +588,17 @@ inline void VizPaint::plot_periph(std::ofstream& f,
   if (RefTar == 'r') {
     if (vertical)
       rect->x = rect->x - TITLE_SPACE / 2 -
-                (1 + showNRC) * (periphWidth + SPACE_TUNE);
+                (1 + showRelRedun) * (periphWidth + SPACE_TUNE);
     else
       rect->x = rect->x + rect->width + TITLE_SPACE + SPACE_TUNE +
-                showNRC * (periphWidth + SPACE_TUNE);
+                showRelRedun * (periphWidth + SPACE_TUNE);
   } else {
     if (vertical)
       rect->x = rect->x + rect->width + TITLE_SPACE / 2 + SPACE_TUNE +
-                showNRC * (SPACE_TUNE + periphWidth);
+                showRelRedun * (SPACE_TUNE + periphWidth);
     else
       rect->x = rect->x - (periphWidth + TITLE_SPACE + SPACE_TUNE +
-                           showNRC * (SPACE_TUNE + periphWidth));
+                           showRelRedun * (SPACE_TUNE + periphWidth));
   }
   rect->width = periphWidth;
   rect->stroke_width *= 1.5;
@@ -615,7 +615,7 @@ inline void VizPaint::plot_periph(std::ofstream& f,
 inline void VizPaint::plot_periph(std::ofstream& f,
                                   std::unique_ptr<Cylinder>& cylinder,
                                   bool vertical, char RefTar,
-                                  uint8_t showNRC) const {
+                                  uint8_t showRelRedun) const {
   const auto mainOriginX{cylinder->x};
   const auto mainWidth{cylinder->width};
   const auto mainStrokeWidth{cylinder->stroke_width};
@@ -624,17 +624,17 @@ inline void VizPaint::plot_periph(std::ofstream& f,
   if (RefTar == 'r') {
     if (vertical)
       cylinder->x = cylinder->x - TITLE_SPACE / 2 -
-                    (1 + showNRC) * (periphWidth + SPACE_TUNE);
+                    (1 + showRelRedun) * (periphWidth + SPACE_TUNE);
     else
       cylinder->x = cylinder->x + cylinder->width + TITLE_SPACE + SPACE_TUNE +
-                    showNRC * (periphWidth + SPACE_TUNE);
+                    showRelRedun * (periphWidth + SPACE_TUNE);
   } else {
     if (vertical)
       cylinder->x = cylinder->x + cylinder->width + TITLE_SPACE / 2 +
-                    SPACE_TUNE + showNRC * (SPACE_TUNE + periphWidth);
+                    SPACE_TUNE + showRelRedun * (SPACE_TUNE + periphWidth);
     else
       cylinder->x = cylinder->x - (periphWidth + TITLE_SPACE + SPACE_TUNE +
-                                   showNRC * (SPACE_TUNE + periphWidth));
+                                   showRelRedun * (SPACE_TUNE + periphWidth));
   }
   cylinder->width = periphWidth;
   cylinder->stroke_width *= 2;
@@ -825,21 +825,21 @@ inline void VizPaint::plot_title(std::ofstream& f, std::string ref,
 inline void VizPaint::plot_legend(std::ofstream& f,
                                   std::unique_ptr<VizParam>& p,
                                   int64_t maxWidth) const {
-  if (!p->showNRC && !p->showRedun) return;
+  if (!p->showRelRedun && !p->showRedun) return;
 
   auto legend = std::make_unique<LegendPlot>();
   legend->maxWidth = maxWidth;
-  legend->showNRC = p->showNRC;
+  legend->showRelRedun = p->showRelRedun;
   legend->showRedun = p->showRedun;
   legend->vertical = p->vertical;
   legend->colorMode = p->colorMode;
 
   legend->text.push_back(std::make_unique<Text>());  // Numbers
-  if (legend->showNRC && !legend->showRedun)
+  if (legend->showRelRedun && !legend->showRedun)
     legend->text.push_back(std::make_unique<Text>());  // NRC
-  else if (!legend->showNRC && legend->showRedun)
+  else if (!legend->showRelRedun && legend->showRedun)
     legend->text.push_back(std::make_unique<Text>());  // Redun
-  else if (legend->showNRC && legend->showRedun)
+  else if (legend->showRelRedun && legend->showRedun)
     for (uint8_t i = 0; i != 2; ++i)
       legend->text.push_back(std::make_unique<Text>());  // NRC + Redun
 
@@ -937,7 +937,7 @@ inline void VizPaint::plot_legend_text_horiz(
     e->font_size = 8;
   }
 
-  if (legend->showNRC && !legend->showRedun) {
+  if (legend->showRelRedun && !legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width / 2;
     if (innerSpace > 55) {
       legend->text[1]->y = legend->rect->y - legend->labelShift +
@@ -957,14 +957,14 @@ inline void VizPaint::plot_legend_text_horiz(
       // legend->text[1]->plot_shadow(f);
       legend->text[1]->plot(f);
     }
-  } else if (!legend->showNRC && legend->showRedun) {
+  } else if (!legend->showRelRedun && legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width / 2;
     legend->text[1]->y = legend->rect->y - legend->labelShift +
                          VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->Label = "Redundancy";
     // legend->text[1]->plot_shadow(f);
     legend->text[1]->plot(f);
-  } else if (legend->showNRC && legend->showRedun) {
+  } else if (legend->showRelRedun && legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width / 2;
     if (innerSpace > 55) {
       legend->text[1]->y = legend->rect->y - legend->labelShift +
@@ -1040,7 +1040,7 @@ inline void VizPaint::plot_legend_path_horiz(
   legend->path->stroke_width = 0.5;
   legend->path->stroke_dasharray = "8 4";
 
-  if (legend->showNRC && !legend->showRedun) {
+  if (legend->showRelRedun && !legend->showRedun) {
     float X1RelRedun = x - (TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth);
     float X2RelRedun = x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 +
                        SPACE_TUNE + 0.5 * periphWidth;
@@ -1088,7 +1088,7 @@ inline void VizPaint::plot_legend_path_horiz(
           legend->path->H((X1RelRedun + X2RelRedun) / 2 + 32);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
-  } else if (!legend->showNRC && legend->showRedun) {
+  } else if (!legend->showRelRedun && legend->showRedun) {
     float X1Redun = x - (TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth);
     float X2Redun = x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 +
                     SPACE_TUNE + 0.5 * periphWidth;
@@ -1110,7 +1110,7 @@ inline void VizPaint::plot_legend_path_horiz(
         legend->path->H((X1Redun + X2Redun) / 2 + 32);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
-  } else if (legend->showNRC && legend->showRedun) {
+  } else if (legend->showRelRedun && legend->showRedun) {
     float X1RelRedun = x - (TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth);
     float X2RelRedun = x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 +
                        SPACE_TUNE + 0.5 * periphWidth;
@@ -1191,7 +1191,7 @@ inline void VizPaint::plot_legend_text_vert(
     e->font_size = 8;
   }
 
-  if (legend->showNRC && !legend->showRedun) {
+  if (legend->showRelRedun && !legend->showRedun) {
     legend->text[1]->x = legend->rect->x - legend->labelShift -
                          VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height / 2;
@@ -1201,7 +1201,7 @@ inline void VizPaint::plot_legend_text_vert(
     legend->text[1]->Label = "Relative Redundancy";
     // legend->text[1]->plot_shadow(f);
     legend->text[1]->plot(f);
-  } else if (!legend->showNRC && legend->showRedun) {
+  } else if (!legend->showRelRedun && legend->showRedun) {
     legend->text[1]->x = legend->rect->x - legend->labelShift -
                          VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height / 2;
@@ -1211,7 +1211,7 @@ inline void VizPaint::plot_legend_text_vert(
     legend->text[1]->Label = "Redundancy";
     // legend->text[1]->plot_shadow(f);
     legend->text[1]->plot(f);
-  } else if (legend->showNRC && legend->showRedun) {
+  } else if (legend->showRelRedun && legend->showRedun) {
     legend->text[1]->x = legend->rect->x - legend->labelShift -
                          VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height / 2;
@@ -1274,7 +1274,7 @@ inline void VizPaint::plot_legend_path_vert(
   legend->path->stroke_width = 0.5;
   legend->path->stroke_dasharray = "8 4";
 
-  if (legend->showNRC && !legend->showRedun) {
+  if (legend->showRelRedun && !legend->showRedun) {
     float Y1RelRedun = y - (TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth);
     float Y2RelRedun = y + 2 * seqWidth + innerSpace + TITLE_SPACE +
                        SPACE_TUNE + 0.5 * periphWidth;
@@ -1313,7 +1313,7 @@ inline void VizPaint::plot_legend_path_vert(
       // legend->path->plot_shadow(f);
     }
     legend->path->plot(f);
-  } else if (!legend->showNRC && legend->showRedun) {
+  } else if (!legend->showRelRedun && legend->showRedun) {
     float Y1Redun = y - (TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth);
     float Y2Redun = y + 2 * seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE +
                     0.5 * periphWidth;
@@ -1335,7 +1335,7 @@ inline void VizPaint::plot_legend_path_vert(
         legend->path->V((Y1Redun + Y2Redun) / 2 + 30);
     // legend->path->plot_shadow(f);
     legend->path->plot(f);
-  } else if (legend->showNRC && legend->showRedun) {
+  } else if (legend->showRelRedun && legend->showRedun) {
     float Y1RelRedun = y - (TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth);
     float Y2RelRedun = y + 2 * seqWidth + innerSpace + TITLE_SPACE +
                        SPACE_TUNE + 0.5 * periphWidth;
@@ -1566,9 +1566,9 @@ inline void VizPaint::make_posNode(const std::vector<Position>& pos,
 //   char   printType = 'b';
 //   uint64_t    nOverlap  = 0;
 //   double shiftY    = 4;
-//   if (par.showNRC && par.showRedun)
+//   if (par.showRelRedun && par.showRedun)
 //     shiftY += 2 * (SPACE_TUNE + periphWidth);
-//   else if (par.showNRC ^ par.showRedun)
+//   else if (par.showRelRedun ^ par.showRedun)
 //     shiftY += SPACE_TUNE + periphWidth;
 //   double CY=y;
 //   type=="ref" ? CY-=shiftY : CY+=seqWidth+innerSpace+seqWidth+shiftY;
@@ -1716,7 +1716,7 @@ inline void VizPaint::plot_pos(std::ofstream& fPlot, std::ifstream& fPos,
   read_pos(fPos, pos, p);
   auto posPlot = std::make_unique<PosPlot>();
   posPlot->vertical = p->vertical;
-  posPlot->showNRC = p->showNRC;
+  posPlot->showRelRedun = p->showRelRedun;
   posPlot->showRedun = p->showRedun;
   posPlot->refTick = p->refTick;
   posPlot->tarTick = p->tarTick;
@@ -1750,13 +1750,13 @@ inline void VizPaint::plot_pos_horizontal(
   if (posPlot->plotRef)
     line->y1 = line->y2 =
         y - TITLE_SPACE - posPlot->vertSkip -
-        (uint8_t(posPlot->showNRC) + uint8_t(posPlot->showRedun)) *
+        (uint8_t(posPlot->showRelRedun) + uint8_t(posPlot->showRedun)) *
             (SPACE_TUNE + periphWidth) -
         posPlot->majorTickSize;
   else
     line->y1 = line->y2 =
         y + 2 * seqWidth + innerSpace + TITLE_SPACE + posPlot->vertSkip +
-        (uint8_t(posPlot->showNRC) + uint8_t(posPlot->showRedun)) *
+        (uint8_t(posPlot->showRelRedun) + uint8_t(posPlot->showRedun)) *
             (SPACE_TUNE + periphWidth) +
         posPlot->majorTickSize;
   // line->plot(f);
@@ -1840,19 +1840,19 @@ inline void VizPaint::plot_pos_vertical(
   if (posPlot->plotRef)
     line->x1 = line->x2 =
         x -
-        static_cast<uint8_t>(posPlot->showNRC | posPlot->showRedun) *
+        static_cast<uint8_t>(posPlot->showRelRedun | posPlot->showRedun) *
             TITLE_SPACE / 2 -
-        (static_cast<uint8_t>(posPlot->showNRC) +
+        (static_cast<uint8_t>(posPlot->showRelRedun) +
          static_cast<uint8_t>(posPlot->showRedun)) *
             (SPACE_TUNE + periphWidth) -
         posPlot->vertSkip - posPlot->majorTickSize;
   else
     line->x1 = line->x2 =
         x + 2 * seqWidth + innerSpace +
-        static_cast<uint8_t>(posPlot->showNRC | posPlot->showRedun) *
+        static_cast<uint8_t>(posPlot->showRelRedun | posPlot->showRedun) *
             TITLE_SPACE / 2 +
         posPlot->vertSkip +
-        (static_cast<uint8_t>(posPlot->showNRC) +
+        (static_cast<uint8_t>(posPlot->showRelRedun) +
          static_cast<uint8_t>(posPlot->showRedun)) *
             (SPACE_TUNE + periphWidth) +
         posPlot->majorTickSize;
