@@ -63,9 +63,9 @@ if os.name == 'posix':
 elif os.name == 'nt':
     sep = '\\'
 current_dir = os.getcwd()
-path_data_synth = 'dataset' + sep + 'synth' + sep
-path_data_real = 'dataset' + sep
-path_data_permute = 'dataset' + sep + 'permute' + sep
+path_data = 'dataset' + sep
+path_data_synth = path_data + 'synth' + sep
+path_data_permute = path_data + 'permute' + sep
 path_bin = 'bin' + sep
 goose_fastqsimulation = path_bin + 'goose-fastqsimulation '
 goose_mutatedna = path_bin + 'goose-mutatedna '
@@ -90,24 +90,21 @@ real_comp_smash_ref_name = 'VII.seq'
 real_comp_smash_tar_name = 'VII.seq'
 real_PXO99A_MAFF_ref_name = 'PXO99A.seq'
 real_PXO99A_MAFF_tar_name = 'MAFF_311018.seq'
-real_PXO99A_MAFF_path_ref = path_data_real + 'bacteria' + \
-    sep + 'Xanthomonas_oryzae_pv_oryzae' + sep
+real_PXO99A_MAFF_path_ref = path_data + 'bacteria' + sep + \
+    'Xanthomonas_oryzae_pv_oryzae' + sep
 real_PXO99A_MAFF_path_tar = real_PXO99A_MAFF_path_ref
 real_gga18_mga20_ref_name = '18.seq'
 real_gga18_mga20_tar_name = '20.seq'
-real_gga18_mga20_path_ref = path_data_real + 'bird' + sep + \
-    'Gallus_gallus' + sep
-real_gga18_mga20_path_tar = path_data_real + 'bird' + sep + \
+real_gga18_mga20_path_ref = path_data + 'bird' + sep + 'Gallus_gallus' + sep
+real_gga18_mga20_path_tar = path_data + 'bird' + sep + \
     'Meleagris_gallopavo' + sep
 real_gga14_mga16_ref_name = '14.seq'
 real_gga14_mga16_tar_name = '16.seq'
-real_gga14_mga16_path_ref = path_data_real + 'bird' + sep + \
-    'Gallus_gallus' + sep
-real_gga14_mga16_path_tar = path_data_real + 'bird' + sep + \
+real_gga14_mga16_path_ref = path_data + 'bird' + sep + 'Gallus_gallus' + sep
+real_gga14_mga16_path_tar = path_data + 'bird' + sep + \
     'Meleagris_gallopavo' + sep
-real_hs12_pt12_path_ref = path_data_real + 'mammalia' + sep + \
-    'Homo_sapiens' + sep
-real_hs12_pt12_path_tar = path_data_real + 'mammalia' + sep + \
+real_hs12_pt12_path_ref = path_data + 'mammalia' + sep + 'Homo_sapiens' + sep
+real_hs12_pt12_path_tar = path_data + 'mammalia' + sep + \
     'Pan_troglodytes' + sep
 real_hs12_pt12_ref_name = '12.seq'
 real_hs12_pt12_tar_name = '12.seq'
@@ -162,7 +159,7 @@ if GET_GOOSE:
     execute('git clone https://github.com/pratas/goose.git;' +
             'cd goose/src/;' +
             'make -j8;' +
-            'cp goose-fastqsimulation goose-mutatedna ../..')
+            'cp goose-fastqsimulation goose-mutatedna ../../bin')
 
 
 '''
@@ -410,10 +407,8 @@ def run_comp_Smash_synth():
 
 
 def run_comp_Smash_real():
-    path_ref = path_data_real + 'fungi' + sep + \
-        'Saccharomyces_cerevisiae' + sep
-    path_tar = path_data_real + 'fungi' + sep + \
-        'Saccharomyces_paradoxus' + sep
+    path_ref = path_data + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+    path_tar = path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
 
     # Smash++
     par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
