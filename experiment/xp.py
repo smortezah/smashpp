@@ -9,10 +9,17 @@ Copyright (C) 2018-2019, IEETA/DETI, University of Aveiro, Portugal
 USER CAN CHANGE HERE BY SWITCHING False/True
 '''
 # Resolve dependencies
+from memory_profiler import memory_usage
+from pathlib import Path
+from shutil import copyfile
+import psutil
+import csv
+import time
+import os
 GET_GOOSE = False
 
 # Make synthetic dataset
-MAKE_SYNTH_SMALL = True
+MAKE_SYNTH_SMALL = False
 MAKE_SYNTH_MEDIUM = False
 MAKE_SYNTH_LARGE = False
 MAKE_SYNTH_XLARGE = False
@@ -20,7 +27,7 @@ MAKE_SYNTH_MUTATE = False
 MAKE_SYNTH_COMPARE_SMASH = False
 
 # Run
-RUN_SYNTH_SMALL = True
+RUN_SYNTH_SMALL = False
 RUN_SYNTH_MEDIUM = False
 RUN_SYNTH_LARGE = False
 RUN_SYNTH_XLARGE = False
@@ -43,20 +50,14 @@ BENCH_REAL_GGA14_MGA16 = False
 BENCH_REAL_HS12_PT12 = False
 BENCH_REAL_PXO99A_MAFF = False
 
-# synth_permute = False
+
+# todo
+synth_permute = True
 
 
 '''
 General
 '''
-import os
-import time
-import csv
-import psutil
-from shutil import copyfile
-from pathlib import Path
-from memory_profiler import memory_usage
-
 if os.name == 'posix':
     sep = '/'
 elif os.name == 'nt':
@@ -69,7 +70,7 @@ path_bin = 'bin' + sep
 goose_fastqsimulation = path_bin + 'goose-fastqsimulation '
 goose_mutatedna = path_bin + 'goose-mutatedna '
 goose_permuteseqbyblocks = path_bin + 'goose-permuteseqbyblocks '
-smashpp = '..' + sep + 'smashpp '
+smashpp_exe = '..' + sep + 'smashpp '
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 smash = path_bin + 'smash '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
@@ -85,6 +86,8 @@ synth_mutate_ref_name = 'RefMut'
 synth_mutate_tar_name = 'TarMut'
 synth_comp_smash_ref_name = 'RefComp'
 synth_comp_smash_tar_name = 'TarComp'
+synth_perm_ref_name = 'RefPerm'
+synth_perm_tar_name = 'TarPerm'
 real_comp_smash_ref_name = 'VII.seq'
 real_comp_smash_tar_name = 'VII.seq'
 real_PXO99A_MAFF_ref_name = 'PXO99A.seq'
@@ -297,39 +300,47 @@ remove_all_start(current_dir, "t_")
 '''
 Run
 '''
+def run_smashpp(ref, tar, par_main, par_viz):
+    ref_name = os.path.basename(ref)
+    tar_name = os.path.basename(tar)
+    execute(smashpp_exe + ' -r ' + ref + ' -t ' + tar + ' ' + par_main)
+    execute(smashpp_exe + ' -viz ' + par_viz + ' ' +
+            ref_name + '.' + tar_name + '.pos')
+
+
 def run_synth_small():
     par_main = '-l 3 -d 1 -f 100'
     par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -stat -o S.svg'
-    run_smashpp(path_data_synth, path_data_synth, synth_small_ref_name,
-                synth_small_tar_name, par_main, par_viz)
+    run_smashpp(path_data_synth + synth_small_ref_name,
+                path_data_synth + synth_small_tar_name, par_main, par_viz)
 
 
 def run_synth_medium():
     par_main = '-l 3 -d 100 -f 50'
     par_viz = '-p 1 -l 1 -w 13 -vv -stat -o M.svg'
-    run_smashpp(path_data_synth, path_data_synth, synth_medium_ref_name,
-                synth_medium_tar_name, par_main, par_viz)
+    run_smashpp(path_data_synth + synth_medium_ref_name,
+                path_data_synth + synth_medium_tar_name, par_main, par_viz)
 
 
 def run_synth_large():
     par_main = '-l 3 -d 100 -f 135'
     par_viz = '-p 1 -l 1 -w 13 -vv -stat -o L.svg'
-    run_smashpp(path_data_synth, path_data_synth, synth_large_ref_name,
-                synth_large_tar_name, par_main, par_viz)
+    run_smashpp(path_data_synth + synth_large_ref_name,
+                path_data_synth + synth_large_tar_name, par_main, par_viz)
 
 
 def run_synth_xlarge():
     par_main = '-l 3 -d 100 -f 275'
     par_viz = '-p 1 -l 1 -w 13 -vv -stat -o XL.svg'
-    run_smashpp(path_data_synth, path_data_synth, synth_xlarge_ref_name,
-                synth_xlarge_tar_name, par_main, par_viz)
+    run_smashpp(path_data_synth + synth_xlarge_ref_name,
+                path_data_synth + synth_xlarge_tar_name, par_main, par_viz)
 
 
 def run_synth_mutate():
     par_main = '-th 1.97 -l 3 -d 600 -f 100 -m 15000'
     par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -vv -stat -o Mut.svg'
-    run_smashpp(path_data_synth, path_data_synth, synth_mutate_ref_name,
-                synth_mutate_tar_name, par_main, par_viz)
+    run_smashpp(path_data_synth + synth_mutate_ref_name,
+                path_data_synth + synth_mutate_tar_name, par_main, par_viz)
 
 
 def run_real_GGA18_MGA20():
@@ -337,8 +348,8 @@ def run_real_GGA18_MGA20():
         '-th 1.9'
     par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" ' + \
         '-stat -o GGA18_MGA20.svg'
-    run_smashpp(real_gga18_mga20_path_ref, real_gga18_mga20_path_tar,
-                real_gga18_mga20_ref_name, real_gga18_mga20_tar_name,
+    run_smashpp(real_gga18_mga20_path_ref + real_gga18_mga20_ref_name,
+                real_gga18_mga20_path_tar + real_gga18_mga20_tar_name,
                 par_main, par_viz)
 
 
@@ -347,8 +358,8 @@ def run_real_GGA14_MGA16():
         '-e 1.95 -m 400000'
     par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + \
         '-rt 1500000 -tt 1500000 -stat -o GGA14_MGA16.svg'
-    run_smashpp(real_gga14_mga16_path_ref, real_gga14_mga16_path_tar,
-                real_gga14_mga16_ref_name, real_gga14_mga16_tar_name,
+    run_smashpp(real_gga14_mga16_path_ref + real_gga14_mga16_ref_name,
+                real_gga14_mga16_path_tar + real_gga14_mga16_tar_name,
                 par_main, par_viz)
 
 
@@ -356,8 +367,8 @@ def run_real_HS12_PT12():
     par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000'
     par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + \
         '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
-    run_smashpp(real_hs12_pt12_path_ref, real_hs12_pt12_path_tar,
-                real_hs12_pt12_ref_name, real_hs12_pt12_tar_name,
+    run_smashpp(real_hs12_pt12_path_ref + real_hs12_pt12_ref_name,
+                real_hs12_pt12_path_tar + real_hs12_pt12_tar_name,
                 par_main, par_viz)
 
 
@@ -365,8 +376,8 @@ def run_real_PXO99A_MAFF311018():
     par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar'
     par_viz = '-l 6 -vv -s 40 -p 1 -rt 500000 ' + \
         '-rn PXO99A -tn "MAFF 311018" -stat -o PXO99A_MAFF_311018.svg'
-    run_smashpp(real_PXO99A_MAFF_path_ref, real_PXO99A_MAFF_path_tar,
-                real_PXO99A_MAFF_ref_name, real_PXO99A_MAFF_tar_name,
+    run_smashpp(real_PXO99A_MAFF_path_ref + real_PXO99A_MAFF_ref_name,
+                real_PXO99A_MAFF_path_tar + real_PXO99A_MAFF_tar_name,
                 par_main, par_viz)
 
 
@@ -382,20 +393,13 @@ def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
     remove(curr_dir, '*.sys*x')
 
 
-def run_smashpp(path_ref, path_tar, ref_name, tar_name, par_main, par_viz):
-    execute(smashpp + ' -r ' + path_ref + ref_name + ' -t ' +
-            path_tar + tar_name + ' ' + par_main)
-    execute(smashpp + ' -viz ' + par_viz + ' ' +
-            ref_name + '.' + tar_name + '.pos')
-
-
 def run_comp_Smash_synth():
     # Smash++
     par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
     par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 ' + \
         '-stat -o CompSmash.svg'
-    run_smashpp(path_data_synth, path_data_synth, synth_comp_smash_ref_name,
-                synth_comp_smash_tar_name, par_main, par_viz)
+    run_smashpp(path_data_synth + synth_comp_smash_ref_name,
+                path_data_synth + synth_comp_smash_tar_name, par_main, par_viz)
 
     # Smash
     par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
@@ -412,8 +416,8 @@ def run_comp_Smash_real():
     # Smash++
     par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
     par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat -o Sc_Sp_smash.svg'
-    run_smashpp(path_ref, path_tar, real_comp_smash_ref_name,
-                real_comp_smash_tar_name, par_main, par_viz)
+    run_smashpp(path_ref + real_comp_smash_ref_name,
+                path_tar + real_comp_smash_tar_name, par_main, par_viz)
 
     # Smash
     par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
@@ -474,6 +478,7 @@ def run_bench(func, name, cat, size):
 
 
 if BENCH_SYNTH_SMALL:
+    bench = True
     name = 'Small'
     cat = 'Synthetic'
     size = os.path.getsize(path_data_synth + synth_small_ref_name) + \
@@ -481,6 +486,7 @@ if BENCH_SYNTH_SMALL:
     run_bench(run_synth_small, name, cat, size)
 
 if BENCH_SYNTH_MEDIUM:
+    bench = True
     name = 'Medium'
     cat = 'Synthetic'
     size = os.path.getsize(path_data_synth + synth_medium_ref_name) + \
@@ -488,6 +494,7 @@ if BENCH_SYNTH_MEDIUM:
     run_bench(run_synth_medium, name, cat, size)
 
 if BENCH_SYNTH_LARGE:
+    bench = True
     name = 'Large'
     cat = 'Synthetic'
     size = os.path.getsize(path_data_synth + synth_large_ref_name) + \
@@ -495,6 +502,7 @@ if BENCH_SYNTH_LARGE:
     run_bench(run_synth_large, name, cat, size)
 
 if BENCH_SYNTH_XLARGE:
+    bench = True
     name = 'XLarge'
     cat = 'Synthetic'
     size = os.path.getsize(path_data_synth + synth_xlarge_ref_name) + \
@@ -502,6 +510,7 @@ if BENCH_SYNTH_XLARGE:
     run_bench(run_synth_xlarge, name, cat, size)
 
 if BENCH_SYNTH_MUTATE:
+    bench = True
     name = 'Mutate'
     cat = 'Synthetic'
     size = os.path.getsize(path_data_synth + synth_mutate_ref_name) + \
@@ -509,6 +518,7 @@ if BENCH_SYNTH_MUTATE:
     run_bench(run_synth_mutate, name, cat, size)
 
 if BENCH_REAL_PXO99A_MAFF:
+    bench = True
     name = 'PXO99A_MAFF'
     cat = 'Real'
     size = os.path.getsize(real_PXO99A_MAFF_path_ref +
@@ -517,6 +527,7 @@ if BENCH_REAL_PXO99A_MAFF:
     run_bench(run_real_PXO99A_MAFF, name, cat, size)
 
 if BENCH_REAL_GGA18_MGA20:
+    bench = True
     name = 'GGA18_MGA20'
     cat = 'Real'
     size = os.path.getsize(real_gga18_mga20_path_ref +
@@ -525,6 +536,7 @@ if BENCH_REAL_GGA18_MGA20:
     run_bench(run_real_gga18_mga20, name, cat, size)
 
 if BENCH_REAL_GGA14_MGA16:
+    bench = True
     name = 'GGA14_MGA16'
     cat = 'Real'
     size = os.path.getsize(real_gga14_mga16_path_ref +
@@ -533,6 +545,7 @@ if BENCH_REAL_GGA14_MGA16:
     run_bench(run_real_gga14_mga16, name, cat, size)
 
 if BENCH_REAL_HS12_PT12:
+    bench = True
     name = 'HS12_PT12'
     cat = 'Real'
     size = os.path.getsize(real_hs12_pt12_path_ref +
@@ -540,66 +553,54 @@ if BENCH_REAL_HS12_PT12:
         os.path.getsize(real_hs12_pt12_path_tar + real_hs12_pt12_tar_name)
     run_bench(run_real_hs12_pt12, name, cat, size)
 
-with open('bench.csv', 'w') as bench_file:
-    writer = csv.writer(bench_file)
-    writer.writerow(['Name', 'Cat', 'Size.B', 'Time.s', 'Memory.MB'])
-    writer.writerows(bench_result)
+if bench:
+    with open('bench.csv', 'w') as bench_file:
+        writer = csv.writer(bench_file)
+        writer.writerow(['Name', 'Cat', 'Size.B', 'Time.s', 'Memory.MB'])
+        writer.writerows(bench_result)
 
 
 # todo
 if synth_permute:
-    ref = 'RefPerm'
-    tar = 'TarPerm'
-    viz_par = ' -l 6 -s 30 -w 13 -p 1 -vv '
+    par_main = ' -th 1.8 -l 0 -f 80 -d 3000 -sf '
+    par_viz = ' -l 6 -p 1 -vv -o Perm.svg '
 
     # Original
-    # execute(smashpp + '-r ' + path_data_synth + ref + ' -t ' +
-    #         path_data_synth + tar + ' -th 1.8 ' +
-    #         '-rm 14,0,0.001,0.95/5,0,0.001,0.95 -f 100 -d 3000 -nr -sf ')
-    # execute(smashpp + '-viz -rn Ref -tn Tar ' + viz_par +
-    #         '-o Perm.svg ' + ref + '.' + tar + '.pos')
-
-#     copyfile(path_data_synth + ref, ref)
-#     copyfile(path_data_synth + tar, tar)
-#     execute(smash + ' -t 1.6 -c 14 -w 100 -d 3000 ' + ref + ' ' + tar)
-#     os.remove(ref)
-#     os.remove(tar)
-#     remove_all_ext(current_dir, 'ext')
-#     remove_all_ext(current_dir, 'rev')
-#     remove(current_dir, '*.sys*')
+    run_smashpp(path_data_synth + synth_perm_ref_name,
+                path_data_synth + synth_perm_tar_name, par_main, par_viz)
 
     # Permutated
-    block_size = 20
-    ref_perm = ref + str(block_size)
-#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#             '-s 165604 < ' + path_data_synth + ref + ' > ' +
-#             path_data_synth + ref_perm)
+#     block_size = 20
+#     ref_perm = ref + str(block_size)
+# #     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+# #             '-s 165604 < ' + path_data_synth + ref + ' > ' +
+# #             path_data_synth + ref_perm)
 
-#     copyfile(path_data_synth + ref_perm, ref_perm)
-#     copyfile(path_data_synth + tar, tar)
-#     execute(smash + ' -t 1.9 -c 14 -w 100 -d 1 ' + ref_perm + ' ' + tar)
-#     os.remove(ref_perm)
-#     os.remove(tar)
-#     remove_all_ext(current_dir, 'ext')
-#     remove_all_ext(current_dir, 'rev')
-#     remove(current_dir, '*.sys*')
+# #     copyfile(path_data_synth + ref_perm, ref_perm)
+# #     copyfile(path_data_synth + tar, tar)
+# #     execute(smash + ' -t 1.9 -c 14 -w 100 -d 1 ' + ref_perm + ' ' + tar)
+# #     os.remove(ref_perm)
+# #     os.remove(tar)
+# #     remove_all_ext(current_dir, 'ext')
+# #     remove_all_ext(current_dir, 'rev')
+# #     remove(current_dir, '*.sys*')
 
-    execute(smashpp + '-r ' + path_data_synth + ref_perm +
-#           ' -t ' + path_data_synth + tar +
-#           ' -th 5 -rm 14,0,0.001,0.95:3,0,0.001,0.95 -f 3000 -d 1 -ar ' +
-#           '-nr -sf ')
-    execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-            '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
+#             ' -t ' + path_data_synth + tar +
+#             ' -th 5 -rm 14,0,0.001,0.95:3,0,0.001,0.95 -f 3000 -d 1 -ar ' +
+#             '-nr -sf ')
+#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
 #     block_size = 2000000
 #     ref_perm = ref + str(block_size)
 #     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
 #             '-s 165604 < ' + path_data_synth + ref +
 #             ' > ' + path_data_synth + ref_perm)
-#     execute(smashpp + '-r ' + path_data_synth + ref_perm +
+#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
 #             ' -t ' + path_data_synth + tar +
 #             ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000 -ar ')
-#     execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
 #             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
 #     block_size = 10000
@@ -607,10 +608,10 @@ if synth_permute:
 #     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
 #             '-s 328914 < ' + path_data_synth + ref +
 #             ' > ' + path_data_synth + ref_perm)
-#     execute(smashpp + '-r ' + path_data_synth + ref_perm +
+#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
 #             ' -t ' + path_data_synth + tar +
 #             ' -th 1.5 -rm 14,0,0.001,0.9 -f 75 -d 1500 -ar ')
-#     execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
 #             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
 #     block_size = 40
@@ -618,8 +619,8 @@ if synth_permute:
 #     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
 #             '-s 564283 < ' + path_data_synth + ref +
 #             ' > ' + path_data_synth + ref_perm)
-#     execute(smashpp + '-r ' + path_data_synth + ref_perm +
+#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
 #             ' -t ' + path_data_synth + tar +
 #             ' -th 1.5 -rm 14,0,0.001,0.9 -f 3000 -d 1 -ar ')
-#     execute(smashpp + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
 #             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
