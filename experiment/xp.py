@@ -596,7 +596,7 @@ if RUN_SYNTH_PERM:
     if perm_1500:
         block_size = 1000
         ref_name = synth_perm_ref_name + str(block_size)
-        par_main = '-l 0 -f 2750 -d 20 -ar'
+        par_main = '-l 0 -f 200 -d 300 -ar'
         par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_1000.svg'
         execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
                 '-s 564283 < ' + path_data_synth + synth_perm_ref_name +
