@@ -477,6 +477,7 @@ def run_bench(func, name, cat, size):
     bench_result.append([name, cat, size, elapsed, max_memory])
 
 
+bench = False
 if BENCH_SYNTH_SMALL:
     bench = True
     name = 'Small'
@@ -562,7 +563,7 @@ if bench:
 
 # todo
 if synth_permute:
-    par_main = ' -th 1.8 -l 0 -f 80 -d 3000 -sf '
+    par_main = ' -th 1.5 -l 0 -f 5 -d 3000 -sf '
     par_viz = ' -l 6 -p 1 -vv -o Perm.svg '
 
     # Original
