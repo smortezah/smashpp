@@ -38,6 +38,7 @@ RUN_REAL_HS12_PT12 = False
 RUN_REAL_PXO99A_MAFF311018 = False
 RUN_COMP_SMASH_SYNTH = False  # Compare to Smash on synthetic data
 RUN_COMP_SMASH_REAL = False  # Compare to Smash on real data
+RUN_SYNTH_PERM = True
 
 # Benchmark
 BENCH_SYNTH_SMALL = False
@@ -49,10 +50,6 @@ BENCH_REAL_GGA18_MGA20 = False
 BENCH_REAL_GGA14_MGA16 = False
 BENCH_REAL_HS12_PT12 = False
 BENCH_REAL_PXO99A_MAFF = False
-
-
-# todo
-synth_permute = True
 
 
 '''
@@ -374,8 +371,8 @@ def run_real_HS12_PT12():
 
 def run_real_PXO99A_MAFF311018():
     par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar'
-    par_viz = '-l 6 -vv -s 40 -p 1 -rt 500000 ' + \
-        '-rn PXO99A -tn "MAFF 311018" -stat -o PXO99A_MAFF_311018.svg'
+    par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" ' + \
+        '-stat -o PXO99A_MAFF_311018.svg'
     run_smashpp(real_PXO99A_MAFF_path_ref + real_PXO99A_MAFF_ref_name,
                 real_PXO99A_MAFF_path_tar + real_PXO99A_MAFF_tar_name,
                 par_main, par_viz)
@@ -518,15 +515,6 @@ if BENCH_SYNTH_MUTATE:
         os.path.getsize(path_data_synth + synth_mutate_tar_name)
     run_bench(run_synth_mutate, name, cat, size)
 
-if BENCH_REAL_PXO99A_MAFF:
-    bench = True
-    name = 'PXO99A_MAFF'
-    cat = 'Real'
-    size = os.path.getsize(real_PXO99A_MAFF_path_ref +
-                           real_PXO99A_MAFF_ref_name) + \
-        os.path.getsize(real_PXO99A_MAFF_path_tar + real_PXO99A_MAFF_tar_name)
-    run_bench(run_real_PXO99A_MAFF, name, cat, size)
-
 if BENCH_REAL_GGA18_MGA20:
     bench = True
     name = 'GGA18_MGA20'
@@ -554,6 +542,15 @@ if BENCH_REAL_HS12_PT12:
         os.path.getsize(real_hs12_pt12_path_tar + real_hs12_pt12_tar_name)
     run_bench(run_real_hs12_pt12, name, cat, size)
 
+if BENCH_REAL_PXO99A_MAFF:
+    bench = True
+    name = 'PXO99A_MAFF'
+    cat = 'Real'
+    size = os.path.getsize(real_PXO99A_MAFF_path_ref +
+                           real_PXO99A_MAFF_ref_name) + \
+        os.path.getsize(real_PXO99A_MAFF_path_tar + real_PXO99A_MAFF_tar_name)
+    run_bench(run_real_PXO99A_MAFF, name, cat, size)
+
 if bench:
     with open('bench.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
@@ -562,13 +559,61 @@ if bench:
 
 
 # todo
-if synth_permute:
-    par_main = ' -th 1.5 -l 0 -f 5 -d 3000 -sf '
-    par_viz = ' -l 6 -p 1 -vv -o Perm.svg '
+if RUN_SYNTH_PERM:
+    original = False
+    perm_450000 = False
+    perm_30000 = False
+    perm_1500 = True
 
-    # Original
-    run_smashpp(path_data_synth + synth_perm_ref_name,
-                path_data_synth + synth_perm_tar_name, par_main, par_viz)
+    if original:
+        par_main = '-l 0 -f 10 -d 3000'
+        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm.svg'
+        run_smashpp(path_data_synth + synth_perm_ref_name,
+                    path_data_synth + synth_perm_tar_name, par_main, par_viz)
+
+    if perm_450000:
+        block_size = 450000
+        ref_name = synth_perm_ref_name + str(block_size)
+        par_main = '-l 0 -f 25 -d 3000 -ar'
+        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_450000.svg'
+        execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+                '-s 6041 < ' + path_data_synth + synth_perm_ref_name +
+                ' > ' + path_data_synth + ref_name)
+        run_smashpp(path_data_synth + ref_name,
+                    path_data_synth + synth_perm_tar_name, par_main, par_viz)
+
+    if perm_30000:
+        block_size = 30000
+        ref_name = synth_perm_ref_name + str(block_size)
+        par_main = '-l 0 -f 75 -d 1500 -ar'
+        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_30000.svg'
+        execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+                '-s 328914 < ' + path_data_synth + synth_perm_ref_name +
+                ' > ' + path_data_synth + ref_name)
+        run_smashpp(path_data_synth + ref_name,
+                    path_data_synth + synth_perm_tar_name, par_main, par_viz)
+
+    if perm_1500:
+        block_size = 1000
+        ref_name = synth_perm_ref_name + str(block_size)
+        par_main = '-l 0 -f 300 -d 600 -ar'
+        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_1000.svg'
+        execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+                '-s 564283 < ' + path_data_synth + synth_perm_ref_name +
+                ' > ' + path_data_synth + ref_name)
+        run_smashpp(path_data_synth + ref_name,
+                    path_data_synth + synth_perm_tar_name, par_main, par_viz)
+
+#     block_size = 40
+#     ref_perm = ref + str(block_size)
+#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+#             '-s 564283 < ' + path_data_synth + ref +
+#             ' > ' + path_data_synth + ref_perm)
+#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
+#             ' -t ' + path_data_synth + tar +
+#             ' -th 1.5 -rm 14,0,0.001,0.9 -f 3000 -d 1 -ar ')
+#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
+#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
 
     # Permutated
 #     block_size = 20
@@ -590,38 +635,5 @@ if synth_permute:
 #             ' -t ' + path_data_synth + tar +
 #             ' -th 5 -rm 14,0,0.001,0.95:3,0,0.001,0.95 -f 3000 -d 1 -ar ' +
 #             '-nr -sf ')
-#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
-
-#     block_size = 2000000
-#     ref_perm = ref + str(block_size)
-#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#             '-s 165604 < ' + path_data_synth + ref +
-#             ' > ' + path_data_synth + ref_perm)
-#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
-#             ' -t ' + path_data_synth + tar +
-#             ' -th 1.5 -rm 14,0,0.001,0.9 -f 100 -d 10000 -ar ')
-#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
-
-#     block_size = 10000
-#     ref_perm = ref + str(block_size)
-#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#             '-s 328914 < ' + path_data_synth + ref +
-#             ' > ' + path_data_synth + ref_perm)
-#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
-#             ' -t ' + path_data_synth + tar +
-#             ' -th 1.5 -rm 14,0,0.001,0.9 -f 75 -d 1500 -ar ')
-#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
-
-#     block_size = 40
-#     ref_perm = ref + str(block_size)
-#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#             '-s 564283 < ' + path_data_synth + ref +
-#             ' > ' + path_data_synth + ref_perm)
-#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
-#             ' -t ' + path_data_synth + tar +
-#             ' -th 1.5 -rm 14,0,0.001,0.9 -f 3000 -d 1 -ar ')
 #     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
 #             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
