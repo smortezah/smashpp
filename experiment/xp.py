@@ -564,13 +564,12 @@ if RUN_SYNTH_PERM:
     perm_450000 = False
     perm_30000 = False
     perm_1000 = False
-    perm_20 = False
+    perm_30 = False
 
     if original:
-        block_size = 0
         par_main = '-l 0 -f 10 -d 3000'
         par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
-            '-o Perm_' + str(block_size) + '.svg'
+            '-o Perm.svg'
         run_smashpp(path_data_synth + synth_perm_ref_name,
                     path_data_synth + synth_perm_tar_name, par_main, par_viz)
 
@@ -602,7 +601,7 @@ if RUN_SYNTH_PERM:
         block_size = 1000
         ref_name = synth_perm_ref_name + str(block_size)
         par_main = '-l 0 -f 25 -d 300 -ar'
-        par_viz = '-p 1 -l 6 -w 13 -vv -rt 500000 -tt 500000 ' + \
+        par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 ' + \
             '-o Perm_' + str(block_size) + '.svg'
         execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
                 '-s 564283 < ' + path_data_synth + synth_perm_ref_name +
@@ -610,7 +609,7 @@ if RUN_SYNTH_PERM:
         run_smashpp(path_data_synth + ref_name,
                     path_data_synth + synth_perm_tar_name, par_main, par_viz)
 
-    if perm_20:
+    if perm_30:
         block_size = 30
         ref_name = synth_perm_ref_name + str(block_size)
         par_main = '-l 0 -f 250 -d 1 -ar'
