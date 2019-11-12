@@ -563,7 +563,8 @@ if RUN_SYNTH_PERM:
     original = False
     perm_450000 = False
     perm_30000 = False
-    perm_1500 = True
+    perm_1000 = False
+    perm_20 = True
 
     if original:
         par_main = '-l 0 -f 10 -d 3000'
@@ -593,7 +594,7 @@ if RUN_SYNTH_PERM:
         run_smashpp(path_data_synth + ref_name,
                     path_data_synth + synth_perm_tar_name, par_main, par_viz)
 
-    if perm_1500:
+    if perm_1000:
         block_size = 1000
         ref_name = synth_perm_ref_name + str(block_size)
         par_main = '-l 0 -f 25 -d 300 -ar'
@@ -604,36 +605,13 @@ if RUN_SYNTH_PERM:
         run_smashpp(path_data_synth + ref_name,
                     path_data_synth + synth_perm_tar_name, par_main, par_viz)
 
-#     block_size = 40
-#     ref_perm = ref + str(block_size)
-#     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-#             '-s 564283 < ' + path_data_synth + ref +
-#             ' > ' + path_data_synth + ref_perm)
-#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
-#             ' -t ' + path_data_synth + tar +
-#             ' -th 1.5 -rm 14,0,0.001,0.9 -f 3000 -d 1 -ar ')
-#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
-
-    # Permutated
-#     block_size = 20
-#     ref_perm = ref + str(block_size)
-# #     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-# #             '-s 165604 < ' + path_data_synth + ref + ' > ' +
-# #             path_data_synth + ref_perm)
-
-# #     copyfile(path_data_synth + ref_perm, ref_perm)
-# #     copyfile(path_data_synth + tar, tar)
-# #     execute(smash + ' -t 1.9 -c 14 -w 100 -d 1 ' + ref_perm + ' ' + tar)
-# #     os.remove(ref_perm)
-# #     os.remove(tar)
-# #     remove_all_ext(current_dir, 'ext')
-# #     remove_all_ext(current_dir, 'rev')
-# #     remove(current_dir, '*.sys*')
-
-#     execute(smashpp_exe + '-r ' + path_data_synth + ref_perm +
-#             ' -t ' + path_data_synth + tar +
-#             ' -th 5 -rm 14,0,0.001,0.95:3,0,0.001,0.95 -f 3000 -d 1 -ar ' +
-#             '-nr -sf ')
-#     execute(smashpp_exe + '-viz -rn Ref_perm -tn Tar ' + viz_par +
-#             '-o ' + ref_perm + '.svg ' + ref_perm + '.' + tar + '.pos')
+    if perm_20:
+        block_size = 20
+        ref_name = synth_perm_ref_name + str(block_size)
+        par_main = '-l 0 -f 25 -d 300 -ar'
+        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_20.svg'
+        execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
+                '-s 900123 < ' + path_data_synth + synth_perm_ref_name +
+                ' > ' + path_data_synth + ref_name)
+        run_smashpp(path_data_synth + ref_name,
+                    path_data_synth + synth_perm_tar_name, par_main, par_viz)
