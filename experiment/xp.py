@@ -576,7 +576,7 @@ if RUN_SYNTH_PERM:
         block_size = 450000
         ref_name = synth_perm_ref_name + str(block_size)
         par_main = '-l 0 -f 25 -d 3000 -ar'
-        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_450000.svg'
+        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_' + block_size + '.svg'
         execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
                 '-s 6041 < ' + path_data_synth + synth_perm_ref_name +
                 ' > ' + path_data_synth + ref_name)
@@ -587,7 +587,7 @@ if RUN_SYNTH_PERM:
         block_size = 30000
         ref_name = synth_perm_ref_name + str(block_size)
         par_main = '-l 0 -f 75 -d 1500 -ar'
-        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_30000.svg'
+        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_' + block_size + '.svg'
         execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
                 '-s 328914 < ' + path_data_synth + synth_perm_ref_name +
                 ' > ' + path_data_synth + ref_name)
@@ -598,7 +598,7 @@ if RUN_SYNTH_PERM:
         block_size = 1000
         ref_name = synth_perm_ref_name + str(block_size)
         par_main = '-l 0 -f 25 -d 300 -ar'
-        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_1000.svg'
+        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_' + block_size + '.svg'
         execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
                 '-s 564283 < ' + path_data_synth + synth_perm_ref_name +
                 ' > ' + path_data_synth + ref_name)
@@ -606,10 +606,10 @@ if RUN_SYNTH_PERM:
                     path_data_synth + synth_perm_tar_name, par_main, par_viz)
 
     if perm_20:
-        block_size = 20
+        block_size = 30
         ref_name = synth_perm_ref_name + str(block_size)
-        par_main = '-l 0 -f 25 -d 300 -ar'
-        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_20.svg'
+        par_main = '-l 0 -f 1000 -d 1 -ar'
+        par_viz = '-p 1 -l 6 -w 13 -vv -o Perm_' + block_size + '.svg'
         execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
                 '-s 900123 < ' + path_data_synth + synth_perm_ref_name +
                 ' > ' + path_data_synth + ref_name)
