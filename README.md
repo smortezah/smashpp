@@ -15,7 +15,6 @@ To install Smash++ on various operating systems, follow the instructions below. 
 conda install -c cobilab smashpp
 ```
 
-
 ### Linux
 * Install "git" and "cmake":
 ```bash
@@ -53,21 +52,21 @@ conda install -c cobilab smashpp
 ```
 
 ## Run
-```bash
-./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
-```
+
+	./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
+
 For example,
-```bash
-./smashpp -r ref -t tar
-```
+
+	./smashpp -r ref -t tar
+
 It is recommended to choose short names for reference and target 
 sequences.
 
 ### Options
 To see the possible options for Smash++, type:
-```bash
-./smashpp
-```
+
+	./smashpp
+
 which provides the following:
 ```text
 SYNOPSIS
@@ -131,9 +130,9 @@ SAMPLE
 ```
 
 To see the options for Smash++ Visualizer, type:
-```bash
-./smashpp -viz
-```
+
+	./smashpp -viz
+
 which provides the following:
 ```text
 SYNOPSIS
@@ -187,10 +186,10 @@ cp smashpp example/
 cd example/
 ```
 There is in this directory two 1000 base sequences, the reference sequence named "ref", and the target sequence, named "tar". Now, run Smash++ and the visualizer:
-```bash
-./smashpp -r ref -t tar
-./smashpp -viz -o example.svg ref.tar.pos
-```
+
+	./smashpp -r ref -t tar
+	./smashpp -viz -o example.svg ref.tar.pos
+
 
 <!-- ### Compare Smash++ with other methods
 In order for comparison, you might set the parameters in 
