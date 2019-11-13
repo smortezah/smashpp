@@ -42,7 +42,7 @@ conda install -c cobilab smashpp
 ```
 
 ### Windows
-* Download and install [CMake](https://github.com/Kitware/CMake/releases/download/v3.14.4/cmake-3.14.4-win64-x64.msi) and [mingw-w64](https://sourceforge.net/projects/mingw-w64/files/latest/download). Make sure to add them to the system PATH. For example, if CMake is installed in "C:\Program Files" and mingw-w64 is installed in "C:\mingw-w64", add "C:\Program Files\CMake\bin" and "C:\mingw-w64\mingw64\bin" to the system PATH.
+* Download and install [CMake](https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-win64-x64.msi) and [mingw-w64](https://sourceforge.net/projects/mingw-w64/files/latest/download). Make sure to add them to the system PATH. For example, if CMake is installed in "C:\Program Files" and mingw-w64 is installed in "C:\mingw-w64", add "C:\Program Files\CMake\bin" and "C:\mingw-w64\mingw64\bin" to the system PATH.
 * Download and install [git](https://git-scm.com/download/win).
 * Clone  Smash++ and install it:
 ```bat
