@@ -180,7 +180,6 @@
 % \begin{titlepage}
 %   \centering
 %   \vspace*{10mm}
-%   % \includegraphics[width=2.8cm]{logo.png} \\[10mm]
 %   \Large\textsc{Supplementary Material for} \\[5mm]
 %   \huge\textbf{Smash++: finding rearrangements} \\[12mm]
 %   \Large Morteza Hosseini\textsuperscript{1}, Diogo Pratas\textsuperscript{1,2}, Armando J. Pinho\textsuperscript{1} \\[6mm]
@@ -188,18 +187,20 @@
 %   \textsuperscript{2}Department of Virology, University of Helsinki, Finland \\[4mm]
 %   {\ttfamily\{seyedmorteza,pratas,ap\}@ua.pt}
   
-%   % \vspace{\fill}
-%   % \thispagestyle{empty}
-%   % \raggedright
-%   % \setstretch{1.2}
-%   % \normalsize\tableofcontents
+%   \vspace{\fill}
+%   \thispagestyle{empty}
+%   \raggedright
+%   \setstretch{1.2}
+%   \normalsize\tableofcontents
 % \end{titlepage}
 
 \begin{center}
-  \Large\textsc{Supplementary Material for} \\[1mm]
-  \huge\textbf{Smash++: finding rearrangements} \\[6mm]
-  \Large Morteza Hosseini\textsuperscript{1}, Diogo Pratas\textsuperscript{1,2}, Armando J. Pinho\textsuperscript{1} \\[2mm]
-  \normalsize \textsuperscript{1}IEETA/DETI, University of Aveiro, Portugal, \textsuperscript{2}Dept. of Virology, University of Helsinki, Finland \\
+  \vspace*{10mm}
+  \Large\textsc{Supplementary Material for} \\[5mm]
+  \huge\textbf{Smash++: finding rearrangements} \\[12mm]
+  \Large Morteza Hosseini\textsuperscript{1}, Diogo Pratas\textsuperscript{1,2}, Armando J. Pinho\textsuperscript{1} \\[6mm]
+  \normalsize \textsuperscript{1}IEETA/DETI, University of Aveiro, Portugal \\  [1mm]
+  \textsuperscript{2}Department of Virology, University of Helsinki, Finland \\ [4mm]
   {\ttfamily\{seyedmorteza,pratas,ap\}@ua.pt}
 \end{center}
 
@@ -207,12 +208,13 @@
 
 \vfill
 
-\section{Permutation}
-and~\ref{fig.supp.perm}.
+\section{\smashpp on fragmented data}
+The result of running \smashpp is shown in~\ref{fig.supp.perm} for two synthetic sequences, in which the reference is permutated by blocks of different sizes.
 
 \begin{figure}[!h]
   \centering
   \includegraphics[width=\linewidth]{fig/perm.pdf}
+  \caption{Similarity of a target sequence to a reference sequence, when the reference is permutated by blocks of different sizes of 450~Kb, 30~Kb, 1~Kb and 30~b. It shows \smashpp is resistant to fragmentation of sequence; for example, in the case of 30~b, although the reference is highly fragmented, \smashpp could detect the same three similar regions in the target as the original case.}
   \label{fig.supp.perm}
 \end{figure}
 
@@ -357,7 +359,6 @@ Various options are provided with the interface of the proposed tool, which are 
   \mono{-ft} & Integer or String:\newline \{0/rectangular, 1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch, 6/sine, 7/nuttall\}\newline \default{hann} & Filter type (windowing function). Besides Hann window that is used by default to smooth the information content (profile), we have implemented several other windowing functions: Blackman~\cite{blackman1959particular}, Hamming~\cite{tukey1949measuring}, Nuttall~\cite{nuttall1981some}, rectangular~\cite{oppenheim1999discrete}, sine~\cite{harris1978use}, triangular~\cite{bartlett1950periodogram} and Welch~\cite{welch1967use} windows. These functions along with Hann function are given by Equation~\ref{eq.filter} and are plotted in Fig.~\ref{fig.filters}. \\
   \midrule
   \mono{-fs} & Char or String:\newline \{S/small, M/medium, L/large\}
-  % \newline Default: large
    & Filter scale. It automatically chooses filter size. If a user does not use this flag, the ``-f'' flag will handle the filtering size.  \\
   \midrule
   \mono{-d} & Integer: $[1, 2^{64}-1]$ & Sampling steps. Instead of considering the whole information content, we can make samples of it. The default value is $\lceil\min\left(\lvert\textrm{ref}\rvert, \lvert\textrm{tar}\rvert\right) /\, 5000\rceil$. Therefore, if this flag is not entered by user, a maximum number of 5000 values of the information content will be considered. \\
@@ -418,21 +419,21 @@ Various options are provided with the interface of the proposed tool, which are 
 \end{small}
 
 \begin{align}
-  w[n] & = 1,
+  w[n] & = 1,\quad 0\le n\le N,
   \tag*{\small(rectangular)} \\
-  w[n] & = 0.54348-0.45652\;\cos \left(\tfrac {2\pi n}{N}\right),
+  w[n] & = 0.54348-0.45652\;\cos \left(\tfrac {2\pi n}{N}\right),\quad 0\le n\le N
   \tag*{\small(Hamming)} \\
-  w[n] & = \sin^2 \left(\tfrac {\pi n}{N}\right),
+  w[n] & = \sin^2 \left(\tfrac {\pi n}{N}\right),\quad 0\le n\le N
   \tag*{\small(Hann)} \\
-  w[n] & = 0.42659-0.49656\;\cos \left(\tfrac {2\pi n}{N}\right)+0.07685\;\cos \left(\tfrac {4\pi n}{N}\right),
+  w[n] & = 0.42659-0.49656\;\cos \left(\tfrac {2\pi n}{N}\right)+0.07685\;\cos \left(\tfrac {4\pi n}{N}\right),\quad 0\le n\le N
   \tag*{\small(Blackman)} \\
-  w[n] & = 1-\left|\tfrac {n-N/2}{N/2}\right|,
+  w[n] & = 1-\left|\tfrac {n-N/2}{N/2}\right|,\quad 0\le n\le N
   \tag*{\small(triangular/Bartlett)} \\
-  w[n] & = 1-\left(\tfrac {n-N/2}{N/2}\right)^{2},
+  w[n] & = 1-\left(\tfrac {n-N/2}{N/2}\right)^{2},\quad 0\le n\le N
   \tag*{\small(Welch)} \\
-  w[n] & = \sin \left(\tfrac {\pi n}{N}\right),
+  w[n] & = \sin \left(\tfrac {\pi n}{N}\right),\quad 0\le n\le N
   \tag*{\small(sine)} \\
-  w[n] & = 0.35577-0.48740\;\cos \left(\tfrac {2\pi n}{N}\right)+0.14423\;\cos \left(\tfrac {4\pi n}{N}\right)-0.01260\;\cos \left(\tfrac {6\pi n}{N}\right),
+  w[n] & = 0.35577-0.48740\;\cos \left(\tfrac {2\pi n}{N}\right)+0.14423\;\cos \left(\tfrac {4\pi n}{N}\right)-0.01260\;\cos \left(\tfrac {6\pi n}{N}\right),\quad 0\le n\le N
   \tag*{\small(Nuttall)} \\
   \label{eq.filter}
 \end{align}

@@ -36,8 +36,8 @@ RUN_REAL_GGA18_MGA20 = False
 RUN_REAL_GGA14_MGA16 = False
 RUN_REAL_HS12_PT12 = False
 RUN_REAL_PXO99A_MAFF311018 = False
-RUN_SYNTH_COMP_SMASH = False  # Compare to Smash on synthetic data
-RUN_REAL_COMP_SMASH = False  # Compare to Smash on real data
+RUN_SYNTH_COMPARE_SMASH = False  # Compare to Smash on synthetic data
+RUN_REAL_COMPARE_SMASH = False  # Compare to Smash on real data
 RUN_SYNTH_PERM_ORIGINAL = False
 RUN_SYNTH_PERM_450000 = False
 RUN_SYNTH_PERM_30000 = False
@@ -54,8 +54,8 @@ BENCH_REAL_GGA18_MGA20 = False
 BENCH_REAL_GGA14_MGA16 = False
 BENCH_REAL_HS12_PT12 = False
 BENCH_REAL_PXO99A_MAFF311018 = False
-BENCH_SYNTH_COMP_SMASH = False
-BENCH_REAL_COMP_SMASH = False
+BENCH_SYNTH_COMPARE_SMASH = False
+BENCH_REAL_COMPARE_SMASH = False
 BENCH_SYNTH_PERM_ORIGINAL = False
 BENCH_SYNTH_PERM_450000 = False
 BENCH_SYNTH_PERM_30000 = False
@@ -524,11 +524,11 @@ if RUN_REAL_HS12_PT12:
 if RUN_REAL_PXO99A_MAFF311018:
     run_real_PXO99A_MAFF311018()
 
-if RUN_SYNTH_COMP_SMASH:
+if RUN_SYNTH_COMPARE_SMASH:
     run_synth_comp_Smash('smashpp')
     run_synth_comp_Smash('smash')
 
-if RUN_REAL_COMP_SMASH:
+if RUN_REAL_COMPARE_SMASH:
     run_real_comp_Smash('smashpp')
     run_real_comp_Smash('smash')
 
@@ -655,7 +655,7 @@ if BENCH_REAL_PXO99A_MAFF311018:
                         real_PXO99A_MAFF311018_tar_name)
     run_bench(run_real_PXO99A_MAFF311018, method, dataset, cat, size)
 
-if BENCH_SYNTH_COMP_SMASH:
+if BENCH_SYNTH_COMPARE_SMASH:
     bench = True
     dataset = 'CompSynth'
     cat = 'Synthetic'
@@ -665,7 +665,7 @@ if BENCH_SYNTH_COMP_SMASH:
               'Smash++', dataset, cat, size)
     run_bench((run_synth_comp_Smash, ('smash',)), 'Smash', dataset, cat, size)
 
-if BENCH_REAL_COMP_SMASH:
+if BENCH_REAL_COMPARE_SMASH:
     bench = True
     dataset = 'CompReal'
     cat = 'Real'
