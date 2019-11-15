@@ -8,7 +8,6 @@ Copyright (C) 2018-2019, IEETA/DETI, University of Aveiro, Portugal
 '''
 USER CAN CHANGE HERE BY SWITCHING False/True
 '''
-# Resolve dependencies
 from memory_profiler import memory_usage
 from pathlib import Path
 from shutil import copyfile
@@ -16,6 +15,8 @@ import psutil
 import csv
 import time
 import os
+
+# Resolve dependencies
 GET_GOOSE = False
 
 # Make synthetic dataset
@@ -25,6 +26,7 @@ MAKE_SYNTH_LARGE = False
 MAKE_SYNTH_XLARGE = False
 MAKE_SYNTH_MUTATE = False
 MAKE_SYNTH_COMPARE_SMASH = False
+MAKE_SYNTH_PERMUTE = False
 
 # Run
 RUN_SYNTH_SMALL = False
@@ -283,6 +285,21 @@ def make_synth_compare_smash():  # Sizes: ref:1,000,000, tar:1,000,000
         append('t_' + str(i), path_data_synth + 'TarComp')
 
 
+def make_synth_permute():  # Sizes: ref:3,000,000, tar:3,000,000
+    execute(goose_fastqsimulation + synth_common_par +
+            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+    execute(goose_fastqsimulation + synth_common_par +
+            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+    execute(goose_fastqsimulation + synth_common_par +
+            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+    cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
+
+    execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+    execute(smashpp_inv_rep + 'r_b t_b')
+    execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+    cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
+
+
 if MAKE_SYNTH_SMALL:
     make_synth_small()
 
@@ -300,6 +317,9 @@ if MAKE_SYNTH_MUTATE:
 
 if MAKE_SYNTH_COMPARE_SMASH:
     make_synth_compare_smash()
+
+if MAKE_SYNTH_PERMUTE:
+    make_synth_permute()
 
 remove_all_start(current_dir, "r_")
 remove_all_start(current_dir, "t_")
