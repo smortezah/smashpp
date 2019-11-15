@@ -193,9 +193,7 @@ There is in this directory two 1000 base sequences, the reference sequence named
 
 | Option             | Description                                            |
 | ------------------ | ------------------------------------------------------ |
-| -p, --pattern      | The binary word pattern used to create wordlists from  |
-|                    | sequences. May only include '0' and '1' characters.    |
-| ------------------ | ------------------------------------------------------ |
+| -p, --pattern      | The binary word pattern used to create wordlists from sequences. May only include '0' and '1' characters. |
 
 <!-- ### Compare Smash++ with other methods
 In order for comparison, you might set the parameters in 
