@@ -43,7 +43,7 @@ if prepare_data:
         if not os.path.exists(dataset_path + sep + group.lower()):
             os.mkdir(dataset_path + sep + group.lower())
 
-    print('Linearizing DNA reads ...', end="\r")
+    print('Linearizing DNA reads ...', end='\r')
     cox1_pos_file = open('COX1_pos.tsv', 'w+')
     cox1_pos_file.write('Name' + '\t' + 'Group' + '\t' + 'Organism' +
                         '\t' + 'COX1_beg' + '\t' + 'COX1_end' + '\n')
@@ -266,8 +266,8 @@ def apply_smashpp(Class):
     if os.path.exists(rearrange_count_name):
         os.remove(rearrange_count_name)
     with open(rearrange_count_name, 'w') as rearrange_count:
-        for i in range(len(header)):
-            rearrange_count.write('\t' + header[i])
+        for i, name in enumerate(header):
+            rearrange_count.write('\t' + name)
         rearrange_count.write('\n')
 
         for i, nameI in enumerate(header):
