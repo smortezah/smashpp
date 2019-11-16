@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 if os.name == 'posix':
     sep = '/'
@@ -8,7 +9,8 @@ smashpp = '..' + sep + '..' + sep + 'smashpp '
 
 
 def execute(cmd):
-    os.popen(cmd).read()
+    subprocess.call(cmd.split())
+    # os.popen(cmd).read()
 
 
 ref_name = 'MT-CO1.fa'

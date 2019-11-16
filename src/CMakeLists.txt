@@ -41,7 +41,7 @@ add_executable(smashpp
 
 #add_executable(excule_N src/excludeN.cpp)
 
-target_compile_features(smashpp PRIVATE cxx_std_17)
+target_compile_features(smashpp PRIVATE cxx_std_14)
 
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)

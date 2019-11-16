@@ -11,10 +11,10 @@ USER CAN CHANGE HERE BY SWITCHING False/True
 from memory_profiler import memory_usage
 from pathlib import Path
 from shutil import copyfile
-import psutil
 import csv
 import time
 import os
+import subprocess
 
 # Resolve dependencies
 GET_GOOSE = False
@@ -123,7 +123,7 @@ real_hs12_pt12_tar_name = '12.seq'
 
 
 def execute(cmd):
-    os.popen(cmd).read()
+    subprocess.call(cmd.split())
 
 
 def cat(file_in_names, file_out_name):
@@ -157,8 +157,8 @@ def remove_path(path):
         os.remove(path)
 
 
-def remove(dir, pattern):
-    for p in Path(dir).glob(pattern):
+def remove(directory, pattern):
+    for p in Path(directory).glob(pattern):
         p.unlink()
 
 
@@ -406,7 +406,7 @@ def run_real_PXO99A_MAFF311018():
         '-stat -o PXO99A_MAFF_311018.svg'
     run_smashpp(real_PXO99A_MAFF311018_path_ref +
                 real_PXO99A_MAFF311018_ref_name,
-                real_PXO99A_MAFF311018_path_tar + 
+                real_PXO99A_MAFF311018_path_tar +
                 real_PXO99A_MAFF311018_tar_name, par_main, par_viz)
 
 

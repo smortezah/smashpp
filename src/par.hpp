@@ -167,7 +167,6 @@ class VizParam {
   uint32_t start;
   uint32_t min;
   bool man_tot_color;
-  bool manMult;
   std::string posFile;
   uint64_t refTick, tarTick;
   bool tickHumanRead;
@@ -193,7 +192,6 @@ class VizParam {
         // start(BEGN),
         min(MINP),
         man_tot_color(false),
-        // manMult(false),
         refTick(0),
         tarTick(0),
         tickHumanRead(true),

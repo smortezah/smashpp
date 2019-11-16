@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 # file_out = open("names.txt", "w+")
 # counter = 0
@@ -17,8 +18,7 @@ for idx_ref in range(num_first, num_files+1):
         tar = str(idx_tar)
         cmd = './smashpp -w 200 -rm 11,0,1,0.95/8,0,1,0.9 -r ' + ref + \
             ' -t ' + tar + ' -th 1.8 -m 60 -rb 15 -re 5'
-            # ' -t ' + tar + ' -th 1.8 -m 60 -rb 15 -re 5 -dp'
-        os.popen(cmd).read()
+        subprocess.call(cmd.split())
 
 
 # for ref in os.listdir("."):
