@@ -38,7 +38,7 @@ class RGB : public Color {
 
   RGB() = default;
   RGB(uint8_t r_, uint8_t g_, uint8_t b_) : r(r_), g(g_), b(b_) {}
-  RGB(std::string color)
+  explicit RGB(std::string color)
       : r(to_rgb(color).r), g(to_rgb(color).g), b(to_rgb(color).b) {}
 };
 

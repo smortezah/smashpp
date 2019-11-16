@@ -1552,7 +1552,6 @@ inline void VizPaint::make_posNode(const std::vector<Position>& pos,
   plottable = static_cast<bool>(nodes.size());
   if (!plottable) return;
 
-  // if (!par.manMult)  par.mult = 512 / nodes.size();  // 256/(size/2)
   // mult = par.mult;
 
   lastPos.push_back(nodes.back().position);
@@ -2101,7 +2100,7 @@ inline void VizPaint::print_log(bool stat, std::string image,
     }
     if (n_pluses != 0) {
       std::cerr << " + ";
-      --n_pluses;
+      // --n_pluses;  // No need for the last one
     }
     if (n_inverseSolo != 0) {
       std::cerr << n_inverseSolo << " solo inverted";

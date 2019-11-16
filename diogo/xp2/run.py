@@ -1,4 +1,5 @@
 import os
+import subprocess
 import shutil
 import matplotlib.pyplot as plt
 import numpy as np
@@ -31,7 +32,8 @@ elif os.name == 'nt':
 
 
 def execute(cmd):
-    os.popen(cmd).read()
+    subprocess.call(cmd.split())
+    # os.popen(cmd).read()
 
 
 if prepare_data:
@@ -233,10 +235,10 @@ def build_simil_matrix(nrc_mat, threshold):
 
 
 def count_rearrange(file_name):
-    file = open(file_name)
-    for i, l in enumerate(file):
-        pass
-    return i
+    with open(file_name) as file:
+        for i, l in enumerate(file, -3):  # 4 lines of headers
+            pass
+        return i
 
 
 def apply_smashpp(Class):
@@ -268,18 +270,17 @@ def apply_smashpp(Class):
             rearrange_count.write('\t' + header[i])
         rearrange_count.write('\n')
 
-        for i in range(len(header)):
-            rearrange_count.write(header[i])
-            for j in range(len(header)):
+        for i, nameI in enumerate(header):
+            rearrange_count.write(nameI)
+            for j, nameJ in enumerate(header):
                 if simil_mat[i][j] == 0:
                     rearrange_count.write('\t0')
                 elif simil_mat[i][j] == 1:
                     execute(smashpp_bin + exe_param +
-                            '-r ' + data_path + header[i] + '.seq ' +
-                            '-t ' + data_path + header[j] + '.seq ')
+                            '-r ' + data_path + nameI + '.seq ' +
+                            '-t ' + data_path + nameJ + '.seq ')
 
-                    pos_file_name = header[i] + \
-                        '.seq.' + header[j] + '.seq.pos'
+                    pos_file_name = nameI + '.seq.' + nameJ + '.seq.pos'
                     rearrange_count.write(
                         '\t' + str(count_rearrange(pos_file_name)))
 
@@ -293,7 +294,7 @@ if find_simil_regions:
     # Class = 'Chondrichthyes'
     Class = 'Mammalia'
     # Class = 'Actinopterygii'
-    
+
     print('Finding similar regions in ' + Class)
     apply_smashpp(Class)
     print('Finished.')
@@ -310,21 +311,20 @@ if make_rearrange_mat_symmetric:
     in_file.seek(0)
     rearrange_count = np.genfromtxt(in_file, skip_header=True, dtype=np.int64,
                                     usecols=range(1, len(header) + 1))
-    length = len(rearrange_count)
-    for i in range(length):
-        for j in range(length):
+    for i, valI in enumerate(rearrange_count):
+        for j, valJ in enumerate(rearrange_count):
             if i > j:
                 rearrange_count[i][j] = rearrange_count[j][i]
 
     if os.path.exists(out_file_name):
         os.remove(out_file_name)
     with open(out_file_name, 'w') as rearrange_count_symmetric:
-        for i in range(len(header)):
-            rearrange_count_symmetric.write('\t' + header[i])
+        for i, nameI in enumerate(header):
+            rearrange_count_symmetric.write('\t' + nameI)
         rearrange_count_symmetric.write('\n')
-        for i in range(len(header)):
-            rearrange_count_symmetric.write(header[i])
-            for j in range(len(header)):
+        for i, nameI in enumerate(header):
+            rearrange_count_symmetric.write(nameI)
+            for j, nameJ in enumerate(header):
                 rearrange_count_symmetric.write(
                     '\t' + str(rearrange_count[i][j]))
             rearrange_count_symmetric.write('\n')

@@ -261,7 +261,6 @@ void prepare_data(std::unique_ptr<Param>& par) {
 void run(std::unique_ptr<Param>& par) {
   std::string ref_round1 = par->ref;
   std::string tar_round1 = par->tar;
-  auto filter = std::make_unique<Filter>();
   std::vector<PosRow> pos_out;
   uint64_t current_pos_row = 0;
 

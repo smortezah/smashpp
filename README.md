@@ -1,14 +1,9 @@
-# Smash++
+# Smash++ &nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.com/smortezah/smashpp.svg?token=EWxsPpL9t9UvE93uKjH5&branch=master)](https://travis-ci.com/smortezah/smashpp) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/028cee56c77046dea4bc870237aae46a)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=smortezah/smashpp&amp;utm_campaign=Badge_Grade) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
-[![Build Status](https://travis-ci.com/smortezah/smashpp.svg?token=EWxsPpL9t9UvE93uKjH5&branch=master)](https://travis-ci.com/smortezah/smashpp)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/028cee56c77046dea4bc870237aae46a)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=smortezah/smashpp&amp;utm_campaign=Badge_Grade)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
-
-## What is Smash++?
 A fast tool to find and visualize rearrangements in DNA sequences.
 
 ## Install
-To install Smash++ on various operating systems, follow the instructions below. Note that the precompiled executables are available for 64 bit operating systems in the "bin/" directory.
+To install Smash++ on various operating systems, follow the instructions below. It requires CMake (>= 3.9) and a C++14 compliant compiler. Note that the precompiled executables are available for 64 bit operating systems in the `bin` directory.
 
 ### Conda
 ```bash
@@ -16,12 +11,12 @@ conda install -c cobilab smashpp
 ```
 
 ### Linux
-* Install "git" and "cmake":
+*  Install Git and CMake:
 ```bash
   sudo apt update
   sudo apt install git cmake
 ```
-* Clone Smash++ and install it:
+*  Clone Smash++ and install it:
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
@@ -29,12 +24,12 @@ conda install -c cobilab smashpp
 ```
 
 ### macOS
-* Install "Homebrew", "git" and "cmake":
+*  Install Homebrew, Git and CMake:
 ```bash
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   brew install git cmake
 ```
-* Clone Smash++ and install it:
+*  Clone Smash++ and install it:
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
@@ -42,9 +37,9 @@ conda install -c cobilab smashpp
 ```
 
 ### Windows
-* Download and install [CMake](https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-win64-x64.msi) and [mingw-w64](https://sourceforge.net/projects/mingw-w64/files/latest/download). Make sure to add them to the system PATH. For example, if CMake is installed in "C:\Program Files" and mingw-w64 is installed in "C:\mingw-w64", add "C:\Program Files\CMake\bin" and "C:\mingw-w64\mingw64\bin" to the system PATH.
-* Download and install [git](https://git-scm.com/download/win).
-* Clone  Smash++ and install it:
+*  Download and install [CMake](https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-win64-x64.msi) and [mingw-w64](https://sourceforge.net/projects/mingw-w64/files/latest/download). Make sure to add them to the system PATH. For example, if CMake is installed in `C:\Program Files` and mingw-w64 is installed in `C:\mingw-w64`, add `C:\Program Files\CMake\bin` and `C:\mingw-w64\mingw64\bin` to the system PATH.
+*  Download and install [Git](https://git-scm.com/download/win).
+*  Clone  Smash++ and install it:
 ```bat
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
@@ -52,20 +47,23 @@ conda install -c cobilab smashpp
 ```
 
 ## Run
-
-	./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
+```bash
+./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
+```
 
 For example,
-
-	./smashpp -r ref -t tar
+```bash
+./smashpp -r ref -t tar
+```
 
 It is recommended to choose short names for reference and target 
 sequences.
 
 ### Options
 To see the possible options for Smash++, type:
-
-	./smashpp
+```bash
+./smashpp
+```
 
 which provides the following:
 ```text
@@ -130,8 +128,9 @@ SAMPLE
 ```
 
 To see the options for Smash++ Visualizer, type:
-
+```bash
 	./smashpp -viz
+```
 
 which provides the following:
 ```text
@@ -180,15 +179,16 @@ SAMPLE
 ```
 
 ### Example
-After installing Smash++, copy its executable file into "example/" directory and go to that directory:
+After installing Smash++, copy its executable file into `example` directory and go to that directory:
 ```bash
 cp smashpp example/
 cd example/
 ```
-There is in this directory two 1000 base sequences, the reference sequence named "ref", and the target sequence, named "tar". Now, run Smash++ and the visualizer:
-
+There is in this directory two 1000 base sequences, the reference sequence named `ref`, and the target sequence, named `tar`. Now, run Smash++ and the visualizer:
+```bash
 	./smashpp -r ref -t tar
 	./smashpp -viz -o example.svg ref.tar.pos
+```
 
 <!-- ### Compare Smash++ with other methods
 In order for comparison, you might set the parameters in 
@@ -201,15 +201,17 @@ install the other tools, run all the tools, and finally, visualize the results. 
 
 ## Cite
 Please cite the following, if you use Smash++:
-* In progress ...
+*  Submitted ...
 
 ## Releases
-* [Release](https://github.com/smortezah/smashpp/releases) 1: .
+*  [Release](https://github.com/smortezah/smashpp/releases) 1: .
 
 ## Issues
 Please let us know if there is any 
 [issues](https://github.com/smortezah/smashpp/issues).
 
 ## License
-Smash++ is under GPL v3 license. For more information, click 
+Copyright © 2018-2019 Morteza Hosseini -- IEETA, University of Aveiro, Portugal.
+
+Smash++ is licensed under GNU GPL v3. For more information, click 
 [here](http://www.gnu.org/licenses/gpl-3.0.html).

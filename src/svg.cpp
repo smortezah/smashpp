@@ -347,11 +347,11 @@ void Cylinder::plot(std::ofstream& f) const {
   ellipse->transform = transform;
   ellipse->cx = x + width / 2;
   ellipse->cy = y;
-  // ellipse->plot(f);
+  ellipse->plot(f);
 
   ellipse->transform = transform;
   ellipse->cy = y + height;
-  // ellipse->plot(f);
+  ellipse->plot(f);
 }
 
 void Cylinder::plot_ir(std::ofstream& f, std::string wave) {
@@ -467,7 +467,8 @@ void Defs::set_tail(std::ofstream& f) const { f << end_elem("defs"); }
 
 void FilterSVG::set_head(std::ofstream& f) const {
   f << begin_elem("filter") << attr("id", id) << attr("x", x) << attr("y", y)
-    << attr("width", width) << attr("height", height) << mid_elem();
+    << attr("width", width_filter) << attr("height", height_filter)
+    << mid_elem();
 }
 
 void FilterSVG::set_tail(std::ofstream& f) const { f << end_elem("filter"); }

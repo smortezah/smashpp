@@ -1,10 +1,11 @@
 ##########   D O   N O T   C H A N G E   ##########
 import os
+import subprocess
 
-# if os.name == 'posix':
-#     sep = '/'
-# elif os.name == 'nt':
-#     sep = '\\'
+if os.name == 'posix':
+    sep = '/'
+elif os.name == 'nt':
+    sep = '\\'
 # current_dir = os.getcwd()
 # path_data = 'dataset' + sep + 'sim' + sep
 # path_bin = 'bin' + sep
@@ -16,8 +17,7 @@ smashpp = '.' + sep + 'smashpp '
 
 
 def execute(cmd):
-    os.popen(cmd).read()
-
+    subprocess.call(cmd.split())
 
 def install_samshpp():
     cmd = 'cd ..;'
@@ -40,7 +40,7 @@ else:
 
 viz_out = 'x' + num_example
 
-Print('Installing Smash++')
+print('Installing Smash++')
 install_samshpp()
 ###################################################
 
