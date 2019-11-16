@@ -11,12 +11,12 @@ conda install -c cobilab smashpp
 ```
 
 ### Linux
-*  Install Git and CMake:
+* Install Git and CMake:
 ```bash
   sudo apt update
   sudo apt install git cmake
 ```
-*  Clone Smash++ and install it:
+* Clone Smash++ and install it:
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
@@ -24,12 +24,12 @@ conda install -c cobilab smashpp
 ```
 
 ### macOS
-*  Install Homebrew, Git and CMake:
+* Install Homebrew, Git and CMake:
 ```bash
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   brew install git cmake
 ```
-*  Clone Smash++ and install it:
+* Clone Smash++ and install it:
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
@@ -37,9 +37,9 @@ conda install -c cobilab smashpp
 ```
 
 ### Windows
-*  Download and install [CMake](https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-win64-x64.msi) and [mingw-w64](https://sourceforge.net/projects/mingw-w64/files/latest/download). Make sure to add them to the system PATH. For example, if CMake is installed in `C:\Program Files` and mingw-w64 is installed in `C:\mingw-w64`, add `C:\Program Files\CMake\bin` and `C:\mingw-w64\mingw64\bin` to the system PATH.
-*  Download and install [Git](https://git-scm.com/download/win).
-*  Clone  Smash++ and install it:
+* Download and install [CMake](https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-win64-x64.msi) and [mingw-w64](https://sourceforge.net/projects/mingw-w64/files/latest/download). Make sure to add them to the system PATH. For example, if CMake is installed in `C:\Program Files` and mingw-w64 is installed in `C:\mingw-w64`, add `C:\Program Files\CMake\bin` and `C:\mingw-w64\mingw64\bin` to the system PATH.
+* Download and install [Git](https://git-scm.com/download/win).
+* Clone  Smash++ and install it:
 ```bat
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
@@ -201,10 +201,10 @@ install the other tools, run all the tools, and finally, visualize the results. 
 
 ## Cite
 Please cite the following, if you use Smash++:
-*  Submitted ...
+* Submitted ...
 
 ## Releases
-*  [Release](https://github.com/smortezah/smashpp/releases) 1: .
+* [Release](https://github.com/smortezah/smashpp/releases) 1: .
 
 ## Issues
 Please let us know if there is any 

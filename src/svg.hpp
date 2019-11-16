@@ -276,10 +276,10 @@ class FilterSVG : public SVG {
  public:
   std::string x;
   std::string y;
-  std::string width_filter;
-  std::string height_filter;
+  std::string width;
+  std::string height;
 
-  FilterSVG() : x("0%"), y("0%"), width_filter("100%"), height_filter("100%") {}
+  FilterSVG() : x("0%"), y("0%"), width("100%"), height("100%") {}
   void set_head(std::ofstream&) const;
   void set_tail(std::ofstream&) const;
 };

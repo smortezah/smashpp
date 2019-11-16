@@ -22,7 +22,7 @@ class Column {
       : align(align_), width(width_), text(text_) {}
   Column(uint8_t width_, std::string text_)
       : Column(Align::left, width_, text_) {}
-  Column(std::string text_) : Column(text_.size() + 1, text_) {}
+  explicit Column(std::string text_) : Column(text_.size() + 1, text_) {}
 };
 
 class Row {

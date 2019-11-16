@@ -467,7 +467,7 @@ void Defs::set_tail(std::ofstream& f) const { f << end_elem("defs"); }
 
 void FilterSVG::set_head(std::ofstream& f) const {
   f << begin_elem("filter") << attr("id", id) << attr("x", x) << attr("y", y)
-    << attr("width", width_filter) << attr("height", height_filter)
+    << attr("width", width) << attr("height", height)
     << mid_elem();
 }
 

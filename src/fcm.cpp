@@ -18,9 +18,9 @@ using namespace smashpp;
 
 FCM::FCM(std::unique_ptr<Param>& par)
     : aveEnt(static_cast<prc_t>(0)),
+      rMs(par->refMs),
       tarSegID(0),
-      entropyN(par->entropyN),
-      rMs(par->refMs) {
+      entropyN(par->entropyN) {
   set_cont(rMs);
   rTMsSize = 0;
   for (const auto& e : rMs)

@@ -19,12 +19,12 @@ void PositionFile::write_pos_file_impl(const std::vector<OutRowAux>& out_aux,
            << ",TarSize=" << std::to_string(info->tar_size) << ">\n";
 
   // Body
-  uint64_t left_beg = 0, left_end = 0, right_beg = 0, right_end = 0;
-  prc_t left_ent = 0.0, left_self_ent = 0.0, right_ent = 0.0,
-        right_self_ent = 0.0;
-
   pos_file << "#RBeg\tREnd\tRRelRdn\tRRdn\tTBeg\tTEnd\tTRelRdn\tTRdn\tInv\n";
   for (auto row : out_aux) {
+    uint64_t left_beg = 0, left_end = 0, right_beg = 0, right_end = 0;
+    prc_t left_ent = 0.0, left_self_ent = 0.0, right_ent = 0.0,
+          right_self_ent = 0.0;
+
     // Left hand side
     if (row.pos2.beg_pos == 0 && row.pos2.end_pos == 0 && row.pos2.ent == 0 &&
         row.pos2.self_ent == 0) {
