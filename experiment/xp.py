@@ -639,7 +639,7 @@ if BENCH_REAL_GGA18_MGA20:
                         real_gga18_mga20_ref_name) + \
         os.path.getsize(real_gga18_mga20_path_tar +
                         real_gga18_mga20_tar_name)
-    run_bench(run_real_gga18_mga20, method, dataset, cat, size)
+    run_bench(run_real_GGA18_MGA20, method, dataset, cat, size)
 
 if BENCH_REAL_GGA14_MGA16:
     bench = True
@@ -651,7 +651,7 @@ if BENCH_REAL_GGA14_MGA16:
                         real_gga14_mga16_ref_name) + \
         os.path.getsize(real_gga14_mga16_path_tar +
                         real_gga14_mga16_tar_name)
-    run_bench(run_real_gga14_mga16, method, dataset, cat, size)
+    run_bench(run_real_GGA14_MGA16, method, dataset, cat, size)
 
 if BENCH_REAL_HS12_PT12:
     bench = True
@@ -661,7 +661,7 @@ if BENCH_REAL_HS12_PT12:
     size = \
         os.path.getsize(real_hs12_pt12_path_ref + real_hs12_pt12_ref_name) + \
         os.path.getsize(real_hs12_pt12_path_tar + real_hs12_pt12_tar_name)
-    run_bench(run_real_hs12_pt12, method, dataset, cat, size)
+    run_bench(run_real_HS12_PT12, method, dataset, cat, size)
 
 if BENCH_REAL_PXO99A_MAFF311018:
     bench = True
