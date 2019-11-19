@@ -472,7 +472,7 @@ def run_synth_perm_450000():
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
         '-o Perm_' + str(block_size) + '.svg'
     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            '-s 6041 < ' + path_data_synth + synth_perm_ref_name +
+            ' -s 6041 < ' + path_data_synth + synth_perm_ref_name +
             ' > ' + path_data_synth + ref_name)
     run_smashpp(path_data_synth + ref_name,
                 path_data_synth + synth_perm_tar_name, par_main, par_viz)
@@ -485,7 +485,7 @@ def run_synth_perm_30000():
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
         '-o Perm_' + str(block_size) + '.svg'
     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            '-s 328914 < ' + path_data_synth + synth_perm_ref_name +
+            ' -s 328914 < ' + path_data_synth + synth_perm_ref_name +
             ' > ' + path_data_synth + ref_name)
     run_smashpp(path_data_synth + ref_name,
                 path_data_synth + synth_perm_tar_name, par_main, par_viz)
@@ -498,7 +498,7 @@ def run_synth_perm_1000():
     par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 ' + \
         '-o Perm_' + str(block_size) + '.svg'
     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            '-s 564283 < ' + path_data_synth + synth_perm_ref_name +
+            ' -s 564283 < ' + path_data_synth + synth_perm_ref_name +
             ' > ' + path_data_synth + ref_name)
     run_smashpp(path_data_synth + ref_name,
                 path_data_synth + synth_perm_tar_name, par_main, par_viz)
@@ -511,7 +511,7 @@ def run_synth_perm_30():
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
         '-o Perm_' + str(block_size) + '.svg'
     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            '-s 900123 < ' + path_data_synth + synth_perm_ref_name +
+            ' -s 900123 < ' + path_data_synth + synth_perm_ref_name +
             ' > ' + path_data_synth + ref_name)
     run_smashpp(path_data_synth + ref_name,
                 path_data_synth + synth_perm_tar_name, par_main, par_viz)
