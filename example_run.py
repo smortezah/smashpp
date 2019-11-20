@@ -17,7 +17,7 @@ smashpp = '.' + sep + 'smashpp '
 
 
 def execute(cmd):
-    subprocess.call(cmd.split())
+    os.popen(cmd).read()
 
 def install_samshpp():
     cmd = 'cd ..;'

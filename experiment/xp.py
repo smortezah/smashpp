@@ -107,8 +107,7 @@ log_smash = 'log_smash'
 
 
 def execute(cmd):
-    # os.popen(cmd).read()
-    subprocess.call(cmd.split())
+    os.popen(cmd).read()
 
 
 def cat(file_in_names, file_out_name):
@@ -759,11 +758,11 @@ if RUN_SYNTH_PERM_ORIGINAL:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_450000:
-    block_size = 450000
-    ref_name = synth_perm_ref_name + str(block_size)
+    block_size = '450000'
+    ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 25 -d 3000 -ar'
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
-        '-o Perm_' + str(block_size) + '.svg'
+        '-o Perm_' + block_size + '.svg'
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
@@ -772,15 +771,15 @@ if RUN_SYNTH_PERM_450000:
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '6041'
     # Run
-    execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            ' -s ' + str(seed) + ' < ' + path_data_synth + 
-            synth_perm_ref_name + ' > ' + path_data_synth + ref_name)
+    execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' + seed +
+            ' < ' + path_data_synth + synth_perm_ref_name +
+            ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'Perm' + str(block_size)
+    dataset = 'Perm' + block_size
     cat = 'Synthetic'
     size = file_size(ref) + file_size(tar)
     mem = calc_mem(log_main, log_viz)
@@ -791,11 +790,11 @@ if RUN_SYNTH_PERM_450000:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_30000:
-    block_size = 30000
-    ref_name = synth_perm_ref_name + str(block_size)
+    block_size = '30000'
+    ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 75 -d 1500 -ar'
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
-        '-o Perm_' + str(block_size) + '.svg'
+        '-o Perm_' + block_size + '.svg'
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
@@ -804,15 +803,15 @@ if RUN_SYNTH_PERM_30000:
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '328914'
     # Run
-    execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            ' -s ' + str(seed) + ' < ' + path_data_synth + 
-            synth_perm_ref_name + ' > ' + path_data_synth + ref_name)
+    execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' + seed +
+            ' < ' + path_data_synth + synth_perm_ref_name +
+            ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'Perm' + str(block_size)
+    dataset = 'Perm' + block_size
     cat = 'Synthetic'
     size = file_size(ref) + file_size(tar)
     mem = calc_mem(log_main, log_viz)
@@ -823,11 +822,11 @@ if RUN_SYNTH_PERM_30000:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_1000:
-    block_size = 1000
-    ref_name = synth_perm_ref_name + str(block_size)
+    block_size = '1000'
+    ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 25 -d 300 -ar'
     par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 ' + \
-        '-o Perm_' + str(block_size) + '.svg'
+        '-o Perm_' + block_size + '.svg'
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
@@ -836,15 +835,15 @@ if RUN_SYNTH_PERM_1000:
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '564283'
     # Run
-    execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            ' -s ' + str(seed) + ' < ' + path_data_synth + 
-            synth_perm_ref_name + ' > ' + path_data_synth + ref_name)
+    execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' + seed +
+            ' < ' + path_data_synth + synth_perm_ref_name +
+            ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'Perm' + str(block_size)
+    dataset = 'Perm' + block_size
     cat = 'Synthetic'
     size = file_size(ref) + file_size(tar)
     mem = calc_mem(log_main, log_viz)
@@ -855,11 +854,11 @@ if RUN_SYNTH_PERM_1000:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_30:
-    block_size = 30
-    ref_name = synth_perm_ref_name + str(block_size)
+    block_size = '30'
+    ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 250 -d 1 -ar'
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
-        '-o Perm_' + str(block_size) + '.svg'
+        '-o Perm_' + block_size + '.svg'
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
@@ -868,15 +867,15 @@ if RUN_SYNTH_PERM_30:
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '900123'
     # Run
-    execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            ' -s ' + str(seed) + ' < ' + path_data_synth + 
-            synth_perm_ref_name + ' > ' + path_data_synth + ref_name)
+    execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' + seed +
+            ' < ' + path_data_synth + synth_perm_ref_name +
+            ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'Perm' + str(block_size)
+    dataset = 'Perm' + block_size
     cat = 'Synthetic'
     size = file_size(ref) + file_size(tar)
     mem = calc_mem(log_main, log_viz)
