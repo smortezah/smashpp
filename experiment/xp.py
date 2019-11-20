@@ -8,11 +8,9 @@ Copyright (C) 2018-2019, IEETA/DETI, University of Aveiro, Portugal
 '''
 USER CAN CHANGE HERE BY SWITCHING False/True
 '''
-from memory_profiler import memory_usage
 from pathlib import Path
 from shutil import copyfile
 import csv
-import time
 import os
 import subprocess
 
@@ -46,23 +44,23 @@ RUN_SYNTH_PERM_30000 = False
 RUN_SYNTH_PERM_1000 = False
 RUN_SYNTH_PERM_30 = False
 
-# Benchmark
-BENCH_SYNTH_SMALL = True
-BENCH_SYNTH_MEDIUM = True
-BENCH_SYNTH_LARGE = True
-BENCH_SYNTH_XLARGE = True
-BENCH_SYNTH_MUTATE = True
-BENCH_REAL_GGA18_MGA20 = True
-BENCH_REAL_GGA14_MGA16 = True
-BENCH_REAL_HS12_PT12 = True
-BENCH_REAL_PXO99A_MAFF311018 = True
-BENCH_SYNTH_COMPARE_SMASH = True
-BENCH_REAL_COMPARE_SMASH = True
-BENCH_SYNTH_PERM_ORIGINAL = True
-BENCH_SYNTH_PERM_450000 = True
-BENCH_SYNTH_PERM_30000 = True
-BENCH_SYNTH_PERM_1000 = True
-BENCH_SYNTH_PERM_30 = True
+# # Benchmark
+# BENCH_SYNTH_SMALL = False
+# BENCH_SYNTH_MEDIUM = False
+# BENCH_SYNTH_LARGE = False
+# BENCH_SYNTH_XLARGE = False
+# BENCH_SYNTH_MUTATE = False
+# BENCH_REAL_GGA18_MGA20 = False
+# BENCH_REAL_GGA14_MGA16 = False
+# BENCH_REAL_HS12_PT12 = False
+# BENCH_REAL_PXO99A_MAFF311018 = False
+# BENCH_SYNTH_COMPARE_SMASH = False
+# BENCH_REAL_COMPARE_SMASH = False
+# BENCH_SYNTH_PERM_ORIGINAL = False
+# BENCH_SYNTH_PERM_450000 = False
+# BENCH_SYNTH_PERM_30000 = False
+# BENCH_SYNTH_PERM_1000 = False
+# BENCH_SYNTH_PERM_30 = False
 
 
 '''
@@ -123,7 +121,8 @@ real_hs12_pt12_tar_name = '12.seq'
 
 
 def execute(cmd):
-    subprocess.call(cmd.split())
+    os.popen(cmd).read()
+    # subprocess.call(cmd.split())
 
 
 def cat(file_in_names, file_out_name):
@@ -177,7 +176,7 @@ if GET_GOOSE:
 '''
 Make synthetic dataset
 '''
-# os.popen('sudo chmod 777 smashpp-inv-rep').read()
+# execute('sudo chmod 777 smashpp-inv-rep')
 
 
 def make_synth_small():  # Sizes: ref:1,500, tar:1,500
@@ -336,80 +335,6 @@ def run_smashpp(ref, tar, par_main, par_viz):
             ref_name + '.' + tar_name + '.pos')
 
 
-def run_synth_small():
-    par_main = '-l 3 -d 1 -f 100'
-    par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -stat -o S.svg'
-    run_smashpp(path_data_synth + synth_small_ref_name,
-                path_data_synth + synth_small_tar_name, par_main, par_viz)
-
-
-def run_synth_medium():
-    par_main = '-l 3 -d 100 -f 50'
-    par_viz = '-p 1 -l 1 -w 13 -vv -stat -o M.svg'
-    run_smashpp(path_data_synth + synth_medium_ref_name,
-                path_data_synth + synth_medium_tar_name, par_main, par_viz)
-
-
-def run_synth_large():
-    par_main = '-l 3 -d 100 -f 135'
-    par_viz = '-p 1 -l 1 -w 13 -vv -stat -o L.svg'
-    run_smashpp(path_data_synth + synth_large_ref_name,
-                path_data_synth + synth_large_tar_name, par_main, par_viz)
-
-
-def run_synth_xlarge():
-    par_main = '-l 3 -d 100 -f 275'
-    par_viz = '-p 1 -l 1 -w 13 -vv -stat -o XL.svg'
-    run_smashpp(path_data_synth + synth_xlarge_ref_name,
-                path_data_synth + synth_xlarge_tar_name, par_main, par_viz)
-
-
-def run_synth_mutate():
-    par_main = '-th 1.97 -l 3 -d 600 -f 100 -m 15000'
-    par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -vv -stat -o Mut.svg'
-    run_smashpp(path_data_synth + synth_mutate_ref_name,
-                path_data_synth + synth_mutate_tar_name, par_main, par_viz)
-
-
-def run_real_GGA18_MGA20():
-    par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 ' + \
-        '-th 1.9'
-    par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" ' + \
-        '-stat -o GGA18_MGA20.svg'
-    run_smashpp(real_gga18_mga20_path_ref + real_gga18_mga20_ref_name,
-                real_gga18_mga20_path_tar + real_gga18_mga20_tar_name,
-                par_main, par_viz)
-
-
-def run_real_GGA14_MGA16():
-    par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 ' + \
-        '-e 1.95 -m 400000'
-    par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + \
-        '-rt 1500000 -tt 1500000 -stat -o GGA14_MGA16.svg'
-    run_smashpp(real_gga14_mga16_path_ref + real_gga14_mga16_ref_name,
-                real_gga14_mga16_path_tar + real_gga14_mga16_tar_name,
-                par_main, par_viz)
-
-
-def run_real_HS12_PT12():
-    par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000'
-    par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + \
-        '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
-    run_smashpp(real_hs12_pt12_path_ref + real_hs12_pt12_ref_name,
-                real_hs12_pt12_path_tar + real_hs12_pt12_tar_name,
-                par_main, par_viz)
-
-
-def run_real_PXO99A_MAFF311018():
-    par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar'
-    par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" ' + \
-        '-stat -o PXO99A_MAFF_311018.svg'
-    run_smashpp(real_PXO99A_MAFF311018_path_ref +
-                real_PXO99A_MAFF311018_ref_name,
-                real_PXO99A_MAFF311018_path_tar +
-                real_PXO99A_MAFF311018_tar_name, par_main, par_viz)
-
-
 def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
     copyfile(ref_main, ref)
     copyfile(tar_main, tar)
@@ -420,42 +345,6 @@ def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
     remove_all_ext(curr_dir, 'rev')
     remove_all_ext(curr_dir, 'inf')
     remove(curr_dir, '*.sys*x')
-
-
-def run_synth_comp_Smash(method):
-    par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
-    par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 ' + \
-        '-stat -o CompSmash.svg'
-
-    if method == 'smashpp':
-        run_smashpp(path_data_synth + synth_comp_smash_ref_name,
-                    path_data_synth + synth_comp_smash_tar_name,
-                    par_main, par_viz)
-    elif method == 'smash':
-        par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
-        run_smash(path_data_synth + synth_comp_smash_ref_name,
-                  path_data_synth + synth_comp_smash_tar_name,
-                  synth_comp_smash_ref_name, synth_comp_smash_tar_name,
-                  par, current_dir)
-
-
-def run_real_comp_Smash(method):
-    path_ref = path_data + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-    path_tar = path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
-
-    if method == 'smashpp':
-        par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
-        par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat ' + \
-            '-o Sc_Sp_smash.svg'
-        run_smashpp(path_ref + real_comp_smash_ref_name,
-                    path_tar + real_comp_smash_tar_name, par_main, par_viz)
-    elif method == 'smash':
-        par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
-        ref_new_smash = 'Sc' + real_comp_smash_ref_name
-        tar_new_smash = 'Sp' + real_comp_smash_tar_name
-        run_smash(path_ref + real_comp_smash_ref_name,
-                  path_tar + real_comp_smash_tar_name,
-                  ref_new_smash, tar_new_smash, par, current_dir)
 
 
 def run_synth_perm_orig():
@@ -518,39 +407,103 @@ def run_synth_perm_30():
 
 
 if RUN_SYNTH_SMALL:
-    run_synth_small()
+    par_main = '-l 3 -d 1 -f 100'
+    par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -stat -o S.svg'
+    run_smashpp(path_data_synth + synth_small_ref_name,
+                path_data_synth + synth_small_tar_name, par_main, par_viz)
 
 if RUN_SYNTH_MEDIUM:
-    run_synth_medium()
+    par_main = '-l 3 -d 100 -f 50'
+    par_viz = '-p 1 -l 1 -w 13 -vv -stat -o M.svg'
+    run_smashpp(path_data_synth + synth_medium_ref_name,
+                path_data_synth + synth_medium_tar_name, par_main, par_viz)
 
 if RUN_SYNTH_LARGE:
-    run_synth_large()
+    par_main = '-l 3 -d 100 -f 135'
+    par_viz = '-p 1 -l 1 -w 13 -vv -stat -o L.svg'
+    run_smashpp(path_data_synth + synth_large_ref_name,
+                path_data_synth + synth_large_tar_name, par_main, par_viz)
 
 if RUN_SYNTH_XLARGE:
-    run_synth_xlarge()
+    par_main = '-l 3 -d 100 -f 275'
+    par_viz = '-p 1 -l 1 -w 13 -vv -stat -o XL.svg'
+    run_smashpp(path_data_synth + synth_xlarge_ref_name,
+                path_data_synth + synth_xlarge_tar_name, par_main, par_viz)
 
 if RUN_SYNTH_MUTATE:
-    run_synth_mutate()
+    par_main = '-th 1.97 -l 3 -d 600 -f 100 -m 15000'
+    par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -vv -stat -o Mut.svg'
+    run_smashpp(path_data_synth + synth_mutate_ref_name,
+                path_data_synth + synth_mutate_tar_name, par_main, par_viz)
 
 if RUN_REAL_GGA18_MGA20:
-    run_real_GGA18_MGA20()
+    par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 ' + \
+        '-th 1.9'
+    par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" ' + \
+        '-stat -o GGA18_MGA20.svg'
+    run_smashpp(real_gga18_mga20_path_ref + real_gga18_mga20_ref_name,
+                real_gga18_mga20_path_tar + real_gga18_mga20_tar_name,
+                par_main, par_viz)
 
 if RUN_REAL_GGA14_MGA16:
-    run_real_GGA14_MGA16()
+    par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 ' + \
+        '-e 1.95 -m 400000'
+    par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + \
+        '-rt 1500000 -tt 1500000 -stat -o GGA14_MGA16.svg'
+    run_smashpp(real_gga14_mga16_path_ref + real_gga14_mga16_ref_name,
+                real_gga14_mga16_path_tar + real_gga14_mga16_tar_name,
+                par_main, par_viz)
 
 if RUN_REAL_HS12_PT12:
-    run_real_HS12_PT12()
+    par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000'
+    par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + \
+        '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
+    run_smashpp(real_hs12_pt12_path_ref + real_hs12_pt12_ref_name,
+                real_hs12_pt12_path_tar + real_hs12_pt12_tar_name,
+                par_main, par_viz)
 
 if RUN_REAL_PXO99A_MAFF311018:
-    run_real_PXO99A_MAFF311018()
+    par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar'
+    par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" ' + \
+        '-stat -o PXO99A_MAFF_311018.svg'
+    run_smashpp(real_PXO99A_MAFF311018_path_ref +
+                real_PXO99A_MAFF311018_ref_name,
+                real_PXO99A_MAFF311018_path_tar +
+                real_PXO99A_MAFF311018_tar_name, par_main, par_viz)
 
 if RUN_SYNTH_COMPARE_SMASH:
-    run_synth_comp_Smash('smashpp')
-    run_synth_comp_Smash('smash')
+    par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
+    par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 ' + \
+        '-stat -o CompSmash.svg'
+
+    # Smash++
+    run_smashpp(path_data_synth + synth_comp_smash_ref_name,
+                path_data_synth + synth_comp_smash_tar_name,
+                par_main, par_viz)
+    # Smash
+    par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
+    run_smash(path_data_synth + synth_comp_smash_ref_name,
+              path_data_synth + synth_comp_smash_tar_name,
+              synth_comp_smash_ref_name, synth_comp_smash_tar_name,
+              par, current_dir)
 
 if RUN_REAL_COMPARE_SMASH:
-    run_real_comp_Smash('smashpp')
-    run_real_comp_Smash('smash')
+    path_ref = path_data + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+    path_tar = path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
+
+    # Smash++
+    par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
+    par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat ' + \
+        '-o Sc_Sp_smash.svg'
+    run_smashpp(path_ref + real_comp_smash_ref_name,
+                path_tar + real_comp_smash_tar_name, par_main, par_viz)
+    # Smash
+    par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
+    ref_new_smash = 'Sc' + real_comp_smash_ref_name
+    tar_new_smash = 'Sp' + real_comp_smash_tar_name
+    run_smash(path_ref + real_comp_smash_ref_name, 
+              path_tar + real_comp_smash_tar_name, 
+              ref_new_smash, tar_new_smash, par, current_dir)
 
 if RUN_SYNTH_PERM_ORIGINAL:
     run_synth_perm_orig()
@@ -574,186 +527,224 @@ Benchmark
 bench_result = []  # Name, Category, Size, Time, Memory
 
 
+# def run_bench(func, method, dataset, cat, size):
+#     import memory_profiler
+#     import time
+#     start_time = time.perf_counter()
+#     memory = memory_profiler.memory_usage(func)
+#     end_time = time.perf_counter()
+#     elapsed = f"{end_time - start_time:.2f}"
+#     max_memory = f"{max(memory):.2f}"
+#     bench_result.append([method, dataset, cat, size, elapsed, max_memory])
+
+# def run_bench(method, dataset, cat, size, func, arg=''):
+#     import time
+#     start_time = time.perf_counter()
+
+#     def start(method, interval=0.001):
+#         method_process = 'smashpp'
+#         if method == 'Smash':
+#             method_process = 'smash'
+#         cmd_bash = \
+#             'echo "0" > mem_ps; \
+#             while true; do \
+#                 ps -T aux | grep ' + method_process + ' | grep -v "grep --color=auto" \
+#                     | awk \'{print $7}\' | sort -V | tail -n 1 >> mem_ps; \
+#                 sleep ' + str(interval) + '; \
+#             done'
+#         os.popen(cmd_bash)
+
+#     def stop():
+#         cmd_bash = \
+#             'kill $! >/dev/null 2>&1; \
+#             cat mem_ps | sort -V | tail -n 1 > peak_mem; \
+#             rm -f mem_ps; \
+#             kill `ps -T aux | grep dash | grep -v "grep --color=auto" | awk \'{print $2}\'`;'
+#         os.popen(cmd_bash)
+
+#     # start(method=method)
+#     memory = memory_profiler.memory_usage(func)
+#     # stop()
+#     end_time = time.perf_counter()
+#     elapsed = f"{end_time - start_time:.2f}"
+#     max_memory = f"{max(memory):.2f}"
+#     bench_result.append([method, dataset, cat, size, elapsed, max_memory])
+
+
 def run_bench(func, method, dataset, cat, size):
-    start_time = time.perf_counter()
-    memory = memory_usage(func)
-    end_time = time.perf_counter()
-    elapsed = f"{end_time - start_time:.2f}"
-    max_memory = f"{max(memory):.2f}"
-    bench_result.append([method, dataset, cat, size, elapsed, max_memory])
 
 
 bench = False
-if BENCH_SYNTH_SMALL:
-    bench = True
-    method = 'Smash++'
-    dataset = 'Small'
-    cat = 'Synthetic'
-    size = os.path.getsize(path_data_synth + synth_small_ref_name) + \
-        os.path.getsize(path_data_synth + synth_small_tar_name)
-    run_bench(run_synth_small, method, dataset, cat, size)
+# if BENCH_SYNTH_SMALL:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'Small'
+#     cat = 'Synthetic'
+#     size = os.path.getsize(path_data_synth + synth_small_ref_name) + \
+#         os.path.getsize(path_data_synth + synth_small_tar_name)
+#     run_bench(run_synth_small, method, dataset, cat, size)
 
-if BENCH_SYNTH_MEDIUM:
-    bench = True
-    method = 'Smash++'
-    dataset = 'Medium'
-    cat = 'Synthetic'
-    size = os.path.getsize(path_data_synth + synth_medium_ref_name) + \
-        os.path.getsize(path_data_synth + synth_medium_tar_name)
-    run_bench(run_synth_medium, method, dataset, cat, size)
+# if BENCH_SYNTH_MEDIUM:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'Medium'
+#     cat = 'Synthetic'
+#     size = os.path.getsize(path_data_synth + synth_medium_ref_name) + \
+#         os.path.getsize(path_data_synth + synth_medium_tar_name)
+#     run_bench(run_synth_medium, method, dataset, cat, size)
 
-if BENCH_SYNTH_LARGE:
-    bench = True
-    method = 'Smash++'
-    dataset = 'Large'
-    cat = 'Synthetic'
-    size = os.path.getsize(path_data_synth + synth_large_ref_name) + \
-        os.path.getsize(path_data_synth + synth_large_tar_name)
-    run_bench(run_synth_large, method, dataset, cat, size)
+# if BENCH_SYNTH_LARGE:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'Large'
+#     cat = 'Synthetic'
+#     size = os.path.getsize(path_data_synth + synth_large_ref_name) + \
+#         os.path.getsize(path_data_synth + synth_large_tar_name)
+#     run_bench(run_synth_large, method, dataset, cat, size)
 
-if BENCH_SYNTH_XLARGE:
-    bench = True
-    method = 'Smash++'
-    dataset = 'XLarge'
-    cat = 'Synthetic'
-    size = os.path.getsize(path_data_synth + synth_xlarge_ref_name) + \
-        os.path.getsize(path_data_synth + synth_xlarge_tar_name)
-    run_bench(run_synth_xlarge, method, dataset, cat, size)
+# if BENCH_SYNTH_XLARGE:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'XLarge'
+#     cat = 'Synthetic'
+#     size = os.path.getsize(path_data_synth + synth_xlarge_ref_name) + \
+#         os.path.getsize(path_data_synth + synth_xlarge_tar_name)
+#     run_bench(run_synth_xlarge, method, dataset, cat, size)
 
-if BENCH_SYNTH_MUTATE:
-    bench = True
-    method = 'Smash++'
-    dataset = 'Mutate'
-    cat = 'Synthetic'
-    size = os.path.getsize(path_data_synth + synth_mutate_ref_name) + \
-        os.path.getsize(path_data_synth + synth_mutate_tar_name)
-    run_bench(run_synth_mutate, method, dataset, cat, size)
+# if BENCH_SYNTH_MUTATE:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'Mutate'
+#     cat = 'Synthetic'
+#     size = os.path.getsize(path_data_synth + synth_mutate_ref_name) + \
+#         os.path.getsize(path_data_synth + synth_mutate_tar_name)
+#     run_bench(run_synth_mutate, method, dataset, cat, size)
 
-if BENCH_REAL_GGA18_MGA20:
-    bench = True
-    method = 'Smash++'
-    dataset = 'GGA18_MGA20'
-    cat = 'Real'
-    size = \
-        os.path.getsize(real_gga18_mga20_path_ref +
-                        real_gga18_mga20_ref_name) + \
-        os.path.getsize(real_gga18_mga20_path_tar +
-                        real_gga18_mga20_tar_name)
-    run_bench(run_real_GGA18_MGA20, method, dataset, cat, size)
+# if BENCH_REAL_GGA18_MGA20:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'GGA18_MGA20'
+#     cat = 'Real'
+#     size = \
+#         os.path.getsize(real_gga18_mga20_path_ref +
+#                         real_gga18_mga20_ref_name) + \
+#         os.path.getsize(real_gga18_mga20_path_tar +
+#                         real_gga18_mga20_tar_name)
+#     run_bench(run_real_GGA18_MGA20, method, dataset, cat, size)
 
-if BENCH_REAL_GGA14_MGA16:
-    bench = True
-    method = 'Smash++'
-    dataset = 'GGA14_MGA16'
-    cat = 'Real'
-    size = \
-        os.path.getsize(real_gga14_mga16_path_ref +
-                        real_gga14_mga16_ref_name) + \
-        os.path.getsize(real_gga14_mga16_path_tar +
-                        real_gga14_mga16_tar_name)
-    run_bench(run_real_GGA14_MGA16, method, dataset, cat, size)
+# if BENCH_REAL_GGA14_MGA16:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'GGA14_MGA16'
+#     cat = 'Real'
+#     size = \
+#         os.path.getsize(real_gga14_mga16_path_ref +
+#                         real_gga14_mga16_ref_name) + \
+#         os.path.getsize(real_gga14_mga16_path_tar +
+#                         real_gga14_mga16_tar_name)
+#     run_bench(run_real_GGA14_MGA16, method, dataset, cat, size)
 
-if BENCH_REAL_HS12_PT12:
-    bench = True
-    method = 'Smash++'
-    dataset = 'HS12_PT12'
-    cat = 'Real'
-    size = \
-        os.path.getsize(real_hs12_pt12_path_ref + real_hs12_pt12_ref_name) + \
-        os.path.getsize(real_hs12_pt12_path_tar + real_hs12_pt12_tar_name)
-    run_bench(run_real_HS12_PT12, method, dataset, cat, size)
+# if BENCH_REAL_HS12_PT12:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'HS12_PT12'
+#     cat = 'Real'
+#     size = \
+#         os.path.getsize(real_hs12_pt12_path_ref + real_hs12_pt12_ref_name) + \
+#         os.path.getsize(real_hs12_pt12_path_tar + real_hs12_pt12_tar_name)
+#     run_bench(run_real_HS12_PT12, method, dataset, cat, size)
 
-if BENCH_REAL_PXO99A_MAFF311018:
-    bench = True
-    method = 'Smash++'
-    dataset = 'PXO99A_MAFF311018'
-    cat = 'Real'
-    size = \
-        os.path.getsize(real_PXO99A_MAFF311018_path_ref +
-                        real_PXO99A_MAFF311018_ref_name) + \
-        os.path.getsize(real_PXO99A_MAFF311018_path_tar +
-                        real_PXO99A_MAFF311018_tar_name)
-    run_bench(run_real_PXO99A_MAFF311018, method, dataset, cat, size)
+# if BENCH_REAL_PXO99A_MAFF311018:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'PXO99A_MAFF311018'
+#     cat = 'Real'
+#     size = \
+#         os.path.getsize(real_PXO99A_MAFF311018_path_ref +
+#                         real_PXO99A_MAFF311018_ref_name) + \
+#         os.path.getsize(real_PXO99A_MAFF311018_path_tar +
+#                         real_PXO99A_MAFF311018_tar_name)
+#     run_bench(run_real_PXO99A_MAFF311018, method, dataset, cat, size)
 
-if BENCH_SYNTH_COMPARE_SMASH:
-    bench = True
-    dataset = 'CompSynth'
-    cat = 'Synthetic'
-    size = os.path.getsize(path_data_synth + synth_comp_smash_ref_name) + \
-        os.path.getsize(path_data_synth + synth_comp_smash_tar_name)
-    run_bench((run_synth_comp_Smash, ('smashpp',)),
-              'Smash++', dataset, cat, size)
-    run_bench((run_synth_comp_Smash, ('smash',)), 'Smash', dataset, cat, size)
+# if BENCH_SYNTH_COMPARE_SMASH:
+#     bench = True
+#     dataset = 'CompSynth'
+#     cat = 'Synthetic'
+#     size = os.path.getsize(path_data_synth + synth_comp_smash_ref_name) + \
+#         os.path.getsize(path_data_synth + synth_comp_smash_tar_name)
+#     run_bench((run_synth_comp_Smash, ('smashpp',)),
+#               'Smash++', dataset, cat, size)
+#     run_bench((run_synth_comp_Smash, ('smash',)), 'Smash', dataset, cat, size)
 
-if BENCH_REAL_COMPARE_SMASH:
-    bench = True
-    dataset = 'CompReal'
-    cat = 'Real'
-    ref = path_data + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep + \
-        real_comp_smash_ref_name
-    tar = path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep + \
-        real_comp_smash_tar_name
-    size = os.path.getsize(ref) + os.path.getsize(tar)
-    run_bench((run_real_comp_Smash, ('smashpp',)),
-              'Smash++', dataset, cat, size)
-    run_bench((run_real_comp_Smash, ('smash',)), 'Smash', dataset, cat, size)
+# if BENCH_REAL_COMPARE_SMASH:
+#     bench = True
+#     dataset = 'CompReal'
+#     cat = 'Real'
+#     ref = path_data + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep + \
+#         real_comp_smash_ref_name
+#     tar = path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep + \
+#         real_comp_smash_tar_name
+#     size = os.path.getsize(ref) + os.path.getsize(tar)
+#     run_bench((run_real_comp_Smash, ('smashpp',)),
+#               'Smash++', dataset, cat, size)
+#     run_bench((run_real_comp_Smash, ('smash',)), 'Smash', dataset, cat, size)
 
-if BENCH_SYNTH_PERM_ORIGINAL:
-    bench = True
-    method = 'Smash++'
-    dataset = 'PermOrig'
-    cat = 'Synthetic'
-    size = os.path.getsize(path_data_synth + synth_perm_ref_name) + \
-        os.path.getsize(path_data_synth + synth_perm_tar_name)
-    run_bench(run_synth_perm_orig, method, dataset, cat, size)
+# if BENCH_SYNTH_PERM_ORIGINAL:
+#     bench = True
+#     method = 'Smash++'
+#     dataset = 'PermOrig'
+#     cat = 'Synthetic'
+#     size = os.path.getsize(path_data_synth + synth_perm_ref_name) + \
+#         os.path.getsize(path_data_synth + synth_perm_tar_name)
+#     run_bench(run_synth_perm_orig, method, dataset, cat, size)
 
-if BENCH_SYNTH_PERM_450000:
-    bench = True
-    block_size = 450000
-    method = 'Smash++'
-    dataset = 'Perm' + str(block_size)
-    cat = 'Synthetic'
-    size = \
-        os.path.getsize(path_data_synth +
-                        synth_perm_ref_name + str(block_size)) + \
-        os.path.getsize(path_data_synth + synth_perm_tar_name)
-    run_bench(run_synth_perm_450000, method, dataset, cat, size)
+# if BENCH_SYNTH_PERM_450000:
+#     bench = True
+#     block_size = 450000
+#     method = 'Smash++'
+#     dataset = 'Perm' + str(block_size)
+#     cat = 'Synthetic'
+#     size = \
+#         os.path.getsize(path_data_synth +
+#                         synth_perm_ref_name + str(block_size)) + \
+#         os.path.getsize(path_data_synth + synth_perm_tar_name)
+#     run_bench(run_synth_perm_450000, method, dataset, cat, size)
 
-if BENCH_SYNTH_PERM_30000:
-    bench = True
-    block_size = 30000
-    method = 'Smash++'
-    dataset = 'Perm' + str(block_size)
-    cat = 'Synthetic'
-    size = \
-        os.path.getsize(path_data_synth +
-                        synth_perm_ref_name + str(block_size)) + \
-        os.path.getsize(path_data_synth + synth_perm_tar_name)
-    run_bench(run_synth_perm_30000, method, dataset, cat, size)
+# if BENCH_SYNTH_PERM_30000:
+#     bench = True
+#     block_size = 30000
+#     method = 'Smash++'
+#     dataset = 'Perm' + str(block_size)
+#     cat = 'Synthetic'
+#     size = \
+#         os.path.getsize(path_data_synth +
+#                         synth_perm_ref_name + str(block_size)) + \
+#         os.path.getsize(path_data_synth + synth_perm_tar_name)
+#     run_bench(run_synth_perm_30000, method, dataset, cat, size)
 
-if BENCH_SYNTH_PERM_1000:
-    bench = True
-    block_size = 1000
-    method = 'Smash++'
-    dataset = 'Perm' + str(block_size)
-    cat = 'Synthetic'
-    size = \
-        os.path.getsize(path_data_synth +
-                        synth_perm_ref_name + str(block_size)) + \
-        os.path.getsize(path_data_synth + synth_perm_tar_name)
-    run_bench(run_synth_perm_1000, method, dataset, cat, size)
+# if BENCH_SYNTH_PERM_1000:
+#     bench = True
+#     block_size = 1000
+#     method = 'Smash++'
+#     dataset = 'Perm' + str(block_size)
+#     cat = 'Synthetic'
+#     size = \
+#         os.path.getsize(path_data_synth +
+#                         synth_perm_ref_name + str(block_size)) + \
+#         os.path.getsize(path_data_synth + synth_perm_tar_name)
+#     run_bench(run_synth_perm_1000, method, dataset, cat, size)
 
-if BENCH_SYNTH_PERM_30:
-    bench = True
-    block_size = 30
-    method = 'Smash++'
-    dataset = 'Perm' + str(block_size)
-    cat = 'Synthetic'
-    size = \
-        os.path.getsize(path_data_synth +
-                        synth_perm_ref_name + str(block_size)) + \
-        os.path.getsize(path_data_synth + synth_perm_tar_name)
-    run_bench(run_synth_perm_30, method, dataset, cat, size)
+# if BENCH_SYNTH_PERM_30:
+#     bench = True
+#     block_size = 30
+#     method = 'Smash++'
+#     dataset = 'Perm' + str(block_size)
+#     cat = 'Synthetic'
+#     size = \
+#         os.path.getsize(path_data_synth +
+#                         synth_perm_ref_name + str(block_size)) + \
+#         os.path.getsize(path_data_synth + synth_perm_tar_name)
+#     run_bench(run_synth_perm_30, method, dataset, cat, size)
 
 if bench:
     with open('bench.csv', 'w') as bench_file:
