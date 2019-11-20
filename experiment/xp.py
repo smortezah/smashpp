@@ -27,22 +27,22 @@ MAKE_SYNTH_COMPARE_SMASH = False
 MAKE_SYNTH_PERMUTE = False
 
 # Run (Benchmark)
-RUN_SYNTH_SMALL = False
-RUN_SYNTH_MEDIUM = False
-RUN_SYNTH_LARGE = False
-RUN_SYNTH_XLARGE = False
-RUN_SYNTH_MUTATE = False
-RUN_REAL_GGA18_MGA20 = False
-RUN_REAL_GGA14_MGA16 = False
-RUN_REAL_HS12_PT12 = False
-RUN_REAL_PXO99A_MAFF311018 = False
-RUN_SYNTH_COMPARE_SMASH = False  # Compare to Smash on synthetic data
-RUN_REAL_COMPARE_SMASH = False  # Compare to Smash on real data
-RUN_SYNTH_PERM_ORIGINAL = False
-RUN_SYNTH_PERM_450000 = False
-RUN_SYNTH_PERM_30000 = False
-RUN_SYNTH_PERM_1000 = False
-RUN_SYNTH_PERM_30 = False
+RUN_SYNTH_SMALL = True
+RUN_SYNTH_MEDIUM = True
+RUN_SYNTH_LARGE = True
+RUN_SYNTH_XLARGE = True
+RUN_SYNTH_MUTATE = True
+RUN_REAL_GGA18_MGA20 = True
+RUN_REAL_GGA14_MGA16 = True
+RUN_REAL_HS12_PT12 = True
+RUN_REAL_PXO99A_MAFF311018 = True
+RUN_SYNTH_COMPARE_SMASH = True  # Compare to Smash on synthetic data
+RUN_REAL_COMPARE_SMASH = True  # Compare to Smash on real data
+RUN_SYNTH_PERM_ORIGINAL = True
+RUN_SYNTH_PERM_450000 = True
+RUN_SYNTH_PERM_30000 = True
+RUN_SYNTH_PERM_1000 = True
+RUN_SYNTH_PERM_30 = True
 
 
 '''
@@ -305,31 +305,10 @@ remove_all_start(current_dir, "t_")
 '''
 Run
 '''
-def run_smashpp(ref, tar, par_main, par_viz):
-    ref_name = os.path.basename(ref)
-    tar_name = os.path.basename(tar)
-    execute(smashpp_exe + ' -r ' + ref + ' -t ' + tar + ' ' + par_main)
-    execute(smashpp_exe + ' -viz ' + par_viz + ' ' +
-            ref_name + '.' + tar_name + '.pos')
-
-
-def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
-    copyfile(ref_main, ref)
-    copyfile(tar_main, tar)
-    execute(smash + ' ' + par + ' ' + ref + ' ' + tar)
-    os.remove(ref)
-    os.remove(tar)
-    remove_all_ext(curr_dir, 'ext')
-    remove_all_ext(curr_dir, 'rev')
-    remove_all_ext(curr_dir, 'inf')
-    remove(curr_dir, '*.sys*x')
-
-
 # def par_smashpp(key, arg):
 #     key = str.lower(key)
 #     if key=='synth_small':
 #         if arg==
-
 
 #     exe_main = {
 #         'SYNTH_SMALL': '-d 1 -f 100',
@@ -354,8 +333,8 @@ def run_smash(ref_main, tar_main, ref, tar, par, curr_dir):
 #         'SYNTH_PERM_30': '-l 0 -f 250 -d 1 -ar'
 #     }
 
-
 #     return switcher.get(str.upper(name), '-d 1 -f 100')
+
 
 bench_result = []  # Name, Category, Size, Time, Memory
 bench = False
@@ -370,56 +349,44 @@ def extract(file, key):
                 return split[-1].strip()
 
 
-def calc_mem(log_main, log_viz):
+def calc_mem(log_main, log_viz=''):
     key = 'Maximum resident'
     mem_main = extract(log_main, key)
-    mem_viz = extract(log_viz, key)
-    return max(int(mem_main), int(mem_viz))
+    if not log_viz:
+        return int(mem_main)
+    else:
+        mem_viz = extract(log_viz, key)
+        return max(int(mem_main), int(mem_viz))
 
 
-def calc_mem(log):
-    key = 'Maximum resident'
-    mem = extract(log, key)
-    return int(mem)
-
-
-def calc_elapsed(log_main, log_viz):
+def calc_elapsed(log_main, log_viz=''):
     key = 'Elapsed'
     elapsed_main = to_seconds(extract(log_main, key))
-    elapsed_viz = to_seconds(extract(log_viz, key))
-    return f"{float(elapsed_main) + float(elapsed_viz):.2f}"
+    if not log_viz:
+        return f"{float(elapsed_main):.2f}"
+    else:
+        elapsed_viz = to_seconds(extract(log_viz, key))
+        return f"{float(elapsed_main) + float(elapsed_viz):.2f}"
 
 
-def calc_elapsed(log):
-    key = 'Elapsed'
-    elapsed = to_seconds(extract(log, key))
-    return f"{float(elapsed):.2f}"
-
-
-def calc_user_time(log_main, log_viz):
+def calc_user_time(log_main, log_viz=''):
     key = 'User'
     user_time_main = extract(log_main, key)
-    user_time_viz = extract(log_viz, key)
-    return f"{float(user_time_main) + float(user_time_viz):.2f}"
+    if not log_viz:
+        return f"{float(user_time_main):.2f}"
+    else:
+        user_time_viz = extract(log_viz, key)
+        return f"{float(user_time_main) + float(user_time_viz):.2f}"
 
 
-def calc_user_time(log):
-    key = 'User'
-    user_time = extract(log, key)
-    return f"{float(user_time):.2f}"
-
-
-def calc_system_time(log_main, log_viz):
+def calc_system_time(log_main, log_viz=''):
     key = 'System'
     system_time_main = extract(log_main, key)
-    system_time_viz = extract(log_viz, key)
-    return f"{float(system_time_main) + float(system_time_viz):.2f}"
-
-
-def calc_system_time(log):
-    key = 'System'
-    system_time = extract(log, key)
-    return f"{float(system_time):.2f}"
+    if not log_viz:
+        return f"{float(system_time_main):.2f}"
+    else:
+        system_time_viz = extract(log_viz, key)
+        return f"{float(system_time_main) + float(system_time_viz):.2f}"
 
 
 if RUN_SYNTH_SMALL:
@@ -694,10 +661,10 @@ if RUN_SYNTH_COMPARE_SMASH:
     execute(cmd)
     os.remove(ref)
     os.remove(tar)
-    remove_all_ext(curr_dir, 'ext')
-    remove_all_ext(curr_dir, 'rev')
-    remove_all_ext(curr_dir, 'inf')
-    remove(curr_dir, '*.sys*x')
+    remove_all_ext(current_dir, 'ext')
+    remove_all_ext(current_dir, 'rev')
+    remove_all_ext(current_dir, 'inf')
+    remove(current_dir, '*.sys*x')
     ## Bench
     method = 'Smash'
     mem = calc_mem(log_smash)
@@ -753,10 +720,10 @@ if RUN_REAL_COMPARE_SMASH:
     execute(cmd)
     os.remove(ref)
     os.remove(tar)
-    remove_all_ext(curr_dir, 'ext')
-    remove_all_ext(curr_dir, 'rev')
-    remove_all_ext(curr_dir, 'inf')
-    remove(curr_dir, '*.sys*x')
+    remove_all_ext(current_dir, 'ext')
+    remove_all_ext(current_dir, 'rev')
+    remove_all_ext(current_dir, 'inf')
+    remove(current_dir, '*.sys*x')
     ## Bench
     method = 'Smash'
     mem = calc_mem(log_smash)
@@ -806,8 +773,8 @@ if RUN_SYNTH_PERM_450000:
     seed = '6041'
     # Run
     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            ' -s ' + seed + ' < ' + path_data_synth + synth_perm_ref_name +
-            ' > ' + path_data_synth + ref_name)
+            ' -s ' + str(seed) + ' < ' + path_data_synth + 
+            synth_perm_ref_name + ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
@@ -838,8 +805,8 @@ if RUN_SYNTH_PERM_30000:
     seed = '328914'
     # Run
     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            ' -s ' + seed + ' + path_data_synth + synth_perm_ref_name +
-            ' > ' + path_data_synth + ref_name)
+            ' -s ' + str(seed) + ' < ' + path_data_synth + 
+            synth_perm_ref_name + ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
@@ -870,8 +837,8 @@ if RUN_SYNTH_PERM_1000:
     seed = '564283'
     # Run
     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            ' -s ' + seed + ' + path_data_synth + synth_perm_ref_name +
-            ' > ' + path_data_synth + ref_name)
+            ' -s ' + str(seed) + ' < ' + path_data_synth + 
+            synth_perm_ref_name + ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
@@ -902,8 +869,8 @@ if RUN_SYNTH_PERM_30:
     seed = '900123'
     # Run
     execute(goose_permuteseqbyblocks + '-bs ' + str(block_size) +
-            ' -s ' + seed + ' + path_data_synth + synth_perm_ref_name +
-            ' > ' + path_data_synth + ref_name)
+            ' -s ' + str(seed) + ' < ' + path_data_synth + 
+            synth_perm_ref_name + ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
