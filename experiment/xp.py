@@ -26,8 +26,8 @@ MAKE_SYNTH_MUTATE = False
 MAKE_SYNTH_COMPARE_SMASH = False
 MAKE_SYNTH_PERMUTE = False
 
-# Run
-RUN_SYNTH_SMALL = True
+# Run (Benchmark)
+RUN_SYNTH_SMALL = False
 RUN_SYNTH_MEDIUM = False
 RUN_SYNTH_LARGE = False
 RUN_SYNTH_XLARGE = False
@@ -43,24 +43,6 @@ RUN_SYNTH_PERM_450000 = False
 RUN_SYNTH_PERM_30000 = False
 RUN_SYNTH_PERM_1000 = False
 RUN_SYNTH_PERM_30 = False
-
-# # Benchmark
-# BENCH_SYNTH_SMALL = False
-# BENCH_SYNTH_MEDIUM = False
-# BENCH_SYNTH_LARGE = False
-# BENCH_SYNTH_XLARGE = False
-# BENCH_SYNTH_MUTATE = False
-# BENCH_REAL_GGA18_MGA20 = False
-# BENCH_REAL_GGA14_MGA16 = False
-# BENCH_REAL_HS12_PT12 = False
-# BENCH_REAL_PXO99A_MAFF311018 = False
-# BENCH_SYNTH_COMPARE_SMASH = False
-# BENCH_REAL_COMPARE_SMASH = False
-# BENCH_SYNTH_PERM_ORIGINAL = False
-# BENCH_SYNTH_PERM_450000 = False
-# BENCH_SYNTH_PERM_30000 = False
-# BENCH_SYNTH_PERM_1000 = False
-# BENCH_SYNTH_PERM_30 = False
 
 
 '''
@@ -389,35 +371,55 @@ def extract(file, key):
 
 
 def calc_mem(log_main, log_viz):
-    with open(log_main) as _log_main, open(log_viz) as _log_viz:
-        key_mem = 'Maximum resident'
-        mem_main = extract(log_main, key_mem)
-        mem_viz = extract(log_viz, key_mem)
+    key = 'Maximum resident'
+    mem_main = extract(log_main, key)
+    mem_viz = extract(log_viz, key)
     return max(int(mem_main), int(mem_viz))
 
 
+def calc_mem(log):
+    key = 'Maximum resident'
+    mem = extract(log, key)
+    return int(mem)
+
+
 def calc_elapsed(log_main, log_viz):
-    with open(log_main) as _log_main, open(log_viz) as _log_viz:
-        key_elapsed = 'Elapsed'
-        elapsed_main = to_seconds(extract(log_main, key_elapsed))
-        elapsed_viz = to_seconds(extract(log_viz, key_elapsed))
+    key = 'Elapsed'
+    elapsed_main = to_seconds(extract(log_main, key))
+    elapsed_viz = to_seconds(extract(log_viz, key))
     return f"{float(elapsed_main) + float(elapsed_viz):.2f}"
 
 
+def calc_elapsed(log):
+    key = 'Elapsed'
+    elapsed = to_seconds(extract(log, key))
+    return f"{float(elapsed):.2f}"
+
+
 def calc_user_time(log_main, log_viz):
-    with open(log_main) as _log_main, open(log_viz) as _log_viz:
-        key_user_time = 'User'
-        user_time_main = extract(log_main, key_user_time)
-        user_time_viz = extract(log_viz, key_user_time)
+    key = 'User'
+    user_time_main = extract(log_main, key)
+    user_time_viz = extract(log_viz, key)
     return f"{float(user_time_main) + float(user_time_viz):.2f}"
 
 
+def calc_user_time(log):
+    key = 'User'
+    user_time = extract(log, key)
+    return f"{float(user_time):.2f}"
+
+
 def calc_system_time(log_main, log_viz):
-    with open(log_main) as _log_main, open(log_viz) as _log_viz:
-        key_system_time = 'System'
-        system_time_main = extract(log_main, 'System')
-        system_time_viz = extract(log_viz, 'System')
+    key = 'System'
+    system_time_main = extract(log_main, key)
+    system_time_viz = extract(log_viz, key)
     return f"{float(system_time_main) + float(system_time_viz):.2f}"
+
+
+def calc_system_time(log):
+    key = 'System'
+    system_time = extract(log, key)
+    return f"{float(system_time):.2f}"
 
 
 if RUN_SYNTH_SMALL:
@@ -442,7 +444,6 @@ if RUN_SYNTH_SMALL:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -468,7 +469,6 @@ if RUN_SYNTH_MEDIUM:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -494,7 +494,6 @@ if RUN_SYNTH_LARGE:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -520,7 +519,6 @@ if RUN_SYNTH_XLARGE:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -546,7 +544,6 @@ if RUN_SYNTH_MUTATE:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -574,7 +571,6 @@ if RUN_REAL_GGA18_MGA20:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -602,7 +598,6 @@ if RUN_REAL_GGA14_MGA16:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -629,7 +624,6 @@ if RUN_REAL_HS12_PT12:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -656,43 +650,121 @@ if RUN_REAL_PXO99A_MAFF311018:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
-# if RUN_SYNTH_COMPARE_SMASH:
-#     par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
-#     par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 ' + \
-#         '-stat -o CompSmash.svg'
+if RUN_SYNTH_COMPARE_SMASH:
+    # Smash++
+    par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
+    par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 ' + \
+        '-stat -o CompSmash.svg'
+    ref = path_data_synth + synth_comp_smash_ref_name
+    tar = path_data_synth + synth_comp_smash_tar_name
+    cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
+        ' -r ' + ref + ' -t ' + tar + ' ' + par_main
+    cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
+        ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+    ## Run
+    execute(cmd_main)
+    execute(cmd_viz)
+    ## Bench
+    bench = True
+    method = 'Smash++'
+    dataset = 'CompSynth'
+    cat = 'Synthetic'
+    size = file_size(ref) + file_size(tar)
+    mem = calc_mem(log_main, log_viz)
+    elapsed = calc_elapsed(log_main, log_viz)
+    user_time = calc_user_time(log_main, log_viz)
+    system_time = calc_system_time(log_main, log_viz)
+    bench_result.append([method, dataset, cat, size, mem,
+                         elapsed, user_time, system_time])
 
-#     # Smash++
-#     run_smashpp(path_data_synth + synth_comp_smash_ref_name,
-#                 path_data_synth + synth_comp_smash_tar_name,
-#                 par_main, par_viz)
-#     # Smash
-#     par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
-#     run_smash(path_data_synth + synth_comp_smash_ref_name,
-#               path_data_synth + synth_comp_smash_tar_name,
-#               synth_comp_smash_ref_name, synth_comp_smash_tar_name,
-#               par, current_dir)
+    # Smash
+    par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
+    ref_main = path_data_synth + synth_comp_smash_ref_name
+    tar_main = path_data_synth + synth_comp_smash_tar_name
+    ref = synth_comp_smash_ref_name
+    tar = synth_comp_smash_tar_name
+    cmd = time_exe + log_smash + ' ' + \
+        smash + ' ' + par + ' ' + ref + ' ' + tar
+    ## Run
+    copyfile(ref_main, ref)
+    copyfile(tar_main, tar)
+    execute(cmd)
+    os.remove(ref)
+    os.remove(tar)
+    remove_all_ext(curr_dir, 'ext')
+    remove_all_ext(curr_dir, 'rev')
+    remove_all_ext(curr_dir, 'inf')
+    remove(curr_dir, '*.sys*x')
+    ## Bench
+    method = 'Smash'
+    mem = calc_mem(log_smash)
+    elapsed = calc_elapsed(log_smash)
+    user_time = calc_user_time(log_smash)
+    system_time = calc_system_time(log_smash)
+    bench_result.append([method, dataset, cat, size, mem,
+                         elapsed, user_time, system_time])
 
-# if RUN_REAL_COMPARE_SMASH:
-#     path_ref = path_data + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-#     path_tar = path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
+if RUN_REAL_COMPARE_SMASH:
+    path_ref = path_data + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
+    path_tar = path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
 
-#     # Smash++
-#     par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
-#     par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat ' + \
-#         '-o Sc_Sp_smash.svg'
-#     run_smashpp(path_ref + real_comp_smash_ref_name,
-#                 path_tar + real_comp_smash_tar_name, par_main, par_viz)
-#     # Smash
-#     par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
-#     ref_new_smash = 'Sc' + real_comp_smash_ref_name
-#     tar_new_smash = 'Sp' + real_comp_smash_tar_name
-#     run_smash(path_ref + real_comp_smash_ref_name,
-#               path_tar + real_comp_smash_tar_name,
-#               ref_new_smash, tar_new_smash, par, current_dir)
+    # Smash++
+    par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
+    par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat ' + \
+        '-o Sc_Sp_smash.svg'
+    ref = path_ref + real_comp_smash_ref_name
+    tar = path_tar + real_comp_smash_tar_name
+    cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
+        ' -r ' + ref + ' -t ' + tar + ' ' + par_main
+    cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
+        ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+    ## Run
+    execute(cmd_main)
+    execute(cmd_viz)
+    ## Bench
+    bench = True
+    method = 'Smash++'
+    dataset = 'CompReal'
+    cat = 'Real'
+    size = file_size(ref) + file_size(tar)
+    mem = calc_mem(log_main, log_viz)
+    elapsed = calc_elapsed(log_main, log_viz)
+    user_time = calc_user_time(log_main, log_viz)
+    system_time = calc_system_time(log_main, log_viz)
+    bench_result.append([method, dataset, cat, size, mem,
+                         elapsed, user_time, system_time])
+
+    # Smash
+    par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
+    ref_new_smash = 'Sc' + real_comp_smash_ref_name
+    tar_new_smash = 'Sp' + real_comp_smash_tar_name
+    ref_main = path_ref + real_comp_smash_ref_name
+    tar_main = path_tar + real_comp_smash_tar_name
+    ref = ref_new_smash
+    tar = tar_new_smash
+    cmd = time_exe + log_smash + ' ' + \
+        smash + ' ' + par + ' ' + ref + ' ' + tar
+    ## Run
+    copyfile(ref_main, ref)
+    copyfile(tar_main, tar)
+    execute(cmd)
+    os.remove(ref)
+    os.remove(tar)
+    remove_all_ext(curr_dir, 'ext')
+    remove_all_ext(curr_dir, 'rev')
+    remove_all_ext(curr_dir, 'inf')
+    remove(curr_dir, '*.sys*x')
+    ## Bench
+    method = 'Smash'
+    mem = calc_mem(log_smash)
+    elapsed = calc_elapsed(log_smash)
+    user_time = calc_user_time(log_smash)
+    system_time = calc_system_time(log_smash)
+    bench_result.append([method, dataset, cat, size, mem,
+                         elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_ORIGINAL:
     par_main = '-l 0 -f 10 -d 3000'
@@ -716,7 +788,6 @@ if RUN_SYNTH_PERM_ORIGINAL:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -749,7 +820,6 @@ if RUN_SYNTH_PERM_450000:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -782,7 +852,6 @@ if RUN_SYNTH_PERM_30000:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -815,7 +884,6 @@ if RUN_SYNTH_PERM_1000:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
@@ -848,15 +916,8 @@ if RUN_SYNTH_PERM_30:
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
-
-
-'''
-Benchmark
-'''
-# bench_result = []  # Name, Category, Size, Time, Memory
 
 
 # def run_bench(func, method, dataset, cat, size):
@@ -902,44 +963,12 @@ Benchmark
 #     max_memory = f"{max(memory):.2f}"
 #     bench_result.append([method, dataset, cat, size, elapsed, max_memory])
 
-
-
-
-if BENCH_SYNTH_COMPARE_SMASH:
-    bench = True
-    dataset = 'CompSynth'
-    cat = 'Synthetic'
-    size = os.path.getsize(path_data_synth + synth_comp_smash_ref_name) + \
-        os.path.getsize(path_data_synth + synth_comp_smash_tar_name)
-    run_bench((run_synth_comp_Smash, ('smashpp',)),
-              'Smash++', dataset, cat, size)
-    run_bench((run_synth_comp_Smash, ('smash',)), 'Smash', dataset, cat, size)
-
-if BENCH_REAL_COMPARE_SMASH:
-    bench = True
-    dataset = 'CompReal'
-    cat = 'Real'
-    ref = path_data + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep + \
-        real_comp_smash_ref_name
-    tar = path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep + \
-        real_comp_smash_tar_name
-    size = os.path.getsize(ref) + os.path.getsize(tar)
-    run_bench((run_real_comp_Smash, ('smashpp',)),
-              'Smash++', dataset, cat, size)
-    run_bench((run_real_comp_Smash, ('smash',)), 'Smash', dataset, cat, size)
-
-
-
-
-
-
-
-
 if bench:
     with open('bench.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
         writer.writerow(['Method', 'Dataset', 'Cat', 'Size.B',
                          'Memory.B', 'Elapsed.s', 'User.s', 'System.s'])
-        # writer.writerow(['Method', 'Dataset', 'Cat',
-        #                  'Size.B', 'Time.s', 'Memory.MB'])
         writer.writerows(bench_result)
+    remove_path(log_main)
+    remove_path(log_viz)
+    remove_path(log_smash)
