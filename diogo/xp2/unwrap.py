@@ -9,8 +9,7 @@ smashpp = '..' + sep + '..' + sep + 'smashpp '
 
 
 def execute(cmd):
-    subprocess.call(cmd.split())
-    # os.popen(cmd).read()
+    os.popen(cmd).read()
 
 
 ref_name = 'MT-CO1.fa'

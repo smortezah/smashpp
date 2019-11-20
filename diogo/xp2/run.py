@@ -32,8 +32,7 @@ elif os.name == 'nt':
 
 
 def execute(cmd):
-    subprocess.call(cmd.split())
-    # os.popen(cmd).read()
+    os.popen(cmd).read()
 
 
 if prepare_data:
