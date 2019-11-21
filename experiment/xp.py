@@ -9,7 +9,7 @@ Copyright (C) 2018-2019, IEETA/DETI, University of Aveiro, Portugal
 USER CAN CHANGE HERE BY SWITCHING False/True
 '''
 from pathlib import Path
-from shutil import copyfile
+import shutil
 import csv
 import os
 import subprocess
@@ -27,22 +27,22 @@ MAKE_SYNTH_COMPARE_SMASH = False
 MAKE_SYNTH_PERMUTE = False
 
 # Run (Benchmark)
-RUN_SYNTH_SMALL = True
-RUN_SYNTH_MEDIUM = True
-RUN_SYNTH_LARGE = True
-RUN_SYNTH_XLARGE = True
-RUN_SYNTH_MUTATE = True
-RUN_REAL_GGA18_MGA20 = True
-RUN_REAL_GGA14_MGA16 = True
-RUN_REAL_HS12_PT12 = True
-RUN_REAL_PXO99A_MAFF311018 = True
-RUN_SYNTH_COMPARE_SMASH = True  # Compare to Smash on synthetic data
-RUN_REAL_COMPARE_SMASH = True  # Compare to Smash on real data
-RUN_SYNTH_PERM_ORIGINAL = True
-RUN_SYNTH_PERM_450000 = True
-RUN_SYNTH_PERM_30000 = True
-RUN_SYNTH_PERM_1000 = True
-RUN_SYNTH_PERM_30 = True
+RUN_SYNTH_SMALL = False
+RUN_SYNTH_MEDIUM = False
+RUN_SYNTH_LARGE = False
+RUN_SYNTH_XLARGE = False
+RUN_SYNTH_MUTATE = False
+RUN_REAL_GGA18_MGA20 = False
+RUN_REAL_GGA14_MGA16 = False
+RUN_REAL_HS12_PT12 = False
+RUN_REAL_PXO99A_MAFF311018 = False
+RUN_SYNTH_COMPARE_SMASH = False  # Compare to Smash on synthetic data
+RUN_REAL_COMPARE_SMASH = False  # Compare to Smash on real data
+RUN_SYNTH_PERM_ORIGINAL = False
+RUN_SYNTH_PERM_450000 = False
+RUN_SYNTH_PERM_30000 = False
+RUN_SYNTH_PERM_1000 = False
+RUN_SYNTH_PERM_30 = False
 
 
 '''
@@ -141,6 +141,11 @@ def remove_path(path):
         os.remove(path)
 
 
+def make_path(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
 def remove(directory, pattern):
     for p in Path(directory).glob(pattern):
         p.unlink()
@@ -211,7 +216,7 @@ if MAKE_SYNTH_MEDIUM:  # Sizes: ref:100,000, tar:100,000
 
     execute(smashpp_inv_rep + 'r_a t_d')
     execute(goose_mutatedna + '-mr 0.90 < r_b > t_c')
-    copyfile('r_c', 't_a')
+    shutil.copyfile('r_c', 't_a')
     execute(goose_mutatedna + '-mr 0.03 < r_d > t_b')
     cat(['t_a', 't_b', 't_c', 't_d'], path_data_synth + 'TarM')
 
@@ -239,7 +244,7 @@ if MAKE_SYNTH_XLARGE:  # Sizes: ref:100,000,000, tar:100,000,000
 
     execute(goose_mutatedna + '-mr 0.01 < r_a > t_a')
     execute(smashpp_inv_rep + 'r_c t_b')
-    copyfile('r_d', 't_c')
+    shutil.copyfile('r_d', 't_c')
     execute(smashpp_inv_rep + 'r_b t_d')
     cat(['t_a', 't_b', 't_c', 't_d'], path_data_synth + 'TarXL')
 
@@ -269,7 +274,7 @@ if MAKE_SYNTH_COMPARE_SMASH:  # Sizes: ref:1,000,000, tar:1,000,000
                 ' -s ' + str(i * 10 + 1) +
                 '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_' + str(i))
         append('r_' + str(i), path_data_synth + 'RefComp')
-    copyfile('r_0', 't_0')
+    shutil.copyfile('r_0', 't_0')
     for i in range(1, 9 + 1):
         execute(goose_mutatedna + '-mr ' + str(i/100) +
                 ' < r_' + str(i) + ' > t_' + str(i))
@@ -655,8 +660,8 @@ if RUN_SYNTH_COMPARE_SMASH:
     cmd = time_exe + log_smash + ' ' + \
         smash + ' ' + par + ' ' + ref + ' ' + tar
     ## Run
-    copyfile(ref_main, ref)
-    copyfile(tar_main, tar)
+    shutil.copyfile(ref_main, ref)
+    shutil.copyfile(tar_main, tar)
     execute(cmd)
     os.remove(ref)
     os.remove(tar)
@@ -714,8 +719,8 @@ if RUN_REAL_COMPARE_SMASH:
     cmd = time_exe + log_smash + ' ' + \
         smash + ' ' + par + ' ' + ref + ' ' + tar
     ## Run
-    copyfile(ref_main, ref)
-    copyfile(tar_main, tar)
+    shutil.copyfile(ref_main, ref)
+    shutil.copyfile(tar_main, tar)
     execute(cmd)
     os.remove(ref)
     os.remove(tar)
@@ -938,3 +943,9 @@ if bench:
     remove_path(log_main)
     remove_path(log_viz)
     remove_path(log_smash)
+    # Move obtained results to the result/ directory
+    make_path('result')
+    for file in os.listdir(current_dir):
+        if file.endswith('.csv') or file.endswith('.svg') or \
+                file.endswith('.pos') or file.endswith('.fil'):
+            shutil.move(file, 'result/')
