@@ -347,11 +347,11 @@ void Cylinder::plot(std::ofstream& f) const {
   ellipse->transform = transform;
   ellipse->cx = x + width / 2;
   ellipse->cy = y;
-  ellipse->plot(f);
+  //// ellipse->plot(f);
 
   ellipse->transform = transform;
   ellipse->cy = y + height;
-  ellipse->plot(f);
+  //// ellipse->plot(f);
 }
 
 void Cylinder::plot_ir(std::ofstream& f, std::string wave) {

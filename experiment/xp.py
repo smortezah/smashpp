@@ -934,6 +934,7 @@ if RUN_SYNTH_PERM_30:
 #     max_memory = f"{max(memory):.2f}"
 #     bench_result.append([method, dataset, cat, size, elapsed, max_memory])
 
+
 if bench:
     with open('bench.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
