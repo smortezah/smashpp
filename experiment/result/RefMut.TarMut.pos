@@ -1,0 +1,5 @@
+##SMASH++
+##PARAM=<-r dataset/synth/RefMut -t dataset/synth/TarMut -th 1.97 -l 3 -d 600 -f 100 -m 15000>
+##INFO=<Ref=RefMut,RefSize=60000,Tar=TarMut,TarSize=60000>
+#RBeg	REnd	RRelRdn	RRdn	TBeg	TEnd	TRelRdn	TRdn	Inv
+0	42600	1.4177	2.0010	0	42600	1.4416	2.0010	F
