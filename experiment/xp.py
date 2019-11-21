@@ -739,7 +739,8 @@ if RUN_REAL_COMPARE_SMASH:
 
 if RUN_SYNTH_PERM_ORIGINAL:
     par_main = '-l 0 -f 10 -d 3000'
-    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -o Perm.svg'
+    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
+        '-o Perm.svg'
     ref = path_data_synth + synth_perm_ref_name
     tar = path_data_synth + synth_perm_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
@@ -766,7 +767,7 @@ if RUN_SYNTH_PERM_450000:
     block_size = '450000'
     ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 25 -d 3000 -ar'
-    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
+    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
@@ -798,7 +799,7 @@ if RUN_SYNTH_PERM_30000:
     block_size = '30000'
     ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 75 -d 1500 -ar'
-    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
+    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
@@ -830,7 +831,7 @@ if RUN_SYNTH_PERM_1000:
     block_size = '1000'
     ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 25 -d 300 -ar'
-    par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 ' + \
+    par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
@@ -862,7 +863,7 @@ if RUN_SYNTH_PERM_30:
     block_size = '30'
     ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 250 -d 1 -ar'
-    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 ' + \
+    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
@@ -939,7 +940,7 @@ if bench:
     with open('bench.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
         writer.writerow(['Method', 'Dataset', 'Cat', 'Size.B',
-                         'Memory.B', 'Elapsed.s', 'User.s', 'System.s'])
+                         'Memory.KB', 'Elapsed.s', 'User.s', 'System.s'])
         writer.writerows(bench_result)
     remove_path(log_main)
     remove_path(log_viz)
