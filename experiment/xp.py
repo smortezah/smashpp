@@ -16,6 +16,7 @@ import subprocess
 
 # Resolve dependencies
 GET_GOOSE = False
+GET_ENTREZ = False  #True
 
 # Make synthetic dataset
 MAKE_SYNTH_SMALL = False
@@ -80,6 +81,10 @@ synth_perm_ref_name = 'RefPerm'
 synth_perm_tar_name = 'TarPerm'
 real_comp_smash_ref_name = 'VII.seq'
 real_comp_smash_tar_name = 'VII.seq'
+real_comp_smash_path_ref = path_data + 'fungi' + \
+    sep + 'Saccharomyces_cerevisiae' + sep
+real_comp_smash_path_tar = path_data + 'fungi' + \
+    sep + 'Saccharomyces_paradoxus' + sep
 real_PXO99A_MAFF311018_ref_name = 'PXO99A.seq'
 real_PXO99A_MAFF311018_tar_name = 'MAFF_311018.seq'
 real_PXO99A_MAFF311018_path_ref = path_data + 'bacteria' + sep + \
@@ -159,6 +164,10 @@ def file_size(file):
     return os.path.getsize(file)
 
 
+def extension_removed(file_with_extension):
+    return os.path.splitext(file_with_extension)[0]
+
+
 def to_seconds(hms):
     vals = hms.split(':')
     if len(vals) == 2:
@@ -172,6 +181,18 @@ def to_seconds(hms):
     return str(h * 3600 + m * 60 + s)
 
 
+def download_seq(id, output):
+    out_file = bare_name(output)
+    message = 'Downloading ' + out_file + ' with accession ' + str(id) + ' '
+    print(message + '...', end='')
+    execute('efetch -db nucleotide -format fasta ' +
+            '-id "' + id + '" > ' + out_file + '.fa')
+    make_path(output[:len(output)-len(out_file)])
+    execute('bin/goose-fasta2seq < ' + out_file + '.fa > ' + output + '.seq')
+    os.remove(out_file + '.fa')
+    print('\r' + message + 'finished.')
+
+
 '''
 Resolve dependencies
 '''
@@ -181,7 +202,13 @@ if GET_GOOSE:
     execute('git clone https://github.com/pratas/goose.git;' +
             'cd goose/src/;' +
             'make -j8;' +
-            'cp goose-fastqsimulation goose-mutatedna ../../bin')
+            'cp goose-fastqsimulation goose-mutatedna ' +
+            'goose-permuteseqbyblocks goose-fasta2seq bin/')
+
+if GET_ENTREZ:
+    print('Downloading and installing Entrez ...')
+    execute('conda install -c bioconda entrez-direct --yes')
+    print('Finished.')
 
 
 '''
@@ -519,6 +546,14 @@ if RUN_SYNTH_MUTATE:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_GGA18_MGA20:
+    DOWNLOAD_DATASET = True
+
+    if DOWNLOAD_DATASET:
+        download_seq('CM000110', real_gga18_mga20_path_ref +
+                     extension_removed(real_gga18_mga20_ref_name))
+        download_seq('CM000981', real_gga18_mga20_path_tar +
+                     extension_removed(real_gga18_mga20_tar_name))
+
     par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 ' + \
         '-th 1.9'
     par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" ' + \
@@ -546,6 +581,14 @@ if RUN_REAL_GGA18_MGA20:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_GGA14_MGA16:
+    DOWNLOAD_DATASET = True
+
+    if DOWNLOAD_DATASET:
+        download_seq('CM000106', real_gga14_mga16_path_ref +
+                     extension_removed(real_gga14_mga16_ref_name))
+        download_seq('CM000977', real_gga14_mga16_path_tar +
+                     extension_removed(real_gga14_mga16_tar_name))
+
     par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 ' + \
         '-e 1.95 -m 400000'
     par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + \
@@ -573,6 +616,14 @@ if RUN_REAL_GGA14_MGA16:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_HS12_PT12:
+    DOWNLOAD_DATASET = True
+
+    if DOWNLOAD_DATASET:
+        download_seq('NC_000012', real_hs12_pt12_path_ref +
+                     extension_removed(real_hs12_pt12_ref_name))
+        download_seq('NC_036891', real_hs12_pt12_path_tar +
+                     extension_removed(real_hs12_pt12_tar_name))
+
     par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000'
     par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + \
         '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
@@ -599,6 +650,14 @@ if RUN_REAL_HS12_PT12:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_PXO99A_MAFF311018:
+    DOWNLOAD_DATASET = True
+
+    if DOWNLOAD_DATASET:
+        download_seq('CP000967', real_PXO99A_MAFF311018_path_ref +
+                     extension_removed(real_PXO99A_MAFF311018_ref_name))
+        download_seq('AP008229', real_PXO99A_MAFF311018_path_tar +
+                     extension_removed(real_PXO99A_MAFF311018_tar_name))
+
     par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar'
     par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" ' + \
         '-stat -o PXO99A_MAFF_311018.svg'
@@ -679,15 +738,20 @@ if RUN_SYNTH_COMPARE_SMASH:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_COMPARE_SMASH:
-    path_ref = path_data + 'fungi' + sep + 'Saccharomyces_cerevisiae' + sep
-    path_tar = path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
+    DOWNLOAD_DATASET = True
+
+    if DOWNLOAD_DATASET:
+        download_seq('NC_001139', real_comp_smash_path_ref +
+                     extension_removed(real_comp_smash_ref_name))
+        download_seq('CP020299', real_comp_smash_path_tar +
+                     extension_removed(real_comp_smash_tar_name))
 
     # Smash++
     par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
     par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat ' + \
         '-o Sc_Sp_smash.svg'
-    ref = path_ref + real_comp_smash_ref_name
-    tar = path_tar + real_comp_smash_tar_name
+    ref = real_comp_smash_path_ref + real_comp_smash_ref_name
+    tar = real_comp_smash_path_tar + real_comp_smash_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -712,8 +776,8 @@ if RUN_REAL_COMPARE_SMASH:
     par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
     ref_new_smash = 'Sc' + real_comp_smash_ref_name
     tar_new_smash = 'Sp' + real_comp_smash_tar_name
-    ref_main = path_ref + real_comp_smash_ref_name
-    tar_main = path_tar + real_comp_smash_tar_name
+    ref_main = real_comp_smash_path_ref + real_comp_smash_ref_name
+    tar_main = real_comp_smash_path_tar + real_comp_smash_tar_name
     ref = ref_new_smash
     tar = tar_new_smash
     cmd = time_exe + log_smash + ' ' + \
