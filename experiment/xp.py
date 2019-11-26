@@ -546,14 +546,6 @@ if RUN_SYNTH_MUTATE:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_GGA18_MGA20:
-    DOWNLOAD_DATASET = True
-
-    if DOWNLOAD_DATASET:
-        download_seq('CM000110', real_gga18_mga20_path_ref +
-                     extension_removed(real_gga18_mga20_ref_name))
-        download_seq('CM000981', real_gga18_mga20_path_tar +
-                     extension_removed(real_gga18_mga20_tar_name))
-
     par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 ' + \
         '-th 1.9'
     par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" ' + \
@@ -564,6 +556,14 @@ if RUN_REAL_GGA18_MGA20:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Download sequences
+    if not os.path.exists(ref):
+        download_seq('CM000110', real_gga18_mga20_path_ref +
+                     extension_removed(real_gga18_mga20_ref_name))
+    if not os.path.exists(tar):
+        download_seq('CM000981', real_gga18_mga20_path_tar +
+                     extension_removed(real_gga18_mga20_tar_name))
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -581,14 +581,6 @@ if RUN_REAL_GGA18_MGA20:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_GGA14_MGA16:
-    DOWNLOAD_DATASET = True
-
-    if DOWNLOAD_DATASET:
-        download_seq('CM000106', real_gga14_mga16_path_ref +
-                     extension_removed(real_gga14_mga16_ref_name))
-        download_seq('CM000977', real_gga14_mga16_path_tar +
-                     extension_removed(real_gga14_mga16_tar_name))
-
     par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 ' + \
         '-e 1.95 -m 400000'
     par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + \
@@ -599,6 +591,14 @@ if RUN_REAL_GGA14_MGA16:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Download sequences
+    if not os.path.exists(ref):
+        download_seq('CM000106', real_gga14_mga16_path_ref +
+                     extension_removed(real_gga14_mga16_ref_name))
+    if not os.path.exists(tar):
+        download_seq('CM000977', real_gga14_mga16_path_tar +
+                     extension_removed(real_gga14_mga16_tar_name))
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -616,14 +616,6 @@ if RUN_REAL_GGA14_MGA16:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_HS12_PT12:
-    DOWNLOAD_DATASET = True
-
-    if DOWNLOAD_DATASET:
-        download_seq('NC_000012', real_hs12_pt12_path_ref +
-                     extension_removed(real_hs12_pt12_ref_name))
-        download_seq('NC_036891', real_hs12_pt12_path_tar +
-                     extension_removed(real_hs12_pt12_tar_name))
-
     par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000'
     par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + \
         '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
@@ -633,6 +625,14 @@ if RUN_REAL_HS12_PT12:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Download sequences
+    if not os.path.exists(ref):
+        download_seq('NC_000012', real_hs12_pt12_path_ref +
+                     extension_removed(real_hs12_pt12_ref_name))
+    if not os.path.exists(tar):
+        download_seq('NC_036891', real_hs12_pt12_path_tar +
+                     extension_removed(real_hs12_pt12_tar_name))
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -650,14 +650,6 @@ if RUN_REAL_HS12_PT12:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_PXO99A_MAFF311018:
-    DOWNLOAD_DATASET = True
-
-    if DOWNLOAD_DATASET:
-        download_seq('CP000967', real_PXO99A_MAFF311018_path_ref +
-                     extension_removed(real_PXO99A_MAFF311018_ref_name))
-        download_seq('AP008229', real_PXO99A_MAFF311018_path_tar +
-                     extension_removed(real_PXO99A_MAFF311018_tar_name))
-
     par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar'
     par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" ' + \
         '-stat -o PXO99A_MAFF_311018.svg'
@@ -667,6 +659,14 @@ if RUN_REAL_PXO99A_MAFF311018:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Download sequences
+    if not os.path.exists(ref):
+        download_seq('CP000967', real_PXO99A_MAFF311018_path_ref +
+                     extension_removed(real_PXO99A_MAFF311018_ref_name))
+    if not os.path.exists(tar):
+        download_seq('AP008229', real_PXO99A_MAFF311018_path_tar +
+                     extension_removed(real_PXO99A_MAFF311018_tar_name))
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -738,14 +738,6 @@ if RUN_SYNTH_COMPARE_SMASH:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_COMPARE_SMASH:
-    DOWNLOAD_DATASET = True
-
-    if DOWNLOAD_DATASET:
-        download_seq('NC_001139', real_comp_smash_path_ref +
-                     extension_removed(real_comp_smash_ref_name))
-        download_seq('CP020299', real_comp_smash_path_tar +
-                     extension_removed(real_comp_smash_tar_name))
-
     # Smash++
     par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
     par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat ' + \
@@ -756,6 +748,14 @@ if RUN_REAL_COMPARE_SMASH:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Download sequences
+    if not os.path.exists(ref):
+        download_seq('NC_001139', real_comp_smash_path_ref +
+                     extension_removed(real_comp_smash_ref_name))
+    if not os.path.exists(tar):
+        download_seq('CP020299', real_comp_smash_path_tar +
+                     extension_removed(real_comp_smash_tar_name))
     ## Run
     execute(cmd_main)
     execute(cmd_viz)
