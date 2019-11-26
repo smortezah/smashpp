@@ -186,8 +186,8 @@ cd example/
 ```
 There is in this directory two 1000 base sequences, the reference sequence named `ref`, and the target sequence, named `tar`. Now, run Smash++ and the visualizer:
 ```bash
-	./smashpp -r ref -t tar
-	./smashpp -viz -o example.svg ref.tar.pos
+./smashpp -r ref -t tar
+./smashpp -viz -o example.svg ref.tar.pos
 ```
 
 <!-- ### Compare Smash++ with other methods
