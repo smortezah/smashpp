@@ -30,5 +30,5 @@ paper/sup.synctex(busy)
 install.bat
 desktop.ini
 
-# experiment/dataset/mammalia/Homo_sapiens/**
-# experiment/dataset/mammalia/Pan_troglodytes/**
+experiment/dataset/mammalia/Homo_sapiens/**
+experiment/dataset/mammalia/Pan_troglodytes/**
