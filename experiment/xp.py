@@ -48,10 +48,8 @@ RUN_SYNTH_PERM_30 = False
 '''
 General
 '''
-if os.name == 'posix':
-    sep = '/'
-elif os.name == 'nt':
-    sep = '\\'
+sep = '/' if os.name == 'posix' else '\\'
+print(sep)
 current_dir = os.getcwd()
 path_data = 'dataset' + sep
 path_data_synth = path_data + 'synth' + sep
@@ -61,6 +59,8 @@ goose_fastqsimulation = path_bin + 'goose-fastqsimulation '
 goose_mutatedna = path_bin + 'goose-mutatedna '
 goose_permuteseqbyblocks = path_bin + 'goose-permuteseqbyblocks '
 smashpp_exe = '..' + sep + 'smashpp '
+if not os.path.exists(smashpp_exe.strip()):
+    smashpp_exe = 'bin' + sep + 'smashpp '
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 smash = path_bin + 'smash '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
