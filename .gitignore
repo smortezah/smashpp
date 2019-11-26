@@ -28,6 +28,7 @@ paper/sup.synctex(busy)
 .vscode/settings.json
 .Rproj.user
 install.bat
+desktop.ini
 
 # experiment/dataset/mammalia/Homo_sapiens/**
 # experiment/dataset/mammalia/Pan_troglodytes/**
