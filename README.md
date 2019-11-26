@@ -3,12 +3,14 @@
 A fast tool to find and visualize rearrangements in DNA sequences.
 
 ## Install
-To install Smash++ on various operating systems, follow the instructions below. It requires CMake (>= 3.9) and a C++14 compliant compiler. Note that the precompiled executables are available for 64 bit operating systems in the `bin` directory.
+To install Smash++ on various operating systems, follow the instructions below. It requires CMake (>= 3.9) and a C++14 compliant compiler. Note that a precompiled executable is available for 64 bit operating systems in the `experiment/bin` directory.
 
 ### Conda
+Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html), then run the following:
 ```bash
 conda install -c cobilab smashpp
 ```
+<!-- conda install -c bioconda smashpp -->
 
 ### Linux
 * Install Git and CMake:

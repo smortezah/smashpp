@@ -22,13 +22,11 @@ callgrind.out*
 gprof2dot.py
 example/*.pos
 example/*.s*
-smashpp
+# smashpp
 smashpp.exe
 paper/sup.synctex(busy)
 .vscode/settings.json
 .Rproj.user
 install.bat
 desktop.ini
-
-experiment/dataset/mammalia/Homo_sapiens/**
-experiment/dataset/mammalia/Pan_troglodytes/**
+experiment/dataset/**
