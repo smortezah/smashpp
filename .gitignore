@@ -29,4 +29,5 @@ paper/sup.synctex(busy)
 .Rproj.user
 install.bat
 desktop.ini
-experiment/dataset/**
+# experiment/dataset/**
+experiment/dataset/mammalia/**
