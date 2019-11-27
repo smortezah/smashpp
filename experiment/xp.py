@@ -68,13 +68,6 @@ def remove_all_ext(directory, extension):
             os.remove(os.path.join(directory, file_name))
 
 
-def remove_start_with(directory, word):
-    '''Remove all files in a directory of which their names start with word'''
-    for file_name in os.listdir(directory):
-        if file_name.startswith(word):
-            os.remove(os.path.join(directory, file_name))
-
-
 def remove_path(path):
     '''Remove a file or a directory, if it exists'''
     if os.path.exists(path):
@@ -551,8 +544,8 @@ class Dataset:
                 remove_path(self.tar)
                 self._acquire_ref()
                 self._acquire_tar()
-                remove_start_with(current_dir, "r_")
-                remove_start_with(current_dir, "t_")
+                remove(current_dir, "r_*")
+                remove(current_dir, "t_*")
 
 
 class Benchmark:
@@ -742,7 +735,7 @@ if not os.path.exists('bin/goose-fasta2seq') or \
    not os.path.exists('bin/goose-fastqsimulation') or \
    not os.path.exists('bin/goose-mutatedna') or \
    not os.path.exists('bin/goose-permuteseqbyblocks'):
-    # remove_start_with(current_dir, "goose-")
+    # remove(current_dir, "goose-*")
     # remove_path("goose")
     execute('git clone https://github.com/pratas/goose.git;' +
             'cd goose/src/;' +
