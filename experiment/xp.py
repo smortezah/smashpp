@@ -259,6 +259,38 @@ class Dataset:
             self.tar_path = path_data_synth
             self.ref_name = 'RefPerm'
             self.tar_name = 'TarPerm'
+        elif self.key == 'synth_perm450000':
+            block_size = '450000'
+            self.label = 'Perm' + block_size
+            self.category = 'Synthetic'
+            self.ref_path = path_data_synth
+            self.tar_path = path_data_synth
+            self.ref_name = 'RefPerm' + block_size
+            self.tar_name = 'TarPerm'
+        elif self.key == 'synth_perm30000':
+            block_size = '30000'
+            self.label = 'Perm' + block_size
+            self.category = 'Synthetic'
+            self.ref_path = path_data_synth
+            self.tar_path = path_data_synth
+            self.ref_name = 'RefPerm' + block_size
+            self.tar_name = 'TarPerm'
+        elif self.key == 'synth_perm1000':
+            block_size = '1000'
+            self.label = 'Perm' + block_size
+            self.category = 'Synthetic'
+            self.ref_path = path_data_synth
+            self.tar_path = path_data_synth
+            self.ref_name = 'RefPerm' + block_size
+            self.tar_name = 'TarPerm'
+        elif self.key == 'synth_perm30':
+            block_size = '30'
+            self.label = 'Perm' + block_size
+            self.category = 'Synthetic'
+            self.ref_path = path_data_synth
+            self.tar_path = path_data_synth
+            self.ref_name = 'RefPerm' + block_size
+            self.tar_name = 'TarPerm'
         elif self.key == 'real_gga18_mga20':
             self.label = 'GGA18_MGA20'
             self.category = 'Real'
@@ -369,6 +401,46 @@ class Dataset:
             execute(goose_fastqsimulation + synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
             cat(['r_a', 'r_b', 'r_c'], self.ref)
+        elif self.key == 'synth_perm450000':
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+            cat(['r_a', 'r_b', 'r_c'], self.ref_path + 'RefPerm')
+
+            execute(goose_permuteseqbyblocks + '-bs 450000 -s 6041 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
+        elif self.key == 'synth_perm30000':
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+            cat(['r_a', 'r_b', 'r_c'], self.ref_path + 'RefPerm')
+
+            execute(goose_permuteseqbyblocks + '-bs 30000 -s 328914 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
+        elif self.key == 'synth_perm1000':
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+            cat(['r_a', 'r_b', 'r_c'], self.ref_path + 'RefPerm')
+
+            execute(goose_permuteseqbyblocks + '-bs 1000 -s 564283 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
+        elif self.key == 'synth_perm30':
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+            execute(goose_fastqsimulation + synth_common_par +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+            cat(['r_a', 'r_b', 'r_c'], self.ref_path + 'RefPerm')
+
+            execute(goose_permuteseqbyblocks + '-bs 1000 -s 900123 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
         elif self.key == 'real_gga18_mga20':
             self._download_seq('CM000110', self.ref_path +
                                extension_removed(self.ref_name))
@@ -431,6 +503,26 @@ class Dataset:
             execute(smashpp_inv_rep + 'r_b t_b')
             execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
             cat(['t_a', 't_b', 't_c'], self.tar)
+        elif self.key == 'synth_perm450000':
+            execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+            execute(smashpp_inv_rep + 'r_b t_b')
+            execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+            cat(['t_a', 't_b', 't_c'], self.tar)
+        elif self.key == 'synth_perm30000':
+            execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+            execute(smashpp_inv_rep + 'r_b t_b')
+            execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+            cat(['t_a', 't_b', 't_c'], self.tar)
+        elif self.key == 'synth_perm1000':
+            execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+            execute(smashpp_inv_rep + 'r_b t_b')
+            execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+            cat(['t_a', 't_b', 't_c'], self.tar)
+        elif self.key == 'synth_perm30':
+            execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+            execute(smashpp_inv_rep + 'r_b t_b')
+            execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+            cat(['t_a', 't_b', 't_c'], self.tar)
         elif self.key == 'real_gga18_mga20':
             self._download_seq('CM000981', self.tar_path +
                                extension_removed(self.tar_name))
@@ -461,13 +553,6 @@ class Dataset:
                 self._acquire_tar()
                 remove_start_with(current_dir, "r_")
                 remove_start_with(current_dir, "t_")
-
-    #todo
-    def run_smashpp_main(self):
-        execute(time_exe + log_main + ' ' + smashpp_exe + ' -r ' + self.ref + ' -t ' + self.tar + ' ' + self.par_main)
-
-    def run_smashpp_viz(self):
-        execute(time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + self.par_viz + ' ' + bare_name(self.ref) + '.' + bare_name(self.tar) + '.pos')
 
 
 class Smashpp:
@@ -696,192 +781,28 @@ if RUN_SYNTH_PERM_ORIGINAL:
     smashpp.bench()  # Bench
 
 if RUN_SYNTH_PERM_450000:
-    dataset = Dataset('synth_perm')
-    block_size = '450000'
-    ref_name = dataset.ref_name + block_size
-    ref = dataset.ref_path + ref_name
-    tar = dataset.tar_path + dataset.tar_name
-    seed = '6041'
-
-    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    if not os.path.exists(dataset.ref_path + dataset.ref_name) or \
-       not os.path.exists(dataset.tar_path + dataset.tar_name):
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
-        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
-
-        execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-        execute(smashpp_inv_rep + 'r_b t_b')
-        execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
-        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
-
-        remove_start_with(current_dir, "r_")
-        remove_start_with(current_dir, "t_")
-
-    if not os.path.exists(ref):
-        execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
-                seed + ' < ' + dataset.ref_path + dataset.ref_name +
-                ' > ' + path_data_synth + ref_name)
-    # Run
-    execute(cmd_main)
-    execute(cmd_viz)
-    # Bench
-    bench = True
-    method = 'Smash++'
-    dataset = 'Perm' + block_size
-    cat = 'Synthetic'
-    size = file_size(ref) + file_size(tar)
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_perm450000')
+    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_SYNTH_PERM_30000:
-    dataset = Dataset('synth_perm')
-    block_size = '30000'
-    ref_name = dataset.ref_name + block_size
-    ref = dataset.ref_path + ref_name
-    tar = dataset.tar_path + dataset.tar_name
-    seed = '328914'
-
-    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    if not os.path.exists(dataset.ref_path + dataset.ref_name) or \
-       not os.path.exists(dataset.tar_path + dataset.tar_name):
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
-        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
-
-        execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-        execute(smashpp_inv_rep + 'r_b t_b')
-        execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
-        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
-
-        remove_start_with(current_dir, "r_")
-        remove_start_with(current_dir, "t_")
-
-    if not os.path.exists(ref):
-        execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
-                seed + ' < ' + dataset.ref_path + dataset.ref_name +
-                ' > ' + path_data_synth + ref_name)
-    # Run
-    execute(cmd_main)
-    execute(cmd_viz)
-    # Bench
-    bench = True
-    method = 'Smash++'
-    dataset = 'Perm' + block_size
-    cat = 'Synthetic'
-    size = file_size(ref) + file_size(tar)
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_perm30000')
+    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_SYNTH_PERM_1000:
-    dataset = Dataset('synth_perm')
-    block_size = '1000'
-    ref_name = dataset.ref_name + block_size
-    ref = dataset.ref_path + ref_name
-    tar = dataset.tar_path + dataset.tar_name
-    seed = '564283'
-
-    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    if not os.path.exists(dataset.ref_path + dataset.ref_name) or \
-       not os.path.exists(dataset.ref_path + dataset.tar_name):
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
-        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
-
-        execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-        execute(smashpp_inv_rep + 'r_b t_b')
-        execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
-        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
-
-        remove_start_with(current_dir, "r_")
-        remove_start_with(current_dir, "t_")
-
-    if not os.path.exists(ref):
-        execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
-                seed + ' < ' + dataset.ref_path + dataset.ref_name +
-                ' > ' + path_data_synth + ref_name)
-    # Run
-    execute(cmd_main)
-    execute(cmd_viz)
-    # Bench
-    bench = True
-    method = 'Smash++'
-    dataset = 'Perm' + block_size
-    cat = 'Synthetic'
-    size = file_size(ref) + file_size(tar)
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_perm1000')
+    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_SYNTH_PERM_30:
-    dataset = Dataset('synth_perm')
-    block_size = '30'
-    ref_name = dataset.ref_name + block_size
-    ref = dataset.ref_path + ref_name
-    tar = dataset.tar_path + dataset.tar_name
-    seed = '900123'
-
-    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    if not os.path.exists(dataset.ref_path + dataset.ref_name) or \
-       not os.path.exists(dataset.tar_path + dataset.tar_name):
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-        execute(goose_fastqsimulation + synth_common_par +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
-        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
-
-        execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-        execute(smashpp_inv_rep + 'r_b t_b')
-        execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
-        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
-
-        remove_start_with(current_dir, "r_")
-        remove_start_with(current_dir, "t_")
-
-    if not os.path.exists(ref):
-        execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
-                seed + ' < ' + dataset.ref_path + dataset.ref_name +
-                ' > ' + path_data_synth + ref_name)
-    # Run
-    execute(cmd_main)
-    execute(cmd_viz)
-    # Bench
-    bench = True
-    method = 'Smash++'
-    dataset = 'Perm' + block_size
-    cat = 'Synthetic'
-    size = file_size(ref) + file_size(tar)
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_perm30')
+    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 
 # def run_bench(method, dataset, cat, size, func, arg=''):
