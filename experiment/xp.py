@@ -8,24 +8,12 @@ Copyright (C) 2018-2019, IEETA/DETI, University of Aveiro, Portugal
 '''
 USER CAN CHANGE HERE BY SWITCHING False/True
 '''
-from pathlib import Path
 import shutil
-import csv
 import os
-import subprocess
 
 # Resolve dependencies
 GET_GOOSE = False
 GET_ENTREZ = False  #True
-
-# Make synthetic dataset
-MAKE_SYNTH_SMALL = False
-MAKE_SYNTH_MEDIUM = False
-MAKE_SYNTH_LARGE = False
-MAKE_SYNTH_XLARGE = False
-MAKE_SYNTH_MUTATE = False
-MAKE_SYNTH_COMPARE_SMASH = False
-MAKE_SYNTH_PERMUTE = False
 
 # Run (Benchmark)
 RUN_SYNTH_SMALL = False
@@ -109,6 +97,7 @@ time_exe = '/usr/bin/time -v --output='
 log_main = 'log_main'
 log_viz = 'log_viz'
 log_smash = 'log_smash'
+# execute('sudo chmod -R 777 bin/')
 
 
 def execute(cmd):
@@ -152,6 +141,7 @@ def make_path(path):
 
 
 def remove(directory, pattern):
+    from pathlib import Path
     for p in Path(directory).glob(pattern):
         p.unlink()
 
@@ -209,128 +199,6 @@ if GET_ENTREZ:
     print('Downloading and installing Entrez ...')
     execute('conda install -c bioconda entrez-direct --yes')
     print('Finished.')
-
-
-'''
-Make synthetic dataset
-'''
-# execute('sudo chmod 777 smashpp-inv-rep')
-
-if MAKE_SYNTH_SMALL:  # Sizes: ref:1,500, tar:1,500
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 5 -s 201  r_a')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.20,0.30,0.30,0.20,0.0 -ls 100 -n 5 -s 58  r_b')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 5 -s 15  r_c')
-    cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefS')
-
-    execute(smashpp_inv_rep + 'r_a t_c')
-    execute(goose_mutatedna + '-mr 0.02 < r_b > t_b')
-    execute(smashpp_inv_rep + 'r_c t_a')
-    cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarS')
-
-if MAKE_SYNTH_MEDIUM:  # Sizes: ref:100,000, tar:100,000
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 191  r_a')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 250 -s 608  r_b')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.20,0.30,0.30,0.20,0.0 -ls 100 -n 250 -s 30  r_c')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 138  r_d')
-    cat(['r_a', 'r_b', 'r_c', 'r_d'], path_data_synth + 'RefM')
-
-    execute(smashpp_inv_rep + 'r_a t_d')
-    execute(goose_mutatedna + '-mr 0.90 < r_b > t_c')
-    shutil.copyfile('r_c', 't_a')
-    execute(goose_mutatedna + '-mr 0.03 < r_d > t_b')
-    cat(['t_a', 't_b', 't_c', 't_d'], path_data_synth + 'TarM')
-
-if MAKE_SYNTH_LARGE:  # Sizes: ref:5,000,000, tar:5,000,000
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 25000 -s 10101  r_a')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 25000 -s 10  r_b')
-    cat(['r_a', 'r_b'], path_data_synth + 'RefL')
-
-    execute(smashpp_inv_rep + 'r_a t_b')
-    execute(goose_mutatedna + '-mr 0.02 < r_b > t_a')
-    cat(['t_a', 't_b'], path_data_synth + 'TarL')
-
-if MAKE_SYNTH_XLARGE:  # Sizes: ref:100,000,000, tar:100,000,000
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 250000 -s 1311  r_a')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 250000 -s 7129  r_b')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250000 -s 16  r_c')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250000 -s 537  r_d')
-    cat(['r_a', 'r_b', 'r_c', 'r_d'], path_data_synth + 'RefXL')
-
-    execute(goose_mutatedna + '-mr 0.01 < r_a > t_a')
-    execute(smashpp_inv_rep + 'r_c t_b')
-    shutil.copyfile('r_d', 't_c')
-    execute(smashpp_inv_rep + 'r_b t_d')
-    cat(['t_a', 't_b', 't_c', 't_d'], path_data_synth + 'TarXL')
-
-if MAKE_SYNTH_MUTATE:  # Sizes: ref:60,000, tar:60,000. Mutation up to 60%
-    if os.path.exists(path_data_synth + "RefMut"):
-        os.remove(path_data_synth + "RefMut")
-    if os.path.exists(path_data_synth + "TarMut"):
-        os.remove(path_data_synth + "TarMut")
-
-    for i in range(1, 60+1):
-        execute(goose_fastqsimulation + synth_common_par + ' -s ' + str(i) +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10 r_' + str(i))
-        append('r_' + str(i), path_data_synth + 'RefMut')
-
-        execute(goose_mutatedna + '-mr ' + str(i/100) +
-                ' < r_' + str(i) + ' > t_' + str(i))
-        append('t_' + str(i), path_data_synth + 'TarMut')
-
-if MAKE_SYNTH_COMPARE_SMASH:  # Sizes: ref:1,000,000, tar:1,000,000
-    if os.path.exists(path_data_synth + "RefComp"):
-        os.remove(path_data_synth + "RefComp")
-    if os.path.exists(path_data_synth + "TarComp"):
-        os.remove(path_data_synth + "TarComp")
-
-    for i in range(0, 9 + 1):
-        execute(goose_fastqsimulation + synth_common_par +
-                ' -s ' + str(i * 10 + 1) +
-                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_' + str(i))
-        append('r_' + str(i), path_data_synth + 'RefComp')
-    shutil.copyfile('r_0', 't_0')
-    for i in range(1, 9 + 1):
-        execute(goose_mutatedna + '-mr ' + str(i/100) +
-                ' < r_' + str(i) + ' > t_' + str(i))
-    for i in range(4, 6 + 1):
-        execute(smashpp_inv_rep + 't_' + str(i) + ' t_' + str(i) + 'i')
-
-    for i in range(0, 3 + 1):
-        append('t_' + str(i), path_data_synth + 'TarComp')
-    for i in range(4, 6 + 1):
-        append('t_' + str(i) + 'i', path_data_synth + 'TarComp')
-    for i in range(7, 9 + 1):
-        append('t_' + str(i), path_data_synth + 'TarComp')
-
-if MAKE_SYNTH_PERMUTE:  # Sizes: ref:3,000,000, tar:3,000,000
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-    execute(goose_fastqsimulation + synth_common_par +
-            '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
-    cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
-
-    execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-    execute(smashpp_inv_rep + 'r_b t_b')
-    execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
-    cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
-
-remove_all_start(current_dir, "r_")
-remove_all_start(current_dir, "t_")
 
 
 '''
@@ -429,6 +297,26 @@ if RUN_SYNTH_SMALL:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Make dataset. Sizes: ref:1,500, tar:1,500
+    if not os.path.exists(ref) or not os.path.exists(tar):
+        remove_path(ref)
+        remove_path(tar)
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 5 -s 201  r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.20,0.30,0.30,0.20,0.0 -ls 100 -n 5 -s 58  r_b')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 5 -s 15  r_c')
+        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefS')
+
+        execute(smashpp_inv_rep + 'r_a t_c')
+        execute(goose_mutatedna + '-mr 0.02 < r_b > t_b')
+        execute(smashpp_inv_rep + 'r_c t_a')
+        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarS')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -454,6 +342,29 @@ if RUN_SYNTH_MEDIUM:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Make dataset. Sizes: ref:100,000, tar:100,000
+    if not os.path.exists(ref) or not os.path.exists(tar):
+        remove_path(ref)
+        remove_path(tar)
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 191  r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 250 -s 608  r_b')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.20,0.30,0.30,0.20,0.0 -ls 100 -n 250 -s 30  r_c')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 138  r_d')
+        cat(['r_a', 'r_b', 'r_c', 'r_d'], path_data_synth + 'RefM')
+
+        execute(smashpp_inv_rep + 'r_a t_d')
+        execute(goose_mutatedna + '-mr 0.90 < r_b > t_c')
+        shutil.copyfile('r_c', 't_a')
+        execute(goose_mutatedna + '-mr 0.03 < r_d > t_b')
+        cat(['t_a', 't_b', 't_c', 't_d'], path_data_synth + 'TarM')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -479,6 +390,23 @@ if RUN_SYNTH_LARGE:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Make dataset. Sizes: ref:5,000,000, tar:5,000,000
+    if not os.path.exists(ref) or not os.path.exists(tar):
+        remove_path(ref)
+        remove_path(tar)
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 25000 -s 10101  r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 25000 -s 10  r_b')
+        cat(['r_a', 'r_b'], path_data_synth + 'RefL')
+
+        execute(smashpp_inv_rep + 'r_a t_b')
+        execute(goose_mutatedna + '-mr 0.02 < r_b > t_a')
+        cat(['t_a', 't_b'], path_data_synth + 'TarL')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -504,6 +432,29 @@ if RUN_SYNTH_XLARGE:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Make dataset. Sizes: ref:100,000,000, tar:100,000,000
+    if not os.path.exists(ref) or not os.path.exists(tar):
+        remove_path(ref)
+        remove_path(tar)
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 250000 -s 1311  r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 250000 -s 7129  r_b')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250000 -s 16  r_c')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250000 -s 537  r_d')
+        cat(['r_a', 'r_b', 'r_c', 'r_d'], path_data_synth + 'RefXL')
+
+        execute(goose_mutatedna + '-mr 0.01 < r_a > t_a')
+        execute(smashpp_inv_rep + 'r_c t_b')
+        shutil.copyfile('r_d', 't_c')
+        execute(smashpp_inv_rep + 'r_b t_d')
+        cat(['t_a', 't_b', 't_c', 't_d'], path_data_synth + 'TarXL')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -529,6 +480,23 @@ if RUN_SYNTH_MUTATE:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Make dataset. Sizes: ref:60,000, tar:60,000. Mutation up to 60%
+    if not os.path.exists(ref) or not os.path.exists(tar):
+        remove_path(ref)
+        remove_path(tar)
+        for i in range(1, 60+1):
+            execute(goose_fastqsimulation + synth_common_par +
+                    ' -s ' + str(i) +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10 r_' + str(i))
+            append('r_' + str(i), path_data_synth + 'RefMut')
+
+            execute(goose_mutatedna + '-mr ' + str(i/100) +
+                    ' < r_' + str(i) + ' > t_' + str(i))
+            append('t_' + str(i), path_data_synth + 'TarMut')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -694,6 +662,32 @@ if RUN_SYNTH_COMPARE_SMASH:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Make dataset. Sizes: ref:1,000,000, tar:1,000,000
+    if not os.path.exists(ref) or not os.path.exists(tar):
+        remove_path(ref)
+        remove_path(tar)
+        for i in range(0, 9 + 1):
+            execute(goose_fastqsimulation + synth_common_par +
+                    ' -s ' + str(i * 10 + 1) +
+                    '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_' + str(i))
+            append('r_' + str(i), path_data_synth + 'RefComp')
+        shutil.copyfile('r_0', 't_0')
+        for i in range(1, 9 + 1):
+            execute(goose_mutatedna + '-mr ' + str(i/100) +
+                    ' < r_' + str(i) + ' > t_' + str(i))
+        for i in range(4, 6 + 1):
+            execute(smashpp_inv_rep + 't_' + str(i) + ' t_' + str(i) + 'i')
+
+        for i in range(0, 3 + 1):
+            append('t_' + str(i), path_data_synth + 'TarComp')
+        for i in range(4, 6 + 1):
+            append('t_' + str(i) + 'i', path_data_synth + 'TarComp')
+        for i in range(7, 9 + 1):
+            append('t_' + str(i), path_data_synth + 'TarComp')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
     ## Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -811,6 +805,26 @@ if RUN_SYNTH_PERM_ORIGINAL:
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
+
+    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    if not os.path.exists(ref) or not os.path.exists(tar):
+        remove_path(ref)
+        remove_path(tar)
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
+
+        execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+        execute(smashpp_inv_rep + 'r_b t_b')
+        execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -828,11 +842,11 @@ if RUN_SYNTH_PERM_ORIGINAL:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_450000:
-    block_size = '450000'
-    ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 25 -d 3000 -ar'
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
+    block_size = '450000'
+    ref_name = synth_perm_ref_name + block_size
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
@@ -840,10 +854,31 @@ if RUN_SYNTH_PERM_450000:
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '6041'
+
+    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    if not os.path.exists(path_data_synth + synth_perm_ref_name) or \
+       not os.path.exists(path_data_synth + synth_perm_tar_name):
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
+
+        execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+        execute(smashpp_inv_rep + 'r_b t_b')
+        execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
+
+    if not os.path.exists(ref):
+        execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
+                seed + ' < ' + path_data_synth + synth_perm_ref_name +
+                ' > ' + path_data_synth + ref_name)
     # Run
-    execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' + seed +
-            ' < ' + path_data_synth + synth_perm_ref_name +
-            ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
@@ -860,11 +895,11 @@ if RUN_SYNTH_PERM_450000:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_30000:
-    block_size = '30000'
-    ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 75 -d 1500 -ar'
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
+    block_size = '30000'
+    ref_name = synth_perm_ref_name + block_size
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
@@ -872,10 +907,31 @@ if RUN_SYNTH_PERM_30000:
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '328914'
+
+    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    if not os.path.exists(path_data_synth + synth_perm_ref_name) or \
+       not os.path.exists(path_data_synth + synth_perm_tar_name):
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
+
+        execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+        execute(smashpp_inv_rep + 'r_b t_b')
+        execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
+
+    if not os.path.exists(ref):
+        execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
+                seed + ' < ' + path_data_synth + synth_perm_ref_name +
+                ' > ' + path_data_synth + ref_name)
     # Run
-    execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' + seed +
-            ' < ' + path_data_synth + synth_perm_ref_name +
-            ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
@@ -892,11 +948,11 @@ if RUN_SYNTH_PERM_30000:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_1000:
-    block_size = '1000'
-    ref_name = synth_perm_ref_name + block_size
     par_main = '-l 0 -f 25 -d 300 -ar'
     par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
+    block_size = '1000'
+    ref_name = synth_perm_ref_name + block_size
     ref = path_data_synth + ref_name
     tar = path_data_synth + synth_perm_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
@@ -904,10 +960,31 @@ if RUN_SYNTH_PERM_1000:
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '564283'
+
+    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    if not os.path.exists(path_data_synth + synth_perm_ref_name) or \
+       not os.path.exists(path_data_synth + synth_perm_tar_name):
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
+
+        execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+        execute(smashpp_inv_rep + 'r_b t_b')
+        execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
+
+    if not os.path.exists(ref):
+        execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
+                seed + ' < ' + path_data_synth + synth_perm_ref_name +
+                ' > ' + path_data_synth + ref_name)
     # Run
-    execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' + seed +
-            ' < ' + path_data_synth + synth_perm_ref_name +
-            ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
@@ -936,10 +1013,31 @@ if RUN_SYNTH_PERM_30:
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
         ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '900123'
+
+    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    if not os.path.exists(path_data_synth + synth_perm_ref_name) or \
+       not os.path.exists(path_data_synth + synth_perm_tar_name):
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
+        execute(goose_fastqsimulation + synth_common_par +
+                '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
+        cat(['r_a', 'r_b', 'r_c'], path_data_synth + 'RefPerm')
+
+        execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
+        execute(smashpp_inv_rep + 'r_b t_b')
+        execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+        cat(['t_a', 't_b', 't_c'], path_data_synth + 'TarPerm')
+
+        remove_all_start(current_dir, "r_")
+        remove_all_start(current_dir, "t_")
+
+    if not os.path.exists(ref):
+        execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
+                seed + ' < ' + path_data_synth + synth_perm_ref_name +
+                ' > ' + path_data_synth + ref_name)
     # Run
-    execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' + seed +
-            ' < ' + path_data_synth + synth_perm_ref_name +
-            ' > ' + path_data_synth + ref_name)
     execute(cmd_main)
     execute(cmd_viz)
     # Bench
@@ -1001,6 +1099,7 @@ if RUN_SYNTH_PERM_30:
 
 
 if bench:
+    import csv
     with open('bench.csv', 'w') as bench_file:
         writer = csv.writer(bench_file)
         writer.writerow(['Method', 'Dataset', 'Cat', 'Size.B',
