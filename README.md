@@ -197,7 +197,9 @@ In order for comparison, you might set the parameters in
 ./run.sh
 ```
 With this script, you can download the datasets, install the dependencies, 
-install the other tools, run all the tools, and finally, visualize the results. -->
+install the other tools, run all the tools, and finally, visualize the results. 
+BEGOO KE CONDA BAYAD NASB BASHE, VASE DATASET HA (ENTREZ-DIRECT)
+-->
 
 ## Cite
 Please cite the following, if you use Smash++:

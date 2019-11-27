@@ -30,11 +30,13 @@ RUN_SYNTH_PERM_1000 = False
 RUN_SYNTH_PERM_30 = False
 
 
+###########################################################################
+#                        D O   N O T   C H A N G E                        #
+###########################################################################
 '''
 General
 '''
 sep = '/' if os.name == 'posix' else '\\'
-print(sep)
 current_dir = os.getcwd()
 path_data = 'dataset' + sep
 path_data_synth = path_data + 'synth' + sep
@@ -97,10 +99,12 @@ log_smash = 'log_smash'
 
 
 def execute(cmd):
+    '''Execute in terminal'''
     os.popen(cmd).read()
 
 
 def cat(file_in_names, file_out_name):
+    '''Concatenate a number of files'''
     with open(file_out_name, 'w') as file_out:
         for file in file_in_names:
             with open(file) as file_in:
@@ -109,52 +113,62 @@ def cat(file_in_names, file_out_name):
 
 
 def append(file_in_name, file_out_name):
+    '''Append a file to another file'''
     with open(file_in_name) as file_in, open(file_out_name, 'a') as file_out:
         for line in file_in:
             file_out.write(line)
 
 
 def remove_all_ext(directory, extension):
+    '''Remove all files in a directory with specific extension'''
     for file_name in os.listdir(directory):
         if file_name.endswith(extension):
             os.remove(os.path.join(directory, file_name))
 
 
 def remove_all_start(directory, word):
+    '''Remove all files in a directory of which their names start with word'''
     for file_name in os.listdir(directory):
         if file_name.startswith(word):
             os.remove(os.path.join(directory, file_name))
 
 
 def remove_path(path):
+    '''Remove a file or a directory, if it exists'''
     if os.path.exists(path):
         os.remove(path)
 
 
 def make_path(path):
+    '''Make a file or a directory, if it does not exist'''
     if not os.path.exists(path):
         os.makedirs(path)
 
 
 def remove(directory, pattern):
+    '''Remove files with specific pattern in their names from a directory'''
     from pathlib import Path
     for p in Path(directory).glob(pattern):
         p.unlink()
 
 
 def bare_name(name):
+    '''Extract file name from path'''
     return os.path.basename(name)
 
 
 def file_size(file):
+    '''Size of a file'''
     return os.path.getsize(file)
 
 
 def extension_removed(file_with_extension):
+    '''File name without extension'''
     return os.path.splitext(file_with_extension)[0]
 
 
 def to_seconds(hms):
+    '''Convert hour:minute:second to seconds'''
     vals = hms.split(':')
     if len(vals) == 2:
         h = 0
@@ -168,6 +182,7 @@ def to_seconds(hms):
 
 
 def download_seq(id, output):
+    '''Download a sequence using accession ID, with entrez direct'''
     out_file = bare_name(output)
     message = 'Downloading ' + out_file + ' with accession ' + str(id) + ' '
     print(message + '...', end='')
@@ -179,15 +194,15 @@ def download_seq(id, output):
     print('\r' + message + 'finished.')
 
 
-'''
-Resolve dependencies
-'''
 def tool_exists(name):
-    '''Python 3.3+'''
+    '''Check if a tool is installed on this machine. Requires Python 3.3+'''
     from shutil import which
     return which(name) is not None
 
 
+'''
+Resolve dependencies
+'''
 if not tool_exists('efetch'):
     '''Entrez Direct'''
     print('Downloading and installing Entrez ...')
