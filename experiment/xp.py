@@ -753,113 +753,69 @@ Run
 '''
 bench = Benchmark()
 
+
+def run_smashpp(key):
+    smashpp = Smashpp(key)
+    smashpp.acquire_dataset()
+    smashpp.run()
+    smashpp.bench(bench.result)
+
+
+def run_smash(key):
+    smash = Smash(key)
+    smash.run()
+    smash.bench(bench.result)
+
+
 if RUN_SYNTH_SMALL:
-    smashpp = Smashpp('synth_small')
-    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:1,500, tar:1,500
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_small')
 
 if RUN_SYNTH_MEDIUM:
-    smashpp = Smashpp('synth_medium')
-    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:100,000, tar:100,000
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_medium')
 
 if RUN_SYNTH_LARGE:
-    smashpp = Smashpp('synth_large')
-    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:5,000,000, tar:5,000,000
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_large')
 
 if RUN_SYNTH_XLARGE:
-    smashpp = Smashpp('synth_xlarge')
-    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:100,000,000, tar:100,000,000
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_xlarge')
 
 if RUN_SYNTH_MUTATE:
-    smashpp = Smashpp('synth_mutate')
-    smashpp.acquire_dataset()  # Make sequences. ref:60,000, tar:60,000. Mutation up to 60%
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_mutate')
 
 if RUN_REAL_GGA18_MGA20:
-    smashpp = Smashpp('real_gga18_mga20')
-    smashpp.acquire_dataset()  # Download sequences
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('real_gga18_mga20')
 
 if RUN_REAL_GGA14_MGA16:
-    smashpp = Smashpp('real_gga14_mga16')
-    smashpp.acquire_dataset()  # Download sequences
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('real_gga14_mga16')
 
 if RUN_REAL_HS12_PT12:
-    smashpp = Smashpp('real_hs12_pt12')
-    smashpp.acquire_dataset()  # Download sequences
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('real_hs12_pt12')
 
 if RUN_REAL_PXO99A_MAFF311018:
-    smashpp = Smashpp('real_pxo99a_maff311018')
-    smashpp.acquire_dataset()  # Download sequences
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('real_pxo99a_maff311018')
 
 if RUN_SYNTH_COMPARE_SMASH:
-    # Smash++
-    smashpp = Smashpp('synth_comp_smash')
-    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:1,000,000, tar:1,000,000
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
-
-    # Smash
-    smash = Smash('synth_comp_smash')
-    smash.run()  # Run
-    smash.bench(bench.result)  # Bench
+    run_smashpp('synth_comp_smash')
+    run_smash('synth_comp_smash')
 
 if RUN_REAL_COMPARE_SMASH:
-    # Smash++
-    smashpp = Smashpp('real_comp_smash')
-    smashpp.acquire_dataset()  # Download sequences
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
-
-    # Smash
-    smash = Smash('synth_comp_smash')
-    smash.run()  # Run
-    smash.bench(bench.result)  # Bench
+    run_smashpp('real_comp_smash')
+    run_smash('real_comp_smash')
 
 if RUN_SYNTH_PERM_ORIGINAL:
-    smashpp = Smashpp('synth_perm')
-    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_perm')
 
 if RUN_SYNTH_PERM_450000:
-    smashpp = Smashpp('synth_perm450000')
-    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_perm450000')
 
 if RUN_SYNTH_PERM_30000:
-    smashpp = Smashpp('synth_perm30000')
-    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_perm30000')
 
 if RUN_SYNTH_PERM_1000:
-    smashpp = Smashpp('synth_perm1000')
-    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_perm1000')
 
 if RUN_SYNTH_PERM_30:
-    smashpp = Smashpp('synth_perm30')
-    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    smashpp.run()  # Run
-    smashpp.bench(bench.result)  # Bench
+    run_smashpp('synth_perm30')
 
 bench.write_result()
 
