@@ -566,14 +566,11 @@ if RUN_SYNTH_LARGE:
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'Large'
-    cat = 'Synthetic'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_XLARGE:
@@ -586,14 +583,11 @@ if RUN_SYNTH_XLARGE:
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'XLarge'
-    cat = 'Synthetic'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_MUTATE:
@@ -606,14 +600,11 @@ if RUN_SYNTH_MUTATE:
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'Mutate'
-    cat = 'Synthetic'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_REAL_GGA18_MGA20:
@@ -626,14 +617,11 @@ if RUN_REAL_GGA18_MGA20:
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'GGA18_MGA20'
-    cat = 'Real'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_REAL_GGA14_MGA16:
@@ -646,14 +634,11 @@ if RUN_REAL_GGA14_MGA16:
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'GGA14_MGA16'
-    cat = 'Real'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_REAL_HS12_PT12:
@@ -666,14 +651,11 @@ if RUN_REAL_HS12_PT12:
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'HS12_PT12'
-    cat = 'Real'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_REAL_PXO99A_MAFF311018:
@@ -686,14 +668,11 @@ if RUN_REAL_PXO99A_MAFF311018:
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'PXO99A_MAFF311018'
-    cat = 'Real'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_COMPARE_SMASH:
@@ -707,14 +686,11 @@ if RUN_SYNTH_COMPARE_SMASH:
     ## Bench
     bench = True
     method = 'Smash++'
-    dataset = 'CompSynth'
-    cat = 'Synthetic'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
     # Smash
@@ -739,7 +715,7 @@ if RUN_SYNTH_COMPARE_SMASH:
     elapsed = calc_elapsed(log_smash)
     user_time = calc_user_time(log_smash)
     system_time = calc_system_time(log_smash)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_REAL_COMPARE_SMASH:
@@ -753,14 +729,11 @@ if RUN_REAL_COMPARE_SMASH:
     ## Bench
     bench = True
     method = 'Smash++'
-    dataset = 'CompReal'
-    cat = 'Real'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
     # Smash
@@ -785,7 +758,7 @@ if RUN_REAL_COMPARE_SMASH:
     elapsed = calc_elapsed(log_smash)
     user_time = calc_user_time(log_smash)
     system_time = calc_system_time(log_smash)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_ORIGINAL:
@@ -798,14 +771,11 @@ if RUN_SYNTH_PERM_ORIGINAL:
     # Bench
     bench = True
     method = 'Smash++'
-    dataset = 'PermOrig'
-    cat = 'Synthetic'
-    size = file_size(dataset.ref) + file_size(dataset.tar)
     mem = calc_mem(log_main, log_viz)
     elapsed = calc_elapsed(log_main, log_viz)
     user_time = calc_user_time(log_main, log_viz)
     system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset, cat, size, mem,
+    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_450000:
