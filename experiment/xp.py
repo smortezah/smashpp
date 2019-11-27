@@ -12,7 +12,7 @@ import shutil
 import os
 
 # Run (Benchmark)
-RUN_SYNTH_SMALL = False
+RUN_SYNTH_SMALL = True
 RUN_SYNTH_MEDIUM = False
 RUN_SYNTH_LARGE = False
 RUN_SYNTH_XLARGE = False
@@ -37,20 +37,9 @@ RUN_SYNTH_PERM_30 = False
 General
 '''
 sep = '/' if os.name == 'posix' else '\\'
-current_dir = os.getcwd()
-path_data = 'dataset' + sep
-path_data_synth = path_data + 'synth' + sep
-path_data_permute = path_data + 'permute' + sep
 path_bin = 'bin' + sep
-goose_fastqsimulation = path_bin + 'goose-fastqsimulation '
-goose_mutatedna = path_bin + 'goose-mutatedna '
-goose_permuteseqbyblocks = path_bin + 'goose-permuteseqbyblocks '
-smashpp_exe = '..' + sep + 'smashpp '
-if not os.path.exists(smashpp_exe.strip()):
-    smashpp_exe = 'bin' + sep + 'smashpp '
-smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
-smash = path_bin + 'smash '
-synth_common_par = '-eh -eo -es -edb -rm 0 '
+path_data = 'dataset' + sep
+current_dir = os.getcwd()
 time_exe = '/usr/bin/time -v --output='
 # execute('sudo chmod -R 777 bin/')
 
@@ -194,6 +183,13 @@ def calc_system_time(log_main, log_viz=''):
 
 
 class Dataset:
+    synth_common_par = '-eh -eo -es -edb -rm 0 '
+    smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
+    goose_mutatedna = path_bin + 'goose-mutatedna '
+    goose_fastqsimulation = path_bin + 'goose-fastqsimulation '
+    goose_permuteseqbyblocks = path_bin + 'goose-permuteseqbyblocks '
+    path_data_synth = path_data + 'synth' + sep
+    
     def __init__(self, key):
         self.key = key
         self._config()
@@ -210,82 +206,82 @@ class Dataset:
         if self.key == 'synth_small':
             self.label = 'Small'
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefS'
             self.tar_name = 'TarS'
         elif self.key == 'synth_medium':
             self.label = 'Medium'
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefM'
             self.tar_name = 'TarM'
         elif self.key == 'synth_large':
             self.label = 'Large'
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefL'
             self.tar_name = 'TarL'
         elif self.key == 'synth_xlarge':
             self.label = 'XLarge'
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefXL'
             self.tar_name = 'TarXL'
         elif self.key == 'synth_mutate':
             self.label = 'Mutate'
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefMut'
             self.tar_name = 'TarMut'
         elif self.key == 'synth_comp_smash':
             self.label = 'CompSynth'
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefComp'
             self.tar_name = 'TarComp'
         elif self.key == 'synth_perm':
             self.label = 'PermOrig'
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefPerm'
             self.tar_name = 'TarPerm'
         elif self.key == 'synth_perm450000':
             block_size = '450000'
             self.label = 'Perm' + block_size
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefPerm' + block_size
             self.tar_name = 'TarPerm'
         elif self.key == 'synth_perm30000':
             block_size = '30000'
             self.label = 'Perm' + block_size
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefPerm' + block_size
             self.tar_name = 'TarPerm'
         elif self.key == 'synth_perm1000':
             block_size = '1000'
             self.label = 'Perm' + block_size
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefPerm' + block_size
             self.tar_name = 'TarPerm'
         elif self.key == 'synth_perm30':
             block_size = '30'
             self.label = 'Perm' + block_size
             self.category = 'Synthetic'
-            self.ref_path = path_data_synth
-            self.tar_path = path_data_synth
+            self.ref_path = Dataset.path_data_synth
+            self.tar_path = Dataset.path_data_synth
             self.ref_name = 'RefPerm' + block_size
             self.tar_name = 'TarPerm'
         elif self.key == 'real_gga18_mga20':
@@ -345,99 +341,99 @@ class Dataset:
 
     def _acquire_ref(self):
         if self.key == 'synth_small':
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 5 -s 201  r_a')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.20,0.30,0.30,0.20,0.0 -ls 100 -n 5 -s 58  r_b')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 5 -s 15  r_c')
             cat(['r_a', 'r_b', 'r_c'], self.ref)
         elif self.key == 'synth_medium':
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 191  r_a')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 250 -s 608  r_b')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.20,0.30,0.30,0.20,0.0 -ls 100 -n 250 -s 30  r_c')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250 -s 138  r_d')
             cat(['r_a', 'r_b', 'r_c', 'r_d'], self.ref)
         elif self.key == 'synth_large':
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 25000 -s 10101  r_a')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 25000 -s 10  r_b')
             cat(['r_a', 'r_b'], self.ref)
         elif self.key == 'synth_xlarge':
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.30,0.20,0.30,0.20,0.0 -ls 100 -n 250000 -s 1311  r_a')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.30,0.20,0.20,0.30,0.0 -ls 100 -n 250000 -s 7129  r_b')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250000 -s 16  r_c')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 250000 -s 537  r_d')
             cat(['r_a', 'r_b', 'r_c', 'r_d'], self.ref)
         elif self.key == 'synth_mutate':
             for i in range(1, 60+1):
-                execute(goose_fastqsimulation + synth_common_par +
+                execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                         ' -s ' + str(i) +
                         '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10 r_' + str(i))
                 append('r_' + str(i), self.ref)
         elif self.key == 'synth_comp_smash':
             for i in range(0, 9 + 1):
-                execute(goose_fastqsimulation + synth_common_par +
+                execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                         ' -s ' + str(i * 10 + 1) +
                         '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 1000 r_' + str(i))
                 append('r_' + str(i), self.ref)
         elif self.key == 'synth_perm':
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
             cat(['r_a', 'r_b', 'r_c'], self.ref)
         elif self.key == 'synth_perm450000':
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
             cat(['r_a', 'r_b', 'r_c'], self.ref_path + 'RefPerm')
 
-            execute(goose_permuteseqbyblocks + '-bs 450000 -s 6041 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
+            execute(Dataset.goose_permuteseqbyblocks + '-bs 450000 -s 6041 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
         elif self.key == 'synth_perm30000':
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
             cat(['r_a', 'r_b', 'r_c'], self.ref_path + 'RefPerm')
 
-            execute(goose_permuteseqbyblocks + '-bs 30000 -s 328914 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
+            execute(Dataset.goose_permuteseqbyblocks + '-bs 30000 -s 328914 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
         elif self.key == 'synth_perm1000':
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
             cat(['r_a', 'r_b', 'r_c'], self.ref_path + 'RefPerm')
 
-            execute(goose_permuteseqbyblocks + '-bs 1000 -s 564283 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
+            execute(Dataset.goose_permuteseqbyblocks + '-bs 1000 -s 564283 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
         elif self.key == 'synth_perm30':
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 110  r_b')
-            execute(goose_fastqsimulation + synth_common_par +
+            execute(Dataset.goose_fastqsimulation + Dataset.synth_common_par +
                     '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 30091  r_c')
             cat(['r_a', 'r_b', 'r_c'], self.ref_path + 'RefPerm')
 
-            execute(goose_permuteseqbyblocks + '-bs 1000 -s 900123 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
+            execute(Dataset.goose_permuteseqbyblocks + '-bs 1000 -s 900123 < ' + self.ref_path + 'RefPerm' + ' > ' + self.ref)
         elif self.key == 'real_gga18_mga20':
             self._download_seq('CM000110', self.ref_path +
                                extension_removed(self.ref_name))
@@ -456,38 +452,38 @@ class Dataset:
 
     def _acquire_tar(self):
         if self.key == 'synth_small':
-            execute(smashpp_inv_rep + 'r_a t_c')
-            execute(goose_mutatedna + '-mr 0.02 < r_b > t_b')
-            execute(smashpp_inv_rep + 'r_c t_a')
+            execute(Dataset.smashpp_inv_rep + 'r_a t_c')
+            execute(Dataset.goose_mutatedna + '-mr 0.02 < r_b > t_b')
+            execute(Dataset.smashpp_inv_rep + 'r_c t_a')
             cat(['t_a', 't_b', 't_c'], self.tar)
         elif self.key == 'synth_medium':
-            execute(smashpp_inv_rep + 'r_a t_d')
-            execute(goose_mutatedna + '-mr 0.90 < r_b > t_c')
+            execute(Dataset.smashpp_inv_rep + 'r_a t_d')
+            execute(Dataset.goose_mutatedna + '-mr 0.90 < r_b > t_c')
             shutil.copyfile('r_c', 't_a')
-            execute(goose_mutatedna + '-mr 0.03 < r_d > t_b')
+            execute(Dataset.goose_mutatedna + '-mr 0.03 < r_d > t_b')
             cat(['t_a', 't_b', 't_c', 't_d'], self.tar)
         elif self.key == 'synth_large':
-            execute(smashpp_inv_rep + 'r_a t_b')
-            execute(goose_mutatedna + '-mr 0.02 < r_b > t_a')
+            execute(Dataset.smashpp_inv_rep + 'r_a t_b')
+            execute(Dataset.goose_mutatedna + '-mr 0.02 < r_b > t_a')
             cat(['t_a', 't_b'], self.tar)
         elif self.key == 'synth_xlarge':
-            execute(goose_mutatedna + '-mr 0.01 < r_a > t_a')
-            execute(smashpp_inv_rep + 'r_c t_b')
+            execute(Dataset.goose_mutatedna + '-mr 0.01 < r_a > t_a')
+            execute(Dataset.smashpp_inv_rep + 'r_c t_b')
             shutil.copyfile('r_d', 't_c')
-            execute(smashpp_inv_rep + 'r_b t_d')
+            execute(Dataset.smashpp_inv_rep + 'r_b t_d')
             cat(['t_a', 't_b', 't_c', 't_d'], self.tar)
         elif self.key == 'synth_mutate':
             for i in range(1, 60+1):
-                execute(goose_mutatedna + '-mr ' + str(i/100) +
+                execute(Dataset.goose_mutatedna + '-mr ' + str(i/100) +
                         ' < r_' + str(i) + ' > t_' + str(i))
                 append('t_' + str(i), self.tar)
         elif self.key == 'synth_comp_smash':
             shutil.copyfile('r_0', 't_0')
             for i in range(1, 9 + 1):
-                execute(goose_mutatedna + '-mr ' + str(i/100) +
+                execute(Dataset.goose_mutatedna + '-mr ' + str(i/100) +
                         ' < r_' + str(i) + ' > t_' + str(i))
             for i in range(4, 6 + 1):
-                execute(smashpp_inv_rep + 't_' + str(i) + ' t_' + str(i) + 'i')
+                execute(Dataset.smashpp_inv_rep + 't_' + str(i) + ' t_' + str(i) + 'i')
 
             for i in range(0, 3 + 1):
                 append('t_' + str(i), self.tar)
@@ -496,29 +492,29 @@ class Dataset:
             for i in range(7, 9 + 1):
                 append('t_' + str(i), self.tar)
         elif self.key == 'synth_perm':
-            execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-            execute(smashpp_inv_rep + 'r_b t_b')
-            execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+            execute(Dataset.goose_mutatedna + '-mr 0.01 < r_a > t_c')
+            execute(Dataset.smashpp_inv_rep + 'r_b t_b')
+            execute(Dataset.goose_mutatedna + '-mr 0.02 < r_c > t_a')
             cat(['t_a', 't_b', 't_c'], self.tar)
         elif self.key == 'synth_perm450000':
-            execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-            execute(smashpp_inv_rep + 'r_b t_b')
-            execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+            execute(Dataset.goose_mutatedna + '-mr 0.01 < r_a > t_c')
+            execute(Dataset.smashpp_inv_rep + 'r_b t_b')
+            execute(Dataset.goose_mutatedna + '-mr 0.02 < r_c > t_a')
             cat(['t_a', 't_b', 't_c'], self.tar)
         elif self.key == 'synth_perm30000':
-            execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-            execute(smashpp_inv_rep + 'r_b t_b')
-            execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+            execute(Dataset.goose_mutatedna + '-mr 0.01 < r_a > t_c')
+            execute(Dataset.smashpp_inv_rep + 'r_b t_b')
+            execute(Dataset.goose_mutatedna + '-mr 0.02 < r_c > t_a')
             cat(['t_a', 't_b', 't_c'], self.tar)
         elif self.key == 'synth_perm1000':
-            execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-            execute(smashpp_inv_rep + 'r_b t_b')
-            execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+            execute(Dataset.goose_mutatedna + '-mr 0.01 < r_a > t_c')
+            execute(Dataset.smashpp_inv_rep + 'r_b t_b')
+            execute(Dataset.goose_mutatedna + '-mr 0.02 < r_c > t_a')
             cat(['t_a', 't_b', 't_c'], self.tar)
         elif self.key == 'synth_perm30':
-            execute(goose_mutatedna + '-mr 0.01 < r_a > t_c')
-            execute(smashpp_inv_rep + 'r_b t_b')
-            execute(goose_mutatedna + '-mr 0.02 < r_c > t_a')
+            execute(Dataset.goose_mutatedna + '-mr 0.01 < r_a > t_c')
+            execute(Dataset.smashpp_inv_rep + 'r_b t_b')
+            execute(Dataset.goose_mutatedna + '-mr 0.02 < r_c > t_a')
             cat(['t_a', 't_b', 't_c'], self.tar)
         elif self.key == 'real_gga18_mga20':
             self._download_seq('CM000981', self.tar_path +
@@ -576,11 +572,14 @@ class Benchmark:
 class Smashpp:
     log_main = 'log_main'
     log_viz = 'log_viz'
+    smashpp_exe = '..' + sep + 'smashpp '
 
     def __init__(self, key):
         self.key = key
         self.dataset = Dataset(key)
         self._config()
+        if not os.path.exists(Smashpp.smashpp_exe.strip()):
+            Smashpp.smashpp_exe = 'bin' + sep + 'smashpp '
 
     def _config(self):
         if self.key == 'synth_small':
@@ -636,10 +635,10 @@ class Smashpp:
         self.dataset.acquire()
 
     def run_main(self):
-        execute(time_exe + Smashpp.log_main + ' ' + smashpp_exe + ' -r ' + self.dataset.ref + ' -t ' + self.dataset.tar + ' ' + self.par_main)
+        execute(time_exe + Smashpp.log_main + ' ' + Smashpp.smashpp_exe + ' -r ' + self.dataset.ref + ' -t ' + self.dataset.tar + ' ' + self.par_main)
 
     def run_viz(self):
-        execute(time_exe + Smashpp.log_viz + ' ' + smashpp_exe + ' -viz ' + self.par_viz + ' ' + bare_name(self.dataset.ref) + '.' + bare_name(self.dataset.tar) + '.pos')
+        execute(time_exe + Smashpp.log_viz + ' ' + Smashpp.smashpp_exe + ' -viz ' + self.par_viz + ' ' + bare_name(self.dataset.ref) + '.' + bare_name(self.dataset.tar) + '.pos')
 
     def run(self):
         self.run_main()
@@ -658,6 +657,7 @@ class Smashpp:
 
 class Smash:
     log_smash = 'log_smash'
+    smash_exe = path_bin + 'smash '
 
     def __init__(self, key):
         self.key = key
@@ -677,7 +677,7 @@ class Smash:
     def run(self):
         shutil.copyfile(self.dataset.ref, self.ref)
         shutil.copyfile(self.dataset.tar, self.tar)
-        execute(time_exe + Smash.log_smash + ' ' + smash + ' ' + self.par + ' ' + self.ref + ' ' + self.tar)
+        execute(time_exe + Smash.log_smash + ' ' + Smash.smash_exe + ' ' + self.par + ' ' + self.ref + ' ' + self.tar)
         os.remove(self.ref)
         os.remove(self.tar)
         remove_all_ext(current_dir, 'ext')
