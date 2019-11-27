@@ -51,16 +51,6 @@ if not os.path.exists(smashpp_exe.strip()):
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 smash = path_bin + 'smash '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
-synth_small_ref_name = 'RefS'
-synth_small_tar_name = 'TarS'
-synth_medium_ref_name = 'RefM'
-synth_medium_tar_name = 'TarM'
-synth_large_ref_name = 'RefL'
-synth_large_tar_name = 'TarL'
-synth_xlarge_ref_name = 'RefXL'
-synth_xlarge_tar_name = 'TarXL'
-synth_mutate_ref_name = 'RefMut'
-synth_mutate_tar_name = 'TarMut'
 synth_comp_smash_ref_name = 'RefComp'
 synth_comp_smash_tar_name = 'TarComp'
 synth_perm_ref_name = 'RefPerm'
@@ -200,6 +190,73 @@ def tool_exists(name):
     return which(name) is not None
 
 
+class Dataset:
+    def __init__(self, key):
+        self.key = key
+
+    def check_found(self, out):
+        if out == 'not found':
+            print(self.key + ' ' + out)
+            exit()
+
+    def ref_name(self):
+        switcher = {
+            'synth_small': 'RefS',
+            'synth_medium': 'RefM',
+            'synth_large': 'RefL',
+            'synth_xlarge': 'RefXL',
+            'synth_mutate': 'RefMut',
+            'synth_comp_smash': 'RefComp',
+            'synth_perm': 'RefPerm',
+        }
+        out = switcher.get(str.lower(self.key), 'not found')
+        self.check_found(out)
+        return out
+
+    def tar_name(self):
+        switcher = {
+            'synth_small': 'TarS',
+            'synth_medium': 'TarM',
+            'synth_large': 'TarL',
+            'synth_xlarge': 'TarXL',
+            'synth_mutate': 'TarMut',
+            'synth_comp_smash': 'TarComp',
+            'synth_perm': 'TarPerm',
+        }
+        out = switcher.get(str.lower(self.key), 'not found')
+        self.check_found(out)
+        return out
+
+    def ref_path(self):
+        switcher = {
+            'synth_small': path_data_synth,
+            'synth_medium': path_data_synth,
+            'synth_large': path_data_synth,
+            'synth_xlarge': path_data_synth,
+            'synth_mutate': path_data_synth,
+            'synth_comp_smash': path_data_synth,
+            'synth_perm': path_data_synth,
+        }
+        out = switcher.get(str.lower(self.key), 'not found')
+        self.check_found(out)
+        return out
+
+    def tar_path(self):
+        switcher = {
+            'synth_small': path_data_synth,
+            'synth_medium': path_data_synth,
+            'synth_large': path_data_synth,
+            'synth_xlarge': path_data_synth,
+            'synth_mutate': path_data_synth,
+            'synth_comp_smash': path_data_synth,
+            'synth_perm': path_data_synth,
+        }
+        out = switcher.get(str.lower(self.key), 'not found')
+        self.check_found(out)
+        return out
+
+# print(Dataset('synth_small').tar_path())
+
 '''
 Resolve dependencies
 '''
@@ -225,37 +282,6 @@ if not os.path.exists('bin/goose-fasta2seq') or \
 '''
 Run
 '''
-# def par_smashpp(key, arg):
-#     key = str.lower(key)
-#     if key=='synth_small':
-#         if arg==
-
-#     exe_main = {
-#         'SYNTH_SMALL': '-d 1 -f 100',
-#         'SYNTH_MEDIUM': '-d 100 -f 50',
-#         'SYNTH_LARGE': '-d 100 -f 135',
-#         'SYNTH_XLARGE': '-d 100 -f 275',
-#         'SYNTH_MUTATE': '-th 1.97 -d 600 -f 100 -m 15000',
-#         'REAL_GGA18_MGA20': '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 ' +
-#                             '-m 500000 -d 2200 -th 1.9',
-#         'REAL_GGA14_MGA16': '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 ' +
-#                             '-d 1500 -th 1.95 -e 1.95 -m 400000',
-#         'REAL_HS12_PT12': '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 ' +
-#                           '-m 100000',
-#         'REAL_PXO99A_MAFF311018': '-rm 13,0,0.005,1 -f 150 -m 10000 ' +
-#                                   '-d 1000 -th 1.55 -ar',
-#         'SYNTH_COMPARE_SMASH': '-th 1.7 -f 1000 -d 10 -m 1 -sf',
-#         'REAL_COMPARE_SMASH': '-th 1.85 -f 370 -d 100 -ar -sf',
-#         'SYNTH_PERM_ORIGINAL': '-l 0 -f 10 -d 3000',
-#         'SYNTH_PERM_450000': '-l 0 -f 25 -d 3000 -ar',
-#         'SYNTH_PERM_30000': '-l 0 -f 75 -d 1500 -ar',
-#         'SYNTH_PERM_1000': '-l 0 -f 25 -d 300 -ar',
-#         'SYNTH_PERM_30': '-l 0 -f 250 -d 1 -ar'
-#     }
-
-#     return switcher.get(str.upper(name), '-d 1 -f 100')
-
-
 bench_result = []  # Name, Category, Size, Time, Memory
 bench = False
 
@@ -310,10 +336,11 @@ def calc_system_time(log_main, log_viz=''):
 
 
 if RUN_SYNTH_SMALL:
+    dataset = Dataset('synth_small')
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     par_main = ' -l 3 -d 1 -f 100'
     par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -stat -o S.svg'
-    ref = path_data_synth + synth_small_ref_name
-    tar = path_data_synth + synth_small_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -355,10 +382,11 @@ if RUN_SYNTH_SMALL:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_MEDIUM:
+    dataset = Dataset('synth_medium')
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     par_main = '-l 3 -d 100 -f 50'
     par_viz = '-p 1 -l 1 -w 13 -vv -stat -o M.svg'
-    ref = path_data_synth + synth_medium_ref_name
-    tar = path_data_synth + synth_medium_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -403,10 +431,11 @@ if RUN_SYNTH_MEDIUM:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_LARGE:
+    dataset = Dataset('synth_large')
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     par_main = '-l 3 -d 100 -f 135'
     par_viz = '-p 1 -l 1 -w 13 -vv -stat -o L.svg'
-    ref = path_data_synth + synth_large_ref_name
-    tar = path_data_synth + synth_large_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -445,10 +474,11 @@ if RUN_SYNTH_LARGE:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_XLARGE:
+    dataset = Dataset('synth_xlarge')
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     par_main = '-l 3 -d 100 -f 275'
     par_viz = '-p 1 -l 1 -w 13 -vv -stat -o XL.svg'
-    ref = path_data_synth + synth_xlarge_ref_name
-    tar = path_data_synth + synth_xlarge_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -493,10 +523,11 @@ if RUN_SYNTH_XLARGE:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_MUTATE:
+    dataset = Dataset('synth_mutate')
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     par_main = '-th 1.97 -l 3 -d 600 -f 100 -m 15000'
     par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -vv -stat -o Mut.svg'
-    ref = path_data_synth + synth_mutate_ref_name
-    tar = path_data_synth + synth_mutate_tar_name
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
