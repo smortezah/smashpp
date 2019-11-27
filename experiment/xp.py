@@ -12,7 +12,7 @@ import shutil
 import os
 
 # Run (Benchmark)
-RUN_SYNTH_SMALL = True
+RUN_SYNTH_SMALL = False
 RUN_SYNTH_MEDIUM = False
 RUN_SYNTH_LARGE = False
 RUN_SYNTH_XLARGE = False
@@ -52,9 +52,6 @@ smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 smash = path_bin + 'smash '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
 time_exe = '/usr/bin/time -v --output='
-log_main = 'log_main'
-log_viz = 'log_viz'
-log_smash = 'log_smash'
 # execute('sudo chmod -R 777 bin/')
 
 
@@ -555,9 +552,34 @@ class Dataset:
                 remove_start_with(current_dir, "t_")
 
 
+class Benchmark:
+    def __init__(self):
+        self.result = []
+
+    def write_result(self):
+        from csv import writer
+        with open('bench.csv', 'w') as bench_file:
+            writer = writer(bench_file)
+            writer.writerow(['Method', 'Dataset', 'Cat', 'Size.B',
+                             'Memory.KB', 'Elapsed.s', 'User.s', 'System.s'])
+            writer.writerows(self.result)
+
+        # Move obtained results to the result/ directory
+        make_path('result')
+        for file in os.listdir(current_dir):
+            if file.endswith('.csv') or file.endswith('.svg') or \
+                    file.endswith('.pos') or file.endswith('.fil'):
+                shutil.copy(file, 'result/')
+                remove_path(file)
+
+
 class Smashpp:
-    def __init__(self, data):
-        self.dataset = Dataset(data)
+    log_main = 'log_main'
+    log_viz = 'log_viz'
+
+    def __init__(self, key):
+        self.key = key
+        self.dataset = Dataset(key)
         self._config()
 
     def _config(self):
@@ -614,28 +636,32 @@ class Smashpp:
         self.dataset.acquire()
 
     def run_main(self):
-        execute(time_exe + log_main + ' ' + smashpp_exe + ' -r ' + self.dataset.ref + ' -t ' + self.dataset.tar + ' ' + self.par_main)
+        execute(time_exe + Smashpp.log_main + ' ' + smashpp_exe + ' -r ' + self.dataset.ref + ' -t ' + self.dataset.tar + ' ' + self.par_main)
 
     def run_viz(self):
-        execute(time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + self.par_viz + ' ' + bare_name(self.dataset.ref) + '.' + bare_name(self.dataset.tar) + '.pos')
+        execute(time_exe + Smashpp.log_viz + ' ' + smashpp_exe + ' -viz ' + self.par_viz + ' ' + bare_name(self.dataset.ref) + '.' + bare_name(self.dataset.tar) + '.pos')
 
     def run(self):
         self.run_main()
         self.run_viz()
 
-    def bench(self):
-        bench = True #todo
+    def bench(self, bench_result):
         method = 'Smash++'
-        mem = calc_mem(log_main, log_viz)
-        elapsed = calc_elapsed(log_main, log_viz)
-        user_time = calc_user_time(log_main, log_viz)
-        system_time = calc_system_time(log_main, log_viz)
+        mem = calc_mem(Smashpp.log_main, Smashpp.log_viz)
+        elapsed = calc_elapsed(Smashpp.log_main, Smashpp.log_viz)
+        user_time = calc_user_time(Smashpp.log_main, Smashpp.log_viz)
+        system_time = calc_system_time(Smashpp.log_main, Smashpp.log_viz)
+        remove_path(Smashpp.log_main)
+        remove_path(Smashpp.log_viz)
         bench_result.append([method, self.dataset.label, self.dataset.category, self.dataset.size, mem, elapsed, user_time, system_time])
 
 
 class Smash:
-    def __init__(self, data):
-        self.dataset = Dataset(data)
+    log_smash = 'log_smash'
+
+    def __init__(self, key):
+        self.key = key
+        self.dataset = Dataset(key)
         self._config()
 
     def _config(self):
@@ -651,7 +677,7 @@ class Smash:
     def run(self):
         shutil.copyfile(self.dataset.ref, self.ref)
         shutil.copyfile(self.dataset.tar, self.tar)
-        execute(time_exe + log_smash + ' ' + smash + ' ' + self.par + ' ' + self.ref + ' ' + self.tar)
+        execute(time_exe + Smash.log_smash + ' ' + smash + ' ' + self.par + ' ' + self.ref + ' ' + self.tar)
         os.remove(self.ref)
         os.remove(self.tar)
         remove_all_ext(current_dir, 'ext')
@@ -659,14 +685,15 @@ class Smash:
         remove_all_ext(current_dir, 'inf')
         remove(current_dir, '*.sys*x')
 
-    def bench(self):
-        bench = True #todo
+    def bench(self, bench_result):
         method = 'Smash'
-        mem = calc_mem(log_smash)
-        elapsed = calc_elapsed(log_smash)
-        user_time = calc_user_time(log_smash)
-        system_time = calc_system_time(log_smash)
+        mem = calc_mem(Smash.log_smash)
+        elapsed = calc_elapsed(Smash.log_smash)
+        user_time = calc_user_time(Smash.log_smash)
+        system_time = calc_system_time(Smash.log_smash)
+        remove_path(Smash.log_smash)
         bench_result.append([method, self.dataset.label, self.dataset.category, self.dataset.size, mem, elapsed, user_time, system_time])
+
 
 '''
 Resolve dependencies
@@ -693,117 +720,117 @@ if not os.path.exists('bin/goose-fasta2seq') or \
 '''
 Run
 '''
-bench_result = []  # Name, Category, Size, Time, Memory
-bench = False
+bench = Benchmark()
 
 if RUN_SYNTH_SMALL:
     smashpp = Smashpp('synth_small')
     smashpp.acquire_dataset()  # Make sequences. Sizes: ref:1,500, tar:1,500
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_SYNTH_MEDIUM:
     smashpp = Smashpp('synth_medium')
     smashpp.acquire_dataset()  # Make sequences. Sizes: ref:100,000, tar:100,000
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_SYNTH_LARGE:
     smashpp = Smashpp('synth_large')
     smashpp.acquire_dataset()  # Make sequences. Sizes: ref:5,000,000, tar:5,000,000
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_SYNTH_XLARGE:
     smashpp = Smashpp('synth_xlarge')
     smashpp.acquire_dataset()  # Make sequences. Sizes: ref:100,000,000, tar:100,000,000
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_SYNTH_MUTATE:
     smashpp = Smashpp('synth_mutate')
     smashpp.acquire_dataset()  # Make sequences. ref:60,000, tar:60,000. Mutation up to 60%
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_REAL_GGA18_MGA20:
     smashpp = Smashpp('real_gga18_mga20')
     smashpp.acquire_dataset()  # Download sequences
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_REAL_GGA14_MGA16:
     smashpp = Smashpp('real_gga14_mga16')
     smashpp.acquire_dataset()  # Download sequences
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_REAL_HS12_PT12:
     smashpp = Smashpp('real_hs12_pt12')
     smashpp.acquire_dataset()  # Download sequences
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_REAL_PXO99A_MAFF311018:
     smashpp = Smashpp('real_pxo99a_maff311018')
     smashpp.acquire_dataset()  # Download sequences
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_SYNTH_COMPARE_SMASH:
     # Smash++
     smashpp = Smashpp('synth_comp_smash')
     smashpp.acquire_dataset()  # Make sequences. Sizes: ref:1,000,000, tar:1,000,000
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
     # Smash
     smash = Smash('synth_comp_smash')
     smash.run()  # Run
-    smash.bench()  # Bench
+    smash.bench(bench.result)  # Bench
 
 if RUN_REAL_COMPARE_SMASH:
     # Smash++
     smashpp = Smashpp('real_comp_smash')
     smashpp.acquire_dataset()  # Download sequences
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
     # Smash
     smash = Smash('synth_comp_smash')
     smash.run()  # Run
-    smash.bench()  # Bench
+    smash.bench(bench.result)  # Bench
 
 if RUN_SYNTH_PERM_ORIGINAL:
     smashpp = Smashpp('synth_perm')
     smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_SYNTH_PERM_450000:
     smashpp = Smashpp('synth_perm450000')
     smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_SYNTH_PERM_30000:
     smashpp = Smashpp('synth_perm30000')
     smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_SYNTH_PERM_1000:
     smashpp = Smashpp('synth_perm1000')
     smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
 if RUN_SYNTH_PERM_30:
     smashpp = Smashpp('synth_perm30')
     smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
     smashpp.run()  # Run
-    smashpp.bench()  # Bench
+    smashpp.bench(bench.result)  # Bench
 
+bench.write_result()
 
 # def run_bench(method, dataset, cat, size, func, arg=''):
 #     import time
@@ -837,21 +864,3 @@ if RUN_SYNTH_PERM_30:
 #     elapsed = f"{end_time - start_time:.2f}"
 #     max_memory = f"{max(memory):.2f}"
 #     bench_result.append([method, dataset, cat, size, elapsed, max_memory])
-
-
-if bench:
-    import csv
-    with open('bench.csv', 'w') as bench_file:
-        writer = csv.writer(bench_file)
-        writer.writerow(['Method', 'Dataset', 'Cat', 'Size.B',
-                         'Memory.KB', 'Elapsed.s', 'User.s', 'System.s'])
-        writer.writerows(bench_result)
-    remove_path(log_main)
-    remove_path(log_viz)
-    remove_path(log_smash)
-    # Move obtained results to the result/ directory
-    make_path('result')
-    for file in os.listdir(current_dir):
-        if file.endswith('.csv') or file.endswith('.svg') or \
-                file.endswith('.pos') or file.endswith('.fil'):
-            shutil.move(file, 'result/')
