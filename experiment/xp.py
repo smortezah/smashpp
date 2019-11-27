@@ -51,36 +51,6 @@ if not os.path.exists(smashpp_exe.strip()):
 smashpp_inv_rep = path_bin + 'smashpp-inv-rep '
 smash = path_bin + 'smash '
 synth_common_par = '-eh -eo -es -edb -rm 0 '
-synth_comp_smash_ref_name = 'RefComp'
-synth_comp_smash_tar_name = 'TarComp'
-synth_perm_ref_name = 'RefPerm'
-synth_perm_tar_name = 'TarPerm'
-real_comp_smash_ref_name = 'VII.seq'
-real_comp_smash_tar_name = 'VII.seq'
-real_comp_smash_path_ref = path_data + 'fungi' + \
-    sep + 'Saccharomyces_cerevisiae' + sep
-real_comp_smash_path_tar = path_data + 'fungi' + \
-    sep + 'Saccharomyces_paradoxus' + sep
-real_PXO99A_MAFF311018_ref_name = 'PXO99A.seq'
-real_PXO99A_MAFF311018_tar_name = 'MAFF_311018.seq'
-real_PXO99A_MAFF311018_path_ref = path_data + 'bacteria' + sep + \
-    'Xanthomonas_oryzae_pv_oryzae' + sep
-real_PXO99A_MAFF311018_path_tar = real_PXO99A_MAFF311018_path_ref
-real_gga18_mga20_ref_name = '18.seq'
-real_gga18_mga20_tar_name = '20.seq'
-real_gga18_mga20_path_ref = path_data + 'bird' + sep + 'Gallus_gallus' + sep
-real_gga18_mga20_path_tar = path_data + 'bird' + sep + \
-    'Meleagris_gallopavo' + sep
-real_gga14_mga16_ref_name = '14.seq'
-real_gga14_mga16_tar_name = '16.seq'
-real_gga14_mga16_path_ref = path_data + 'bird' + sep + 'Gallus_gallus' + sep
-real_gga14_mga16_path_tar = path_data + 'bird' + sep + \
-    'Meleagris_gallopavo' + sep
-real_hs12_pt12_path_ref = path_data + 'mammalia' + sep + 'Homo_sapiens' + sep
-real_hs12_pt12_path_tar = path_data + 'mammalia' + sep + \
-    'Pan_troglodytes' + sep
-real_hs12_pt12_ref_name = '12.seq'
-real_hs12_pt12_tar_name = '12.seq'
 time_exe = '/usr/bin/time -v --output='
 log_main = 'log_main'
 log_viz = 'log_viz'
@@ -208,6 +178,11 @@ class Dataset:
             'synth_mutate': 'RefMut',
             'synth_comp_smash': 'RefComp',
             'synth_perm': 'RefPerm',
+            'real_gga18_mga20': '18.seq',
+            'real_gga14_mga16': '14.seq',
+            'real_hs12_pt12': '12.seq',
+            'real_pxo99a_maff311018': 'PXO99A.seq',
+            'real_comp_smash': 'VII.seq'
         }
         out = switcher.get(str.lower(self.key), 'not found')
         self.check_found(out)
@@ -222,6 +197,11 @@ class Dataset:
             'synth_mutate': 'TarMut',
             'synth_comp_smash': 'TarComp',
             'synth_perm': 'TarPerm',
+            'real_gga18_mga20': '20.seq',
+            'real_gga14_mga16': '16.seq',
+            'real_hs12_pt12': '12.seq',
+            'real_pxo99a_maff311018': 'MAFF_311018.seq',
+            'real_comp_smash': 'VII.seq'
         }
         out = switcher.get(str.lower(self.key), 'not found')
         self.check_found(out)
@@ -236,6 +216,11 @@ class Dataset:
             'synth_mutate': path_data_synth,
             'synth_comp_smash': path_data_synth,
             'synth_perm': path_data_synth,
+            'real_gga18_mga20': path_data + 'bird' + sep + 'Gallus_gallus' + sep,
+            'real_gga14_mga16': path_data + 'bird' + sep + 'Gallus_gallus' + sep,
+            'real_hs12_pt12': path_data + 'mammalia' + sep + 'Homo_sapiens' + sep,
+            'real_pxo99a_maff311018': path_data + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep,
+            'real_comp_smash': path_data + 'fungi' +     sep + 'Saccharomyces_cerevisiae' + sep
         }
         out = switcher.get(str.lower(self.key), 'not found')
         self.check_found(out)
@@ -250,6 +235,11 @@ class Dataset:
             'synth_mutate': path_data_synth,
             'synth_comp_smash': path_data_synth,
             'synth_perm': path_data_synth,
+            'real_gga18_mga20': path_data + 'bird' + sep + 'Meleagris_gallopavo' + sep,
+            'real_gga14_mga16': path_data + 'bird' + sep + 'Meleagris_gallopavo' + sep,
+            'real_hs12_pt12': path_data + 'mammalia' + sep + 'Pan_troglodytes' + sep,
+            'real_pxo99a_maff311018': path_data + 'bacteria' + sep + 'Xanthomonas_oryzae_pv_oryzae' + sep,
+            'real_comp_smash': path_data + 'fungi' +     sep + 'Saccharomyces_paradoxus' + sep
         }
         out = switcher.get(str.lower(self.key), 'not found')
         self.check_found(out)
@@ -566,12 +556,13 @@ if RUN_SYNTH_MUTATE:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_GGA18_MGA20:
+    dataset = Dataset('real_gga18_mga20')
     par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 ' + \
         '-th 1.9'
     par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" ' + \
         '-stat -o GGA18_MGA20.svg'
-    ref = real_gga18_mga20_path_ref + real_gga18_mga20_ref_name
-    tar = real_gga18_mga20_path_tar + real_gga18_mga20_tar_name
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -579,11 +570,11 @@ if RUN_REAL_GGA18_MGA20:
 
     # Download sequences
     if not os.path.exists(ref):
-        download_seq('CM000110', real_gga18_mga20_path_ref +
-                     extension_removed(real_gga18_mga20_ref_name))
+        download_seq('CM000110', dataset.ref_path() +
+                     extension_removed(dataset.ref_name()))
     if not os.path.exists(tar):
-        download_seq('CM000981', real_gga18_mga20_path_tar +
-                     extension_removed(real_gga18_mga20_tar_name))
+        download_seq('CM000981', dataset.tar_path() +
+                     extension_removed(dataset.tar_name()))
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -601,12 +592,13 @@ if RUN_REAL_GGA18_MGA20:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_GGA14_MGA16:
+    dataset = Dataset('real_gga14_mga16')
     par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 ' + \
         '-e 1.95 -m 400000'
     par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + \
         '-rt 1500000 -tt 1500000 -stat -o GGA14_MGA16.svg'
-    ref = real_gga14_mga16_path_ref + real_gga14_mga16_ref_name
-    tar = real_gga14_mga16_path_tar + real_gga14_mga16_tar_name
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -614,11 +606,11 @@ if RUN_REAL_GGA14_MGA16:
 
     # Download sequences
     if not os.path.exists(ref):
-        download_seq('CM000106', real_gga14_mga16_path_ref +
-                     extension_removed(real_gga14_mga16_ref_name))
+        download_seq('CM000106', dataset.ref_path() +
+                     extension_removed(dataset.ref_name()))
     if not os.path.exists(tar):
-        download_seq('CM000977', real_gga14_mga16_path_tar +
-                     extension_removed(real_gga14_mga16_tar_name))
+        download_seq('CM000977', dataset.tar_path() +
+                     extension_removed(dataset.tar_name()))
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -636,11 +628,12 @@ if RUN_REAL_GGA14_MGA16:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_HS12_PT12:
+    dataset = Dataset('real_hs12_pt12')
     par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000'
     par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + \
         '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
-    ref = real_hs12_pt12_path_ref + real_hs12_pt12_ref_name
-    tar = real_hs12_pt12_path_tar + real_hs12_pt12_tar_name
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -648,11 +641,11 @@ if RUN_REAL_HS12_PT12:
 
     # Download sequences
     if not os.path.exists(ref):
-        download_seq('NC_000012', real_hs12_pt12_path_ref +
-                     extension_removed(real_hs12_pt12_ref_name))
+        download_seq('NC_000012', dataset.ref_path() +
+                     extension_removed(dataset.ref_name()))
     if not os.path.exists(tar):
-        download_seq('NC_036891', real_hs12_pt12_path_tar +
-                     extension_removed(real_hs12_pt12_tar_name))
+        download_seq('NC_036891', dataset.tar_path() +
+                     extension_removed(dataset.tar_name()))
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -670,11 +663,12 @@ if RUN_REAL_HS12_PT12:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_PXO99A_MAFF311018:
+    dataset = Dataset('real_pxo99a_maff311018')
     par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar'
     par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" ' + \
         '-stat -o PXO99A_MAFF_311018.svg'
-    ref = real_PXO99A_MAFF311018_path_ref + real_PXO99A_MAFF311018_ref_name
-    tar = real_PXO99A_MAFF311018_path_tar + real_PXO99A_MAFF311018_tar_name
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -682,11 +676,11 @@ if RUN_REAL_PXO99A_MAFF311018:
 
     # Download sequences
     if not os.path.exists(ref):
-        download_seq('CP000967', real_PXO99A_MAFF311018_path_ref +
-                     extension_removed(real_PXO99A_MAFF311018_ref_name))
+        download_seq('CP000967', dataset.ref_path() +
+                     extension_removed(dataset.ref_name()))
     if not os.path.exists(tar):
-        download_seq('AP008229', real_PXO99A_MAFF311018_path_tar +
-                     extension_removed(real_PXO99A_MAFF311018_tar_name))
+        download_seq('AP008229', dataset.tar_path() +
+                     extension_removed(dataset.tar_name()))
     # Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -704,12 +698,13 @@ if RUN_REAL_PXO99A_MAFF311018:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_COMPARE_SMASH:
+    dataset = Dataset('synth_comp_smash')
     # Smash++
     par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
     par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 ' + \
         '-stat -o CompSmash.svg'
-    ref = path_data_synth + synth_comp_smash_ref_name
-    tar = path_data_synth + synth_comp_smash_tar_name
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -758,10 +753,10 @@ if RUN_SYNTH_COMPARE_SMASH:
 
     # Smash
     par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
-    ref_main = path_data_synth + synth_comp_smash_ref_name
-    tar_main = path_data_synth + synth_comp_smash_tar_name
-    ref = synth_comp_smash_ref_name
-    tar = synth_comp_smash_tar_name
+    ref_main = dataset.ref_path() + dataset.ref_name()
+    tar_main = dataset.tar_path() + dataset.tar_name()
+    ref = dataset.ref_name()
+    tar = dataset.tar_name()
     cmd = time_exe + log_smash + ' ' + \
         smash + ' ' + par + ' ' + ref + ' ' + tar
     ## Run
@@ -784,12 +779,13 @@ if RUN_SYNTH_COMPARE_SMASH:
                          elapsed, user_time, system_time])
 
 if RUN_REAL_COMPARE_SMASH:
+    dataset = Dataset('real_comp_smash')
     # Smash++
     par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
     par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat ' + \
         '-o Sc_Sp_smash.svg'
-    ref = real_comp_smash_path_ref + real_comp_smash_ref_name
-    tar = real_comp_smash_path_tar + real_comp_smash_tar_name
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -797,11 +793,11 @@ if RUN_REAL_COMPARE_SMASH:
 
     # Download sequences
     if not os.path.exists(ref):
-        download_seq('NC_001139', real_comp_smash_path_ref +
-                     extension_removed(real_comp_smash_ref_name))
+        download_seq('NC_001139', dataset.ref_path() +
+                     extension_removed(dataset.ref_name()))
     if not os.path.exists(tar):
-        download_seq('CP020299', real_comp_smash_path_tar +
-                     extension_removed(real_comp_smash_tar_name))
+        download_seq('CP020299', dataset.tar_path() +
+                     extension_removed(dataset.tar_name()))
     ## Run
     execute(cmd_main)
     execute(cmd_viz)
@@ -820,10 +816,10 @@ if RUN_REAL_COMPARE_SMASH:
 
     # Smash
     par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
-    ref_new_smash = 'Sc' + real_comp_smash_ref_name
-    tar_new_smash = 'Sp' + real_comp_smash_tar_name
-    ref_main = real_comp_smash_path_ref + real_comp_smash_ref_name
-    tar_main = real_comp_smash_path_tar + real_comp_smash_tar_name
+    ref_new_smash = 'Sc' + dataset.ref_name()
+    tar_new_smash = 'Sp' + dataset.tar_name()
+    ref_main = dataset.ref_path() + dataset.ref_name()
+    tar_main = dataset.tar_path() + dataset.tar_name()
     ref = ref_new_smash
     tar = tar_new_smash
     cmd = time_exe + log_smash + ' ' + \
@@ -848,11 +844,12 @@ if RUN_REAL_COMPARE_SMASH:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_ORIGINAL:
+    dataset = Dataset('synth_perm')
     par_main = '-l 0 -f 10 -d 3000'
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
         '-o Perm.svg'
-    ref = path_data_synth + synth_perm_ref_name
-    tar = path_data_synth + synth_perm_tar_name
+    ref = dataset.ref_path() + dataset.ref_name()
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -894,13 +891,14 @@ if RUN_SYNTH_PERM_ORIGINAL:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_450000:
+    dataset = Dataset('synth_perm')
     par_main = '-l 0 -f 25 -d 3000 -ar'
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
     block_size = '450000'
-    ref_name = synth_perm_ref_name + block_size
-    ref = path_data_synth + ref_name
-    tar = path_data_synth + synth_perm_tar_name
+    ref_name = dataset.ref_name() + block_size
+    ref = dataset.ref_path() + ref_name
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -908,8 +906,8 @@ if RUN_SYNTH_PERM_450000:
     seed = '6041'
 
     # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    if not os.path.exists(path_data_synth + synth_perm_ref_name) or \
-       not os.path.exists(path_data_synth + synth_perm_tar_name):
+    if not os.path.exists(dataset.ref_path() + dataset.ref_name()) or \
+       not os.path.exists(dataset.tar_path() + dataset.tar_name()):
         execute(goose_fastqsimulation + synth_common_par +
                 '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
         execute(goose_fastqsimulation + synth_common_par +
@@ -928,7 +926,7 @@ if RUN_SYNTH_PERM_450000:
 
     if not os.path.exists(ref):
         execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
-                seed + ' < ' + path_data_synth + synth_perm_ref_name +
+                seed + ' < ' + dataset.ref_path() + dataset.ref_name() +
                 ' > ' + path_data_synth + ref_name)
     # Run
     execute(cmd_main)
@@ -947,13 +945,14 @@ if RUN_SYNTH_PERM_450000:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_30000:
+    dataset = Dataset('synth_perm')
     par_main = '-l 0 -f 75 -d 1500 -ar'
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
     block_size = '30000'
-    ref_name = synth_perm_ref_name + block_size
-    ref = path_data_synth + ref_name
-    tar = path_data_synth + synth_perm_tar_name
+    ref_name = dataset.ref_name() + block_size
+    ref = dataset.ref_path() + ref_name
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -961,8 +960,8 @@ if RUN_SYNTH_PERM_30000:
     seed = '328914'
 
     # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    if not os.path.exists(path_data_synth + synth_perm_ref_name) or \
-       not os.path.exists(path_data_synth + synth_perm_tar_name):
+    if not os.path.exists(dataset.ref_path() + dataset.ref_name()) or \
+       not os.path.exists(dataset.tar_path() + dataset.tar_name()):
         execute(goose_fastqsimulation + synth_common_par +
                 '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
         execute(goose_fastqsimulation + synth_common_par +
@@ -981,7 +980,7 @@ if RUN_SYNTH_PERM_30000:
 
     if not os.path.exists(ref):
         execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
-                seed + ' < ' + path_data_synth + synth_perm_ref_name +
+                seed + ' < ' + dataset.ref_path() + dataset.ref_name() +
                 ' > ' + path_data_synth + ref_name)
     # Run
     execute(cmd_main)
@@ -1000,13 +999,14 @@ if RUN_SYNTH_PERM_30000:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_1000:
+    dataset = Dataset('synth_perm')
     par_main = '-l 0 -f 25 -d 300 -ar'
     par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
     block_size = '1000'
-    ref_name = synth_perm_ref_name + block_size
-    ref = path_data_synth + ref_name
-    tar = path_data_synth + synth_perm_tar_name
+    ref_name = dataset.ref_name() + block_size
+    ref = dataset.ref_path() + ref_name
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -1014,8 +1014,8 @@ if RUN_SYNTH_PERM_1000:
     seed = '564283'
 
     # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    if not os.path.exists(path_data_synth + synth_perm_ref_name) or \
-       not os.path.exists(path_data_synth + synth_perm_tar_name):
+    if not os.path.exists(dataset.ref_path() + dataset.ref_name()) or \
+       not os.path.exists(dataset.ref_path() + dataset.tar_name()):
         execute(goose_fastqsimulation + synth_common_par +
                 '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
         execute(goose_fastqsimulation + synth_common_par +
@@ -1034,7 +1034,7 @@ if RUN_SYNTH_PERM_1000:
 
     if not os.path.exists(ref):
         execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
-                seed + ' < ' + path_data_synth + synth_perm_ref_name +
+                seed + ' < ' + dataset.ref_path() + dataset.ref_name() +
                 ' > ' + path_data_synth + ref_name)
     # Run
     execute(cmd_main)
@@ -1053,13 +1053,14 @@ if RUN_SYNTH_PERM_1000:
                          elapsed, user_time, system_time])
 
 if RUN_SYNTH_PERM_30:
+    dataset = Dataset('synth_perm')
     block_size = '30'
-    ref_name = synth_perm_ref_name + block_size
+    ref_name = dataset.ref_name() + block_size
     par_main = '-l 0 -f 250 -d 1 -ar'
     par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
         '-o Perm_' + block_size + '.svg'
-    ref = path_data_synth + ref_name
-    tar = path_data_synth + synth_perm_tar_name
+    ref = dataset.ref_path() + ref_name
+    tar = dataset.tar_path() + dataset.tar_name()
     cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
         ' -r ' + ref + ' -t ' + tar + ' ' + par_main
     cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
@@ -1067,8 +1068,8 @@ if RUN_SYNTH_PERM_30:
     seed = '900123'
 
     # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    if not os.path.exists(path_data_synth + synth_perm_ref_name) or \
-       not os.path.exists(path_data_synth + synth_perm_tar_name):
+    if not os.path.exists(dataset.ref_path() + dataset.ref_name()) or \
+       not os.path.exists(dataset.tar_path() + dataset.tar_name()):
         execute(goose_fastqsimulation + synth_common_par +
                 '-f 0.25,0.25,0.25,0.25,0.0 -ls 100 -n 10000 -s 198  r_a')
         execute(goose_fastqsimulation + synth_common_par +
@@ -1087,7 +1088,7 @@ if RUN_SYNTH_PERM_30:
 
     if not os.path.exists(ref):
         execute(goose_permuteseqbyblocks + '-bs ' + block_size + ' -s ' +
-                seed + ' < ' + path_data_synth + synth_perm_ref_name +
+                seed + ' < ' + dataset.ref_path() + dataset.ref_name() +
                 ' > ' + path_data_synth + ref_name)
     # Run
     execute(cmd_main)
