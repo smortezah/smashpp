@@ -12,7 +12,7 @@ import shutil
 import os
 
 # Run (Benchmark)
-RUN_SYNTH_SMALL = False
+RUN_SYNTH_SMALL = True
 RUN_SYNTH_MEDIUM = False
 RUN_SYNTH_LARGE = False
 RUN_SYNTH_XLARGE = False
@@ -147,6 +147,55 @@ def tool_exists(name):
     return which(name) is not None
 
 
+def extract(file, key):
+    import re
+    with open(file) as f:
+        for line in f:
+            if re.search(key, line):
+                split = re.split(' ', line)
+                return split[-1].strip()
+
+
+def calc_mem(log_main, log_viz=''):
+    key = 'Maximum resident'
+    mem_main = extract(log_main, key)
+    if not log_viz:
+        return int(mem_main)
+    else:
+        mem_viz = extract(log_viz, key)
+        return max(int(mem_main), int(mem_viz))
+
+
+def calc_elapsed(log_main, log_viz=''):
+    key = 'Elapsed'
+    elapsed_main = to_seconds(extract(log_main, key))
+    if not log_viz:
+        return f"{float(elapsed_main):.2f}"
+    else:
+        elapsed_viz = to_seconds(extract(log_viz, key))
+        return f"{float(elapsed_main) + float(elapsed_viz):.2f}"
+
+
+def calc_user_time(log_main, log_viz=''):
+    key = 'User'
+    user_time_main = extract(log_main, key)
+    if not log_viz:
+        return f"{float(user_time_main):.2f}"
+    else:
+        user_time_viz = extract(log_viz, key)
+        return f"{float(user_time_main) + float(user_time_viz):.2f}"
+
+
+def calc_system_time(log_main, log_viz=''):
+    key = 'System'
+    system_time_main = extract(log_main, key)
+    if not log_viz:
+        return f"{float(system_time_main):.2f}"
+    else:
+        system_time_viz = extract(log_viz, key)
+        return f"{float(system_time_main) + float(system_time_viz):.2f}"
+
+
 class Dataset:
     def __init__(self, key):
         self.key = key
@@ -168,8 +217,6 @@ class Dataset:
             self.tar_path = path_data_synth
             self.ref_name = 'RefS'
             self.tar_name = 'TarS'
-            self.par_main = '-l 3 -d 1 -f 100'
-            self.par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -stat -o S.svg'
         elif self.key == 'synth_medium':
             self.label = 'Medium'
             self.category = 'Synthetic'
@@ -177,8 +224,6 @@ class Dataset:
             self.tar_path = path_data_synth
             self.ref_name = 'RefM'
             self.tar_name = 'TarM'
-            self.par_main = '-l 3 -d 100 -f 50'
-            self.par_viz = '-p 1 -l 1 -w 13 -vv -stat -o M.svg'
         elif self.key == 'synth_large':
             self.label = 'Large'
             self.category = 'Synthetic'
@@ -186,8 +231,6 @@ class Dataset:
             self.tar_path = path_data_synth
             self.ref_name = 'RefL'
             self.tar_name = 'TarL'
-            self.par_main = '-l 3 -d 100 -f 135'
-            self.par_viz = '-p 1 -l 1 -w 13 -vv -stat -o L.svg'
         elif self.key == 'synth_xlarge':
             self.label = 'XLarge'
             self.category = 'Synthetic'
@@ -195,8 +238,6 @@ class Dataset:
             self.tar_path = path_data_synth
             self.ref_name = 'RefXL'
             self.tar_name = 'TarXL'
-            self.par_main = '-l 3 -d 100 -f 275'
-            self.par_viz = '-p 1 -l 1 -w 13 -vv -stat -o XL.svg'
         elif self.key == 'synth_mutate':
             self.label = 'Mutate'
             self.category = 'Synthetic'
@@ -204,8 +245,6 @@ class Dataset:
             self.tar_path = path_data_synth
             self.ref_name = 'RefMut'
             self.tar_name = 'TarMut'
-            self.par_main = '-th 1.97 -l 3 -d 600 -f 100 -m 15000'
-            self.par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -vv -stat -o Mut.svg'
         elif self.key == 'synth_comp_smash':
             self.label = 'CompSynth'
             self.category = 'Synthetic'
@@ -213,8 +252,6 @@ class Dataset:
             self.tar_path = path_data_synth
             self.ref_name = 'RefComp'
             self.tar_name = 'TarComp'
-            self.par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
-            self.par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 ' + '-stat -o CompSmash.svg'
         elif self.key == 'synth_perm':
             self.label = 'PermOrig'
             self.category = 'Synthetic'
@@ -222,8 +259,6 @@ class Dataset:
             self.tar_path = path_data_synth
             self.ref_name = 'RefPerm'
             self.tar_name = 'TarPerm'
-            self.par_main = '-l 0 -f 10 -d 3000'
-            self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + '-o Perm.svg'
         elif self.key == 'real_gga18_mga20':
             self.label = 'GGA18_MGA20'
             self.category = 'Real'
@@ -232,8 +267,6 @@ class Dataset:
                 path_data + 'bird' + sep + 'Meleagris_gallopavo' + sep
             self.ref_name = '18.seq'
             self.tar_name = '20.seq'
-            self.par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 ' + '-th 1.9'
-            self.par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" ' + '-stat -o GGA18_MGA20.svg'
         elif self.key == 'real_gga14_mga16':
             self.label = 'GGA14_MGA16'
             self.category = 'Real'
@@ -242,8 +275,6 @@ class Dataset:
                 path_data + 'bird' + sep + 'Meleagris_gallopavo' + sep
             self.ref_name = '14.seq'
             self.tar_name = '16.seq'
-            self.par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 ' + '-e 1.95 -m 400000'
-            self.par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + '-rt 1500000 -tt 1500000 -stat -o GGA14_MGA16.svg'
         elif self.key == 'real_hs12_pt12':
             self.label = 'HS12_PT12'
             self.category = 'Real'
@@ -252,8 +283,6 @@ class Dataset:
                 path_data + 'mammalia' + sep + 'Pan_troglodytes' + sep
             self.ref_name = '12.seq'
             self.tar_name = '12.seq'
-            self.par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000'
-            self.par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
         elif self.key == 'real_pxo99a_maff311018':
             self.label = 'PXO99A_MAFF311018'
             self.category = 'Real'
@@ -263,8 +292,6 @@ class Dataset:
                 'Xanthomonas_oryzae_pv_oryzae' + sep
             self.ref_name = 'PXO99A.seq'
             self.tar_name = 'MAFF_311018.seq'
-            self.par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar'
-            self.par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" ' + '-stat -o PXO99A_MAFF_311018.svg'
         elif self.key == 'real_comp_smash':
             self.label = 'CompReal'
             self.category = 'Real'
@@ -274,8 +301,6 @@ class Dataset:
                 path_data + 'fungi' + sep + 'Saccharomyces_paradoxus' + sep
             self.ref_name = 'VII.seq'
             self.tar_name = 'VII.seq'
-            self.par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
-            self.par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat ' + '-o Sc_Sp_smash.svg'
 
     def _download_seq(id, output):
         '''Download a sequence using accession ID, with entrez direct'''
@@ -423,12 +448,12 @@ class Dataset:
                                extension_removed(self.tar_name))
 
     def acquire(self):
-        if self.key.startswith('real'):
+        if self.category == 'Real':
             if not os.path.exists(self.ref):
                 self._acquire_ref()
             elif not os.path.exists(self.tar):
                 self._acquire_tar()
-        elif file_name.startswith('synth'):
+        elif self.category == 'Synthetic':
             if not os.path.exists(self.ref) or not os.path.exists(self.tar):
                 remove_path(self.ref)
                 remove_path(self.tar)
@@ -437,12 +462,126 @@ class Dataset:
                 remove_start_with(current_dir, "r_")
                 remove_start_with(current_dir, "t_")
 
+    #todo
     def run_smashpp_main(self):
         execute(time_exe + log_main + ' ' + smashpp_exe + ' -r ' + self.ref + ' -t ' + self.tar + ' ' + self.par_main)
 
     def run_smashpp_viz(self):
         execute(time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + self.par_viz + ' ' + bare_name(self.ref) + '.' + bare_name(self.tar) + '.pos')
 
+
+class Smashpp:
+    def __init__(self, data):
+        self.dataset = Dataset(data)
+        self._config()
+
+    def _config(self):
+        if self.key == 'synth_small':
+            self.par_main = '-l 3 -d 1 -f 100'
+            self.par_viz = '-p 1 -rt 150 -tt 150 -l 1 -w 13 -vv -stat -o S.svg'
+        elif self.key == 'synth_medium':
+            self.par_main = '-l 3 -d 100 -f 50'
+            self.par_viz = '-p 1 -l 1 -w 13 -vv -stat -o M.svg'
+        elif self.key == 'synth_large':
+            self.par_main = '-l 3 -d 100 -f 135'
+            self.par_viz = '-p 1 -l 1 -w 13 -vv -stat -o L.svg'
+        elif self.key == 'synth_xlarge':
+            self.par_main = '-l 3 -d 100 -f 275'
+            self.par_viz = '-p 1 -l 1 -w 13 -vv -stat -o XL.svg'
+        elif self.key == 'synth_mutate':
+            self.par_main = '-th 1.97 -l 3 -d 600 -f 100 -m 15000'
+            self.par_viz = '-p 1 -l 1 -w 13 -rt 5000 -tt 5000 -vv -stat -o Mut.svg'
+        elif self.key == 'synth_comp_smash':
+            self.par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
+            self.par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar -rt 100000 -tt 100000 ' + '-stat -o CompSmash.svg'
+        elif self.key == 'synth_perm':
+            self.par_main = '-l 0 -f 10 -d 3000'
+            self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + '-o Perm.svg'
+        elif self.key == 'synth_perm450000':
+            self.par_main = '-l 0 -f 25 -d 3000 -ar'
+            self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + '-o Perm_450000.svg'
+        elif self.key == 'synth_perm30000':
+            self.par_main = '-l 0 -f 75 -d 1500 -ar'
+            self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + '-o Perm_30000.svg'
+        elif self.key == 'synth_perm1000':
+            self.par_main = '-l 0 -f 25 -d 300 -ar'
+            self.par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 -stat ' + '-o Perm_1000.svg'
+        elif self.key == 'synth_perm30':
+            self.par_main = '-l 0 -f 250 -d 1 -ar'
+            self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + '-o Perm_30.svg'
+        elif self.key == 'real_gga18_mga20':
+            self.par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 -m 500000 -d 2200 ' + '-th 1.9'
+            self.par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" -tn "MGA 20" ' + '-stat -o GGA18_MGA20.svg'
+        elif self.key == 'real_gga14_mga16':
+            self.par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 -d 1500 -th 1.95 ' + '-e 1.95 -m 400000'
+            self.par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + '-rt 1500000 -tt 1500000 -stat -o GGA14_MGA16.svg'
+        elif self.key == 'real_hs12_pt12':
+            self.par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 -m 100000'
+            self.par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
+        elif self.key == 'real_pxo99a_maff311018':
+            self.par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 -th 1.55 -ar'
+            self.par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A -tn "MAFF 311018" ' + '-stat -o PXO99A_MAFF_311018.svg'
+        elif self.key == 'real_comp_smash':
+            self.par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
+            self.par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII -stat ' + '-o Sc_Sp_smash.svg'
+
+    def acquire_dataset(self):
+        self.dataset.acquire()
+
+    def run_main(self):
+        execute(time_exe + log_main + ' ' + smashpp_exe + ' -r ' + self.dataset.ref + ' -t ' + self.dataset.tar + ' ' + self.par_main)
+
+    def run_viz(self):
+        execute(time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + self.par_viz + ' ' + bare_name(self.dataset.ref) + '.' + bare_name(self.dataset.tar) + '.pos')
+
+    def run(self):
+        self.run_main()
+        self.run_viz()
+
+    def bench(self):
+        bench = True #todo
+        method = 'Smash++'
+        mem = calc_mem(log_main, log_viz)
+        elapsed = calc_elapsed(log_main, log_viz)
+        user_time = calc_user_time(log_main, log_viz)
+        system_time = calc_system_time(log_main, log_viz)
+        bench_result.append([method, self.dataset.label, self.dataset.category, self.dataset.size, mem, elapsed, user_time, system_time])
+
+
+class Smash:
+    def __init__(self, data):
+        self.dataset = Dataset(data)
+        self._config()
+
+    def _config(self):
+        if self.key == 'synth_comp_smash':
+            self.ref = self.dataset.ref_name
+            self.tar = self.dataset.tar_name
+            self.par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd'
+        elif self.key == 'real_comp_smash':
+            self.ref = 'Sc' + self.dataset.ref_name
+            self.tar = 'Sp' + self.dataset.tar_name
+            self.par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd'
+
+    def run(self):
+        shutil.copyfile(self.dataset.ref, self.ref)
+        shutil.copyfile(self.dataset.tar, self.tar)
+        execute(time_exe + log_smash + ' ' + smash + ' ' + self.par + ' ' + self.ref + ' ' + self.tar)
+        os.remove(self.ref)
+        os.remove(self.tar)
+        remove_all_ext(current_dir, 'ext')
+        remove_all_ext(current_dir, 'rev')
+        remove_all_ext(current_dir, 'inf')
+        remove(current_dir, '*.sys*x')
+
+    def bench(self):
+        bench = True #todo
+        method = 'Smash'
+        mem = calc_mem(log_smash)
+        elapsed = calc_elapsed(log_smash)
+        user_time = calc_user_time(log_smash)
+        system_time = calc_system_time(log_smash)
+        bench_result.append([method, self.dataset.label, self.dataset.category, self.dataset.size, mem, elapsed, user_time, system_time])
 
 '''
 Resolve dependencies
@@ -472,325 +611,96 @@ Run
 bench_result = []  # Name, Category, Size, Time, Memory
 bench = False
 
-
-def extract(file, key):
-    import re
-    with open(file) as f:
-        for line in f:
-            if re.search(key, line):
-                split = re.split(' ', line)
-                return split[-1].strip()
-
-
-def calc_mem(log_main, log_viz=''):
-    key = 'Maximum resident'
-    mem_main = extract(log_main, key)
-    if not log_viz:
-        return int(mem_main)
-    else:
-        mem_viz = extract(log_viz, key)
-        return max(int(mem_main), int(mem_viz))
-
-
-def calc_elapsed(log_main, log_viz=''):
-    key = 'Elapsed'
-    elapsed_main = to_seconds(extract(log_main, key))
-    if not log_viz:
-        return f"{float(elapsed_main):.2f}"
-    else:
-        elapsed_viz = to_seconds(extract(log_viz, key))
-        return f"{float(elapsed_main) + float(elapsed_viz):.2f}"
-
-
-def calc_user_time(log_main, log_viz=''):
-    key = 'User'
-    user_time_main = extract(log_main, key)
-    if not log_viz:
-        return f"{float(user_time_main):.2f}"
-    else:
-        user_time_viz = extract(log_viz, key)
-        return f"{float(user_time_main) + float(user_time_viz):.2f}"
-
-
-def calc_system_time(log_main, log_viz=''):
-    key = 'System'
-    system_time_main = extract(log_main, key)
-    if not log_viz:
-        return f"{float(system_time_main):.2f}"
-    else:
-        system_time_viz = extract(log_viz, key)
-        return f"{float(system_time_main) + float(system_time_viz):.2f}"
-
-
 if RUN_SYNTH_SMALL:
-    dataset = Dataset('synth_small')
-    # Make dataset. Sizes: ref:1,500, tar:1,500
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_small')
+    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:1,500, tar:1,500
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_SYNTH_MEDIUM:
-    dataset = Dataset('synth_medium')
-    # Make dataset. Sizes: ref:100,000, tar:100,000
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_medium')
+    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:100,000, tar:100,000
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_SYNTH_LARGE:
-    dataset = Dataset('synth_large')
-    # Make dataset. Sizes: ref:5,000,000, tar:5,000,000
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_large')
+    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:5,000,000, tar:5,000,000
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_SYNTH_XLARGE:
-    dataset = Dataset('synth_xlarge')
-    # Make dataset. Sizes: ref:100,000,000, tar:100,000,000
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_xlarge')
+    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:100,000,000, tar:100,000,000
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_SYNTH_MUTATE:
-    dataset = Dataset('synth_mutate')
-    # Make dataset. Sizes: ref:60,000, tar:60,000. Mutation up to 60%
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_mutate')
+    smashpp.acquire_dataset()  # Make sequences. ref:60,000, tar:60,000. Mutation up to 60%
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_REAL_GGA18_MGA20:
-    dataset = Dataset('real_gga18_mga20')
-    # Download sequences
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('real_gga18_mga20')
+    smashpp.acquire_dataset()  # Download sequences
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_REAL_GGA14_MGA16:
-    dataset = Dataset('real_gga14_mga16')
-    # Download sequences
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('real_gga14_mga16')
+    smashpp.acquire_dataset()  # Download sequences
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_REAL_HS12_PT12:
-    dataset = Dataset('real_hs12_pt12')
-    # Download sequences
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('real_hs12_pt12')
+    smashpp.acquire_dataset()  # Download sequences
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_REAL_PXO99A_MAFF311018:
-    dataset = Dataset('real_pxo99a_maff311018')
-    # Download sequences
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('real_pxo99a_maff311018')
+    smashpp.acquire_dataset()  # Download sequences
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_SYNTH_COMPARE_SMASH:
-    dataset = Dataset('synth_comp_smash')
     # Smash++
-    # Make dataset. Sizes: ref:1,000,000, tar:1,000,000
-    dataset.acquire()
-    ## Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    ## Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_comp_smash')
+    smashpp.acquire_dataset()  # Make sequences. Sizes: ref:1,000,000, tar:1,000,000
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
     # Smash
-    par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd '
-    ref = dataset.ref_name
-    tar = dataset.tar_name
-    cmd = time_exe + log_smash + ' ' + \
-        smash + ' ' + par + ' ' + ref + ' ' + tar
-    ## Run
-    shutil.copyfile(dataset.ref, ref)
-    shutil.copyfile(dataset.tar, tar)
-    execute(cmd)
-    os.remove(ref)
-    os.remove(tar)
-    remove_all_ext(current_dir, 'ext')
-    remove_all_ext(current_dir, 'rev')
-    remove_all_ext(current_dir, 'inf')
-    remove(current_dir, '*.sys*x')
-    ## Bench
-    method = 'Smash'
-    mem = calc_mem(log_smash)
-    elapsed = calc_elapsed(log_smash)
-    user_time = calc_user_time(log_smash)
-    system_time = calc_system_time(log_smash)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smash = Smash('synth_comp_smash')
+    smash.run()  # Run
+    smash.bench()  # Bench
 
 if RUN_REAL_COMPARE_SMASH:
-    dataset = Dataset('real_comp_smash')
     # Smash++
-    # Download sequences
-    dataset.acquire()
-    ## Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    ## Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('real_comp_smash')
+    smashpp.acquire_dataset()  # Download sequences
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
     # Smash
-    par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd '
-    ref = 'Sc' + dataset.ref_name
-    tar = 'Sp' + dataset.tar_name
-    cmd = time_exe + log_smash + ' ' + \
-        smash + ' ' + par + ' ' + ref + ' ' + tar
-    ## Run
-    shutil.copyfile(dataset.ref, ref)
-    shutil.copyfile(dataset.tar, tar)
-    execute(cmd)
-    os.remove(ref)
-    os.remove(tar)
-    remove_all_ext(current_dir, 'ext')
-    remove_all_ext(current_dir, 'rev')
-    remove_all_ext(current_dir, 'inf')
-    remove(current_dir, '*.sys*x')
-    ## Bench
-    method = 'Smash'
-    mem = calc_mem(log_smash)
-    elapsed = calc_elapsed(log_smash)
-    user_time = calc_user_time(log_smash)
-    system_time = calc_system_time(log_smash)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smash = Smash('synth_comp_smash')
+    smash.run()  # Run
+    smash.bench()  # Bench
 
 if RUN_SYNTH_PERM_ORIGINAL:
-    dataset = Dataset('synth_perm')
-    # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
-    dataset.acquire()
-    # Run
-    dataset.run_smashpp_main()
-    dataset.run_smashpp_viz()
-    # Bench
-    bench = True
-    method = 'Smash++'
-    mem = calc_mem(log_main, log_viz)
-    elapsed = calc_elapsed(log_main, log_viz)
-    user_time = calc_user_time(log_main, log_viz)
-    system_time = calc_system_time(log_main, log_viz)
-    bench_result.append([method, dataset.label, dataset.category, dataset.size, mem,
-                         elapsed, user_time, system_time])
+    smashpp = Smashpp('synth_perm')
+    smashpp.acquire_dataset()  # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
+    smashpp.run()  # Run
+    smashpp.bench()  # Bench
 
 if RUN_SYNTH_PERM_450000:
     dataset = Dataset('synth_perm')
-    par_main = '-l 0 -f 25 -d 3000 -ar'
-    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
-        '-o Perm_' + block_size + '.svg'
     block_size = '450000'
     ref_name = dataset.ref_name + block_size
     ref = dataset.ref_path + ref_name
     tar = dataset.tar_path + dataset.tar_name
-    cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
-        ' -r ' + ref + ' -t ' + tar + ' ' + par_main
-    cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
-        ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '6041'
 
     # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
@@ -834,17 +744,10 @@ if RUN_SYNTH_PERM_450000:
 
 if RUN_SYNTH_PERM_30000:
     dataset = Dataset('synth_perm')
-    par_main = '-l 0 -f 75 -d 1500 -ar'
-    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
-        '-o Perm_' + block_size + '.svg'
     block_size = '30000'
     ref_name = dataset.ref_name + block_size
     ref = dataset.ref_path + ref_name
     tar = dataset.tar_path + dataset.tar_name
-    cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
-        ' -r ' + ref + ' -t ' + tar + ' ' + par_main
-    cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
-        ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '328914'
 
     # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
@@ -888,17 +791,10 @@ if RUN_SYNTH_PERM_30000:
 
 if RUN_SYNTH_PERM_1000:
     dataset = Dataset('synth_perm')
-    par_main = '-l 0 -f 25 -d 300 -ar'
-    par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 -stat ' + \
-        '-o Perm_' + block_size + '.svg'
     block_size = '1000'
     ref_name = dataset.ref_name + block_size
     ref = dataset.ref_path + ref_name
     tar = dataset.tar_path + dataset.tar_name
-    cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
-        ' -r ' + ref + ' -t ' + tar + ' ' + par_main
-    cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
-        ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '564283'
 
     # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
@@ -944,15 +840,8 @@ if RUN_SYNTH_PERM_30:
     dataset = Dataset('synth_perm')
     block_size = '30'
     ref_name = dataset.ref_name + block_size
-    par_main = '-l 0 -f 250 -d 1 -ar'
-    par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 -tt 500000 -stat ' + \
-        '-o Perm_' + block_size + '.svg'
     ref = dataset.ref_path + ref_name
     tar = dataset.tar_path + dataset.tar_name
-    cmd_main = time_exe + log_main + ' ' + smashpp_exe + \
-        ' -r ' + ref + ' -t ' + tar + ' ' + par_main
-    cmd_viz = time_exe + log_viz + ' ' + smashpp_exe + ' -viz ' + par_viz + \
-        ' ' + bare_name(ref) + '.' + bare_name(tar) + '.pos'
     seed = '900123'
 
     # Make dataset. Sizes: ref:3,000,000, tar:3,000,000
@@ -994,16 +883,6 @@ if RUN_SYNTH_PERM_30:
     bench_result.append([method, dataset, cat, size, mem,
                          elapsed, user_time, system_time])
 
-
-# def run_bench(func, method, dataset, cat, size):
-#     import memory_profiler
-#     import time
-#     start_time = time.perf_counter()
-#     memory = memory_profiler.memory_usage(func)
-#     end_time = time.perf_counter()
-#     elapsed = f"{end_time - start_time:.2f}"
-#     max_memory = f"{max(memory):.2f}"
-#     bench_result.append([method, dataset, cat, size, elapsed, max_memory])
 
 # def run_bench(method, dataset, cat, size, func, arg=''):
 #     import time
