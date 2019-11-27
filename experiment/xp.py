@@ -5,12 +5,9 @@ Morteza Hosseini, Diogo Pratas, Armando J. Pinho
 Copyright (C) 2018-2019, IEETA/DETI, University of Aveiro, Portugal
 '''
 
-'''
-USER CAN CHANGE HERE BY SWITCHING False/True
-'''
-import shutil
-import os
-
+###########################################################################
+#             TO RUN ON A DATASET, CHANGE False to True                   #
+###########################################################################
 # Run (Benchmark)
 RUN_SYNTH_SMALL = False
 RUN_SYNTH_MEDIUM = False
@@ -21,8 +18,8 @@ RUN_REAL_GGA18_MGA20 = False
 RUN_REAL_GGA14_MGA16 = False
 RUN_REAL_HS12_PT12 = False
 RUN_REAL_PXO99A_MAFF311018 = False
-RUN_SYNTH_COMPARE_SMASH = False  # Compare to Smash on synthetic data
-RUN_REAL_COMPARE_SMASH = False  # Compare to Smash on real data
+RUN_SYNTH_COMPARE_SMASH = False
+RUN_REAL_COMPARE_SMASH = False
 RUN_SYNTH_PERM_ORIGINAL = False
 RUN_SYNTH_PERM_450000 = False
 RUN_SYNTH_PERM_30000 = False
@@ -33,9 +30,8 @@ RUN_SYNTH_PERM_30 = False
 ###########################################################################
 #                        D O   N O T   C H A N G E                        #
 ###########################################################################
-'''
-General
-'''
+import shutil
+import os
 sep = '/' if os.name == 'posix' else '\\'
 path_bin = 'bin' + sep
 path_data = 'dataset' + sep
@@ -134,6 +130,7 @@ def tool_exists(name):
 
 
 def extract(file, key):
+    '''Extract the line including the key in a file'''
     import re
     with open(file) as f:
         for line in f:
@@ -143,6 +140,7 @@ def extract(file, key):
 
 
 def calc_mem(log_main, log_viz=''):
+    '''Obtain memory usage saved in log file'''
     key = 'Maximum resident'
     mem_main = extract(log_main, key)
     if not log_viz:
@@ -153,6 +151,7 @@ def calc_mem(log_main, log_viz=''):
 
 
 def calc_elapsed(log_main, log_viz=''):
+    '''Obtain elapsed time (wall clock) saved in log file'''
     key = 'Elapsed'
     elapsed_main = to_seconds(extract(log_main, key))
     if not log_viz:
@@ -163,6 +162,7 @@ def calc_elapsed(log_main, log_viz=''):
 
 
 def calc_user_time(log_main, log_viz=''):
+    '''Obtain user time saved in log file'''
     key = 'User'
     user_time_main = extract(log_main, key)
     if not log_viz:
@@ -173,6 +173,7 @@ def calc_user_time(log_main, log_viz=''):
 
 
 def calc_system_time(log_main, log_viz=''):
+    '''Obtain system time saved in log file'''
     key = 'System'
     system_time_main = extract(log_main, key)
     if not log_viz:
@@ -559,20 +560,22 @@ class Benchmark:
         self.result = []
 
     def write_result(self):
-        from csv import writer
-        with open('bench.csv', 'w') as bench_file:
-            writer = writer(bench_file)
-            writer.writerow(['Method', 'Dataset', 'Cat', 'Size.B',
-                             'Memory.KB', 'Elapsed.s', 'User.s', 'System.s'])
-            writer.writerows(self.result)
+        if self.result:
+            from csv import writer
+            with open('bench.csv', 'w') as bench_file:
+                writer = writer(bench_file)
+                writer.writerow(
+                    ['Method', 'Dataset', 'Cat', 'Size.B', 'Memory.KB',
+                     'Elapsed.s', 'User.s', 'System.s'])
+                writer.writerows(self.result)
 
-        # Move obtained results to the result/ directory
-        make_path('result')
-        for file in os.listdir(current_dir):
-            if file.endswith('.csv') or file.endswith('.svg') or \
-                    file.endswith('.pos') or file.endswith('.fil'):
-                shutil.copy(file, 'result/')
-                remove_path(file)
+            # Move obtained results to the result/ directory
+            make_path('result')
+            for file in os.listdir(current_dir):
+                if file.endswith('.csv') or file.endswith('.svg') or \
+                        file.endswith('.pos') or file.endswith('.fil'):
+                    shutil.copy(file, 'result/')
+                    remove_path(file)
 
 
 class Smashpp:
