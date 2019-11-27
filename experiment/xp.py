@@ -11,10 +11,6 @@ USER CAN CHANGE HERE BY SWITCHING False/True
 import shutil
 import os
 
-# Resolve dependencies
-GET_GOOSE = False
-GET_ENTREZ = False  #True
-
 # Run (Benchmark)
 RUN_SYNTH_SMALL = False
 RUN_SYNTH_MEDIUM = False
@@ -186,19 +182,29 @@ def download_seq(id, output):
 '''
 Resolve dependencies
 '''
-if GET_GOOSE:
-    remove_all_start(current_dir, "goose-")
-    remove_path("goose")
-    execute('git clone https://github.com/pratas/goose.git;' +
-            'cd goose/src/;' +
-            'make -j8;' +
-            'cp goose-fastqsimulation goose-mutatedna ' +
-            'goose-permuteseqbyblocks goose-fasta2seq bin/')
+def tool_exists(name):
+    '''Python 3.3+'''
+    from shutil import which
+    return which(name) is not None
 
-if GET_ENTREZ:
+
+if not tool_exists('efetch'):
+    '''Entrez Direct'''
     print('Downloading and installing Entrez ...')
     execute('conda install -c bioconda entrez-direct --yes')
     print('Finished.')
+
+if not os.path.exists('bin/goose-fasta2seq') or \
+   not os.path.exists('bin/goose-fastqsimulation') or \
+   not os.path.exists('bin/goose-mutatedna') or \
+   not os.path.exists('bin/goose-permuteseqbyblocks'):
+    # remove_all_start(current_dir, "goose-")
+    # remove_path("goose")
+    execute('git clone https://github.com/pratas/goose.git;' +
+            'cd goose/src/;' +
+            'make -j8;' +
+            'cp goose-fasta2seq goose-fastqsimulation ' +
+            'goose-mutatedna goose-permuteseqbyblocks ../../bin/')
 
 
 '''
