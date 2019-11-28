@@ -191,9 +191,15 @@ There is in this directory two 1000 base sequences, the reference sequence named
 ```
 
 ## Experiment
-To reproduce the results in the paper, we have provided the Python script `xp.py` in the `experiment/` directory, that can run Smash++ on synthetic and real genomic data. By this script, you can automatically make/download the datasets, in case of synthetic/real data, run Smash++ on those data using predefined parameters, and benchmark the method.
+To reproduce results in the paper, we have provided the Python script `xp.py` in the `experiment/` directory, that can run Smash++ on synthetic and real genomic data. By this script, you can automatically make/download the datasets, in case of synthetic/real data, run Smash++ on those data using predefined parameters, and benchmark the method.
 
-To use `xp.py`, you need to switch **False** to **True** for the desired dataset, in the beginnig of the file.
+To use `xp.py`, you need to switch **False** to **True** for a desired dataset, in the beginnig of the file. Then, it runs Smash++ on that (those) dataset(s) and saves in the `result/` directory the results including:
+- a `*.pos` file, which contains the positions of similar regions, plus self- and relative-redundancy values. It also includes in the header the parameters used to run Smash++, and sizes of the reference and the target files
+- a `*.svg` file with the similar regions visualized. This file is the output of Smash++ visualizer.
+- the `bench.csv` file, that provides time and memory usage of Smash++. In case of comparing with Smash (the first version), this file will provide the time and memory usage of Smash method, too.
+- in some cases, there would be a `*.csv` file, including the number of regular and inverted regions among the detected rearrangements. This file is generated when `-stat` flag is enabled for Smash++ visualizer.
+
+Note that, `xp.py` requires `conda` for downloading the real dataset using Entrez Direct (EDirect) utility. If EDirect is not already installed, the script will automatically install it by `conda`.
 
 <!-- ### Compare Smash++ with other methods
 In order for comparison, you might set the parameters in 
