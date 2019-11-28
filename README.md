@@ -129,7 +129,7 @@ SAMPLE
 
 To see the options for Smash++ Visualizer, type:
 ```bash
-	./smashpp -viz
+./smashpp -viz
 ```
 
 which provides the following:
@@ -190,6 +190,11 @@ There is in this directory two 1000 base sequences, the reference sequence named
 ./smashpp -viz -o example.svg ref.tar.pos
 ```
 
+## Experiment
+To reproduce the results in the paper, we have provided the Python script `xp.py` in the `experiment/` directory, that can run Smash++ on synthetic and real genomic data. By this script, you can automatically make/download the datasets, in case of synthetic/real data, run Smash++ on those data using predefined parameters, and benchmark the method.
+
+To use `xp.py`, you need to switch **False** to **True** for the desired dataset, in the beginnig of the file.
+
 <!-- ### Compare Smash++ with other methods
 In order for comparison, you might set the parameters in 
 "run.sh" bash script, then run it:
@@ -203,7 +208,7 @@ BEGOO KE CONDA BAYAD NASB BASHE, VASE DATASET HA (ENTREZ-DIRECT)
 
 ## Cite
 Please cite the following, if you use Smash++:
-* Submitted ...
+* M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: ," *bioRxiv*, 2019; doi: https://doi.org/
 
 ## Releases
 * [Release](https://github.com/smortezah/smashpp/releases) 1: .
