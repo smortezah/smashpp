@@ -8,7 +8,6 @@ Copyright (C) 2018-2019, IEETA/DETI, University of Aveiro, Portugal
 ###########################################################################
 #             TO RUN ON A DATASET, CHANGE False to True                   #
 ###########################################################################
-# Run (Benchmark)
 RUN_SYNTH_SMALL = False
 RUN_SYNTH_MEDIUM = False
 RUN_SYNTH_LARGE = False
