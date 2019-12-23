@@ -47,12 +47,12 @@ cd smashpp
 ```
 
 ## Run
-```bash
+```text
 ./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
 ```
 
 For example,
-```bash
+```text
 ./smashpp -r ref -t tar
 ```
 
@@ -199,25 +199,14 @@ To use `xp.py`, you need to switch **False** to **True** for a desired dataset, 
 - the `bench.csv` file, that provides time and memory usage of Smash++. In case of comparing with Smash (the first version), this file will provide the time and memory usage of Smash method, too.
 - in some cases, there would be a `*.csv` file, including the number of regular and inverted regions among the detected rearrangements. This file is generated when `-stat` flag is enabled for Smash++ visualizer.
 
-Note that, `xp.py` requires `conda` for downloading the real dataset using Entrez Direct (EDirect) utility. If EDirect is not already installed, the script will automatically install it by `conda`.
-
-<!-- ### Compare Smash++ with other methods
-In order for comparison, you might set the parameters in 
-"run.sh" bash script, then run it:
-```bash
-./run.sh
-```
-With this script, you can download the datasets, install the dependencies, 
-install the other tools, run all the tools, and finally, visualize the results. 
-BEGOO KE CONDA BAYAD NASB BASHE, VASE DATASET HA (ENTREZ-DIRECT)
--->
+Note that `xp.py` requires `conda` for downloading the real dataset using Entrez Direct (EDirect) utility. If EDirect is not already installed, the script will automatically install it by `conda`.
 
 ## Cite
 Please cite the following, if you use Smash++:
-* M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: ," *bioRxiv*, 2019; doi: https://doi.org/
+* M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: an alignment-free and memory-efficient tool to find genomic rearrangements," *bioRxiv*, 2019; doi: https://doi.org/
 
-## Releases
-* [Release](https://github.com/smortezah/smashpp/releases) 1: .
+<!-- ## Releases
+* [Release](https://github.com/smortezah/smashpp/releases) 1: . -->
 
 ## Issues
 Please let us know if there is any 

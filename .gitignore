@@ -2,7 +2,7 @@
 /*.svg
 !example.svg
 **/build
-.vscode/ipch
+.vscode
 **/*.blg
 **/*.bbl
 **/*.aux
@@ -25,7 +25,6 @@ example/*.s*
 # smashpp
 smashpp.exe
 paper/sup.synctex(busy)
-.vscode/settings.json
 .Rproj.user
 install.bat
 desktop.ini
