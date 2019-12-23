@@ -8,7 +8,7 @@ To install Smash++ on various operating systems, follow the instructions below. 
 ### Conda
 Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html), then run the following:
 ```bash
-conda install -c cobilab smashpp
+conda install -c cobilab -y smashpp
 ```
 <!-- conda install -c bioconda smashpp -->
 
