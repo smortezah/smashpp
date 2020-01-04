@@ -1,4 +1,4 @@
-# Smash++ &nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.com/smortezah/smashpp.svg?token=EWxsPpL9t9UvE93uKjH5&branch=master)](https://travis-ci.com/smortezah/smashpp) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/028cee56c77046dea4bc870237aae46a)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=smortezah/smashpp&amp;utm_campaign=Badge_Grade) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+# Smash++ &nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.com/smortezah/smashpp.svg?token=EWxsPpL9t9UvE93uKjH5&branch=master)](https://travis-ci.com/smortezah/smashpp) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/028cee56c77046dea4bc870237aae46a)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=smortezah/smashpp&amp;utm_campaign=Badge_Grade) ![Conda](https://img.shields.io/conda/dn/bioconda/smashpp) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 A fast tool to find and visualize rearrangements in DNA sequences.
 
@@ -8,9 +8,8 @@ To install Smash++ on various operating systems, follow the instructions below. 
 ### Conda
 Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html), then run the following:
 ```bash
-conda install -c cobilab -y smashpp
+conda install -y -c bioconda smashpp
 ```
-<!-- conda install -c bioconda smashpp -->
 
 ### Linux
 * Install Git and CMake:
