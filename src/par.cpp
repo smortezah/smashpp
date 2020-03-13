@@ -188,8 +188,8 @@ void Param::parse(int argc, char**& argv) {
       range->assert(tar_guard->end);
     } else if (*i == "-ar") {
       asym_region = true;
-    // } else if (*i == "-dp") {
-    //   deep = true;
+    } else if (*i == "-dp") {//todo
+      deep = false;
     } else if (*i == "-nr") {
       noRedun = true;
     } else if (*i == "-sb") {
