@@ -499,7 +499,6 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
          it != std::begin(buffer) + tar_file.gcount(); ++it) {
       auto c = *it;
       if (c != '\n') {
-        ++symsNo;
         prc_t entr;
         if (rMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
           if (c != 'N') {
@@ -512,8 +511,6 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
             prob_par.config_ir0(c, ctx);
             entr = entropyN;
           }
-          prf_file << precision(PREC_PRF, entr) << '\n';
-          sumEnt += entr;
           update_ctx_ir0(ctx, &prob_par);
         } else if (rMs[0].ir == 1) {
           if (c != 'N') {
@@ -526,8 +523,6 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
             prob_par.config_ir1(c, ctxIr);
             entr = entropyN;
           }
-          prf_file << precision(PREC_PRF, entr) << '\n';
-          sumEnt += entr;
           update_ctx_ir1(ctxIr, &prob_par);
         } else if (rMs[0].ir == 2) {
           if (c != 'N') {
@@ -540,10 +535,12 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
             prob_par.config_ir2(c, ctx, ctxIr);
             entr = entropyN;
           }
-          prf_file << precision(PREC_PRF, entr) << '\n';
-          sumEnt += entr;
           update_ctx_ir2(ctx, ctxIr, &prob_par);
         }
+
+        ++symsNo;
+          sumEnt += entr;
+          prf_file << precision(PREC_PRF, entr) << '\n';
         if (par->verbose) show_progress(symsNo, totalSize, par->message);
       }
     }
