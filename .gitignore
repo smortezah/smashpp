@@ -30,3 +30,4 @@ install.bat
 desktop.ini
 # experiment/dataset/**
 experiment/dataset/mammalia/**
+test_remove_it/**
