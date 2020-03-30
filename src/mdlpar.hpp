@@ -1,6 +1,6 @@
 // Smash++
 // Morteza Hosseini    seyedmorteza@ua.pt
-// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+// Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
 #ifndef SMASHPP_MDLPAR_HPP
 #define SMASHPP_MDLPAR_HPP
@@ -92,7 +92,7 @@ inline void ProbPar::config_ir0(uint64_t ctx) { l = ctx << 2u; }
 inline void ProbPar::config_ir0(uint8_t nsym) { numSym = nsym; }
 
 inline void ProbPar::config_ir0(char c, uint64_t ctx) {
-  numSym = NUM[static_cast<uint8_t>(c)];
+  numSym = base_code(c);
   l = ctx << 2u;
 }
 
@@ -102,7 +102,7 @@ inline void ProbPar::config_ir1(uint8_t nsym) {
 }
 
 inline void ProbPar::config_ir1(char c, uint64_t ctxIr) {
-  numSym = NUM[static_cast<uint8_t>(c)];
+  numSym = base_code(c);
   revNumSym = static_cast<uint8_t>(3 - numSym);
   r = ctxIr >> 2u;
 }
@@ -113,7 +113,7 @@ inline void ProbPar::config_ir2(uint8_t nsym) {
 }
 
 inline void ProbPar::config_ir2(char c, uint64_t ctx, uint64_t ctxIr) {
-  numSym = NUM[static_cast<uint8_t>(c)];
+  numSym = base_code(c);
   l = ctx << 2u;
   revNumSym = static_cast<uint8_t>(3 - numSym);
   r = ctxIr >> 2u;
