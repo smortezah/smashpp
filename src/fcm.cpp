@@ -1,19 +1,21 @@
 // Smash++
 // Morteza Hosseini    seyedmorteza@ua.pt
-// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+// Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
-#include <fstream>
-#include <cmath>
-#include <thread>
-#include <numeric>  // std::accumulate
 #include "fcm.hpp"
-#include "par.hpp"
+
+#include <cmath>
+#include <fstream>
+#include <numeric>  // std::accumulate
+#include <thread>
+
 #include "assert.hpp"
 #include "container.hpp"
-#include "number.hpp"
+#include "exception.hpp"
 #include "file.hpp"
 #include "naming.hpp"
-#include "exception.hpp"
+#include "number.hpp"
+#include "par.hpp"
 using namespace smashpp;
 
 FCM::FCM(std::unique_ptr<Param>& par)
@@ -427,13 +429,13 @@ inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
   std::ifstream rf(ref);
   Mask ctx = 0;
 
-  for (std::vector<char> buffer(FILE_BUF, 0); rf.peek() != EOF;) {
-    rf.read(buffer.data(), FILE_BUF);
+  for (std::vector<char> buffer(FILE_READ_BUF, 0); rf.peek() != EOF;) {
+    rf.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer); it != std::begin(buffer) + rf.gcount();
          ++it) {
       const auto c = *it;
       if (c != '\n') {
-        ctx = ((ctx & mask) << 2u) | NUM[static_cast<uint8_t>(c)];
+        ctx = ((ctx & mask) << 2u) | base_code(c);
         (*cont)->update(ctx);
       }
     }
@@ -488,24 +490,34 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
   prc_t sumEnt{0};     // Sum of entropies = sum(log_2 P(s|c^t))
   ProbPar prob_par{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
                    static_cast<uint8_t>(rMs[0].k << 1u)};
-  const auto totalSize = file_size(par->tar);
   std::ifstream tar_file(par->tar);
   std::ofstream prf_file(
       gen_name(par->ID, par->ref, par->tar, Format::profile));
+  const auto totalSize = file_size(par->tar);
+  std::vector<prc_t> entropies;
+  entropies.reserve(FILE_WRITE_BUF);
+  auto write_entropies = [&]() {
+    for (auto e : entropies) prf_file << precision(PREC_PRF, e) << '\n';
+  };
+  uint64_t sample_step_index = 0;
 
-  for (std::vector<char> buffer(FILE_BUF, 0); tar_file.peek() != EOF;) {
-    tar_file.read(buffer.data(), FILE_BUF);
+  for (std::vector<char> buffer(FILE_READ_BUF, 0); tar_file.peek() != EOF;) {
+    tar_file.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer);
          it != std::begin(buffer) + tar_file.gcount(); ++it) {
       auto c = *it;
       if (c != '\n') {
         prc_t entr;
+        bool sample_taken = (sample_step_index % par->sampleStep == 0);
+
         if (rMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
           if (c != 'N') {
             prob_par.config_ir0(c, ctx);
-            std::array<decltype((*cont)->query(0)), 4> f{};
-            freqs_ir0(f, cont, prob_par.l);
-            entr = entropy(prob(std::begin(f), &prob_par));
+            if (sample_taken) {
+              std::array<decltype((*cont)->query(0)), 4> f{};
+              freqs_ir0(f, cont, prob_par.l);
+              entr = entropy(prob(std::begin(f), &prob_par));
+            }
           } else {
             // c = TAR_ALT_N;//todo
             prob_par.config_ir0(c, ctx);
@@ -515,9 +527,11 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
         } else if (rMs[0].ir == 1) {
           if (c != 'N') {
             prob_par.config_ir1(c, ctxIr);
-            std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-            freqs_ir1(f, cont, prob_par.shl, prob_par.r);
-            entr = entropy(prob(std::begin(f), &prob_par));
+            if (sample_taken) {
+              std::array<decltype(2 * (*cont)->query(0)), 4> f{};
+              freqs_ir1(f, cont, prob_par.shl, prob_par.r);
+              entr = entropy(prob(std::begin(f), &prob_par));
+            }
           } else {
             // c = TAR_ALT_N;//todo
             prob_par.config_ir1(c, ctxIr);
@@ -527,9 +541,11 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
         } else if (rMs[0].ir == 2) {
           if (c != 'N') {
             prob_par.config_ir2(c, ctx, ctxIr);
-            std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-            freqs_ir2(f, cont, &prob_par);
-            entr = entropy(prob(begin(f), &prob_par));
+            if (sample_taken) {
+              std::array<decltype(2 * (*cont)->query(0)), 4> f{};
+              freqs_ir2(f, cont, &prob_par);
+              entr = entropy(prob(begin(f), &prob_par));
+            }
           } else {
             // c = TAR_ALT_N;//todo
             prob_par.config_ir2(c, ctx, ctxIr);
@@ -538,13 +554,24 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
           update_ctx_ir2(ctx, ctxIr, &prob_par);
         }
 
-        ++symsNo;
+        if (sample_taken) {
+          ++symsNo;
           sumEnt += entr;
-          prf_file << precision(PREC_PRF, entr) << '\n';
+          entropies.push_back(entr);
+        }
+        ++sample_step_index;
+        // prf_file << precision(PREC_PRF, entr) << '\n';
         if (par->verbose) show_progress(symsNo, totalSize, par->message);
       }
     }
+
+    if (entropies.size() >= FILE_WRITE_BUF) {
+      write_entropies();
+      entropies.clear();
+      entropies.reserve(FILE_WRITE_BUF);
+    }
   }
+  write_entropies();
 
   tar_file.close();
   prf_file.close();
@@ -574,10 +601,16 @@ inline void FCM::compress_n(std::unique_ptr<Param>& par) {
       cp->pp.emplace_back(mm.child->alpha, *maskIter++,
                           static_cast<uint8_t>(2 * mm.k));
   }
-  const auto totalSize = file_size(par->tar);
   std::ifstream tar_file(par->tar);
   std::ofstream prf_file(
       gen_name(par->ID, par->ref, par->tar, Format::profile));
+  const auto totalSize = file_size(par->tar);
+  std::vector<prc_t> entropies;
+  entropies.reserve(FILE_WRITE_BUF);
+  auto write_entropies = [&]() {
+    for (auto e : entropies) prf_file << precision(PREC_PRF, e) << '\n';
+  };
+  uint64_t sample_step_index = 0;
 
   const auto compress_n_impl = [&](auto& cp, auto cont, uint8_t& n) {
     compress_n_parent(cp, cont, n);
@@ -589,15 +622,15 @@ inline void FCM::compress_n(std::unique_ptr<Param>& par) {
     }
   };
 
-  for (std::vector<char> buffer(FILE_BUF, 0); tar_file.peek() != EOF;) {
-    tar_file.read(buffer.data(), FILE_BUF);
+  for (std::vector<char> buffer(FILE_READ_BUF, 0); tar_file.peek() != EOF;) {
+    tar_file.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer);
          it != std::begin(buffer) + tar_file.gcount(); ++it) {
       const auto c = *it;
       if (c != '\n') {
-        ++symsNo;
+        bool sample_taken = (sample_step_index % par->sampleStep == 0);
         cp->c = c;
-        cp->nSym = NUM[static_cast<uint8_t>(c)];
+        cp->nSym = base_code(c);
         cp->ppIt = std::begin(cp->pp);
         cp->ctxIt = std::begin(cp->ctx);
         cp->ctxIrIt = std::begin(cp->ctxIr);
@@ -631,18 +664,28 @@ inline void FCM::compress_n(std::unique_ptr<Param>& par) {
           ++cp->ctxIrIt;
         }
 
-        const auto ent = entropy(std::begin(cp->w), std::begin(cp->probs),
-                                 std::end(cp->probs));
-        prf_file << precision(PREC_PRF, ent) << '\n';
+        const auto entr = entropy(std::begin(cp->w), std::begin(cp->probs),
+                                  std::end(cp->probs));
+        // prf_file << precision(PREC_PRF, entr) << '\n';
         normalize(std::begin(cp->w), std::begin(cp->wNext),
                   std::end(cp->wNext));
         ////        update_weights(begin(cp->w), begin(cp->probs),
         /// end(cp->probs));
-        sumEnt += ent;
+        ++symsNo;
+        sumEnt += entr;
+        if (sample_taken) entropies.push_back(entr);
+        ++sample_step_index;
         if (par->verbose) show_progress(symsNo, totalSize, par->message);
       }
     }
+
+    if (entropies.size() >= FILE_WRITE_BUF) {
+      write_entropies();
+      entropies.clear();
+      entropies.reserve(FILE_WRITE_BUF);
+    }
   }
+  write_entropies();
 
   tar_file.close();
   prf_file.close();
@@ -796,9 +839,8 @@ void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID,
     self_compress_n(par, ID);
 
   if (par->verbose)
-    std::cerr << "\r" << message
-              << "done. Ave. entropy = " << fixed_precision(PREC_PRF, selfEnt[ID])
-              << " bps." << '\n';
+    std::cerr << "\r" << message << "done. Ave. entropy = "
+              << fixed_precision(PREC_PRF, selfEnt[ID]) << " bps." << '\n';
 }
 
 inline void FCM::self_compress_alloc() {
@@ -842,8 +884,8 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
   const auto totalSize = file_size(par->seq);
   prc_t entr;
 
-  for (std::vector<char> buffer(FILE_BUF, 0); seqF.peek() != EOF;) {
-    seqF.read(buffer.data(), FILE_BUF);
+  for (std::vector<char> buffer(FILE_READ_BUF, 0); seqF.peek() != EOF;) {
+    seqF.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount();
          ++it) {
       const auto c = *it;
@@ -934,15 +976,15 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
     (*cont)->update(valUpd);
   };
 
-  for (std::vector<char> buffer(FILE_BUF, 0); seqF.peek() != EOF;) {
-    seqF.read(buffer.data(), FILE_BUF);
+  for (std::vector<char> buffer(FILE_READ_BUF, 0); seqF.peek() != EOF;) {
+    seqF.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount();
          ++it) {
       const auto c = *it;
       if (c != '\n') {
         ++symsNo;
         cp->c = c;
-        cp->nSym = NUM[static_cast<uint8_t>(c)];
+        cp->nSym = base_code(c);
         cp->ppIt = std::begin(cp->pp);
         cp->ctxIt = std::begin(cp->ctx);
         cp->ctxIrIt = std::begin(cp->ctxIr);
@@ -1200,7 +1242,6 @@ template <typename FreqIter, typename ProbParIter>
 inline prc_t FCM::prob(FreqIter fFirst, ProbParIter pp) const {
   return (*(fFirst + pp->numSym) + pp->alpha) /
          std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha);
-  
 
   // const uint64_t aDen = 1 / pp->alpha;
   // // const uint64_t aDen = 1000;
@@ -1260,8 +1301,7 @@ inline prc_t FCM::entropy(WIter wFirst, PIter PFirst, PIter PLast) const {
   //  return -std::log2(
   //    inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0)));
 
-
-  //todo
+  // todo
   // const auto p = inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0));
   // // if (*(PFirst + 1) > 1)
   // // if (*PFirst!=2.0 && p > 1)

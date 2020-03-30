@@ -1,12 +1,12 @@
 // Smash++
 // Morteza Hosseini    seyedmorteza@ua.pt
-// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+// Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
 #ifndef SMASHPP_STRING_HPP
 #define SMASHPP_STRING_HPP
 
-#include "par.hpp"
 #include "number.hpp"
+#include "par.hpp"
 
 namespace smashpp {
 static constexpr uint8_t TEXTWIDTH{65};
@@ -70,8 +70,9 @@ inline std::string bold_red(const std::string& text) {
 #endif
 
 inline
-//  static 
-void wrap_text(std::string& text) {
+    //  static
+    void
+    wrap_text(std::string& text) {
   constexpr auto width{TEXTWIDTH};
   std::string out;
   std::string word;
@@ -177,10 +178,10 @@ inline static std::string conv_to_string(FilterScale val) {
 
 inline static std::string human_readable(uint64_t bytes,
                                          uint8_t precision = 0) {
-  const uint64_t KB_div{POW2[10]};
-  const uint64_t MB_div{POW2[20]};
-  const uint64_t GB_div{POW2[30]};
-  const uint64_t TB_div{POW2[40]};
+  const uint64_t KB_div = pow2(10);
+  const uint64_t MB_div = pow2(20);
+  const uint64_t GB_div = pow2(30);
+  const uint64_t TB_div = pow2(40);
   const std::string precFormat{"%." + std::to_string(precision) + "f"};
 
   if (bytes >= TB_div)

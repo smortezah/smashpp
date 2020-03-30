@@ -1,6 +1,6 @@
 // Smash++
 // Morteza Hosseini    seyedmorteza@ua.pt
-// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+// Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
 #ifndef SMASHPP_PAR_HPP
 #define SMASHPP_PAR_HPP
@@ -36,7 +36,8 @@ static constexpr uint64_t W{2 << 29ull};    // Width of CML sketch
 static constexpr uint8_t D{5};              // Depth of CML sketch
 static const std::string LBL_BAK{"_bk"};    // Label  - backup files
 static const std::string POS_WATERMARK{"##SMASH++"};  // Hdr of pos file
-static constexpr int FILE_BUF{8 * 1024};  // 8K
+static constexpr size_t FILE_READ_BUF{8 * 1024};  // 8K
+static constexpr size_t FILE_WRITE_BUF{8 * 1024};
 static const std::string IMAGE{"map.svg"};
 
 // Visualization

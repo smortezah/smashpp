@@ -1,6 +1,6 @@
 // Smash++
 // Morteza Hosseini    seyedmorteza@ua.pt
-// Copyright (C) 2018-2019, IEETA, University of Aveiro, Portugal.
+// Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 #include "filter.hpp"
 #include <cmath>
 #include <numeric>
@@ -711,9 +711,15 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
       seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
   }
 
-  seg->totalSize = file_lines(profileName);  // todo
+  // seg->totalSize = file_lines(profileName)*par->sampleStep;
+  seg->totalSize = file_size(par->tar);// todo
   const auto jump_lines = [&]() {
-    for (uint64_t i = par->sampleStep; i--;) ignore_this_line(prfF);
+    // for (uint64_t i = par->sampleStep; i--;) ignore_this_line(prfF);//todo
+  };
+  std::vector<float> filtered_values;
+  filtered_values.reserve(FILE_WRITE_BUF);
+  auto write_filtered_values = [&]() {
+    for (auto e : filtered_values) filF << precision(PREC_FIL, e) << "\n";
   };
 
   std::vector<float> seq;
@@ -738,7 +744,8 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
   auto sum = std::inner_product(std::begin(seq), std::end(seq), winBeg, 0.f);
   auto filtered = sum / sum_weights;
-  if (SaveFilter) filF << precision(PREC_FIL, filtered) << '\n';
+  // if (SaveFilter) filF << precision(PREC_FIL, filtered) << '\n';
+    if (SaveFilter) filtered_values.push_back(filtered);
   seg->partition(pos_out, filtered);
   if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
 
@@ -751,7 +758,15 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     sum = (std::inner_product(winBeg, winEnd - idx, seqBeg + idx, 0.f) +
            std::inner_product(winEnd - idx, winEnd, seqBeg, 0.f));
     filtered = sum / sum_weights;
-    if (SaveFilter) filF << precision(PREC_FIL, filtered) << '\n';
+    // if (SaveFilter) filF << precision(PREC_FIL, filtered) << '\n';
+    if (SaveFilter) {
+      filtered_values.push_back(filtered);
+      if (filtered_values.size() >= FILE_WRITE_BUF) {
+        write_filtered_values();
+        filtered_values.clear();
+        filtered_values.reserve(FILE_WRITE_BUF);
+      }
+    }
     ++seg->pos;
     seg->partition(pos_out, filtered);
     if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
@@ -766,12 +781,21 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     sum = (std::inner_product(winBeg, winEnd - idx, seqBeg + idx, 0.f) +
            std::inner_product(winEnd - idx, winEnd, seqBeg, 0.f));
     filtered = sum / sum_weights;
-    if (SaveFilter) filF << precision(PREC_FIL, filtered) << '\n';
+    // if (SaveFilter) filF << precision(PREC_FIL, filtered) << '\n';
+    if (SaveFilter) {
+      filtered_values.push_back(filtered);
+      if (filtered_values.size() >= FILE_WRITE_BUF) {
+        write_filtered_values();
+        filtered_values.clear();
+        filtered_values.reserve(FILE_WRITE_BUF);
+      }
+    }
     ++seg->pos;
     seg->partition(pos_out, filtered);
     if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
   }
   seg->finalize_partition(pos_out);
+  write_filtered_values();//todo
   if (par->verbose) show_progress(++symsNo, seg->totalSize, par->message);
 
   filF.close();
