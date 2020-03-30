@@ -2,9 +2,11 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
-#include <random>
-#include <fstream>
 #include "cmls4.hpp"
+
+#include <fstream>
+#include <random>
+
 #include "exception.hpp"
 using namespace smashpp;
 
@@ -36,11 +38,11 @@ void CMLS4::set_a_b() {
 
 void CMLS4::update(uint64_t ctx) {
   const auto c{min_log_ctr(ctx)};
-  if (!(tot++ & POW2minus1[c]))     // Increase decision.  x % 2^n = x & (2^n-1)
-  //    for (uint8_t i=0; i!=d; ++i) {
+  if (!(tot++ & POW2minus1[c]))  // Increase decision.  x % 2^n = x & (2^n-1)
+                                 //    for (uint8_t i=0; i!=d; ++i) {
     for (uint8_t i = d; i--;) {
       const auto idx = hash(i, ctx);
-      if (read_cell(idx) == c)      // Conservative update
+      if (read_cell(idx) == c)  // Conservative update
         sk[idx >> 1u] = INC_CTR[((idx & 1ull) << 8u) + sk[idx >> 1u]];
     }
 }
@@ -69,6 +71,11 @@ uint16_t CMLS4::query(uint64_t ctx) const {
   return FREQ2[min_log_ctr(ctx)];  // Base 2. otherwise (b^c-1)/(b-1)
 }
 
+auto CMLS4::query_counters(uint64_t l) const -> std::array<uint16_t, CARDIN> {
+  return {query(l), query(l | 1ull), query(l | 2ull), query(l | 3ull)};
+}
+
+#ifdef DEBUG
 void CMLS4::dump(std::ofstream& ofs) const {
   ofs.write((const char*)&sk[0], sk.size());
   //  ofs.close();
@@ -78,7 +85,6 @@ void CMLS4::load(std::ifstream& ifs) const {
   ifs.read((char*)&sk[0], sk.size());
 }
 
-#ifdef DEBUG
 uint64_t CMLS4::get_total() const { return tot; }
 
 uint64_t CMLS4::count_empty() const {

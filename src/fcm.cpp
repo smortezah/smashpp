@@ -34,10 +34,6 @@ FCM::FCM(std::unique_ptr<Param>& par)
   for (const auto& e : tMs)
     if (e.child) ++tTMsSize;
 
-  if (par->verbose && par->showInfo) {
-    show_info(par);
-    par->showInfo = false;
-  }
   alloc_model();
 }
 
@@ -483,7 +479,7 @@ void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
 }
 
 template <typename ContIter>
-inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
+void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
   uint64_t ctx{0};  // Ctx, Mir (int) sliding through the dataset
   uint64_t ctxIr{(1ull << (2 * rMs[0].k)) - 1};
   uint64_t symsNo{0};  // No. syms in target file, except \n
@@ -506,63 +502,62 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
     for (auto it = std::begin(buffer);
          it != std::begin(buffer) + tar_file.gcount(); ++it) {
       auto c = *it;
-      if (c != '\n') {
-        prc_t entr;
-        bool sample_taken = (sample_step_index % par->sampleStep == 0);
+      if (c == '\n') continue;
 
-        if (rMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
-          if (c != 'N') {
-            prob_par.config_ir0(c, ctx);
-            if (sample_taken) {
-              std::array<decltype((*cont)->query(0)), 4> f{};
-              freqs_ir0(f, cont, prob_par.l);
-              entr = entropy(prob(std::begin(f), &prob_par));
-            }
-          } else {
-            // c = TAR_ALT_N;//todo
-            prob_par.config_ir0(c, ctx);
-            entr = entropyN;
-          }
-          update_ctx_ir0(ctx, &prob_par);
-        } else if (rMs[0].ir == 1) {
-          if (c != 'N') {
-            prob_par.config_ir1(c, ctxIr);
-            if (sample_taken) {
-              std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-              freqs_ir1(f, cont, prob_par.shl, prob_par.r);
-              entr = entropy(prob(std::begin(f), &prob_par));
-            }
-          } else {
-            // c = TAR_ALT_N;//todo
-            prob_par.config_ir1(c, ctxIr);
-            entr = entropyN;
-          }
-          update_ctx_ir1(ctxIr, &prob_par);
-        } else if (rMs[0].ir == 2) {
-          if (c != 'N') {
-            prob_par.config_ir2(c, ctx, ctxIr);
-            if (sample_taken) {
-              std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-              freqs_ir2(f, cont, &prob_par);
-              entr = entropy(prob(begin(f), &prob_par));
-            }
-          } else {
-            // c = TAR_ALT_N;//todo
-            prob_par.config_ir2(c, ctx, ctxIr);
-            entr = entropyN;
-          }
-          update_ctx_ir2(ctx, ctxIr, &prob_par);
-        }
+      prc_t entr;
+      bool sample_taken = (sample_step_index % par->sampleStep == 0);
 
-        if (sample_taken) {
-          ++symsNo;
-          sumEnt += entr;
-          entropies.push_back(entr);
+      if (rMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
+        if (c != 'N') {
+          prob_par.config_ir0(c, ctx);
+          if (sample_taken) {
+            auto f = freqs_ir0<decltype((*cont)->query(0))>(cont, prob_par.l);
+            entr = entropy(std::begin(f), &prob_par);
+          }
+        } else {
+          // c = TAR_ALT_N;//todo
+          prob_par.config_ir0(c, ctx);
+          entr = entropyN;
         }
-        ++sample_step_index;
-        // prf_file << precision(PREC_PRF, entr) << '\n';
-        if (par->verbose) show_progress(symsNo, totalSize, par->message);
+        update_ctx_ir0(ctx, &prob_par);
+      } else if (rMs[0].ir == 1) {
+        if (c != 'N') {
+          prob_par.config_ir1(c, ctxIr);
+          if (sample_taken) {
+            auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(
+                cont, prob_par.shl, prob_par.r);
+            entr = entropy(std::begin(f), &prob_par);
+          }
+        } else {
+          // c = TAR_ALT_N;//todo
+          prob_par.config_ir1(c, ctxIr);
+          entr = entropyN;
+        }
+        update_ctx_ir1(ctxIr, &prob_par);
+      } else if (rMs[0].ir == 2) {
+        if (c != 'N') {
+          prob_par.config_ir2(c, ctx, ctxIr);
+          if (sample_taken) {
+            auto f =
+                freqs_ir2<decltype(2 * (*cont)->query(0))>(cont, &prob_par);
+            entr = entropy(std::begin(f), &prob_par);
+          }
+        } else {
+          // c = TAR_ALT_N;//todo
+          prob_par.config_ir2(c, ctx, ctxIr);
+          entr = entropyN;
+        }
+        update_ctx_ir2(ctx, ctxIr, &prob_par);
       }
+
+      if (sample_taken) {
+        ++symsNo;
+        sumEnt += entr;
+        entropies.push_back(entr);
+      }
+      ++sample_step_index;
+      // prf_file << precision(PREC_PRF, entr) << '\n';
+      if (par->verbose) show_progress(symsNo, totalSize, par->message);
     }
 
     if (entropies.size() >= FILE_WRITE_BUF) {
@@ -578,7 +573,7 @@ inline void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
   aveEnt = sumEnt / symsNo;
 }
 
-inline void FCM::compress_n(std::unique_ptr<Param>& par) {
+void FCM::compress_n(std::unique_ptr<Param>& par) {
   uint64_t symsNo{0};  // No. syms in target file, except \n
   prc_t sumEnt{0};     // Sum of entropies = sum(log_2 P(s|c^t))
   auto cp = std::make_unique<CompressPar>();
@@ -627,56 +622,55 @@ inline void FCM::compress_n(std::unique_ptr<Param>& par) {
     for (auto it = std::begin(buffer);
          it != std::begin(buffer) + tar_file.gcount(); ++it) {
       const auto c = *it;
-      if (c != '\n') {
-        bool sample_taken = (sample_step_index % par->sampleStep == 0);
-        cp->c = c;
-        cp->nSym = base_code(c);
-        cp->ppIt = std::begin(cp->pp);
-        cp->ctxIt = std::begin(cp->ctx);
-        cp->ctxIrIt = std::begin(cp->ctxIr);
-        cp->probs.clear();
-        cp->probs.reserve(nMdl);
-        auto tbl64_it = std::begin(tbl64);
-        auto tbl32_it = std::begin(tbl32);
-        auto lgtbl8_it = std::begin(lgtbl8);
-        auto cmls4_it = std::begin(cmls4);
+      if (c == '\n') continue;
 
-        uint8_t n = 0;  // Counter for the models
-        for (const auto& mm : rMs) {
-          cp->mm = mm;
-          switch (mm.cont) {
-            case Container::sketch_8:
-              compress_n_impl(cp, cmls4_it++, n);
-              break;
-            case Container::log_table_8:
-              compress_n_impl(cp, lgtbl8_it++, n);
-              break;
-            case Container::table_32:
-              compress_n_impl(cp, tbl32_it++, n);
-              break;
-            case Container::table_64:
-              compress_n_impl(cp, tbl64_it++, n);
-              break;
-          }
-          ++n;
-          ++cp->ppIt;
-          ++cp->ctxIt;
-          ++cp->ctxIrIt;
+      bool sample_taken = (sample_step_index % par->sampleStep == 0);
+      cp->c = c;
+      cp->nSym = base_code(c);
+      cp->ppIt = std::begin(cp->pp);
+      cp->ctxIt = std::begin(cp->ctx);
+      cp->ctxIrIt = std::begin(cp->ctxIr);
+      cp->probs.clear();
+      cp->probs.reserve(nMdl);
+      auto tbl64_it = std::begin(tbl64);
+      auto tbl32_it = std::begin(tbl32);
+      auto lgtbl8_it = std::begin(lgtbl8);
+      auto cmls4_it = std::begin(cmls4);
+
+      uint8_t n = 0;  // Counter for the models
+      for (const auto& mm : rMs) {
+        cp->mm = mm;
+        switch (mm.cont) {
+          case Container::sketch_8:
+            compress_n_impl(cp, cmls4_it++, n);
+            break;
+          case Container::log_table_8:
+            compress_n_impl(cp, lgtbl8_it++, n);
+            break;
+          case Container::table_32:
+            compress_n_impl(cp, tbl32_it++, n);
+            break;
+          case Container::table_64:
+            compress_n_impl(cp, tbl64_it++, n);
+            break;
         }
-
-        const auto entr = entropy(std::begin(cp->w), std::begin(cp->probs),
-                                  std::end(cp->probs));
-        // prf_file << precision(PREC_PRF, entr) << '\n';
-        normalize(std::begin(cp->w), std::begin(cp->wNext),
-                  std::end(cp->wNext));
-        ////        update_weights(begin(cp->w), begin(cp->probs),
-        /// end(cp->probs));
-        ++symsNo;
-        sumEnt += entr;
-        if (sample_taken) entropies.push_back(entr);
-        ++sample_step_index;
-        if (par->verbose) show_progress(symsNo, totalSize, par->message);
+        ++n;
+        ++cp->ppIt;
+        ++cp->ctxIt;
+        ++cp->ctxIrIt;
       }
+
+      const auto entr = entropy(std::begin(cp->w), std::begin(cp->probs),
+                                std::end(cp->probs));
+      // prf_file << precision(PREC_PRF, entr) << '\n';
+      normalize(std::begin(cp->w), std::begin(cp->wNext), std::end(cp->wNext));
+      ////        update_weights(begin(cp->w), begin(cp->probs),
+      /// end(cp->probs));
+      ++symsNo;
+      sumEnt += entr;
+      if (sample_taken) entropies.push_back(entr);
+      ++sample_step_index;
+      if (par->verbose) show_progress(symsNo, totalSize, par->message);
     }
 
     if (entropies.size() >= FILE_WRITE_BUF) {
@@ -700,8 +694,7 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
   if (cp->mm.ir == 0) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
-      std::array<decltype((*cont)->query(0)), 4> f{};
-      freqs_ir0(f, cont, cp->ppIt->l);
+      auto f = freqs_ir0<decltype((*cont)->query(0))>(cont, cp->ppIt->l);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
       // cp->c = TAR_ALT_N;//todo
@@ -714,8 +707,8 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
   } else if (cp->mm.ir == 1) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
-      std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-      freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
+      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl,
+                                                          cp->ppIt->r);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
       // cp->c = TAR_ALT_N;//todo
@@ -728,8 +721,7 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
   } else if (cp->mm.ir == 2) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);
-      std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-      freqs_ir2(f, cont, cp->ppIt);
+      auto f = freqs_ir2<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
       // cp->c = TAR_ALT_N;//todo
@@ -750,16 +742,14 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
   if (cp->mm.child->ir == 0) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
-      std::array<decltype((*cont)->query(0)), 4> f{};
-      freqs_ir0(f, cont, cp->ppIt->l);
+      auto f = freqs_ir0<decltype((*cont)->query(0))>(cont, cp->ppIt->l);
       prb = prob(std::begin(f), cp->ppIt);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
       // cp->c = TAR_ALT_N;//todo
       cp->ppIt->config_ir0(cp->c, *cp->ctxIt);  // l
-      std::array<decltype((*cont)->query(0)), 4> f{};
-      freqs_ir0(f, cont, cp->ppIt->l);
+      auto f = freqs_ir0<decltype((*cont)->query(0))>(cont, cp->ppIt->l);
       prb = 1.0 / std::pow(2.0, entropyN);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
@@ -769,16 +759,16 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
   } else if (cp->mm.child->ir == 1) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
-      std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-      freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
+      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl,
+                                                          cp->ppIt->r);
       prb = prob(std::begin(f), cp->ppIt);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
       // cp->c = TAR_ALT_N;//todo
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
-      std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-      freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
+      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl,
+                                                          cp->ppIt->r);
       prb = 1.0 / std::pow(2.0, entropyN);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
@@ -788,16 +778,14 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
   } else if (cp->mm.child->ir == 2) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
-      std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-      freqs_ir2(f, cont, cp->ppIt);
+      auto f = freqs_ir2<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt);
       prb = prob(std::begin(f), cp->ppIt);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
       // cp->c = TAR_ALT_N;//todo
       cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);  // l and r
-      std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-      freqs_ir2(f, cont, cp->ppIt);
+      auto f = freqs_ir2<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt);
       prb = 1.0 / std::pow(2.0, entropyN);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
@@ -894,8 +882,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
         if (tMs[0].ir == 0) {
           pp.config_ir0(c, ctx);
           if (c != 'N') {
-            std::array<decltype((*cont)->query(0)), 4> f{};
-            freqs_ir0(f, cont, pp.l);
+            auto f = freqs_ir0<decltype((*cont)->query(0))>(cont, pp.l);
             entr = entropy(prob(std::begin(f), &pp));
           } else {
             entr = entropyN;
@@ -907,8 +894,8 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
         } else if (tMs[0].ir == 1) {
           pp.config_ir1(c, ctxIr);
           if (c != 'N') {
-            std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-            freqs_ir1(f, cont, pp.shl, pp.r);
+            auto f =
+                freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, pp.shl, pp.r);
             entr = entropy(prob(std::begin(f), &pp));
           } else {
             entr = entropyN;
@@ -920,8 +907,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
         } else if (tMs[0].ir == 2) {
           pp.config_ir2(c, ctx, ctxIr);
           if (c != 'N') {
-            std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-            freqs_ir2(f, cont, &pp);
+            auto f = freqs_ir2<decltype(2 * (*cont)->query(0))>(cont, &pp);
             entr = entropy(prob(std::begin(f), &pp));
           } else {
             entr = entropyN;
@@ -1043,8 +1029,7 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
   if (cp->mm.ir == 0) {
     cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
     if (cp->c != 'N') {
-      std::array<decltype((*cont)->query(0)), 4> f{};
-      freqs_ir0(f, cont, cp->ppIt->l);
+      auto f = freqs_ir0<decltype((*cont)->query(0))>(cont, cp->ppIt->l);
       prb = prob(begin(f), cp->ppIt);
     } else {
       prb = 1.0 / std::pow(2.0, entropyN);
@@ -1056,8 +1041,8 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
   } else if (cp->mm.ir == 1) {
     cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
     if (cp->c != 'N') {
-      std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-      freqs_ir1(f, cont, cp->ppIt->shl, cp->ppIt->r);
+      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl,
+                                                          cp->ppIt->r);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
       prb = 1.0 / std::pow(2.0, entropyN);
@@ -1069,8 +1054,7 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
   } else if (cp->mm.ir == 2) {
     cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);
     if (cp->c != 'N') {
-      std::array<decltype(2 * (*cont)->query(0)), 4> f{};
-      freqs_ir2(f, cont, cp->ppIt);
+      auto f = freqs_ir2<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
       prb = 1.0 / std::pow(2.0, entropyN);
@@ -1093,31 +1077,33 @@ void FCM::aggregate_slf_ent(std::vector<PosRow>& pos_out, uint8_t round,
 }
 
 template <typename OutT, typename ContIter>
-inline void FCM::freqs_ir0(std::array<OutT, 4>& a, ContIter cont,
-                           uint64_t l) const {
-  a = {(*cont)->query(l), (*cont)->query(l | 1ull), (*cont)->query(l | 2ull),
-       (*cont)->query(l | 3ull)};
+auto FCM::freqs_ir0(ContIter cont, uint64_t l) const
+    -> std::array<OutT, CARDIN> {
+  // return {(*cont)->query(l), (*cont)->query(l | 1ull), (*cont)->query(l | 2ull),
+  //         (*cont)->query(l | 3ull)};
+  return (*cont)->query_counters(l);
 }
 
 template <typename OutT, typename ContIter>
-inline void FCM::freqs_ir1(std::array<OutT, 4>& a, ContIter cont, uint64_t shl,
-                           uint64_t r) const {
-  a = {static_cast<OutT>((*cont)->query((3ull << shl) | r)),
-       static_cast<OutT>((*cont)->query((2ull << shl) | r)),
-       static_cast<OutT>((*cont)->query((1ull << shl) | r)),
-       static_cast<OutT>((*cont)->query(r))};
+auto FCM::freqs_ir1(ContIter cont, uint64_t shl, uint64_t r) const
+    -> std::array<OutT, CARDIN> {
+  return {static_cast<OutT>((*cont)->query((3ull << shl) | r)),
+          static_cast<OutT>((*cont)->query((2ull << shl) | r)),
+          static_cast<OutT>((*cont)->query((1ull << shl) | r)),
+          static_cast<OutT>((*cont)->query(r))};
 }
 
 template <typename OutT, typename ContIter, typename ProbParIter>
-inline void FCM::freqs_ir2(std::array<OutT, 4>& a, ContIter cont,
-                           ProbParIter pp) const {
-  a = {static_cast<OutT>((*cont)->query(pp->l) +
-                         (*cont)->query((3ull << pp->shl) | pp->r)),
-       static_cast<OutT>((*cont)->query(pp->l | 1ull) +
-                         (*cont)->query((2ull << pp->shl) | pp->r)),
-       static_cast<OutT>((*cont)->query(pp->l | 2ull) +
-                         (*cont)->query((1ull << pp->shl) | pp->r)),
-       static_cast<OutT>((*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r))};
+auto FCM::freqs_ir2(ContIter cont, ProbParIter pp) const
+    -> std::array<OutT, CARDIN> {
+  return {
+      static_cast<OutT>((*cont)->query(pp->l) +
+                        (*cont)->query((3ull << pp->shl) | pp->r)),
+      static_cast<OutT>((*cont)->query(pp->l | 1ull) +
+                        (*cont)->query((2ull << pp->shl) | pp->r)),
+      static_cast<OutT>((*cont)->query(pp->l | 2ull) +
+                        (*cont)->query((1ull << pp->shl) | pp->r)),
+      static_cast<OutT>((*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r))};
 }
 
 inline prc_t FCM::weight_next(prc_t w, prc_t g, prc_t p) const {
@@ -1261,6 +1247,13 @@ inline prc_t FCM::prob(FreqIter fFirst, ProbParIter pp) const {
   // uint64_t cumul = freq0 + freq1 + freq2 + freq3;
 
   // return (prc_t)freq_n / cumul;
+}
+
+template <typename FreqIter, typename ProbParIter>
+auto FCM::entropy(FreqIter fFirst, ProbParIter pp) const -> prc_t {
+  auto prob_rev = std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha) /
+                  (*(fFirst + pp->numSym) + pp->alpha);
+  return std::log2(prob_rev);
 }
 
 inline prc_t FCM::entropy(prc_t P) const {

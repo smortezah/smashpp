@@ -2,9 +2,11 @@
 // Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
+#include "tbl64.hpp"
+
 #include <algorithm>
 #include <fstream>
-#include "tbl64.hpp"
+
 #include "exception.hpp"
 using namespace smashpp;
 
@@ -20,6 +22,13 @@ void Table64::update(uint32_t ctx) { ++tbl[ctx]; }
 
 uint64_t Table64::query(uint32_t ctx) const { return tbl[ctx]; }
 
+auto Table64::query_counters(uint32_t l) const -> std::array<uint64_t, CARDIN> {
+  auto row_address = &tbl[l];
+  return {*row_address, *(row_address + 1), *(row_address + 2),
+          *(row_address + 3)};
+}
+
+#ifdef DEBUG
 void Table64::dump(std::ofstream& ofs) const {
   ofs.write((const char*)&tbl[0], tbl.size());
   //  ofs.close();
@@ -29,7 +38,6 @@ void Table64::load(std::ifstream& ifs) const {
   ifs.read((char*)&tbl[0], tbl.size());
 }
 
-#ifdef DEBUG
 uint64_t Table64::count_empty() const {
   return static_cast<uint64_t>(std::count(std::begin(tbl), std::end(tbl), 0));
 }

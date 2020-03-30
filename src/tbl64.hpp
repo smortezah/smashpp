@@ -10,23 +10,25 @@
 
 namespace smashpp {
 class Table64 {
+ private:
+  std::vector<uint64_t> tbl;  // Table of 64 bit counters
+  uint8_t k;                  // Ctx size
+
  public:
   Table64() : k(0) {}
   explicit Table64(uint8_t);
   void update(uint32_t);                   // Update table
   auto query(uint32_t) const -> uint64_t;  // Query count of ctx
+  auto query_counters(uint32_t) const -> std::array<uint64_t, CARDIN>;
+
+#ifdef DEBUG
   void dump(std::ofstream&) const;
   void load(std::ifstream&) const;
-#ifdef DEBUG
   auto count_empty() const -> uint64_t;  // Number of empty cells in the table
   auto max_tbl_val() const -> uint64_t;
   void print() const;
   void print(std::string) const;
 #endif
-
- private:
-  std::vector<uint64_t> tbl;  // Table of 64 bit counters
-  uint8_t k;                  // Ctx size
 };
 }  // namespace smashpp
 
