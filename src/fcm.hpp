@@ -6,12 +6,13 @@
 #define SMASHPP_FCM_HPP
 
 #include <memory>
-#include "par.hpp"
-#include "tbl64.hpp"
-#include "tbl32.hpp"
-#include "logtbl8.hpp"
+
 #include "cmls4.hpp"
+#include "logtbl8.hpp"
 #include "mdlpar.hpp"
+#include "par.hpp"
+#include "tbl32.hpp"
+#include "tbl64.hpp"
 
 namespace smashpp {
 static constexpr uint8_t PREC_PRF{3};  // Precisions - floats in Inf. prof
@@ -71,11 +72,12 @@ class FCM {  // Finite-context models
                               uint64_t&) const;
 
   template <typename OutT, typename ContIter>
-  void freqs_ir0(std::array<OutT, 4>&, ContIter, uint64_t) const;
+  auto freqs_ir0(ContIter, uint64_t) const -> std::array<OutT, CARDIN>;
   template <typename OutT, typename ContIter>
-  void freqs_ir1(std::array<OutT, 4>&, ContIter, uint64_t, uint64_t) const;
+  auto freqs_ir1(ContIter, uint64_t, uint64_t) const
+      -> std::array<OutT, CARDIN>;
   template <typename OutT, typename ContIter, typename ProbParIter>
-  void freqs_ir2(std::array<OutT, 4>&, ContIter, ProbParIter) const;
+  auto freqs_ir2(ContIter, ProbParIter) const -> std::array<OutT, CARDIN>;
   auto weight_next(prc_t, prc_t, prc_t) const -> prc_t;
   template <typename FreqIter>
   void correct_stmm(std::unique_ptr<CompressPar>&, FreqIter) const;
@@ -96,6 +98,8 @@ class FCM {  // Finite-context models
 #endif
   template <typename FreqIter, typename ProbParIter>
   auto prob(FreqIter, ProbParIter) const -> prc_t;
+  template <typename FreqIter, typename ProbParIter>
+  auto entropy(FreqIter, ProbParIter) const -> prc_t;
   auto entropy(prc_t) const -> prc_t;
   template <typename WIter, typename PIter>
   auto entropy(WIter, PIter, PIter) const -> prc_t;
