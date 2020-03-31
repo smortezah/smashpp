@@ -6,6 +6,7 @@
 #define SMASHPP_LOGTABLE8_HPP
 
 #include <vector>
+
 #include "def.hpp"
 
 namespace smashpp {
@@ -21,7 +22,7 @@ class LogTable8 {
  public:
   LogTable8() : k(0), tot(0) {}
   explicit LogTable8(uint8_t);
-  void update(ctx_t);                   // Update table
+  void update(ctx_t);                // Update table
   auto query(ctx_t) const -> val_t;  // Query count of ctx
   auto query_counters(ctx_t) const -> std::array<val_t, CARDIN>;
 

@@ -356,13 +356,13 @@ inline void FCM::store_1(std::unique_ptr<Param>& par) {
 
   for (const auto& m : rMs) {  // Mask: 1<<2k - 1 = 4^k - 1
     switch (m.cont) {
-      case Container::sketch_8:
-        store_impl(par->ref, (1ull << (2 * m.k)) - 1ull /*Mask 64*/,
-                   cmls4_iter++);
-        break;
       case Container::log_table_8:
         store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
                    lgtbl8_iter++);
+        break;
+      case Container::sketch_8:
+        store_impl(par->ref, (1ull << (2 * m.k)) - 1ull /*Mask 64*/,
+                   cmls4_iter++);
         break;
       case Container::table_64:
         store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
@@ -520,34 +520,35 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
           entr = entropyN;
         }
         update_ctx_ir0(ctx, &prob_par);
-      } else if (rMs[0].ir == 1) {
-        if (c != 'N') {
-          prob_par.config_ir1(c, ctxIr);
-          if (sample_taken) {
-            auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(
-                cont, prob_par.shl, prob_par.r);
-            entr = entropy(std::begin(f), &prob_par);
+        } else if (rMs[0].ir == 1) {
+          if (c != 'N') {
+            prob_par.config_ir1(c, ctxIr);
+            if (sample_taken) {
+              auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(
+                  cont, prob_par.shl, prob_par.r);
+              entr = entropy(std::begin(f), &prob_par);
+            }
+          } else {
+            // c = TAR_ALT_N;//todo
+            prob_par.config_ir1(c, ctxIr);
+            entr = entropyN;
           }
-        } else {
-          // c = TAR_ALT_N;//todo
-          prob_par.config_ir1(c, ctxIr);
-          entr = entropyN;
-        }
-        update_ctx_ir1(ctxIr, &prob_par);
-      } else if (rMs[0].ir == 2) {
-        if (c != 'N') {
-          prob_par.config_ir2(c, ctx, ctxIr);
-          if (sample_taken) {
-            auto f =
-                freqs_ir2<decltype(2 * (*cont)->query(0))>(cont, &prob_par);
-            entr = entropy(std::begin(f), &prob_par);
+          update_ctx_ir1(ctxIr, &prob_par);
+        } else if (rMs[0].ir == 2) {
+          if (c != 'N') {
+            prob_par.config_ir2(c, ctx, ctxIr);
+            if (sample_taken) {
+              auto f =
+                  freqs_ir2<decltype(2 * (*cont)->query(0))>(cont,
+                  &prob_par);
+              entr = entropy(std::begin(f), &prob_par);
+            }
+          } else {
+            // c = TAR_ALT_N;//todo
+            prob_par.config_ir2(c, ctx, ctxIr);
+            entr = entropyN;
           }
-        } else {
-          // c = TAR_ALT_N;//todo
-          prob_par.config_ir2(c, ctx, ctxIr);
-          entr = entropyN;
-        }
-        update_ctx_ir2(ctx, ctxIr, &prob_par);
+          update_ctx_ir2(ctx, ctxIr, &prob_par);
       }
 
       if (sample_taken) {
@@ -1079,7 +1080,8 @@ void FCM::aggregate_slf_ent(std::vector<PosRow>& pos_out, uint8_t round,
 template <typename OutT, typename ContIter>
 auto FCM::freqs_ir0(ContIter cont, uint64_t l) const
     -> std::array<OutT, CARDIN> {
-  // return {(*cont)->query(l), (*cont)->query(l | 1ull), (*cont)->query(l | 2ull),
+  // return {(*cont)->query(l), (*cont)->query(l | 1ull), (*cont)->query(l |
+  // 2ull),
   //         (*cont)->query(l | 3ull)};
   return (*cont)->query_counters(l);
 }

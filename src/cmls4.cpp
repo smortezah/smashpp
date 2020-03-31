@@ -36,10 +36,10 @@ void CMLS4::set_a_b() {
   }                                 // Parenthesis in ab[(i<<1)+1] are MANDATORY
 }
 
-void CMLS4::update(uint64_t ctx) {
+void CMLS4::update(CMLS4::ctx_t ctx) {
   const auto c{min_log_ctr(ctx)};
   if (!(tot++ & POW2minus1[c]))  // Increase decision.  x % 2^n = x & (2^n-1)
-                                 //    for (uint8_t i=0; i!=d; ++i) {
+    // for (uint8_t i=0; i!=d; ++i) {
     for (uint8_t i = d; i--;) {
       const auto idx = hash(i, ctx);
       if (read_cell(idx) == c)  // Conservative update
@@ -67,11 +67,12 @@ uint64_t CMLS4::hash(uint8_t i, uint64_t ctx) const {
   return i * w + ((ab[i << 1u] * ctx + ab[(i << 1u) + 1]) >> uhashShift);
 }
 
-uint16_t CMLS4::query(uint64_t ctx) const {
+auto CMLS4::query(CMLS4::ctx_t ctx) const -> CMLS4::val_t {
   return FREQ2[min_log_ctr(ctx)];  // Base 2. otherwise (b^c-1)/(b-1)
 }
 
-auto CMLS4::query_counters(uint64_t l) const -> std::array<uint16_t, CARDIN> {
+auto CMLS4::query_counters(CMLS4::ctx_t l) const
+    -> std::array<CMLS4::val_t, CARDIN> {
   return {query(l), query(l | 1ull), query(l | 2ull), query(l | 3ull)};
 }
 
