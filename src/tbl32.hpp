@@ -11,6 +11,9 @@
 
 namespace smashpp {
 class Table32 {
+  using ctx_t = uint32_t;
+  using val_t = uint32_t;
+
  private:
   std::vector<uint32_t> tbl;  // Table of 32 bit counters
   uint8_t k;                  // Ctx size
@@ -20,9 +23,9 @@ class Table32 {
  public:
   Table32() : k(0), nRenorm(0), tot(0) {}
   explicit Table32(uint8_t);
-  void update(uint32_t);                   // Update table
-  auto query(uint32_t) const -> uint32_t;  // Query count of ctx
-  auto query_counters(uint32_t) const -> std::array<uint32_t, CARDIN>;
+  void update(ctx_t);                // Update table
+  auto query(ctx_t) const -> val_t;  // Query count of ctx
+  auto query_counters(ctx_t) const -> std::array<val_t, CARDIN>;
 
 #ifdef DEBUG
   void dump(std::ofstream&) const;

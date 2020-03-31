@@ -18,7 +18,7 @@ Table32::Table32(uint8_t k_) : k(k_), nRenorm(0), tot(0) {
   }
 }
 
-void Table32::update(uint32_t ctx) {
+void Table32::update(Table32::ctx_t ctx) {
   if (tbl[ctx] == 0xFFFFFFFF)  // 2^32-1
     renormalize();
   ++tbl[ctx];
@@ -30,9 +30,12 @@ inline void Table32::renormalize() {
   ++nRenorm;
 }
 
-uint32_t Table32::query(uint32_t ctx) const { return tbl[ctx]; }
+auto Table32::query(Table32::ctx_t ctx) const -> Table32::val_t {
+  return tbl[ctx];
+}
 
-auto Table32::query_counters(uint32_t l) const -> std::array<uint32_t, CARDIN> {
+auto Table32::query_counters(Table32::ctx_t l) const
+    -> std::array<Table32::val_t, CARDIN> {
   auto row_address = &tbl[l];
   return {*row_address, *(row_address + 1), *(row_address + 2),
           *(row_address + 3)};

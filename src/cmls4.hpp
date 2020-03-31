@@ -11,6 +11,9 @@ namespace smashpp {
 static constexpr uint32_t G{64};  // Machine word size-univers hash fn
 
 class CMLS4 {  // Count-min-log sketch, 4 bits per counter
+  using ctx_t = uint64_t;
+  using val_t = uint16_t;
+
  private:
   uint64_t w;                // Width of sketch
   uint8_t d;                 // Depth of sketch
@@ -22,9 +25,9 @@ class CMLS4 {  // Count-min-log sketch, 4 bits per counter
  public:
   CMLS4() : w(W), d(D), uhashShift(0), tot(0) {}
   CMLS4(uint64_t, uint8_t);
-  void update(uint64_t);                   // Update sketch
-  auto query(uint64_t) const -> uint16_t;  // Query count of ctx
-  auto query_counters(uint64_t) const -> std::array<uint16_t, CARDIN>;
+  void update(ctx_t);                   // Update sketch
+  auto query(ctx_t) const -> val_t;  // Query count of ctx
+  auto query_counters(ctx_t) const -> std::array<val_t, CARDIN>;
 
 #ifdef DEBUG
   void dump(std::ofstream&) const;
