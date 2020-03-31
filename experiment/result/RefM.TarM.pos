@@ -1,6 +1,6 @@
 ##SMASH++
-##PARAM=<-r dataset/synth/RefM -t dataset/synth/TarM -l 3 -d 100 -f 50>
+##PARAM=<-r dataset/synth/RefM -t dataset/synth/TarM -rm 14,0,0.001,0.95 -m 10000 -d 12 -f 10 -nr -dp>
 ##INFO=<Ref=RefM,RefSize=100000,Tar=TarM,TarSize=100000>
 #RBeg	REnd	RRelRdn	RRdn	TBeg	TEnd	TRelRdn	TRdn	Inv
-49500	100000	0.1969	2.0010	0	50600	0.1603	2.0009	F
-0	25200	0.0994	2.0004	100000	74500	0.1333	2.0004	T
+50004	75156	0.1911	0.0000	0	25152	0.0096	0.0000	F
+12	25020	0.0078	0.0000	100000	75000	0.1887	0.0000	T

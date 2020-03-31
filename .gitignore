@@ -33,3 +33,4 @@ experiment/dataset/mammalia/**
 test_remove_it/**
 experiment/res_new
 experiment/res_orig
+experiment/result
