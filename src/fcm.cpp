@@ -424,7 +424,7 @@ template <typename Mask, typename ContIter /*Container iterator*/>
 inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
   std::ifstream rf(ref);
   Mask ctx = 0;
-
+  
   for (std::vector<char> buffer(FILE_READ_BUF, 0); rf.peek() != EOF;) {
     rf.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer); it != std::begin(buffer) + rf.gcount();
