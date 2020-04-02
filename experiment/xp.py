@@ -34,7 +34,7 @@ RUN_SYNTH_SMALL_QUAN = False
 RUN_SYNTH_MEDIUM_QUAN = False
 RUN_SYNTH_LARGE_QUAN = False
 RUN_SYNTH_XLARGE_QUAN = False
-RUN_SYNTH_MUTATE_QUAN = True
+RUN_SYNTH_MUTATE_QUAN = False
 RUN_REAL_GGA18_MGA20_QUAN = False
 RUN_REAL_GGA14_MGA16_QUAN = False
 RUN_REAL_HS12_PT12_QUAN = False
@@ -42,10 +42,6 @@ RUN_REAL_PXO99A_MAFF311018_QUAN = False
 RUN_SYNTH_COMPARE_SMASH_QUAN = False
 RUN_REAL_COMPARE_SMASH_QUAN = False
 RUN_SYNTH_PERM_ORIGINAL_QUAN = False
-RUN_SYNTH_PERM_450000_QUAN = False
-RUN_SYNTH_PERM_30000_QUAN = False
-RUN_SYNTH_PERM_1000_QUAN = False
-RUN_SYNTH_PERM_30_QUAN = False
 
 RUN_FORGETTING_FACTOR = False
 
@@ -656,8 +652,7 @@ class Smashpp:
                 self.par_viz = '-p 1 -l 1 -w 13 -vv -stat -o XL.svg'
         elif self.key == 'synth_mutate':
             if self.comp == QUANTITY:
-                self.par_main = '-rm 8,0,0.001,0.95 -d 8 -f 3 ' + \
-                    '-m 20 -nr -dp'
+                self.par_main = '-rm 10,0,0.001,0.95 -d 8 -f 6 -m 25 -nr -dp'
                 self.par_viz = '-p 1 -l 1 -w 13 -vv -nr -nrr -o Mut_quan.svg'
             elif self.comp == QUALITY:
                 self.par_main = '-th 1.97 -l 3 -d 600 -f 100 -m 15000'
@@ -665,89 +660,97 @@ class Smashpp:
                     '-stat -o Mut.svg'
         elif self.key == 'synth_comp_smash':
             if self.comp == QUANTITY:
-                self.par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
+                self.par_main = '-rm 14,0,0.001,0.95 -d 10 -f 15 -m 1500 ' + \
+                    '-th 1.7 -nr -dp '
+                self.par_viz = '-p 1 -l 1 -w 13 -vv -rn Ref -tn Tar ' + \
+                    '-rt 100000 -tt 100000 -nr -nrr -o CompSmash_quan.svg'
             elif self.comp == QUALITY:
                 self.par_main = '-th 1.7 -l 3 -f 1000 -d 10 -m 1 -sf'
-            self.par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar ' + \
-                '-rt 100000 -tt 100000 ' + '-stat -o CompSmash.svg'
+                self.par_viz = '-p 1 -l 1 -w 13 -rn Ref -tn Tar ' + \
+                    '-rt 100000 -tt 100000 -stat -o CompSmash.svg'
         elif self.key == 'synth_perm':
             if self.comp == QUANTITY:
-                self.par_main = '-l 0 -f 10 -d 3000'
+                self.par_main = '-rm 11,0,0.001,0.95 -d 302 -f 30 ' + \
+                    '-m 100000 -nr -dp '
+                self.par_viz = '-p 1 -l 6 -w 13 -vv -rt 500000 ' + \
+                    '-tt 500000 -nr -nrr -o Perm_quan.svg'
             elif self.comp == QUALITY:
                 self.par_main = '-l 0 -f 10 -d 3000'
-            self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 ' + \
-                '-tt 500000 -stat ' + '-o Perm.svg'
+                self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 ' + \
+                    '-tt 500000 -stat -o Perm.svg'
         elif self.key == 'synth_perm450000':
-            if self.comp == QUANTITY:
-                self.par_main = '-l 0 -f 25 -d 3000 -ar'
-            elif self.comp == QUALITY:
-                self.par_main = '-l 0 -f 25 -d 3000 -ar'
+            self.par_main = '-l 0 -f 25 -d 3000 -ar'
             self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 ' + \
-                '-tt 500000 -stat ' + '-o Perm_450000.svg'
+                '-tt 500000 -stat -o Perm_450000.svg'
         elif self.key == 'synth_perm30000':
-            if self.comp == QUANTITY:
-                self.par_main = '-l 0 -f 75 -d 1500 -ar'
-            elif self.comp == QUALITY:
-                self.par_main = '-l 0 -f 75 -d 1500 -ar'
+            self.par_main = '-l 0 -f 75 -d 1500 -ar'
             self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 ' + \
-                '-tt 500000 -stat ' + '-o Perm_30000.svg'
+                '-tt 500000 -stat -o Perm_30000.svg'
         elif self.key == 'synth_perm1000':
-            if self.comp == QUANTITY:
-                self.par_main = '-l 0 -f 25 -d 300 -ar'
-            elif self.comp == QUALITY:
-                self.par_main = '-l 0 -f 25 -d 300 -ar'
+            self.par_main = '-l 0 -f 25 -d 300 -ar'
             self.par_viz = '-p 1 -l 6 -w 13  -rt 500000 -tt 500000 ' + \
                 '-stat -o Perm_1000.svg'
         elif self.key == 'synth_perm30':
-            if self.comp == QUANTITY:
-                self.par_main = '-l 0 -f 250 -d 1 -ar'
-            elif self.comp == QUALITY:
-                self.par_main = '-l 0 -f 250 -d 1 -ar'
+            self.par_main = '-l 0 -f 250 -d 1 -ar'
             self.par_viz = '-p 1 -l 6 -w 13 -s 35 -vv -rt 500000 ' + \
                 '-tt 500000 -stat ' + '-o Perm_30.svg'
         elif self.key == 'real_gga18_mga20':
             if self.comp == QUANTITY:
-                self.par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 ' + \
-                    '-m 500000 -d 2200 ' + '-th 1.9'
+                self.par_main = '-rm 14,0,0.001,0.95 -d 1139 -f 60 ' + \
+                    '-m 1000 -nr -dp -ar'
+                self.par_viz = '-p 1 -l 1 -w 13 -vv -nr -nrr -tc 6 ' + \
+                    '-rn "GGA 18" -tn "MGA 20" -o GGA18_MGA20_quan.svg'
             elif self.comp == QUALITY:
                 self.par_main = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 ' + \
                     '-m 500000 -d 2200 ' + '-th 1.9'
-            self.par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" ' + \
-                '-tn "MGA 20" -stat -o GGA18_MGA20.svg'
+                self.par_viz = '-l 1 -p 1 -vv -tc 6 -rn "GGA 18" ' + \
+                    '-tn "MGA 20" -stat -o GGA18_MGA20.svg'
         elif self.key == 'real_gga14_mga16':
             if self.comp == QUANTITY:
-                self.par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 ' + \
-                    '-d 1500 -th 1.95 ' + '-e 1.95 -m 400000'
+                self.par_main = '-rm 14,0,0.001,0.95 -d 1623 -f 100 ' + \
+                    '-m 100 -nr -dp -ar'
+                self.par_viz = '-p 1 -l 1 -w 13 -vv -nr -nrr -rt 1500000 ' + \
+                    '-tt 1500000 -rn "GGA 14" -tn "MGA 16" ' + \
+                    '-o GGA14_MGA16_quan.svg'
             elif self.comp == QUALITY:
                 self.par_main = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 ' + \
-                    '-d 1500 -th 1.95 ' + '-e 1.95 -m 400000'
-            self.par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + \
-                '-rt 1500000 -tt 1500000 -stat -o GGA14_MGA16.svg'
+                    '-d 1500 -th 1.95 -e 1.95 -m 400000'
+                self.par_viz = '-l 1 -vv -p 1 -rn "GGA 14" -tn "MGA 16" ' + \
+                    '-rt 1500000 -tt 1500000 -stat -o GGA14_MGA16.svg'
         elif self.key == 'real_hs12_pt12':
             if self.comp == QUANTITY:
-                self.par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 ' + \
-                    '-th 1.9 -m 100000'
+                self.par_main = '-rm 14,0,0.001,0.95 -d 13101 -f 100 ' + \
+                    '-m 100000 -th 1.9 -nr -dp'
+                self.par_viz = '-p 1 -l 6 -w 13 -vv -nr -nrr -rt 15000000 ' + \
+                    '-tt 15000000 -rn "HS 12" -tn "PT 12" ' + \
+                    '-o HS12_PT12_quan.svg'
             elif self.comp == QUALITY:
                 self.par_main = '-rm 14,0,0.001,0.95 -f 9000 -d 500 ' + \
                     '-th 1.9 -m 100000'
-            self.par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + \
-                '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
+                self.par_viz = '-l 1 -p 1 -vv -rn "HS 12" -tn "PT 12" ' + \
+                    '-rt 15000000 -tt 15000000 -stat -o HS12_PT12.svg'
         elif self.key == 'real_pxo99a_maff311018':
             if self.comp == QUANTITY:
-                self.par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 ' + \
-                    '-th 1.55 -ar'
+                self.par_main = '-rm 14,0,0.001,0.95 -d 525 -f 50 ' + \
+                    '-m 10000 -nr -dp -ar'
+                self.par_viz = '-p 1 -l 6 -w 13 -vv -nr -nrr -rt 500000 ' + \
+                    '-rn PXO99A -tn "MAFF 311018" ' + \
+                    '-o PXO99A_MAFF_311018_quan.svg'
             elif self.comp == QUALITY:
                 self.par_main = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 ' + \
                     '-th 1.55 -ar'
-            self.par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A ' + \
-                '-tn "MAFF 311018" ' + '-stat -o PXO99A_MAFF_311018.svg'
+                self.par_viz = '-l 6 -vv -p 1 -rt 500000 -rn PXO99A ' + \
+                    '-tn "MAFF 311018" ' + '-stat -o PXO99A_MAFF_311018.svg'
         elif self.key == 'real_comp_smash':
             if self.comp == QUANTITY:
-                self.par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
+                self.par_main = '-rm 11,0,0.001,0.95 -d 102 -f 34 -m 1 ' + \
+                    '-nr -dp -ar'
+                self.par_viz = '-p 1 -l 1 -w 13 -vv -nr -nrr -rn Sc.VII ' + \
+                    '-tn Sp.VII -o Sc_Sp_smash_quan.svg'
             elif self.comp == QUALITY:
                 self.par_main = '-th 1.85 -l 3 -f 370 -d 100 -ar -sf'
-            self.par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII ' + \
-                '-stat -o Sc_Sp_smash.svg'
+                self.par_viz = '-p 1 -l 1 -w 13 -rn Sc.VII -tn Sp.VII ' + \
+                    '-stat -o Sc_Sp_smash.svg'
 
     def acquire_dataset(self):
         self.dataset.acquire()
@@ -791,14 +794,15 @@ class Smash:
     def _config(self):
         if self.key == 'synth_comp_smash':
             if self.comp == QUANTITY:
-                self.par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd'
+                self.par = '-c 14 -d 9 -m 1500 -t 1.7 ' + \
+                    '-p RefCompTarComp_quan.pos -o RefCompTarComp_quan.svg'
             elif self.comp == QUALITY:
                 self.par = '-t 1.7 -c 14 -d 9 -w 5000 -m 1 -nd'
             self.ref = self.dataset.ref_name
             self.tar = self.dataset.tar_name
         elif self.key == 'real_comp_smash':
             if self.comp == QUANTITY:
-                self.par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd'
+                self.par = '-c 11 -m 1'
             elif self.comp == QUALITY:
                 self.par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd'
             self.ref = 'Sc' + self.dataset.ref_name
@@ -820,47 +824,27 @@ class Smash:
             self.ref = self.dataset.ref_name
             self.tar = self.dataset.tar_name
         elif self.key == 'synth_mutate':
-            self.par = '-c 8 -m 20'
+            self.par = '-c 10 -m 25'
             self.ref = self.dataset.ref_name
             self.tar = self.dataset.tar_name
         elif self.key == 'synth_perm':
-            self.par = '-l 0 -f 10 -d 3000'
-            self.ref = self.dataset.ref_name
-            self.tar = self.dataset.tar_name
-        elif self.key == 'synth_perm450000':
-            self.par = '-l 0 -f 25 -d 3000 -ar'
-            self.ref = self.dataset.ref_name
-            self.tar = self.dataset.tar_name
-        elif self.key == 'synth_perm30000':
-            self.par = '-l 0 -f 75 -d 1500 -ar'
-            self.ref = self.dataset.ref_name
-            self.tar = self.dataset.tar_name
-        elif self.key == 'synth_perm1000':
-            self.par = '-l 0 -f 25 -d 300 -ar'
-            self.ref = self.dataset.ref_name
-            self.tar = self.dataset.tar_name
-        elif self.key == 'synth_perm30':
-            self.par = '-l 0 -f 250 -d 1 -ar'
+            self.par = '-c 11 -m 100000'
             self.ref = self.dataset.ref_name
             self.tar = self.dataset.tar_name
         elif self.key == 'real_gga18_mga20':
-            self.par = '-rm 14,0,0.005,0.95/5,0,1,0.95 -f 130 ' + \
-                '-m 500000 -d 2200 ' + '-th 1.9'
+            self.par = '-c 14 -m 1000'
             self.ref = self.dataset.ref_name
             self.tar = self.dataset.tar_name
         elif self.key == 'real_gga14_mga16':
-            self.par = '-rm 14,0,0.005,0.95/5,0,0.99,0.95 -f 200 ' + \
-                '-d 1500 -th 1.95 ' + '-e 1.95 -m 400000'
+            self.par = '-c 14 -m 100'
             self.ref = self.dataset.ref_name
             self.tar = self.dataset.tar_name
         elif self.key == 'real_hs12_pt12':
-            self.par = '-rm 14,0,0.001,0.95 -f 9000 -d 500 -th 1.9 ' + \
-                '-m 100000'
-            self.ref = self.dataset.ref_name
-            self.tar = self.dataset.tar_name
+            self.par = '-c 14 -m 100000 -t 1.9'
+            self.ref = 'HS' + self.dataset.ref_name
+            self.tar = 'PT' + self.dataset.tar_name
         elif self.key == 'real_pxo99a_maff311018':
-            self.par = '-rm 13,0,0.005,1 -f 150 -m 10000 -d 1000 ' + \
-                '-th 1.55 -ar'
+            self.par = '-c 14 -m 10000 -v'
             self.ref = self.dataset.ref_name
             self.tar = self.dataset.tar_name
 
@@ -1012,7 +996,7 @@ def evaluate_quantity():
         run_smashpp('synth_xlarge')
 
     if RUN_SYNTH_MUTATE_QUAN:
-        # run_smash('synth_mutate')
+        run_smash('synth_mutate')
         run_smashpp('synth_mutate')
 
     if RUN_REAL_GGA18_MGA20_QUAN:
