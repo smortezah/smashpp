@@ -18,30 +18,30 @@ RUN_SYNTH_MEDIUM = False
 RUN_SYNTH_LARGE = False
 RUN_SYNTH_XLARGE = False
 RUN_SYNTH_MUTATE = False
-RUN_REAL_GGA18_MGA20 = False
-RUN_REAL_GGA14_MGA16 = False
-RUN_REAL_HS12_PT12 = False
-RUN_REAL_PXO99A_MAFF311018 = False
 RUN_SYNTH_COMPARE_SMASH = False
-RUN_REAL_COMPARE_SMASH = False
 RUN_SYNTH_PERM_ORIGINAL = False
 RUN_SYNTH_PERM_450000 = False
 RUN_SYNTH_PERM_30000 = False
 RUN_SYNTH_PERM_1000 = False
 RUN_SYNTH_PERM_30 = False
+RUN_REAL_GGA18_MGA20 = False
+RUN_REAL_GGA14_MGA16 = False
+RUN_REAL_HS12_PT12 = False
+RUN_REAL_PXO99A_MAFF311018 = False
+RUN_REAL_COMPARE_SMASH = False
 
 RUN_SYNTH_SMALL_QUAN = False
 RUN_SYNTH_MEDIUM_QUAN = False
 RUN_SYNTH_LARGE_QUAN = False
 RUN_SYNTH_XLARGE_QUAN = False
 RUN_SYNTH_MUTATE_QUAN = False
+RUN_SYNTH_COMPARE_SMASH_QUAN = False
+RUN_SYNTH_PERM_ORIGINAL_QUAN = False
 RUN_REAL_GGA18_MGA20_QUAN = False
 RUN_REAL_GGA14_MGA16_QUAN = False
 RUN_REAL_HS12_PT12_QUAN = False
 RUN_REAL_PXO99A_MAFF311018_QUAN = False
-RUN_SYNTH_COMPARE_SMASH_QUAN = False
 RUN_REAL_COMPARE_SMASH_QUAN = False
-RUN_SYNTH_PERM_ORIGINAL_QUAN = False
 
 RUN_FORGETTING_FACTOR = False
 
@@ -804,7 +804,7 @@ class Smash:
             if self.comp == QUANTITY:
                 self.par = '-c 11 -m 1'
             elif self.comp == QUALITY:
-                self.par = '-t 1.85 -c 14 -d 99 -w 15000 -m 1 -nd'
+                self.par = '-t 1.95 -c 14 -d 99 -w 150000 -m 2500 -nd'
             self.ref = 'Sc' + self.dataset.ref_name
             self.tar = 'Sp' + self.dataset.tar_name
         elif self.key == 'synth_small':
@@ -1026,22 +1026,6 @@ def evaluate_quantity():
     if RUN_SYNTH_PERM_ORIGINAL_QUAN:
         run_smash('synth_perm')
         run_smashpp('synth_perm')
-
-    if RUN_SYNTH_PERM_450000_QUAN:
-        run_smash('synth_perm450000')
-        run_smashpp('synth_perm450000')
-
-    if RUN_SYNTH_PERM_30000_QUAN:
-        run_smash('synth_perm30000')
-        run_smashpp('synth_perm30000')
-
-    if RUN_SYNTH_PERM_1000_QUAN:
-        run_smash('synth_perm1000')
-        run_smashpp('synth_perm1000')
-
-    if RUN_SYNTH_PERM_30_QUAN:
-        run_smash('synth_perm30')
-        run_smashpp('synth_perm30')
 
     bench.write_result()
 

@@ -1,7 +1,5 @@
 ##SMASH++
 ##PARAM=<-r dataset/fungi/Saccharomyces_cerevisiae/VII.seq -t dataset/fungi/Saccharomyces_paradoxus/VII.seq -rm 11,0,0.001,0.95 -d 102 -f 34 -m 1 -nr -dp -ar>
-##INFO=<Ref=VII.seq,RefSize=1090940,Tar=VII.seq,TarSize=1105967>
+##INFO=<Ref=VII.seq,RefSize=1106526,Tar=VII.seq,TarSize=1121768>
 #RBeg	REnd	RRelRdn	RRdn	TBeg	TEnd	TRelRdn	TRdn	Inv
-482358	483378	1.4084	0.0000	487866	488886	1.2912	0.0000	F
-526116	526626	1.4729	0.0000	531114	531828	1.4251	0.0000	F
-721854	722466	1.4657	0.0000	763062	764082	1.4073	0.0000	F
+475524	476136	1.4674	0.0000	487866	488886	1.2912	0.0000	F

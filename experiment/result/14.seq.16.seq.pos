@@ -1,5 +1,9 @@
 ##SMASH++
 ##PARAM=<-r dataset/bird/Gallus_gallus/14.seq -t dataset/bird/Meleagris_gallopavo/16.seq -rm 14,0,0.001,0.95 -d 1623 -f 100 -m 100 -nr -dp -ar>
-##INFO=<Ref=14.seq,RefSize=16219308,Tar=16.seq,TarSize=14878991>
+##INFO=<Ref=14.seq,RefSize=16451014,Tar=16.seq,TarSize=15091550>
 #RBeg	REnd	RRelRdn	RRdn	TBeg	TEnd	TRelRdn	TRdn	Inv
-4080222	4117551	1.4598	0.0000	9653604	9788313	1.3676	0.0000	F
+-2	-2	-2	-2	F
+-2	-2	-2	-2	F
+-2	-2	-2	-2	F
+-2	-2	-2	-2	F
+-2	-2	-2	-2	F
