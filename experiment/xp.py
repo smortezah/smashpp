@@ -16,7 +16,7 @@ from csv import writer
 RUN_SYNTH_SMALL = False
 RUN_SYNTH_MEDIUM = False
 RUN_SYNTH_LARGE = False
-RUN_SYNTH_XLARGE = False
+RUN_SYNTH_XLARGE = True
 RUN_SYNTH_MUTATE = False
 RUN_SYNTH_COMPARE_SMASH = False
 RUN_SYNTH_PERM_ORIGINAL = False
@@ -615,7 +615,6 @@ class Smashpp:
         if not os.path.exists(self.smashpp_exe.strip()):
             self.smashpp_exe = 'bin' + sep + 'smashpp '
 
-    #todo self.par_viz bayad vase quan & qual joda bashe
     def _config(self):
         if self.key == 'synth_small':
             if self.comp == QUANTITY:
@@ -648,7 +647,8 @@ class Smashpp:
                     '-m 1000000 -nr -dp'
                 self.par_viz = '-p 1 -l 1 -w 13 -vv -nr -nrr -o XL_quan.svg'
             elif self.comp == QUALITY:
-                self.par_main = '-l 3 -d 100 -f 275'
+                # self.par_main = '-l 3 -d 100 -f 275'
+                self.par_main = '-l 0 -d 1000 -f 300'
                 self.par_viz = '-p 1 -l 1 -w 13 -vv -stat -o XL.svg'
         elif self.key == 'synth_mutate':
             if self.comp == QUANTITY:

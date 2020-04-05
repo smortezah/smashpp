@@ -2,7 +2,7 @@ Method,Dataset,Cat,Size.B,Memory.KB,Elapsed.s,User.s,System.s
 Smash++,Small,Synthetic,3000,1053528,6.95,1.76,5.22
 Smash++,Medium,Synthetic,200000,1053328,5.11,1.45,3.68
 Smash++,Large,Synthetic,10000000,1055860,16.06,12.2,3.73
-Smash++,XLarge,Synthetic,200000000,1102292,322.31,311.8,7.81
+Smash++,XLarge,Synthetic,200000000,1126892,88.61,78.67,7.95
 Smash++,Mutate,Synthetic,120000,1053308,2.93,0.87,2.06
 Smash++,GGA18_MGA20,Real,22419393,1062700,46.75,37.77,8.73
 Smash++,GGA14_MGA16,Real,31542564,1067380,53.74,44.8,8.57
