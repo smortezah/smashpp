@@ -1,8 +1,5 @@
 // Smash++
-// Morteza Hosseini      seyedmorteza@ua.pt
-// Diogo Pratas          pratas@ua.pt
-// Burkhard Morgenstern  bmorgen@gwdg.de
-// Armando J. Pinho      ap@ua.pt
+// Morteza Hosseini    seyedmorteza@ua.pt
 // Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
 #define __STDC_FORMAT_MACROS
@@ -13,7 +10,6 @@
 #endif
 
 #include "application.hpp"
-
 using namespace smashpp;
 
 int main(int argc, char* argv[]) {
