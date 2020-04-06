@@ -14,10 +14,8 @@ endif()
 # set(CMAKE_CXX_COMPILER C:\\MinGW\\bin\\g++.exe)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fbranch-target-load-optimize -fforce-addr -march=native")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -fopenmp -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fbranch-target-load-optimize -fforce-addr -march=native")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -Wall -O0 -g")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -pg") # mem prof
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -fopenmp -D_GLIBCXX_PARALLEL")
 
 add_executable(smashpp 
   par.cpp
@@ -35,13 +33,13 @@ add_executable(smashpp
   main.cpp
 )
 
-#add_executable(smashpp-inv-rep src/invRep.cpp)
-
-#add_executable(excule_N src/excludeN.cpp)
-
 target_compile_features(smashpp PRIVATE cxx_std_14)
 
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
     target_link_libraries(smashpp PRIVATE OpenMP::OpenMP_CXX)
 endif()
+
+add_executable(smashpp-inv-rep invRep.cpp)
+
+add_executable(exclude_N excludeN.cpp)
