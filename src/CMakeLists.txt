@@ -13,9 +13,13 @@ endif()
 # set(CMAKE_C_COMPILER C:\\mingw\\mingw64\\bin\\x86_64-w64-mingw32-gcc.exe)
 # set(CMAKE_CXX_COMPILER C:\\MinGW\\bin\\g++.exe)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fbranch-target-load-optimize -fforce-addr -march=native")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -Wall -O0 -g")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -pg") # mem prof
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fforce-addr -march=native")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fbranch-target-load-optimize -fforce-addr -march=native")
+  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -Wall -O0 -g")
+  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -O3 -pg") # mem prof
+endif()
 
 add_executable(smashpp 
   par.cpp
@@ -32,8 +36,6 @@ add_executable(smashpp
   vizpaint.cpp
   main.cpp
 )
-
-target_compile_features(smashpp PRIVATE cxx_std_14)
 
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)

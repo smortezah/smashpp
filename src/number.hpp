@@ -6,6 +6,8 @@
 #define SMASHPP_NUMBER_HPP
 
 #include <cmath>
+#include <sstream>
+
 #include "def.hpp"
 #include "file.hpp"
 
@@ -97,7 +99,7 @@ inline static std::string thousands_sep(T number) {
   return ss.str();
 }
 
-inline static double round_to_prec(double value, double precision=1.0) {
+inline static double round_to_prec(double value, double precision = 1.0) {
   const auto reciprocal = 1.0 / precision;
   return std::ceil(value * reciprocal) / reciprocal;
 }

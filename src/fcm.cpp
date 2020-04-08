@@ -8,6 +8,7 @@
 #include <fstream>
 #include <numeric>  // std::accumulate
 #include <thread>
+#include <array>
 
 #include "assert.hpp"
 #include "container.hpp"

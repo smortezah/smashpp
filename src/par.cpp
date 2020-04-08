@@ -7,6 +7,8 @@
 #include <fstream>
 #include <memory>
 #include <vector>
+#include <array>
+
 #include "assert.hpp"
 #include "container.hpp"
 #include "def.hpp"

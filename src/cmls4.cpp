@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <random>
+#include <array>
 
 #include "exception.hpp"
 using namespace smashpp;

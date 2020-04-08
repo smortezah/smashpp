@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <array>
 
 #include "exception.hpp"
 using namespace smashpp;
