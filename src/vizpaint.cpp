@@ -50,7 +50,7 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
       [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
 
   for (auto e = std::begin(pos); e != std::end(pos); ++e) {
-    if (abs(e->endTar - e->begTar) <= p->min) {
+    if (std::abs(e->endTar - e->begTar) <= p->min) {
       ++n_ignored;
       continue;
     // } else if (e->begRef != DBLANK && e->endRef - e->begRef <= p->min) {
@@ -470,7 +470,7 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
   rect->width = seqWidth;
   rect->stroke_width = 0.75;
   rect->fill_opacity = rect->stroke_opacity = p->opacity;
-  rect->height = get_point(abs(e->begTar - e->endTar));
+  rect->height = get_point(std::abs(e->begTar - e->endTar));
   if (p->vertical) {
     rect->x = x + seqWidth + innerSpace;
     rect->y = !inverted ? y + get_point(e->begTar) : y + get_point(e->endTar);
@@ -788,8 +788,8 @@ inline void VizPaint::plot_title(std::ofstream& f, std::string ref,
 
     const auto charSpace{5};
     const bool tooClose{(innerSpace -
-                             abs(ref.size() * charSpace - seqWidth) / 2 -
-                             abs(tar.size() * charSpace - seqWidth) / 2 <
+                             std::abs(ref.size() * charSpace - seqWidth) / 2 -
+                             std::abs(tar.size() * charSpace - seqWidth) / 2 <
                          15)};
 
     text->x = x + seqWidth / 2;

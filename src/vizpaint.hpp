@@ -116,7 +116,7 @@ class VizPaint {
   std::unique_ptr<SVG> svg;
 
   VizPaint()
-      : svg(std::make_unique<SVG>()), ratio(1), plottable(true), ry(2.0f) {}
+      : svg(std::make_unique<SVG>()), ratio(1), plottable(true) {}
   void plot(std::unique_ptr<VizParam>&);
 
  private:
@@ -127,7 +127,6 @@ class VizPaint {
   uint64_t n_refBases;
   uint64_t n_tarBases;
   bool plottable;
-  float ry;
   std::vector<int64_t> lastPos;
   std::vector<PosNode> nodes;
 
