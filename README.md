@@ -212,7 +212,7 @@ Please let us know if there is any
 [issues](https://github.com/smortezah/smashpp/issues).
 
 ## License
-Copyright © 2018-2019 Morteza Hosseini -- IEETA, University of Aveiro, Portugal.
+Copyright © 2018-2020 Morteza Hosseini -- IEETA, University of Aveiro, Portugal.
 
 Smash++ is licensed under GNU GPL v3. For more information, click 
 [here](http://www.gnu.org/licenses/gpl-3.0.html).
