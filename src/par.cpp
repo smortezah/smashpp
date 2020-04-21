@@ -58,7 +58,7 @@ void Param::parse(int argc, char**& argv) {
     } else if (*i == "-v") {
       verbose = true;
     } else if (*i == "-ll") {
-      std::cerr << "Level Model parameters" << '\n';
+      std::cerr << "Level  Model parameters" << '\n';
       for (size_t i = 0; i != LEVEL.size(); ++i)
         std::cerr << "[ " << i << " ]  " << LEVEL[i] << '\n';
       throw EXIT_SUCCESS;
