@@ -202,7 +202,7 @@ Note that `xp.py` requires `conda` for downloading the real dataset using Entrez
 
 ## Cite
 Please cite the following, if you use Smash++:
-* M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: an alignment-free and memory-efficient tool to find genomic rearrangements," *GigaScience*, vol. , no. , 2020
+* M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: an alignment-free and memory-efficient tool to find genomic rearrangements," *GigaScience*, vol. 9, no. 5, 2020.
 
 ## Issues
 Please let us know if there is any 
