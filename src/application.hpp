@@ -265,34 +265,29 @@ void application::prepare_data(std::unique_ptr<Param>& par) {
   std::cerr << bold("====[ PREPARE DATA ]==================================\n");
 
   // FASTA/FASTQ to seq
-  const auto convert_to_seq = [](std::string in, std::string out,
+  auto convert_to_seq = [](std::string in, std::string out,
                                  const FileType& type) {
-    std::string msg = "[+] " + italic(in) + " (FAST";
+    std::string msg = "[+] " + italic(file_name(in)) + " (FAST";
     if (type == FileType::fasta)
       msg += "A";
     else if (type == FileType::fastq)
       msg += "Q";
     msg += ") -> " + italic(out) + " (seq) ";
     std::cerr << msg << "...";
-    rename(in.c_str(), (in + LBL_BAK).c_str());
-    to_seq(in + LBL_BAK, in, type);
+    to_seq(in, out, type);
     std::cerr << "\r" << msg << "finished.\n";
   };
 
   const std::string ref_seq = file_name_no_ext(par->refName) + ".seq";
   const std::string tar_seq = file_name_no_ext(par->tarName) + ".seq";
 
-  if (par->refType == FileType::fasta)
-    convert_to_seq(par->refName, ref_seq, FileType::fasta);
-  else if (par->refType == FileType::fastq)
-    convert_to_seq(par->refName, ref_seq, FileType::fastq);
+  if (par->refType == FileType::fasta || par->refType == FileType::fastq)
+    convert_to_seq(par->ref, ref_seq, par->refType);
   else if (par->refType != FileType::seq)
     error("\"" + par->refName + "\" has unknown format.");
 
-  if (par->tarType == FileType::fasta)
-    convert_to_seq(par->tarName, tar_seq, FileType::fasta);
-  else if (par->tarType == FileType::fastq)
-    convert_to_seq(par->tarName, tar_seq, FileType::fastq);
+  if (par->tarType == FileType::fasta || par->tarType == FileType::fastq)
+    convert_to_seq(par->tar, tar_seq, par->tarType);
   else if (par->tarType != FileType::seq)
     error("\"" + par->tarName + "\" has unknown format.");
 
@@ -309,24 +304,29 @@ void application::remove_temp_seg(std::unique_ptr<Param>& par,
 }
 
 void application::remove_temp_seq(std::unique_ptr<Param>& par) {
+  const std::string ref_seq = file_name_no_ext(par->ref) + ".seq";
+  const std::string tar_seq = file_name_no_ext(par->tar) + ".seq";
+
   if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
     if (!par->saveSeq) {
-      remove(par->ref.c_str());
-    } else {
-      const std::string seq_name = file_name_no_ext(par->ref) + ".seq";
-      rename(par->ref.c_str(), seq_name.c_str());
-    }
-    rename((par->ref + LBL_BAK).c_str(), par->ref.c_str());
+      remove(ref_seq.c_str());
+    } 
+    // else {
+      //   const std::string seq_name = file_name_no_ext(par->ref) + ".seq";
+      //   rename(par->ref.c_str(), seq_name.c_str());
+    // }
+    // rename((par->ref + LBL_BAK).c_str(), par->ref.c_str());
   }
 
   if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
     if (!par->saveSeq) {
-      remove(par->tar.c_str());
-    } else {
-      const std::string seq_name = file_name_no_ext(par->tar) + ".seq";
-      rename(par->tar.c_str(), seq_name.c_str());
-    }
-    rename((par->tar + LBL_BAK).c_str(), par->tar.c_str());
+      remove(tar_seq.c_str());
+    } 
+    // else {
+    //   const std::string seq_name = file_name_no_ext(par->tar) + ".seq";
+    //   rename(par->tar.c_str(), seq_name.c_str());
+    // }
+    // rename((par->tar + LBL_BAK).c_str(), par->tar.c_str());
   }
 }
 

@@ -60,7 +60,7 @@ inline static std::string file_name_no_ext(std::string str) {
   auto found = str.find_last_of("/\\");
   const std::string file_name = str.substr(found + 1);
   found = file_name.find_last_of(".");
-  return str.substr(0, found);
+  return file_name.substr(0, found);
 }
 
 inline static uint64_t file_size(std::string name) {
