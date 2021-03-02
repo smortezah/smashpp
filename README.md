@@ -45,6 +45,8 @@ cd smashpp
 ./install.sh
 ```
 
+**Note**: in all operating systems, in the case of permission denial, you can use `sudo bash install.sh` instead of `./install.sh`.
+
 ## Run
 ```text
 ./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
