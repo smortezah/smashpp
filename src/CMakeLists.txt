@@ -14,7 +14,7 @@ endif()
 # set(CMAKE_CXX_COMPILER C:\\MinGW\\bin\\g++.exe)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fforce-addr -march=native")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fforce-addr")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -Wall -ffast-math -fno-math-errno -funsafe-math-optimizations -ffinite-math-only -fbranch-target-load-optimize -fforce-addr -march=native")
   # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -Wall -O0 -g")
