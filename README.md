@@ -3,21 +3,28 @@
 A fast tool to find and visualize rearrangements in DNA sequences.
 
 ## Install
+
 To install Smash++ on various operating systems, follow the instructions below. It requires CMake (>= 3.9) and a C++14 compliant compiler. Note that a precompiled executable is available for 64 bit operating systems in the `experiment/bin` directory.
 
 ### Conda
+
 Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html), then run the following:
+
 ```bash
 conda install -y -c bioconda smashpp
 ```
 
 ### Linux
+
 * Install Git and CMake:
+
 ```bash
   sudo apt update
   sudo apt install git cmake
 ```
+
 * Clone Smash++ and install it:
+
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
@@ -25,12 +32,16 @@ conda install -y -c bioconda smashpp
 ```
 
 ### macOS
+
 * Install Homebrew, Git and CMake:
+
 ```bash
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   brew install git cmake
 ```
+
 * Clone Smash++ and install it:
+
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
@@ -38,7 +49,9 @@ conda install -y -c bioconda smashpp
 ```
 
 ### Windows
+
 Install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Windows Subsystem for Linux), then clone Smash++ and install it, like in Linux/macOS:
+
 ```bat
 git clone https://github.com/smortezah/smashpp.git
 cd smashpp
@@ -48,25 +61,29 @@ cd smashpp
 **Note**: in all operating systems, in the case of permission denial, you can use `sudo bash install.sh` instead of `./install.sh`.
 
 ## Run
+
 ```text
 ./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
 ```
 
 For example,
+
 ```text
 ./smashpp -r ref -t tar
 ```
 
-It is recommended to choose short names for reference and target 
-sequences.
+It is recommended to choose short names for reference and target sequences.
 
 ### Options
+
 To see the possible options for Smash++, type:
+
 ```bash
 ./smashpp
 ```
 
 which provides the following:
+
 ```text
 SYNOPSIS
   ./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
@@ -129,11 +146,13 @@ SAMPLE
 ```
 
 To see the options for Smash++ Visualizer, type:
+
 ```bash
 ./smashpp -viz
 ```
 
 which provides the following:
+
 ```text
 SYNOPSIS
   ./smashpp -viz [OPTIONS]  -o <SVG-FILE>  <POS-FILE>
@@ -180,37 +199,46 @@ SAMPLE
 ```
 
 ### Example
+
 After installing Smash++, copy its executable file into `example` directory and go to that directory:
+
 ```bash
 cp smashpp example/
 cd example/
 ```
+
 There is in this directory two 1000 base sequences, the reference sequence named `ref`, and the target sequence, named `tar`. Now, run Smash++ and the visualizer:
+
 ```bash
 ./smashpp -r ref -t tar
 ./smashpp -viz -o example.svg ref.tar.pos
 ```
 
 ## Experiment
+
 To reproduce results in the paper, we have provided the Python script `xp.py` in the `experiment/` directory, that can run Smash++ on synthetic and real genomic data. By this script, you can automatically make/download the datasets, in case of synthetic/real data, run Smash++ on those data using predefined parameters, and benchmark the method.
 
 To use `xp.py`, you need to switch **False** to **True** for a desired dataset, in the beginnig of the file. Then, it runs Smash++ on that (those) dataset(s) and saves in the `result/` directory the results including:
-- a `*.pos` file, which contains the positions of similar regions, plus self- and relative-redundancy values. It also includes in the header the parameters used to run Smash++, and sizes of the reference and the target files
-- a `*.svg` file with the similar regions visualized. This file is the output of Smash++ visualizer.
-- the `bench.csv` file, that provides time and memory usage of Smash++. In case of comparing with Smash (the first version), this file will provide the time and memory usage of Smash method, too.
-- in some cases, there would be a `*.csv` file, including the number of regular and inverted regions among the detected rearrangements. This file is generated when `-stat` flag is enabled for Smash++ visualizer.
+
+* a `*.pos` file, which contains the positions of similar regions, plus self- and relative-redundancy values. It also includes in the header the parameters used to run Smash++, and sizes of the reference and the target files
+* a `*.svg` file with the similar regions visualized. This file is the output of Smash++ visualizer.
+* the `bench.csv` file, that provides time and memory usage of Smash++. In case of comparing with Smash (the first version), this file will provide the time and memory usage of Smash method, too.
+* in some cases, there would be a `*.csv` file, including the number of regular and inverted regions among the detected rearrangements. This file is generated when `-stat` flag is enabled for Smash++ visualizer.
 
 Note that `xp.py` requires `conda` for downloading the real dataset using Entrez Direct (EDirect) utility. If EDirect is not already installed, the script will automatically install it by `conda`.
 
 ## Cite
+
 Please cite the following, if you use Smash++:
+
 * M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: an alignment-free and memory-efficient tool to find genomic rearrangements," *GigaScience*, vol. 9, no. 5, 2020. [[BibTeX]](https://scholar.googleusercontent.com/scholar.bib?q=info:kwoJB3-yUWcJ:scholar.google.com/&output=citation&scisdr=CgVA98UgEN32sP2NO7g:AAGBfm0AAAAAYXaLI7gazyBilzTZk3NSuwvkVj1DLsQr&scisig=AAGBfm0AAAAAYXaLIw0rIN5YCs7vKpdDORt1buQAV30Z&scisf=4&ct=citation&cd=-1&hl=en) [[EndNote]](https://scholar.googleusercontent.com/scholar.enw?q=info:kwoJB3-yUWcJ:scholar.google.com/&output=citation&scisdr=CgVA98UgEN32sP2NO7g:AAGBfm0AAAAAYXaLI7gazyBilzTZk3NSuwvkVj1DLsQr&scisig=AAGBfm0AAAAAYXaLIw0rIN5YCs7vKpdDORt1buQAV30Z&scisf=3&ct=citation&cd=-1&hl=en)
 
 ## Issues
-Please let us know if there is any 
-[issues](https://github.com/smortezah/smashpp/issues).
+
+Please let us know if there is any [issues](https://github.com/smortezah/smashpp/issues).
 
 ## License
-Copyright © 2018-2021 Morteza Hosseini -- IEETA, University of Aveiro, Portugal.
+
+Copyright © 2018-2021 Morteza Hosseini.
 
 Smash++ is licensed under [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html).
