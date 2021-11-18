@@ -231,7 +231,7 @@ Note that `xp.py` requires `conda` for downloading the real dataset using Entrez
 
 Please cite the following, if you use Smash++:
 
-* M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: an alignment-free and memory-efficient tool to find genomic rearrangements," *GigaScience*, vol. 9, no. 5, 2020. [[BibTeX]](https://scholar.googleusercontent.com/scholar.bib?q=info:kwoJB3-yUWcJ:scholar.google.com/&output=citation&scisdr=CgVA98UgEN32sP2NO7g:AAGBfm0AAAAAYXaLI7gazyBilzTZk3NSuwvkVj1DLsQr&scisig=AAGBfm0AAAAAYXaLIw0rIN5YCs7vKpdDORt1buQAV30Z&scisf=4&ct=citation&cd=-1&hl=en) [[EndNote]](https://scholar.googleusercontent.com/scholar.enw?q=info:kwoJB3-yUWcJ:scholar.google.com/&output=citation&scisdr=CgVA98UgEN32sP2NO7g:AAGBfm0AAAAAYXaLI7gazyBilzTZk3NSuwvkVj1DLsQr&scisig=AAGBfm0AAAAAYXaLIw0rIN5YCs7vKpdDORt1buQAV30Z&scisf=3&ct=citation&cd=-1&hl=en)
+* M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: an alignment-free and memory-efficient tool to find genomic rearrangements," *GigaScience*, vol. 9, no. 5, 2020. [DOI: 10.1093/gigascience/giaa048](https://doi.org/10.1093/gigascience/giaa048)
 
 ## Issues
 
