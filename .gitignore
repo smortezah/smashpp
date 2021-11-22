@@ -22,16 +22,12 @@ callgrind.out*
 gprof2dot.py
 example/*.pos
 example/*.s*
-# smashpp
+smashpp
 smashpp.exe
 paper/sup.synctex(busy)
 .Rproj.user
 install.bat
 desktop.ini
-# experiment/dataset/**
-experiment/dataset/mammalia/**
 test_remove_it/**
-experiment/res_new
-experiment/res_orig
-experiment/result
+experiment
 .DS_Store
