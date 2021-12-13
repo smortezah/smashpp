@@ -11,16 +11,15 @@ To install Smash++ on various operating systems, follow the instructions below. 
 Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html), then run the following:
 
 ```bash
-conda install -y -c bioconda smashpp
+conda install -c bioconda -y smashpp
 ```
 
-### Linux
+### Ubuntu
 
-* Install Git and CMake:
+* Install Git, CMake and g++:
 
 ```bash
-  sudo apt update
-  sudo apt install git cmake
+  apt update && apt install -y git cmake g++
 ```
 
 * Clone Smash++ and install it:
@@ -28,7 +27,7 @@ conda install -y -c bioconda smashpp
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
-  ./install.sh
+  bash install.sh
 ```
 
 ### macOS
@@ -45,12 +44,12 @@ conda install -y -c bioconda smashpp
 ```bash
   git clone https://github.com/smortezah/smashpp.git
   cd smashpp
-  ./install.sh
+  bash install.sh
 ```
 
 ### Windows
 
-Install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Windows Subsystem for Linux), then clone Smash++ and install it, like in Linux/macOS:
+Install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Windows Subsystem for Linux), then clone Smash++ and install it, like in Ubuntu:
 
 ```bat
 git clone https://github.com/smortezah/smashpp.git
