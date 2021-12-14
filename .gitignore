@@ -22,6 +22,5 @@ install.bat
 desktop.ini
 test_remove_it/**
 **/experiment/dataset/bacteria
-**/experiment/dataset/bird
 **/experiment/dataset/synth
 .DS_Store
