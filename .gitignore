@@ -23,5 +23,4 @@ desktop.ini
 test_remove_it/**
 **/experiment/bin
 **/experiment/dataset
-**/experiment/result
 .DS_Store
