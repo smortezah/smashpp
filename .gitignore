@@ -21,5 +21,7 @@ paper/sup.synctex(busy)
 install.bat
 desktop.ini
 test_remove_it/**
-**/experiment/dataset
+**/experiment/dataset/bacteria
+**/experiment/dataset/bird
+**/experiment/dataset/synth
 .DS_Store
