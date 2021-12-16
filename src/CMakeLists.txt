@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.5)
+# cmake_minimum_required(VERSION 3.9)
 project(smashpp)
 
 if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
