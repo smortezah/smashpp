@@ -108,9 +108,9 @@ void application::run(std::unique_ptr<Param>& par) {
           gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
       std::string tar_round2 = par->tar = par->ref;
 
-#pragma omp parallel for ordered schedule(static, 1)
+// #pragma omp parallel for ordered schedule(static, 1)
       for (uint64_t i = 0; i < num_seg_round1; ++i) {
-#pragma omp ordered
+// #pragma omp ordered
         if (!par->verbose)
           std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
 
@@ -118,13 +118,13 @@ void application::run(std::unique_ptr<Param>& par) {
 
         auto num_seg_round2 =
             run_round(par, 2, run_num, pos_out, current_pos_row);
-#pragma omp ordered
+// #pragma omp ordered
         if (par->verbose) std::cerr << '\n';
 
         if (num_seg_round2 != 0) {
           // Round 3
           if (par->deep) {
-#pragma omp ordered
+// #pragma omp ordered
             if (par->verbose)
               std::cerr << "    " << italic("Deep compression") << '\n';
 
