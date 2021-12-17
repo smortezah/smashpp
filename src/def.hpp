@@ -17,8 +17,8 @@
 
 namespace smashpp {
 // Version
-static const std::string VERSION{"20.04"};
-static const std::string DEV_YEARS{"2018-2020"};
+static const std::string VERSION{"21.12"};
+static const std::string DEV_YEARS{"2018-2021"};
 
 // Typedef
 using dur_t = std::chrono::duration<double>;
