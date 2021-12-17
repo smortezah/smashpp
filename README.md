@@ -6,12 +6,14 @@ A fast tool to find and visualize rearrangements in DNA sequences.
 
 To install Smash++ on various operating systems, follow the instructions below. It requires CMake (>= 3.9) and a C++14 compliant compiler. Note that a precompiled executable is available for 64 bit operating systems in the `experiment/bin` directory.
 
-### Conda
-
-Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html), then run the following:
-
+### Docker
+Pull the image by
 ```bash
-conda install -c bioconda -y smashpp
+docker pull smortezah/smashpp
+```
+and run it:
+```bash
+docker run -it smortezah/smashpp
 ```
 
 ### Ubuntu
@@ -58,6 +60,14 @@ cd smashpp
 ```
 
 **Note**: in all operating systems, in the case of permission denial, you can use `sudo bash install.sh` instead of `./install.sh`.
+
+### Conda
+
+Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html), then run the following:
+
+```bash
+conda install -c bioconda -y smashpp
+```
 
 ## Run
 
