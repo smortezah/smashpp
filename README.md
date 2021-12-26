@@ -39,7 +39,7 @@ conda install -c bioconda -y smashpp
 * Clone Smash++ and install it:
 
 ```bash
-  git clone https://github.com/smortezah/smashpp.git
+  git clone --depth 1 https://github.com/smortezah/smashpp.git
   cd smashpp
   bash install.sh
 ```
@@ -56,7 +56,7 @@ conda install -c bioconda -y smashpp
 * Clone Smash++ and install it:
 
 ```bash
-  git clone https://github.com/smortezah/smashpp.git
+  git clone --depth 1 https://github.com/smortezah/smashpp.git
   cd smashpp
   bash install.sh
 ```
@@ -65,8 +65,8 @@ conda install -c bioconda -y smashpp
 
 Install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Windows Subsystem for Linux), then clone Smash++ and install it, like in Ubuntu:
 
-```bat
-git clone https://github.com/smortezah/smashpp.git
+```bash
+git clone --depth 1 https://github.com/smortezah/smashpp.git
 cd smashpp
 ./install.sh
 ```
