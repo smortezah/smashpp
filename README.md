@@ -1,4 +1,4 @@
-# Smash++ &nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.com/smortezah/smashpp.svg?token=EWxsPpL9t9UvE93uKjH5&branch=master)](https://travis-ci.com/smortezah/smashpp) ![Conda](https://img.shields.io/conda/dn/bioconda/smashpp) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+# Smash++ &nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.com/smortezah/smashpp.svg?token=EWxsPpL9t9UvE93uKjH5&branch=master)](https://travis-ci.com/smortezah/smashpp) ![Conda](https://img.shields.io/conda/dn/bioconda/smashpp) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE) [![GitNFT](https://img.shields.io/badge/%F0%9F%94%AE-Open%20in%20GitNFT-darkviolet?style=flat)](https://gitnft.quine.sh/app/commits/list/repo/smashpp)
 
 A fast tool to find and visualize rearrangements in DNA sequences.
 
