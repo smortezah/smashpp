@@ -1,25 +1,61 @@
-**/~*
-/*.svg
-!example.svg
-**/build
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# macOS
+.DS_Store
+
+# Windows
+desktop.ini
+
+# Debug/profile
+callgrind.out*
+gprof2dot.py
+
+# Visual Studio Code
 .vscode
+
+# CMake
+**/build
+
+# Smash++
 **/*.sys*
 **/*.inf
 **/*.rev
 **/*.ext
 **/*.inf.fil
 *_bk
-gmon.out
-callgrind.out*
-gprof2dot.py
 example/*.pos
 example/*.s*
 smashpp
 smashpp.exe
-paper/sup.synctex(busy)
-.Rproj.user
 install.bat
-desktop.ini
-test_remove_it/**
-.DS_Store
-bfg-1.14.0.jar
