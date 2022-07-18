@@ -1,4 +1,7 @@
-# Smash++ &nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.com/smortezah/smashpp.svg?token=EWxsPpL9t9UvE93uKjH5&branch=master)](https://travis-ci.com/smortezah/smashpp) ![Conda](https://img.shields.io/conda/dn/bioconda/smashpp) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE) [![GitNFT](https://img.shields.io/badge/%F0%9F%94%AE-Open%20in%20GitNFT-darkviolet?style=flat)](https://gitnft.quine.sh/app/commits/list/repo/smashpp)
+# Smash++
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+[![CI](https://github.com/smortezah/smashpp/actions/workflows/ci.yml/badge.svg)](https://github.com/smortezah/smashpp/actions/workflows/ci.yml)
+[![GitNFT](https://img.shields.io/badge/%F0%9F%94%AE-Open%20in%20GitNFT-darkviolet?style=flat)](https://gitnft.quine.sh/app/commits/list/repo/smashpp)
 
 A fast tool to find and visualize rearrangements in DNA sequences.
 
@@ -252,6 +255,6 @@ Please let us know if there is any [issues](https://github.com/smortezah/smashpp
 
 ## License
 
-Copyright © 2018-2021 Morteza Hosseini.
+Copyright © 2018-2022 Morteza Hosseini.
 
 Smash++ is licensed under [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html).
