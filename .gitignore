@@ -54,8 +54,10 @@ gprof2dot.py
 **/*.ext
 **/*.inf.fil
 *_bk
-example/*.pos
-example/*.s*
+*.pos
+*.s*
 smashpp
 smashpp.exe
+exclude_N
+smashpp-inv-rep
 install.bat
