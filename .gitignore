@@ -42,7 +42,7 @@ callgrind.out*
 gprof2dot.py
 
 # Visual Studio Code
-.vscode
+**/.vscode
 
 # CMake
 **/build
