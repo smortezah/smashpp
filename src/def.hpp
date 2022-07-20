@@ -1,6 +1,5 @@
 // Smash++
 // Morteza Hosseini    seyedmorteza@ua.pt
-// Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
 //#define DEBUG 1
 
@@ -17,8 +16,7 @@
 
 namespace smashpp {
 // Version
-static const std::string VERSION{"21.12"};
-static const std::string DEV_YEARS{"2018-2021"};
+static const std::string VERSION{"22.07"};
 
 // Typedef
 using dur_t = std::chrono::duration<double>;

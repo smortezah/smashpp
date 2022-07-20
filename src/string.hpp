@@ -1,6 +1,5 @@
 // Smash++
 // Morteza Hosseini    seyedmorteza@ua.pt
-// Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
 #ifndef SMASHPP_STRING_HPP
 #define SMASHPP_STRING_HPP

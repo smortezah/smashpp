@@ -1,6 +1,5 @@
 // Smash++
 // Morteza Hosseini    seyedmorteza@ua.pt
-// Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
 #include "par.hpp"
 #include <algorithm>
@@ -48,12 +47,7 @@ void Param::parse(int argc, char**& argv) {
       help();
       throw EXIT_SUCCESS;
     } else if (*i == "--version") {
-      std::cerr << "Smash++ " << VERSION << "\n"
-                << "Maintained by Morteza Hosseini (seyedmorteza@ua.pt)"
-                << "\n"
-                << "Copyright (C) " << DEV_YEARS
-                << " IEETA, University of Aveiro."
-                << "\n";
+      std::cerr << "Smash++ " << VERSION << "\n";
       throw EXIT_SUCCESS;
     } else if (*i == "-v") {
       verbose = true;
@@ -484,15 +478,6 @@ void Param::help() const {
   print_title("SAMPLE");
   print_line("./smashpp -r ref -t tar -l 0 -m 1000");
   print_line("");
-
-  // // title("COPYRIGHT");
-  // // line("Copyright (C) " + DEV_YEARS +
-  // //      ", IEETA, University of Aveiro. You may  ");
-  // // line("redistribute copies of this Free software under the terms of
-  // the");
-  // // line("GPL v3 (General Public License)
-  // <www.gnu.org/licenses/gpl.html>.");
-  // // line("There is NO WARRANTY, to the extent permitted by law.");
 }
 
 FilterType Param::win_type(std::string t) const {
@@ -596,12 +581,7 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (*i == "-v") {
       verbose = true;
     } else if (*i == "--version") {
-      std::cerr << "Smash++ " << VERSION << "\n"
-                << "Maintained by Morteza Hosseini (seyedmorteza@ua.pt)"
-                << "\n"
-                << "Copyright (C) " << DEV_YEARS
-                << " IEETA, University of Aveiro."
-                << "\n";
+      std::cerr << "Smash++ " << VERSION << "\n";
       throw EXIT_SUCCESS;
     } else if (option_inserted(i, "-o")) {
       image = *++i;
@@ -791,11 +771,4 @@ void VizParam::help() const {
   print_title("SAMPLE");
   print_line("./smashpp -viz -vv -o simil.svg ref.tar.pos");
   print_line("");
-
-  // title("COPYRIGHT");
-  // line("Copyright (C) " + DEV_YEARS +
-  //      ", IEETA, University of Aveiro. You may  ");
-  // line("redistribute copies of this Free software under the terms of the");
-  // line("GPL v3 (General Public License) <www.gnu.org/licenses/gpl.html>.");
-  // line("There is NO WARRANTY, to the extent permitted by law.");
 }

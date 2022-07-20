@@ -1,6 +1,5 @@
 // Smash++
 // Morteza Hosseini    seyedmorteza@ua.pt
-// Copyright (C) 2018-2020, IEETA, University of Aveiro, Portugal.
 
 #include "svg.hpp"
 #include <algorithm>
@@ -39,7 +38,7 @@ std::string SVG::end_empty_elem() const { return "/>\n"; }
 
 void SVG::print_header(std::ofstream& f) const {
   f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-    << "<!-- Morteza Hosseini, IEETA " << DEV_YEARS << " -->\n"
+    << "<!-- Morteza Hosseini seyedmorteza@ua.pt -->\n"
     << begin_elem("svg") << attr("xmlns", "http://www.w3.org/2000/svg")
     << attr("xmlns:xlink", "http://www.w3.org/1999/xlink");
   if (width != 0.0f && height != 0.0f)
