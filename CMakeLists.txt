@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(smashpp)
+project(smashpp LANGUAGES CXX)
 
 if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
   if (NOT CMAKE_BUILD_TYPE)
@@ -35,11 +35,14 @@ add_executable(smashpp
   src/main.cpp
 )
 
+# OpenMP
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
     target_link_libraries(smashpp PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
+# smashpp-inv-rep
 add_executable(smashpp-inv-rep src/invRep.cpp)
 
+# exclude_N
 add_executable(exclude_N src/excludeN.cpp)
