@@ -1,12 +1,13 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #include "par.hpp"
+
 #include <algorithm>
+#include <array>
 #include <fstream>
 #include <memory>
 #include <vector>
-#include <array>
 
 #include "assert.hpp"
 #include "container.hpp"
@@ -43,20 +44,20 @@ void Param::parse(int argc, char**& argv) {
   std::string tModelsPars;
 
   for (auto i = std::begin(vArgs); i != std::end(vArgs); ++i) {
-    if (*i == "-h") {
+    if (*i == "-h" || *i == "--help") {
       help();
       throw EXIT_SUCCESS;
-    } else if (*i == "--version") {
+    } else if (*i == "-V" || *i == "--version") {
       std::cerr << "Smash++ " << VERSION << "\n";
       throw EXIT_SUCCESS;
-    } else if (*i == "-v") {
+    } else if (*i == "-v" || *i == "--verbose") {
       verbose = true;
-    } else if (*i == "-ll") {
+    } else if (*i == "-ll" || *i == "--list-levels") {
       std::cerr << "Level  Model parameters" << '\n';
       for (size_t i = 0; i != LEVEL.size(); ++i)
         std::cerr << "[ " << i << " ]  " << LEVEL[i] << '\n';
       throw EXIT_SUCCESS;
-    } else if (*i == "-r") {
+    } else if (*i == "-r" || *i == "--reference") {
       if (i + 1 != std::end(vArgs)) {
         ref = *++i;
         check_file(ref);
@@ -65,7 +66,7 @@ void Param::parse(int argc, char**& argv) {
       } else {
         error("reference file not specified. Use \"-r <fileName>\".");
       }
-    } else if (*i == "-t") {
+    } else if (*i == "-t" || *i == "--target") {
       if (i + 1 != std::end(vArgs)) {
         tar = *++i;
         check_file(tar);
@@ -74,48 +75,63 @@ void Param::parse(int argc, char**& argv) {
       } else {
         error("target file not specified. Use \"-t <fileName>\".");
       }
-    } else if (option_inserted(i, "-l")) {
+    } else if (option_inserted(i, "-l") || option_inserted(i, "--level")) {
       man_level = true;
       level = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_LVL, MAX_LVL, LVL, "Level", Interval::closed, "default",
           Problem::warning);
       range->assert(level);
-    } else if (option_inserted(i, "-m")) {
+    } else if (option_inserted(i, "-m") ||
+               option_inserted(i, "--min-segment-size")) {
       segSize = std::stoul(*++i);
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", Interval::closed,
           "default", Problem::warning);
       range->assert(segSize);
-    } else if (option_inserted(i, "-rm")) {
+    } else if (option_inserted(i, "-rm") ||
+               option_inserted(i, "--reference-model")) {
       man_rm = true;
       rModelsPars = *++i;
       if (rModelsPars.front() == '-' || rModelsPars.empty())
         error("incorrect reference model parameters.");
       else
         parseModelsPars(std::begin(rModelsPars), std::end(rModelsPars), refMs);
-    } else if (option_inserted(i, "-tm")) {
+    } else if (option_inserted(i, "-fmt") || option_inserted(i, "--format")) {
+      auto format_ = *++i;
+      std::transform(std::begin(format_), std::end(format_),
+                     std::begin(format_), ::tolower);
+      if (format_ == "pos") {  // default
+      } else if (format_ == "json") {
+        format = Format::json;
+      } else {
+        warning("incorrect format inserted. Used \"pos\" instead.\n");
+      }
+    } else if (option_inserted(i, "-tm") ||
+               option_inserted(i, "--target-model")) {
       man_tm = true;
       tModelsPars = *++i;
       if (tModelsPars.front() == '-' || tModelsPars.empty())
         error("incorrect target model parameters.");
       else
         parseModelsPars(std::begin(tModelsPars), std::end(tModelsPars), tarMs);
-    } else if (option_inserted(i, "-f")) {
+    } else if (option_inserted(i, "-f") ||
+               option_inserted(i, "--filter-size")) {
       manWSize = true;
       filt_size = static_cast<uint32_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_WS, MAX_WS, WS, "Filter size", Interval::closed, "default",
           Problem::warning);
       range->assert(filt_size);
-    } else if (option_inserted(i, "-th")) {
+    } else if (option_inserted(i, "-th") || option_inserted(i, "--threshold")) {
       manThresh = true;
       thresh = std::stof(*++i);
       auto range = std::make_unique<ValRange<float>>(
           MIN_THRSH, MAX_THRSH, THRSH, "Threshold", Interval::open_closed,
           "default", Problem::warning);
       range->assert(thresh);
-    } else if (option_inserted(i, "-ft")) {
+    } else if (option_inserted(i, "-ft") ||
+               option_inserted(i, "--filter-type")) {
       const auto is_win_type = [](std::string t) {
         return (t == "0" || t == "rectangular" || t == "1" || t == "hamming" ||
                 t == "2" || t == "hann" || t == "3" || t == "blackman" ||
@@ -127,23 +143,26 @@ void Param::parse(int argc, char**& argv) {
           SET_WTYPE, FT, "Window type", "default", Problem::warning,
           win_type(cmd), is_win_type(cmd));
       set->assert(filt_type);
-    } else if (option_inserted(i, "-e")) {
+    } else if (option_inserted(i, "-e") || option_inserted(i, "--entropy-N")) {
       entropyN = static_cast<prc_t>(std::stod(*++i));
       auto range = std::make_unique<ValRange<prc_t>>(
           MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases",
           Interval::closed, "default", Problem::warning);
       range->assert(entropyN);
-    } else if (option_inserted(i, "-n")) {
+    } else if (option_inserted(i, "-n") ||
+               option_inserted(i, "--num-threads")) {
       nthr = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_THRD, MAX_THRD, THRD, "Number of threads", Interval::closed,
           "default", Problem::warning);
       range->assert(nthr);
-    } else if (option_inserted(i, "-d")) {
+    } else if (option_inserted(i, "-d") ||
+               option_inserted(i, "--sampling-step")) {
       manSampleStep = true;
       sampleStep = std::stoull(*++i);
       if (sampleStep == 0) sampleStep = 1ull;
-    } else if (option_inserted(i, "-fs")) {
+    } else if (option_inserted(i, "-fs") ||
+               option_inserted(i, "--filter-scale")) {
       manFilterScale = true;
       const auto is_filter_scale = [](std::string s) {
         return (s == "S" || s == "small" || s == "M" || s == "medium" ||
@@ -154,61 +173,66 @@ void Param::parse(int argc, char**& argv) {
           SET_FSCALE, filterScale, "Filter scale", "default", Problem::warning,
           filter_scale(cmd), is_filter_scale(cmd));
       set->assert(filterScale);
-    } else if (option_inserted(i, "-rb")) {
+    } else if (option_inserted(i, "-rb") ||
+               option_inserted(i, "--reference-begin-guard")) {
       ref_guard->beg = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard",
           Interval::closed, "default", Problem::warning);
       range->assert(ref_guard->beg);
-    } else if (option_inserted(i, "-re")) {
+    } else if (option_inserted(i, "-re") ||
+               option_inserted(i, "--reference-end-guard")) {
       ref_guard->end = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference ending guard",
           Interval::closed, "default", Problem::warning);
       range->assert(ref_guard->end);
-    } else if (option_inserted(i, "-tb")) {
+    } else if (option_inserted(i, "-tb") ||
+               option_inserted(i, "--target-begin-guard")) {
       tar_guard->beg = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target beginning guard",
           Interval::closed, "default", Problem::warning);
       range->assert(tar_guard->beg);
-    } else if (option_inserted(i, "-te")) {
+    } else if (option_inserted(i, "-te") ||
+               option_inserted(i, "--target-end-guard")) {
       tar_guard->end = static_cast<int16_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target ending guard",
           Interval::closed, "default", Problem::warning);
       range->assert(tar_guard->end);
-    } else if (*i == "-ar") {
+    } else if (*i == "-ar" || *i == "--asymmetric-regions") {
       asym_region = true;
-    } else if (*i == "-dp") {//todo
+    } else if (*i == "-dp") {  // hidden option :)
       deep = false;
-    } else if (*i == "-nr") {
+    } else if (*i == "-nr" || *i == "--no-self-complexity") {
       noRedun = true;
-    } else if (*i == "-sb") {
+    } else if (*i == "-sb" || *i == "--save-sequence") {
       saveSeq = true;
-    } else if (*i == "-sp") {
+    } else if (*i == "-sp" || *i == "--save-profile") {
       saveProfile = true;
-    } else if (*i == "-sf") {
+    } else if (*i == "-sf" || *i == "--save-filtered") {
       saveFilter = true;
-    } else if (*i == "-ss") {
+    } else if (*i == "-ss" || *i == "--save-segmented") {
       saveSegment = true;
-    } else if (*i == "-sa") {
+    } else if (*i == "-sa" || *i == "--save-profile-filtered-segmented") {
       saveAll = true;
     }
   }
 
   // Mandatory args
   const bool has_t{has(std::begin(vArgs), std::end(vArgs), "-t")};
-  const bool has_tar{has(std::begin(vArgs), std::end(vArgs), "--tar")};
+  const bool has_target{has(std::begin(vArgs), std::end(vArgs), "--target")};
   const bool has_r{has(std::begin(vArgs), std::end(vArgs), "-r")};
-  const bool has_ref{has(std::begin(vArgs), std::end(vArgs), "--ref")};
-  if (!has_t && !has_tar)
+  const bool has_reference{
+      has(std::begin(vArgs), std::end(vArgs), "--reference")};
+  if (!has_t && !has_target)
     error("target file not specified. Use \"-t <fileName>\".");
-  else if (!has_r && !has_ref)
+  else if (!has_r && !has_reference)
     error("reference file not specified. Use \"-r <fileName>\".");
 
   if (!man_rm && !man_tm) {
@@ -224,8 +248,6 @@ void Param::parse(int argc, char**& argv) {
   } else if (man_rm && !man_tm) {
     tarMs = refMs;
   }
-
-  //// manFilterScale = !manThresh;
 
   if (!manSampleStep) {
     const auto min_ref_tar = std::min(file_size(ref), file_size(tar));
@@ -310,174 +332,171 @@ void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
 }
 
 void Param::help() const {
-  const std::string delim_descr1 = "=";
-  const std::string delim_descr2 = " ";
-  const std::string delim_def = "->";
+  const std::string tab1 = "      ";
+  const std::string tab2 = tab1 + "      ";
+  const std::string tab3 = tab2 + "    ";
 
-  print_title("SYNOPSIS");
-  print_line("./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>");
-  print_line("");
-
-  print_title("OPTIONS");
-  print_line(italic("Required") + ":");
-
-  print_align(bold("-r"), "FILE", delim_descr1,
-              "reference file (Seq/FASTA/FASTQ)");
-
-  print_align(bold("-t"), "FILE", delim_descr1,
-              "target file    (Seq/FASTA/FASTQ)");
-  print_line("");
-
-  print_line(italic("Optional") + ":");
-  print_align(bold("-l"), "INT", delim_descr1,
-              "level of compression: [" + std::to_string(MIN_LVL) + ", " +
-                  std::to_string(MAX_LVL) + "]. Default",
-              delim_def, std::to_string(LVL));
-
-  print_align(bold("-m"), "INT", delim_descr1,
-              "min segment size: [" + std::to_string(MIN_SSIZE) + ", " +
-                  std::to_string(MAX_SSIZE) + "]",
-              delim_def, std::to_string(SSIZE));
-
-  print_align(bold("-e"), "FLOAT", delim_descr1,
-              "entropy of 'N's: [" + string_format("%.1f", MIN_ENTR_N) + ", " +
-                  string_format("%.1f", MAX_ENTR_N) + "]",
-              delim_def, string_format("%.1f", ENTR_N));
-
-  print_align(bold("-n"), "INT", delim_descr1,
-              "number of threads: [" + std::to_string(MIN_THRD) + ", " +
-                  std::to_string(MAX_THRD) + "]",
-              delim_def, std::to_string(THRD));
-
-  print_align(bold("-f"), "INT", delim_descr1,
-              "filter size: [" + std::to_string(MIN_WS) + ", " +
-                  std::to_string(MAX_WS) + "]",
-              delim_def, std::to_string(WS));
-
-  print_align(bold("-ft"), "INT/STRING", delim_descr1,
-              "filter type (windowing function):", delim_def, "hann");
-  print_align("", delim_descr2, "{0/rectangular, 1/hamming, 2/hann,");
-  print_align("", delim_descr2, "3/blackman, 4/triangular, 5/welch,");
-  print_align("", delim_descr2, "6/sine, 7/nuttall}");
-
-  print_align(bold("-fs"), "[S][M][L]", delim_descr1, "filter scale");
-  print_align("", delim_descr2, "{S/small, M/medium, L/large}");
-
-  print_align(bold("-d"), "INT", delim_descr1, "sampling steps", delim_def,
-              std::to_string(SAMPLE_STEP));
-
-  print_align(bold("-th"), "FLOAT", delim_descr1,
-              "threshold: [" + string_format("%.1f", MIN_THRSH) + ", " +
-                  string_format("%.1f", MAX_THRSH) + "]",
-              delim_def, string_format("%.1f", THRSH));
-
-  print_align(
-      bold("-rb"), "INT", delim_descr1,
-      "ref beginning guard: [" +
-          std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::min()) +
-          ", " +
-          std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::max()) +
-          "]",
-      delim_def, std::to_string(ref_guard->beg));
-
-  print_align(
-      bold("-re"), "INT", delim_descr1,
-      "ref ending guard: [" +
-          std::to_string(std::numeric_limits<decltype(ref_guard->end)>::min()) +
-          ", " +
-          std::to_string(std::numeric_limits<decltype(ref_guard->end)>::max()) +
-          "]",
-      delim_def, std::to_string(ref_guard->end));
-
-  print_align(
-      bold("-tb"), "INT", delim_descr1,
-      "tar beginning guard: [" +
-          std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::min()) +
-          ", " +
-          std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::max()) +
-          "]",
-      delim_def, std::to_string(tar_guard->beg));
-
-  print_align(
-      bold("-te"), "INT", delim_descr1,
-      "tar ending guard: [" +
-          std::to_string(std::numeric_limits<decltype(tar_guard->end)>::min()) +
-          ", " +
-          std::to_string(std::numeric_limits<decltype(tar_guard->end)>::max()) +
-          "]",
-      delim_def, std::to_string(tar_guard->end));
-
-  print_align(bold("-ar"), delim_descr1, "consider asymmetric regions",
-              delim_def, "no");
-
-  // print_align(bold("-dp"), delim_descr1, "deep compression", delim_def, "no");
-
-  print_align(bold("-nr"), delim_descr1, "do NOT compute self complexity",
-              delim_def, "no");
-
-  print_align(bold("-sb"), delim_descr1, "save sequence (input: FASTA/FASTQ)",
-              delim_def, "no");
-
-  print_align(bold("-sp"), delim_descr1, "save profile (*.prf)", delim_def,
-              "no");
-
-  print_align(bold("-sf"), delim_descr1, "save filtered file (*.fil)",
-              delim_def, "no");
-
-  print_align(bold("-ss"), delim_descr1, "save segmented files (*.s[i])",
-              delim_def, "no");
-
-  print_align(bold("-sa"), delim_descr1, "save profile, filetered and",
-              delim_def, "no");
-  print_align("", delim_descr2, "segmented files");
-
-  print_line(bold("-rm") + " " + italic("k") + ",[" + italic("w") + "," +
-             italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +
-             italic("t") + ",ir," + italic("a") + "," + italic("g") + ":...");
-
-  print_line(bold("-tm") + " " + italic("k") + ",[" + italic("w") + "," +
-             italic("d") + ",]ir," + italic("a") + "," + italic("g") + "/" +
-             italic("t") + ",ir," + italic("a") + "," + italic("g") + ":...");
-
-  print_align("", delim_descr1, "parameters of models");
-
-  print_align_model("INT", delim_descr2, italic("k") + ":", "context size");
-
-  print_align_model("INT", delim_descr2, italic("w") + ":",
-                    "width of sketch in log2 form,");
-  print_align_model("", delim_descr2, "", "e.g., set 10 for w=2^10=1024");
-
-  print_align_model("INT", delim_descr2, italic("d") + ":", "depth of sketch");
-
-  print_align_model("INT", delim_descr2, "ir:", "inverted repeat: {0, 1, 2}");
-  print_align_model("", delim_descr2, "", "0: regular (not inverted)");
-  print_align_model("", delim_descr2, "", "1: inverted, solely");
-  print_align_model("", delim_descr2, "", "2: both regular and inverted");
-
-  print_align_model("FLOAT", delim_descr2, italic("a") + ":", "estimator");
-
-  print_align_model("FLOAT", delim_descr2, italic("g") + ":",
-                    "forgetting factor: [0.0, 1.0)");
-
-  print_align_model("INT", delim_descr2, italic("t") + ":",
-                    "threshold (no. substitutions)");
-
-  print_align(bold("-ll"), delim_descr1, "list of compression levels");
-
-  print_align(bold("-h"), delim_descr1, "usage guide");
-
-  print_align(bold("-v"), delim_descr1, "more information");
-
-  print_align(bold("--version"), delim_descr1, "show version");
-  print_line("");
-
-  print_title("AUTHOR");
-  print_align("Morteza Hosseini", delim_descr2, "seyedmorteza@ua.pt");
-  print_line("");
-
-  print_title("SAMPLE");
-  print_line("./smashpp -r ref -t tar -l 0 -m 1000");
-  print_line("");
+  std::cerr
+      << bold("SYNOPSIS") << '\n'
+      << tab1 << "./smashpp [OPTIONS]  -r <REF_FILE>  -t <TAR_FILE>\n"
+      << '\n'
+      << bold("SAMPLE") << '\n'
+      << tab1 << "./smashpp -r ref -t tar -l 0 -m 1000\n"
+      << tab1 << "./smashpp \\ \n"
+      << tab1 << "    --reference ref \\ \n"
+      << tab1 << "    --target tar \\ \n"
+      << tab1 << "    --format json \\ \n"
+      << tab1 << "    --verbose \n"
+      << '\n'
+      << bold("OPTIONS") << '\n'
+      << "    " << italic("Required") << ":\n"
+      << tab1 << bold("-r") << ", " << bold("--reference") << " <FILE>       "
+      << "reference file (Seq/FASTA/FASTQ)\n"
+      << tab1 << bold("-t") << ", " << bold("--target") << " <FILE>          "
+      << "target file    (Seq/FASTA/FASTQ)\n"
+      << '\n'
+      << "    " << italic("Optional") << ":\n"
+      << tab1 << bold("-l") << ", " << bold("--level") << " <INT>\n"
+      << tab2 << "level of compression: " << std::to_string(MIN_LVL) << " to "
+      << std::to_string(MAX_LVL) << ". Default: " << std::to_string(LVL) << '\n'
+      << '\n'
+      << tab1 << bold("-m") << ", " << bold("--min-segment-size") << " <INT>\n"
+      << tab2 << "minimum segment size: " << std::to_string(MIN_SSIZE) << " to "
+      << std::to_string(MAX_SSIZE) << ". Default: " << std::to_string(SSIZE)
+      << '\n'
+      << '\n'
+      << tab1 << bold("-fmt") << ", " << bold("--format") << " <STRING>\n"
+      << tab2
+      << "format of the output (position) file: {pos, json}.\n"
+      << tab2 << "Default: pos\n"
+      << '\n'
+      << tab1 << bold("-e") << ", " << bold("--entropy-N") << " <FLOAT>\n"
+      << tab2 << "entropy of 'N's: " << string_format("%.1f", MIN_ENTR_N)
+      << " to " << string_format("%.1f", MAX_ENTR_N)
+      << ". Default: " << string_format("%.1f", ENTR_N) << '\n'
+      << '\n'
+      << tab1 << bold("-n") << ", " << bold("--num-threads") << " <INT>\n"
+      << tab2 << "number of threads: " << std::to_string(MIN_THRD) << " to "
+      << std::to_string(MAX_THRD) << ". Default: " << std::to_string(THRD)
+      << '\n'
+      << '\n'
+      << tab1 << bold("-f") << ", " << bold("--filter-size") << " <INT>\n"
+      << tab2 << "filter size: " << std::to_string(MIN_WS) << " to "
+      << std::to_string(MAX_WS) << ". Default: " << std::to_string(WS) << '\n'
+      << '\n'
+      << tab1 << bold("-ft") << ", " << bold("--filter-type")
+      << " <INT/STRING>\n"
+      << tab2 << "filter type (windowing function): {0/rectangular,\n"
+      << tab2 << "1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch,\n"
+      << tab2 << "6/sine, 7/nuttall}. Default: hann\n"
+      << '\n'
+      << tab1 << bold("-fs") << ", " << bold("--filter-scale") << " <STRING>\n"
+      << tab2 << "filter scale: {S/small, M/medium, L/large}\n"
+      << '\n'
+      << tab1 << bold("-d") << ", " << bold("--sampling-step") << " <INT>\n"
+      << tab2 << "sampling step. Default: " << std::to_string(SAMPLE_STEP)
+      << '\n'
+      << '\n'
+      << tab1 << bold("-th") << ", " << bold("--threshold") << " <FLOAT>\n"
+      << tab2 << "threshold: " << string_format("%.1f", MIN_THRSH) << " to "
+      << string_format("%.1f", MAX_THRSH)
+      << ". Default: " << string_format("%.1f", THRSH) << '\n'
+      << '\n'
+      << tab1 << bold("-rb") << ", " << bold("--reference-begin-guard")
+      << " <INT>\n"
+      << tab2 << "reference begin guard: "
+      << std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::min())
+      << " to " + std::to_string(
+                      std::numeric_limits<decltype(ref_guard->beg)>::max())
+      << ". Default: " << std::to_string(ref_guard->beg) << '\n'
+      << '\n'
+      << tab1 << bold("-re") << ", " << bold("--reference-end-guard")
+      << " <INT>\n"
+      << tab2 << "reference ending guard: "
+      << std::to_string(std::numeric_limits<decltype(ref_guard->end)>::min())
+      << " to "
+      << std::to_string(std::numeric_limits<decltype(ref_guard->end)>::max())
+      << ". Default: " << std::to_string(ref_guard->end) << '\n'
+      << '\n'
+      << tab1 << bold("-tb") << ", " << bold("--target-begin-guard")
+      << " <INT>\n"
+      << tab2 << "target begin guard: "
+      << std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::min())
+      << " to " + std::to_string(
+                      std::numeric_limits<decltype(tar_guard->beg)>::max())
+      << ". Default: " << std::to_string(tar_guard->beg) << '\n'
+      << '\n'
+      << tab1 << bold("-te") << ", " << bold("--target-end-guard") << " <INT>\n"
+      << tab2 << "target ending guard: "
+      << std::to_string(std::numeric_limits<decltype(tar_guard->end)>::min())
+      << " to "
+      << std::to_string(std::numeric_limits<decltype(tar_guard->end)>::max())
+      << ". Default: " << std::to_string(tar_guard->end) << '\n'
+      << '\n'
+      << tab1 << bold("-ar") << ", " << bold("--asymmetric-regions") << '\n'
+      << tab2 << "consider asymmetric regions. Default: not used\n"
+      << '\n'
+      // << "  " << bold("-dp") '\n'
+      // << "        deep compression. Default: no\n"
+      // << '\n'
+      << tab1 << bold("-nr") << ", " << bold("--no-self-complexity") << '\n'
+      << tab2 << "do not compute self complexity. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-sb") << ", " << bold("--save-sequence") << '\n'
+      << tab2 << "save sequence (input: FASTA/FASTQ). Default: not used\n"
+      << '\n'
+      << tab1 << bold("-sp") << ", " << bold("--save-profile") << '\n'
+      << tab2 << "save profile (*.prf). Default: not used\n"
+      << '\n'
+      << tab1 << bold("-sf") << ", " << bold("--save-filtered") << '\n'
+      << tab2 << "save filtered file (*.fil). Default: not used\n"
+      << '\n'
+      << tab1 << bold("-ss") << ", " << bold("--save-segmented") << '\n'
+      << tab2 << "save segmented files (*.s[i]). Default: not used\n"
+      << '\n'
+      << tab1 << bold("-sa") << ", "
+      << bold("--save-profile-filtered-segmented") << '\n'
+      << tab2 << "save profile, filetered and segmented files.\n"
+      << tab2 << "Default: not used\n"
+      << '\n'
+      << tab1 << bold("-rm") << ", " << bold("--reference-model") << "  "
+      << italic("k") << ",[" << italic("w") << "," << italic("d") << ",]ir,"
+      << italic("a") << "," << italic("g") << "/" << italic("t") << ",ir,"
+      << italic("a") << "," << italic("g") << ":...\n"
+      << tab1 << bold("-tm") << ", " << bold("--target-model") << "     "
+      << italic("k") << ",[" << italic("w") << "," << italic("d") << ",]ir,"
+      << italic("a") << "," << italic("g") << "/" << italic("t") << ",ir,"
+      << italic("a") << "," << italic("g") << ":...\n"
+      << tab2 << "parameters of models\n"
+      << tab3 << "<INT>  " << italic("k") << ":  context size\n"
+      << tab3 << "<INT>  " << italic("w")
+      << ":  width of sketch in log2 form,\n"
+      << tab3 << "           e.g., set 10 for w=2^10=1024\n"
+      << tab3 << "<INT>  " << italic("d") << ":  depth of sketch\n"
+      << tab3 << "<INT>  " << italic("ir") << ": inverted repeat: {0, 1, 2}\n"
+      << tab3 << "           0: regular (not inverted)\n"
+      << tab3 << "           1: inverted, solely\n"
+      << tab3 << "           2: both regular and inverted\n"
+      << tab2 << "  <FLOAT>  " << italic("a") << ":  estimator\n"
+      << tab2 << "  <FLOAT>  " << italic("g")
+      << ":  forgetting factor: 0.0 to 1.0\n"
+      << tab3 << "<INT>  " << italic("t")
+      << ":  threshold (number of substitutions)\n"
+      << '\n'
+      << tab1 << bold("-ll") << ", " << bold("--list-levels") << '\n'
+      << tab2 << "list of compression levels\n"
+      << '\n'
+      << tab1 << bold("-h") << ", " << bold("--help") << '\n'
+      << tab2 << "usage guide\n"
+      << '\n'
+      << tab1 << bold("-v") << ", " << bold("--verbose") << '\n'
+      << tab2 << "more information\n"
+      << '\n'
+      << tab1 << bold("-V") << ", " << bold("--version") << '\n'
+      << tab2 << "show version\n"
+      << '\n'
+      << bold("AUTHOR") << '\n'
+      << tab1 << "Morteza Hosseini      mhosayny@gmail.com\n";
 }
 
 FilterType Param::win_type(std::string t) const {
@@ -575,88 +594,95 @@ void VizParam::parse(int argc, char**& argv) {
   };
 
   for (auto i = std::begin(vArgs); i != std::end(vArgs); ++i) {
-    if (*i == "-h") {
+    if (*i == "-h" || *i == "--help") {
       help();
       throw EXIT_SUCCESS;
-    } else if (*i == "-v") {
+    } else if (*i == "-v" || *i == "--verbose") {
       verbose = true;
-    } else if (*i == "--version") {
+    } else if (*i == "-V" || *i == "--version") {
       std::cerr << "Smash++ " << VERSION << "\n";
       throw EXIT_SUCCESS;
-    } else if (option_inserted(i, "-o")) {
+    } else if (option_inserted(i, "-o") || option_inserted(i, "--output")) {
       image = *++i;
-    } else if (option_inserted(i, "-rn")) {
+    } else if (option_inserted(i, "-rn") ||
+               option_inserted(i, "--reference-name")) {
       refName = *++i;
-    } else if (option_inserted(i, "-tn")) {
+    } else if (option_inserted(i, "-tn") ||
+               option_inserted(i, "--target-name")) {
       tarName = *++i;
-    } else if (option_inserted(i, "-p")) {
+    } else if (option_inserted(i, "-p") || option_inserted(i, "--opacity")) {
       opacity = std::stof(*++i);
       auto range = std::make_unique<ValRange<float>>(
           MIN_OPAC, MAX_OPAC, OPAC, "Opacity", Interval::closed, "default",
           Problem::warning);
       range->assert(opacity);
-    } else if (option_inserted(i, "-l")) {
+    } else if (option_inserted(i, "-l") || option_inserted(i, "--link")) {
       link = static_cast<uint8_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_LINK, MAX_LINK, LINK, "Link", Interval::closed, "default",
           Problem::warning);
       range->assert(link);
-    } else if (option_inserted(i, "-m")) {
+    } else if (option_inserted(i, "-m") ||
+               option_inserted(i, "--min-block-size")) {
       min = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_MINP, MAX_MINP, MINP, "Min", Interval::closed, "default",
           Problem::warning);
       range->assert(min);
-    } else if (option_inserted(i, "-tc")) {
+    } else if (option_inserted(i, "-tc") ||
+               option_inserted(i, "--total-colors")) {
       man_tot_color = true;
       auto val = std::stoi(*++i);
       keep_in_range(1, val, 255);
       tot_color = static_cast<uint8_t>(val);
-    } else if (option_inserted(i, "-rt")) {
+    } else if (option_inserted(i, "-rt") ||
+               option_inserted(i, "--reference-tick")) {
       refTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for reference", Interval::closed,
           "default", Problem::warning);
       range->assert(refTick);
-    } else if (option_inserted(i, "-tt")) {
+    } else if (option_inserted(i, "-tt") ||
+               option_inserted(i, "--target-tick")) {
       tarTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for target", Interval::closed,
           "default", Problem::warning);
       range->assert(tarTick);
-    } else if (option_inserted(i, "-th")) {
+    } else if (option_inserted(i, "-th") ||
+               option_inserted(i, "--tick-human-readable")) {
       tickHumanRead = (std::stoi(*++i) != 0);
-    } else if (option_inserted(i, "-c")) {
+    } else if (option_inserted(i, "-c") || option_inserted(i, "--color")) {
       colorMode = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_COLOR, MAX_COLOR, COLOR, "Color", Interval::closed, "default",
           Problem::warning);
       range->assert(colorMode);
-    } else if (option_inserted(i, "-w")) {
+    } else if (option_inserted(i, "-w") || option_inserted(i, "--width")) {
       width = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_WDTH, MAX_WDTH, WDTH, "Width", Interval::closed, "default",
           Problem::warning);
       range->assert(width);
-    } else if (option_inserted(i, "-s")) {
+    } else if (option_inserted(i, "-s") || option_inserted(i, "--space")) {
       space = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SPC, MAX_SPC, SPC, "Space", Interval::closed, "default",
           Problem::warning);
       range->assert(space);
-    } else if (*i == "-nrr") {
+    } else if (*i == "-nrr" || *i == "--no-relative-redundancy") {
       showRelRedun = false;
-    } else if (*i == "-nr") {
+    } else if (*i == "-nr" || *i == "--no-redundancy") {
       showRedun = false;
-    } else if (*i == "-ni") {
+    } else if (*i == "-ni" || *i == "--no-inverted") {
       inverse = false;
-    } else if (*i == "-ng") {
+    } else if (*i == "-ng" || *i == "--no-regular") {
       regular = false;
-    } else if (*i == "-n") {
+    } else if (*i == "-n" || *i == "--show-N") {
       showN = true;
-    } else if (*i == "-vv") {
+    } else if (*i == "-vv" || *i == "--vertical-view") {
       vertical = true;
-    } else if (*i == "-stat") {
+    } else if (*i == "-stat" || *i == "--statistics") {
       stat = true;
     }
   }
@@ -664,111 +690,117 @@ void VizParam::parse(int argc, char**& argv) {
 }
 
 void VizParam::help() const {
-  const std::string delim_descr1 = "=";
-  const std::string delim_descr2 = " ";
-  const std::string delim_def = "->";
+  const std::string tab1 = "      ";
+  const std::string tab2 = tab1 + "      ";
+  const std::string tab3 = tab2 + "    ";
 
-  print_title("SYNOPSIS");
-  print_line("./smashpp -viz [OPTIONS]  -o <SVG-FILE>  <POS-FILE>");
-  print_line("");
-
-  print_title("OPTIONS");
-  print_line(italic("Required") + ":");
-  print_align("<POS-FILE>", delim_descr1, "position file, generated by");
-  print_align("", delim_descr2, "Smash++ tool (*.pos)", "", " ");
-  print_line("");
-
-  print_line(italic("Optional") + ":");
-  print_align(bold("-o"), "SVG-FILE", delim_descr1,
-              "output image name (*.svg).    Default", delim_def, "map.svg");
-
-  print_align(bold("-rn"), "STRING", delim_descr1,
-              "reference name shown on output. If it");
-  print_align("", delim_descr2, "has spaces, use double quotes, e.g.");
-  print_align("", delim_descr2, "\"Seq label\". Default: name in header");
-  print_align("", delim_descr2, "of position file");
-
-  print_align(bold("-tn"), "STRING", delim_descr1,
-              "target name shown on output");
-
-  print_align(bold("-l"), "INT", delim_descr1,
-              "type of the link between maps: [" + std::to_string(MIN_LINK) +
-                  ", " + std::to_string(MAX_LINK) + "]",
-              delim_def, std::to_string(link));
-
-  print_align(bold("-c"), "INT", delim_descr1,
-              "color mode: [" + std::to_string(MIN_COLOR) + ", " +
-                  std::to_string(MAX_COLOR) + "]",
-              delim_def, std::to_string(colorMode));
-
-  print_align(bold("-p"), "FLOAT", delim_descr1,
-              "opacity: [" + string_format("%.1f", MIN_OPAC) + ", " +
-                  string_format("%.1f", MAX_OPAC) + "]",
-              delim_def, string_format("%.1f", opacity));
-
-  print_align(bold("-w"), "INT", delim_descr1,
-              "width of the sequence: [" + std::to_string(MIN_WDTH) + ", " +
-                  std::to_string(MAX_WDTH) + "]",
-              delim_def, std::to_string(width));
-
-  print_align(bold("-s"), "INT", delim_descr1,
-              "space between sequences: [" + std::to_string(MIN_SPC) + ", " +
-                  std::to_string(MAX_SPC) + "]",
-              delim_def, std::to_string(space));
-
-  print_align(bold("-tc"), "INT", delim_descr1,
-              "total number of colors: [" + std::to_string(1) + ", " +
-                  std::to_string(255) + "]");
-
-  print_align(bold("-rt"), "INT", delim_descr1,
-              "reference tick: [" + std::to_string(MIN_TICK) + ", " +
-                  std::to_string(MAX_TICK) + "]");
-
-  print_align(bold("-tt"), "INT", delim_descr1,
-              "target tick: [" + std::to_string(MIN_TICK) + ", " +
-                  std::to_string(MAX_TICK) + "]");
-
-  print_align(bold("-th"), "[0][1]", delim_descr1,
-              "tick human readable: 0=false, 1=true", delim_def,
-              std::to_string(tickHumanRead));
-
-  print_align(bold("-m"), "INT", delim_descr1,
-              "minimum block size: [" + std::to_string(MIN_MINP) + ", " +
-                  std::to_string(MAX_MINP) + "]",
-              delim_def, std::to_string(min));
-
-  print_align(bold("-vv"), delim_descr1, "vertical view", delim_def, "no");
-
-  print_align(bold("-nrr"), delim_descr1, "do NOT show relative redundancy",
-              delim_def, "no");
-  print_align("", delim_descr2, "(relative complexity)");
-
-  print_align(bold("-nr"), delim_descr1, "do NOT show redunadancy",
-              delim_def, "no");
-
-  print_align(bold("-ni"), delim_descr1, "do NOT show inverse maps", delim_def,
-              "no");
-
-  print_align(bold("-ng"), delim_descr1, "do NOT show regular maps", delim_def,
-              "no");
-
-  print_align(bold("-n"), delim_descr1, "show 'N' bases", delim_def, "no");
-
-  print_align(bold("-stat"), delim_descr1, "save stats (*.csv)", delim_def,
-              "stat.csv");
-
-  print_align(bold("-h"), delim_descr1, "usage guide");
-
-  print_align(bold("-v"), delim_descr1, "more information");
-
-  print_align(bold("--version"), delim_descr1, "show version");
-  print_line("");
-
-  print_title("AUTHOR");
-  print_align("Morteza Hosseini", delim_descr2, "seyedmorteza@ua.pt");
-  print_line("");
-
-  print_title("SAMPLE");
-  print_line("./smashpp -viz -vv -o simil.svg ref.tar.pos");
-  print_line("");
+  std::cerr
+      << bold("SYNOPSIS") << '\n'
+      << tab1 << "./smashpp viz|-viz [OPTIONS]  -o <SVG_FILE>  <POS_FILE>\n"
+      << '\n'
+      << bold("SAMPLE") << '\n'
+      << tab1 << "./smashpp -viz -o simil.svg ref.tar.pos\n"
+      << tab1 << "./smashpp viz \\ \n"
+      << tab1 << "    --output similarity.svg \\ \n"
+      << tab1 << "    --vertical-view \\ \n"
+      << tab1 << "    ref.tar.json\n"
+      << '\n'
+      << bold("OPTIONS") << '\n'
+      << "    " << italic("Required") << ":\n"
+      << tab1
+      << "<POS_FILE>    position file generated by Smash++ (*.pos/*.json)\n"
+      << '\n'
+      << "    " << italic("Optional") << ":\n"
+      << tab1 << bold("-o") << ", " << bold("--output") << " <SVG_FILE>\n"
+      << tab2 << "output image name (*.svg). Default: map.svg\n"
+      << '\n'
+      << tab1 << bold("-rn") << ", " << bold("--reference-name")
+      << " <STRING>\n"
+      << tab2 << "reference name shown on output. If it has spaces, use\n"
+      << tab2 << "double quotes, e.g. \"Seq label\". Default: the name in\n"
+      << tab2 << "the header of position file\n"
+      << '\n'
+      << tab1 << bold("-tn") << ", " << bold("--target-name") << " <STRING>\n"
+      << tab2 << "target name shown on output\n"
+      << '\n'
+      << tab1 << bold("-l") << ", " << bold("--link") << " <INT>\n"
+      << tab2 << "type of the link between maps: " << std::to_string(MIN_LINK)
+      << " to " << std::to_string(MAX_LINK)
+      << ". Default: " << std::to_string(link) << '\n'
+      << '\n'
+      << tab1 << bold("-c") << ", " << bold("--color") << " <INT>\n"
+      << tab2 << "color mode: {" << std::to_string(MIN_COLOR) << ", "
+      << std::to_string(MAX_COLOR)
+      << "}. Default: " << std::to_string(colorMode) << '\n'
+      << '\n'
+      << tab1 << bold("-p") << ", " << bold("--opacity") << " <FLOAT>\n"
+      << tab2 << "opacity: " << string_format("%.1f", MIN_OPAC) << " to "
+      << string_format("%.1f", MAX_OPAC)
+      << ". Default: " << string_format("%.1f", opacity) << '\n'
+      << '\n'
+      << tab1 << bold("-w") << ", " << bold("--width") << " <INT>\n"
+      << tab2 << "width of the sequence: " << std::to_string(MIN_WDTH) << " to "
+      << std::to_string(MAX_WDTH) << ". Default: " << std::to_string(width)
+      << '\n'
+      << '\n'
+      << tab1 << bold("-s") << ", " << bold("--space") << " <INT>\n"
+      << tab2 << "space between sequences: " << std::to_string(MIN_SPC)
+      << " to " << std::to_string(MAX_SPC)
+      << ". Default: " << std::to_string(space) << '\n'
+      << '\n'
+      << tab1 << bold("-tc") << ", " << bold("--total-colors") << " <INT>\n"
+      << tab2 << "total number of colors: 1 to 255\n"
+      << '\n'
+      << tab1 << bold("-rt") << ", " << bold("--reference-tick") << " <INT>\n"
+      << tab2 << "reference tick: " << std::to_string(MIN_TICK) << " to "
+      << std::to_string(MAX_TICK) << '\n'
+      << '\n'
+      << tab1 << bold("-tt") << ", " << bold("--target-tick") << " <INT>\n"
+      << tab2 << "target tick: " << std::to_string(MIN_TICK) << " to "
+      << std::to_string(MAX_TICK) << '\n'
+      << '\n'
+      << tab1 << bold("-th") << ", " << bold("--tick-human-readable")
+      << " <INT>\n"
+      << tab2 << "tick human readable: {0: false, 1: true}. Default: "
+      << std::to_string(tickHumanRead) << '\n'
+      << '\n'
+      << tab1 << bold("-m") << ", " << bold("--min-block-size") << " <INT>\n"
+      << tab2 << "minimum block size: " << std::to_string(MIN_MINP) << " to "
+      << std::to_string(MAX_MINP) << ". Default: " << std::to_string(min)
+      << '\n'
+      << '\n'
+      << tab1 << bold("-vv") << ", " << bold("--vertical-view") << '\n'
+      << tab2 << "vertical view. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-nrr") << ", " << bold("--no-relative-redundancy")
+      << '\n'
+      << tab2 << "do not show relative redundancy (relative complexity).\n"
+      << tab2 << "Default: not used\n"
+      << '\n'
+      << tab1 << bold("-nr") << ", " << bold("--no-redundancy") << '\n'
+      << tab2 << "do not show redundancy. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-ni") << ", " << bold("--no-inverted") << '\n'
+      << tab2 << "do not show inverse maps. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-ng") << ", " << bold("--no-regular") << '\n'
+      << tab2 << "do not show regular maps. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-n") << ", " << bold("--show-N") << '\n'
+      << tab2 << "show 'N' bases. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-stat") << ", " << bold("--statistics") << '\n'
+      << tab2 << "save statistics (*.csv). Default: stat.csv\n"
+      << '\n'
+      << tab1 << bold("-h") << ", " << bold("--help") << '\n'
+      << tab2 << "usage guide\n"
+      << '\n'
+      << tab1 << bold("-v") << ", " << bold("--verbose") << '\n'
+      << tab2 << "more information\n"
+      << '\n'
+      << tab1 << bold("-V") << ", " << bold("--version") << '\n'
+      << tab2 << "show version\n"
+      << '\n'
+      << bold("AUTHOR") << '\n'
+      << tab1 << "Morteza Hosseini      mhosayny@gmail.com\n";
 }
