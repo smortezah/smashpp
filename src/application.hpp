@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_APPLICATION_HPP
 #define SMASHPP_APPLICATION_HPP
@@ -69,7 +69,8 @@ class info {
 };
 
 void application::exe(int argc, char* argv[]) {
-  if (has(argv, argv + argc, std::string("-viz"))) {
+  if (has(argv, argv + argc, std::string("-viz")) ||
+      has(argv, argv + argc, std::string("viz"))) {
     auto vizpar = std::make_unique<VizParam>();
     vizpar->parse(argc, argv);
     auto paint = std::make_unique<VizPaint>();
@@ -107,9 +108,7 @@ void application::run(std::unique_ptr<Param>& par) {
           gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
       std::string tar_round2 = par->tar = par->ref;
 
-// #pragma omp parallel for ordered schedule(static, 1)
       for (uint64_t i = 0; i < num_seg_round1; ++i) {
-// #pragma omp ordered
         if (!par->verbose)
           std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
 
@@ -117,13 +116,11 @@ void application::run(std::unique_ptr<Param>& par) {
 
         auto num_seg_round2 =
             run_round(par, 2, run_num, pos_out, current_pos_row);
-// #pragma omp ordered
         if (par->verbose) std::cerr << '\n';
 
         if (num_seg_round2 != 0) {
           // Round 3
           if (par->deep) {
-// #pragma omp ordered
             if (par->verbose)
               std::cerr << "    " << italic("Deep compression") << '\n';
 
@@ -131,12 +128,10 @@ void application::run(std::unique_ptr<Param>& par) {
                 gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
             par->tar = ref_round2;
 
-#pragma omp parallel for ordered schedule(static, 1)
             for (uint64_t j = 0; j < num_seg_round2; ++j) {
               par->ref = name_seg_round2 + std::to_string(j);
               auto num_seg_round3 =
                   run_round(par, 3, run_num, pos_out, current_pos_row);
-#pragma omp ordered
               if (par->verbose) std::cerr << "\n";
               remove_temp_seg(par, num_seg_round3);
             }
@@ -155,10 +150,10 @@ void application::run(std::unique_ptr<Param>& par) {
     par->ref = ref_round1;
     par->tar = tar_round1;
     remove_temp_seg(par, num_seg_round1);
-    // remove_temp_seq(par);
   }  // Round 1
 
   remove_temp_seq(par);
+
   if (!pos_out.empty()) {
     auto pos_file = std::make_unique<PositionFile>();
     pos_file->param_list = par->param_list;
@@ -166,9 +161,7 @@ void application::run(std::unique_ptr<Param>& par) {
     pos_file->info->ref_size = file_size(par->ref);
     pos_file->info->tar = file_name(par->tar);
     pos_file->info->tar_size = file_size(par->tar);
-    pos_file->name =
-        gen_name(pos_file->info->ref, pos_file->info->tar, Format::position);
-    pos_file->write_pos_file(pos_out, par->asym_region);
+    pos_file->dump(pos_out, par->asym_region, par->format);
   }
 }
 
@@ -207,16 +200,9 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round,
 
   // Filter and segment
   auto filter = std::make_unique<Filter>(par);
-  // if (!par->manThresh)
-  //   par->thresh = static_cast<float>(round_to_prec(models->aveEnt, 0.5));
-  //   // par->thresh = static_cast<float>(models->aveEnt);
   filter->smooth_seg(pos_out, par, round, current_pos_row);
 
   if (filter->nSegs == 0) {
-    // if (round == 2) {
-    //   pos_out.push_back(
-    //       PosRow(0, 0, 0.0, 0.0, run_num, par->ref, par->tar, 0, round));
-    // }
     if (round == 1) std::cerr << '\n';
     return 0;  // continue;
   }
@@ -234,15 +220,11 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round,
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.reserve(filter->nSegs);
-#pragma omp parallel for ordered schedule(static, 1)
     for (uint64_t i = 0; i < filter->nSegs; ++i) {
-#pragma omp ordered
-      {
-        if (!par->verbose && round == 1)
-          std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
+      if (!par->verbose && round == 1)
+        std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
 
-        par->seq = seg + std::to_string(i);
-      }
+      par->seq = seg + std::to_string(i);
       models->self_compress(par, i, round);
     }
 
@@ -310,22 +292,12 @@ void application::remove_temp_seq(std::unique_ptr<Param>& par) {
     if (!par->saveSeq) {
       remove(ref_seq.c_str());
     } 
-    // else {
-      //   const std::string seq_name = file_name_no_ext(par->ref) + ".seq";
-      //   rename(par->ref.c_str(), seq_name.c_str());
-    // }
-    // rename((par->ref + LBL_BAK).c_str(), par->ref.c_str());
   }
 
   if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
     if (!par->saveSeq) {
       remove(tar_seq.c_str());
     } 
-    // else {
-    //   const std::string seq_name = file_name_no_ext(par->tar) + ".seq";
-    //   rename(par->tar.c_str(), seq_name.c_str());
-    // }
-    // rename((par->tar + LBL_BAK).c_str(), par->tar.c_str());
   }
 }
 
@@ -492,10 +464,8 @@ void info::rule(uint8_t n, std::string&& s) const {
 }
 
 void info::toprule() const {}
-// void toprule () { rule(tblWidth, "~"); }
 
 void info::midrule() const { rule(tblWidth, "="); }
-// void midrule () { rule(tblWidth, "~"); }
 
 void info::botrule() const { rule(tblWidth, " "); }
 
@@ -589,22 +559,16 @@ void info::info_filter(std::unique_ptr<Param>& par, char c) const {
 
 void info::info_file(std::unique_ptr<Param>& par, char c) const {
   std::cerr << std::setw(2 * colWidth) << std::left;
-  // const auto lacale = "en_US.UTF8";
-  // std::setlocale(LC_ALL, "en_US.UTF-8");
   switch (c) {
     case '1':
-      // std::cerr.imbue(std::locale(lacale));
       std::cerr << file_size(par->ref);
       break;
-    // case 'r':  cerr<<par->ref;  break;
     case 'r':
       std::cerr << par->refName;
       break;
     case '2':
-      // std::cerr.imbue(std::locale(lacale));
       std::cerr << file_size(par->tar);
       break;
-    // case 't':  cerr<<par->tar;  break;
     case 't':
       std::cerr << par->tarName;
       break;
