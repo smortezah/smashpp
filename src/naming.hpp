@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_NAMING_HPP
 #define SMASHPP_NAMING_HPP
@@ -42,6 +42,8 @@ inline static std::string gen_name(std::string ref, std::string tar,
       return refName + "." + tarName + ".pos";
     case Format::midposition:
       return "mid." + refName + "." + tarName + ".pos";
+    case Format::json:
+      return refName + "." + tarName + ".json";
     case Format::segment:
       return refName + "." + tarName + "-s";
     default:

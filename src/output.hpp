@@ -1,9 +1,10 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_OUTPUT_HPP
 #define SMASHPP_OUTPUT_HPP
 
+#include <sstream>
 #include "naming.hpp"
 
 namespace smashpp {
@@ -19,8 +20,6 @@ struct OutRowAux {
 
 class PositionFile {
  public:
-  std::string name;
-  std::string watermark;
   std::string param_list;
   struct Info {
     std::string ref;
@@ -28,21 +27,18 @@ class PositionFile {
     std::string tar;
     uint64_t tar_size;
     Info() = default;
-    // Info() {};
   };
   std::unique_ptr<Info> info;
 
-  PositionFile()
-      : name("out.pos"),
-        watermark(POS_WATERMARK),
-        info(std::make_unique<Info>()) {}
-  void write_pos_file(const std::vector<PosRow>&, bool);
+  PositionFile() : info(std::make_unique<Info>()) {}
+  void dump(const std::vector<PosRow>&, bool, Format);
 
  private:
-  void make_write_pos_pair(const std::vector<PosRow>&,
-                           const std::vector<PosRow>&,
-                           const std::vector<PosRow>&, bool);
-  void write_pos_file_impl(const std::vector<OutRowAux>&, bool);
+  auto stream_pos(std::ostringstream&, const std::vector<PosRow>&, bool) const
+      -> std::ostringstream&;
+  auto pos_pairs(const std::vector<PosRow>&) const -> std::vector<OutRowAux>;
+  void stream_pos_impl(std::ostringstream&, const std::vector<OutRowAux>&,
+                       bool) const;
 };
 }  // namespace smashpp
 

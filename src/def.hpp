@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 //#define DEBUG 1
 
@@ -11,12 +11,10 @@
 #include <chrono>
 #include <iomanip>  // setw, setprecision
 #include <vector>
-// #include <stdint.h>
-// #define __STDC_FORMAT_MACROS
 
 namespace smashpp {
 // Version
-static const std::string VERSION{"22.07"};
+static const std::string VERSION{"22.08"};
 
 // Typedef
 using dur_t = std::chrono::duration<double>;
@@ -26,13 +24,7 @@ using prc_t = double;  // Precision type -- MUST be double
 static constexpr uint8_t CARDIN{4};  // CARDINALITY = Alphabet size
 static constexpr double DBLANK{-2.0};
 
-// #ifdef __unix__
-// // const auto lacale = "en_US.UTF8";
 const auto lacale = "en_US.UTF-8";
-// #elif _WIN32
-// const auto lacale = "en-US";
-// const auto lacale = "en_US";
-// #endif
 
 // Enum
 enum class Container {  // Data structure
@@ -51,7 +43,15 @@ enum class FilterType {  // Types of windowing function
   sine,
   nuttall
 };
-enum class Format { profile, filter, position, midposition, segment, self };
+enum class Format {
+  profile,
+  filter,
+  position,
+  midposition,
+  segment,
+  self,
+  json
+};
 enum class FileType { seq, fasta, fastq };
 enum class FilterScale { s, m, l };
 enum class Problem { warning, error };

@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_FILE_HPP
 #define SMASHPP_FILE_HPP
@@ -9,6 +9,15 @@
 #include <iterator>
 #include "exception.hpp"
 #include "par.hpp"
+
+#define JSON_ASSERT(x)                                        \
+  if (!(x)) {                                                 \
+    fprintf(stderr, "assertion error in %s\n", __FUNCTION__); \
+    std::abort();                                             \
+  }
+
+#include "nlohmann/json.hpp"
+using json = nlohmann::ordered_json;
 
 namespace smashpp {
 static constexpr float PI{3.14159265f};
@@ -194,6 +203,62 @@ inline static void to_seq(std::string inName, std::string outName,
 
   in_file.close();
   out_file.close();
+}
+
+inline static json parse_pos_metadata(const std::string& pos) {
+  json j;
+  std::istringstream iss(pos);
+  std::string line;
+
+  // Watermark
+  std::getline(iss, line);
+  j["watermark"] = line;
+
+  // Parameters
+  std::getline(iss, line);
+  line = line.substr(line.find("<") + 1);
+  line.pop_back();
+  j["parameters"] = line;
+
+  // Info
+  std::getline(iss, line);
+  std::string ref, refsize, tar, tarsize;
+  std::istringstream info_ss(line);
+  std::getline(info_ss, ref, ',');
+  std::getline(info_ss, refsize, ',');
+  std::getline(info_ss, tar, ',');
+  std::getline(info_ss, tarsize, ',');
+  ref = ref.substr(ref.find("<") + 1);
+  j["reference"] = ref.substr(ref.find("=") + 1);
+  j["reference_size"] = refsize.substr(refsize.find("=") + 1);
+  j["target"] = tar.substr(tar.find("=") + 1);
+  j["target_size"] = tarsize.substr(tarsize.find("=") + 1);
+
+  return j;
+}
+
+inline static std::string pos2json(const std::string& pos_content) {
+  json j = parse_pos_metadata(pos_content);
+  std::istringstream iss(pos_content);
+
+  for (std::string line; std::getline(iss, line);) {
+    if (line[0] == '#') continue;
+    std::istringstream line_ss(line);
+    std::string rbeg, rend, rrelrdn, rrdn, tbeg, tend, trelrdn, trdn, inv;
+    line_ss >> rbeg >> rend >> rrelrdn >> rrdn >> tbeg >> tend >> trelrdn >>
+        trdn >> inv;
+    j["positions"].push_back({{"reference_begin", rbeg},
+                              {"reference_end", rend},
+                              {"reference_relative_redundancy", rrelrdn},
+                              {"reference_redundancy", rrdn},
+                              {"target_begin", tbeg},
+                              {"target_end", tend},
+                              {"target_relative_redundancy", trelrdn},
+                              {"target_redundancy", trdn},
+                              {"inverted", inv}});
+  }
+
+  return j.dump(4);
 }
 }  // namespace smashpp
 

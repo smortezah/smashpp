@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_PAR_HPP
 #define SMASHPP_PAR_HPP
@@ -67,6 +67,7 @@ class Param {
   std::string ref, tar;
   std::string refName, tarName;
   std::string seq;
+  Format format;
   bool verbose;
   uint8_t level;
   uint32_t segSize;
@@ -106,7 +107,8 @@ class Param {
   std::unique_ptr<RefGuard> ref_guard;
 
   Param()  // Define Param::Param(){} in *.hpp => compile error
-      : verbose(false),
+      : format(Format::position),
+        verbose(false),
         level(LVL),
         segSize(SSIZE),
         entropyN(ENTR_N),
@@ -131,7 +133,6 @@ class Param {
         ID(0),
         noRedun(false),
         deep(true),
-        // deep(false),
         asym_region(false),
         tar_guard(std::make_unique<TarGuard>()),
         ref_guard(std::make_unique<RefGuard>()) {}
@@ -188,8 +189,6 @@ class VizParam {
         width(WDTH),
         space(SPC),
         tot_color(1),
-        // mult(MULT),
-        // start(BEGN),
         min(MINP),
         man_tot_color(false),
         refTick(0),
