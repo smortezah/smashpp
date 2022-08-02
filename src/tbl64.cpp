@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #include "tbl64.hpp"
 
@@ -34,7 +34,6 @@ auto Table64::query_counters(Table64::ctx_t l) const
 #ifdef DEBUG
 void Table64::dump(std::ofstream& ofs) const {
   ofs.write((const char*)&tbl[0], tbl.size());
-  //  ofs.close();
 }
 
 void Table64::load(std::ifstream& ifs) const {

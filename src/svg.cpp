@@ -1,10 +1,9 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #include "svg.hpp"
 #include <algorithm>
 #include <fstream>
-// #include "color.hpp"
 #include "color.cpp"
 #include "def.hpp"
 using namespace smashpp;
@@ -38,7 +37,7 @@ std::string SVG::end_empty_elem() const { return "/>\n"; }
 
 void SVG::print_header(std::ofstream& f) const {
   f << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-    << "<!-- Morteza Hosseini seyedmorteza@ua.pt -->\n"
+    << "<!-- Morteza Hosseini mhosayny@gmail.com -->\n"
     << begin_elem("svg") << attr("xmlns", "http://www.w3.org/2000/svg")
     << attr("xmlns:xlink", "http://www.w3.org/1999/xlink");
   if (width != 0.0f && height != 0.0f)
@@ -46,14 +45,11 @@ void SVG::print_header(std::ofstream& f) const {
               "0 0 " + std::to_string(width) + " " + std::to_string(height));
   else
     f << attr("viewBox", viewBox);
-  // << attr("width", width, true)
-  // << attr("height", height, true)
   f << mid_elem();
 }
 
 void SVG::print_tailer(std::ofstream& f) const {
   f << "</svg>";
-  // f << "</g>\n</svg>";
 }
 
 void Stop::plot(std::ofstream& f) const {
@@ -346,11 +342,9 @@ void Cylinder::plot(std::ofstream& f) const {
   ellipse->transform = transform;
   ellipse->cx = x + width / 2;
   ellipse->cy = y;
-  //// ellipse->plot(f);
 
   ellipse->transform = transform;
   ellipse->cy = y + height;
-  //// ellipse->plot(f);
 }
 
 void Cylinder::plot_ir(std::ofstream& f, std::string wave) {
@@ -373,9 +367,6 @@ void Cylinder::plot_ir(std::ofstream& f, std::string wave) {
                     -pattern->height + path->stroke_width) +
             path->l(pattern->width / 2 + path->stroke_width / 2,
                     pattern->height - path->stroke_width);
-  // path->stroke_width = 1.3 * stroke_width;
-  // path->d = path->m(0, 0) +
-  //           path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
   if (wave == "Wavy")
     path->stroke = shade(stroke, 0.95);
   else if (wave == "WavyWhite")
@@ -420,11 +411,7 @@ void Rectangle::plot_ir(std::ofstream& f, std::string wave,
                     -pattern->height + path->stroke_width) +
             path->l(pattern->width / 2 + path->stroke_width / 2,
                     pattern->height - path->stroke_width);
-  // path->stroke_width = 1.3 * stroke_width;
-  // path->d = path->m(0, 0) +
-  //           path->q(pattern->width/2, 1.5*ry, pattern->width, 0);
   if (wave == "Wavy") path->stroke = pattern_stroke;
-  // path->stroke = shade(stroke, 0.95);
   else if (wave == "WavyWhite")
     path->stroke = "white";
   make_pattern(f, pattern, path);

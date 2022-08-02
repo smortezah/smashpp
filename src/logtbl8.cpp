@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #include "logtbl8.hpp"
 
@@ -21,9 +21,6 @@ LogTable8::LogTable8(uint8_t k_) : k(k_), tot(0) {
 void LogTable8::update(LogTable8::ctx_t ctx) {
   if ((tot++ & POW2minus1[tbl[ctx]]) == 0)  // x % 2^n = x & (2^n-1)
     ++tbl[ctx];
-  //  const auto addr=&tbl[ctx];
-  //  if ((tot++ & POW2minus1[*addr]) == 0)  // x % 2^n = x & (2^n-1)
-  //    ++(*addr);
 }
 
 auto LogTable8::query(LogTable8::ctx_t ctx) const -> LogTable8::val_t {

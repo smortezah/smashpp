@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #include "tbl32.hpp"
 
@@ -44,7 +44,6 @@ auto Table32::query_counters(Table32::ctx_t l) const
 #ifdef DEBUG
 void Table32::dump(std::ofstream& ofs) const {
   ofs.write((const char*)&tbl[0], tbl.size());
-  //  ofs.close();
 }
 
 void Table32::load(std::ifstream& ifs) const {

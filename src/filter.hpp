@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_FILTER_HPP
 #define SMASHPP_FILTER_HPP
@@ -48,7 +48,6 @@ class Filter {
   template <bool SaveFilter>
   void smooth_seg_non_rect(std::vector<PosRow>&, std::unique_ptr<Param>&,
                            uint8_t);
-  // bool is_mergable (const Position&, const Position&) const;
 
 #ifdef BENCH
   template <typename Iter, typename Value>

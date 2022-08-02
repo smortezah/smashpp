@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #include "cmls4.hpp"
 
@@ -39,7 +39,6 @@ void CMLS4::set_a_b() {
 void CMLS4::update(CMLS4::ctx_t ctx) {
   const auto c{min_log_ctr(ctx)};
   if (!(tot++ & POW2minus1[c]))  // Increase decision.  x % 2^n = x & (2^n-1)
-    // for (uint8_t i=0; i!=d; ++i) {
     for (uint8_t i = d; i--;) {
       const auto idx = hash(i, ctx);
       if (read_cell(idx) == c)  // Conservative update
@@ -49,7 +48,6 @@ void CMLS4::update(CMLS4::ctx_t ctx) {
 
 uint8_t CMLS4::min_log_ctr(uint64_t ctx) const {
   uint8_t min{15};  // 15 = max val in CTR[]
-  //  for (uint8_t i=0; i!=d && min!=0; ++i) {
   for (uint8_t i = d; min != 0 && i--;) {
     const auto lg = read_cell(hash(i, ctx));
     if (lg < min) min = lg;
@@ -59,7 +57,6 @@ uint8_t CMLS4::min_log_ctr(uint64_t ctx) const {
 
 uint8_t CMLS4::read_cell(uint64_t idx) const {
   return CTR[((idx & 1ull) << 8u) + sk[idx >> 1u]];
-  ////  return CTR[static_cast<uint16_t>(((idx&1ull)<<8u) | sk[idx>>1u])];
 }
 
 // Strong 2-universal
@@ -79,7 +76,6 @@ auto CMLS4::query_counters(CMLS4::ctx_t l) const
 #ifdef DEBUG
 void CMLS4::dump(std::ofstream& ofs) const {
   ofs.write((const char*)&sk[0], sk.size());
-  //  ofs.close();
 }
 
 void CMLS4::load(std::ifstream& ifs) const {

@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_CONTAINER_HPP
 #define SMASHPP_CONTAINER_HPP
@@ -41,7 +41,6 @@ template <typename Digit>
 inline static uint8_t pop_count(Digit d) {  // Number of ones in a digit
   uint8_t n{0};
   for (; d; ++n) d &= d - 1;  // First impl. Kernighan. Clear the LSB set
-  //  do { if (d & 1) ++n; } while (d >>= 1); // Second impl. Negative nums?
   return n;
 }
 #endif

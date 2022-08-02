@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_VIZPAINT_HPP
 #define SMASHPP_VIZPAINT_HPP
@@ -184,8 +184,6 @@ class VizPaint {
   void plot_seq_borders(std::ofstream&, bool) const;
   void print_log(bool, std::string, uint64_t, uint64_t, uint64_t, uint64_t,
                  uint64_t) const;
-  // void print_pos (ofstream&, VizParam&, const vector<Position>&, uint64_t,
-  // string&&);
   void set_n_color(std::vector<Position>&);
 };
 }  // namespace smashpp

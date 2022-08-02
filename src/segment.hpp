@@ -1,11 +1,10 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_SEGMENT_HPP
 #define SMASHPP_SEGMENT_HPP
 
 #include <fstream>
-// #include "def.hpp"
 #include "par.hpp"
 #include "number.hpp"
 

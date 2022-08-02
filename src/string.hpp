@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_STRING_HPP
 #define SMASHPP_STRING_HPP
@@ -58,20 +58,7 @@ inline std::string bold_red(const std::string& text) {
 #endif
 }
 
-#ifdef DEBUG
-// Print variadic inputs
-// template <class Head, class... Tail>
-// inline static void print (Head const& head, Tail const&... tail) {
-//   std::cerr << head;
-//   if (std::is_convertible<Head, uint8_t>::value)
-//   (void) initializer_list<int>{((std::cerr<<", "<<tail), 0)...};
-// }
-#endif
-
-inline
-    //  static
-    void
-    wrap_text(std::string& text) {
+inline void wrap_text(std::string& text) {
   constexpr auto width{TEXTWIDTH};
   std::string out;
   std::string word;
@@ -197,7 +184,7 @@ inline static std::string human_readable(uint64_t bytes,
   return "";
 }
 
-// Non-computer science
+// Outside-computer science
 inline static std::string human_readable_non_cs(uint64_t bytes,
                                                 uint8_t precision = 0) {
   const uint64_t Kb_div{POW10[3]};

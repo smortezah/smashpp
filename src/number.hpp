@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_NUMBER_HPP
 #define SMASHPP_NUMBER_HPP
@@ -42,26 +42,6 @@ inline static double Power(double base, double exponent) {
   return u.d;
 }
 
-// inline static auto Power (double base, double exponent) {
-//   int tmp  = (*(1 + (int*) &base)),
-//       tmp2 = int(exponent * (tmp-1072632447) + 1072632447);
-//   double p = 0.0;
-//   *(1 + (int*) &p) = tmp2;
-//   return p;
-// }
-// inline double Power(const double a, const double b) {
-//   union {
-//     double d;
-//     struct {
-//       int a;
-//       int b;
-//     } s;
-//   } u = { a };
-//   u.s.b = (int)(b * (u.s.b - 1072632447) + 1072632447);
-//   u.s.a = 0;
-//   return u.d;
-// }
-
 template <typename Val, typename MinVal, typename MaxVal>
 inline static void keep_in_range(MinVal min, Val& val, MaxVal max) {
   if (val < min)
@@ -91,9 +71,6 @@ inline static uint8_t num_digits(uint64_t number) {
 template <typename T>
 inline static std::string thousands_sep(T number) {
   std::ostringstream ss;
-  // std::setlocale(LC_ALL, "en_US.UTF-8");
-  // const auto lacale = "en_US.UTF8";
-  // ss.imbue(std::locale(lacale));
   ss << number;
   return ss.str();
 }
@@ -108,33 +85,26 @@ inline static float tick_round(float lowerBound, float upperBound,
   // Round fraction in range [0.1, 1)
   const auto round_frac = [=](float value) -> float {
     if (value >= 0.100 && value <= 0.125) return 0.1;
-    // else if (value <= 0.175)  return 0.15;
     else if (value <= 0.225)
       return 0.2;
     else if (value <= 0.275)
       return 0.25;
     else if (value <= 0.325)
       return 0.3;
-    // else if (value <= 0.375)  return 0.35;
     else if (value <= 0.425)
       return 0.4;
-    // else if (value <= 0.475)  return 0.45;
     else if (value <= 0.525)
       return 0.5;
-    // else if (value <= 0.575)  return 0.55;
     else if (value <= 0.625)
       return 0.6;
-    // else if (value <= 0.675)  return 0.65;
     else if (value <= 0.725)
       return 0.7;
     else if (value <= 0.775)
       return 0.75;
     else if (value <= 0.825)
       return 0.8;
-    // else if (value <= 0.875)  return 0.85;
     else if (value <= 0.925)
       return 0.9;
-    // else if (value <= 0.975)  return 0.95;
 
     return 1.0;
   };

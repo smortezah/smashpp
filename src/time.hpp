@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_TIME_HPP
 #define SMASHPP_TIME_HPP
@@ -15,7 +15,6 @@ now() noexcept {
 
 template <typename Time>
 inline static std::string hms(Time elapsed) {
-  //  std::chrono::duration<double, std::milli> ms = elapsed;
   const auto durSec =
       std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
   const auto h = durSec / 3600;

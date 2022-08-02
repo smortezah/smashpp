@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_ASSERT_HPP
 #define SMASHPP_ASSERT_HPP
@@ -35,7 +35,6 @@ class ValRange {
   Value def;
   std::string label;
   Interval criterion;
-  // std::string criterion;
   std::string initMode;
   Problem problem;
   bool inRange;

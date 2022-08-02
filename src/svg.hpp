@@ -1,5 +1,5 @@
 // Smash++
-// Morteza Hosseini    seyedmorteza@ua.pt
+// Morteza Hosseini    mhosayny@gmail.com
 
 #ifndef SMASHPP_SVG_HPP
 #define SMASHPP_SVG_HPP
@@ -7,7 +7,6 @@
 #include "par.hpp"
 #include "exception.hpp"
 #include "number.hpp"
-// #include "color.hpp"
 
 namespace smashpp {  
 static constexpr uint8_t PREC_VIZ{2};  // Precision
@@ -202,8 +201,7 @@ class Cylinder : public SVG {
   std::string transform;
 
   Cylinder()
-      // : ry(2.0f),
-      : ry(5.f),//todo
+      : ry(5.f),
         stroke_width(1.0f),
         fill_opacity(OPAC),
         stroke_opacity(1.0f),
@@ -359,33 +357,6 @@ inline std::string text_shadow(std::ofstream& file) {
   feOffset->plot(file);
 
   filter->set_tail(file);
-
-  // // Apply filter on object (text, shape, ...)
-  // auto filter = make_unique<FilterSVG>();
-  // filter->id = "dropShadow";
-  // filter->set_head(file);
-
-  // auto feGaussianBlur = make_unique<FeGaussianBlur>();
-  // feGaussianBlur->in = "SourceAlpha";
-  // feGaussianBlur->stdDeviation = "3";
-  // feGaussianBlur->plot(file);
-
-  // auto feOffset = make_unique<FeOffset>();
-  // feOffset->dx = 2;
-  // feOffset->dy = 4;
-  // feOffset->plot(file);
-
-  // auto feMerge = make_unique<FeMerge>();
-  // feMerge->set_head(file);
-
-  // auto feMergeNode = make_unique<FeMergeNode>();
-  // feMergeNode->plot(file);
-
-  // feMergeNode->in = "SourceGraphic";
-  // feMergeNode->plot(file);
-
-  // feMerge->set_tail(file);
-  // filter->set_tail(file);
 
   return filter->id;
 }
