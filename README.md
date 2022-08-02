@@ -7,19 +7,15 @@ A fast tool to find and visualize rearrangements in DNA sequences.
 
 ## Install
 
-To install Smash++ on various operating systems, follow the instructions below. It requires CMake (>= 3.9) and a C++14 compliant compiler. Note that a precompiled executable is available for 64 bit operating systems in the `experiment/bin` directory.
+Installing Smash++ requires CMake >=3.5 and a C++14 compliant compiler.
 
 ### Docker
 
-Pull the image by
-
 ```bash
-docker pull smortezah/smashpp
-```
+# Pull the image
+docker pull smortezah/smashpp;
 
-and run it:
-
-```bash
+# Run the container
 docker run -it smortezah/smashpp
 ```
 
@@ -33,35 +29,27 @@ conda install -c bioconda -y smashpp
 
 ### Ubuntu
 
-* Install Git, CMake and g++:
-
 ```bash
-  apt update && apt install -y git cmake g++
-```
+# Install Git, CMake and g++
+apt update && apt install -y git cmake g++;
 
-* Clone Smash++ and install it:
-
-```bash
-  git clone --depth 1 https://github.com/smortezah/smashpp.git
-  cd smashpp
-  bash install.sh
+# Clone the repository and install it
+git clone --depth 1 https://github.com/smortezah/smashpp.git;
+cd smashpp;
+bash install.sh
 ```
 
 ### macOS
 
-* Install Homebrew, Git and CMake:
-
 ```bash
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  brew install git cmake
-```
+# Install Homebrew, Git and CMake
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)";
+brew install git cmake;
 
-* Clone Smash++ and install it:
-
-```bash
-  git clone --depth 1 https://github.com/smortezah/smashpp.git
-  cd smashpp
-  bash install.sh
+# Clone the repository and install it
+git clone --depth 1 https://github.com/smortezah/smashpp.git;
+cd smashpp;
+bash install.sh
 ```
 
 ### Windows
@@ -69,22 +57,22 @@ conda install -c bioconda -y smashpp
 Install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Windows Subsystem for Linux), then clone Smash++ and install it, like in Ubuntu:
 
 ```bash
-git clone --depth 1 https://github.com/smortezah/smashpp.git
-cd smashpp
+git clone --depth 1 https://github.com/smortezah/smashpp.git;
+cd smashpp;
 ./install.sh
 ```
 
-**Note**: in all operating systems, in the case of permission denial, you can use `sudo bash install.sh` instead of `./install.sh`.
+**Note**: in all operating systems, in the case of permission denial, you can use the `sudo` command.
 
 ## Run
 
-```text
-./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
+```bash
+./smashpp [OPTIONS] -r <REF_FILE> -t <TAR_FILE>
 ```
 
 For example,
 
-```text
+```bash
 ./smashpp -r ref -t tar
 ```
 
@@ -102,42 +90,92 @@ which provides the following:
 
 ```text
 SYNOPSIS
-  ./smashpp [OPTIONS]  -r <REF-FILE>  -t <TAR-FILE>
+      ./smashpp [OPTIONS]  -r <REF_FILE>  -t <TAR_FILE>
+
+SAMPLE
+      ./smashpp -r ref -t tar -l 0 -m 1000
+      ./smashpp \ 
+          --reference ref \ 
+          --target tar \ 
+          --format json \ 
+          --verbose 
 
 OPTIONS
-  Required:
-  -r  <FILE>         = reference file (Seq/FASTA/FASTQ)
-  -t  <FILE>         = target file    (Seq/FASTA/FASTQ)
+    Required:
+      -r, --reference <FILE>       reference file (Seq/FASTA/FASTQ)
+      -t, --target <FILE>          target file    (Seq/FASTA/FASTQ)
 
-  Optional:
-  -l  <INT>          = level of compression: [0, 6]. Default -> 3
-  -m  <INT>          = min segment size: [1, 4294967295]     -> 50
-  -e  <FLOAT>        = entropy of 'N's: [0.0, 100.0]         -> 2.0
-  -n  <INT>          = number of threads: [1, 255]           -> 4
-  -f  <INT>          = filter size: [1, 4294967295]          -> 100
-  -ft <INT/STRING>   = filter type (windowing function):     -> hann
-                       {0/rectangular, 1/hamming, 2/hann,
-                       3/blackman, 4/triangular, 5/welch,
-                       6/sine, 7/nuttall}
-  -fs [S][M][L]      = filter scale:
-                       {S/small, M/medium, L/large}
-  -d  <INT>          = sampling steps                        -> 1
-  -th <FLOAT>        = threshold: [0.0, 20.0]                -> 1.5
-  -rb <INT>          = ref beginning guard: [-32768, 32767]  -> 0
-  -re <INT>          = ref ending guard: [-32768, 32767]     -> 0
-  -tb <INT>          = tar beginning guard: [-32768, 32767]  -> 0
-  -te <INT>          = tar ending guard: [-32768, 32767]     -> 0
-  -ar                = consider asymmetric regions           -> no
-  -nr                = do NOT compute self complexity        -> no
-  -sb                = save sequence (input: FASTA/FASTQ)    -> no
-  -sp                = save profile (*.prf)                  -> no
-  -sf                = save filtered file (*.fil)            -> no
-  -ss                = save segmented files (*.s[i])         -> no
-  -sa                = save profile, filetered and           -> no
-                       segmented files
-  -rm k,[w,d,]ir,a,g/t,ir,a,g:...
-  -tm k,[w,d,]ir,a,g/t,ir,a,g:...
-                     = parameters of models
+    Optional:
+      -l, --level <INT>
+            level of compression: 0 to 6. Default: 3
+
+      -m, --min-segment-size <INT>
+            minimum segment size: 1 to 4294967295. Default: 50
+
+      -fmt, --format <STRING>
+            format of the output (position) file: {pos, json}.
+            Default: pos
+
+      -e, --entropy-N <FLOAT>
+            entropy of 'N's: 0.0 to 100.0. Default: 2.0
+
+      -n, --num-threads <INT>
+            number of threads: 1 to 255. Default: 4
+
+      -f, --filter-size <INT>
+            filter size: 1 to 4294967295. Default: 100
+
+      -ft, --filter-type <INT/STRING>
+            filter type (windowing function): {0/rectangular,
+            1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch,
+            6/sine, 7/nuttall}. Default: hann
+
+      -fs, --filter-scale <STRING>
+            filter scale: {S/small, M/medium, L/large}
+
+      -d, --sampling-step <INT>
+            sampling step. Default: 1
+
+      -th, --threshold <FLOAT>
+            threshold: 0.0 to 20.0. Default: 1.5
+
+      -rb, --reference-begin-guard <INT>
+            reference begin guard: -32768 to 32767. Default: 0
+
+      -re, --reference-end-guard <INT>
+            reference ending guard: -32768 to 32767. Default: 0
+
+      -tb, --target-begin-guard <INT>
+            target begin guard: -32768 to 32767. Default: 0
+
+      -te, --target-end-guard <INT>
+            target ending guard: -32768 to 32767. Default: 0
+
+      -ar, --asymmetric-regions
+            consider asymmetric regions. Default: not used
+
+      -nr, --no-self-complexity
+            do not compute self complexity. Default: not used
+
+      -sb, --save-sequence
+            save sequence (input: FASTA/FASTQ). Default: not used
+
+      -sp, --save-profile
+            save profile (*.prf). Default: not used
+
+      -sf, --save-filtered
+            save filtered file (*.fil). Default: not used
+
+      -ss, --save-segmented
+            save segmented files (*.s[i]). Default: not used
+
+      -sa, --save-profile-filtered-segmented
+            save profile, filetered and segmented files.
+            Default: not used
+
+      -rm, --reference-model  k,[w,d,]ir,a,g/t,ir,a,g:...
+      -tm, --target-model     k,[w,d,]ir,a,g/t,ir,a,g:...
+            parameters of models
                 <INT>  k:  context size
                 <INT>  w:  width of sketch in log2 form,
                            e.g., set 10 for w=2^10=1024
@@ -147,21 +185,29 @@ OPTIONS
                            1: inverted, solely
                            2: both regular and inverted
               <FLOAT>  a:  estimator
-              <FLOAT>  g:  forgetting factor: [0.0, 1.0)
-                <INT>  t:  threshold (no. substitutions)
-  -ll                = list of compression levels
-  -h                 = usage guide
-  -v                 = more information
-  --version          = show version
+              <FLOAT>  g:  forgetting factor: 0.0 to 1.0
+                <INT>  t:  threshold (number of substitutions)
 
-AUTHOR
-  Morteza Hosseini     seyedmorteza@ua.pt
+      -ll, --list-levels
+            list of compression levels
 
-SAMPLE
-  ./smashpp -r ref -t tar -l 0 -m 1000
+      -h, --help
+            usage guide
+
+      -v, --verbose
+            more information
+
+      -V, --version
+            show version
 ```
 
 To see the options for Smash++ Visualizer, type:
+
+```bash
+./smashpp viz
+```
+
+or
 
 ```bash
 ./smashpp -viz
@@ -171,47 +217,91 @@ which provides the following:
 
 ```text
 SYNOPSIS
-  ./smashpp -viz [OPTIONS]  -o <SVG-FILE>  <POS-FILE>
-
-OPTIONS
-  Required:
-  <POS-FILE>         = position file, generated by
-                       Smash++ tool (*.pos)
-
-  Optional:
-  -o  <SVG-FILE>     = output image name (*.svg).    Default -> map.svg
-  -rn <STRING>       = reference name shown on output. If it
-                       has spaces, use double quotes, e.g.
-                       "Seq label". Default: name in header
-                       of position file
-  -tn <STRING>       = target name shown on output
-  -l  <INT>          = type of the link between maps: [1, 6] -> 1
-  -c  <INT>          = color mode: [0, 1]                    -> 0
-  -p  <FLOAT>        = opacity: [0.0, 1.0]                   -> 0.9
-  -w  <INT>          = width of the sequence: [8, 100]       -> 10
-  -s  <INT>          = space between sequences: [5, 200]     -> 40
-  -tc <INT>          = total number of colors: [1, 255]
-  -rt <INT>          = reference tick: [1, 4294967295]
-  -tt <INT>          = target tick: [1, 4294967295]
-  -th [0][1]         = tick human readable: 0=false, 1=true  -> 1
-  -m  <INT>          = minimum block size: [1, 4294967295]   -> 1
-  -vv                = vertical view                         -> no
-  -nrr               = do NOT show relative redundancy       -> no
-                       (relative complexity)
-  -nr                = do NOT show redunadancy               -> no
-  -ni                = do NOT show inverse maps              -> no
-  -ng                = do NOT show regular maps              -> no
-  -n                 = show 'N' bases                        -> no
-  -stat              = save stats (*.csv)                    -> stat.csv
-  -h                 = usage guide
-  -v                 = more information
-  --version          = show version
-
-AUTHOR
-  Morteza Hosseini     seyedmorteza@ua.pt
+      ./smashpp viz|-viz [OPTIONS]  -o <SVG_FILE>  <POS_FILE>
 
 SAMPLE
-  ./smashpp -viz -vv -o simil.svg ref.tar.pos
+      ./smashpp -viz -o simil.svg ref.tar.pos
+      ./smashpp viz \ 
+          --output similarity.svg \ 
+          --vertical-view \ 
+          ref.tar.json
+
+OPTIONS
+    Required:
+      <POS_FILE>    position file generated by Smash++ (*.pos/*.json)
+
+    Optional:
+      -o, --output <SVG_FILE>
+            output image name (*.svg). Default: map.svg
+
+      -rn, --reference-name <STRING>
+            reference name shown on output. If it has spaces, use
+            double quotes, e.g. "Seq label". Default: the name in
+            the header of position file
+
+      -tn, --target-name <STRING>
+            target name shown on output
+
+      -l, --link <INT>
+            type of the link between maps: 1 to 6. Default: 1
+
+      -c, --color <INT>
+            color mode: {0, 1}. Default: 0
+
+      -p, --opacity <FLOAT>
+            opacity: 0.0 to 1.0. Default: 0.9
+
+      -w, --width <INT>
+            width of the sequence: 8 to 100. Default: 10
+
+      -s, --space <INT>
+            space between sequences: 5 to 200. Default: 40
+
+      -tc, --total-colors <INT>
+            total number of colors: 1 to 255
+
+      -rt, --reference-tick <INT>
+            reference tick: 1 to 4294967295
+
+      -tt, --target-tick <INT>
+            target tick: 1 to 4294967295
+
+      -th, --tick-human-readable <INT>
+            tick human readable: {0: false, 1: true}. Default: 1
+
+      -m, --min-block-size <INT>
+            minimum block size: 1 to 4294967295. Default: 1
+
+      -vv, --vertical-view
+            vertical view. Default: not used
+
+      -nrr, --no-relative-redundancy
+            do not show relative redundancy (relative complexity).
+            Default: not used
+
+      -nr, --no-redundancy
+            do not show redundancy. Default: not used
+
+      -ni, --no-inverted
+            do not show inverse maps. Default: not used
+
+      -ng, --no-regular
+            do not show regular maps. Default: not used
+
+      -n, --show-N
+            show 'N' bases. Default: not used
+
+      -stat, --statistics
+            save statistics (*.csv). Default: stat.csv
+
+      -h, --help
+            usage guide
+
+      -v, --verbose
+            more information
+
+      -V, --version
+            show version
 ```
 
 ### Example
@@ -219,29 +309,23 @@ SAMPLE
 After installing Smash++, copy its executable file into `example` directory and go to that directory:
 
 ```bash
-cp smashpp example/
+cp smashpp example/;
 cd example/
 ```
 
-There is in this directory two 1000 base sequences, the reference sequence named `ref`, and the target sequence, named `tar`. Now, run Smash++ and the visualizer:
+There are in this directory two 1000 base sequences, the reference sequence named `ref`, and the target sequence, named `tar`. Now, run Smash++ and the visualizer:
 
 ```bash
-./smashpp -r ref -t tar
-./smashpp -viz -o example.svg ref.tar.pos
+./smashpp -r ref -t tar;
+./smashpp viz -o example.svg ref.tar.pos
 ```
 
-<!-- ## Experiment
+Since version 22.08, the json format is also supported. To use it, you can run:
 
-To reproduce results in the paper, we have provided the Python script `xp.py` in the `experiment/` directory, that can run Smash++ on synthetic and real genomic data. By this script (running `python3 xp.py`), you can automatically make/download the datasets, in case of synthetic/real data, run Smash++ on those data using predefined parameters, and benchmark the method.
-
-To use `xp.py`, you need to switch **False** to **True** for a desired dataset, in the beginnig of the file. Then, it runs Smash++ on that (those) dataset(s) and saves in the `result/` directory the results including:
-
-* a `*.pos` file, which contains the positions of similar regions, plus self- and relative-redundancy values. It also includes in the header the parameters used to run Smash++, and sizes of the reference and the target files
-* a `*.svg` file with the similar regions visualized. This file is the output of Smash++ visualizer.
-* the `bench.csv` file, that provides time and memory usage of Smash++. In case of comparing with Smash (the first version), this file will provide the time and memory usage of Smash method, too.
-* in some cases, there would be a `*.csv` file, including the number of regular and inverted regions among the detected rearrangements. This file is generated when `-stat` flag is enabled for Smash++ visualizer.
-
-Note that `xp.py` requires `conda` for downloading the real dataset using Entrez Direct (EDirect) utility. If EDirect is not already installed, the script will automatically install it by `conda`. -->
+```bash
+./smashpp --reference ref --target tar --format json;
+./smashpp viz --output example.svg ref.tar.json
+```
 
 ## Cite
 
