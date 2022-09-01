@@ -15,4 +15,4 @@ jobs:
         uses: githubocto/repo-visualizer@main
         with:
           output_file: "diagram.svg"
-          excluded_paths: "ignore,.github"
+          excluded_paths: ".github"
