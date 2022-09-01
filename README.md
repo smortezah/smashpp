@@ -327,6 +327,10 @@ Since version 22.08, the json format is also supported. To use it, you can run:
 ./smashpp viz --output example.svg ref.tar.json
 ```
 
+## Codebase
+
+![Visualization of this repo](./diagram.svg)
+
 ## Cite
 
 Please cite the following, if you use Smash++:
