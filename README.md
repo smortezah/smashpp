@@ -320,7 +320,7 @@ There are in this directory two 1000 base sequences, the reference sequence name
 ./smashpp viz -o example.svg ref.tar.pos
 ```
 
-Since version 22.08, the json format is also supported. To use it, you can run:
+Since version 22.08, the JSON format support is added. To use it, you can run:
 
 ```bash
 ./smashpp --reference ref --target tar --format json;
