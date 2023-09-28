@@ -6,6 +6,7 @@
 
 #ifdef __APPLE__
 #undef assert
+#defind assert(e) my_assert(e)
 #endif
 
 #include <stdexcept>
