@@ -1,9 +1,14 @@
 #!/bin/bash
 
 # Parameters
-BUILD_TYPE=Release
 BUILD=build
+BUILD_TYPE=Release
 PARALLEL=8
+
+# Remove the build directory if it exists
+if [ -d "$BUILD" ]; then
+  rm -rf $BUILD
+fi
 
 # Configure CMake
 cmake -B $BUILD -DCMAKE_BUILD_TYPE=$BUILD_TYPE
