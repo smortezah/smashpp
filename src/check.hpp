@@ -1,13 +1,8 @@
 // Smash++
 // Morteza Hosseini    mhosayny@gmail.com
 
-#ifndef SMASHPP_ASSERT_HPP
-#define SMASHPP_ASSERT_HPP
-
-#ifdef __APPLE__
-#undef assert
-#define assert(e) my_assert(e)
-#endif
+#ifndef SMASHPP_CHECKHPP
+#define SMASHPP_CHECKHPP
 
 #include <stdexcept>
 #include "exception.hpp"
@@ -28,7 +23,7 @@ class ValRange {
         problem(p_),
         inRange(true) {}
 
-  void assert(Value&);
+  void check(Value&);
 
  private:
   Value min;
@@ -43,9 +38,8 @@ class ValRange {
 };
 
 template <typename Value>
-void ValRange<Value>::assert(Value& val) {
-  bool isFloat{false};
-  if (std::is_floating_point<Value>::value) isFloat = true;
+void ValRange<Value>::check(Value& val) {
+  bool isFloat = std::is_floating_point<Value>::value;
 
   const auto append_msg = [&](std::string&& msg) {
     message = "\"" + label + "\" not in valid range " + msg;
@@ -100,7 +94,7 @@ class ValSet {
         problem(p_),
         inRange(i) {}
 
-  void assert(Value&);
+  void check(Value&);
 
  private:
   std::vector<Value> set;
@@ -114,7 +108,7 @@ class ValSet {
 };
 
 template <typename Value>
-void ValSet<Value>::assert(Value& val) {
+void ValSet<Value>::check(Value& val) {
   if (inRange) {
     val = cmd;
     return;
@@ -143,4 +137,4 @@ void ValSet<Value>::assert(Value& val) {
 }
 }  // namespace smashpp
 
-#endif  // SMASHPP_ASSERT_HPP
+#endif  // SMASHPP_CHECKHPP

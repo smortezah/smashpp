@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 
-#include "assert.hpp"
+#include "check.hpp"
 #include "container.hpp"
 #include "def.hpp"
 #include "exception.hpp"
@@ -81,14 +81,14 @@ void Param::parse(int argc, char**& argv) {
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_LVL, MAX_LVL, LVL, "Level", Interval::closed, "default",
           Problem::warning);
-      range->assert(level);
+      range->check(level);
     } else if (option_inserted(i, "-m") ||
                option_inserted(i, "--min-segment-size")) {
       segSize = std::stoul(*++i);
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", Interval::closed,
           "default", Problem::warning);
-      range->assert(segSize);
+      range->check(segSize);
     } else if (option_inserted(i, "-rm") ||
                option_inserted(i, "--reference-model")) {
       man_rm = true;
@@ -122,14 +122,14 @@ void Param::parse(int argc, char**& argv) {
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_WS, MAX_WS, WS, "Filter size", Interval::closed, "default",
           Problem::warning);
-      range->assert(filt_size);
+      range->check(filt_size);
     } else if (option_inserted(i, "-th") || option_inserted(i, "--threshold")) {
       manThresh = true;
       thresh = std::stof(*++i);
       auto range = std::make_unique<ValRange<float>>(
           MIN_THRSH, MAX_THRSH, THRSH, "Threshold", Interval::open_closed,
           "default", Problem::warning);
-      range->assert(thresh);
+      range->check(thresh);
     } else if (option_inserted(i, "-ft") ||
                option_inserted(i, "--filter-type")) {
       const auto is_win_type = [](std::string t) {
@@ -142,20 +142,20 @@ void Param::parse(int argc, char**& argv) {
       auto set = std::make_unique<ValSet<FilterType>>(
           SET_WTYPE, FT, "Window type", "default", Problem::warning,
           win_type(cmd), is_win_type(cmd));
-      set->assert(filt_type);
+      set->check(filt_type);
     } else if (option_inserted(i, "-e") || option_inserted(i, "--entropy-N")) {
       entropyN = static_cast<prc_t>(std::stod(*++i));
       auto range = std::make_unique<ValRange<prc_t>>(
           MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases",
           Interval::closed, "default", Problem::warning);
-      range->assert(entropyN);
+      range->check(entropyN);
     } else if (option_inserted(i, "-n") ||
                option_inserted(i, "--num-threads")) {
       nthr = static_cast<uint8_t>(std::stoi(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_THRD, MAX_THRD, THRD, "Number of threads", Interval::closed,
           "default", Problem::warning);
-      range->assert(nthr);
+      range->check(nthr);
     } else if (option_inserted(i, "-d") ||
                option_inserted(i, "--sampling-step")) {
       manSampleStep = true;
@@ -172,7 +172,7 @@ void Param::parse(int argc, char**& argv) {
       auto set = std::make_unique<ValSet<FilterScale>>(
           SET_FSCALE, filterScale, "Filter scale", "default", Problem::warning,
           filter_scale(cmd), is_filter_scale(cmd));
-      set->assert(filterScale);
+      set->check(filterScale);
     } else if (option_inserted(i, "-rb") ||
                option_inserted(i, "--reference-begin-guard")) {
       ref_guard->beg = static_cast<int16_t>(std::stoi(*++i));
@@ -180,7 +180,7 @@ void Param::parse(int argc, char**& argv) {
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard",
           Interval::closed, "default", Problem::warning);
-      range->assert(ref_guard->beg);
+      range->check(ref_guard->beg);
     } else if (option_inserted(i, "-re") ||
                option_inserted(i, "--reference-end-guard")) {
       ref_guard->end = static_cast<int16_t>(std::stoi(*++i));
@@ -188,7 +188,7 @@ void Param::parse(int argc, char**& argv) {
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference ending guard",
           Interval::closed, "default", Problem::warning);
-      range->assert(ref_guard->end);
+      range->check(ref_guard->end);
     } else if (option_inserted(i, "-tb") ||
                option_inserted(i, "--target-begin-guard")) {
       tar_guard->beg = static_cast<int16_t>(std::stoi(*++i));
@@ -196,7 +196,7 @@ void Param::parse(int argc, char**& argv) {
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target beginning guard",
           Interval::closed, "default", Problem::warning);
-      range->assert(tar_guard->beg);
+      range->check(tar_guard->beg);
     } else if (option_inserted(i, "-te") ||
                option_inserted(i, "--target-end-guard")) {
       tar_guard->end = static_cast<int16_t>(std::stoi(*++i));
@@ -204,7 +204,7 @@ void Param::parse(int argc, char**& argv) {
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target ending guard",
           Interval::closed, "default", Problem::warning);
-      range->assert(tar_guard->end);
+      range->check(tar_guard->end);
     } else if (*i == "-ar" || *i == "--asymmetric-regions") {
       asym_region = true;
     } else if (*i == "-dp") {  // hidden option :)
@@ -615,20 +615,20 @@ void VizParam::parse(int argc, char**& argv) {
       auto range = std::make_unique<ValRange<float>>(
           MIN_OPAC, MAX_OPAC, OPAC, "Opacity", Interval::closed, "default",
           Problem::warning);
-      range->assert(opacity);
+      range->check(opacity);
     } else if (option_inserted(i, "-l") || option_inserted(i, "--link")) {
       link = static_cast<uint8_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_LINK, MAX_LINK, LINK, "Link", Interval::closed, "default",
           Problem::warning);
-      range->assert(link);
+      range->check(link);
     } else if (option_inserted(i, "-m") ||
                option_inserted(i, "--min-block-size")) {
       min = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_MINP, MAX_MINP, MINP, "Min", Interval::closed, "default",
           Problem::warning);
-      range->assert(min);
+      range->check(min);
     } else if (option_inserted(i, "-tc") ||
                option_inserted(i, "--total-colors")) {
       man_tot_color = true;
@@ -641,14 +641,14 @@ void VizParam::parse(int argc, char**& argv) {
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for reference", Interval::closed,
           "default", Problem::warning);
-      range->assert(refTick);
+      range->check(refTick);
     } else if (option_inserted(i, "-tt") ||
                option_inserted(i, "--target-tick")) {
       tarTick = std::stoull(*++i);
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for target", Interval::closed,
           "default", Problem::warning);
-      range->assert(tarTick);
+      range->check(tarTick);
     } else if (option_inserted(i, "-th") ||
                option_inserted(i, "--tick-human-readable")) {
       tickHumanRead = (std::stoi(*++i) != 0);
@@ -657,19 +657,19 @@ void VizParam::parse(int argc, char**& argv) {
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_COLOR, MAX_COLOR, COLOR, "Color", Interval::closed, "default",
           Problem::warning);
-      range->assert(colorMode);
+      range->check(colorMode);
     } else if (option_inserted(i, "-w") || option_inserted(i, "--width")) {
       width = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_WDTH, MAX_WDTH, WDTH, "Width", Interval::closed, "default",
           Problem::warning);
-      range->assert(width);
+      range->check(width);
     } else if (option_inserted(i, "-s") || option_inserted(i, "--space")) {
       space = static_cast<uint32_t>(std::stoul(*++i));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SPC, MAX_SPC, SPC, "Space", Interval::closed, "default",
           Problem::warning);
-      range->assert(space);
+      range->check(space);
     } else if (*i == "-nrr" || *i == "--no-relative-redundancy") {
       showRelRedun = false;
     } else if (*i == "-nr" || *i == "--no-redundancy") {
