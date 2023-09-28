@@ -342,6 +342,6 @@ Please let us know if there is any [issues](https://github.com/smortezah/smashpp
 
 ## License
 
-Copyright © 2018-2022 Morteza Hosseini.
+Copyright © 2018-2023 Morteza Hosseini.
 
 Smash++ is licensed under [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html).
