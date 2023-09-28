@@ -1,11 +1,10 @@
 # Smash++
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 [![CI](https://github.com/smortezah/smashpp/actions/workflows/ci.yml/badge.svg)](https://github.com/smortezah/smashpp/actions/workflows/ci.yml)
-[![GitNFT](https://img.shields.io/badge/%F0%9F%94%AE-Open%20in%20GitNFT-darkviolet?style=flat)](https://gitnft.quine.sh/app/commits/list/repo/smashpp)
 
 A fast tool to find and visualize rearrangements in DNA sequences.
 
-## Install
+## Installation
 
 Installing Smash++ requires CMake >=3.5 and a C++14 compliant compiler.
 
@@ -64,7 +63,7 @@ cd smashpp;
 
 **Note**: in all operating systems, in the case of permission denial, you can use the `sudo` command.
 
-## Run
+## Usage
 
 ```bash
 ./smashpp [OPTIONS] -r <REF_FILE> -t <TAR_FILE>
@@ -313,14 +312,14 @@ cp smashpp example/;
 cd example/
 ```
 
-There are in this directory two 1000 base sequences, the reference sequence named `ref`, and the target sequence, named `tar`. Now, run Smash++ and the visualizer:
+In this directory, there are two 1000 base sequences, the reference sequence named `ref`, and the target sequence named `tar`. Now, run Smash++ and the visualizer:
 
 ```bash
 ./smashpp -r ref -t tar;
 ./smashpp viz -o example.svg ref.tar.pos
 ```
 
-Since version 22.08, the JSON format support is added. To use it, you can run:
+**Update**: since version 22.08, the JSON format is supported. To use it, run:
 
 ```bash
 ./smashpp --reference ref --target tar --format json;
