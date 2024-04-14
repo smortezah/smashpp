@@ -2,11 +2,11 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 [![CI](https://github.com/smortezah/smashpp/actions/workflows/ci.yml/badge.svg)](https://github.com/smortezah/smashpp/actions/workflows/ci.yml)
 
-A fast tool to find and visualize rearrangements in DNA sequences.
+Smash++ is a fast utility designed for the identification and visualization of rearrangements in DNA sequences.
 
 ## Installation
 
-Installing Smash++ requires CMake >=3.5 and a C++14 compliant compiler.
+To install Smash++, you'll need CMake version 3.5 or higher, along with a compiler that supports C++14.
 
 ### Docker
 
@@ -20,7 +20,7 @@ docker run -it smortezah/smashpp
 
 ### Conda
 
-Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html), then run the following:
+Begin by installing [Miniconda](https://docs.conda.io/en/latest/miniconda.html). Once installed, execute the following commands:
 
 ```bash
 conda install -c bioconda -y smashpp
@@ -53,7 +53,7 @@ bash install.sh
 
 ### Windows
 
-Install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Windows Subsystem for Linux), then clone Smash++ and install it, like in Ubuntu:
+First, set up [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Windows Subsystem for Linux). After that, clone the Smash++ repository and proceed with the installation as you would on Ubuntu:
 
 ```bash
 git clone --depth 1 https://github.com/smortezah/smashpp.git;
@@ -61,7 +61,8 @@ cd smashpp;
 ./install.sh
 ```
 
-**Note**: in all operating systems, in the case of permission denial, you can use the `sudo` command.
+>[!NOTE]
+> If you encounter permission issues on any operating system, consider using the `sudo` command.
 
 ## Usage
 
@@ -69,23 +70,23 @@ cd smashpp;
 ./smashpp [OPTIONS] -r <REF_FILE> -t <TAR_FILE>
 ```
 
-For example,
+For example:
 
 ```bash
 ./smashpp -r ref -t tar
 ```
 
-It is recommended to choose short names for reference and target sequences.
+For optimal results, it's advisable to select short names for both reference and target sequences.
 
 ### Options
 
-To see the possible options for Smash++, type:
+To explore the available options for Smash++, execute the following command:
 
 ```bash
 ./smashpp
 ```
 
-which provides the following:
+which will yield the following:
 
 ```text
 SYNOPSIS
@@ -200,7 +201,7 @@ OPTIONS
             show version
 ```
 
-To see the options for Smash++ Visualizer, type:
+To explore the options available for the Smash++ Visualizer, enter the following command:
 
 ```bash
 ./smashpp viz
@@ -212,7 +213,7 @@ or
 ./smashpp -viz
 ```
 
-which provides the following:
+which will yield the following:
 
 ```text
 SYNOPSIS
@@ -305,21 +306,21 @@ OPTIONS
 
 ### Example
 
-After installing Smash++, copy its executable file into `example` directory and go to that directory:
+Once Smash++ is installed, copy its executable file into the `example` directory and navigate to that directory:
 
 ```bash
 cp smashpp example/;
 cd example/
 ```
 
-In this directory, there are two 1000 base sequences, the reference sequence named `ref`, and the target sequence named `tar`. Now, run Smash++ and the visualizer:
+This directory contains two sequences, each 1000 bases long: the reference sequence (`ref`) and the target sequence (`tar`). To run Smash++ and the visualizer, use the following commands:
 
 ```bash
 ./smashpp -r ref -t tar;
 ./smashpp viz -o example.svg ref.tar.pos
 ```
 
-**Update**: since version 22.08, the JSON format is supported. To use it, run:
+**Update**: As of version 22.08, Smash++ now supports the JSON format. To utilize this feature, execute the following command:
 
 ```bash
 ./smashpp --reference ref --target tar --format json;
@@ -328,7 +329,7 @@ In this directory, there are two 1000 base sequences, the reference sequence nam
 
 ## Cite
 
-Please cite the following, if you use Smash++:
+If you find Smash++ useful in your research, please acknowledge our work by citing the following:
 
 * M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: an alignment-free and memory-efficient tool to find genomic rearrangements," *GigaScience*, vol. 9, no. 5, 2020. [DOI: 10.1093/gigascience/giaa048](https://doi.org/10.1093/gigascience/giaa048)
 
@@ -338,10 +339,10 @@ Please cite the following, if you use Smash++:
 
 ## Issues
 
-Please let us know if there is any [issues](https://github.com/smortezah/smashpp/issues).
+Should you encounter any [issues](https://github.com/smortezah/smashpp/issues), please don't hesitate to let us know.
 
 ## License
 
-Copyright © 2018-2023 Morteza Hosseini.
+Smash++ is protected under the [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html) license.
 
-Smash++ is licensed under [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html).
+Copyright © 2018-2024 Morteza Hosseini.
