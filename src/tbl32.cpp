@@ -26,7 +26,7 @@ void Table32::update(Table32::ctx_t ctx) {
 }
 
 inline void Table32::renormalize() {
-  for (auto c : tbl) c >>= 1;
+  for (auto& c : tbl) c >>= 1;
   ++nRenorm;
 }
 

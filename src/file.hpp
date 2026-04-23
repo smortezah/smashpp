@@ -110,8 +110,8 @@ inline static FileType file_type(std::string name) {
 
   // Fastq
   while (f.peek() == '@') ignore_this_line(f);
-  for (uint8_t nTabs = 0; f.get(c) && c != '\n';)
-    if (c == '\t') ++nTabs;
+  while (f.get(c) && c != '\n') {
+  }
   if (f.peek() == '+') {
     f.close();
     return FileType::fastq;
@@ -229,6 +229,7 @@ inline static json parse_pos_metadata(const std::string& pos) {
   std::getline(info_ss, tar, ',');
   std::getline(info_ss, tarsize, ',');
   ref = ref.substr(ref.find("<") + 1);
+  if (!tarsize.empty() && tarsize.back() == '>') tarsize.pop_back();
   j["reference"] = ref.substr(ref.find("=") + 1);
   j["reference_size"] = refsize.substr(refsize.find("=") + 1);
   j["target"] = tar.substr(tar.find("=") + 1);

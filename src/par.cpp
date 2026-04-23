@@ -34,8 +34,15 @@ void Param::parse(int argc, char**& argv) {
     param_list += *iter + ' ';
   param_list.pop_back();
 
-  auto option_inserted = [&](auto iter, std::string name) -> bool {
-    return (iter + 1 <= std::end(vArgs)) && (*iter == name);
+  auto looks_like_option = [](const std::string& value) {
+    return value.size() > 1 && value.front() == '-' &&
+           !((value[1] >= '0' && value[1] <= '9') || value[1] == '.');
+  };
+  auto require_value = [&](auto& iter, const std::string& label,
+                           const std::string& usage) -> std::string {
+    if (iter + 1 == std::end(vArgs) || looks_like_option(*(iter + 1)))
+      error(label + " not specified. Use \"" + usage + "\".");
+    return *++iter;
   };
 
   bool man_rm{false};
@@ -43,7 +50,7 @@ void Param::parse(int argc, char**& argv) {
   std::string rModelsPars;
   std::string tModelsPars;
 
-  for (auto i = std::begin(vArgs); i != std::end(vArgs); ++i) {
+  for (auto i = std::begin(vArgs) + 1; i != std::end(vArgs); ++i) {
     if (*i == "-h" || *i == "--help") {
       help();
       throw EXIT_SUCCESS;
@@ -58,47 +65,40 @@ void Param::parse(int argc, char**& argv) {
         std::cerr << "[ " << i << " ]  " << LEVEL[i] << '\n';
       throw EXIT_SUCCESS;
     } else if (*i == "-r" || *i == "--reference") {
-      if (i + 1 != std::end(vArgs)) {
-        ref = *++i;
-        check_file(ref);
-        refName = file_name(ref);
-        refType = file_type(ref);
-      } else {
-        error("reference file not specified. Use \"-r <fileName>\".");
-      }
+      ref = require_value(i, "reference file", "-r <fileName>");
+      check_file(ref);
+      refName = file_name(ref);
+      refType = file_type(ref);
     } else if (*i == "-t" || *i == "--target") {
-      if (i + 1 != std::end(vArgs)) {
-        tar = *++i;
-        check_file(tar);
-        tarName = file_name(tar);
-        tarType = file_type(tar);
-      } else {
-        error("target file not specified. Use \"-t <fileName>\".");
-      }
-    } else if (option_inserted(i, "-l") || option_inserted(i, "--level")) {
+      tar = require_value(i, "target file", "-t <fileName>");
+      check_file(tar);
+      tarName = file_name(tar);
+      tarType = file_type(tar);
+    } else if (*i == "-l" || *i == "--level") {
       man_level = true;
-      level = static_cast<uint8_t>(std::stoi(*++i));
+      level = static_cast<uint8_t>(
+          std::stoi(require_value(i, "level", "-l <INT>")));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_LVL, MAX_LVL, LVL, "Level", Interval::closed, "default",
           Problem::warning);
       range->check(level);
-    } else if (option_inserted(i, "-m") ||
-               option_inserted(i, "--min-segment-size")) {
-      segSize = std::stoul(*++i);
+    } else if (*i == "-m" || *i == "--min-segment-size") {
+      segSize = std::stoul(
+          require_value(i, "minimum segment size", "-m <INT>"));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", Interval::closed,
           "default", Problem::warning);
       range->check(segSize);
-    } else if (option_inserted(i, "-rm") ||
-               option_inserted(i, "--reference-model")) {
+    } else if (*i == "-rm" || *i == "--reference-model") {
       man_rm = true;
-      rModelsPars = *++i;
-      if (rModelsPars.front() == '-' || rModelsPars.empty())
+      rModelsPars =
+          require_value(i, "reference model parameters", "-rm <STRING>");
+      if (rModelsPars.empty() || rModelsPars.front() == '-')
         error("incorrect reference model parameters.");
       else
         parseModelsPars(std::begin(rModelsPars), std::end(rModelsPars), refMs);
-    } else if (option_inserted(i, "-fmt") || option_inserted(i, "--format")) {
-      auto format_ = *++i;
+    } else if (*i == "-fmt" || *i == "--format") {
+      auto format_ = require_value(i, "output format", "-fmt <STRING>");
       std::transform(std::begin(format_), std::end(format_),
                      std::begin(format_), ::tolower);
       if (format_ == "pos") {  // default
@@ -107,99 +107,100 @@ void Param::parse(int argc, char**& argv) {
       } else {
         warning("incorrect format inserted. Used \"pos\" instead.\n");
       }
-    } else if (option_inserted(i, "-tm") ||
-               option_inserted(i, "--target-model")) {
+    } else if (*i == "-tm" || *i == "--target-model") {
       man_tm = true;
-      tModelsPars = *++i;
-      if (tModelsPars.front() == '-' || tModelsPars.empty())
+      tModelsPars =
+          require_value(i, "target model parameters", "-tm <STRING>");
+      if (tModelsPars.empty() || tModelsPars.front() == '-')
         error("incorrect target model parameters.");
       else
         parseModelsPars(std::begin(tModelsPars), std::end(tModelsPars), tarMs);
-    } else if (option_inserted(i, "-f") ||
-               option_inserted(i, "--filter-size")) {
+    } else if (*i == "-f" || *i == "--filter-size") {
       manWSize = true;
-      filt_size = static_cast<uint32_t>(std::stoi(*++i));
+      filt_size = static_cast<uint32_t>(
+          std::stoi(require_value(i, "filter size", "-f <INT>")));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_WS, MAX_WS, WS, "Filter size", Interval::closed, "default",
           Problem::warning);
       range->check(filt_size);
-    } else if (option_inserted(i, "-th") || option_inserted(i, "--threshold")) {
+    } else if (*i == "-th" || *i == "--threshold") {
       manThresh = true;
-      thresh = std::stof(*++i);
+      thresh = std::stof(require_value(i, "threshold", "-th <FLOAT>"));
       auto range = std::make_unique<ValRange<float>>(
           MIN_THRSH, MAX_THRSH, THRSH, "Threshold", Interval::open_closed,
           "default", Problem::warning);
       range->check(thresh);
-    } else if (option_inserted(i, "-ft") ||
-               option_inserted(i, "--filter-type")) {
+    } else if (*i == "-ft" || *i == "--filter-type") {
       const auto is_win_type = [](std::string t) {
         return (t == "0" || t == "rectangular" || t == "1" || t == "hamming" ||
                 t == "2" || t == "hann" || t == "3" || t == "blackman" ||
                 t == "4" || t == "triangular" || t == "5" || t == "welch" ||
                 t == "6" || t == "sine" || t == "7" || t == "nuttall");
       };
-      const std::string cmd{*++i};
+      const std::string cmd{
+          require_value(i, "filter type", "-ft <INT/STRING>")};
       auto set = std::make_unique<ValSet<FilterType>>(
           SET_WTYPE, FT, "Window type", "default", Problem::warning,
           win_type(cmd), is_win_type(cmd));
       set->check(filt_type);
-    } else if (option_inserted(i, "-e") || option_inserted(i, "--entropy-N")) {
-      entropyN = static_cast<prc_t>(std::stod(*++i));
+    } else if (*i == "-e" || *i == "--entropy-N") {
+      entropyN = static_cast<prc_t>(
+          std::stod(require_value(i, "entropy of N bases", "-e <FLOAT>")));
       auto range = std::make_unique<ValRange<prc_t>>(
           MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases",
           Interval::closed, "default", Problem::warning);
       range->check(entropyN);
-    } else if (option_inserted(i, "-n") ||
-               option_inserted(i, "--num-threads")) {
-      nthr = static_cast<uint8_t>(std::stoi(*++i));
+    } else if (*i == "-n" || *i == "--num-threads") {
+      nthr = static_cast<uint8_t>(
+          std::stoi(require_value(i, "number of threads", "-n <INT>")));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_THRD, MAX_THRD, THRD, "Number of threads", Interval::closed,
           "default", Problem::warning);
       range->check(nthr);
-    } else if (option_inserted(i, "-d") ||
-               option_inserted(i, "--sampling-step")) {
+    } else if (*i == "-d" || *i == "--sampling-step") {
       manSampleStep = true;
-      sampleStep = std::stoull(*++i);
+      sampleStep = std::stoull(
+          require_value(i, "sampling step", "-d <INT>"));
       if (sampleStep == 0) sampleStep = 1ull;
-    } else if (option_inserted(i, "-fs") ||
-               option_inserted(i, "--filter-scale")) {
+    } else if (*i == "-fs" || *i == "--filter-scale") {
       manFilterScale = true;
       const auto is_filter_scale = [](std::string s) {
         return (s == "S" || s == "small" || s == "M" || s == "medium" ||
                 s == "L" || s == "large");
       };
-      const std::string cmd{*++i};
+      const std::string cmd{
+          require_value(i, "filter scale", "-fs <STRING>")};
       auto set = std::make_unique<ValSet<FilterScale>>(
           SET_FSCALE, filterScale, "Filter scale", "default", Problem::warning,
           filter_scale(cmd), is_filter_scale(cmd));
       set->check(filterScale);
-    } else if (option_inserted(i, "-rb") ||
-               option_inserted(i, "--reference-begin-guard")) {
-      ref_guard->beg = static_cast<int16_t>(std::stoi(*++i));
+    } else if (*i == "-rb" || *i == "--reference-begin-guard") {
+      ref_guard->beg = static_cast<int16_t>(
+          std::stoi(require_value(i, "reference beginning guard", "-rb <INT>")));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard",
           Interval::closed, "default", Problem::warning);
       range->check(ref_guard->beg);
-    } else if (option_inserted(i, "-re") ||
-               option_inserted(i, "--reference-end-guard")) {
-      ref_guard->end = static_cast<int16_t>(std::stoi(*++i));
+    } else if (*i == "-re" || *i == "--reference-end-guard") {
+      ref_guard->end = static_cast<int16_t>(
+          std::stoi(require_value(i, "reference ending guard", "-re <INT>")));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Reference ending guard",
           Interval::closed, "default", Problem::warning);
       range->check(ref_guard->end);
-    } else if (option_inserted(i, "-tb") ||
-               option_inserted(i, "--target-begin-guard")) {
-      tar_guard->beg = static_cast<int16_t>(std::stoi(*++i));
+    } else if (*i == "-tb" || *i == "--target-begin-guard") {
+      tar_guard->beg = static_cast<int16_t>(
+          std::stoi(require_value(i, "target beginning guard", "-tb <INT>")));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target beginning guard",
           Interval::closed, "default", Problem::warning);
       range->check(tar_guard->beg);
-    } else if (option_inserted(i, "-te") ||
-               option_inserted(i, "--target-end-guard")) {
-      tar_guard->end = static_cast<int16_t>(std::stoi(*++i));
+    } else if (*i == "-te" || *i == "--target-end-guard") {
+      tar_guard->end = static_cast<int16_t>(
+          std::stoi(require_value(i, "target ending guard", "-te <INT>")));
       auto range = std::make_unique<ValRange<int16_t>>(
           std::numeric_limits<int16_t>::min(),
           std::numeric_limits<int16_t>::max(), 0, "Target ending guard",
@@ -589,11 +590,21 @@ void VizParam::parse(int argc, char**& argv) {
   for (int i = 0; i != argc; ++i)
     vArgs.push_back(static_cast<std::string>(argv[i]));
 
-  auto option_inserted = [&](auto iter, std::string name) -> bool {
-    return (iter + 1 <= std::end(vArgs)) && (*iter == name);
+  auto looks_like_option = [](const std::string& value) {
+    return value.size() > 1 && value.front() == '-' &&
+           !((value[1] >= '0' && value[1] <= '9') || value[1] == '.');
+  };
+  auto require_value = [&](auto& iter, const std::string& label,
+                           const std::string& usage) -> std::string {
+    if (iter + 1 == std::end(vArgs) || looks_like_option(*(iter + 1)))
+      error(label + " not specified. Use \"" + usage + "\".");
+    return *++iter;
   };
 
-  for (auto i = std::begin(vArgs); i != std::end(vArgs); ++i) {
+  for (auto i = std::begin(vArgs) + 1; i != std::end(vArgs); ++i) {
+    if (*i == "viz" || *i == "-viz") {
+      continue;
+    }
     if (*i == "-h" || *i == "--help") {
       help();
       throw EXIT_SUCCESS;
@@ -602,70 +613,72 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (*i == "-V" || *i == "--version") {
       std::cerr << "Smash++ " << VERSION << "\n";
       throw EXIT_SUCCESS;
-    } else if (option_inserted(i, "-o") || option_inserted(i, "--output")) {
-      image = *++i;
-    } else if (option_inserted(i, "-rn") ||
-               option_inserted(i, "--reference-name")) {
-      refName = *++i;
-    } else if (option_inserted(i, "-tn") ||
-               option_inserted(i, "--target-name")) {
-      tarName = *++i;
-    } else if (option_inserted(i, "-p") || option_inserted(i, "--opacity")) {
-      opacity = std::stof(*++i);
+    } else if (*i == "-o" || *i == "--output") {
+      image = require_value(i, "output image name", "-o <SVG_FILE>");
+    } else if (*i == "-rn" || *i == "--reference-name") {
+      refName = require_value(i, "reference name", "-rn <STRING>");
+    } else if (*i == "-tn" || *i == "--target-name") {
+      tarName = require_value(i, "target name", "-tn <STRING>");
+    } else if (*i == "-p" || *i == "--opacity") {
+      opacity = std::stof(require_value(i, "opacity", "-p <FLOAT>"));
       auto range = std::make_unique<ValRange<float>>(
           MIN_OPAC, MAX_OPAC, OPAC, "Opacity", Interval::closed, "default",
           Problem::warning);
       range->check(opacity);
-    } else if (option_inserted(i, "-l") || option_inserted(i, "--link")) {
-      link = static_cast<uint8_t>(std::stoul(*++i));
+    } else if (*i == "-l" || *i == "--link") {
+      link =
+          static_cast<uint8_t>(std::stoul(require_value(i, "link", "-l <INT>")));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_LINK, MAX_LINK, LINK, "Link", Interval::closed, "default",
           Problem::warning);
       range->check(link);
-    } else if (option_inserted(i, "-m") ||
-               option_inserted(i, "--min-block-size")) {
-      min = static_cast<uint32_t>(std::stoul(*++i));
+    } else if (*i == "-m" || *i == "--min-block-size") {
+      min = static_cast<uint32_t>(
+          std::stoul(require_value(i, "minimum block size", "-m <INT>")));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_MINP, MAX_MINP, MINP, "Min", Interval::closed, "default",
           Problem::warning);
       range->check(min);
-    } else if (option_inserted(i, "-tc") ||
-               option_inserted(i, "--total-colors")) {
+    } else if (*i == "-tc" || *i == "--total-colors") {
       man_tot_color = true;
-      auto val = std::stoi(*++i);
+      auto val =
+          std::stoi(require_value(i, "total number of colors", "-tc <INT>"));
       keep_in_range(1, val, 255);
       tot_color = static_cast<uint8_t>(val);
-    } else if (option_inserted(i, "-rt") ||
-               option_inserted(i, "--reference-tick")) {
-      refTick = std::stoull(*++i);
+    } else if (*i == "-rt" || *i == "--reference-tick") {
+      refTick = std::stoull(
+          require_value(i, "reference tick", "-rt <INT>"));
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for reference", Interval::closed,
           "default", Problem::warning);
       range->check(refTick);
-    } else if (option_inserted(i, "-tt") ||
-               option_inserted(i, "--target-tick")) {
-      tarTick = std::stoull(*++i);
+    } else if (*i == "-tt" || *i == "--target-tick") {
+      tarTick =
+          std::stoull(require_value(i, "target tick", "-tt <INT>"));
       auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_TICK, MAX_TICK, TICK, "Tick hop for target", Interval::closed,
           "default", Problem::warning);
       range->check(tarTick);
-    } else if (option_inserted(i, "-th") ||
-               option_inserted(i, "--tick-human-readable")) {
-      tickHumanRead = (std::stoi(*++i) != 0);
-    } else if (option_inserted(i, "-c") || option_inserted(i, "--color")) {
-      colorMode = static_cast<uint8_t>(std::stoi(*++i));
+    } else if (*i == "-th" || *i == "--tick-human-readable") {
+      tickHumanRead =
+          (std::stoi(require_value(i, "tick human readable", "-th <INT>")) != 0);
+    } else if (*i == "-c" || *i == "--color") {
+      colorMode =
+          static_cast<uint8_t>(std::stoi(require_value(i, "color mode", "-c <INT>")));
       auto range = std::make_unique<ValRange<uint8_t>>(
           MIN_COLOR, MAX_COLOR, COLOR, "Color", Interval::closed, "default",
           Problem::warning);
       range->check(colorMode);
-    } else if (option_inserted(i, "-w") || option_inserted(i, "--width")) {
-      width = static_cast<uint32_t>(std::stoul(*++i));
+    } else if (*i == "-w" || *i == "--width") {
+      width = static_cast<uint32_t>(
+          std::stoul(require_value(i, "width", "-w <INT>")));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_WDTH, MAX_WDTH, WDTH, "Width", Interval::closed, "default",
           Problem::warning);
       range->check(width);
-    } else if (option_inserted(i, "-s") || option_inserted(i, "--space")) {
-      space = static_cast<uint32_t>(std::stoul(*++i));
+    } else if (*i == "-s" || *i == "--space") {
+      space = static_cast<uint32_t>(
+          std::stoul(require_value(i, "space", "-s <INT>")));
       auto range = std::make_unique<ValRange<uint32_t>>(
           MIN_SPC, MAX_SPC, SPC, "Space", Interval::closed, "default",
           Problem::warning);
@@ -684,9 +697,16 @@ void VizParam::parse(int argc, char**& argv) {
       vertical = true;
     } else if (*i == "-stat" || *i == "--statistics") {
       stat = true;
+    } else if (!i->empty() && i->front() != '-') {
+      if (!posFile.empty())
+        error("multiple position files specified for visualization.");
+      posFile = *i;
+    } else {
+      error("unknown option \"" + *i + "\".");
     }
   }
-  posFile = vArgs.back();
+  if (posFile.empty())
+    error("position file not specified. Use \"smashpp viz <POS_FILE>\".");
 }
 
 void VizParam::help() const {

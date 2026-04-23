@@ -1,10 +1,25 @@
-FROM ubuntu:22.04
-LABEL maintainer "Morteza Hosseini"
+FROM ubuntu:24.04 AS build
+LABEL maintainer="Morteza Hosseini"
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y cmake g++
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential python3-pip && \
+    pip3 install --no-cache-dir "cmake~=4.0.0" && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY . /smashpp
-WORKDIR /smashpp
-RUN bash install.sh
-# ENTRYPOINT ["./smashpp"]
+WORKDIR /src
+COPY . .
+RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/smashpp && \
+    cmake --build build --parallel && \
+    cmake --install build
+
+FROM ubuntu:24.04 AS runtime
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates libgomp1 && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /opt/smashpp /usr/local
+WORKDIR /data
+ENTRYPOINT ["smashpp"]
+CMD ["--help"]

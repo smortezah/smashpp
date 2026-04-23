@@ -61,5 +61,5 @@ smashpp
 smashpp.exe
 exclude_N
 smashpp-inv-rep
-install.bat
 instruct.md
+dist/

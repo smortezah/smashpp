@@ -713,20 +713,19 @@ inline void VizPaint::plot_legend(std::ofstream& f,
       legend->text.push_back(std::make_unique<Text>());  // NRC + Redun
 
   if (legend->vertical) {
-    set_legend_rect(f, legend, 'h');
+    set_legend_rect(legend, 'h');
     plot_legend_gradient(f, legend);
     plot_legend_text_horiz(f, legend);
     plot_legend_path_horiz(f, legend);
   } else {
-    set_legend_rect(f, legend, 'v');
+    set_legend_rect(legend, 'v');
     plot_legend_gradient(f, legend);
     plot_legend_text_vert(f, legend);
     plot_legend_path_vert(f, legend);
   }
 }
 
-inline void VizPaint::set_legend_rect(std::ofstream& f,
-                                      std::unique_ptr<LegendPlot>& legend,
+inline void VizPaint::set_legend_rect(std::unique_ptr<LegendPlot>& legend,
                                       char direction) const {
   if (direction == 'h' || direction == 'H') {
     legend->rect->height = 11;
@@ -1508,24 +1507,19 @@ inline void VizPaint::plot_pos_vertical(
   line->stroke_width = posPlot->majorStrokeWidth;
   line->y1 = y;
   line->y2 = y + get_point(posPlot->n_bases) + 0.5 * line->stroke_width;
+  const auto showLegend =
+      static_cast<uint8_t>(posPlot->showRelRedun || posPlot->showRedun);
+  const auto visibleBars = static_cast<uint8_t>(posPlot->showRelRedun) +
+                           static_cast<uint8_t>(posPlot->showRedun);
   if (posPlot->plotRef)
     line->x1 = line->x2 =
-        x -
-        static_cast<uint8_t>(posPlot->showRelRedun | posPlot->showRedun) *
-            TITLE_SPACE / 2 -
-        (static_cast<uint8_t>(posPlot->showRelRedun) +
-         static_cast<uint8_t>(posPlot->showRedun)) *
-            (SPACE_TUNE + periphWidth) -
+        x - showLegend * TITLE_SPACE / 2 -
+        visibleBars * (SPACE_TUNE + periphWidth) -
         posPlot->vertSkip - posPlot->majorTickSize;
   else
     line->x1 = line->x2 =
-        x + 2 * seqWidth + innerSpace +
-        static_cast<uint8_t>(posPlot->showRelRedun | posPlot->showRedun) *
-            TITLE_SPACE / 2 +
-        posPlot->vertSkip +
-        (static_cast<uint8_t>(posPlot->showRelRedun) +
-         static_cast<uint8_t>(posPlot->showRedun)) *
-            (SPACE_TUNE + periphWidth) +
+        x + 2 * seqWidth + innerSpace + showLegend * TITLE_SPACE / 2 +
+        posPlot->vertSkip + visibleBars * (SPACE_TUNE + periphWidth) +
         posPlot->majorTickSize;
 
   auto text = std::make_unique<Text>();

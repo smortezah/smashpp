@@ -42,7 +42,7 @@ void Segment::finalize_partition(std::vector<PosRow>& pos_out) {
   }
 }
 
-void Segment::set_guards(uint8_t max_ctx, int16_t beg, int16_t end) {
+void Segment::set_guards(int16_t beg, int16_t end) {
   beg_guard = beg;  // beg_guard = maxCtx + beg;
   end_guard = end;
 }

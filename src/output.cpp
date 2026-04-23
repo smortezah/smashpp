@@ -39,7 +39,7 @@ std::vector<OutRowAux> PositionFile::pos_pairs(
   }
 
   // Make position pairs
-  std::vector<OutRowAux> out_aux{std::vector<OutRowAux>()};
+  std::vector<OutRowAux> out_aux;
 
   if (left.empty()) {
     for (const auto& row : right1) out_aux.push_back(OutRowAux(PosRow(), row));
@@ -56,7 +56,7 @@ std::vector<OutRowAux> PositionFile::pos_pairs(
       }
     }
     for (const auto& row_right3 : right3) {
-      for (auto row_out_aux : out_aux) {
+      for (auto& row_out_aux : out_aux) {
         const auto seg_name{gen_name(row_out_aux.pos2.run_num,
                                      row_out_aux.pos2.ref, row_out_aux.pos2.tar,
                                      Format::segment) +
@@ -137,12 +137,14 @@ void PositionFile::stream_pos_impl(std::ostringstream& out,
           << (right_beg < right_end ? "F" : "T") << '\n';
       return oss.str();
     };
+    const auto abs_diff = [](uint64_t lhs, uint64_t rhs) {
+      return (lhs > rhs) ? lhs - rhs : rhs - lhs;
+    };
+    const auto right_span = abs_diff(right_end, right_beg);
+    const auto left_span = abs_diff(left_end, left_beg);
 
     if (!asym_region) {
-      if (uint64_t(std::llabs(right_end - right_beg)) <
-              (left_end - left_beg) * 1.5 &&
-          uint64_t(std::llabs(right_end - right_beg)) >
-              (left_end - left_beg) * 0.5)
+      if (right_span < left_span * 1.5 && right_span > left_span * 0.5)
         out << publish(left_beg, left_end, left_ent, left_self_ent, right_beg,
                        right_end, right_ent, right_self_ent);
     } else {

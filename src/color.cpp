@@ -1,31 +1,33 @@
 // Smash++
 // Morteza Hosseini    mhosayny@gmail.com
 
-#include <algorithm>
+#include "exception.hpp"
 #include "color.hpp"
 #include "string.hpp"
-#include "exception.hpp"
+
+#include <algorithm>
+#include <cctype>
 
 namespace smashpp {
 // Global functions
-inline bool is_hex(std::string color) {
+bool is_hex(std::string color) {
   if (color.front() != '#' || color.size() != 7) return false;
 
   for (auto ch : color.substr(1))
-    if (!std::isxdigit(ch)) return false;
+    if (!std::isxdigit(static_cast<unsigned char>(ch))) return false;
 
   return true;
 }
 
-inline std::string to_hex(const RGB& color) {
+std::string to_hex(const RGB& color) {
   return string_format("#%X%X%X", color.r, color.g, color.b);
 }
 
-inline std::string to_hex(const HSV& color) {
+std::string to_hex(const HSV& color) {
   return to_hex(to_rgb(color));
 }
 
-inline RGB to_rgb(std::string color) {
+RGB to_rgb(std::string color) {
   if (is_hex(color)) {
     return RGB(std::stoi(color.substr(1, 2), 0, 16 /*base*/),
                std::stoi(color.substr(3, 2), 0, 16 /*base*/),
@@ -44,12 +46,12 @@ inline RGB to_rgb(std::string color) {
     else if (color == "blue")
       return RGB(0, 0, 255);
     else
-      error("color \"" + color + "\"undefined");
+      error("color \"" + color + "\" undefined");
   }
   return RGB();
 }
 
-inline RGB to_rgb(const HSV& hsv) {
+RGB to_rgb(const HSV& hsv) {
   RGB rgb{};
   if (hsv.s == 0) {
     rgb.r = rgb.g = rgb.b = hsv.v;
@@ -99,7 +101,7 @@ inline RGB to_rgb(const HSV& hsv) {
   return rgb;
 }
 
-inline HSV to_hsv(const RGB& rgb) {
+HSV to_hsv(const RGB& rgb) {
   const uint8_t rgbMin{std::min({rgb.r, rgb.g, rgb.b})};
   const uint8_t rgbMax{std::max({rgb.r, rgb.g, rgb.b})};
 
@@ -128,33 +130,33 @@ inline HSV to_hsv(const RGB& rgb) {
   return hsv;
 }
 
-inline RGB alpha_blend(const RGB& color1, const RGB& color2, float alpha) {
+RGB alpha_blend(const RGB& color1, const RGB& color2, float alpha) {
   return RGB(static_cast<uint8_t>(color1.r + (color2.r - color1.r) * alpha),
              static_cast<uint8_t>(color1.g + (color2.g - color1.g) * alpha),
              static_cast<uint8_t>(color1.b + (color2.b - color1.b) * alpha));
 }
 
-inline RGB shade(const RGB& color, float alpha) {
+RGB shade(const RGB& color, float alpha) {
   return alpha_blend(color, to_rgb("black"), alpha);
 }
 
-inline std::string shade(std::string color, float alpha) {
+std::string shade(std::string color, float alpha) {
   return to_hex(alpha_blend(to_rgb(color), to_rgb("black"), alpha));
 }
 
-inline RGB tint(const RGB& color, float alpha) {
+RGB tint(const RGB& color, float alpha) {
   return alpha_blend(color, to_rgb("white"), alpha);
 }
 
-inline std::string tint(std::string color, float alpha) {
+std::string tint(std::string color, float alpha) {
   return to_hex(alpha_blend(to_rgb(color), to_rgb("white"), alpha));
 }
 
-inline RGB tone(const RGB& color, float alpha) {
+RGB tone(const RGB& color, float alpha) {
   return alpha_blend(color, to_rgb("grey"), alpha);
 }
 
-inline std::string tone(std::string color, float alpha) {
+std::string tone(std::string color, float alpha) {
   return to_hex(alpha_blend(to_rgb(color), to_rgb("grey"), alpha));
 }
 }  // namespace smashpp

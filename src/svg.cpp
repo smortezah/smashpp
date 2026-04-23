@@ -2,9 +2,11 @@
 // Morteza Hosseini    mhosayny@gmail.com
 
 #include "svg.hpp"
+
 #include <algorithm>
 #include <fstream>
-#include "color.cpp"
+
+#include "color.hpp"
 #include "def.hpp"
 using namespace smashpp;
 
@@ -18,7 +20,8 @@ std::string SVG::attr(std::string name, float value, bool precise,
   return ss.str();
 }
 
-std::string SVG::attr(std::string name, const std::string& value, bool precise,
+std::string SVG::attr(std::string name, const std::string& value,
+                      bool /*precise*/,
                       std::string unit) const {
   std::stringstream ss;
   ss << name << "=\"" << value << unit << "\" ";
@@ -305,7 +308,7 @@ void Path::plot(std::ofstream& f) const {
   f << end_empty_elem();
 }
 
-void Path::plot_shadow(std::ofstream& f, std::string shadowFill) {
+void Path::plot_shadow(std::ofstream& f, std::string) {
   // Filter
   filter = path_shadow(f);
   plot(f);

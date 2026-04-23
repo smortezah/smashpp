@@ -1,0 +1,143 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "[0-9]*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing git tag to package and draft
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  BUILD_TYPE: Release
+  PARALLEL: 8
+
+jobs:
+  package:
+    name: Package (${{matrix.name}})
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        include:
+          - name: Linux
+            os: ubuntu-latest
+            artifact_suffix: linux
+          - name: macOS
+            os: macos-latest
+            artifact_suffix: macos
+          - name: Windows
+            os: windows-latest
+            artifact_suffix: windows
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+        ref: ${{inputs.tag || github.ref}}
+
+    - name: Install CMake 4
+      run: python -m pip install --upgrade "cmake~=4.0.0"
+
+    - name: Resolve release metadata
+      id: meta
+      shell: bash
+      env:
+        INPUT_TAG: ${{inputs.tag}}
+      run: |
+        set -euo pipefail
+        tag="${INPUT_TAG:-${GITHUB_REF_NAME}}"
+        archive_base="smashpp-${tag}-${{matrix.artifact_suffix}}"
+        echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+        echo "archive_base=${archive_base}" >> "$GITHUB_OUTPUT"
+
+    - name: Build, test, and install
+      if: runner.os != 'Windows'
+      env:
+        BUILD_DIR: ${{github.workspace}}/build-release
+        INSTALL_DIR: ${{github.workspace}}/release-dist
+      run: |
+        cmake -S "$GITHUB_WORKSPACE" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR"
+        cmake --build "$BUILD_DIR" --parallel "$PARALLEL" --config "$BUILD_TYPE"
+        ctest --test-dir "$BUILD_DIR" -C "$BUILD_TYPE" --output-on-failure --parallel "$PARALLEL"
+        cmake --install "$BUILD_DIR" --config "$BUILD_TYPE"
+        "$INSTALL_DIR/bin/smashpp" -V
+
+    - name: Build, test, and install (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $buildDir = Join-Path $env:GITHUB_WORKSPACE "build-release"
+        $installDir = Join-Path $env:GITHUB_WORKSPACE "release-dist"
+        .\install.ps1 -BuildDir $buildDir -BuildType $env:BUILD_TYPE -Prefix $installDir -Parallel $env:PARALLEL
+        ctest --test-dir $buildDir -C $env:BUILD_TYPE --output-on-failure --parallel $env:PARALLEL
+        $smashpp = Join-Path $installDir "bin/smashpp.exe"
+        & $smashpp -V
+
+    - name: Package artifact
+      if: runner.os != 'Windows'
+      id: package_unix
+      shell: bash
+      env:
+        INSTALL_DIR: ${{github.workspace}}/release-dist
+      run: |
+        set -euo pipefail
+        archive_name="${{steps.meta.outputs.archive_base}}.tar.gz"
+        archive_path="$RUNNER_TEMP/$archive_name"
+        tar -C "$INSTALL_DIR" -czf "$archive_path" .
+        echo "archive_name=${archive_name}" >> "$GITHUB_OUTPUT"
+        echo "archive_path=${archive_path}" >> "$GITHUB_OUTPUT"
+
+    - name: Package artifact (Windows)
+      if: runner.os == 'Windows'
+      id: package_windows
+      shell: pwsh
+      run: |
+        $installDir = Join-Path $env:GITHUB_WORKSPACE "release-dist"
+        $archiveName = "${{steps.meta.outputs.archive_base}}.zip"
+        $archivePath = Join-Path $env:RUNNER_TEMP $archiveName
+        if (Test-Path $archivePath) {
+          Remove-Item $archivePath -Force
+        }
+        Compress-Archive -Path (Join-Path $installDir '*') -DestinationPath $archivePath -Force
+        "archive_name=$archiveName" >> $env:GITHUB_OUTPUT
+        "archive_path=$archivePath" >> $env:GITHUB_OUTPUT
+
+    - name: Upload packaged artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{steps.package_unix.outputs.archive_name || steps.package_windows.outputs.archive_name}}
+        path: ${{steps.package_unix.outputs.archive_path || steps.package_windows.outputs.archive_path}}
+        if-no-files-found: error
+
+  draft-release:
+    name: Draft release
+    needs: package
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download packaged artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: release-assets
+        pattern: smashpp-*
+        merge-multiple: true
+
+    - name: Create or update draft release
+      uses: softprops/action-gh-release@v3
+      with:
+        tag_name: ${{inputs.tag || github.ref_name}}
+        name: Smash++ ${{inputs.tag || github.ref_name}}
+        draft: true
+        generate_release_notes: true
+        fail_on_unmatched_files: true
+        files: |
+          release-assets/*.tar.gz
+          release-assets/*.zip

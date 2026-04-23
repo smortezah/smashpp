@@ -1,4 +1,11 @@
 .DS_Store
 .git
+.github
 build/
+build-*/
+dist/
+*.pos
+*.json
 smashpp
+smashpp-inv-rep
+exclude_N

@@ -13,6 +13,7 @@ class HSV;
 // Global functions
 bool is_hex(std::string);
 auto to_hex(const RGB&) -> std::string;
+auto to_hex(const HSV&) -> std::string;
 auto to_rgb(std::string) -> RGB;
 auto to_rgb(const HSV&) -> RGB;
 auto to_hsv(const RGB&) -> HSV;

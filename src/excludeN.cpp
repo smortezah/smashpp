@@ -1,13 +1,13 @@
 // Smash++
 // Morteza Hosseini    mhosayny@gmail.com
 
-#include <fstream>
 #include <iostream>
+#include <vector>
 
 #include "par.hpp"
 using namespace smashpp;
 
-int main(int argc, char* argv[]) {
+int main(int, char*[]) {
   for (std::vector<char> buffer(FILE_READ_BUF, 0); std::cin;) {
     std::cin.read(buffer.data(), FILE_READ_BUF);
     std::string out;
