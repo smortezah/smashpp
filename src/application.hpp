@@ -219,7 +219,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round,
     }
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
-    models->selfEnt.reserve(filter->nSegs);
+    models->selfEnt.resize(filter->nSegs);
     for (uint64_t i = 0; i < filter->nSegs; ++i) {
       if (!par->verbose && round == 1)
         std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
@@ -247,7 +247,7 @@ void application::prepare_data(std::unique_ptr<Param>& par) {
 
   // FASTA/FASTQ to seq
   auto convert_to_seq = [](std::string in, std::string out,
-                                 const FileType& type) {
+                           const FileType& type) {
     std::string msg = "[+] " + italic(file_name(in)) + " (FAST";
     if (type == FileType::fasta)
       msg += "A";
@@ -291,13 +291,13 @@ void application::remove_temp_seq(std::unique_ptr<Param>& par) {
   if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
     if (!par->saveSeq) {
       remove(ref_seq.c_str());
-    } 
+    }
   }
 
   if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
     if (!par->saveSeq) {
       remove(tar_seq.c_str());
-    } 
+    }
   }
 }
 
@@ -518,9 +518,9 @@ void info::info_STMM(std::vector<MMPar> const& Ms, char c) const {
           std::cerr << static_cast<int>(e.child->thresh);
           break;
         case 'i':
-          std::cerr << (e.child->ir == 0
-                            ? "reg"
-                            : e.child->ir == 1 ? "inv" : "reg+inv");
+          std::cerr << (e.child->ir == 0   ? "reg"
+                        : e.child->ir == 1 ? "inv"
+                                           : "reg+inv");
           break;
         case 'a':
           std::cerr << e.child->alpha;

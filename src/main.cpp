@@ -17,8 +17,11 @@ int main(int argc, char* argv[]) {
     application{}.exe(argc, argv);
     auto const t1 = now();
     std::cerr << "Total time: " << hms(t1 - t0);
+  } catch (int code) {
+    return code;
   } catch (std::exception& e) {
     std::cerr << e.what();
+    return EXIT_FAILURE;
   } catch (...) {
     return EXIT_FAILURE;
   }
