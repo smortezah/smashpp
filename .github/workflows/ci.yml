@@ -10,6 +10,7 @@ on:
 
 env:
   BUILD: ${{github.workspace}}/build
+  INSTALL: ${{github.workspace}}/install
   BUILD_TYPE: Release
   PARALLEL: 8
 
@@ -27,8 +28,17 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
+    - name: Install CMake 4
+      run: python -m pip install --upgrade "cmake~=4.0.0"
+
+    - name: Show CMake version
+      run: cmake --version
+
     - name: Configure CMake
-      run: cmake -B ${{env.BUILD}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -S ${{github.workspace}} -B ${{env.BUILD}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       run: cmake --build ${{env.BUILD}} --parallel ${{env.PARALLEL}} --config ${{env.BUILD_TYPE}}
+
+    - name: Install
+      run: cmake --install ${{env.BUILD}} --prefix ${{env.INSTALL}} --config ${{env.BUILD_TYPE}}
