@@ -16,8 +16,25 @@ if ([string]::IsNullOrWhiteSpace($Prefix)) {
   $Prefix = Join-Path $rootDir "dist"
 }
 
-cmake -S $rootDir -B $BuildDir -DCMAKE_BUILD_TYPE=$BuildType -DCMAKE_INSTALL_PREFIX=$Prefix
-cmake --build $BuildDir --parallel $Parallel --config $BuildType
-cmake --install $BuildDir --config $BuildType
+$configureArgs = @(
+  "-S", $rootDir,
+  "-B", $BuildDir,
+  "-DCMAKE_BUILD_TYPE=$BuildType",
+  "-DCMAKE_INSTALL_PREFIX=$Prefix"
+)
+$buildArgs = @(
+  "--build", $BuildDir,
+  "--parallel", $Parallel,
+  "--config", $BuildType
+)
+$installArgs = @(
+  "--install", $BuildDir,
+  "--config", $BuildType,
+  "--prefix", $Prefix
+)
 
-Write-Host "Installed Smash++ binaries to $Prefix\bin"
+& cmake @configureArgs
+& cmake @buildArgs
+& cmake @installArgs
+
+Write-Host "Installed Smash++ binaries to $(Join-Path $Prefix 'bin')"
