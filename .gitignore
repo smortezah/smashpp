@@ -61,5 +61,6 @@ smashpp
 smashpp.exe
 exclude_N
 smashpp-inv-rep
-install.bat
 instruct.md
+build-asan/
+dist/
