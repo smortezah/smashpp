@@ -102,43 +102,48 @@ if(BUILD_TESTING)
   add_test(
       NAME smashpp-missing-format
       COMMAND ${CMAKE_COMMAND}
-              -DEXECUTABLE=$<TARGET_FILE:smashpp>
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
               -DARG_0=-fmt
               "-DEXPECTED_TEXT=output format not specified"
-              -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake)
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
 
   add_test(
       NAME smashpp-viz-missing-output
       COMMAND ${CMAKE_COMMAND}
-              -DEXECUTABLE=$<TARGET_FILE:smashpp>
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
               -DARG_0=viz
               -DARG_1=-o
               "-DEXPECTED_TEXT=output image name not specified"
-              -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake)
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
 
   add_test(
       NAME smashpp-example-smoke
       COMMAND ${CMAKE_COMMAND}
-              -DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-example-smoke
-              -DSMASHPP=$<TARGET_FILE:smashpp>
-              -DREF=${CMAKE_CURRENT_SOURCE_DIR}/example/ref
-              -DTAR=${CMAKE_CURRENT_SOURCE_DIR}/example/tar
-              -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/RunSmashppSmoke.cmake)
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-example-smoke"
+              "-DSMASHPP=$<TARGET_FILE:smashpp>"
+              "-DREF=${CMAKE_CURRENT_SOURCE_DIR}/example/ref"
+              "-DTAR=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunSmashppSmoke.cmake")
 
   add_test(
       NAME helper-tools-smoke
       COMMAND ${CMAKE_COMMAND}
-              -DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/helper-tools-smoke
-              -DEXCLUDE_N=$<TARGET_FILE:exclude_N>
-              -DINV_REP=$<TARGET_FILE:smashpp-inv-rep>
-              -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/RunHelperToolsSmoke.cmake)
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/helper-tools-smoke"
+              "-DEXCLUDE_N=$<TARGET_FILE:exclude_N>"
+              "-DINV_REP=$<TARGET_FILE:smashpp-inv-rep>"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunHelperToolsSmoke.cmake")
 
   add_test(
       NAME smashpp-inv-rep-usage
       COMMAND ${CMAKE_COMMAND}
-              -DEXECUTABLE=$<TARGET_FILE:smashpp-inv-rep>
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp-inv-rep>"
               "-DEXPECTED_TEXT=Usage: smashpp-inv-rep"
-              -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake)
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
 endif()
 
 install(TARGETS smashpp smashpp-inv-rep exclude_N
