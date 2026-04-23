@@ -110,8 +110,8 @@ inline static FileType file_type(std::string name) {
 
   // Fastq
   while (f.peek() == '@') ignore_this_line(f);
-  for (uint8_t nTabs = 0; f.get(c) && c != '\n';)
-    if (c == '\t') ++nTabs;
+  while (f.get(c) && c != '\n') {
+  }
   if (f.peek() == '+') {
     f.close();
     return FileType::fastq;

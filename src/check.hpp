@@ -5,6 +5,7 @@
 #define SMASHPP_CHECKHPP
 
 #include <stdexcept>
+
 #include "exception.hpp"
 
 namespace smashpp {
@@ -51,7 +52,8 @@ void ValRange<Value>::check(Value& val) {
       message += "Will be automatically modified.";
     message += "\n";
   };
-  const auto create_message = [=](char open, char close) {
+  const auto create_message = [this, &append_msg, isFloat](char open,
+                                                           char close) {
     inRange = false;
     auto s =
         std::string(1, open) +

@@ -4,7 +4,6 @@
 #ifndef SMASHPP_VIZPAINT_HPP
 #define SMASHPP_VIZPAINT_HPP
 
-#include "color.cpp"
 #include "color.hpp"
 #include "def.hpp"
 #include "par.hpp"
@@ -157,8 +156,7 @@ class VizPaint {
                       std::unique_ptr<VizParam>&, bool) const;
   void plot_title(std::ofstream&, std::string, std::string, bool) const;
   void plot_legend(std::ofstream&, std::unique_ptr<VizParam>&, int64_t) const;
-  void set_legend_rect(std::ofstream&, std::unique_ptr<LegendPlot>&,
-                       char) const;
+  void set_legend_rect(std::unique_ptr<LegendPlot>&, char) const;
   void plot_legend_gradient(std::ofstream&, std::unique_ptr<LegendPlot>&) const;
   void plot_legend_text_horiz(std::ofstream&,
                               std::unique_ptr<LegendPlot>&) const;

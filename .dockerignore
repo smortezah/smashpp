@@ -4,7 +4,6 @@
 build/
 build-*/
 dist/
-build-asan/
 *.pos
 *.json
 smashpp

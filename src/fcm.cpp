@@ -165,22 +165,22 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
         break;
     }
   };
-  const auto rmm_row = [=](std::string&& lbl, char c) {
+  const auto rmm_row = [&](std::string&& lbl, char c) {
     label(lbl);
     info_MM(rMs, c);
     std::cerr << '\n';
   };
-  const auto rstmm_row = [=](std::string&& lbl, char c) {
+  const auto rstmm_row = [&](std::string&& lbl, char c) {
     label(lbl);
     if (c != 'h') info_STMM(rMs, c);
     std::cerr << '\n';
   };
-  const auto tmm_row = [=](std::string&& lbl, char c) {
+  const auto tmm_row = [&](std::string&& lbl, char c) {
     label(lbl);
     info_MM(tMs, c);
     std::cerr << '\n';
   };
-  const auto tstmm_row = [=](std::string&& lbl, char c) {
+  const auto tstmm_row = [&](std::string&& lbl, char c) {
     label(lbl);
     if (c != 'h') info_STMM(tMs, c);
     std::cerr << '\n';

@@ -196,14 +196,10 @@ void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out,
   seg->round = round;
   seg->sample_step = par->sampleStep;
 
-  uint8_t maxCtx = 0;
-  for (const auto& e : par->refMs)
-    if (e.k > maxCtx) maxCtx = e.k;
-
   if (round == 2)
-    seg->set_guards(maxCtx, par->ref_guard->beg, par->ref_guard->end);
+    seg->set_guards(par->ref_guard->beg, par->ref_guard->end);
   else if (round == 1 || round == 3)
-    seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
+    seg->set_guards(par->tar_guard->beg, par->tar_guard->end);
 
   seg->totalSize = file_lines(profile_name);
   auto filtered{0.f};
@@ -396,16 +392,10 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out,
   seg->minSize = par->segSize;
   seg->round = round;
   seg->sample_step = par->sampleStep;
-  {
-    uint8_t maxCtx = 0;
-    for (const auto& e : par->refMs)
-      if (e.k > maxCtx) maxCtx = e.k;
-
-    if (round == 2)
-      seg->set_guards(maxCtx, par->ref_guard->beg, par->ref_guard->end);
-    else if (round == 1 || round == 3)
-      seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
-  }
+  if (round == 2)
+    seg->set_guards(par->ref_guard->beg, par->ref_guard->end);
+  else if (round == 1 || round == 3)
+    seg->set_guards(par->tar_guard->beg, par->tar_guard->end);
 
   seg->totalSize = file_lines(profileName);
   const auto jump_lines = [&]() {
@@ -485,16 +475,10 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   seg->minSize = par->segSize;
   seg->round = round;
   seg->sample_step = par->sampleStep;
-  {
-    uint8_t maxCtx = 0;
-    for (const auto& e : par->refMs)
-      if (e.k > maxCtx) maxCtx = e.k;
-
-    if (round == 2)
-      seg->set_guards(maxCtx, par->ref_guard->beg, par->ref_guard->end);
-    else if (round == 1 || round == 3)
-      seg->set_guards(maxCtx, par->tar_guard->beg, par->tar_guard->end);
-  }
+  if (round == 2)
+    seg->set_guards(par->ref_guard->beg, par->ref_guard->end);
+  else if (round == 1 || round == 3)
+    seg->set_guards(par->tar_guard->beg, par->tar_guard->end);
 
   seg->totalSize = file_size(par->tar);
   const auto jump_lines = [&]() {

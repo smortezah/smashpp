@@ -41,7 +41,7 @@ class Segment {
 
   void partition(std::vector<PosRow>&, float);
   void finalize_partition(std::vector<PosRow>&);
-  void set_guards(uint8_t, int16_t, int16_t);
+  void set_guards(int16_t, int16_t);
 };
 }  // namespace smashpp
 
