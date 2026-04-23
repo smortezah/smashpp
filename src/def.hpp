@@ -14,7 +14,7 @@
 
 namespace smashpp {
 // Version
-static const std::string VERSION{"23.09"};
+static const std::string VERSION{"26.04"};
 
 // Typedef
 using dur_t = std::chrono::duration<double>;
