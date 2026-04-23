@@ -40,5 +40,8 @@ jobs:
     - name: Build
       run: cmake --build ${{env.BUILD}} --parallel ${{env.PARALLEL}} --config ${{env.BUILD_TYPE}}
 
+    - name: Test
+      run: ctest --test-dir ${{env.BUILD}} -C ${{env.BUILD_TYPE}} --output-on-failure --parallel ${{env.PARALLEL}}
+
     - name: Install
       run: cmake --install ${{env.BUILD}} --prefix ${{env.INSTALL}} --config ${{env.BUILD_TYPE}}
