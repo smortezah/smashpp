@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <vector>
 
 // a,A->84(T)  c,C->71(G)  g,G->67(C)  t,T->65(A)  n,N->78(N)
@@ -34,11 +35,29 @@ int main(int argc, char* argv[]) {
   }
 
   inFile.seekg(0, std::ios::end);
-  const auto size = static_cast<size_t>(inFile.tellg());
+  const auto endPos = inFile.tellg();
+  if (endPos < 0) {
+    std::cerr << "Error: cannot determine input file size for \"" << inFileName
+              << "\".\n";
+    return EXIT_FAILURE;
+  }
+
+  if (endPos > std::numeric_limits<std::streamsize>::max()) {
+    std::cerr << "Error: input file \"" << inFileName
+              << "\" is too large to process.\n";
+    return EXIT_FAILURE;
+  }
+
+  const auto size = static_cast<size_t>(endPos);
   inFile.seekg(0, std::ios::beg);
 
   std::vector<char> buffer(size, 0);
-  inFile.read(buffer.data(), static_cast<std::streamsize>(size));
+  if (size != 0 &&
+      !inFile.read(buffer.data(), static_cast<std::streamsize>(size))) {
+    std::cerr << "Error: failed to read input file \"" << inFileName
+              << "\".\n";
+    return EXIT_FAILURE;
+  }
   inFile.close();
 
   auto payloadSize = buffer.size();
@@ -57,7 +76,13 @@ int main(int argc, char* argv[]) {
     std::cerr << "Error: cannot open output file \"" << outFileName << "\".\n";
     return EXIT_FAILURE;
   }
-  outFile.write(buffer.data(), static_cast<std::streamsize>(size));
+  if (size != 0)
+    outFile.write(buffer.data(), static_cast<std::streamsize>(size));
+  if (!outFile) {
+    std::cerr << "Error: failed to write output file \"" << outFileName
+              << "\".\n";
+    return EXIT_FAILURE;
+  }
   outFile.close();
 
   return 0;
