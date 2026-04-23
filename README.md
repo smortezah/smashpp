@@ -1,348 +1,204 @@
 # Smash++
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
-[![CI](https://github.com/smortezah/smashpp/actions/workflows/ci.yml/badge.svg)](https://github.com/smortezah/smashpp/actions/workflows/ci.yml)
 
-Smash++ is a fast utility designed for the identification and visualization of rearrangements in DNA sequences.
+[![CI](https://github.com/smortezah/smashpp/actions/workflows/ci.yml/badge.svg)](https://github.com/smortezah/smashpp/actions/workflows/ci.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+
+Smash++ is a fast utility for identifying and visualizing rearrangements in DNA sequences.
 
 ## Installation
 
-To install Smash++, you'll need CMake version 3.5 or higher, along with a compiler that supports C++14.
-
-### Docker
-
-```bash
-# Pull the image
-docker pull smortezah/smashpp;
-
-# Run the container
-docker run -it smortezah/smashpp
-```
+Smash++ requires CMake `4.0.0` or newer and a compiler with C++20 support.
 
 ### Conda
 
-Begin by installing [Miniconda](https://docs.conda.io/en/latest/miniconda.html). Once installed, execute the following commands:
+```sh
+conda install -y bioconda::smashpp
+```
 
-```bash
-conda install -c bioconda -y smashpp
+### Docker
+
+```sh
+docker pull smortezah/smashpp
+docker run -it smortezah/smashpp
+```
+
+### Build From Source
+
+```sh
+git clone --depth 1 https://github.com/smortezah/smashpp.git
+cd smashpp
+bash install.sh
+```
+
+By default, `install.sh` builds in `./build` and installs `smashpp`, `smashpp-inv-rep`, and `exclude_N` into `./dist/bin`.
+
+You can customize the build with environment variables:
+
+```sh
+PREFIX=/your/path BUILD_TYPE=Debug PARALLEL=16 bash install.sh
 ```
 
 ### Ubuntu
 
-```bash
-# Install Git, CMake and g++
-apt update && apt install -y git cmake g++;
+```sh
+apt update && apt install -y git g++ python3-pip
+pip3 install --user "cmake~=4.0.0"
 
-# Clone the repository and install it
-git clone --depth 1 https://github.com/smortezah/smashpp.git;
-cd smashpp;
+git clone --depth 1 https://github.com/smortezah/smashpp.git
+cd smashpp
 bash install.sh
 ```
 
 ### macOS
 
-```bash
-# Install Homebrew, Git and CMake
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)";
-brew install git cmake;
+```sh
+brew install git python
+pip3 install --user "cmake~=4.0.0"
 
-# Clone the repository and install it
-git clone --depth 1 https://github.com/smortezah/smashpp.git;
-cd smashpp;
+git clone --depth 1 https://github.com/smortezah/smashpp.git
+cd smashpp
 bash install.sh
 ```
 
 ### Windows
 
-First, set up [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Windows Subsystem for Linux). After that, clone the Smash++ repository and proceed with the installation as you would on Ubuntu:
+Install Visual Studio 2022 Build Tools with the Desktop C++ workload, plus Python 3.
 
-```bash
-git clone --depth 1 https://github.com/smortezah/smashpp.git;
-cd smashpp;
-./install.sh
+```powershell
+py -m pip install --user "cmake~=4.0.0"
+git clone --depth 1 https://github.com/smortezah/smashpp.git
+cd smashpp
+powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
->[!NOTE]
-> If you encounter permission issues on any operating system, consider using the `sudo` command.
+The PowerShell installer supports the same knobs as the shell script, for example:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -BuildType Debug -Prefix .\dist
+```
 
 ## Usage
 
-```bash
-./smashpp [OPTIONS] -r <REF_FILE> -t <TAR_FILE>
+If you used the default source install, run the binaries from `./dist/bin`.
+
+```sh
+./dist/bin/smashpp [OPTIONS] -r <REF_FILE> -t <TAR_FILE>
+./dist/bin/smashpp viz [OPTIONS] -o <SVG_FILE> <POS_FILE>
 ```
 
-For example:
-
-```bash
-./smashpp -r ref -t tar
-```
-
-For optimal results, it's advisable to select short names for both reference and target sequences.
-
-### Options
-
-To explore the available options for Smash++, execute the following command:
-
-```bash
-./smashpp
-```
-
-which will yield the following:
-
-```text
-SYNOPSIS
-      ./smashpp [OPTIONS]  -r <REF_FILE>  -t <TAR_FILE>
-
-SAMPLE
-      ./smashpp -r ref -t tar -l 0 -m 1000
-      ./smashpp \ 
-          --reference ref \ 
-          --target tar \ 
-          --format json \ 
-          --verbose 
-
-OPTIONS
-    Required:
-      -r, --reference <FILE>       reference file (Seq/FASTA/FASTQ)
-      -t, --target <FILE>          target file    (Seq/FASTA/FASTQ)
-
-    Optional:
-      -l, --level <INT>
-            level of compression: 0 to 6. Default: 3
-
-      -m, --min-segment-size <INT>
-            minimum segment size: 1 to 4294967295. Default: 50
-
-      -fmt, --format <STRING>
-            format of the output (position) file: {pos, json}.
-            Default: pos
-
-      -e, --entropy-N <FLOAT>
-            entropy of 'N's: 0.0 to 100.0. Default: 2.0
-
-      -n, --num-threads <INT>
-            number of threads: 1 to 255. Default: 4
-
-      -f, --filter-size <INT>
-            filter size: 1 to 4294967295. Default: 100
-
-      -ft, --filter-type <INT/STRING>
-            filter type (windowing function): {0/rectangular,
-            1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch,
-            6/sine, 7/nuttall}. Default: hann
-
-      -fs, --filter-scale <STRING>
-            filter scale: {S/small, M/medium, L/large}
-
-      -d, --sampling-step <INT>
-            sampling step. Default: 1
-
-      -th, --threshold <FLOAT>
-            threshold: 0.0 to 20.0. Default: 1.5
-
-      -rb, --reference-begin-guard <INT>
-            reference begin guard: -32768 to 32767. Default: 0
-
-      -re, --reference-end-guard <INT>
-            reference ending guard: -32768 to 32767. Default: 0
-
-      -tb, --target-begin-guard <INT>
-            target begin guard: -32768 to 32767. Default: 0
-
-      -te, --target-end-guard <INT>
-            target ending guard: -32768 to 32767. Default: 0
-
-      -ar, --asymmetric-regions
-            consider asymmetric regions. Default: not used
-
-      -nr, --no-self-complexity
-            do not compute self complexity. Default: not used
-
-      -sb, --save-sequence
-            save sequence (input: FASTA/FASTQ). Default: not used
-
-      -sp, --save-profile
-            save profile (*.prf). Default: not used
-
-      -sf, --save-filtered
-            save filtered file (*.fil). Default: not used
-
-      -ss, --save-segmented
-            save segmented files (*.s[i]). Default: not used
-
-      -sa, --save-profile-filtered-segmented
-            save profile, filetered and segmented files.
-            Default: not used
-
-      -rm, --reference-model  k,[w,d,]ir,a,g/t,ir,a,g:...
-      -tm, --target-model     k,[w,d,]ir,a,g/t,ir,a,g:...
-            parameters of models
-                <INT>  k:  context size
-                <INT>  w:  width of sketch in log2 form,
-                           e.g., set 10 for w=2^10=1024
-                <INT>  d:  depth of sketch
-                <INT>  ir: inverted repeat: {0, 1, 2}
-                           0: regular (not inverted)
-                           1: inverted, solely
-                           2: both regular and inverted
-              <FLOAT>  a:  estimator
-              <FLOAT>  g:  forgetting factor: 0.0 to 1.0
-                <INT>  t:  threshold (number of substitutions)
-
-      -ll, --list-levels
-            list of compression levels
-
-      -h, --help
-            usage guide
-
-      -v, --verbose
-            more information
-
-      -V, --version
-            show version
-```
-
-To explore the options available for the Smash++ Visualizer, enter the following command:
-
-```bash
-./smashpp viz
-```
-
-or
-
-```bash
-./smashpp -viz
-```
-
-which will yield the following:
-
-```text
-SYNOPSIS
-      ./smashpp viz|-viz [OPTIONS]  -o <SVG_FILE>  <POS_FILE>
-
-SAMPLE
-      ./smashpp -viz -o simil.svg ref.tar.pos
-      ./smashpp viz \ 
-          --output similarity.svg \ 
-          --vertical-view \ 
-          ref.tar.json
-
-OPTIONS
-    Required:
-      <POS_FILE>    position file generated by Smash++ (*.pos/*.json)
-
-    Optional:
-      -o, --output <SVG_FILE>
-            output image name (*.svg). Default: map.svg
-
-      -rn, --reference-name <STRING>
-            reference name shown on output. If it has spaces, use
-            double quotes, e.g. "Seq label". Default: the name in
-            the header of position file
-
-      -tn, --target-name <STRING>
-            target name shown on output
-
-      -l, --link <INT>
-            type of the link between maps: 1 to 6. Default: 1
-
-      -c, --color <INT>
-            color mode: {0, 1}. Default: 0
-
-      -p, --opacity <FLOAT>
-            opacity: 0.0 to 1.0. Default: 0.9
-
-      -w, --width <INT>
-            width of the sequence: 8 to 100. Default: 10
-
-      -s, --space <INT>
-            space between sequences: 5 to 200. Default: 40
-
-      -tc, --total-colors <INT>
-            total number of colors: 1 to 255
-
-      -rt, --reference-tick <INT>
-            reference tick: 1 to 4294967295
-
-      -tt, --target-tick <INT>
-            target tick: 1 to 4294967295
-
-      -th, --tick-human-readable <INT>
-            tick human readable: {0: false, 1: true}. Default: 1
-
-      -m, --min-block-size <INT>
-            minimum block size: 1 to 4294967295. Default: 1
-
-      -vv, --vertical-view
-            vertical view. Default: not used
-
-      -nrr, --no-relative-redundancy
-            do not show relative redundancy (relative complexity).
-            Default: not used
-
-      -nr, --no-redundancy
-            do not show redundancy. Default: not used
-
-      -ni, --no-inverted
-            do not show inverse maps. Default: not used
-
-      -ng, --no-regular
-            do not show regular maps. Default: not used
-
-      -n, --show-N
-            show 'N' bases. Default: not used
-
-      -stat, --statistics
-            save statistics (*.csv). Default: stat.csv
-
-      -h, --help
-            usage guide
-
-      -v, --verbose
-            more information
-
-      -V, --version
-            show version
-```
+For best results, keep the reference and target filenames short.
+
+### Smash++ Options
+
+Use `smashpp --help` to print the full CLI help.
+
+| Option                                     | Value          | Description                                                                                                              | Default             |
+| ------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------- |
+| `-r`, `--reference`                        | `<FILE>`       | Reference file in `seq`, `FASTA`, or `FASTQ` format.                                                                     | Required            |
+| `-t`, `--target`                           | `<FILE>`       | Target file in `seq`, `FASTA`, or `FASTQ` format.                                                                        | Required            |
+| `-l`, `--level`                            | `<INT>`        | Compression level from `0` to `6`.                                                                                       | `3`                 |
+| `-m`, `--min-segment-size`                 | `<INT>`        | Minimum segment size.                                                                                                    | `50`                |
+| `-fmt`, `--format`                         | `<STRING>`     | Output format: `pos` or `json`.                                                                                          | `pos`               |
+| `-e`, `--entropy-N`                        | `<FLOAT>`      | Entropy assigned to `N` bases.                                                                                           | `2.0`               |
+| `-n`, `--num-threads`                      | `<INT>`        | Number of worker threads.                                                                                                | `4`                 |
+| `-f`, `--filter-size`                      | `<INT>`        | Filter window size.                                                                                                      | `100`               |
+| `-ft`, `--filter-type`                     | `<INT/STRING>` | Window function: `0/rectangular`, `1/hamming`, `2/hann`, `3/blackman`, `4/triangular`, `5/welch`, `6/sine`, `7/nuttall`. | `hann`              |
+| `-fs`, `--filter-scale`                    | `<STRING>`     | Filter scale: `S/small`, `M/medium`, or `L/large`.                                                                       | Auto                |
+| `-d`, `--sampling-step`                    | `<INT>`        | Sampling step.                                                                                                           | Auto                |
+| `-th`, `--threshold`                       | `<FLOAT>`      | Segmentation threshold.                                                                                                  | `1.5`               |
+| `-rb`, `--reference-begin-guard`           | `<INT>`        | Reference begin guard.                                                                                                   | `0`                 |
+| `-re`, `--reference-end-guard`             | `<INT>`        | Reference end guard.                                                                                                     | `0`                 |
+| `-tb`, `--target-begin-guard`              | `<INT>`        | Target begin guard.                                                                                                      | `0`                 |
+| `-te`, `--target-end-guard`                | `<INT>`        | Target end guard.                                                                                                        | `0`                 |
+| `-ar`, `--asymmetric-regions`              | `-`            | Consider asymmetric regions.                                                                                             | Disabled            |
+| `-nr`, `--no-self-complexity`              | `-`            | Skip self-complexity computation.                                                                                        | Disabled            |
+| `-sb`, `--save-sequence`                   | `-`            | Keep temporary `.seq` files generated from FASTA/FASTQ input.                                                            | Disabled            |
+| `-sp`, `--save-profile`                    | `-`            | Save profile output.                                                                                                     | Disabled            |
+| `-sf`, `--save-filtered`                   | `-`            | Save filtered output.                                                                                                    | Disabled            |
+| `-ss`, `--save-segmented`                  | `-`            | Save extracted segment files.                                                                                            | Disabled            |
+| `-sa`, `--save-profile-filtered-segmented` | `-`            | Save profile, filtered, and segmented outputs.                                                                           | Disabled            |
+| `-rm`, `--reference-model`                 | `<STRING>`     | Custom reference model chain.                                                                                            | Auto from `--level` |
+| `-tm`, `--target-model`                    | `<STRING>`     | Custom target model chain.                                                                                               | Auto from `--level` |
+| `-ll`, `--list-levels`                     | `-`            | Print the built-in compression levels.                                                                                   | -                   |
+| `-h`, `--help`                             | `-`            | Show the help message.                                                                                                   | -                   |
+| `-v`, `--verbose`                          | `-`            | Print detailed progress information.                                                                                     | Disabled            |
+| `-V`, `--version`                          | `-`            | Show the program version.                                                                                                | -                   |
+
+#### Model Parameter Fields
+
+Custom model strings use the form `k,[w,d,]ir,a,g/t,ir,a,g:...`.
+
+| Field | Meaning                                                                          |
+| ----- | -------------------------------------------------------------------------------- |
+| `k`   | Context size.                                                                    |
+| `w`   | Sketch width given in log2 form, for example `10` means $2^{10} = 1024$.         |
+| `d`   | Sketch depth.                                                                    |
+| `ir`  | Inverted-repeat mode: `0` regular, `1` inverted only, `2` regular plus inverted. |
+| `a`   | Estimator.                                                                       |
+| `g`   | Forgetting factor in the range `0.0` to `1.0`.                                   |
+| `t`   | Threshold for the number of substitutions in a tolerant model.                   |
+
+### Visualizer Options
+
+Use `smashpp viz --help` to print the full CLI help.
+
+| Option                             | Value        | Description                                                       | Default      |
+| ---------------------------------- | ------------ | ----------------------------------------------------------------- | ------------ |
+| `<POS_FILE>`                       | File         | Position file generated by Smash++ in `*.pos` or `*.json` format. | Required     |
+| `-o`, `--output`                   | `<SVG_FILE>` | Output SVG path.                                                  | `map.svg`    |
+| `-rn`, `--reference-name`          | `<STRING>`   | Override the displayed reference label.                           | Header value |
+| `-tn`, `--target-name`             | `<STRING>`   | Override the displayed target label.                              | Header value |
+| `-l`, `--link`                     | `<INT>`      | Link style between the two maps.                                  | `1`          |
+| `-c`, `--color`                    | `<INT>`      | Color mode: `0` or `1`.                                           | `0`          |
+| `-p`, `--opacity`                  | `<FLOAT>`    | Connector opacity.                                                | `0.9`        |
+| `-w`, `--width`                    | `<INT>`      | Sequence bar width.                                               | `10`         |
+| `-s`, `--space`                    | `<INT>`      | Space between sequences.                                          | `40`         |
+| `-tc`, `--total-colors`            | `<INT>`      | Total number of colors to use.                                    | Auto         |
+| `-rt`, `--reference-tick`          | `<INT>`      | Reference tick spacing.                                           | Auto         |
+| `-tt`, `--target-tick`             | `<INT>`      | Target tick spacing.                                              | Auto         |
+| `-th`, `--tick-human-readable`     | `<INT>`      | Human-readable tick labels: `0` false, `1` true.                  | `1`          |
+| `-m`, `--min-block-size`           | `<INT>`      | Minimum block size to display.                                    | `1`          |
+| `-vv`, `--vertical-view`           | `-`          | Render a vertical layout.                                         | Disabled     |
+| `-nrr`, `--no-relative-redundancy` | `-`          | Hide relative redundancy coloring.                                | Disabled     |
+| `-nr`, `--no-redundancy`           | `-`          | Hide redundancy coloring.                                         | Disabled     |
+| `-ni`, `--no-inverted`             | `-`          | Hide inverted matches.                                            | Disabled     |
+| `-ng`, `--no-regular`              | `-`          | Hide regular matches.                                             | Disabled     |
+| `-n`, `--show-N`                   | `-`          | Highlight `N` bases.                                              | Disabled     |
+| `-stat`, `--statistics`            | `-`          | Save statistics to CSV.                                           | `stat.csv`   |
+| `-h`, `--help`                     | `-`          | Show the help message.                                            | -            |
+| `-v`, `--verbose`                  | `-`          | Print detailed plotting information.                              | Disabled     |
+| `-V`, `--version`                  | `-`          | Show the program version.                                         | -            |
 
 ### Example
 
-Once Smash++ is installed, copy its executable file into the `example` directory and navigate to that directory:
+After running the default installer, the example workflow looks like this:
 
-```bash
-cp smashpp example/;
-cd example/
+```sh
+cd example
+../dist/bin/smashpp -r ref -t tar
+../dist/bin/smashpp viz -o example.svg ref.tar.pos
 ```
 
-This directory contains two sequences, each 1000 bases long: the reference sequence (`ref`) and the target sequence (`tar`). To run Smash++ and the visualizer, use the following commands:
+JSON output is available too:
 
-```bash
-./smashpp -r ref -t tar;
-./smashpp viz -o example.svg ref.tar.pos
+```sh
+cd example
+../dist/bin/smashpp --reference ref --target tar --format json
+../dist/bin/smashpp viz --output example.svg ref.tar.json
 ```
 
-**Update**: As of version 22.08, Smash++ now supports the JSON format. To utilize this feature, execute the following command:
-
-```bash
-./smashpp --reference ref --target tar --format json;
-./smashpp viz --output example.svg ref.tar.json
-```
+If `smashpp` is already on your `PATH`, you can drop the `../dist/bin/` prefix.
 
 ## Cite
 
-If you find Smash++ useful in your research, please acknowledge our work by citing the following:
+If you find Smash++ useful in your research, please acknowledge our work by citing:
 
-* M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: an alignment-free and memory-efficient tool to find genomic rearrangements," *GigaScience*, vol. 9, no. 5, 2020. [DOI: 10.1093/gigascience/giaa048](https://doi.org/10.1093/gigascience/giaa048)
-
-## Codebase
-
-![Visualization of this repo](./diagram.svg)
+- M. Hosseini, D. Pratas, B. Morgenstern, A.J. Pinho, "Smash++: an alignment-free and memory-efficient tool to find genomic rearrangements," _GigaScience_, vol. 9, no. 5, 2020. [DOI: 10.1093/gigascience/giaa048](https://doi.org/10.1093/gigascience/giaa048)
 
 ## Issues
 
-Should you encounter any [issues](https://github.com/smortezah/smashpp/issues), please don't hesitate to let us know.
+If you encounter an [issue](https://github.com/smortezah/smashpp/issues), please let us know.
 
 ## License
 
-Smash++ is protected under the [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html) license.
-
-Copyright © 2018-2024 Morteza Hosseini.
+Smash++ is distributed under the [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html) license.
