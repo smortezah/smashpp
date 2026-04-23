@@ -5,6 +5,8 @@ project(smashpp VERSION 26.04 LANGUAGES CXX)
 include(GNUInstallDirs)
 
 option(SMASHPP_ENABLE_OPENMP "Enable OpenMP support when available." ON)
+option(SMASHPP_ENABLE_SANITIZERS
+       "Enable address and undefined behavior sanitizers." OFF)
 option(SMASHPP_ENABLE_UNSAFE_FAST_MATH
        "Enable aggressive GNU floating-point optimizations." OFF)
 option(BUILD_TESTING "Enable the Smash++ test suite." ON)
@@ -23,6 +25,24 @@ function(smashpp_configure_target target_name)
     target_compile_options(${target_name} PRIVATE /W4)
   else()
     target_compile_options(${target_name} PRIVATE -Wall -Wextra)
+  endif()
+
+  if (SMASHPP_ENABLE_SANITIZERS)
+    if (MSVC)
+      message(FATAL_ERROR
+              "SMASHPP_ENABLE_SANITIZERS is not supported with MSVC.")
+    endif()
+    if (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+      message(FATAL_ERROR
+              "SMASHPP_ENABLE_SANITIZERS requires Clang or GCC.")
+    endif()
+
+    target_compile_options(
+        ${target_name} PRIVATE -fsanitize=address,undefined
+                               -fno-omit-frame-pointer)
+    target_link_options(
+        ${target_name} PRIVATE -fsanitize=address,undefined
+                               -fno-omit-frame-pointer)
   endif()
 endfunction()
 

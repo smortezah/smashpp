@@ -16,13 +16,17 @@ env:
 
 jobs:
   build:
+    name: Build (${{matrix.name}})
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+        include:
+          - name: Linux
+            os: ubuntu-latest
+          - name: macOS
+            os: macos-latest
+          - name: Windows
+            os: windows-latest
 
     steps:
     - name: Checkout repo
@@ -35,13 +39,68 @@ jobs:
       run: cmake --version
 
     - name: Configure CMake
+      if: runner.os != 'Windows'
       run: cmake -S ${{github.workspace}} -B ${{env.BUILD}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      if: runner.os != 'Windows'
+      run: cmake --build ${{env.BUILD}} --parallel ${{env.PARALLEL}} --config ${{env.BUILD_TYPE}}
+
+    - name: Install with PowerShell wrapper
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: .\install.ps1 -BuildDir $env:BUILD -BuildType $env:BUILD_TYPE -Prefix $env:INSTALL -Parallel $env:PARALLEL
+
+    - name: Test
+      run: ctest --test-dir ${{env.BUILD}} -C ${{env.BUILD_TYPE}} --output-on-failure --parallel ${{env.PARALLEL}}
+
+    - name: Install
+      if: runner.os != 'Windows'
+      run: cmake --install ${{env.BUILD}} --prefix ${{env.INSTALL}} --config ${{env.BUILD_TYPE}}
+
+    - name: Smoke installed CLI
+      if: runner.os != 'Windows'
+      run: ${{env.INSTALL}}/bin/smashpp -V
+
+    - name: Smoke installed CLI (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $smashpp = Join-Path $env:INSTALL "bin/smashpp.exe"
+        & $smashpp -V
+
+  sanitizers:
+    name: Sanitizers (Linux)
+    runs-on: ubuntu-latest
+    env:
+      BUILD: ${{github.workspace}}/build-sanitizers
+      BUILD_TYPE: RelWithDebInfo
+      PARALLEL: 8
+      ASAN_OPTIONS: detect_leaks=1:strict_string_checks=1
+      UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Install CMake 4
+      run: python -m pip install --upgrade "cmake~=4.0.0"
+
+    - name: Show compiler version
+      run: clang++ --version
+
+    - name: Configure CMake
+      env:
+        CC: clang
+        CXX: clang++
+      run: >
+        cmake -S ${{github.workspace}} -B ${{env.BUILD}}
+        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        -DSMASHPP_ENABLE_OPENMP=OFF
+        -DSMASHPP_ENABLE_SANITIZERS=ON
 
     - name: Build
       run: cmake --build ${{env.BUILD}} --parallel ${{env.PARALLEL}} --config ${{env.BUILD_TYPE}}
 
     - name: Test
       run: ctest --test-dir ${{env.BUILD}} -C ${{env.BUILD_TYPE}} --output-on-failure --parallel ${{env.PARALLEL}}
-
-    - name: Install
-      run: cmake --install ${{env.BUILD}} --prefix ${{env.INSTALL}} --config ${{env.BUILD_TYPE}}
