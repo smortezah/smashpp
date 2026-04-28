@@ -4,6 +4,7 @@
 #include "filter.hpp"
 
 #include <cmath>
+#include <format>
 #include <numeric>
 
 #include "file.hpp"
@@ -139,7 +140,7 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out, std::unique_ptr<Param>& pa
                         uint64_t& current_pos_row) {
   if (par->verbose || round == 1) {
     par->message = (round == 3) ? "    " : "";
-    par->message += "[+] Filtering " + italic(par->tarName) + " ";
+    par->message += std::format("[+] Filtering {} ", italic(par->tarName));
   }
 
   if (window.size() != 1) {
@@ -627,7 +628,7 @@ void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round, uint8_t ru
       auto subseq = std::make_unique<SubSeq>();
       subseq->inName = row.tar;
       const auto seg{gen_name(row.run_num, row.ref, row.tar, Format::segment)};
-      subseq->outName = seg + std::to_string(seg_idx);
+      subseq->outName = std::format("{}{}", seg, seg_idx);
       subseq->begPos = row.beg_pos;
       const uint64_t max_tar_pos{file_size(row.tar) - 1};
       subseq->size = static_cast<std::streamsize>(row.end_pos > max_tar_pos

@@ -4,6 +4,8 @@
 #ifndef SMASHPP_EXCEPTION_HPP
 #define SMASHPP_EXCEPTION_HPP
 
+#include <format>
+
 #include "def.hpp"
 #include "string.hpp"
 
@@ -14,27 +16,28 @@ extern std::string bold_red(const std::string&);
 
 // "inline" is a MUST -- not to get "multiple definition of ..." error
 inline void error(std::string&& msg) {
-  std::string message = "Error: " + std::move(msg);
+  std::string message = std::format("Error: {}", msg);
   wrap_text(message);
-  throw std::runtime_error(bold_red(message.substr(0, 6)) + message.substr(6) + "\n");
+  throw std::runtime_error(
+      std::format("{}{}\n", bold_red(message.substr(0, 6)), message.substr(6)));
 }
 
 inline void err(std::string&& msg) {
-  std::string message = "Error: " + std::move(msg);
+  std::string message = std::format("Error: {}", msg);
   wrap_text(message);
-  std::cerr << bold_red(message.substr(0, 6)) << message.substr(6) << '\n';
+  std::cerr << std::format("{}{}\n", bold_red(message.substr(0, 6)), message.substr(6));
 }
 
 inline void warning(std::string&& msg) {
-  std::string message = "Warning: " + std::move(msg);
+  std::string message = std::format("Warning: {}", msg);
   wrap_text(message);
-  std::cerr << bold(message.substr(0, 8)) << message.substr(8) << '\n';
+  std::cerr << std::format("{}{}\n", bold(message.substr(0, 8)), message.substr(8));
 }
 
 inline void exit(std::string&& msg) {
   std::string message = std::move(msg);
   wrap_text(message);
-  throw std::runtime_error(message + "\n");
+  throw std::runtime_error(std::format("{}\n", message));
 }
 }  // namespace smashpp
 

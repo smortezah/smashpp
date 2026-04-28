@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -27,19 +28,19 @@ int main(int argc, char* argv[]) {
 
   std::ifstream inFile(inFileName, std::ios::binary);
   if (!inFile) {
-    std::cerr << "Error: cannot open input file \"" << inFileName << "\".\n";
+    std::cerr << std::format("Error: cannot open input file \"{}\".\n", inFileName);
     return EXIT_FAILURE;
   }
 
   inFile.seekg(0, std::ios::end);
   const auto endPos = inFile.tellg();
   if (endPos < 0) {
-    std::cerr << "Error: cannot determine input file size for \"" << inFileName << "\".\n";
+    std::cerr << std::format("Error: cannot determine input file size for \"{}\".\n", inFileName);
     return EXIT_FAILURE;
   }
 
   if (endPos > std::numeric_limits<std::streamsize>::max()) {
-    std::cerr << "Error: input file \"" << inFileName << "\" is too large to process.\n";
+    std::cerr << std::format("Error: input file \"{}\" is too large to process.\n", inFileName);
     return EXIT_FAILURE;
   }
 
@@ -48,7 +49,7 @@ int main(int argc, char* argv[]) {
 
   std::vector<char> buffer(size, 0);
   if (size != 0 && !inFile.read(buffer.data(), static_cast<std::streamsize>(size))) {
-    std::cerr << "Error: failed to read input file \"" << inFileName << "\".\n";
+    std::cerr << std::format("Error: failed to read input file \"{}\".\n", inFileName);
     return EXIT_FAILURE;
   }
   inFile.close();
@@ -64,14 +65,14 @@ int main(int argc, char* argv[]) {
   }
   std::ofstream outFile(outFileName, std::ios::binary);
   if (!outFile) {
-    std::cerr << "Error: cannot open output file \"" << outFileName << "\".\n";
+    std::cerr << std::format("Error: cannot open output file \"{}\".\n", outFileName);
     return EXIT_FAILURE;
   }
   if (size != 0) {
     outFile.write(buffer.data(), static_cast<std::streamsize>(size));
   }
   if (!outFile) {
-    std::cerr << "Error: failed to write output file \"" << outFileName << "\".\n";
+    std::cerr << std::format("Error: failed to write output file \"{}\".\n", outFileName);
     return EXIT_FAILURE;
   }
   outFile.close();

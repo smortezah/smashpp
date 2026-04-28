@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <format>
 
 #include "exception.hpp"
 #include "string.hpp"
@@ -25,7 +26,10 @@ bool is_hex(std::string color) {
   return true;
 }
 
-std::string to_hex(const RGB& color) { return string_format("#%X%X%X", color.r, color.g, color.b); }
+std::string to_hex(const RGB& color) {
+  return std::format("#{:X}{:X}{:X}", static_cast<unsigned>(color.r),
+                     static_cast<unsigned>(color.g), static_cast<unsigned>(color.b));
+}
 
 std::string to_hex(const HSV& color) { return to_hex(to_rgb(color)); }
 
@@ -48,7 +52,7 @@ RGB to_rgb(std::string color) {
     } else if (color == "blue") {
       return RGB(0, 0, 255);
     } else {
-      error("color \"" + color + "\" undefined");
+      error(std::format("color \"{}\" undefined", color));
     }
   }
   return RGB();

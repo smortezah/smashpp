@@ -4,6 +4,8 @@
 #ifndef SMASHPP_TIME_HPP
 #define SMASHPP_TIME_HPP
 
+#include <format>
+
 #include "def.hpp"
 
 namespace smashpp {
@@ -20,12 +22,11 @@ inline static std::string hms(Time elapsed) {
   const auto s = durSec % 60;
 
   if (m < 1) {
-    return std::to_string(s) + " sec.\n";
+    return std::format("{} sec.\n", s);
   } else if (h < 1) {
-    return std::to_string(m) + ":" + std::to_string(s) + " min:sec.\n";
+    return std::format("{}:{} min:sec.\n", m, s);
   } else {
-    return std::to_string(h) + ":" + std::to_string(m) + ":" + std::to_string(s) +
-           " hour:min:sec.\n";
+    return std::format("{}:{}:{} hour:min:sec.\n", h, m, s);
   }
 }
 }  // namespace smashpp

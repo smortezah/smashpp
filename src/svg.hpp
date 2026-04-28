@@ -4,6 +4,9 @@
 #ifndef SMASHPP_SVG_HPP
 #define SMASHPP_SVG_HPP
 
+#include <fstream>
+#include <memory>
+
 #include "exception.hpp"
 #include "number.hpp"
 #include "par.hpp"
@@ -38,7 +41,6 @@ class Stop : public SVG {
 
   Stop() : stop_opacity(1) {}
   void plot(std::ofstream&) const;
-  void plot(std::stringstream&) const;
 };
 
 class LinearGradient : public SVG {

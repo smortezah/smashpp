@@ -5,6 +5,7 @@
 
 #include <array>
 #include <cmath>
+#include <format>
 #include <fstream>
 #include <numeric>  // std::accumulate
 #include <thread>
@@ -84,7 +85,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
           std::cerr << static_cast<int>(e.k);
           break;
         case 'w':
-          std::cerr << (e.w == 0 ? "0" : "2^" + std::to_string(static_cast<int>(std::log2(e.w))));
+          std::cerr << (e.w == 0 ? "0" : std::format("2^{}", static_cast<int>(std::log2(e.w))));
           break;
         case 'd':
           std::cerr << static_cast<int>(e.d);
@@ -336,14 +337,10 @@ inline void FCM::alloc_model() {
 void FCM::store(std::unique_ptr<Param>& par, uint8_t round) {
   if (round == 1 || par->verbose) {
     par->message = (round == 3) ? "    " : "";
-    par->message += "[+] Creating model";
-    if (rMs.size() > 1) {
-      par->message += "s";
-    }
-    par->message += " of ";
+    const auto model_name =
+        tarSegMsg.empty() ? italic(par->refName) : italic(std::format("{}{}", tarSegMsg, tarSegID));
     par->message +=
-        tarSegMsg.empty() ? italic(par->refName) : italic(tarSegMsg + std::to_string(tarSegID));
-    par->message += " ";
+        std::format("[+] Creating model{} of {} ", rMs.size() > 1 ? "s" : "", model_name);
     std::cerr << par->message << "...";
   }
 
@@ -455,10 +452,10 @@ inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
 void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
   if (par->verbose) {
     par->message = (round == 3) ? "    " : "";
-    par->message += "[+] Compressing " + italic(par->tarName) + " ";
+    par->message += std::format("[+] Compressing {} ", italic(par->tarName));
   } else {
     if (round == 1) {
-      par->message = "[+] Compressing & filtering " + italic(par->tarName) + " ";
+      par->message = std::format("[+] Compressing & filtering {} ", italic(par->tarName));
       std::cerr << par->message << "...";
     }
   }
@@ -804,9 +801,9 @@ void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID, uint8_t round)
   std::string message;
   if (par->verbose) {
     if (round == 3) {
-      message = "        [-] Compressing segment " + std::to_string(ID + 1) + " ";
+      message = std::format("        [-] Compressing segment {} ", ID + 1);
     } else {
-      message = "    [-] Compressing segment " + std::to_string(ID + 1) + " ";
+      message = std::format("    [-] Compressing segment {} ", ID + 1);
     }
   }
 

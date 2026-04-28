@@ -5,8 +5,10 @@
 #define SMASHPP_FILE_HPP
 
 #include <algorithm>
+#include <format>
 #include <fstream>
 #include <iterator>
+#include <sstream>
 
 #include "exception.hpp"
 #include "par.hpp"
@@ -39,7 +41,7 @@ inline static void check_file(std::string name) {  // Must be inline
   std::ifstream f(name);
   if (!f) {
     f.close();
-    error("the file \"" + name + "\" cannot be opened or is empty.");
+    error(std::format("the file \"{}\" cannot be opened or is empty.", name));
   } else {
     bool foundChar{false};
     for (char c; f.get(c) && !foundChar;) {
@@ -48,7 +50,7 @@ inline static void check_file(std::string name) {  // Must be inline
       }
     }
     if (!foundChar) {
-      error("the file \"" + name + "\" is empty.");
+      error(std::format("the file \"{}\" is empty.", name));
     }
     f.close();
   }

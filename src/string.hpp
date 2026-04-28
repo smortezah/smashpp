@@ -4,6 +4,8 @@
 #ifndef SMASHPP_STRING_HPP
 #define SMASHPP_STRING_HPP
 
+#include <format>
+
 #include "number.hpp"
 #include "par.hpp"
 
@@ -14,7 +16,7 @@ inline std::string bold(const std::string& text) {
 #ifdef _WIN32
   return text;
 #else
-  return "\033[1m" + text + "\033[0m";
+  return std::format("\033[1m{}\033[0m", text);
 #endif
 }
 
@@ -22,7 +24,7 @@ inline std::string faint(const std::string& text) {
 #ifdef _WIN32
   return text;
 #else
-  return "\033[2m" + text + "\033[0m";
+  return std::format("\033[2m{}\033[0m", text);
 #endif
 }
 
@@ -30,7 +32,7 @@ inline std::string italic(const std::string& text) {
 #ifdef _WIN32
   return text;
 #else
-  return "\033[3m" + text + "\033[0m";
+  return std::format("\033[3m{}\033[0m", text);
 #endif
 }
 
@@ -38,7 +40,7 @@ inline std::string underline(const std::string& text) {
 #ifdef _WIN32
   return text;
 #else
-  return "\033[4m" + text + "\033[0m";
+  return std::format("\033[4m{}\033[0m", text);
 #endif
 }
 
@@ -46,7 +48,7 @@ inline std::string highlight(const std::string& text) {
 #ifdef _WIN32
   return text;
 #else
-  return "\033[7m" + text + "\033[0m";
+  return std::format("\033[7m{}\033[0m", text);
 #endif
 }
 
@@ -54,7 +56,7 @@ inline std::string bold_red(const std::string& text) {
 #ifdef _WIN32
   return text;
 #else
-  return "\033[1m\033[38;5;1m" + text + "\033[0m";
+  return std::format("\033[1m\033[38;5;1m{}\033[0m", text);
 #endif
 }
 
@@ -77,7 +79,7 @@ inline void wrap_text(std::string& text) {
         word = std::string(++p, std::end(word));
       }
 
-      out += "\n" + word;
+      out += std::format("\n{}", word);
       pos = word.length();
       word.clear();
     } else if (c == ' ' && last != ' ') {
@@ -96,25 +98,15 @@ inline void wrap_text(std::string& text) {
 template <typename ValuePos, typename Value>
 inline static void show_progress(ValuePos pos, Value total) {
   if (total > 100 && pos % (total / 100) == 0) {
-    std::cerr << "Progress: [" << static_cast<int>((pos * 100) / total) << "%]\r";
+    std::cerr << std::format("Progress: [{}%]\r", static_cast<int>((pos * 100) / total));
   }
 }
 
 template <typename ValuePos, typename Value>
 inline static void show_progress(ValuePos pos, Value total, const std::string& msg) {
   if (total > 100 && pos % (total / 100) == 0) {
-    std::cerr << msg << "[" << static_cast<int>((pos * 100) / total) << "%]\r";
+    std::cerr << std::format("{}[{}%]\r", msg, static_cast<int>((pos * 100) / total));
   }
-}
-
-template <typename... Args>
-inline static std::string string_format(const std::string& format, Args... args) {
-  // Extra space for '\0'
-  auto size{size_t(snprintf(nullptr, 0, format.c_str(), args...) + 1)};
-  std::unique_ptr<char[]> buf(new char[size]);
-  std::snprintf(buf.get(), size, format.c_str(), args...);
-  return std::string(buf.get(),
-                     buf.get() + size - 1);  // Don't want the '\0' inside
 }
 
 inline static std::string conv_to_string(FilterType val) {
@@ -169,18 +161,18 @@ inline static std::string human_readable(uint64_t bytes, uint8_t precision = 0) 
   const uint64_t MB_div = pow2(20);
   const uint64_t GB_div = pow2(30);
   const uint64_t TB_div = pow2(40);
-  const std::string precFormat{"%." + std::to_string(precision) + "f"};
+  const auto prec{static_cast<int>(precision)};
 
   if (bytes >= TB_div) {
-    return string_format(precFormat + " T", static_cast<float>(bytes) / TB_div);
+    return std::format("{:.{}f} T", static_cast<float>(bytes) / TB_div, prec);
   } else if (bytes >= GB_div && bytes < TB_div) {
-    return string_format(precFormat + " G", static_cast<float>(bytes) / GB_div);
+    return std::format("{:.{}f} G", static_cast<float>(bytes) / GB_div, prec);
   } else if (bytes >= MB_div && bytes < GB_div) {
-    return string_format(precFormat + " M", static_cast<float>(bytes) / MB_div);
+    return std::format("{:.{}f} M", static_cast<float>(bytes) / MB_div, prec);
   } else if (bytes >= KB_div && bytes < MB_div) {
-    return string_format(precFormat + " K", static_cast<float>(bytes) / KB_div);
+    return std::format("{:.{}f} K", static_cast<float>(bytes) / KB_div, prec);
   } else if (bytes < KB_div) {
-    return string_format(precFormat, static_cast<float>(bytes));
+    return std::format("{:.{}f}", static_cast<float>(bytes), prec);
   }
 
   return "";
@@ -192,13 +184,13 @@ inline static std::string human_readable_non_cs(uint64_t bytes, uint8_t precisio
   const uint64_t Mb_div{POW10[6]};
   const uint64_t Gb_div{POW10[9]};
   const uint64_t Tb_div{POW10[12]};
+  const auto prec{static_cast<int>(precision)};
 
   const auto out = [=](std::string unit, uint64_t div) {
     if (static_cast<float>(bytes / div) == static_cast<float>(bytes) / div) {
-      return string_format("%.0f " + unit, static_cast<float>(bytes) / div);
+      return std::format("{:.0f} {}", static_cast<float>(bytes) / div, unit);
     } else {
-      return string_format("%." + std::to_string(precision) + "f " + unit,
-                           static_cast<float>(bytes) / div);
+      return std::format("{:.{}f} {}", static_cast<float>(bytes) / div, prec, unit);
     }
   };
 

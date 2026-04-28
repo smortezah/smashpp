@@ -5,6 +5,7 @@
 #define SMASHPP_APPLICATION_HPP
 
 #include <chrono>
+#include <format>
 #include <iomanip>  // setw, setprecision
 #include <iostream>
 #include <memory>
@@ -111,7 +112,7 @@ void application::run(std::unique_ptr<Param>& par) {
           std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
         }
 
-        std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
+        std::string ref_round2 = par->ref = std::format("{}{}", name_seg_round1, i);
 
         auto num_seg_round2 = run_round(par, 2, run_num, pos_out, current_pos_row);
         if (par->verbose) {
@@ -129,7 +130,7 @@ void application::run(std::unique_ptr<Param>& par) {
             par->tar = ref_round2;
 
             for (uint64_t j = 0; j < num_seg_round2; ++j) {
-              par->ref = name_seg_round2 + std::to_string(j);
+              par->ref = std::format("{}{}", name_seg_round2, j);
               auto num_seg_round3 = run_round(par, 3, run_num, pos_out, current_pos_row);
               if (par->verbose) {
                 std::cerr << "\n";
@@ -235,7 +236,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
         std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
       }
 
-      par->seq = seg + std::to_string(i);
+      par->seq = std::format("{}{}", seg, i);
       models->self_compress(par, i, round);
     }
 
@@ -259,31 +260,27 @@ void application::prepare_data(std::unique_ptr<Param>& par) {
 
   // FASTA/FASTQ to seq
   auto convert_to_seq = [](std::string in, std::string out, const FileType& type) {
-    std::string msg = "[+] " + italic(file_name(in)) + " (FAST";
-    if (type == FileType::fasta) {
-      msg += "A";
-    } else if (type == FileType::fastq) {
-      msg += "Q";
-    }
-    msg += ") -> " + italic(out) + " (seq) ";
+    const auto type_label = (type == FileType::fasta) ? "FASTA" : "FASTQ";
+    const auto msg =
+        std::format("[+] {} ({}) -> {} (seq) ", italic(file_name(in)), type_label, italic(out));
     std::cerr << msg << "...";
     to_seq(in, out, type);
     std::cerr << "\r" << msg << "finished.\n";
   };
 
-  const std::string ref_seq = file_name_no_ext(par->refName) + ".seq";
-  const std::string tar_seq = file_name_no_ext(par->tarName) + ".seq";
+  const std::string ref_seq = std::format("{}.seq", file_name_no_ext(par->refName));
+  const std::string tar_seq = std::format("{}.seq", file_name_no_ext(par->tarName));
 
   if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
     convert_to_seq(par->ref, ref_seq, par->refType);
   } else if (par->refType != FileType::seq) {
-    error("\"" + par->refName + "\" has unknown format.");
+    error(std::format("\"{}\" has unknown format.", par->refName));
   }
 
   if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
     convert_to_seq(par->tar, tar_seq, par->tarType);
   } else if (par->tarType != FileType::seq) {
-    error("\"" + par->tarName + "\" has unknown format.");
+    error(std::format("\"{}\" has unknown format.", par->tarName));
   }
 
   std::cerr << '\n';
@@ -294,14 +291,14 @@ void application::remove_temp_seg(std::unique_ptr<Param>& par, uint64_t seg_num)
 
   for (uint64_t i = 0; i != seg_num; ++i) {
     if (!par->saveAll && !par->saveSegment) {
-      remove((seg + std::to_string(i)).c_str());
+      remove(std::format("{}{}", seg, i).c_str());
     }
   }
 }
 
 void application::remove_temp_seq(std::unique_ptr<Param>& par) {
-  const std::string ref_seq = file_name_no_ext(par->ref) + ".seq";
-  const std::string tar_seq = file_name_no_ext(par->tar) + ".seq";
+  const std::string ref_seq = std::format("{}.seq", file_name_no_ext(par->ref));
+  const std::string tar_seq = std::format("{}.seq", file_name_no_ext(par->tar));
 
   if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
     if (!par->saveSeq) {
@@ -518,7 +515,7 @@ void info::info_FCM(const std::vector<MMPar>& Ms, char c) const {
         std::cerr << static_cast<int>(e.k);
         break;
       case 'w':
-        std::cerr << (e.w == 0 ? "0" : "2^" + std::to_string(static_cast<int>(std::log2(e.w))));
+        std::cerr << (e.w == 0 ? "0" : std::format("2^{}", static_cast<int>(std::log2(e.w))));
         break;
       case 'd':
         std::cerr << static_cast<int>(e.d);

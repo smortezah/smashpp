@@ -3,6 +3,8 @@
 
 #include "vizpaint.hpp"
 
+#include <format>
+
 #include "exception.hpp"
 #include "file.hpp"
 #include "number.hpp"
@@ -114,11 +116,11 @@ inline void VizPaint::read_matadata(std::ifstream& fPos, std::unique_ptr<VizPara
     j = json::parse(fPos);
     fPos.seekg(std::ios::beg);
   } else {
-    std::stringstream ss;
+    std::string metadata;
     for (std::string line; std::getline(fPos, line) && (line[0] == '#') && (fPos.peek() == '#');) {
-      ss << line << '\n';
+      metadata += std::format("{}\n", line);
     }
-    j = parse_pos_metadata(ss.str());
+    j = parse_pos_metadata(metadata);
   }
 
   if (j["watermark"] != POS_WATERMARK) {
@@ -326,23 +328,23 @@ inline std::string VizPaint::redun_color(double entropy, uint32_t colorMode) con
 inline std::string VizPaint::seq_gradient(std::ofstream& fPlot, std::string color,
                                           std::string id) const {
   auto grad = std::make_unique<LinearGradient>();
-  grad->id = "grad" + id;
+  grad->id = std::format("grad{}", id);
   grad->add_stop("0%", color);
   grad->add_stop("50%", tint(color, 0.5));
   grad->add_stop("100%", color);
   grad->plot(fPlot);
 
-  return "url(#" + grad->id + ")";
+  return std::format("url(#{})", grad->id);
 }
 
 inline std::string VizPaint::periph_gradient(std::ofstream& fPlot, std::string color,
                                              std::string id) const {
   auto grad = std::make_unique<LinearGradient>();
-  grad->id = "grad" + id;
+  grad->id = std::format("grad{}", id);
   grad->add_stop("100%", color);
   grad->plot(fPlot);
 
-  return "url(#" + grad->id + ")";
+  return std::format("url(#{})", grad->id);
 }
 
 template <typename Value>
@@ -379,10 +381,9 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot, const std::vector<Posit
     } else {
       rect->x = x + get_point(e->begRef);
       rect->y = y + seqWidth;
-      rect->transform =
-          "rotate(-90 " + std::to_string(rect->x) + " " + std::to_string(rect->y) + ")";
+      rect->transform = std::format("rotate(-90 {:f} {:f})", rect->x, rect->y);
     }
-    rect->id = std::to_string(rect->x) + std::to_string(rect->y);
+    rect->id = std::format("{:f}{:f}", rect->x, rect->y);
     rect->fill = seq_gradient(fPlot, make_color(e->n_color, p->tot_color), rect->id);
     rect->plot(fPlot);
 
@@ -414,9 +415,9 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot, const std::vector<Posit
   } else {
     rect->x = !inverted ? x + get_point(e->begTar) : x + get_point(e->endTar);
     rect->y = y + 2 * seqWidth + innerSpace;
-    rect->transform = "rotate(-90 " + std::to_string(rect->x) + " " + std::to_string(rect->y) + ")";
+    rect->transform = std::format("rotate(-90 {:f} {:f})", rect->x, rect->y);
   }
-  rect->id = std::to_string(rect->x) + std::to_string(rect->y);
+  rect->id = std::format("{:f}{:f}", rect->x, rect->y);
   if (e->begRef == DBLANK) {
     rect->fill = "black";
     rect->stroke = "white";
@@ -744,7 +745,7 @@ inline void VizPaint::plot_legend_gradient(std::ofstream& f,
     default:
       error("undefined color mode.");
   }
-  auto id{std::to_string(legend->rect->x) + std::to_string(legend->rect->y)};
+  auto id{std::format("{:f}{:f}", legend->rect->x, legend->rect->y)};
 
   auto grad = std::make_unique<LinearGradient>();
   if (legend->vertical) {
@@ -758,16 +759,16 @@ inline void VizPaint::plot_legend_gradient(std::ofstream& f,
     grad->x2 = "0%";
     grad->y2 = "0%";
   }
-  grad->id = "grad" + id;
+  grad->id = std::format("grad{}", id);
   for (uint8_t i = 0; i != colorset.size(); ++i) {
-    grad->add_stop(std::to_string(i * 100 / (colorset.size() - 1)) + "%", colorset[i]);
+    grad->add_stop(std::format("{}%", i * 100 / (colorset.size() - 1)), colorset[i]);
   }
   grad->plot(f);
 
   legend->rect->stroke = "black";
   legend->rect->stroke_width = 0.5;
   legend->rect->rx = legend->rect->ry = 2;
-  legend->rect->fill = "url(#grad" + id + ")";
+  legend->rect->fill = std::format("url(#grad{})", id);
   legend->rect->plot(f);
 }
 
@@ -858,7 +859,7 @@ inline void VizPaint::plot_legend_text_horiz(std::ofstream& f,
       if (legend->colorMode == 1 && i == 3) {
         legend->text[0]->fill = "white";
       }
-      legend->text[0]->Label = string_format("%.1f", i * 0.5);
+      legend->text[0]->Label = std::format("{:.1f}", i * 0.5);
       legend->text[0]->plot(f);
     }
   }
@@ -1005,24 +1006,24 @@ inline void VizPaint::plot_legend_text_vert(std::ofstream& f,
     legend->text[1]->x =
         legend->rect->x - legend->labelShift - VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height / 2;
-    legend->text[1]->transform = "rotate(90 " + std::to_string(legend->text[1]->x) + " " +
-                                 std::to_string(legend->text[1]->y) + ")";
+    legend->text[1]->transform =
+        std::format("rotate(90 {:f} {:f})", legend->text[1]->x, legend->text[1]->y);
     legend->text[1]->Label = "Relative Redundancy";
     legend->text[1]->plot(f);
   } else if (!legend->showRelRedun && legend->showRedun) {
     legend->text[1]->x =
         legend->rect->x - legend->labelShift - VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height / 2;
-    legend->text[1]->transform = "rotate(90 " + std::to_string(legend->text[1]->x) + " " +
-                                 std::to_string(legend->text[1]->y) + ")";
+    legend->text[1]->transform =
+        std::format("rotate(90 {:f} {:f})", legend->text[1]->x, legend->text[1]->y);
     legend->text[1]->Label = "Redundancy";
     legend->text[1]->plot(f);
   } else if (legend->showRelRedun && legend->showRedun) {
     legend->text[1]->x =
         legend->rect->x - legend->labelShift - VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height / 2;
-    legend->text[1]->transform = "rotate(90 " + std::to_string(legend->text[1]->x) + " " +
-                                 std::to_string(legend->text[1]->y) + ")";
+    legend->text[1]->transform =
+        std::format("rotate(90 {:f} {:f})", legend->text[1]->x, legend->text[1]->y);
     legend->text[1]->Label = "Relative Redundancy";
     legend->text[1]->plot(f);
 
@@ -1030,8 +1031,8 @@ inline void VizPaint::plot_legend_text_vert(std::ofstream& f,
     legend->text[2]->x = legend->rect->x + legend->rect->width + legend->labelShift -
                          VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[2]->y = legend->rect->y + legend->rect->height / 2;
-    legend->text[2]->transform = "rotate(90 " + std::to_string(legend->text[2]->x) + " " +
-                                 std::to_string(legend->text[2]->y) + ")";
+    legend->text[2]->transform =
+        std::format("rotate(90 {:f} {:f})", legend->text[2]->x, legend->text[2]->y);
     legend->text[2]->Label = "Redundancy";
     legend->text[2]->plot(f);
   }
@@ -1060,7 +1061,7 @@ inline void VizPaint::plot_legend_text_vert(std::ofstream& f,
     if (legend->colorMode == 1 && i == 3) {
       legend->text[0]->fill = "white";
     }
-    legend->text[0]->Label = string_format("%.1f", i * 0.5);
+    legend->text[0]->Label = std::format("{:.1f}", i * 0.5);
     legend->text[0]->plot(f);
   }
 }
@@ -1173,13 +1174,13 @@ inline void VizPaint::plot_legend_path_vert(std::ofstream& f,
 }
 
 inline std::string VizPaint::tspan(uint32_t start, int64_t pos) const {
-  return "<tspan id=\"" + std::to_string(start) + "\" style=\"fill:" + rgb_color(start) + "\">" +
-         std::to_string(pos) + ", </tspan>\n";
+  return std::format("<tspan id=\"{}\" style=\"fill:{}\">{}, </tspan>\n", start, rgb_color(start),
+                     pos);
 }
 
 inline std::string VizPaint::tspan(uint32_t start, std::string pos) const {
-  return "<tspan id=\"" + std::to_string(start) + "\" style=\"fill:" + rgb_color(start) + "\">" +
-         pos + ", </tspan>\n";
+  return std::format("<tspan id=\"{}\" style=\"fill:{}\">{}, </tspan>\n", start, rgb_color(start),
+                     pos);
 }
 
 inline void VizPaint::sort_merge(std::string& s) const {
@@ -1230,17 +1231,17 @@ inline void VizPaint::sort_merge(std::string& s) const {
   uint64_t leftOver = vEnv.size();
   for (auto it = std::begin(vEnv); it < std::end(vEnv) - 1;) {
     if (it->id == (it + 1)->id) {
-      s += tspan(it->id, std::to_string(it->pos) + "-" + std::to_string((it + 1)->pos)) + "\n";
+      s += std::format("{}\n", tspan(it->id, std::format("{}-{}", it->pos, (it + 1)->pos)));
       leftOver -= 2;
       it += 2;
     } else {
-      s += it->line + "\n";
+      s += std::format("{}\n", it->line);
       leftOver -= 1;
       it += 1;
     }
   }
   if (leftOver == 1) {
-    s += vEnv.back().line + "\n";
+    s += std::format("{}\n", vEnv.back().line);
   }
 
   s.erase(s.find_last_of(", <") - 2, 2);
@@ -1248,7 +1249,7 @@ inline void VizPaint::sort_merge(std::string& s) const {
 
 inline void VizPaint::save_n_pos(std::string filePath) const {
   std::ifstream inFile(filePath);
-  std::ofstream NFile(file_name(filePath) + "." + FMT_N);
+  std::ofstream NFile(std::format("{}.{}", file_name(filePath), FMT_N));
   uint64_t pos{0};
   uint64_t beg{0};
   uint64_t num{0};
@@ -1441,7 +1442,7 @@ inline void VizPaint::plot_pos_horizontal(std::ofstream& f,
       if (posPlot->tickHumanRead) {
         text->Label = human_readable_non_cs(uint64_t(std::round(pos)), 1);
       } else {
-        text->Label = std::to_string(uint64_t(std::round(pos)));
+        text->Label = std::format("{}", uint64_t(std::round(pos)));
       }
       if (pos != 0.0f) {
         text->plot(f);
@@ -1516,7 +1517,7 @@ inline void VizPaint::plot_pos_vertical(std::ofstream& f, std::unique_ptr<PosPlo
       if (posPlot->tickHumanRead) {
         text->Label = human_readable_non_cs(uint64_t(std::round(pos)), 1);
       } else {
-        text->Label = std::to_string(uint64_t(std::round(pos)));
+        text->Label = std::format("{}", uint64_t(std::round(pos)));
       }
       text->plot(f);
     } else {  // Minor ticks
@@ -1533,7 +1534,8 @@ inline void VizPaint::plot_pos_vertical(std::ofstream& f, std::unique_ptr<PosPlo
 // TODO modify
 inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity, bool vertical) const {
   save_n_pos(ref);
-  std::ifstream refFile(file_name(ref) + "." + FMT_N);
+  const auto ref_n_file = std::format("{}.{}", file_name(ref), FMT_N);
+  std::ifstream refFile(ref_n_file);
 
   for (int64_t beg, end; refFile >> beg >> end;) {
     auto cylinder = std::make_unique<Cylinder>();
@@ -1548,18 +1550,18 @@ inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity, bool vertical
     } else {
       cylinder->x = x + get_point(beg);
       cylinder->y = y + seqWidth;
-      cylinder->transform =
-          "rotate(-90 " + std::to_string(cylinder->x) + " " + std::to_string(cylinder->y) + ")";
+      cylinder->transform = std::format("rotate(-90 {:f} {:f})", cylinder->x, cylinder->y);
     }
-    cylinder->id = std::to_string(cylinder->x) + std::to_string(cylinder->y);
+    cylinder->id = std::format("{:f}{:f}", cylinder->x, cylinder->y);
     cylinder->plot(fPlot);
   }
 
   refFile.close();
-  remove((file_name(ref) + "." + FMT_N).c_str());
+  remove(ref_n_file.c_str());
 
   save_n_pos(tar);
-  std::ifstream tarFile(file_name(tar) + "." + FMT_N);
+  const auto tar_n_file = std::format("{}.{}", file_name(tar), FMT_N);
+  std::ifstream tarFile(tar_n_file);
 
   for (int64_t beg, end; tarFile >> beg >> end;) {
     auto cylinder = std::make_unique<Cylinder>();
@@ -1574,15 +1576,14 @@ inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity, bool vertical
     } else {
       cylinder->x = x + get_point(beg);
       cylinder->y = y + 2 * seqWidth + innerSpace;
-      cylinder->transform =
-          "rotate(-90 " + std::to_string(cylinder->x) + " " + std::to_string(cylinder->y) + ")";
+      cylinder->transform = std::format("rotate(-90 {:f} {:f})", cylinder->x, cylinder->y);
     }
-    cylinder->id = std::to_string(cylinder->x) + std::to_string(cylinder->y);
+    cylinder->id = std::format("{:f}{:f}", cylinder->x, cylinder->y);
     cylinder->plot(fPlot);
   }
 
   tarFile.close();
-  remove((file_name(tar) + "." + FMT_N).c_str());
+  remove(tar_n_file.c_str());
 }
 
 inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
@@ -1591,7 +1592,7 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   cylinder->stroke_width = 1;
 
   auto path = std::make_unique<Path>();
-  path->id = "rhs" + std::to_string(x) + std::to_string(y);
+  path->id = std::format("rhs{:f}{:f}", x, y);
   path->fill = path->stroke = "white";
   path->fill_opacity = path->stroke_opacity = 1.0;
   path->stroke_width = cylinder->stroke_width;
@@ -1604,8 +1605,7 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   } else {
     cylinder->x = x;
     cylinder->y = y + seqWidth;
-    cylinder->transform =
-        "rotate(-90 " + std::to_string(cylinder->x) + " " + std::to_string(cylinder->y) + ")";
+    cylinder->transform = std::format("rotate(-90 {:f} {:f})", cylinder->x, cylinder->y);
   }
   // cylinder->stroke_dasharray = "8 3";
   path->stroke_dasharray = cylinder->stroke_dasharray;
@@ -1628,8 +1628,7 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   } else {
     cylinder->x = x;
     cylinder->y = y + 2 * seqWidth + innerSpace;
-    cylinder->transform =
-        "rotate(-90 " + std::to_string(cylinder->x) + " " + std::to_string(cylinder->y) + ")";
+    cylinder->transform = std::format("rotate(-90 {:f} {:f})", cylinder->x, cylinder->y);
   }
   path->stroke_dasharray = cylinder->stroke_dasharray;
   path->transform = cylinder->transform;
@@ -1652,7 +1651,7 @@ inline void VizPaint::print_log(bool stat, std::string image, uint64_t n_regular
     if (image != IMAGE) {
       std::string temp = image;
       temp.erase(std::end(temp) - 4, std::end(temp));
-      stat_file_name = temp + ".csv";
+      stat_file_name = std::format("{}.csv", temp);
     }
 
     std::ofstream stat_file(stat_file_name);

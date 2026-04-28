@@ -4,7 +4,9 @@
 #ifndef SMASHPP_CHECKHPP
 #define SMASHPP_CHECKHPP
 
+#include <format>
 #include <stdexcept>
+#include <type_traits>
 
 #include "exception.hpp"
 
@@ -40,24 +42,26 @@ class ValRange {
 
 template <typename Value>
 void ValRange<Value>::check(Value& val) {
-  bool isFloat = std::is_floating_point<Value>::value;
+  const auto format_value = [](Value value) {
+    if constexpr (std::is_floating_point_v<Value>) {
+      return std::format("{:.1f}", value);
+    } else {
+      return std::format("{}", value);
+    }
+  };
 
   const auto append_msg = [&](std::string&& msg) {
-    message = "\"" + label + "\" not in valid range " + msg;
+    message = std::format("\"{}\" not in valid range {}", label, msg);
     if (initMode == "default") {
-      message += "Default value " + (isFloat ? string_format("%.1f", def) : std::to_string(def)) +
-                 " been set.";
+      message += std::format("Default value {} been set.", format_value(def));
     } else if (initMode == "auto") {
       message += "Will be automatically modified.";
     }
     message += "\n";
   };
-  const auto create_message = [this, &append_msg, isFloat](char open, char close) {
+  const auto create_message = [this, &append_msg, &format_value](char open, char close) {
     inRange = false;
-    auto s = std::string(1, open) +
-             (isFloat ? (string_format("%.1f", min) + "," + string_format("%.1f", max))
-                      : (std::to_string(min) + "," + std::to_string(max))) +
-             std::string(1, close) + ". ";
+    auto s = std::format("{}{},{}{}. ", open, format_value(min), format_value(max), close);
     append_msg(std::move(s));
   };
 
@@ -117,9 +121,9 @@ void ValSet<Value>::check(Value& val) {
 
   val = def;
   const auto append_msg = [&](std::string&& msg) {
-    message = "\"" + label + "\" not in valid set " + msg;
+    message = std::format("\"{}\" not in valid set {}", label, msg);
     if (initMode == "default") {
-      message += "Default value " + conv_to_string(def) + " been set.";
+      message += std::format("Default value {} been set.", conv_to_string(def));
     } else if (initMode == "auto") {
       message += "Will be automatically modified.";
     }
@@ -128,9 +132,9 @@ void ValSet<Value>::check(Value& val) {
 
   std::string msg = "{";
   for (auto it = begin(set); it != end(set) - 1; ++it) {
-    msg += conv_to_string(*it) + ", ";
+    msg += std::format("{}, ", conv_to_string(*it));
   }
-  msg += conv_to_string(set.back()) + "}. ";
+  msg += std::format("{}}}. ", conv_to_string(set.back()));
 
   append_msg(std::move(msg));
   if (problem == Problem::warning) {

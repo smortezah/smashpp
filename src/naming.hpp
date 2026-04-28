@@ -4,6 +4,8 @@
 #ifndef SMASHPP_NAMING_HPP
 #define SMASHPP_NAMING_HPP
 
+#include <format>
+
 #include "def.hpp"
 #include "file.hpp"
 
@@ -14,15 +16,15 @@ inline static std::string gen_name(uint32_t ID, std::string ref, std::string tar
   const auto tarName{file_name(tar)};
   switch (frmt) {
     case Format::profile:
-      return std::to_string(ID) + "." + refName + "." + tarName + ".prf";
+      return std::format("{}.{}.{}.prf", ID, refName, tarName);
     case Format::filter:
-      return std::to_string(ID) + "." + refName + "." + tarName + ".fil";
+      return std::format("{}.{}.{}.fil", ID, refName, tarName);
     case Format::position:
-      return std::to_string(ID) + "." + refName + "." + tarName + ".pos";
+      return std::format("{}.{}.{}.pos", ID, refName, tarName);
     case Format::midposition:
-      return "mid." + std::to_string(ID) + "." + refName + "." + tarName + ".pos";
+      return std::format("mid.{}.{}.{}.pos", ID, refName, tarName);
     case Format::segment:
-      return std::to_string(ID) + "." + refName + "." + tarName + ".s";
+      return std::format("{}.{}.{}.s", ID, refName, tarName);
     default:
       return "";
   }
@@ -33,17 +35,17 @@ inline static std::string gen_name(std::string ref, std::string tar, const Forma
   const auto tarName{file_name(tar)};
   switch (frmt) {
     case Format::profile:
-      return refName + "." + tarName + ".prf";
+      return std::format("{}.{}.prf", refName, tarName);
     case Format::filter:
-      return refName + "." + tarName + ".fil";
+      return std::format("{}.{}.fil", refName, tarName);
     case Format::position:
-      return refName + "." + tarName + ".pos";
+      return std::format("{}.{}.pos", refName, tarName);
     case Format::midposition:
-      return "mid." + refName + "." + tarName + ".pos";
+      return std::format("mid.{}.{}.pos", refName, tarName);
     case Format::json:
-      return refName + "." + tarName + ".json";
+      return std::format("{}.{}.json", refName, tarName);
     case Format::segment:
-      return refName + "." + tarName + "-s";
+      return std::format("{}.{}-s", refName, tarName);
     default:
       return "";
   }

@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <format>
 #include <fstream>
 #include <memory>
 #include <vector>
@@ -43,7 +44,7 @@ void Param::parse(int argc, char**& argv) {
   auto require_value = [&](auto& iter, const std::string& label,
                            const std::string& usage) -> std::string {
     if (iter + 1 == std::end(vArgs) || looks_like_option(*(iter + 1))) {
-      error(label + " not specified. Use \"" + usage + "\".");
+      error(std::format("{} not specified. Use \"{}\".", label, usage));
     }
     return *++iter;
   };
@@ -58,14 +59,14 @@ void Param::parse(int argc, char**& argv) {
       help();
       throw EXIT_SUCCESS;
     } else if (*i == "-V" || *i == "--version") {
-      std::cerr << "Smash++ " << VERSION << "\n";
+      std::cerr << std::format("Smash++ {}\n", VERSION);
       throw EXIT_SUCCESS;
     } else if (*i == "-v" || *i == "--verbose") {
       verbose = true;
     } else if (*i == "-ll" || *i == "--list-levels") {
       std::cerr << "Level  Model parameters" << '\n';
       for (size_t i = 0; i != LEVEL.size(); ++i) {
-        std::cerr << "[ " << i << " ]  " << LEVEL[i] << '\n';
+        std::cerr << std::format("[ {} ]  {}\n", i, LEVEL[i]);
       }
       throw EXIT_SUCCESS;
     } else if (*i == "-r" || *i == "--reference") {
@@ -324,150 +325,143 @@ void Param::help() const {
   const std::string tab2 = tab1 + "      ";
   const std::string tab3 = tab2 + "    ";
 
-  std::cerr << bold("SYNOPSIS") << '\n'
-            << tab1 << "./smashpp [OPTIONS]  -r <REF_FILE>  -t <TAR_FILE>\n"
-            << '\n'
-            << bold("SAMPLE") << '\n'
-            << tab1 << "./smashpp -r ref -t tar -l 0 -m 1000\n"
-            << tab1 << "./smashpp \\ \n"
-            << tab1 << "    --reference ref \\ \n"
-            << tab1 << "    --target tar \\ \n"
-            << tab1 << "    --format json \\ \n"
-            << tab1 << "    --verbose \n"
-            << '\n'
-            << bold("OPTIONS") << '\n'
-            << "    " << italic("Required") << ":\n"
-            << tab1 << bold("-r") << ", " << bold("--reference") << " <FILE>       "
-            << "reference file (Seq/FASTA/FASTQ)\n"
-            << tab1 << bold("-t") << ", " << bold("--target") << " <FILE>          "
-            << "target file    (Seq/FASTA/FASTQ)\n"
-            << '\n'
-            << "    " << italic("Optional") << ":\n"
-            << tab1 << bold("-l") << ", " << bold("--level") << " <INT>\n"
-            << tab2 << "level of compression: " << std::to_string(MIN_LVL) << " to "
-            << std::to_string(MAX_LVL) << ". Default: " << std::to_string(LVL) << '\n'
-            << '\n'
-            << tab1 << bold("-m") << ", " << bold("--min-segment-size") << " <INT>\n"
-            << tab2 << "minimum segment size: " << std::to_string(MIN_SSIZE) << " to "
-            << std::to_string(MAX_SSIZE) << ". Default: " << std::to_string(SSIZE) << '\n'
-            << '\n'
-            << tab1 << bold("-fmt") << ", " << bold("--format") << " <STRING>\n"
-            << tab2 << "format of the output (position) file: {pos, json}.\n"
-            << tab2 << "Default: pos\n"
-            << '\n'
-            << tab1 << bold("-e") << ", " << bold("--entropy-N") << " <FLOAT>\n"
-            << tab2 << "entropy of 'N's: " << string_format("%.1f", MIN_ENTR_N) << " to "
-            << string_format("%.1f", MAX_ENTR_N) << ". Default: " << string_format("%.1f", ENTR_N)
-            << '\n'
-            << '\n'
-            << tab1 << bold("-n") << ", " << bold("--num-threads") << " <INT>\n"
-            << tab2 << "number of threads: " << std::to_string(MIN_THRD) << " to "
-            << std::to_string(MAX_THRD) << ". Default: " << std::to_string(THRD) << '\n'
-            << '\n'
-            << tab1 << bold("-f") << ", " << bold("--filter-size") << " <INT>\n"
-            << tab2 << "filter size: " << std::to_string(MIN_WS) << " to " << std::to_string(MAX_WS)
-            << ". Default: " << std::to_string(WS) << '\n'
-            << '\n'
-            << tab1 << bold("-ft") << ", " << bold("--filter-type") << " <INT/STRING>\n"
-            << tab2 << "filter type (windowing function): {0/rectangular,\n"
-            << tab2 << "1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch,\n"
-            << tab2 << "6/sine, 7/nuttall}. Default: hann\n"
-            << '\n'
-            << tab1 << bold("-fs") << ", " << bold("--filter-scale") << " <STRING>\n"
-            << tab2 << "filter scale: {S/small, M/medium, L/large}\n"
-            << '\n'
-            << tab1 << bold("-d") << ", " << bold("--sampling-step") << " <INT>\n"
-            << tab2 << "sampling step. Default: " << std::to_string(SAMPLE_STEP) << '\n'
-            << '\n'
-            << tab1 << bold("-th") << ", " << bold("--threshold") << " <FLOAT>\n"
-            << tab2 << "threshold: " << string_format("%.1f", MIN_THRSH) << " to "
-            << string_format("%.1f", MAX_THRSH) << ". Default: " << string_format("%.1f", THRSH)
-            << '\n'
-            << '\n'
-            << tab1 << bold("-rb") << ", " << bold("--reference-begin-guard") << " <INT>\n"
-            << tab2 << "reference begin guard: "
-            << std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::min())
-            << " to " + std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::max())
-            << ". Default: " << std::to_string(ref_guard->beg) << '\n'
-            << '\n'
-            << tab1 << bold("-re") << ", " << bold("--reference-end-guard") << " <INT>\n"
-            << tab2 << "reference ending guard: "
-            << std::to_string(std::numeric_limits<decltype(ref_guard->end)>::min()) << " to "
-            << std::to_string(std::numeric_limits<decltype(ref_guard->end)>::max())
-            << ". Default: " << std::to_string(ref_guard->end) << '\n'
-            << '\n'
-            << tab1 << bold("-tb") << ", " << bold("--target-begin-guard") << " <INT>\n"
-            << tab2 << "target begin guard: "
-            << std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::min())
-            << " to " + std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::max())
-            << ". Default: " << std::to_string(tar_guard->beg) << '\n'
-            << '\n'
-            << tab1 << bold("-te") << ", " << bold("--target-end-guard") << " <INT>\n"
-            << tab2 << "target ending guard: "
-            << std::to_string(std::numeric_limits<decltype(tar_guard->end)>::min()) << " to "
-            << std::to_string(std::numeric_limits<decltype(tar_guard->end)>::max())
-            << ". Default: " << std::to_string(tar_guard->end) << '\n'
-            << '\n'
-            << tab1 << bold("-ar") << ", " << bold("--asymmetric-regions") << '\n'
-            << tab2 << "consider asymmetric regions. Default: not used\n"
-            << '\n'
-            // << "  " << bold("-dp") '\n'
-            // << "        deep compression. Default: no\n"
-            // << '\n'
-            << tab1 << bold("-nr") << ", " << bold("--no-self-complexity") << '\n'
-            << tab2 << "do not compute self complexity. Default: not used\n"
-            << '\n'
-            << tab1 << bold("-sb") << ", " << bold("--save-sequence") << '\n'
-            << tab2 << "save sequence (input: FASTA/FASTQ). Default: not used\n"
-            << '\n'
-            << tab1 << bold("-sp") << ", " << bold("--save-profile") << '\n'
-            << tab2 << "save profile (*.prf). Default: not used\n"
-            << '\n'
-            << tab1 << bold("-sf") << ", " << bold("--save-filtered") << '\n'
-            << tab2 << "save filtered file (*.fil). Default: not used\n"
-            << '\n'
-            << tab1 << bold("-ss") << ", " << bold("--save-segmented") << '\n'
-            << tab2 << "save segmented files (*.s[i]). Default: not used\n"
-            << '\n'
-            << tab1 << bold("-sa") << ", " << bold("--save-profile-filtered-segmented") << '\n'
-            << tab2 << "save profile, filetered and segmented files.\n"
-            << tab2 << "Default: not used\n"
-            << '\n'
-            << tab1 << bold("-rm") << ", " << bold("--reference-model") << "  " << italic("k")
-            << ",[" << italic("w") << "," << italic("d") << ",]ir," << italic("a") << ","
-            << italic("g") << "/" << italic("t") << ",ir," << italic("a") << "," << italic("g")
-            << ":...\n"
-            << tab1 << bold("-tm") << ", " << bold("--target-model") << "     " << italic("k")
-            << ",[" << italic("w") << "," << italic("d") << ",]ir," << italic("a") << ","
-            << italic("g") << "/" << italic("t") << ",ir," << italic("a") << "," << italic("g")
-            << ":...\n"
-            << tab2 << "parameters of models\n"
-            << tab3 << "<INT>  " << italic("k") << ":  context size\n"
-            << tab3 << "<INT>  " << italic("w") << ":  width of sketch in log2 form,\n"
-            << tab3 << "           e.g., set 10 for w=2^10=1024\n"
-            << tab3 << "<INT>  " << italic("d") << ":  depth of sketch\n"
-            << tab3 << "<INT>  " << italic("ir") << ": inverted repeat: {0, 1, 2}\n"
-            << tab3 << "           0: regular (not inverted)\n"
-            << tab3 << "           1: inverted, solely\n"
-            << tab3 << "           2: both regular and inverted\n"
-            << tab2 << "  <FLOAT>  " << italic("a") << ":  estimator\n"
-            << tab2 << "  <FLOAT>  " << italic("g") << ":  forgetting factor: 0.0 to 1.0\n"
-            << tab3 << "<INT>  " << italic("t") << ":  threshold (number of substitutions)\n"
-            << '\n'
-            << tab1 << bold("-ll") << ", " << bold("--list-levels") << '\n'
-            << tab2 << "list of compression levels\n"
-            << '\n'
-            << tab1 << bold("-h") << ", " << bold("--help") << '\n'
-            << tab2 << "usage guide\n"
-            << '\n'
-            << tab1 << bold("-v") << ", " << bold("--verbose") << '\n'
-            << tab2 << "more information\n"
-            << '\n'
-            << tab1 << bold("-V") << ", " << bold("--version") << '\n'
-            << tab2 << "show version\n"
-            << '\n'
-            << bold("AUTHOR") << '\n'
-            << tab1 << "Morteza Hosseini      mhosayny@gmail.com\n";
+  std::cerr
+      << bold("SYNOPSIS") << '\n'
+      << tab1 << "./smashpp [OPTIONS]  -r <REF_FILE>  -t <TAR_FILE>\n"
+      << '\n'
+      << bold("SAMPLE") << '\n'
+      << tab1 << "./smashpp -r ref -t tar -l 0 -m 1000\n"
+      << tab1 << "./smashpp \\ \n"
+      << tab1 << "    --reference ref \\ \n"
+      << tab1 << "    --target tar \\ \n"
+      << tab1 << "    --format json \\ \n"
+      << tab1 << "    --verbose \n"
+      << '\n'
+      << bold("OPTIONS") << '\n'
+      << "    " << italic("Required") << ":\n"
+      << tab1 << bold("-r") << ", " << bold("--reference") << " <FILE>       "
+      << "reference file (Seq/FASTA/FASTQ)\n"
+      << tab1 << bold("-t") << ", " << bold("--target") << " <FILE>          "
+      << "target file    (Seq/FASTA/FASTQ)\n"
+      << '\n'
+      << "    " << italic("Optional") << ":\n"
+      << tab1 << bold("-l") << ", " << bold("--level") << " <INT>\n"
+      << tab2 << std::format("level of compression: {} to {}. Default: {}\n", MIN_LVL, MAX_LVL, LVL)
+      << '\n'
+      << tab1 << bold("-m") << ", " << bold("--min-segment-size") << " <INT>\n"
+      << tab2
+      << std::format("minimum segment size: {} to {}. Default: {}\n", MIN_SSIZE, MAX_SSIZE, SSIZE)
+      << '\n'
+      << tab1 << bold("-fmt") << ", " << bold("--format") << " <STRING>\n"
+      << tab2 << "format of the output (position) file: {pos, json}.\n"
+      << tab2 << "Default: pos\n"
+      << '\n'
+      << tab1 << bold("-e") << ", " << bold("--entropy-N") << " <FLOAT>\n"
+      << tab2
+      << std::format("entropy of 'N's: {:.1f} to {:.1f}. Default: {:.1f}\n", MIN_ENTR_N, MAX_ENTR_N,
+                     ENTR_N)
+      << '\n'
+      << tab1 << bold("-n") << ", " << bold("--num-threads") << " <INT>\n"
+      << tab2 << std::format("number of threads: {} to {}. Default: {}\n", MIN_THRD, MAX_THRD, THRD)
+      << '\n'
+      << tab1 << bold("-f") << ", " << bold("--filter-size") << " <INT>\n"
+      << tab2 << std::format("filter size: {} to {}. Default: {}\n", MIN_WS, MAX_WS, WS) << '\n'
+      << tab1 << bold("-ft") << ", " << bold("--filter-type") << " <INT/STRING>\n"
+      << tab2 << "filter type (windowing function): {0/rectangular,\n"
+      << tab2 << "1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch,\n"
+      << tab2 << "6/sine, 7/nuttall}. Default: hann\n"
+      << '\n'
+      << tab1 << bold("-fs") << ", " << bold("--filter-scale") << " <STRING>\n"
+      << tab2 << "filter scale: {S/small, M/medium, L/large}\n"
+      << '\n'
+      << tab1 << bold("-d") << ", " << bold("--sampling-step") << " <INT>\n"
+      << tab2 << std::format("sampling step. Default: {}\n", SAMPLE_STEP) << '\n'
+      << tab1 << bold("-th") << ", " << bold("--threshold") << " <FLOAT>\n"
+      << tab2
+      << std::format("threshold: {:.1f} to {:.1f}. Default: {:.1f}\n", MIN_THRSH, MAX_THRSH, THRSH)
+      << '\n'
+      << tab1 << bold("-rb") << ", " << bold("--reference-begin-guard") << " <INT>\n"
+      << tab2
+      << std::format("reference begin guard: {} to {}. Default: {}\n",
+                     std::numeric_limits<decltype(ref_guard->beg)>::min(),
+                     std::numeric_limits<decltype(ref_guard->beg)>::max(), ref_guard->beg)
+      << '\n'
+      << tab1 << bold("-re") << ", " << bold("--reference-end-guard") << " <INT>\n"
+      << tab2
+      << std::format("reference ending guard: {} to {}. Default: {}\n",
+                     std::numeric_limits<decltype(ref_guard->end)>::min(),
+                     std::numeric_limits<decltype(ref_guard->end)>::max(), ref_guard->end)
+      << '\n'
+      << tab1 << bold("-tb") << ", " << bold("--target-begin-guard") << " <INT>\n"
+      << tab2
+      << std::format("target begin guard: {} to {}. Default: {}\n",
+                     std::numeric_limits<decltype(tar_guard->beg)>::min(),
+                     std::numeric_limits<decltype(tar_guard->beg)>::max(), tar_guard->beg)
+      << '\n'
+      << tab1 << bold("-te") << ", " << bold("--target-end-guard") << " <INT>\n"
+      << tab2
+      << std::format("target ending guard: {} to {}. Default: {}\n",
+                     std::numeric_limits<decltype(tar_guard->end)>::min(),
+                     std::numeric_limits<decltype(tar_guard->end)>::max(), tar_guard->end)
+      << '\n'
+      << tab1 << bold("-ar") << ", " << bold("--asymmetric-regions") << '\n'
+      << tab2 << "consider asymmetric regions. Default: not used\n"
+      << '\n'
+      // << "  " << bold("-dp") '\n'
+      // << "        deep compression. Default: no\n"
+      // << '\n'
+      << tab1 << bold("-nr") << ", " << bold("--no-self-complexity") << '\n'
+      << tab2 << "do not compute self complexity. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-sb") << ", " << bold("--save-sequence") << '\n'
+      << tab2 << "save sequence (input: FASTA/FASTQ). Default: not used\n"
+      << '\n'
+      << tab1 << bold("-sp") << ", " << bold("--save-profile") << '\n'
+      << tab2 << "save profile (*.prf). Default: not used\n"
+      << '\n'
+      << tab1 << bold("-sf") << ", " << bold("--save-filtered") << '\n'
+      << tab2 << "save filtered file (*.fil). Default: not used\n"
+      << '\n'
+      << tab1 << bold("-ss") << ", " << bold("--save-segmented") << '\n'
+      << tab2 << "save segmented files (*.s[i]). Default: not used\n"
+      << '\n'
+      << tab1 << bold("-sa") << ", " << bold("--save-profile-filtered-segmented") << '\n'
+      << tab2 << "save profile, filetered and segmented files.\n"
+      << tab2 << "Default: not used\n"
+      << '\n'
+      << tab1 << bold("-rm") << ", " << bold("--reference-model") << "  " << italic("k") << ",["
+      << italic("w") << "," << italic("d") << ",]ir," << italic("a") << "," << italic("g") << "/"
+      << italic("t") << ",ir," << italic("a") << "," << italic("g") << ":...\n"
+      << tab1 << bold("-tm") << ", " << bold("--target-model") << "     " << italic("k") << ",["
+      << italic("w") << "," << italic("d") << ",]ir," << italic("a") << "," << italic("g") << "/"
+      << italic("t") << ",ir," << italic("a") << "," << italic("g") << ":...\n"
+      << tab2 << "parameters of models\n"
+      << tab3 << "<INT>  " << italic("k") << ":  context size\n"
+      << tab3 << "<INT>  " << italic("w") << ":  width of sketch in log2 form,\n"
+      << tab3 << "           e.g., set 10 for w=2^10=1024\n"
+      << tab3 << "<INT>  " << italic("d") << ":  depth of sketch\n"
+      << tab3 << "<INT>  " << italic("ir") << ": inverted repeat: {0, 1, 2}\n"
+      << tab3 << "           0: regular (not inverted)\n"
+      << tab3 << "           1: inverted, solely\n"
+      << tab3 << "           2: both regular and inverted\n"
+      << tab2 << "  <FLOAT>  " << italic("a") << ":  estimator\n"
+      << tab2 << "  <FLOAT>  " << italic("g") << ":  forgetting factor: 0.0 to 1.0\n"
+      << tab3 << "<INT>  " << italic("t") << ":  threshold (number of substitutions)\n"
+      << '\n'
+      << tab1 << bold("-ll") << ", " << bold("--list-levels") << '\n'
+      << tab2 << "list of compression levels\n"
+      << '\n'
+      << tab1 << bold("-h") << ", " << bold("--help") << '\n'
+      << tab2 << "usage guide\n"
+      << '\n'
+      << tab1 << bold("-v") << ", " << bold("--verbose") << '\n'
+      << tab2 << "more information\n"
+      << '\n'
+      << tab1 << bold("-V") << ", " << bold("--version") << '\n'
+      << tab2 << "show version\n"
+      << '\n'
+      << bold("AUTHOR") << '\n'
+      << tab1 << "Morteza Hosseini      mhosayny@gmail.com\n";
 }
 
 FilterType Param::win_type(std::string t) const {
@@ -569,7 +563,7 @@ void VizParam::parse(int argc, char**& argv) {
   auto require_value = [&](auto& iter, const std::string& label,
                            const std::string& usage) -> std::string {
     if (iter + 1 == std::end(vArgs) || looks_like_option(*(iter + 1))) {
-      error(label + " not specified. Use \"" + usage + "\".");
+      error(std::format("{} not specified. Use \"{}\".", label, usage));
     }
     return *++iter;
   };
@@ -584,7 +578,7 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (*i == "-v" || *i == "--verbose") {
       verbose = true;
     } else if (*i == "-V" || *i == "--version") {
-      std::cerr << "Smash++ " << VERSION << "\n";
+      std::cerr << std::format("Smash++ {}\n", VERSION);
       throw EXIT_SUCCESS;
     } else if (*i == "-o" || *i == "--output") {
       image = require_value(i, "output image name", "-o <SVG_FILE>");
@@ -661,7 +655,7 @@ void VizParam::parse(int argc, char**& argv) {
       }
       posFile = *i;
     } else {
-      error("unknown option \"" + *i + "\".");
+      error(std::format("unknown option \"{}\".", *i));
     }
   }
   if (posFile.empty()) {
@@ -674,103 +668,98 @@ void VizParam::help() const {
   const std::string tab2 = tab1 + "      ";
   const std::string tab3 = tab2 + "    ";
 
-  std::cerr << bold("SYNOPSIS") << '\n'
-            << tab1 << "./smashpp viz|-viz [OPTIONS]  -o <SVG_FILE>  <POS_FILE>\n"
-            << '\n'
-            << bold("SAMPLE") << '\n'
-            << tab1 << "./smashpp -viz -o simil.svg ref.tar.pos\n"
-            << tab1 << "./smashpp viz \\ \n"
-            << tab1 << "    --output similarity.svg \\ \n"
-            << tab1 << "    --vertical-view \\ \n"
-            << tab1 << "    ref.tar.json\n"
-            << '\n'
-            << bold("OPTIONS") << '\n'
-            << "    " << italic("Required") << ":\n"
-            << tab1 << "<POS_FILE>    position file generated by Smash++ (*.pos/*.json)\n"
-            << '\n'
-            << "    " << italic("Optional") << ":\n"
-            << tab1 << bold("-o") << ", " << bold("--output") << " <SVG_FILE>\n"
-            << tab2 << "output image name (*.svg). Default: map.svg\n"
-            << '\n'
-            << tab1 << bold("-rn") << ", " << bold("--reference-name") << " <STRING>\n"
-            << tab2 << "reference name shown on output. If it has spaces, use\n"
-            << tab2 << "double quotes, e.g. \"Seq label\". Default: the name in\n"
-            << tab2 << "the header of position file\n"
-            << '\n'
-            << tab1 << bold("-tn") << ", " << bold("--target-name") << " <STRING>\n"
-            << tab2 << "target name shown on output\n"
-            << '\n'
-            << tab1 << bold("-l") << ", " << bold("--link") << " <INT>\n"
-            << tab2 << "type of the link between maps: " << std::to_string(MIN_LINK) << " to "
-            << std::to_string(MAX_LINK) << ". Default: " << std::to_string(link) << '\n'
-            << '\n'
-            << tab1 << bold("-c") << ", " << bold("--color") << " <INT>\n"
-            << tab2 << "color mode: {" << std::to_string(MIN_COLOR) << ", "
-            << std::to_string(MAX_COLOR) << "}. Default: " << std::to_string(colorMode) << '\n'
-            << '\n'
-            << tab1 << bold("-p") << ", " << bold("--opacity") << " <FLOAT>\n"
-            << tab2 << "opacity: " << string_format("%.1f", MIN_OPAC) << " to "
-            << string_format("%.1f", MAX_OPAC) << ". Default: " << string_format("%.1f", opacity)
-            << '\n'
-            << '\n'
-            << tab1 << bold("-w") << ", " << bold("--width") << " <INT>\n"
-            << tab2 << "width of the sequence: " << std::to_string(MIN_WDTH) << " to "
-            << std::to_string(MAX_WDTH) << ". Default: " << std::to_string(width) << '\n'
-            << '\n'
-            << tab1 << bold("-s") << ", " << bold("--space") << " <INT>\n"
-            << tab2 << "space between sequences: " << std::to_string(MIN_SPC) << " to "
-            << std::to_string(MAX_SPC) << ". Default: " << std::to_string(space) << '\n'
-            << '\n'
-            << tab1 << bold("-tc") << ", " << bold("--total-colors") << " <INT>\n"
-            << tab2 << "total number of colors: 1 to 255\n"
-            << '\n'
-            << tab1 << bold("-rt") << ", " << bold("--reference-tick") << " <INT>\n"
-            << tab2 << "reference tick: " << std::to_string(MIN_TICK) << " to "
-            << std::to_string(MAX_TICK) << '\n'
-            << '\n'
-            << tab1 << bold("-tt") << ", " << bold("--target-tick") << " <INT>\n"
-            << tab2 << "target tick: " << std::to_string(MIN_TICK) << " to "
-            << std::to_string(MAX_TICK) << '\n'
-            << '\n'
-            << tab1 << bold("-th") << ", " << bold("--tick-human-readable") << " <INT>\n"
-            << tab2 << "tick human readable: {0: false, 1: true}. Default: "
-            << std::to_string(tickHumanRead) << '\n'
-            << '\n'
-            << tab1 << bold("-m") << ", " << bold("--min-block-size") << " <INT>\n"
-            << tab2 << "minimum block size: " << std::to_string(MIN_MINP) << " to "
-            << std::to_string(MAX_MINP) << ". Default: " << std::to_string(min) << '\n'
-            << '\n'
-            << tab1 << bold("-vv") << ", " << bold("--vertical-view") << '\n'
-            << tab2 << "vertical view. Default: not used\n"
-            << '\n'
-            << tab1 << bold("-nrr") << ", " << bold("--no-relative-redundancy") << '\n'
-            << tab2 << "do not show relative redundancy (relative complexity).\n"
-            << tab2 << "Default: not used\n"
-            << '\n'
-            << tab1 << bold("-nr") << ", " << bold("--no-redundancy") << '\n'
-            << tab2 << "do not show redundancy. Default: not used\n"
-            << '\n'
-            << tab1 << bold("-ni") << ", " << bold("--no-inverted") << '\n'
-            << tab2 << "do not show inverse maps. Default: not used\n"
-            << '\n'
-            << tab1 << bold("-ng") << ", " << bold("--no-regular") << '\n'
-            << tab2 << "do not show regular maps. Default: not used\n"
-            << '\n'
-            << tab1 << bold("-n") << ", " << bold("--show-N") << '\n'
-            << tab2 << "show 'N' bases. Default: not used\n"
-            << '\n'
-            << tab1 << bold("-stat") << ", " << bold("--statistics") << '\n'
-            << tab2 << "save statistics (*.csv). Default: stat.csv\n"
-            << '\n'
-            << tab1 << bold("-h") << ", " << bold("--help") << '\n'
-            << tab2 << "usage guide\n"
-            << '\n'
-            << tab1 << bold("-v") << ", " << bold("--verbose") << '\n'
-            << tab2 << "more information\n"
-            << '\n'
-            << tab1 << bold("-V") << ", " << bold("--version") << '\n'
-            << tab2 << "show version\n"
-            << '\n'
-            << bold("AUTHOR") << '\n'
-            << tab1 << "Morteza Hosseini      mhosayny@gmail.com\n";
+  std::cerr
+      << bold("SYNOPSIS") << '\n'
+      << tab1 << "./smashpp viz|-viz [OPTIONS]  -o <SVG_FILE>  <POS_FILE>\n"
+      << '\n'
+      << bold("SAMPLE") << '\n'
+      << tab1 << "./smashpp -viz -o simil.svg ref.tar.pos\n"
+      << tab1 << "./smashpp viz \\ \n"
+      << tab1 << "    --output similarity.svg \\ \n"
+      << tab1 << "    --vertical-view \\ \n"
+      << tab1 << "    ref.tar.json\n"
+      << '\n'
+      << bold("OPTIONS") << '\n'
+      << "    " << italic("Required") << ":\n"
+      << tab1 << "<POS_FILE>    position file generated by Smash++ (*.pos/*.json)\n"
+      << '\n'
+      << "    " << italic("Optional") << ":\n"
+      << tab1 << bold("-o") << ", " << bold("--output") << " <SVG_FILE>\n"
+      << tab2 << "output image name (*.svg). Default: map.svg\n"
+      << '\n'
+      << tab1 << bold("-rn") << ", " << bold("--reference-name") << " <STRING>\n"
+      << tab2 << "reference name shown on output. If it has spaces, use\n"
+      << tab2 << "double quotes, e.g. \"Seq label\". Default: the name in\n"
+      << tab2 << "the header of position file\n"
+      << '\n'
+      << tab1 << bold("-tn") << ", " << bold("--target-name") << " <STRING>\n"
+      << tab2 << "target name shown on output\n"
+      << '\n'
+      << tab1 << bold("-l") << ", " << bold("--link") << " <INT>\n"
+      << tab2
+      << std::format("type of the link between maps: {} to {}. Default: {}\n", MIN_LINK, MAX_LINK,
+                     link)
+      << '\n'
+      << tab1 << bold("-c") << ", " << bold("--color") << " <INT>\n"
+      << tab2
+      << std::format("color mode: {{{}, {}}}. Default: {}\n", MIN_COLOR, MAX_COLOR, colorMode)
+      << '\n'
+      << tab1 << bold("-p") << ", " << bold("--opacity") << " <FLOAT>\n"
+      << tab2
+      << std::format("opacity: {:.1f} to {:.1f}. Default: {:.1f}\n", MIN_OPAC, MAX_OPAC, opacity)
+      << '\n'
+      << tab1 << bold("-w") << ", " << bold("--width") << " <INT>\n"
+      << tab2
+      << std::format("width of the sequence: {} to {}. Default: {}\n", MIN_WDTH, MAX_WDTH, width)
+      << '\n'
+      << tab1 << bold("-s") << ", " << bold("--space") << " <INT>\n"
+      << tab2
+      << std::format("space between sequences: {} to {}. Default: {}\n", MIN_SPC, MAX_SPC, space)
+      << '\n'
+      << tab1 << bold("-tc") << ", " << bold("--total-colors") << " <INT>\n"
+      << tab2 << "total number of colors: 1 to 255\n"
+      << '\n'
+      << tab1 << bold("-rt") << ", " << bold("--reference-tick") << " <INT>\n"
+      << tab2 << std::format("reference tick: {} to {}\n", MIN_TICK, MAX_TICK) << '\n'
+      << tab1 << bold("-tt") << ", " << bold("--target-tick") << " <INT>\n"
+      << tab2 << std::format("target tick: {} to {}\n", MIN_TICK, MAX_TICK) << '\n'
+      << tab1 << bold("-th") << ", " << bold("--tick-human-readable") << " <INT>\n"
+      << tab2 << "tick human readable: {0: false, 1: true}. Default: "
+      << std::format("{}\n", static_cast<int>(tickHumanRead)) << '\n'
+      << tab1 << bold("-m") << ", " << bold("--min-block-size") << " <INT>\n"
+      << tab2 << std::format("minimum block size: {} to {}. Default: {}\n", MIN_MINP, MAX_MINP, min)
+      << '\n'
+      << tab1 << bold("-vv") << ", " << bold("--vertical-view") << '\n'
+      << tab2 << "vertical view. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-nrr") << ", " << bold("--no-relative-redundancy") << '\n'
+      << tab2 << "do not show relative redundancy (relative complexity).\n"
+      << tab2 << "Default: not used\n"
+      << '\n'
+      << tab1 << bold("-nr") << ", " << bold("--no-redundancy") << '\n'
+      << tab2 << "do not show redundancy. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-ni") << ", " << bold("--no-inverted") << '\n'
+      << tab2 << "do not show inverse maps. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-ng") << ", " << bold("--no-regular") << '\n'
+      << tab2 << "do not show regular maps. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-n") << ", " << bold("--show-N") << '\n'
+      << tab2 << "show 'N' bases. Default: not used\n"
+      << '\n'
+      << tab1 << bold("-stat") << ", " << bold("--statistics") << '\n'
+      << tab2 << "save statistics (*.csv). Default: stat.csv\n"
+      << '\n'
+      << tab1 << bold("-h") << ", " << bold("--help") << '\n'
+      << tab2 << "usage guide\n"
+      << '\n'
+      << tab1 << bold("-v") << ", " << bold("--verbose") << '\n'
+      << tab2 << "more information\n"
+      << '\n'
+      << tab1 << bold("-V") << ", " << bold("--version") << '\n'
+      << tab2 << "show version\n"
+      << '\n'
+      << bold("AUTHOR") << '\n'
+      << tab1 << "Morteza Hosseini      mhosayny@gmail.com\n";
 }

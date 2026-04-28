@@ -8,6 +8,8 @@
 #include <unistd.h>
 #endif
 
+#include <format>
+
 #include "application.hpp"
 using namespace smashpp;
 
@@ -16,7 +18,7 @@ int main(int argc, char* argv[]) {
     auto const t0 = now();
     application{}.exe(argc, argv);
     auto const t1 = now();
-    std::cerr << "Total time: " << hms(t1 - t0);
+    std::cerr << std::format("Total time: {}", hms(t1 - t0));
   } catch (int code) {
     return code;
   } catch (std::exception& e) {

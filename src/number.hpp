@@ -5,7 +5,9 @@
 #define SMASHPP_NUMBER_HPP
 
 #include <cmath>
-#include <sstream>
+#include <format>
+#include <type_traits>
+#include <typeinfo>
 
 #include "def.hpp"
 #include "file.hpp"
@@ -21,7 +23,7 @@ inline static bool is_uint8_t(const Input& in) {
 template <typename Value>
 inline static bool is_odd(Value val) {
   if (val < 0) {
-    error("\"" + std::to_string(val) + "\" is a negative number.");
+    error(std::format("\"{}\" is a negative number.", val));
   }
 
   return (val & 1ull);
@@ -55,16 +57,20 @@ inline static void keep_in_range(MinVal min, Val& val, MaxVal max) {
 
 template <class T, class U>
 inline static std::string precision(T prec, U value) {
-  std::ostringstream oss;
-  oss << std::setprecision(prec) << value;
-  return oss.str();
+  if constexpr (std::is_floating_point_v<U>) {
+    return std::format("{:.{}g}", value, static_cast<int>(prec));
+  } else {
+    return std::format("{}", value);
+  }
 }
 
 template <class T, class U>
 inline static std::string fixed_precision(T prec, U value) {
-  std::ostringstream oss;
-  oss << std::fixed << std::setprecision(prec) << value;
-  return oss.str();
+  if constexpr (std::is_floating_point_v<U>) {
+    return std::format("{:.{}f}", value, static_cast<int>(prec));
+  } else {
+    return std::format("{}", value);
+  }
 }
 
 inline static uint8_t num_digits(uint64_t number) {
@@ -73,9 +79,7 @@ inline static uint8_t num_digits(uint64_t number) {
 
 template <typename T>
 inline static std::string thousands_sep(T number) {
-  std::ostringstream ss;
-  ss << number;
-  return ss.str();
+  return std::format("{}", number);
 }
 
 inline static double round_to_prec(double value, double precision = 1.0) {
