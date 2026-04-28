@@ -4,8 +4,8 @@
 #include "logtbl8.hpp"
 
 #include <algorithm>
-#include <fstream>
 #include <array>
+#include <fstream>
 
 #include "exception.hpp"
 using namespace smashpp;
@@ -19,16 +19,16 @@ LogTable8::LogTable8(uint8_t k_) : k(k_), tot(0) {
 }
 
 void LogTable8::update(LogTable8::ctx_t ctx) {
-  if ((tot++ & POW2minus1[tbl[ctx]]) == 0)  // x % 2^n = x & (2^n-1)
+  if ((tot++ & POW2minus1[tbl[ctx]]) == 0) {  // x % 2^n = x & (2^n-1)
     ++tbl[ctx];
+  }
 }
 
 auto LogTable8::query(LogTable8::ctx_t ctx) const -> LogTable8::val_t {
   return POW2minus1[tbl[ctx]];  // POW2[tbl[ctx]] - 1
 }
 
-auto LogTable8::query_counters(LogTable8::ctx_t l) const
-    -> std::array<LogTable8::val_t, CARDIN> {
+auto LogTable8::query_counters(LogTable8::ctx_t l) const -> std::array<LogTable8::val_t, CARDIN> {
   auto row_address = &tbl[l];
   return {static_cast<LogTable8::val_t>((1ul << *row_address) - 1ul),
           static_cast<LogTable8::val_t>((1ul << *(row_address + 1ul)) - 1ul),
@@ -42,9 +42,7 @@ void LogTable8::dump(std::ofstream& ofs) const {
   //  ofs.close();
 }
 
-void LogTable8::load(std::ifstream& ifs) const {
-  ifs.read((char*)&tbl[0], tbl.size());
-}
+void LogTable8::load(std::ifstream& ifs) const { ifs.read((char*)&tbl[0], tbl.size()); }
 
 uint64_t LogTable8::get_total() const { return tot; }
 

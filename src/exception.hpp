@@ -16,8 +16,7 @@ extern std::string bold_red(const std::string&);
 inline void error(std::string&& msg) {
   std::string message = "Error: " + std::move(msg);
   wrap_text(message);
-  throw std::runtime_error(bold_red(message.substr(0, 6)) + message.substr(6) +
-                           "\n");
+  throw std::runtime_error(bold_red(message.substr(0, 6)) + message.substr(6) + "\n");
 }
 
 inline void err(std::string&& msg) {

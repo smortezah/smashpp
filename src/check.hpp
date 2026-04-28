@@ -13,8 +13,8 @@ template <typename Value>
 class ValRange {
  public:
   ValRange() = default;
-  ValRange(Value min_, Value max_, Value d_, std::string&& l_, Interval i_,
-           std::string&& m_, Problem p_)
+  ValRange(Value min_, Value max_, Value d_, std::string&& l_, Interval i_, std::string&& m_,
+           Problem p_)
       : min(min_),
         max(max_),
         def(d_),
@@ -44,41 +44,40 @@ void ValRange<Value>::check(Value& val) {
 
   const auto append_msg = [&](std::string&& msg) {
     message = "\"" + label + "\" not in valid range " + msg;
-    if (initMode == "default")
-      message += "Default value " +
-                 (isFloat ? string_format("%.1f", def) : std::to_string(def)) +
+    if (initMode == "default") {
+      message += "Default value " + (isFloat ? string_format("%.1f", def) : std::to_string(def)) +
                  " been set.";
-    else if (initMode == "auto")
+    } else if (initMode == "auto") {
       message += "Will be automatically modified.";
+    }
     message += "\n";
   };
-  const auto create_message = [this, &append_msg, isFloat](char open,
-                                                           char close) {
+  const auto create_message = [this, &append_msg, isFloat](char open, char close) {
     inRange = false;
-    auto s =
-        std::string(1, open) +
-        (isFloat
-             ? (string_format("%.1f", min) + "," + string_format("%.1f", max))
-             : (std::to_string(min) + "," + std::to_string(max))) +
-        std::string(1, close) + ". ";
+    auto s = std::string(1, open) +
+             (isFloat ? (string_format("%.1f", min) + "," + string_format("%.1f", max))
+                      : (std::to_string(min) + "," + std::to_string(max))) +
+             std::string(1, close) + ". ";
     append_msg(std::move(s));
   };
 
-  if (criterion == Interval::closed && (val > max || val < min))
+  if (criterion == Interval::closed && (val > max || val < min)) {
     create_message('[', ']');
-  else if (criterion == Interval::closed_open && (val >= max || val < min))
+  } else if (criterion == Interval::closed_open && (val >= max || val < min)) {
     create_message('[', ')');
-  else if (criterion == Interval::open_closed && (val > max || val <= min))
+  } else if (criterion == Interval::open_closed && (val > max || val <= min)) {
     create_message('(', ']');
-  else if (criterion == Interval::open && (val >= max || val <= min))
+  } else if (criterion == Interval::open && (val >= max || val <= min)) {
     create_message('(', ')');
+  }
 
   if (!inRange) {
     val = def;
-    if (problem == Problem::warning)
+    if (problem == Problem::warning) {
       warning(std::move(message));
-    else if (problem == Problem::error)
+    } else if (problem == Problem::error) {
       error(std::move(message));
+    }
   }
 }
 
@@ -86,8 +85,8 @@ template <typename Value>
 class ValSet {
  public:
   ValSet() = default;
-  ValSet(const std::vector<Value>& set_, Value d_, std::string&& l_,
-         std::string&& m_, Problem p_, Value c_, bool i)
+  ValSet(const std::vector<Value>& set_, Value d_, std::string&& l_, std::string&& m_, Problem p_,
+         Value c_, bool i)
       : set(set_),
         cmd(c_),
         def(d_),
@@ -119,23 +118,26 @@ void ValSet<Value>::check(Value& val) {
   val = def;
   const auto append_msg = [&](std::string&& msg) {
     message = "\"" + label + "\" not in valid set " + msg;
-    if (initMode == "default")
+    if (initMode == "default") {
       message += "Default value " + conv_to_string(def) + " been set.";
-    else if (initMode == "auto")
+    } else if (initMode == "auto") {
       message += "Will be automatically modified.";
+    }
     message += "\n";
   };
 
   std::string msg = "{";
-  for (auto it = begin(set); it != end(set) - 1; ++it)
+  for (auto it = begin(set); it != end(set) - 1; ++it) {
     msg += conv_to_string(*it) + ", ";
+  }
   msg += conv_to_string(set.back()) + "}. ";
 
   append_msg(std::move(msg));
-  if (problem == Problem::warning)
+  if (problem == Problem::warning) {
     warning(std::move(message));
-  else if (problem == Problem::error)
+  } else if (problem == Problem::error) {
     error(std::move(message));
+  }
 }
 }  // namespace smashpp
 

@@ -8,8 +8,8 @@
 #include "file.hpp"
 
 namespace smashpp {
-inline static std::string gen_name(uint32_t ID, std::string ref,
-                                   std::string tar, const Format& frmt) {
+inline static std::string gen_name(uint32_t ID, std::string ref, std::string tar,
+                                   const Format& frmt) {
   const auto refName{file_name(ref)};
   const auto tarName{file_name(tar)};
   switch (frmt) {
@@ -20,8 +20,7 @@ inline static std::string gen_name(uint32_t ID, std::string ref,
     case Format::position:
       return std::to_string(ID) + "." + refName + "." + tarName + ".pos";
     case Format::midposition:
-      return "mid." + std::to_string(ID) + "." + refName + "." + tarName +
-             ".pos";
+      return "mid." + std::to_string(ID) + "." + refName + "." + tarName + ".pos";
     case Format::segment:
       return std::to_string(ID) + "." + refName + "." + tarName + ".s";
     default:
@@ -29,8 +28,7 @@ inline static std::string gen_name(uint32_t ID, std::string ref,
   }
 }
 
-inline static std::string gen_name(std::string ref, std::string tar,
-                                   const Format& frmt) {
+inline static std::string gen_name(std::string ref, std::string tar, const Format& frmt) {
   const auto refName{file_name(ref)};
   const auto tarName{file_name(tar)};
   switch (frmt) {

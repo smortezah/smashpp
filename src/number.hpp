@@ -20,7 +20,9 @@ inline static bool is_uint8_t(const Input& in) {
 
 template <typename Value>
 inline static bool is_odd(Value val) {
-  if (val < 0) error("\"" + std::to_string(val) + "\" is a negative number.");
+  if (val < 0) {
+    error("\"" + std::to_string(val) + "\" is a negative number.");
+  }
 
   return (val & 1ull);
 }
@@ -44,10 +46,11 @@ inline static double Power(double base, double exponent) {
 
 template <typename Val, typename MinVal, typename MaxVal>
 inline static void keep_in_range(MinVal min, Val& val, MaxVal max) {
-  if (val < min)
+  if (val < min) {
     val = min;
-  else if (val > max)
+  } else if (val > max) {
     val = max;
+  }
 }
 
 template <class T, class U>
@@ -80,31 +83,32 @@ inline static double round_to_prec(double value, double precision = 1.0) {
   return std::ceil(value * reciprocal) / reciprocal;
 }
 
-inline static float tick_round(float lowerBound, float upperBound,
-                               uint8_t n_ranges) {
+inline static float tick_round(float lowerBound, float upperBound, uint8_t n_ranges) {
   // Round fraction in range [0.1, 1)
   const auto round_frac = [=](float value) -> float {
-    if (value >= 0.100 && value <= 0.125) return 0.1;
-    else if (value <= 0.225)
+    if (value >= 0.100 && value <= 0.125) {
+      return 0.1;
+    } else if (value <= 0.225) {
       return 0.2;
-    else if (value <= 0.275)
+    } else if (value <= 0.275) {
       return 0.25;
-    else if (value <= 0.325)
+    } else if (value <= 0.325) {
       return 0.3;
-    else if (value <= 0.425)
+    } else if (value <= 0.425) {
       return 0.4;
-    else if (value <= 0.525)
+    } else if (value <= 0.525) {
       return 0.5;
-    else if (value <= 0.625)
+    } else if (value <= 0.625) {
       return 0.6;
-    else if (value <= 0.725)
+    } else if (value <= 0.725) {
       return 0.7;
-    else if (value <= 0.775)
+    } else if (value <= 0.775) {
       return 0.75;
-    else if (value <= 0.825)
+    } else if (value <= 0.825) {
       return 0.8;
-    else if (value <= 0.925)
+    } else if (value <= 0.925) {
       return 0.9;
+    }
 
     return 1.0;
   };
@@ -116,15 +120,14 @@ inline static float tick_round(float lowerBound, float upperBound,
 }
 
 template <typename Int>
-inline static Int map_interval(Int in_first, Int in_last, Int out_first,
-                               Int out_last, Int value) {
-  if (in_last == in_first)
+inline static Int map_interval(Int in_first, Int in_last, Int out_first, Int out_last, Int value) {
+  if (in_last == in_first) {
     return out_first;
-  else if (in_last == out_last && in_first == out_first)
+  } else if (in_last == out_last && in_first == out_first) {
     return value;
+  }
 
-  const auto slope{static_cast<double>(out_last - out_first) /
-                   (in_last - in_first)};
+  const auto slope{static_cast<double>(out_last - out_first) / (in_last - in_first)};
   return std::round(out_first + slope * (value - in_first));
 }
 }  // namespace smashpp

@@ -3,11 +3,11 @@
 
 #include "fcm.hpp"
 
+#include <array>
 #include <cmath>
 #include <fstream>
 #include <numeric>  // std::accumulate
 #include <thread>
-#include <array>
 
 #include "check.hpp"
 #include "container.hpp"
@@ -19,53 +19,56 @@
 using namespace smashpp;
 
 FCM::FCM(std::unique_ptr<Param>& par)
-    : aveEnt(static_cast<prc_t>(0)),
-      rMs(par->refMs),
-      tarSegID(0),
-      entropyN(par->entropyN) {
+    : aveEnt(static_cast<prc_t>(0)), rMs(par->refMs), tarSegID(0), entropyN(par->entropyN) {
   set_cont(rMs);
   rTMsSize = 0;
-  for (const auto& e : rMs)
-    if (e.child) ++rTMsSize;
+  for (const auto& e : rMs) {
+    if (e.child) {
+      ++rTMsSize;
+    }
+  }
 
   tMs = par->tarMs;
   set_cont(tMs);
   tTMsSize = 0;
-  for (const auto& e : tMs)
-    if (e.child) ++tTMsSize;
+  for (const auto& e : tMs) {
+    if (e.child) {
+      ++tTMsSize;
+    }
+  }
 
   alloc_model();
 }
 
 inline void FCM::set_cont(std::vector<MMPar>& Ms) {
   for (auto& m : Ms) {
-    if (m.k > K_MAX_LGTBL8)
+    if (m.k > K_MAX_LGTBL8) {
       m.cont = Container::sketch_8;
-    else if (m.k > K_MAX_TBL32)
+    } else if (m.k > K_MAX_TBL32) {
       m.cont = Container::log_table_8;
-    else if (m.k > K_MAX_TBL64)
+    } else if (m.k > K_MAX_TBL64) {
       m.cont = Container::table_32;
-    else
+    } else {
       m.cont = Container::table_64;
+    }
   }
 }
 
 inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   constexpr uint8_t lblWidth = 20;
   constexpr uint8_t colWidth = 8;
-  constexpr uint8_t tblWidth =
-      52;  // static_cast<uint8_t>(lblWidth + Ms.size()*colWidth);
+  constexpr uint8_t tblWidth = 52;  // static_cast<uint8_t>(lblWidth + Ms.size()*colWidth);
 
   const auto rule = [](uint8_t n, std::string&& s) {
-    for (auto i = n / s.size(); i--;) std::cerr << s;
+    for (auto i = n / s.size(); i--;) {
+      std::cerr << s;
+    }
     std::cerr << '\n';
   };
   const auto toprule = [=]() {};
   const auto midrule = [=]() { rule(tblWidth, "="); };
   const auto botrule = [=]() { rule(tblWidth, " "); };
-  const auto label = [=](std::string s) {
-    std::cerr << std::setw(lblWidth) << std::left << s;
-  };
+  const auto label = [=](std::string s) { std::cerr << std::setw(lblWidth) << std::left << s; };
   const auto header = [=](std::string s) {
     std::cerr << std::setw(2 * colWidth) << std::left << s;
   };
@@ -81,9 +84,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
           std::cerr << static_cast<int>(e.k);
           break;
         case 'w':
-          std::cerr << (e.w == 0 ? "0"
-                                 : "2^" + std::to_string(static_cast<int>(
-                                              std::log2(e.w))));
+          std::cerr << (e.w == 0 ? "0" : "2^" + std::to_string(static_cast<int>(std::log2(e.w))));
           break;
         case 'd':
           std::cerr << static_cast<int>(e.d);
@@ -110,9 +111,7 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
             std::cerr << static_cast<int>(e.child->thresh);
             break;
           case 'i':
-            std::cerr << (e.child->ir == 0
-                              ? "reg"
-                              : e.child->ir == 1 ? "inv" : "reg+inv");
+            std::cerr << (e.child->ir == 0 ? "reg" : e.child->ir == 1 ? "inv" : "reg+inv");
             break;
           case 'a':
             std::cerr << e.child->alpha;
@@ -172,7 +171,9 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   };
   const auto rstmm_row = [&](std::string&& lbl, char c) {
     label(lbl);
-    if (c != 'h') info_STMM(rMs, c);
+    if (c != 'h') {
+      info_STMM(rMs, c);
+    }
     std::cerr << '\n';
   };
   const auto tmm_row = [&](std::string&& lbl, char c) {
@@ -182,16 +183,19 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   };
   const auto tstmm_row = [&](std::string&& lbl, char c) {
     label(lbl);
-    if (c != 'h') info_STMM(tMs, c);
+    if (c != 'h') {
+      info_STMM(tMs, c);
+    }
     std::cerr << '\n';
   };
   const auto filter_row = [=](std::string&& lbl, char c) {
     label(lbl);
-    if (c != 'h') info_filter(c);
+    if (c != 'h') {
+      info_filter(c);
+    }
     std::cerr << '\n';
   };
-  const auto file_row = [=](std::string&& lbl, std::string&& s1,
-                            std::string&& s2) {
+  const auto file_row = [=](std::string&& lbl, std::string&& s1, std::string&& s2) {
     label(lbl);
     if (s1.size() == 1) {
       char c1 = s1[0];
@@ -210,11 +214,12 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   midrule();
   rmm_row("Context size (k)", 'k');
   bool hasSketch{false};
-  for (const auto& e : rMs)
+  for (const auto& e : rMs) {
     if (e.cont == Container::sketch_8) {
       hasSketch = true;
       break;
     }
+  }
   if (hasSketch) {
     rmm_row("Sketch width (w)", 'w');
     rmm_row("Sketch depth (d)", 'd');
@@ -226,11 +231,12 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
 
   {
     bool show_rstmm = false;
-    for (const auto& model : rMs)
+    for (const auto& model : rMs) {
       if (model.child) {
         show_rstmm = true;
         break;
       }
+    }
     if (show_rstmm) {
       toprule();
       rstmm_row(bold("Ref Substituttional Model           "), 'h');
@@ -248,11 +254,12 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   midrule();
   rmm_row("Context size (k)", 'k');
   hasSketch = false;
-  for (const auto& e : tMs)
+  for (const auto& e : tMs) {
     if (e.cont == Container::sketch_8) {
       hasSketch = true;
       break;
     }
+  }
   if (hasSketch) {
     rmm_row("Sketch width (w)", 'w');
     rmm_row("Sketch depth (d)", 'd');
@@ -264,11 +271,12 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
 
   {
     bool show_tstmm = false;
-    for (const auto& model : tMs)
+    for (const auto& model : tMs) {
       if (model.child) {
         show_tstmm = true;
         break;
       }
+    }
     if (show_tstmm) {
       toprule();
       tstmm_row(bold("Tar Substituttional Model           "), 'h');
@@ -286,15 +294,20 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
     filter_row(bold("Filter & Segment"), 'h');
     midrule();
     filter_row("Window function", 'f');
-    if (par->manFilterScale) filter_row("Filter scale", 's');
-    if (!par->manFilterScale) filter_row("Window size", 'w');
-    if (par->manThresh) filter_row("Threshold", 't');
+    if (par->manFilterScale) {
+      filter_row("Filter scale", 's');
+    }
+    if (!par->manFilterScale) {
+      filter_row("Window size", 'w');
+    }
+    if (par->manThresh) {
+      filter_row("Threshold", 't');
+    }
     botrule();  // cerr << '\n';
   }
 
   toprule();
-  file_row(bold("File                "), bold("Name            "),
-           bold("Size (B)"));
+  file_row(bold("File                "), bold("Name            "), bold("Size (B)"));
   midrule();
   file_row("Reference", "r", "1");
   file_row("Target", "t", "2");
@@ -324,20 +337,25 @@ void FCM::store(std::unique_ptr<Param>& par, uint8_t round) {
   if (round == 1 || par->verbose) {
     par->message = (round == 3) ? "    " : "";
     par->message += "[+] Creating model";
-    if (rMs.size() > 1) par->message += "s";
+    if (rMs.size() > 1) {
+      par->message += "s";
+    }
     par->message += " of ";
-    par->message += tarSegMsg.empty()
-                        ? italic(par->refName)
-                        : italic(tarSegMsg + std::to_string(tarSegID));
+    par->message +=
+        tarSegMsg.empty() ? italic(par->refName) : italic(tarSegMsg + std::to_string(tarSegID));
     par->message += " ";
     std::cerr << par->message << "...";
   }
 
-  (par->nthr == 1 || rMs.size() == 1) ? store_1(par)
-                                      : store_n(par) /*Multiple threads*/;
+  if (par->nthr == 1 || rMs.size() == 1) {
+    store_1(par);
+  } else {
+    store_n(par);  // Multiple threads
+  }
 
-  if (round == 1 || par->verbose)
+  if (round == 1 || par->verbose) {
     std::cerr << "\r" << par->message << "done." << '\n';
+  }
 }
 
 inline void FCM::store_1(std::unique_ptr<Param>& par) {
@@ -349,20 +367,16 @@ inline void FCM::store_1(std::unique_ptr<Param>& par) {
   for (const auto& m : rMs) {  // Mask: 1<<2k - 1 = 4^k - 1
     switch (m.cont) {
       case Container::log_table_8:
-        store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
-                   lgtbl8_iter++);
+        store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/, lgtbl8_iter++);
         break;
       case Container::sketch_8:
-        store_impl(par->ref, (1ull << (2 * m.k)) - 1ull /*Mask 64*/,
-                   cmls4_iter++);
+        store_impl(par->ref, (1ull << (2 * m.k)) - 1ull /*Mask 64*/, cmls4_iter++);
         break;
       case Container::table_64:
-        store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
-                   tbl64_iter++);
+        store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/, tbl64_iter++);
         break;
       case Container::table_32:
-        store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/,
-                   tbl32_iter++);
+        store_impl(par->ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/, tbl32_iter++);
         break;
       default:
         break;
@@ -381,46 +395,52 @@ inline void FCM::store_n(std::unique_ptr<Param>& par) {
   for (uint8_t i = 0; i != rMs.size(); ++i) {  // Mask: 1<<2k-1 = 4^k-1
     switch (rMs[i].cont) {
       case Container::sketch_8:
-        thrd[i % vThrSz] = std::thread(
-            &FCM::store_impl<uint64_t, decltype(cmls4_iter)>, this,
-            std::cref(par->ref), (1ull << (2 * rMs[i].k)) - 1ull, cmls4_iter++);
+        thrd[i % vThrSz] =
+            std::thread(&FCM::store_impl<uint64_t, decltype(cmls4_iter)>, this, std::cref(par->ref),
+                        (1ull << (2 * rMs[i].k)) - 1ull, cmls4_iter++);
         break;
       case Container::log_table_8:
-        thrd[i % vThrSz] = std::thread(
-            &FCM::store_impl<uint32_t, decltype(lgtbl8_iter)>, this,
-            std::cref(par->ref), (1ul << (2 * rMs[i].k)) - 1ul, lgtbl8_iter++);
+        thrd[i % vThrSz] =
+            std::thread(&FCM::store_impl<uint32_t, decltype(lgtbl8_iter)>, this,
+                        std::cref(par->ref), (1ul << (2 * rMs[i].k)) - 1ul, lgtbl8_iter++);
         break;
       case Container::table_64:
-        thrd[i % vThrSz] = std::thread(
-            &FCM::store_impl<uint32_t, decltype(tbl64_iter)>, this,
-            std::cref(par->ref), (1ul << (2 * rMs[i].k)) - 1ul, tbl64_iter++);
+        thrd[i % vThrSz] =
+            std::thread(&FCM::store_impl<uint32_t, decltype(tbl64_iter)>, this, std::cref(par->ref),
+                        (1ul << (2 * rMs[i].k)) - 1ul, tbl64_iter++);
         break;
       case Container::table_32:
-        thrd[i % vThrSz] = std::thread(
-            &FCM::store_impl<uint32_t, decltype(tbl32_iter)>, this,
-            std::cref(par->ref), (1ul << (2 * rMs[i].k)) - 1ul, tbl32_iter++);
+        thrd[i % vThrSz] =
+            std::thread(&FCM::store_impl<uint32_t, decltype(tbl32_iter)>, this, std::cref(par->ref),
+                        (1ul << (2 * rMs[i].k)) - 1ul, tbl32_iter++);
         break;
       default:
         break;
     }
     // Join
-    if ((i + 1) % vThrSz == 0)
-      for (auto& t : thrd)
-        if (t.joinable()) t.join();
+    if ((i + 1) % vThrSz == 0) {
+      for (auto& t : thrd) {
+        if (t.joinable()) {
+          t.join();
+        }
+      }
+    }
   }
-  for (auto& t : thrd)
-    if (t.joinable()) t.join();  // Join leftover threads
+  for (auto& t : thrd) {
+    if (t.joinable()) {
+      t.join();  // Join leftover threads
+    }
+  }
 }
 
 template <typename Mask, typename ContIter /*Container iterator*/>
 inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
   std::ifstream rf(ref);
   Mask ctx = 0;
-  
+
   for (std::vector<char> buffer(FILE_READ_BUF, 0); rf.peek() != EOF;) {
     rf.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + rf.gcount();
-         ++it) {
+    for (auto it = std::begin(buffer); it != std::begin(buffer) + rf.gcount(); ++it) {
       const auto c = *it;
       if (c != '\n') {
         ctx = ((ctx & mask) << 2u) | base_code(c);
@@ -438,13 +458,12 @@ void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
     par->message += "[+] Compressing " + italic(par->tarName) + " ";
   } else {
     if (round == 1) {
-      par->message =
-          "[+] Compressing & filtering " + italic(par->tarName) + " ";
+      par->message = "[+] Compressing & filtering " + italic(par->tarName) + " ";
       std::cerr << par->message << "...";
     }
   }
 
-  if (rMs.size() == 1 && rTMsSize == 0)  // 1 MM
+  if (rMs.size() == 1 && rTMsSize == 0) {  // 1 MM
     switch (rMs[0].cont) {
       case Container::sketch_8:
         compress_1(par, std::begin(cmls4));
@@ -459,13 +478,14 @@ void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
         compress_1(par, std::begin(tbl64));
         break;
     }
-  else
+  } else {
     compress_n(par);
+  }
 
   if (par->verbose) {
-    std::cerr << "\r" << par->message << "finished. Ave. entropy = "
-              << fixed_precision(PREC_PRF, aveEnt) << " bps." << '\n';
-  } else {
+    std::cerr << "\r" << par->message
+              << "finished. Ave. entropy = " << fixed_precision(PREC_PRF, aveEnt) << " bps."
+              << '\n';
   }
 }
 
@@ -478,22 +498,24 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
   ProbPar prob_par{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
                    static_cast<uint8_t>(rMs[0].k << 1u)};
   std::ifstream tar_file(par->tar);
-  std::ofstream prf_file(
-      gen_name(par->ID, par->ref, par->tar, Format::profile));
+  std::ofstream prf_file(gen_name(par->ID, par->ref, par->tar, Format::profile));
   const auto totalSize = file_size(par->tar);
   std::vector<prc_t> entropies;
   entropies.reserve(FILE_WRITE_BUF);
   auto write_entropies = [&]() {
-    for (auto e : entropies) prf_file << precision(PREC_PRF, e) << '\n';
+    for (auto e : entropies) {
+      prf_file << precision(PREC_PRF, e) << '\n';
+    }
   };
   uint64_t sample_step_index = 0;
 
   for (std::vector<char> buffer(FILE_READ_BUF, 0); tar_file.peek() != EOF;) {
     tar_file.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer);
-         it != std::begin(buffer) + tar_file.gcount(); ++it) {
+    for (auto it = std::begin(buffer); it != std::begin(buffer) + tar_file.gcount(); ++it) {
       auto c = *it;
-      if (c == '\n') continue;
+      if (c == '\n') {
+        continue;
+      }
 
       prc_t entr;
       bool sample_taken = (sample_step_index % par->sampleStep == 0);
@@ -510,33 +532,30 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
           entr = entropyN;
         }
         update_ctx_ir0(ctx, &prob_par);
-        } else if (rMs[0].ir == 1) {
-          if (c != 'N') {
-            prob_par.config_ir1(c, ctxIr);
-            if (sample_taken) {
-              auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(
-                  cont, prob_par.shl, prob_par.r);
-              entr = entropy(std::begin(f), &prob_par);
-            }
-          } else {
-            prob_par.config_ir1(c, ctxIr);
-            entr = entropyN;
+      } else if (rMs[0].ir == 1) {
+        if (c != 'N') {
+          prob_par.config_ir1(c, ctxIr);
+          if (sample_taken) {
+            auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, prob_par.shl, prob_par.r);
+            entr = entropy(std::begin(f), &prob_par);
           }
-          update_ctx_ir1(ctxIr, &prob_par);
-        } else if (rMs[0].ir == 2) {
-          if (c != 'N') {
-            prob_par.config_ir2(c, ctx, ctxIr);
-            if (sample_taken) {
-              auto f =
-                  freqs_ir2<decltype(2 * (*cont)->query(0))>(cont,
-                  &prob_par);
-              entr = entropy(std::begin(f), &prob_par);
-            }
-          } else {
-            prob_par.config_ir2(c, ctx, ctxIr);
-            entr = entropyN;
+        } else {
+          prob_par.config_ir1(c, ctxIr);
+          entr = entropyN;
+        }
+        update_ctx_ir1(ctxIr, &prob_par);
+      } else if (rMs[0].ir == 2) {
+        if (c != 'N') {
+          prob_par.config_ir2(c, ctx, ctxIr);
+          if (sample_taken) {
+            auto f = freqs_ir2<decltype(2 * (*cont)->query(0))>(cont, &prob_par);
+            entr = entropy(std::begin(f), &prob_par);
           }
-          update_ctx_ir2(ctx, ctxIr, &prob_par);
+        } else {
+          prob_par.config_ir2(c, ctx, ctxIr);
+          entr = entropyN;
+        }
+        update_ctx_ir2(ctx, ctxIr, &prob_par);
       }
 
       if (sample_taken) {
@@ -546,7 +565,9 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
       }
       ++sample_step_index;
       // prf_file << precision(PREC_PRF, entr) << '\n';
-      if (par->verbose) show_progress(symsNo, totalSize, par->message);
+      if (par->verbose) {
+        show_progress(symsNo, totalSize, par->message);
+      }
     }
 
     if (entropies.size() >= FILE_WRITE_BUF) {
@@ -573,7 +594,9 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
   cp->ctxIr.reserve(nMdl);
   for (const auto& mm : rMs) {  // Mask: 1<<2k - 1 = 4^k - 1
     cp->ctxIr.push_back((1ull << (2 * mm.k)) - 1);
-    if (mm.child) cp->ctxIr.push_back((1ull << (2 * mm.k)) - 1);
+    if (mm.child) {
+      cp->ctxIr.push_back((1ull << (2 * mm.k)) - 1);
+    }
   }
   cp->w.resize(nMdl, static_cast<prc_t>(1) / nMdl);
   cp->wNext.resize(nMdl, static_cast<prc_t>(0));
@@ -581,18 +604,19 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
   auto maskIter = std::begin(cp->ctxIr);
   for (const auto& mm : rMs) {
     cp->pp.emplace_back(mm.alpha, *maskIter++, static_cast<uint8_t>(2 * mm.k));
-    if (mm.child)
-      cp->pp.emplace_back(mm.child->alpha, *maskIter++,
-                          static_cast<uint8_t>(2 * mm.k));
+    if (mm.child) {
+      cp->pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<uint8_t>(2 * mm.k));
+    }
   }
   std::ifstream tar_file(par->tar);
-  std::ofstream prf_file(
-      gen_name(par->ID, par->ref, par->tar, Format::profile));
+  std::ofstream prf_file(gen_name(par->ID, par->ref, par->tar, Format::profile));
   const auto totalSize = file_size(par->tar);
   std::vector<prc_t> entropies;
   entropies.reserve(FILE_WRITE_BUF);
   auto write_entropies = [&]() {
-    for (auto e : entropies) prf_file << precision(PREC_PRF, e) << '\n';
+    for (auto e : entropies) {
+      prf_file << precision(PREC_PRF, e) << '\n';
+    }
   };
   uint64_t sample_step_index = 0;
 
@@ -608,10 +632,11 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
 
   for (std::vector<char> buffer(FILE_READ_BUF, 0); tar_file.peek() != EOF;) {
     tar_file.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer);
-         it != std::begin(buffer) + tar_file.gcount(); ++it) {
+    for (auto it = std::begin(buffer); it != std::begin(buffer) + tar_file.gcount(); ++it) {
       const auto c = *it;
-      if (c == '\n') continue;
+      if (c == '\n') {
+        continue;
+      }
 
       bool sample_taken = (sample_step_index % par->sampleStep == 0);
       cp->c = c;
@@ -649,14 +674,17 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
         ++cp->ctxIrIt;
       }
 
-      const auto entr = entropy(std::begin(cp->w), std::begin(cp->probs),
-                                std::end(cp->probs));
+      const auto entr = entropy(std::begin(cp->w), std::begin(cp->probs), std::end(cp->probs));
       normalize(std::begin(cp->w), std::begin(cp->wNext), std::end(cp->wNext));
       ++symsNo;
       sumEnt += entr;
-      if (sample_taken) entropies.push_back(entr);
+      if (sample_taken) {
+        entropies.push_back(entr);
+      }
       ++sample_step_index;
-      if (par->verbose) show_progress(symsNo, totalSize, par->message);
+      if (par->verbose) {
+        show_progress(symsNo, totalSize, par->message);
+      }
     }
 
     if (entropies.size() >= FILE_WRITE_BUF) {
@@ -673,8 +701,8 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
 }
 
 template <typename ContIter>
-inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
-                                   ContIter cont, uint8_t n) const {
+inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp, ContIter cont,
+                                   uint8_t n) const {
   prc_t prb;
 
   if (cp->mm.ir == 0) {
@@ -692,8 +720,7 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
   } else if (cp->mm.ir == 1) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
-      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl,
-                                                          cp->ppIt->r);
+      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl, cp->ppIt->r);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
@@ -718,8 +745,8 @@ inline void FCM::compress_n_parent(std::unique_ptr<CompressPar>& cp,
 }
 
 template <typename ContIter>
-inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
-                                  ContIter cont, uint8_t n) const {
+inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp, ContIter cont,
+                                  uint8_t n) const {
   prc_t prb;
 
   if (cp->mm.child->ir == 0) {
@@ -741,15 +768,13 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
   } else if (cp->mm.child->ir == 1) {
     if (cp->c != 'N') {
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
-      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl,
-                                                          cp->ppIt->r);
+      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl, cp->ppIt->r);
       prb = prob(std::begin(f), cp->ppIt);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
     } else {
       cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);  // r
-      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl,
-                                                          cp->ppIt->r);
+      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl, cp->ppIt->r);
       prb = 1.0 / std::pow(2.0, entropyN);
       cp->probs.push_back(prb);
       correct_stmm(cp, std::begin(f));
@@ -775,20 +800,19 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp,
   }
 }
 
-void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID,
-                        uint8_t round) {
+void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID, uint8_t round) {
   std::string message;
   if (par->verbose) {
-    if (round == 3)
-      message =
-          "        [-] Compressing segment " + std::to_string(ID + 1) + " ";
-    else
+    if (round == 3) {
+      message = "        [-] Compressing segment " + std::to_string(ID + 1) + " ";
+    } else {
       message = "    [-] Compressing segment " + std::to_string(ID + 1) + " ";
+    }
   }
 
   self_compress_alloc();
 
-  if (tMs.size() == 1 && tTMsSize == 0)  // 1 MM
+  if (tMs.size() == 1 && tTMsSize == 0) {  // 1 MM
     switch (tMs[0].cont) {
       case Container::sketch_8:
         self_compress_1(par, std::begin(cmls4), ID);
@@ -803,19 +827,30 @@ void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID,
         self_compress_1(par, std::begin(tbl64), ID);
         break;
     }
-  else
+  } else {
     self_compress_n(par, ID);
+  }
 
-  if (par->verbose)
-    std::cerr << "\r" << message << "done. Ave. entropy = "
-              << fixed_precision(PREC_PRF, selfEnt[ID]) << " bps." << '\n';
+  if (par->verbose) {
+    std::cerr << "\r" << message
+              << "done. Ave. entropy = " << fixed_precision(PREC_PRF, selfEnt[ID]) << " bps."
+              << '\n';
+  }
 }
 
 inline void FCM::self_compress_alloc() {
-  for (auto& e : cmls4) e.reset();
-  for (auto& e : lgtbl8) e.reset();
-  for (auto& e : tbl32) e.reset();
-  for (auto& e : tbl64) e.reset();
+  for (auto& e : cmls4) {
+    e.reset();
+  }
+  for (auto& e : lgtbl8) {
+    e.reset();
+  }
+  for (auto& e : tbl32) {
+    e.reset();
+  }
+  for (auto& e : tbl64) {
+    e.reset();
+  }
   cmls4.clear();
   lgtbl8.clear();
   tbl32.clear();
@@ -840,22 +875,19 @@ inline void FCM::self_compress_alloc() {
 }
 
 template <typename ContIter>
-inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
-                                 uint64_t ID) {
+inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont, uint64_t ID) {
   uint64_t ctx{0};
   uint64_t ctxIr{(1ull << (2 * tMs[0].k)) - 1};
   uint64_t symsNo{0};
   prc_t sumEnt{0};
   std::ifstream seqF(par->seq);
-  ProbPar pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
-             static_cast<uint8_t>(tMs[0].k << 1u)};
+  ProbPar pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, static_cast<uint8_t>(tMs[0].k << 1u)};
   const auto totalSize = file_size(par->seq);
   prc_t entr;
 
   for (std::vector<char> buffer(FILE_READ_BUF, 0); seqF.peek() != EOF;) {
     seqF.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount();
-         ++it) {
+    for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount(); ++it) {
       const auto c = *it;
       if (c != '\n') {
         ++symsNo;
@@ -873,8 +905,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
         } else if (tMs[0].ir == 1) {
           pp.config_ir1(c, ctxIr);
           if (c != 'N') {
-            auto f =
-                freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, pp.shl, pp.r);
+            auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, pp.shl, pp.r);
             entr = entropy(prob(std::begin(f), &pp));
           } else {
             entr = entropyN;
@@ -894,7 +925,9 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
-        if (par->verbose) show_progress(symsNo, totalSize, par->message);
+        if (par->verbose) {
+          show_progress(symsNo, totalSize, par->message);
+        }
       }
     }
   }
@@ -913,18 +946,19 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
   cp->ctxIr.reserve(nMdl);
   for (const auto& mm : tMs) {  // Mask: 1<<2k - 1 = 4^k - 1
     cp->ctxIr.push_back((1ull << (mm.k << 1)) - 1);
-    if (mm.child) cp->ctxIr.push_back((1ull << (mm.k << 1)) - 1);
+    if (mm.child) {
+      cp->ctxIr.push_back((1ull << (mm.k << 1)) - 1);
+    }
   }
   cp->w.resize(nMdl, static_cast<prc_t>(1) / nMdl);
   cp->wNext.resize(nMdl, static_cast<prc_t>(0));
   cp->pp.reserve(nMdl);
   auto maskIter = begin(cp->ctxIr);
   for (const auto& mm : tMs) {
-    cp->pp.emplace_back(mm.alpha, *maskIter++,
-                        static_cast<uint8_t>(mm.k << 1u));
-    if (mm.child)
-      cp->pp.emplace_back(mm.child->alpha, *maskIter++,
-                          static_cast<uint8_t>(mm.k << 1u));
+    cp->pp.emplace_back(mm.alpha, *maskIter++, static_cast<uint8_t>(mm.k << 1u));
+    if (mm.child) {
+      cp->pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<uint8_t>(mm.k << 1u));
+    }
   }
   const auto totalSize = file_size(par->seq);
   const auto self_compress_n_impl = [&](auto& cp, auto cont, uint8_t& n) {
@@ -941,8 +975,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
 
   for (std::vector<char> buffer(FILE_READ_BUF, 0); seqF.peek() != EOF;) {
     seqF.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount();
-         ++it) {
+    for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount(); ++it) {
       const auto c = *it;
       if (c != '\n') {
         ++symsNo;
@@ -981,12 +1014,12 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
           ++cp->ctxIrIt;
         }
 
-        const auto ent = entropy(std::begin(cp->w), std::begin(cp->probs),
-                                 std::end(cp->probs));
-        normalize(std::begin(cp->w), std::begin(cp->wNext),
-                  std::end(cp->wNext));
+        const auto ent = entropy(std::begin(cp->w), std::begin(cp->probs), std::end(cp->probs));
+        normalize(std::begin(cp->w), std::begin(cp->wNext), std::end(cp->wNext));
         sumEnt += ent;
-        if (par->verbose) show_progress(symsNo, totalSize, par->message);
+        if (par->verbose) {
+          show_progress(symsNo, totalSize, par->message);
+        }
       }
     }
   }
@@ -995,8 +1028,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
 }
 
 template <typename ContIter>
-inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
-                                        ContIter cont, uint8_t n,
+inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp, ContIter cont, uint8_t n,
                                         uint64_t& valUpd) const {
   prc_t prb;
 
@@ -1015,8 +1047,7 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
   } else if (cp->mm.ir == 1) {
     cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
     if (cp->c != 'N') {
-      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl,
-                                                          cp->ppIt->r);
+      auto f = freqs_ir1<decltype(2 * (*cont)->query(0))>(cont, cp->ppIt->shl, cp->ppIt->r);
       prb = prob(std::begin(f), cp->ppIt);
     } else {
       prb = 1.0 / std::pow(2.0, entropyN);
@@ -1040,25 +1071,24 @@ inline void FCM::self_compress_n_parent(std::unique_ptr<CompressPar>& cp,
   }
 }
 
-void FCM::aggregate_slf_ent(std::vector<PosRow>& pos_out, uint8_t round,
-                            uint8_t run_num, std::string ref,
-                            bool no_redun) const {
+void FCM::aggregate_slf_ent(std::vector<PosRow>& pos_out, uint8_t round, uint8_t run_num,
+                            std::string ref, bool no_redun) const {
   auto selfEnt_beg = std::begin(selfEnt);
 
-  for (auto& row : pos_out)
-    if (row.round == round && row.run_num == run_num && row.ref == ref)
+  for (auto& row : pos_out) {
+    if (row.round == round && row.run_num == run_num && row.ref == ref) {
       row.self_ent = (!no_redun ? *selfEnt_beg++ : DBLANK);
+    }
+  }
 }
 
 template <typename OutT, typename ContIter>
-auto FCM::freqs_ir0(ContIter cont, uint64_t l) const
-    -> std::array<OutT, CARDIN> {
+auto FCM::freqs_ir0(ContIter cont, uint64_t l) const -> std::array<OutT, CARDIN> {
   return (*cont)->query_counters(l);
 }
 
 template <typename OutT, typename ContIter>
-auto FCM::freqs_ir1(ContIter cont, uint64_t shl, uint64_t r) const
-    -> std::array<OutT, CARDIN> {
+auto FCM::freqs_ir1(ContIter cont, uint64_t shl, uint64_t r) const -> std::array<OutT, CARDIN> {
   return {static_cast<OutT>((*cont)->query((3ull << shl) | r)),
           static_cast<OutT>((*cont)->query((2ull << shl) | r)),
           static_cast<OutT>((*cont)->query((1ull << shl) | r)),
@@ -1066,25 +1096,18 @@ auto FCM::freqs_ir1(ContIter cont, uint64_t shl, uint64_t r) const
 }
 
 template <typename OutT, typename ContIter, typename ProbParIter>
-auto FCM::freqs_ir2(ContIter cont, ProbParIter pp) const
-    -> std::array<OutT, CARDIN> {
+auto FCM::freqs_ir2(ContIter cont, ProbParIter pp) const -> std::array<OutT, CARDIN> {
   return {
-      static_cast<OutT>((*cont)->query(pp->l) +
-                        (*cont)->query((3ull << pp->shl) | pp->r)),
-      static_cast<OutT>((*cont)->query(pp->l | 1ull) +
-                        (*cont)->query((2ull << pp->shl) | pp->r)),
-      static_cast<OutT>((*cont)->query(pp->l | 2ull) +
-                        (*cont)->query((1ull << pp->shl) | pp->r)),
+      static_cast<OutT>((*cont)->query(pp->l) + (*cont)->query((3ull << pp->shl) | pp->r)),
+      static_cast<OutT>((*cont)->query(pp->l | 1ull) + (*cont)->query((2ull << pp->shl) | pp->r)),
+      static_cast<OutT>((*cont)->query(pp->l | 2ull) + (*cont)->query((1ull << pp->shl) | pp->r)),
       static_cast<OutT>((*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r))};
 }
 
-inline prc_t FCM::weight_next(prc_t w, prc_t g, prc_t p) const {
-  return Power(w, g) * p;
-}
+inline prc_t FCM::weight_next(prc_t w, prc_t g, prc_t p) const { return Power(w, g) * p; }
 
 template <typename FreqIter>
-inline void FCM::correct_stmm(std::unique_ptr<CompressPar>& cp,
-                              FreqIter fFirst) const {
+inline void FCM::correct_stmm(std::unique_ptr<CompressPar>& cp, FreqIter fFirst) const {
   const auto best_id = [=](FreqIter fFirst) {
     if (are_all(fFirst, 1)) {
       return static_cast<uint8_t>(255);
@@ -1099,11 +1122,11 @@ inline void FCM::correct_stmm(std::unique_ptr<CompressPar>& cp,
   const auto best = best_id(fFirst);
 
   if (stmm->enabled) {
-    if (best == static_cast<uint8_t>(255))
+    if (best == static_cast<uint8_t>(255)) {
       miss_stmm(stmm);
-    else if (best == static_cast<uint8_t>(254) || best == cp->nSym)
+    } else if (best == static_cast<uint8_t>(254) || best == cp->nSym) {
       hit_stmm(stmm);
-    else {
+    } else {
       miss_stmm(stmm);
       switch (stmm->ir) {
         case 0:
@@ -1144,15 +1167,15 @@ inline void FCM::hit_stmm(const TmPar& stmm) const {
 
 template <typename TmPar>
 inline void FCM::miss_stmm(TmPar stmm) const {
-  if (pop_count(std::begin(stmm->history), stmm->k) > stmm->thresh)
+  if (pop_count(std::begin(stmm->history), stmm->k) > stmm->thresh) {
     stmm->enabled = false;
-  else
+  } else {
     stmm_update_hist(stmm->history, true);
+  }
 }
 #else
 template <typename History, typename Value>
-inline void FCM::update_hist_stmm(History& hist, Value val,
-                                  uint32_t mask) const {
+inline void FCM::update_hist_stmm(History& hist, Value val, uint32_t mask) const {
   hist = ((hist << 1u) | val) & mask;  // ull for 64 bits
 }
 
@@ -1163,10 +1186,11 @@ inline void FCM::hit_stmm(const TmPar& stmm) const {
 
 template <typename TmPar>
 inline void FCM::miss_stmm(TmPar stmm) const {
-  if (pop_count(stmm->history) > stmm->thresh)
+  if (pop_count(stmm->history) > stmm->thresh) {
     stmm->enabled = false;
-  else
+  } else {
     update_hist_stmm(stmm->history, 1u, stmm->mask);
+  }
 }
 #endif
 
@@ -1178,19 +1202,16 @@ inline prc_t FCM::prob(FreqIter fFirst, ProbParIter pp) const {
 
 template <typename FreqIter, typename ProbParIter>
 auto FCM::entropy(FreqIter fFirst, ProbParIter pp) const -> prc_t {
-  auto prob_rev = std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha) /
-                  (*(fFirst + pp->numSym) + pp->alpha);
+  auto prob_rev =
+      std::accumulate(fFirst, fFirst + CARDIN, pp->sAlpha) / (*(fFirst + pp->numSym) + pp->alpha);
   return std::log2(prob_rev);
 }
 
-inline prc_t FCM::entropy(prc_t P) const {
-  return std::log2(1 / P);
-}
+inline prc_t FCM::entropy(prc_t P) const { return std::log2(1 / P); }
 
 template <typename WIter, typename PIter>
 inline prc_t FCM::entropy(WIter wFirst, PIter PFirst, PIter PLast) const {
-  return std::log2(1 /
-                   inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0)));
+  return std::log2(1 / inner_product(PFirst, PLast, wFirst, static_cast<prc_t>(0)));
 }
 
 template <typename ProbParIter>
@@ -1204,8 +1225,7 @@ inline void FCM::update_ctx_ir1(uint64_t& ctxIr, ProbParIter pp) const {
 }
 
 template <typename ProbParIter>
-inline void FCM::update_ctx_ir2(uint64_t& ctx, uint64_t& ctxIr,
-                                ProbParIter pp) const {
+inline void FCM::update_ctx_ir2(uint64_t& ctx, uint64_t& ctxIr, ProbParIter pp) const {
   ctx = (pp->l & pp->mask) | pp->numSym;
   ctxIr = (pp->revNumSym << pp->shl) | pp->r;
 }

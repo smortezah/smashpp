@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iterator>
+
 #include "exception.hpp"
 #include "par.hpp"
 
@@ -41,9 +42,14 @@ inline static void check_file(std::string name) {  // Must be inline
     error("the file \"" + name + "\" cannot be opened or is empty.");
   } else {
     bool foundChar{false};
-    for (char c; f.get(c) && !foundChar;)
-      if (c != ' ' && c != '\n' && c != '\t') foundChar = true;
-    if (!foundChar) error("the file \"" + name + "\" is empty.");
+    for (char c; f.get(c) && !foundChar;) {
+      if (c != ' ' && c != '\n' && c != '\t') {
+        foundChar = true;
+      }
+    }
+    if (!foundChar) {
+      error("the file \"" + name + "\" is empty.");
+    }
     f.close();
   }
 }
@@ -52,8 +58,11 @@ inline static bool file_is_empty(std::string name) {
   std::ifstream f(name);
   bool foundChar{false};
 
-  for (char c; f.get(c) && !foundChar;)
-    if (c != ' ' && c != '\n' && c != '\t') foundChar = true;
+  for (char c; f.get(c) && !foundChar;) {
+    if (c != ' ' && c != '\n' && c != '\t') {
+      foundChar = true;
+    }
+  }
 
   f.close();
   return !foundChar;
@@ -79,15 +88,16 @@ inline static uint64_t file_size(std::string name) {
 
 inline static uint64_t file_lines(std::string name) {
   std::ifstream f(name);
-  f.unsetf(
-      std::ios_base::skipws);  // New lines will be skipped unless we stop it
-  return static_cast<uint64_t>(std::count(std::istream_iterator<char>(f),
-                                          std::istream_iterator<char>(), '\n'));
+  f.unsetf(std::ios_base::skipws);  // New lines will be skipped unless we stop it
+  return static_cast<uint64_t>(
+      std::count(std::istream_iterator<char>(f), std::istream_iterator<char>(), '\n'));
 }
 
 // Must be inline
 inline static void extract_subseq(std::unique_ptr<SubSeq>& subseq) {
-  if (subseq->size <= 0) return;
+  if (subseq->size <= 0) {
+    return;
+  }
 
   std::ifstream in_file(subseq->inName);
   std::ofstream out_file(subseq->outName);
@@ -105,11 +115,14 @@ inline static FileType file_type(std::string name) {
   check_file(name);
   std::ifstream f(name);
   char c;
-  while (f.peek() == '\n' || f.peek() == ' ')
-    f.get(c);  // Skip leading blank spaces
+  while (f.peek() == '\n' || f.peek() == ' ') {  // Skip leading blank spaces
+    f.get(c);
+  }
 
   // Fastq
-  while (f.peek() == '@') ignore_this_line(f);
+  while (f.peek() == '@') {
+    ignore_this_line(f);
+  }
   while (f.get(c) && c != '\n') {
   }
   if (f.peek() == '+') {
@@ -120,7 +133,9 @@ inline static FileType file_type(std::string name) {
   // Fasta or bare Seq
   f.clear();
   f.seekg(0, std::ios::beg);
-  while (f.peek() != '>' && f.peek() != EOF) ignore_this_line(f);
+  while (f.peek() != '>' && f.peek() != EOF) {
+    ignore_this_line(f);
+  }
   if (f.peek() == '>') {
     f.close();
     return FileType::fasta;
@@ -130,8 +145,7 @@ inline static FileType file_type(std::string name) {
   }
 }
 
-inline static void to_seq(std::string inName, std::string outName,
-                          const FileType& type) {
+inline static void to_seq(std::string inName, std::string outName, const FileType& type) {
   std::ifstream in_file(inName);
   std::ofstream out_file(outName);
 
@@ -140,8 +154,7 @@ inline static void to_seq(std::string inName, std::string outName,
     for (std::vector<char> buffer(FILE_READ_BUF, 0); in_file.peek() != EOF;) {
       in_file.read(buffer.data(), FILE_READ_BUF);
       std::string out;
-      for (auto it = std::begin(buffer);
-           it != std::begin(buffer) + in_file.gcount(); ++it) {
+      for (auto it = std::begin(buffer); it != std::begin(buffer) + in_file.gcount(); ++it) {
         const auto c = *it;
         if (c == '>') {
           isHeader = true;
@@ -163,8 +176,7 @@ inline static void to_seq(std::string inName, std::string outName,
     for (std::vector<char> buffer(FILE_READ_BUF, 0); in_file.peek() != EOF;) {
       in_file.read(buffer.data(), FILE_READ_BUF);
       std::string out;
-      for (auto it = std::begin(buffer);
-           it != std::begin(buffer) + in_file.gcount(); ++it) {
+      for (auto it = std::begin(buffer); it != std::begin(buffer) + in_file.gcount(); ++it) {
         const auto c{*it};
         switch (line) {
           case 0:
@@ -194,8 +206,12 @@ inline static void to_seq(std::string inName, std::string outName,
           default:
             break;
         }
-        if (!isDNA || c == '\n') continue;
-        if (c > 64 && c < 123) out += c;
+        if (!isDNA || c == '\n') {
+          continue;
+        }
+        if (c > 64 && c < 123) {
+          out += c;
+        }
       }
       out_file.write(out.data(), out.size());
     }
@@ -229,7 +245,9 @@ inline static json parse_pos_metadata(const std::string& pos) {
   std::getline(info_ss, tar, ',');
   std::getline(info_ss, tarsize, ',');
   ref = ref.substr(ref.find("<") + 1);
-  if (!tarsize.empty() && tarsize.back() == '>') tarsize.pop_back();
+  if (!tarsize.empty() && tarsize.back() == '>') {
+    tarsize.pop_back();
+  }
   j["reference"] = ref.substr(ref.find("=") + 1);
   j["reference_size"] = refsize.substr(refsize.find("=") + 1);
   j["target"] = tar.substr(tar.find("=") + 1);
@@ -243,11 +261,12 @@ inline static std::string pos2json(const std::string& pos_content) {
   std::istringstream iss(pos_content);
 
   for (std::string line; std::getline(iss, line);) {
-    if (line[0] == '#') continue;
+    if (line[0] == '#') {
+      continue;
+    }
     std::istringstream line_ss(line);
     std::string rbeg, rend, rrelrdn, rrdn, tbeg, tend, trelrdn, trdn, inv;
-    line_ss >> rbeg >> rend >> rrelrdn >> rrdn >> tbeg >> tend >> trelrdn >>
-        trdn >> inv;
+    line_ss >> rbeg >> rend >> rrelrdn >> rrdn >> tbeg >> tend >> trelrdn >> trdn >> inv;
     j["positions"].push_back({{"reference_begin", rbeg},
                               {"reference_end", rend},
                               {"reference_relative_redundancy", rrelrdn},

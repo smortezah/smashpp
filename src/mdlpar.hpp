@@ -5,6 +5,7 @@
 #define SMASHPP_MDLPAR_HPP
 
 #include <memory>
+
 #include "def.hpp"
 
 namespace smashpp {
@@ -30,8 +31,7 @@ struct MMPar {
         gamma(g_),
         cont(Container::table_64),
         child(nullptr) {}
-  MMPar(uint8_t k_, uint8_t ir_, prc_t a_, prc_t g_)
-      : MMPar(k_, 0, 0, ir_, a_, g_) {}
+  MMPar(uint8_t k_, uint8_t ir_, prc_t a_, prc_t g_) : MMPar(k_, 0, 0, ir_, a_, g_) {}
 };
 
 struct STMMPar {
@@ -49,13 +49,7 @@ struct STMMPar {
   uint32_t mask;  // For updating the history
 
   STMMPar(uint8_t k_, uint8_t t_, uint8_t ir_, prc_t a_, prc_t g_)
-      : k(k_),
-        thresh(t_),
-        ir(ir_),
-        alpha(a_),
-        gamma(g_),
-        enabled(true),
-        mask((1u << k) - 1u) {
+      : k(k_), thresh(t_), ir(ir_), alpha(a_), gamma(g_), enabled(true), mask((1u << k) - 1u) {
 #ifdef ARRAY_HISTORY
     history.resize(k);
 #else

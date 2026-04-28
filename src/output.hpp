@@ -5,6 +5,7 @@
 #define SMASHPP_OUTPUT_HPP
 
 #include <sstream>
+
 #include "naming.hpp"
 
 namespace smashpp {
@@ -37,8 +38,7 @@ class PositionFile {
   auto stream_pos(std::ostringstream&, const std::vector<PosRow>&, bool) const
       -> std::ostringstream&;
   auto pos_pairs(const std::vector<PosRow>&) const -> std::vector<OutRowAux>;
-  void stream_pos_impl(std::ostringstream&, const std::vector<OutRowAux>&,
-                       bool) const;
+  void stream_pos_impl(std::ostringstream&, const std::vector<OutRowAux>&, bool) const;
 };
 }  // namespace smashpp
 

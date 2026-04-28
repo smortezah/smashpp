@@ -5,6 +5,7 @@
 #define SMASHPP_FILTER_HPP
 
 #include <memory>
+
 #include "par.hpp"
 
 namespace smashpp {
@@ -16,8 +17,7 @@ class Filter {
 
   Filter();
   explicit Filter(std::unique_ptr<Param>&);
-  void smooth_seg(std::vector<PosRow>&, std::unique_ptr<Param>&, uint8_t,
-                  uint64_t&);
+  void smooth_seg(std::vector<PosRow>&, std::unique_ptr<Param>&, uint8_t, uint64_t&);
   void extract_seg(std::vector<PosRow>&, uint8_t, uint8_t, std::string) const;
 
  private:
@@ -46,8 +46,7 @@ class Filter {
   template <bool SaveFilter>
   void smooth_seg_rect(std::vector<PosRow>&, std::unique_ptr<Param>&, uint8_t);
   template <bool SaveFilter>
-  void smooth_seg_non_rect(std::vector<PosRow>&, std::unique_ptr<Param>&,
-                           uint8_t);
+  void smooth_seg_non_rect(std::vector<PosRow>&, std::unique_ptr<Param>&, uint8_t);
 
 #ifdef BENCH
   template <typename Iter, typename Value>

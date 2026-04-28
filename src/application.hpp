@@ -30,8 +30,8 @@ class application {
 
  private:
   void run(std::unique_ptr<Param>&);
-  auto run_round(std::unique_ptr<Param>&, uint8_t, uint8_t,
-                 std::vector<PosRow>&, uint64_t&) -> uint64_t;
+  auto run_round(std::unique_ptr<Param>&, uint8_t, uint8_t, std::vector<PosRow>&, uint64_t&)
+      -> uint64_t;
 
   void prepare_data(std::unique_ptr<Param>&);
   void remove_temp_seg(std::unique_ptr<Param>&, uint64_t);
@@ -69,8 +69,7 @@ class info {
 };
 
 void application::exe(int argc, char* argv[]) {
-  if (has(argv, argv + argc, std::string("-viz")) ||
-      has(argv, argv + argc, std::string("viz"))) {
+  if (has(argv, argv + argc, std::string("-viz")) || has(argv, argv + argc, std::string("viz"))) {
     auto vizpar = std::make_unique<VizParam>();
     vizpar->parse(argc, argv);
     auto paint = std::make_unique<VizPaint>();
@@ -104,35 +103,37 @@ void application::run(std::unique_ptr<Param>& par) {
         par->message = "[+] Repeating above process for ";
       }
 
-      const auto name_seg_round1{
-          gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
+      const auto name_seg_round1{gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
       std::string tar_round2 = par->tar = par->ref;
 
       for (uint64_t i = 0; i < num_seg_round1; ++i) {
-        if (!par->verbose)
+        if (!par->verbose) {
           std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
+        }
 
         std::string ref_round2 = par->ref = name_seg_round1 + std::to_string(i);
 
-        auto num_seg_round2 =
-            run_round(par, 2, run_num, pos_out, current_pos_row);
-        if (par->verbose) std::cerr << '\n';
+        auto num_seg_round2 = run_round(par, 2, run_num, pos_out, current_pos_row);
+        if (par->verbose) {
+          std::cerr << '\n';
+        }
 
         if (num_seg_round2 != 0) {
           // Round 3
           if (par->deep) {
-            if (par->verbose)
+            if (par->verbose) {
               std::cerr << "    " << italic("Deep compression") << '\n';
+            }
 
-            const auto name_seg_round2{
-                gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+            const auto name_seg_round2{gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
             par->tar = ref_round2;
 
             for (uint64_t j = 0; j < num_seg_round2; ++j) {
               par->ref = name_seg_round2 + std::to_string(j);
-              auto num_seg_round3 =
-                  run_round(par, 3, run_num, pos_out, current_pos_row);
-              if (par->verbose) std::cerr << "\n";
+              auto num_seg_round3 = run_round(par, 3, run_num, pos_out, current_pos_row);
+              if (par->verbose) {
+                std::cerr << "\n";
+              }
               remove_temp_seg(par, num_seg_round3);
             }
           }  // Round 3
@@ -143,8 +144,9 @@ void application::run(std::unique_ptr<Param>& par) {
         }
       }
 
-      if (!par->verbose)
+      if (!par->verbose) {
         std::cerr << "\r" << par->message << "all segments done.\n\n";
+      }
     }  // Round 2
 
     par->ref = ref_round1;
@@ -165,9 +167,8 @@ void application::run(std::unique_ptr<Param>& par) {
   }
 }
 
-uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round,
-                                uint8_t run_num, std::vector<PosRow>& pos_out,
-                                uint64_t& current_pos_row) {
+uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
+                                std::vector<PosRow>& pos_out, uint64_t& current_pos_row) {
   par->ID = run_num;
   par->refName = file_name(par->ref);
   par->tarName = file_name(par->tar);
@@ -177,21 +178,24 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round,
     info{}.show(par);
     par->showInfo = false;
   }
-  if (round == 1 && run_num == 0)
-    std::cerr << bold(
-        "====[ REGULAR MODE ]==================================\n");
-  else if (round == 1 && run_num == 1)
-    std::cerr << bold(
-        "====[ INVERTED MODE ]=================================\n");
+  if (round == 1 && run_num == 0) {
+    std::cerr << bold("====[ REGULAR MODE ]==================================\n");
+  } else if (round == 1 && run_num == 1) {
+    std::cerr << bold("====[ INVERTED MODE ]=================================\n");
+  }
 
   // Make all IRs consistent
   for (auto& ref_model : models->rMs) {
     ref_model.ir = run_num;
-    if (ref_model.child) ref_model.child->ir = run_num;
+    if (ref_model.child) {
+      ref_model.child->ir = run_num;
+    }
   }
   for (auto& tar_model : models->tMs) {
     tar_model.ir = run_num;
-    if (tar_model.child) tar_model.child->ir = run_num;
+    if (tar_model.child) {
+      tar_model.child->ir = run_num;
+    }
   }
 
   // Build models and Compress
@@ -203,7 +207,9 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round,
   filter->smooth_seg(pos_out, par, round, current_pos_row);
 
   if (filter->nSegs == 0) {
-    if (round == 1) std::cerr << '\n';
+    if (round == 1) {
+      std::cerr << '\n';
+    }
     return 0;  // continue;
   }
   filter->extract_seg(pos_out, round, run_num, par->ref);
@@ -211,18 +217,23 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round,
   // Ref-free compress
   if (!par->noRedun) {
     if (par->verbose) {
-      if (round == 3) std::cerr << "    ";
+      if (round == 3) {
+        std::cerr << "    ";
+      }
       std::cerr << "[+] Reference-free compression of the segment"
                 << (filter->nSegs == 1 ? "" : "s") << '\n';
     } else {
-      if (round == 1) par->message = "[+] Ref-free compression of ";
+      if (round == 1) {
+        par->message = "[+] Ref-free compression of ";
+      }
     }
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.resize(filter->nSegs);
     for (uint64_t i = 0; i < filter->nSegs; ++i) {
-      if (!par->verbose && round == 1)
+      if (!par->verbose && round == 1) {
         std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
+      }
 
       par->seq = seg + std::to_string(i);
       models->self_compress(par, i, round);
@@ -230,8 +241,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round,
 
     models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);
     if (!par->verbose && round == 1) {
-      std::cerr << "\r" << par->message
-                << (filter->nSegs == 1 ? "the segment " : "all segments ")
+      std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "the segment " : "all segments ")
                 << "done.         " << '\n';
     }
   }
@@ -241,18 +251,20 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round,
 }
 
 void application::prepare_data(std::unique_ptr<Param>& par) {
-  if (par->refType == FileType::seq && par->tarType == FileType::seq) return;
+  if (par->refType == FileType::seq && par->tarType == FileType::seq) {
+    return;
+  }
 
   std::cerr << bold("====[ PREPARE DATA ]==================================\n");
 
   // FASTA/FASTQ to seq
-  auto convert_to_seq = [](std::string in, std::string out,
-                           const FileType& type) {
+  auto convert_to_seq = [](std::string in, std::string out, const FileType& type) {
     std::string msg = "[+] " + italic(file_name(in)) + " (FAST";
-    if (type == FileType::fasta)
+    if (type == FileType::fasta) {
       msg += "A";
-    else if (type == FileType::fastq)
+    } else if (type == FileType::fastq) {
       msg += "Q";
+    }
     msg += ") -> " + italic(out) + " (seq) ";
     std::cerr << msg << "...";
     to_seq(in, out, type);
@@ -262,26 +274,29 @@ void application::prepare_data(std::unique_ptr<Param>& par) {
   const std::string ref_seq = file_name_no_ext(par->refName) + ".seq";
   const std::string tar_seq = file_name_no_ext(par->tarName) + ".seq";
 
-  if (par->refType == FileType::fasta || par->refType == FileType::fastq)
+  if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
     convert_to_seq(par->ref, ref_seq, par->refType);
-  else if (par->refType != FileType::seq)
+  } else if (par->refType != FileType::seq) {
     error("\"" + par->refName + "\" has unknown format.");
+  }
 
-  if (par->tarType == FileType::fasta || par->tarType == FileType::fastq)
+  if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
     convert_to_seq(par->tar, tar_seq, par->tarType);
-  else if (par->tarType != FileType::seq)
+  } else if (par->tarType != FileType::seq) {
     error("\"" + par->tarName + "\" has unknown format.");
+  }
 
   std::cerr << '\n';
 }
 
-void application::remove_temp_seg(std::unique_ptr<Param>& par,
-                                  uint64_t seg_num) {
+void application::remove_temp_seg(std::unique_ptr<Param>& par, uint64_t seg_num) {
   const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
 
-  for (uint64_t i = 0; i != seg_num; ++i)
-    if (!par->saveAll && !par->saveSegment)
+  for (uint64_t i = 0; i != seg_num; ++i) {
+    if (!par->saveAll && !par->saveSegment) {
       remove((seg + std::to_string(i)).c_str());
+    }
+  }
 }
 
 void application::remove_temp_seq(std::unique_ptr<Param>& par) {
@@ -346,7 +361,9 @@ void info::show_ref_STMM(std::unique_ptr<Param>& par) const {
       break;
     }
   }
-  if (!show_rstmm) return;
+  if (!show_rstmm) {
+    return;
+  }
 
   auto ref_STMM_row = [&](std::string lbl, char c) {
     label(lbl);
@@ -376,11 +393,12 @@ void info::show_tar_FCM(std::unique_ptr<Param>& par) const {
   midrule();
   tar_FCM_row("Context size (k)", 'k');
   bool hasSketch = false;
-  for (const auto& e : par->tarMs)
+  for (const auto& e : par->tarMs) {
     if (e.cont == Container::sketch_8) {
       hasSketch = true;
       break;
     }
+  }
   if (hasSketch) {
     tar_FCM_row("Sketch width (w)", 'w');
     tar_FCM_row("Sketch depth (d)", 'd');
@@ -399,11 +417,15 @@ void info::show_tar_STMM(std::unique_ptr<Param>& par) const {
       break;
     }
   }
-  if (!show_tstmm) return;
+  if (!show_tstmm) {
+    return;
+  }
 
   auto tar_STMM_row = [&](std::string lbl, char c) {
     label(lbl);
-    if (c != 'h') info_STMM(par->tarMs, c);
+    if (c != 'h') {
+      info_STMM(par->tarMs, c);
+    }
     std::cerr << '\n';
   };
 
@@ -418,11 +440,15 @@ void info::show_tar_STMM(std::unique_ptr<Param>& par) const {
 }
 
 void info::show_filter(std::unique_ptr<Param>& par) const {
-  if (par->compress) return;
+  if (par->compress) {
+    return;
+  }
 
   auto filter_row = [&](std::string lbl, char c) {
     label(lbl);
-    if (c != 'h') info_filter(par, c);
+    if (c != 'h') {
+      info_filter(par, c);
+    }
     std::cerr << '\n';
   };
 
@@ -430,9 +456,15 @@ void info::show_filter(std::unique_ptr<Param>& par) const {
   filter_row(bold("Filter & Segment"), 'h');
   midrule();
   filter_row("Window function", 'f');
-  if (par->manFilterScale) filter_row("Filter scale", 's');
-  if (!par->manFilterScale) filter_row("Window size", 'w');
-  if (par->manThresh) filter_row("Threshold", 't');
+  if (par->manFilterScale) {
+    filter_row("Filter scale", 's');
+  }
+  if (!par->manFilterScale) {
+    filter_row("Window size", 'w');
+  }
+  if (par->manThresh) {
+    filter_row("Threshold", 't');
+  }
   botrule();  // cerr << '\n';
 }
 
@@ -450,8 +482,7 @@ void info::show_file(std::unique_ptr<Param>& par) const {
   };
 
   toprule();
-  file_row(bold("File                "), bold("Name            "),
-           bold("Size (B)"));
+  file_row(bold("File                "), bold("Name            "), bold("Size (B)"));
   midrule();
   file_row("Reference", "r", "1");
   file_row("Target", "t", "2");
@@ -459,7 +490,9 @@ void info::show_file(std::unique_ptr<Param>& par) const {
 }
 
 void info::rule(uint8_t n, std::string&& s) const {
-  for (auto i = n / s.size(); i--;) std::cerr << s;
+  for (auto i = n / s.size(); i--;) {
+    std::cerr << s;
+  }
   std::cerr << '\n';
 }
 
@@ -469,13 +502,9 @@ void info::midrule() const { rule(tblWidth, "="); }
 
 void info::botrule() const { rule(tblWidth, " "); }
 
-void info::label(std::string s) const {
-  std::cerr << std::setw(lblWidth) << std::left << s;
-}
+void info::label(std::string s) const { std::cerr << std::setw(lblWidth) << std::left << s; }
 
-void info::header(std::string s) const {
-  std::cerr << std::setw(2 * colWidth) << std::left << s;
-}
+void info::header(std::string s) const { std::cerr << std::setw(2 * colWidth) << std::left << s; }
 
 void info::info_FCM(const std::vector<MMPar>& Ms, char c) const {
   int i = 0;
@@ -489,9 +518,7 @@ void info::info_FCM(const std::vector<MMPar>& Ms, char c) const {
         std::cerr << static_cast<int>(e.k);
         break;
       case 'w':
-        std::cerr << (e.w == 0 ? "0"
-                               : "2^" + std::to_string(
-                                            static_cast<int>(std::log2(e.w))));
+        std::cerr << (e.w == 0 ? "0" : "2^" + std::to_string(static_cast<int>(std::log2(e.w))));
         break;
       case 'd':
         std::cerr << static_cast<int>(e.d);
@@ -518,9 +545,7 @@ void info::info_STMM(std::vector<MMPar> const& Ms, char c) const {
           std::cerr << static_cast<int>(e.child->thresh);
           break;
         case 'i':
-          std::cerr << (e.child->ir == 0   ? "reg"
-                        : e.child->ir == 1 ? "inv"
-                                           : "reg+inv");
+          std::cerr << (e.child->ir == 0 ? "reg" : e.child->ir == 1 ? "inv" : "reg+inv");
           break;
         case 'a':
           std::cerr << e.child->alpha;

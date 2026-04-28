@@ -5,8 +5,9 @@
 #define SMASHPP_SEGMENT_HPP
 
 #include <fstream>
-#include "par.hpp"
+
 #include "number.hpp"
+#include "par.hpp"
 
 namespace smashpp {
 class Segment {

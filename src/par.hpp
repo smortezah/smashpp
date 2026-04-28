@@ -23,19 +23,19 @@ static constexpr prc_t ENTR_N{2.0};
 static constexpr uint32_t MIN_WS{1};
 static constexpr uint32_t MAX_WS{0xffffffff};  // 2^32 - 1
 static constexpr uint32_t WS{100};
-static constexpr auto FT{FilterType::hann};         // Window type -- filter
+static constexpr auto FT{FilterType::hann};  // Window type -- filter
 static constexpr auto SAMPLE_STEP{1ull};
 static constexpr float MIN_THRSH{0};
 static constexpr float MAX_THRSH{20};
 static constexpr float THRSH{1.5};
-static constexpr uint8_t K_MAX_TBL64{11};   // Max ctx table 64     (128 MB mem)
-static constexpr uint8_t K_MAX_TBL32{13};   // Max ctx table 32     (1   GB mem)
-static constexpr uint8_t K_MAX_LGTBL8{14};  // Max ctx log table 8  (1   GB mem)
-static constexpr uint64_t W{2 << 29ull};    // Width of CML sketch
-static constexpr uint8_t D{5};              // Depth of CML sketch
-static const std::string LBL_BAK{"_bk"};    // Label  - backup files
+static constexpr uint8_t K_MAX_TBL64{11};             // Max ctx table 64     (128 MB mem)
+static constexpr uint8_t K_MAX_TBL32{13};             // Max ctx table 32     (1   GB mem)
+static constexpr uint8_t K_MAX_LGTBL8{14};            // Max ctx log table 8  (1   GB mem)
+static constexpr uint64_t W{2 << 29ull};              // Width of CML sketch
+static constexpr uint8_t D{5};                        // Depth of CML sketch
+static const std::string LBL_BAK{"_bk"};              // Label  - backup files
 static const std::string POS_WATERMARK{"##SMASH++"};  // Hdr of pos file
-static constexpr size_t FILE_READ_BUF{8 * 1024};  // 8K
+static constexpr size_t FILE_READ_BUF{8 * 1024};      // 8K
 static constexpr size_t FILE_WRITE_BUF{8 * 1024};
 static const std::string IMAGE{"map.svg"};
 
@@ -60,7 +60,7 @@ static constexpr uint32_t MIN_MINP{1};
 static constexpr uint32_t MAX_MINP{0xffffffff};  // 2^32 - 1
 static constexpr uint64_t MIN_TICK{1};
 static constexpr uint64_t MAX_TICK{0xffffffff};
-static constexpr uint64_t TICK{100};             // Major tick
+static constexpr uint64_t TICK{100};  // Major tick
 
 class Param {
  public:

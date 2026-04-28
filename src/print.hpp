@@ -20,8 +20,7 @@ class Column {
   Column() = default;
   Column(Align align_, uint8_t width_, std::string text_)
       : align(align_), width(width_), text(text_) {}
-  Column(uint8_t width_, std::string text_)
-      : Column(Align::left, width_, text_) {}
+  Column(uint8_t width_, std::string text_) : Column(Align::left, width_, text_) {}
   explicit Column(std::string text_) : Column(text_.size() + 1, text_) {}
 };
 
