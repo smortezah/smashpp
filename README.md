@@ -1,5 +1,6 @@
 # Smash++
 
+[![Anaconda-Server Badge](https://anaconda.org/bioconda/smashpp/badges/version.svg)](https://anaconda.org/bioconda/smashpp)
 [![CI](https://github.com/smortezah/smashpp/actions/workflows/ci.yml/badge.svg)](https://github.com/smortezah/smashpp/actions/workflows/ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
