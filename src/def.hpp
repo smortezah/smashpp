@@ -9,13 +9,13 @@
 #include <chrono>
 #include <iomanip>  // setw, setprecision
 #include <iostream>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
-namespace smashpp {
-// Version
-static const std::string VERSION{"26.04"};
+#include "smashpp/version.hpp"
 
+namespace smashpp {
 // Typedef
 using dur_t = std::chrono::duration<double>;
 using prc_t = double;  // Precision type -- MUST be double

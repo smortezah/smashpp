@@ -1,8 +1,53 @@
 cmake_minimum_required(VERSION 4.0.0)
 
-project(smashpp VERSION 26.04 LANGUAGES CXX)
+set(SMASHPP_VERSION_OVERRIDE "" CACHE STRING "Override the version embedded in Smash++")
+set(SMASHPP_VERSION "0.0.0-dev")
+
+if (SMASHPP_VERSION_OVERRIDE)
+  set(SMASHPP_VERSION "${SMASHPP_VERSION_OVERRIDE}")
+elseif(DEFINED ENV{GITHUB_REF_TYPE} AND "$ENV{GITHUB_REF_TYPE}" STREQUAL "tag")
+  set(SMASHPP_VERSION "$ENV{GITHUB_REF_NAME}")
+  string(REGEX REPLACE "^v" "" SMASHPP_VERSION "${SMASHPP_VERSION}")
+else()
+  find_package(Git QUIET)
+
+  if (Git_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
+    execute_process(
+        COMMAND "${GIT_EXECUTABLE}" describe --tags --exact-match
+                --match "v[0-9]*" --match "[0-9]*"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        OUTPUT_VARIABLE SMASHPP_GIT_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+        RESULT_VARIABLE SMASHPP_GIT_VERSION_RESULT)
+
+    if (NOT SMASHPP_GIT_VERSION_RESULT EQUAL 0)
+      execute_process(
+          COMMAND "${GIT_EXECUTABLE}" describe --tags --dirty --always
+                  --match "v[0-9]*" --match "[0-9]*"
+          WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+          OUTPUT_VARIABLE SMASHPP_GIT_VERSION
+          OUTPUT_STRIP_TRAILING_WHITESPACE
+          ERROR_QUIET
+          RESULT_VARIABLE SMASHPP_GIT_VERSION_RESULT)
+    endif()
+
+    if (SMASHPP_GIT_VERSION_RESULT EQUAL 0 AND SMASHPP_GIT_VERSION)
+      string(REGEX REPLACE "^v" "" SMASHPP_VERSION "${SMASHPP_GIT_VERSION}")
+    endif()
+  endif()
+endif()
+
+project(smashpp LANGUAGES CXX)
 
 include(GNUInstallDirs)
+
+set(SMASHPP_GENERATED_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.hpp.in"
+    "${SMASHPP_GENERATED_INCLUDE_DIR}/smashpp/version.hpp"
+    @ONLY)
+message(STATUS "Smash++ version: ${SMASHPP_VERSION}")
 
 option(SMASHPP_ENABLE_OPENMP "Enable OpenMP support when available." ON)
 option(SMASHPP_ENABLE_SANITIZERS
@@ -19,6 +64,7 @@ find_package(Threads REQUIRED)
 
 function(smashpp_configure_target target_name)
   target_compile_features(${target_name} PRIVATE cxx_std_20)
+  target_include_directories(${target_name} PRIVATE "${SMASHPP_GENERATED_INCLUDE_DIR}")
   set_target_properties(${target_name} PROPERTIES CXX_EXTENSIONS OFF)
 
   if (MSVC)
@@ -94,7 +140,7 @@ if(BUILD_TESTING)
   set_tests_properties(smashpp-help PROPERTIES PASS_REGULAR_EXPRESSION "SYNOPSIS")
 
   add_test(NAME smashpp-version COMMAND $<TARGET_FILE:smashpp> --version)
-  set_tests_properties(smashpp-version PROPERTIES PASS_REGULAR_EXPRESSION "Smash\\+\\+ 26\\.04")
+  set_tests_properties(smashpp-version PROPERTIES PASS_REGULAR_EXPRESSION "Smash\\+\\+ .+")
 
   add_test(NAME smashpp-viz-help COMMAND $<TARGET_FILE:smashpp> viz --help)
   set_tests_properties(smashpp-viz-help PROPERTIES PASS_REGULAR_EXPRESSION "SYNOPSIS")
