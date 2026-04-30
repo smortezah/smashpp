@@ -83,13 +83,14 @@ void application::exe(int argc, char* argv[]) {
 }
 
 void application::run(std::unique_ptr<Param>& par) {
-  std::string ref_round1 = par->ref;
-  std::string tar_round1 = par->tar;
   std::vector<PosRow> pos_out;
   uint64_t current_pos_row = 0;
 
   // FASTA/FASTQ to seq, if applicable
   prepare_data(par);
+
+  std::string ref_round1 = par->ref;
+  std::string tar_round1 = par->tar;
 
   // Round 1
   for (uint8_t run_num = 0; run_num < 2; ++run_num) {
@@ -155,17 +156,17 @@ void application::run(std::unique_ptr<Param>& par) {
     remove_temp_seg(par, num_seg_round1);
   }  // Round 1
 
-  remove_temp_seq(par);
-
   if (!pos_out.empty()) {
     auto pos_file = std::make_unique<PositionFile>();
     pos_file->param_list = par->param_list;
-    pos_file->info->ref = file_name(par->ref);
+    pos_file->info->ref = file_name(par->original_ref.empty() ? par->ref : par->original_ref);
     pos_file->info->ref_size = file_size(par->ref);
-    pos_file->info->tar = file_name(par->tar);
+    pos_file->info->tar = file_name(par->original_tar.empty() ? par->tar : par->original_tar);
     pos_file->info->tar_size = file_size(par->tar);
     pos_file->dump(pos_out, par->asym_region, par->format);
   }
+
+  remove_temp_seq(par);
 }
 
 uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
@@ -273,12 +274,18 @@ void application::prepare_data(std::unique_ptr<Param>& par) {
 
   if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
     convert_to_seq(par->ref, ref_seq, par->refType);
+    par->ref = ref_seq;
+    par->refName = file_name(par->ref);
+    par->refType = FileType::seq;
   } else if (par->refType != FileType::seq) {
     error(std::format("\"{}\" has unknown format.", par->refName));
   }
 
   if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
     convert_to_seq(par->tar, tar_seq, par->tarType);
+    par->tar = tar_seq;
+    par->tarName = file_name(par->tar);
+    par->tarType = FileType::seq;
   } else if (par->tarType != FileType::seq) {
     error(std::format("\"{}\" has unknown format.", par->tarName));
   }

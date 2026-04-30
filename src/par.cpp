@@ -71,11 +71,13 @@ void Param::parse(int argc, char**& argv) {
       throw EXIT_SUCCESS;
     } else if (*i == "-r" || *i == "--reference") {
       ref = require_value(i, "reference file", "-r <fileName>");
+      original_ref = ref;
       check_file(ref);
       refName = file_name(ref);
       refType = file_type(ref);
     } else if (*i == "-t" || *i == "--target") {
       tar = require_value(i, "target file", "-t <fileName>");
+      original_tar = tar;
       check_file(tar);
       tarName = file_name(tar);
       tarType = file_type(tar);

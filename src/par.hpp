@@ -65,6 +65,7 @@ static constexpr uint64_t TICK{100};  // Major tick
 class Param {
  public:
   std::string ref, tar;
+  std::string original_ref, original_tar;
   std::string refName, tarName;
   std::string seq;
   Format format;
