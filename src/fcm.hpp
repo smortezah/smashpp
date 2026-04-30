@@ -31,6 +31,7 @@ class FCM {  // Finite-context models
   void store(std::unique_ptr<Param>&, uint8_t);  // Build FCM
   void compress(std::unique_ptr<Param>&, uint8_t);
   void self_compress(std::unique_ptr<Param>&, uint64_t, uint8_t);
+  void self_compress(std::unique_ptr<Param>&, const SegmentView&, uint64_t, uint8_t);
   void aggregate_slf_ent(std::vector<PosRow>&, uint8_t, uint8_t, std::string, bool) const;
 
  private:
@@ -60,10 +61,11 @@ class FCM {  // Finite-context models
   template <typename ContIter>
   void compress_n_child(std::unique_ptr<CompressPar>&, ContIter, uint8_t) const;
 
+  void self_compress(std::unique_ptr<Param>&, const SegmentView*, uint64_t, uint8_t);
   void self_compress_alloc();
   template <typename ContIter>
-  void self_compress_1(std::unique_ptr<Param>&, ContIter, uint64_t);
-  void self_compress_n(std::unique_ptr<Param>&, uint64_t);
+  void self_compress_1(std::unique_ptr<Param>&, ContIter, const SegmentView*, uint64_t);
+  void self_compress_n(std::unique_ptr<Param>&, const SegmentView*, uint64_t);
   template <typename ContIter>
   void self_compress_n_parent(std::unique_ptr<CompressPar>&, ContIter, uint8_t, uint64_t&) const;
 

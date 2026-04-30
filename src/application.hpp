@@ -214,7 +214,13 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
     }
     return 0;  // continue;
   }
-  filter->extract_seg(pos_out, round, run_num, par->ref);
+  const auto need_segment_files =
+      par->saveAll || par->saveSegment || round == 1 || (round == 2 && par->deep);
+  const auto segment_views =
+      filter->extract_seg(pos_out, round, run_num, par->ref, need_segment_files);
+  if (segment_views.size() != filter->nSegs) {
+    error("failed to prepare segment views.");
+  }
 
   // Ref-free compress
   if (!par->noRedun) {
@@ -231,14 +237,14 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
     }
 
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
-    models->selfEnt.resize(filter->nSegs);
-    for (uint64_t i = 0; i < filter->nSegs; ++i) {
+    models->selfEnt.resize(segment_views.size());
+    for (uint64_t i = 0; i < segment_views.size(); ++i) {
       if (!par->verbose && round == 1) {
         std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
       }
 
       par->seq = std::format("{}{}", seg, i);
-      models->self_compress(par, i, round);
+      models->self_compress(par, segment_views.at(i), i, round);
     }
 
     models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);

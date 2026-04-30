@@ -3,6 +3,7 @@
 
 #include "fcm.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <format>
@@ -18,6 +19,38 @@
 #include "number.hpp"
 #include "par.hpp"
 using namespace smashpp;
+
+namespace {
+struct SequenceWindow {
+  std::string source;
+  uint64_t beg_pos;
+  uint64_t size;
+};
+
+auto make_sequence_window(const std::unique_ptr<Param>& par, const SegmentView* segment)
+    -> SequenceWindow {
+  if (segment != nullptr) {
+    check_file(segment->source);
+    return {segment->source, segment->beg_pos, segment->size};
+  }
+
+  return {par->seq, 0, file_size(par->seq)};
+}
+
+auto read_sequence_chunk(std::ifstream& seq, std::vector<char>& buffer, uint64_t& remaining)
+    -> std::streamsize {
+  if (remaining == 0) {
+    return 0;
+  }
+
+  const auto bytes_to_read =
+      static_cast<std::streamsize>(std::min<uint64_t>(buffer.size(), remaining));
+  seq.read(buffer.data(), bytes_to_read);
+  const auto bytes_read = seq.gcount();
+  remaining -= static_cast<uint64_t>(bytes_read);
+  return bytes_read;
+}
+}  // namespace
 
 FCM::FCM(std::unique_ptr<Param>& par)
     : aveEnt(static_cast<prc_t>(0)), rMs(par->refMs), tarSegID(0), entropyN(par->entropyN) {
@@ -830,6 +863,16 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp, ContIter con
 }
 
 void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID, uint8_t round) {
+  self_compress(par, nullptr, ID, round);
+}
+
+void FCM::self_compress(std::unique_ptr<Param>& par, const SegmentView& segment, uint64_t ID,
+                        uint8_t round) {
+  self_compress(par, &segment, ID, round);
+}
+
+void FCM::self_compress(std::unique_ptr<Param>& par, const SegmentView* segment, uint64_t ID,
+                        uint8_t round) {
   std::string message;
   if (par->verbose) {
     if (round == 3) {
@@ -844,20 +887,20 @@ void FCM::self_compress(std::unique_ptr<Param>& par, uint64_t ID, uint8_t round)
   if (tMs.size() == 1 && tTMsSize == 0) {  // 1 MM
     switch (tMs[0].cont) {
       case Container::sketch_8:
-        self_compress_1(par, std::begin(cmls4), ID);
+        self_compress_1(par, std::begin(cmls4), segment, ID);
         break;
       case Container::log_table_8:
-        self_compress_1(par, std::begin(lgtbl8), ID);
+        self_compress_1(par, std::begin(lgtbl8), segment, ID);
         break;
       case Container::table_32:
-        self_compress_1(par, std::begin(tbl32), ID);
+        self_compress_1(par, std::begin(tbl32), segment, ID);
         break;
       case Container::table_64:
-        self_compress_1(par, std::begin(tbl64), ID);
+        self_compress_1(par, std::begin(tbl64), segment, ID);
         break;
     }
   } else {
-    self_compress_n(par, ID);
+    self_compress_n(par, segment, ID);
   }
 
   if (par->verbose) {
@@ -904,20 +947,27 @@ inline void FCM::self_compress_alloc() {
 }
 
 template <typename ContIter>
-inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont, uint64_t ID) {
+inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
+                                 const SegmentView* segment, uint64_t ID) {
   uint64_t ctx{0};
   uint64_t ctxIr{(1ull << (2 * tMs[0].k)) - 1};
   uint64_t symsNo{0};
   prc_t sumEnt{0};
-  std::ifstream seqF(par->seq);
+  const auto seq_window = make_sequence_window(par, segment);
+  uint64_t remaining = seq_window.size;
+  std::ifstream seqF(seq_window.source);
+  seqF.seekg(static_cast<std::streamoff>(seq_window.beg_pos));
   ProbPar pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, static_cast<uint8_t>(tMs[0].k << 1u)};
-  const auto totalSize = file_size(par->seq);
+  const auto totalSize = seq_window.size;
   prc_t entr;
 
-  for (std::vector<char> buffer(FILE_READ_BUF, 0); seqF.peek() != EOF;) {
-    seqF.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount(); ++it) {
-      const auto c = normalize_base(*it, par->seq);
+  for (std::vector<char> buffer(FILE_READ_BUF, 0); remaining != 0;) {
+    const auto bytes_read = read_sequence_chunk(seqF, buffer, remaining);
+    if (bytes_read == 0) {
+      break;
+    }
+    for (auto it = std::begin(buffer); it != std::begin(buffer) + bytes_read; ++it) {
+      const auto c = normalize_base(*it, seq_window.source);
       if (c != '\0') {
         ++symsNo;
         if (tMs[0].ir == 0) {
@@ -960,14 +1010,18 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont, uin
       }
     }
   }
-  /*mut.lock();*/ selfEnt[ID] = sumEnt / symsNo; /*mut.unlock();*/
+  /*mut.lock();*/ selfEnt[ID] = symsNo == 0 ? 0 : sumEnt / symsNo; /*mut.unlock();*/
   seqF.close();
 }
 
-inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
+inline void FCM::self_compress_n(std::unique_ptr<Param>& par, const SegmentView* segment,
+                                 uint64_t ID) {
   uint64_t symsNo{0};
   prc_t sumEnt{0};
-  std::ifstream seqF(par->seq);
+  const auto seq_window = make_sequence_window(par, segment);
+  uint64_t remaining = seq_window.size;
+  std::ifstream seqF(seq_window.source);
+  seqF.seekg(static_cast<std::streamoff>(seq_window.beg_pos));
   auto cp = std::make_unique<CompressPar>();
   const auto nMdl = static_cast<uint8_t>(tMs.size() + tTMsSize);
   cp->nMdl = nMdl;
@@ -989,7 +1043,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
       cp->pp.emplace_back(mm.child->alpha, *maskIter++, static_cast<uint8_t>(mm.k << 1u));
     }
   }
-  const auto totalSize = file_size(par->seq);
+  const auto totalSize = seq_window.size;
   const auto self_compress_n_impl = [&](auto& cp, auto cont, uint8_t& n) {
     uint64_t valUpd = 0;
     self_compress_n_parent(cp, cont, n, valUpd);
@@ -1002,10 +1056,13 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
     (*cont)->update(valUpd);
   };
 
-  for (std::vector<char> buffer(FILE_READ_BUF, 0); seqF.peek() != EOF;) {
-    seqF.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount(); ++it) {
-      const auto c = normalize_base(*it, par->seq);
+  for (std::vector<char> buffer(FILE_READ_BUF, 0); remaining != 0;) {
+    const auto bytes_read = read_sequence_chunk(seqF, buffer, remaining);
+    if (bytes_read == 0) {
+      break;
+    }
+    for (auto it = std::begin(buffer); it != std::begin(buffer) + bytes_read; ++it) {
+      const auto c = normalize_base(*it, seq_window.source);
       if (c != '\0') {
         ++symsNo;
         cp->c = c;
@@ -1052,7 +1109,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
       }
     }
   }
-  /*mut.lock();*/ selfEnt[ID] = sumEnt / symsNo; /*mut.unlock();*/
+  /*mut.lock();*/ selfEnt[ID] = symsNo == 0 ? 0 : sumEnt / symsNo; /*mut.unlock();*/
   seqF.close();
 }
 

@@ -99,6 +99,12 @@ struct PosRow {
   void print() const { std::cerr << beg_pos << '\t' << end_pos << '\t' << ent << '\t' << self_ent; }
 };
 
+struct SegmentView {
+  std::string source;
+  uint64_t beg_pos;
+  uint64_t size;
+};
+
 // Function
 static auto base_code(char c) -> uint8_t {
   switch (c) {
