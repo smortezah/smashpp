@@ -3,6 +3,7 @@
 
 #include "filter.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <format>
 #include <numeric>
@@ -639,25 +640,37 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   nSegs = seg->nSegs;
 }
 
-void Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round, uint8_t run_num,
-                         std::string ref) const {
+auto Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round, uint8_t run_num,
+                         const std::string& ref, bool write_files) const
+    -> std::vector<SegmentView> {
+  std::vector<SegmentView> segments;
   uint64_t seg_idx{0};
 
   for (const auto& row : pos_out) {
     if (row.round == round && row.run_num == run_num && row.ref == ref) {
-      auto subseq = std::make_unique<SubSeq>();
-      subseq->inName = row.tar;
-      const auto seg{gen_name(row.run_num, row.ref, row.tar, Format::segment)};
-      subseq->outName = std::format("{}{}", seg, seg_idx);
-      subseq->begPos = row.beg_pos;
       const uint64_t max_tar_pos{file_size(row.tar) - 1};
-      subseq->size = static_cast<std::streamsize>(row.end_pos > max_tar_pos
-                                                      ? max_tar_pos - subseq->begPos + 1
-                                                      : row.end_pos - subseq->begPos + 1);
-      extract_subseq(subseq);
+      const auto end_pos = std::min(row.end_pos, max_tar_pos);
+      if (row.beg_pos > end_pos) {
+        continue;
+      }
+
+      const auto size = end_pos - row.beg_pos + 1;
+      segments.push_back({row.tar, row.beg_pos, size});
+
+      if (write_files) {
+        auto subseq = std::make_unique<SubSeq>();
+        subseq->inName = row.tar;
+        const auto seg{gen_name(row.run_num, row.ref, row.tar, Format::segment)};
+        subseq->outName = std::format("{}{}", seg, seg_idx);
+        subseq->begPos = row.beg_pos;
+        subseq->size = static_cast<std::streamsize>(size);
+        extract_subseq(subseq);
+      }
       ++seg_idx;
     }
   }
+
+  return segments;
 }
 
 #ifdef BENCH

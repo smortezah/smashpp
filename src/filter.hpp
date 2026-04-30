@@ -19,7 +19,8 @@ class Filter {
   explicit Filter(std::unique_ptr<Param>&);
   void smooth_seg(std::vector<PosRow>&, const std::vector<prc_t>&, std::unique_ptr<Param>&, uint8_t,
                   uint64_t&);
-  void extract_seg(std::vector<PosRow>&, uint8_t, uint8_t, std::string) const;
+  auto extract_seg(std::vector<PosRow>&, uint8_t, uint8_t, const std::string&, bool) const
+      -> std::vector<SegmentView>;
 
  private:
   FilterType filt_type;
