@@ -461,7 +461,7 @@ void Param::help() const {
       << tab2 << "show version\n"
       << '\n'
       << bold("AUTHOR") << '\n'
-      << tab1 << "Morteza Hosseini      mhosayny@gmail.com\n";
+      << tab1 << "Morteza Hosseini      seyedmorteza.hosseini@manchester.ac.uk\n";
 }
 
 FilterType Param::win_type(std::string t) const {
