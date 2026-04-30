@@ -35,6 +35,16 @@ if(NOT json_content MATCHES "\"positions\"[ \t\r\n]*:[ \t\r\n]*\\[")
   message(FATAL_ERROR "JSON output is missing the positions array.")
 endif()
 
+file(GLOB default_profiles "${WORKDIR}/*.prf")
+if(default_profiles)
+  message(FATAL_ERROR "Default run left temporary profile files: ${default_profiles}")
+endif()
+
+file(GLOB default_filters "${WORKDIR}/*.fil")
+if(default_filters)
+  message(FATAL_ERROR "Default run left temporary filter files: ${default_filters}")
+endif()
+
 execute_process(
     COMMAND "${SMASHPP}" viz -o smoke.svg "${json_file}"
     WORKING_DIRECTORY "${WORKDIR}"
@@ -57,4 +67,26 @@ endif()
 file(READ "${svg_file}" svg_content)
 if(NOT svg_content MATCHES "<svg")
   message(FATAL_ERROR "SVG output does not contain an <svg> element.")
+endif()
+
+set(save_profile_workdir "${WORKDIR}/save-profile")
+file(MAKE_DIRECTORY "${save_profile_workdir}")
+
+execute_process(
+    COMMAND "${SMASHPP}" -sp -nr -fmt json -r "${REF}" -t "${TAR}"
+    WORKING_DIRECTORY "${save_profile_workdir}"
+    RESULT_VARIABLE save_profile_result
+    OUTPUT_VARIABLE save_profile_stdout
+    ERROR_VARIABLE save_profile_stderr)
+
+if(NOT save_profile_result EQUAL 0)
+  message(FATAL_ERROR
+          "Smash++ save-profile smoke run failed with exit code ${save_profile_result}\n"
+          "stdout:\n${save_profile_stdout}\n"
+          "stderr:\n${save_profile_stderr}")
+endif()
+
+file(GLOB saved_profiles "${save_profile_workdir}/*.prf")
+if(NOT saved_profiles)
+  message(FATAL_ERROR "Save-profile run did not create any profile files.")
 endif()
