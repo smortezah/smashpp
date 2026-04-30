@@ -186,6 +186,22 @@ if(BUILD_TESTING)
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunHelperToolsSmoke.cmake")
 
   add_test(
+      NAME smashpp-input-normalization
+      COMMAND ${CMAKE_COMMAND}
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-input-normalization"
+              "-DSMASHPP=$<TARGET_FILE:smashpp>"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunInputNormalization.cmake")
+
+  add_test(
+      NAME smashpp-invalid-base
+      COMMAND ${CMAKE_COMMAND}
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-invalid-base"
+              "-DSMASHPP=$<TARGET_FILE:smashpp>"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunInvalidBaseFailure.cmake")
+
+  add_test(
       NAME smashpp-inv-rep-usage
       COMMAND ${CMAKE_COMMAND}
               "-DEXECUTABLE=$<TARGET_FILE:smashpp-inv-rep>"
