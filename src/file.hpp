@@ -19,7 +19,7 @@
     std::abort();                                             \
   }
 
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 using json = nlohmann::ordered_json;
 
 namespace smashpp {

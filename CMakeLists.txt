@@ -62,6 +62,8 @@ endif()
 
 find_package(Threads REQUIRED)
 
+add_subdirectory(third_party/nlohmann_json)
+
 function(smashpp_configure_target target_name)
   target_compile_features(${target_name} PRIVATE cxx_std_20)
   target_include_directories(${target_name} PRIVATE "${SMASHPP_GENERATED_INCLUDE_DIR}")
@@ -115,7 +117,7 @@ smashpp_configure_target(smashpp)
 smashpp_configure_target(smashpp-inv-rep)
 smashpp_configure_target(exclude_N)
 
-target_link_libraries(smashpp PRIVATE Threads::Threads)
+target_link_libraries(smashpp PRIVATE Threads::Threads nlohmann_json::nlohmann_json)
 
 if (SMASHPP_ENABLE_OPENMP)
   find_package(OpenMP QUIET COMPONENTS CXX)
