@@ -45,6 +45,11 @@ if(default_filters)
   message(FATAL_ERROR "Default run left temporary filter files: ${default_filters}")
 endif()
 
+file(GLOB default_segments "${WORKDIR}/*.s[0-9]*")
+if(default_segments)
+  message(FATAL_ERROR "Default run left temporary segment files: ${default_segments}")
+endif()
+
 execute_process(
     COMMAND "${SMASHPP}" viz -o smoke.svg "${json_file}"
     WORKING_DIRECTORY "${WORKDIR}"
@@ -89,4 +94,26 @@ endif()
 file(GLOB saved_profiles "${save_profile_workdir}/*.prf")
 if(NOT saved_profiles)
   message(FATAL_ERROR "Save-profile run did not create any profile files.")
+endif()
+
+set(save_segment_workdir "${WORKDIR}/save-segment")
+file(MAKE_DIRECTORY "${save_segment_workdir}")
+
+execute_process(
+    COMMAND "${SMASHPP}" -ss -nr -th 20 -fmt json -r "${REF}" -t "${TAR}"
+    WORKING_DIRECTORY "${save_segment_workdir}"
+    RESULT_VARIABLE save_segment_result
+    OUTPUT_VARIABLE save_segment_stdout
+    ERROR_VARIABLE save_segment_stderr)
+
+if(NOT save_segment_result EQUAL 0)
+  message(FATAL_ERROR
+          "Smash++ save-segment smoke run failed with exit code ${save_segment_result}\n"
+          "stdout:\n${save_segment_stdout}\n"
+          "stderr:\n${save_segment_stderr}")
+endif()
+
+file(GLOB saved_segments "${save_segment_workdir}/*.s[0-9]*")
+if(NOT saved_segments)
+  message(FATAL_ERROR "Save-segment run did not create any segment files.")
 endif()
