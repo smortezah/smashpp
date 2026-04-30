@@ -37,6 +37,72 @@ inline static void ignore_this_line(std::ifstream& fs) {
   fs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
+inline static bool is_sequence_space(char c) {
+  return c == '\n' || c == '\r' || c == ' ' || c == '\t';
+}
+
+inline static std::string char_label(char c) {
+  switch (c) {
+    case '\n':
+      return "\\n";
+    case '\r':
+      return "\\r";
+    case '\t':
+      return "\\t";
+    default:
+      return std::format("{}", c);
+  }
+}
+
+inline static char normalize_base(char c, const std::string& source) {
+  switch (c) {
+    case 'A':
+    case 'a':
+      return 'A';
+    case 'C':
+    case 'c':
+      return 'C';
+    case 'G':
+    case 'g':
+      return 'G';
+    case 'T':
+    case 't':
+      return 'T';
+    case 'N':
+    case 'n':
+    case 'R':
+    case 'r':
+    case 'Y':
+    case 'y':
+    case 'S':
+    case 's':
+    case 'W':
+    case 'w':
+    case 'K':
+    case 'k':
+    case 'M':
+    case 'm':
+    case 'B':
+    case 'b':
+    case 'D':
+    case 'd':
+    case 'H':
+    case 'h':
+    case 'V':
+    case 'v':
+      return 'N';
+    default:
+      break;
+  }
+
+  if (is_sequence_space(c)) {
+    return '\0';
+  }
+
+  error(std::format("invalid base \"{}\" in \"{}\".", char_label(c), source));
+  return '\0';
+}
+
 inline static void check_file(std::string name) {  // Must be inline
   std::ifstream f(name);
   if (!f) {
@@ -150,72 +216,94 @@ inline static FileType file_type(std::string name) {
 inline static void to_seq(std::string inName, std::string outName, const FileType& type) {
   std::ifstream in_file(inName);
   std::ofstream out_file(outName);
+  std::string out;
+  out.reserve(FILE_READ_BUF);
+
+  const auto append_base = [&](char c) {
+    const auto base = normalize_base(c, inName);
+    if (base != '\0') {
+      out.push_back(base);
+    }
+  };
+  const auto flush_out = [&]() {
+    out_file.write(out.data(), static_cast<std::streamsize>(out.size()));
+    out.clear();
+  };
 
   if (type == FileType::fasta) {
-    bool isHeader{false};  // MUST be positioned before the following loop
+    bool is_header{false};
+    bool line_start{true};
+
     for (std::vector<char> buffer(FILE_READ_BUF, 0); in_file.peek() != EOF;) {
       in_file.read(buffer.data(), FILE_READ_BUF);
-      std::string out;
       for (auto it = std::begin(buffer); it != std::begin(buffer) + in_file.gcount(); ++it) {
         const auto c = *it;
-        if (c == '>') {
-          isHeader = true;
+        if (line_start && c == '>') {
+          is_header = true;
+          line_start = false;
           continue;
-        } else if (c == '\n') {
-          if (isHeader) isHeader = false;
-          continue;
-        } else if (isHeader) {
-          continue;
-        } else if (c > 64 && c < 123) {
-          out += c;
         }
+        if (c == '\n') {
+          is_header = false;
+          line_start = true;
+          continue;
+        }
+        if (c == '\r') {
+          continue;
+        }
+        if (is_header) {
+          continue;
+        }
+        line_start = false;
+        append_base(c);
       }
-      out_file.write(out.data(), out.size());
+      flush_out();
     }
   } else if (type == FileType::fastq) {
-    uint8_t line{0};    // MUST be positioned before the following loop
-    bool isDNA{false};  // MUST be positioned before the following loop
+    uint8_t line{0};
+    bool is_dna{false};
+
     for (std::vector<char> buffer(FILE_READ_BUF, 0); in_file.peek() != EOF;) {
       in_file.read(buffer.data(), FILE_READ_BUF);
-      std::string out;
       for (auto it = std::begin(buffer); it != std::begin(buffer) + in_file.gcount(); ++it) {
         const auto c{*it};
+        if (c == '\r') {
+          continue;
+        }
         switch (line) {
           case 0:
             if (c == '\n') {
               line = 1;
-              isDNA = true;
+              is_dna = true;
             }
             break;
           case 1:
             if (c == '\n') {
               line = 2;
-              isDNA = false;
+              is_dna = false;
             }
             break;
           case 2:
             if (c == '\n') {
               line = 3;
-              isDNA = false;
+              is_dna = false;
             }
             break;
           case 3:
             if (c == '\n') {
               line = 0;
-              isDNA = false;
+              is_dna = false;
             }
             break;
           default:
             break;
         }
-        if (!isDNA || c == '\n') {
+        if (!is_dna || c == '\n') {
           continue;
         }
-        if (c > 64 && c < 123) {
-          out += c;
-        }
+        append_base(c);
       }
-      out_file.write(out.data(), out.size());
+      flush_out();
     }
   }
 

@@ -438,8 +438,8 @@ inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
   for (std::vector<char> buffer(FILE_READ_BUF, 0); rf.peek() != EOF;) {
     rf.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer); it != std::begin(buffer) + rf.gcount(); ++it) {
-      const auto c = *it;
-      if (c != '\n') {
+      const auto c = normalize_base(*it, ref);
+      if (c != '\0') {
         ctx = ((ctx & mask) << 2u) | base_code(c);
         (*cont)->update(ctx);
       }
@@ -509,8 +509,8 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
   for (std::vector<char> buffer(FILE_READ_BUF, 0); tar_file.peek() != EOF;) {
     tar_file.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer); it != std::begin(buffer) + tar_file.gcount(); ++it) {
-      auto c = *it;
-      if (c == '\n') {
+      auto c = normalize_base(*it, par->tar);
+      if (c == '\0') {
         continue;
       }
 
@@ -630,8 +630,8 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
   for (std::vector<char> buffer(FILE_READ_BUF, 0); tar_file.peek() != EOF;) {
     tar_file.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer); it != std::begin(buffer) + tar_file.gcount(); ++it) {
-      const auto c = *it;
-      if (c == '\n') {
+      const auto c = normalize_base(*it, par->tar);
+      if (c == '\0') {
         continue;
       }
 
@@ -885,8 +885,8 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont, uin
   for (std::vector<char> buffer(FILE_READ_BUF, 0); seqF.peek() != EOF;) {
     seqF.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount(); ++it) {
-      const auto c = *it;
-      if (c != '\n') {
+      const auto c = normalize_base(*it, par->seq);
+      if (c != '\0') {
         ++symsNo;
         if (tMs[0].ir == 0) {
           pp.config_ir0(c, ctx);
@@ -973,8 +973,8 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, uint64_t ID) {
   for (std::vector<char> buffer(FILE_READ_BUF, 0); seqF.peek() != EOF;) {
     seqF.read(buffer.data(), FILE_READ_BUF);
     for (auto it = std::begin(buffer); it != std::begin(buffer) + seqF.gcount(); ++it) {
-      const auto c = *it;
-      if (c != '\n') {
+      const auto c = normalize_base(*it, par->seq);
+      if (c != '\0') {
         ++symsNo;
         cp->c = c;
         cp->nSym = base_code(c);
