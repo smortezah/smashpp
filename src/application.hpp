@@ -206,7 +206,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
 
   // Filter and segment
   auto filter = std::make_unique<Filter>(par);
-  filter->smooth_seg(pos_out, par, round, current_pos_row);
+  filter->smooth_seg(pos_out, models->profileEnt, par, round, current_pos_row);
 
   if (filter->nSegs == 0) {
     if (round == 1) {

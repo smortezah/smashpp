@@ -460,6 +460,8 @@ void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
     }
   }
 
+  profileEnt.clear();
+
   if (rMs.size() == 1 && rTMsSize == 0) {  // 1 MM
     switch (rMs[0].cont) {
       case Container::sketch_8:
@@ -495,13 +497,24 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
   ProbPar prob_par{rMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */,
                    static_cast<uint8_t>(rMs[0].k << 1u)};
   std::ifstream tar_file(par->tar);
-  std::ofstream prf_file(gen_name(par->ID, par->ref, par->tar, Format::profile));
+  std::ofstream prf_file;
+  const auto save_profile = par->saveProfile || par->saveAll;
+  if (save_profile) {
+    prf_file.open(gen_name(par->ID, par->ref, par->tar, Format::profile));
+  }
   const auto totalSize = file_size(par->tar);
-  std::vector<prc_t> entropies;
-  entropies.reserve(FILE_WRITE_BUF);
+  std::vector<prc_t> pending_profile_output;
+  pending_profile_output.reserve(FILE_WRITE_BUF);
   auto write_entropies = [&]() {
-    for (auto e : entropies) {
+    for (auto e : pending_profile_output) {
       prf_file << precision(PREC_PRF, e) << '\n';
+    }
+  };
+  auto emit_entropy = [&](prc_t entropy) {
+    const auto rounded_entropy = static_cast<prc_t>(std::stod(precision(PREC_PRF, entropy)));
+    profileEnt.push_back(rounded_entropy);
+    if (save_profile) {
+      pending_profile_output.push_back(rounded_entropy);
     }
   };
   uint64_t sample_step_index = 0;
@@ -558,7 +571,7 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
       if (sample_taken) {
         ++symsNo;
         sumEnt += entr;
-        entropies.push_back(entr);
+        emit_entropy(entr);
       }
       ++sample_step_index;
       // prf_file << precision(PREC_PRF, entr) << '\n';
@@ -567,16 +580,20 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
       }
     }
 
-    if (entropies.size() >= FILE_WRITE_BUF) {
+    if (save_profile && pending_profile_output.size() >= FILE_WRITE_BUF) {
       write_entropies();
-      entropies.clear();
-      entropies.reserve(FILE_WRITE_BUF);
+      pending_profile_output.clear();
+      pending_profile_output.reserve(FILE_WRITE_BUF);
     }
   }
-  write_entropies();
+  if (save_profile) {
+    write_entropies();
+  }
 
   tar_file.close();
-  prf_file.close();
+  if (save_profile) {
+    prf_file.close();
+  }
   aveEnt = sumEnt / symsNo;
 }
 
@@ -606,13 +623,24 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
     }
   }
   std::ifstream tar_file(par->tar);
-  std::ofstream prf_file(gen_name(par->ID, par->ref, par->tar, Format::profile));
+  std::ofstream prf_file;
+  const auto save_profile = par->saveProfile || par->saveAll;
+  if (save_profile) {
+    prf_file.open(gen_name(par->ID, par->ref, par->tar, Format::profile));
+  }
   const auto totalSize = file_size(par->tar);
-  std::vector<prc_t> entropies;
-  entropies.reserve(FILE_WRITE_BUF);
+  std::vector<prc_t> pending_profile_output;
+  pending_profile_output.reserve(FILE_WRITE_BUF);
   auto write_entropies = [&]() {
-    for (auto e : entropies) {
+    for (auto e : pending_profile_output) {
       prf_file << precision(PREC_PRF, e) << '\n';
+    }
+  };
+  auto emit_entropy = [&](prc_t entropy) {
+    const auto rounded_entropy = static_cast<prc_t>(std::stod(precision(PREC_PRF, entropy)));
+    profileEnt.push_back(rounded_entropy);
+    if (save_profile) {
+      pending_profile_output.push_back(rounded_entropy);
     }
   };
   uint64_t sample_step_index = 0;
@@ -676,7 +704,7 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
       ++symsNo;
       sumEnt += entr;
       if (sample_taken) {
-        entropies.push_back(entr);
+        emit_entropy(entr);
       }
       ++sample_step_index;
       if (par->verbose) {
@@ -684,16 +712,20 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
       }
     }
 
-    if (entropies.size() >= FILE_WRITE_BUF) {
+    if (save_profile && pending_profile_output.size() >= FILE_WRITE_BUF) {
       write_entropies();
-      entropies.clear();
-      entropies.reserve(FILE_WRITE_BUF);
+      pending_profile_output.clear();
+      pending_profile_output.reserve(FILE_WRITE_BUF);
     }
   }
-  write_entropies();
+  if (save_profile) {
+    write_entropies();
+  }
 
   tar_file.close();
-  prf_file.close();
+  if (save_profile) {
+    prf_file.close();
+  }
   aveEnt = sumEnt / symsNo;
 }
 

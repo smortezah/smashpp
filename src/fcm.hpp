@@ -20,6 +20,7 @@ static constexpr char TAR_ALT_N{'T'};  // Alter. to Ns in target file
 class FCM {  // Finite-context models
  public:
   prc_t aveEnt;
+  std::vector<prc_t> profileEnt;
   std::vector<prc_t> selfEnt;
   std::vector<MMPar> rMs;  // Ref Markov models
   std::vector<MMPar> tMs;  // Tar Markov models
