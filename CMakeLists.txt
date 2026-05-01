@@ -167,6 +167,20 @@ if(BUILD_TESTING)
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
 
   add_test(
+      NAME smashpp-memory-budget
+      COMMAND ${CMAKE_COMMAND}
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
+              -DARG_0=--max-memory
+              -DARG_1=1K
+              -DARG_2=-r
+              "-DARG_3=${CMAKE_CURRENT_SOURCE_DIR}/example/ref"
+              -DARG_4=-t
+              "-DARG_5=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
+              "-DEXPECTED_TEXT=estimated peak memory"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+
+  add_test(
       NAME smashpp-example-smoke
       COMMAND ${CMAKE_COMMAND}
               "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-example-smoke"
