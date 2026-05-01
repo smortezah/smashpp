@@ -42,9 +42,9 @@ class application {
   auto run_round(std::unique_ptr<Param>&, uint8_t, uint8_t, std::vector<PosRow>&, uint64_t&)
       -> uint64_t;
 
-  void prepare_data(std::unique_ptr<Param>&);
-  void remove_temp_seg(std::unique_ptr<Param>&, uint64_t);
-  void remove_temp_seq(std::unique_ptr<Param>&);
+  void prepare_data(Param&);
+  void remove_temp_seg(Param&, uint64_t);
+  void remove_temp_seq(Param&);
 };
 
 class info {
@@ -94,7 +94,7 @@ void application::run(std::unique_ptr<Param>& par) {
   std::vector<PosRow> pos_out;
 
   // FASTA/FASTQ to seq, if applicable
-  prepare_data(par);
+  prepare_data(*par);
 
   std::string ref_round1 = par->ref;
   std::string tar_round1 = par->tar;
@@ -126,7 +126,7 @@ void application::run(std::unique_ptr<Param>& par) {
     pos_file->dump(pos_out, par->asym_region, par->format);
   }
 
-  remove_temp_seq(par);
+  remove_temp_seq(*par);
 }
 
 std::vector<PosRow> application::run_modes_parallel(std::unique_ptr<Param>& par,
@@ -223,13 +223,13 @@ std::vector<PosRow> application::run_mode(std::unique_ptr<Param>& par, uint8_t r
             if (!par->quiet && par->verbose) {
               std::cerr << "\n";
             }
-            remove_temp_seg(par, num_seg_round3);
+            remove_temp_seg(*par, num_seg_round3);
           }
         }  // Round 3
 
         par->ref = ref_round2;
         par->tar = tar_round2;
-        remove_temp_seg(par, num_seg_round2);
+        remove_temp_seg(*par, num_seg_round2);
       }
     }
 
@@ -240,7 +240,7 @@ std::vector<PosRow> application::run_mode(std::unique_ptr<Param>& par, uint8_t r
 
   par->ref = ref_round1;
   par->tar = tar_round1;
-  remove_temp_seg(par, num_seg_round1);
+  remove_temp_seg(*par, num_seg_round1);
 
   return pos_out;
 }
@@ -334,8 +334,8 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
   return filter->nSegs;
 }
 
-void application::prepare_data(std::unique_ptr<Param>& par) {
-  if (par->refType == FileType::seq && par->tarType == FileType::seq) {
+void application::prepare_data(Param& par) {
+  if (par.refType == FileType::seq && par.tarType == FileType::seq) {
     return;
   }
 
@@ -351,52 +351,52 @@ void application::prepare_data(std::unique_ptr<Param>& par) {
     std::cerr << "\r" << msg << "finished.\n";
   };
 
-  const std::string ref_seq = std::format("{}.seq", file_name_no_ext(par->refName));
-  const std::string tar_seq = std::format("{}.seq", file_name_no_ext(par->tarName));
+  const std::string ref_seq = std::format("{}.seq", file_name_no_ext(par.refName));
+  const std::string tar_seq = std::format("{}.seq", file_name_no_ext(par.tarName));
 
-  if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
-    convert_to_seq(par->ref, ref_seq, par->refType);
-    par->ref = ref_seq;
-    par->refName = file_name(par->ref);
-    par->refType = FileType::seq;
-  } else if (par->refType != FileType::seq) {
-    error(std::format("\"{}\" has unknown format.", par->refName));
+  if (par.refType == FileType::fasta || par.refType == FileType::fastq) {
+    convert_to_seq(par.ref, ref_seq, par.refType);
+    par.ref = ref_seq;
+    par.refName = file_name(par.ref);
+    par.refType = FileType::seq;
+  } else if (par.refType != FileType::seq) {
+    error(std::format("\"{}\" has unknown format.", par.refName));
   }
 
-  if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
-    convert_to_seq(par->tar, tar_seq, par->tarType);
-    par->tar = tar_seq;
-    par->tarName = file_name(par->tar);
-    par->tarType = FileType::seq;
-  } else if (par->tarType != FileType::seq) {
-    error(std::format("\"{}\" has unknown format.", par->tarName));
+  if (par.tarType == FileType::fasta || par.tarType == FileType::fastq) {
+    convert_to_seq(par.tar, tar_seq, par.tarType);
+    par.tar = tar_seq;
+    par.tarName = file_name(par.tar);
+    par.tarType = FileType::seq;
+  } else if (par.tarType != FileType::seq) {
+    error(std::format("\"{}\" has unknown format.", par.tarName));
   }
 
   std::cerr << '\n';
 }
 
-void application::remove_temp_seg(std::unique_ptr<Param>& par, uint64_t seg_num) {
-  const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
+void application::remove_temp_seg(Param& par, uint64_t seg_num) {
+  const auto seg{gen_name(par.ID, par.ref, par.tar, Format::segment)};
 
   for (uint64_t i = 0; i != seg_num; ++i) {
-    if (!par->saveAll && !par->saveSegment) {
+    if (!par.saveAll && !par.saveSegment) {
       remove(std::format("{}{}", seg, i).c_str());
     }
   }
 }
 
-void application::remove_temp_seq(std::unique_ptr<Param>& par) {
-  const std::string ref_seq = std::format("{}.seq", file_name_no_ext(par->ref));
-  const std::string tar_seq = std::format("{}.seq", file_name_no_ext(par->tar));
+void application::remove_temp_seq(Param& par) {
+  const std::string ref_seq = std::format("{}.seq", file_name_no_ext(par.ref));
+  const std::string tar_seq = std::format("{}.seq", file_name_no_ext(par.tar));
 
-  if (par->refType == FileType::fasta || par->refType == FileType::fastq) {
-    if (!par->saveSeq) {
+  if (par.refType == FileType::fasta || par.refType == FileType::fastq) {
+    if (!par.saveSeq) {
       remove(ref_seq.c_str());
     }
   }
 
-  if (par->tarType == FileType::fasta || par->tarType == FileType::fastq) {
-    if (!par->saveSeq) {
+  if (par.tarType == FileType::fasta || par.tarType == FileType::fastq) {
+    if (!par.saveSeq) {
       remove(tar_seq.c_str());
     }
   }
