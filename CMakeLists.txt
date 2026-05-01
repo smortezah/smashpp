@@ -194,6 +194,16 @@ if(BUILD_TESTING)
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunInputNormalization.cmake")
 
   add_test(
+      NAME smashpp-parallel-consistency
+      COMMAND ${CMAKE_COMMAND}
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-parallel-consistency"
+              "-DSMASHPP=$<TARGET_FILE:smashpp>"
+              "-DREF=${CMAKE_CURRENT_SOURCE_DIR}/example/ref"
+              "-DTAR=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunParallelConsistency.cmake")
+
+  add_test(
       NAME smashpp-invalid-base
       COMMAND ${CMAKE_COMMAND}
               "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-invalid-base"
