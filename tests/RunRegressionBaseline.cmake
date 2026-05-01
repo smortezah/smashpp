@@ -51,8 +51,8 @@ expect_json("\"reference_size\"[ \t\r\n]*:[ \t\r\n]*\"1000\"" "reference size")
 expect_json("\"target_size\"[ \t\r\n]*:[ \t\r\n]*\"1000\"" "target size")
 
 expect_compact_json(
-    "\\{\"reference_begin\":\"0\",\"reference_end\":\"510\",[^}]*\"target_begin\":\"500\",\"target_end\":\"999\",[^}]*\"inverted\":\"F\"\\}"
+    "\\{\"reference_begin\":\"0\",\"reference_end\":\"510\",[^}]*\"target_begin\":\"500\",\"target_end\":\"1000\",[^}]*\"inverted\":\"F\"\\}"
     "regular baseline position")
 expect_compact_json(
-    "\\{\"reference_begin\":\"498\",\"reference_end\":\"999\",[^}]*\"target_begin\":\"508\",\"target_end\":\"0\",[^}]*\"inverted\":\"T\"\\}"
+    "\\{\"reference_begin\":\"498\",\"reference_end\":\"1000\",[^}]*\"target_begin\":\"508\",\"target_end\":\"0\",[^}]*\"inverted\":\"T\"\\}"
     "inverted baseline position")

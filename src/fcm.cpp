@@ -730,9 +730,9 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
 }
 
 void FCM::compress_n(std::unique_ptr<Param>& par) {
-  uint64_t symsNo{0};         // Sampled symbols
+  uint64_t symsNo{0};         // Symbols contributing to average entropy
   uint64_t processedSyms{0};  // No. syms in target file, except \n
-  prc_t sumEnt{0};            // Sum of sampled entropies = sum(log_2 P(s|c^t))
+  prc_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   auto cp = std::make_unique<CompressPar>();
   const auto nMdl = static_cast<uint8_t>(rMs.size()) + rTMsSize;
   cp->nMdl = nMdl;
@@ -818,6 +818,7 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
       const bool sample_taken = sample_ticker.take();
       cp->c = c;
       cp->nSym = base_code(c);
+      const bool approximate_update = par->approxSampledModels && !sample_taken;
       cp->ppIt = std::begin(cp->pp);
       cp->ctxIt = std::begin(cp->ctx);
       cp->ctxIrIt = std::begin(cp->ctxIr);
@@ -830,7 +831,9 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
       uint8_t n = 0;  // Counter for the models
       for (const auto& mm : rMs) {
         cp->mm = mm;
-        if (sample_taken) {
+        if (approximate_update) {
+          compress_n_context_impl(cp, n);
+        } else {
           switch (mm.cont) {
             case Container::sketch_8:
               compress_n_impl(cp, cmls4_it++, n);
@@ -845,8 +848,6 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
               compress_n_impl(cp, tbl64_it++, n);
               break;
           }
-        } else {
-          compress_n_context_impl(cp, n);
         }
         ++n;
         ++cp->ppIt;
@@ -854,12 +855,14 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
         ++cp->ctxIrIt;
       }
 
-      if (sample_taken) {
+      if (!approximate_update) {
         const auto entr = entropy(std::begin(cp->w), std::begin(cp->probs), std::end(cp->probs));
         normalize(std::begin(cp->w), std::begin(cp->wNext), std::end(cp->wNext));
         ++symsNo;
         sumEnt += entr;
-        emit_entropy(entr);
+        if (sample_taken) {
+          emit_entropy(entr);
+        }
       }
       if (show_progress_enabled) {
         show_progress(processedSyms, totalSize, par->message);

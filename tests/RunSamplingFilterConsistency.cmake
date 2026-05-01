@@ -8,6 +8,8 @@ file(MAKE_DIRECTORY "${WORKDIR}/multi-sampled-filter")
 file(MAKE_DIRECTORY "${WORKDIR}/non-rect-filter")
 file(MAKE_DIRECTORY "${WORKDIR}/sampled-segment")
 file(MAKE_DIRECTORY "${WORKDIR}/large-step")
+file(MAKE_DIRECTORY "${WORKDIR}/exact-sampled-models")
+file(MAKE_DIRECTORY "${WORKDIR}/approx-sampled-models")
 
 set(seq "AAAAAAAAAAA")
 
@@ -48,6 +50,21 @@ function(assert_file_content file expected)
   file(READ "${file}" content)
   if(NOT content STREQUAL expected)
     message(FATAL_ERROR "Expected ${file} content to match the non-rectangular filter baseline.")
+  endif()
+endfunction()
+
+function(assert_files_differ lhs rhs)
+  if(NOT EXISTS "${lhs}")
+    message(FATAL_ERROR "Expected file was not created: ${lhs}")
+  endif()
+  if(NOT EXISTS "${rhs}")
+    message(FATAL_ERROR "Expected file was not created: ${rhs}")
+  endif()
+
+  file(READ "${lhs}" lhs_content)
+  file(READ "${rhs}" rhs_content)
+  if(lhs_content STREQUAL rhs_content)
+    message(FATAL_ERROR "Expected ${lhs} and ${rhs} to differ.")
   endif()
 endfunction()
 
@@ -195,8 +212,8 @@ if(NOT sampled_segment_result EQUAL 0)
           "stderr:\n${sampled_segment_stderr}")
 endif()
 
-assert_file_size("${WORKDIR}/sampled-segment/0.ref.tar.s0" 11)
-assert_file_size("${WORKDIR}/sampled-segment/1.ref.tar.s0" 11)
+assert_file_size("${WORKDIR}/sampled-segment/0.ref.tar.s0" 10)
+assert_file_size("${WORKDIR}/sampled-segment/1.ref.tar.s0" 10)
 
 write_inputs("${WORKDIR}/large-step")
 execute_process(
@@ -217,4 +234,58 @@ endif()
 
 assert_line_count("${WORKDIR}/large-step/0.ref.tar.prf" 1)
 assert_line_count("${WORKDIR}/large-step/0.ref.tar.fil" 1)
-assert_file_size("${WORKDIR}/large-step/0.ref.tar.s0" 11)
+
+set(varied_ref_unit "ACGTTGCATAGGCTAACGATTCGACCGTAGCTTACGGATCGTACCTAGGTTACGATCGCATTA")
+set(varied_tar_unit "TGCACGTAACCTGATCGTAGGCTTACGATTCGGCATAGCTACCGTTAAGCTCGATGGCATACG")
+string(REPEAT "${varied_ref_unit}" 128 varied_ref)
+string(REPEAT "${varied_tar_unit}" 128 varied_tar)
+file(WRITE "${WORKDIR}/exact-sampled-models/ref" "${varied_ref}")
+file(WRITE "${WORKDIR}/exact-sampled-models/tar" "${varied_tar}")
+file(WRITE "${WORKDIR}/approx-sampled-models/ref" "${varied_ref}")
+file(WRITE "${WORKDIR}/approx-sampled-models/tar" "${varied_tar}")
+execute_process(
+    COMMAND "${SMASHPP}" -n 1 -sp -sf -nr -d 7 -f 5 -th 20 -m 1
+            -rm "3,0,0.01,0.95:6,0,0.02,0.95"
+            -tm "3,0,0.01,0.95:6,0,0.02,0.95"
+            -r ref -t tar
+    WORKING_DIRECTORY "${WORKDIR}/exact-sampled-models"
+    RESULT_VARIABLE exact_sampled_models_result
+    OUTPUT_VARIABLE exact_sampled_models_stdout
+    ERROR_VARIABLE exact_sampled_models_stderr)
+
+if(NOT exact_sampled_models_result EQUAL 0)
+  message(FATAL_ERROR
+          "Exact sampled multi-model run failed with exit code ${exact_sampled_models_result}\n"
+          "stdout:\n${exact_sampled_models_stdout}\n"
+          "stderr:\n${exact_sampled_models_stderr}")
+endif()
+
+execute_process(
+    COMMAND "${SMASHPP}" -n 1 --approx-sampled-models -sp -sf -nr -d 7 -f 5 -th 20 -m 1
+            -rm "3,0,0.01,0.95:6,0,0.02,0.95"
+            -tm "3,0,0.01,0.95:6,0,0.02,0.95"
+            -r ref -t tar
+    WORKING_DIRECTORY "${WORKDIR}/approx-sampled-models"
+    RESULT_VARIABLE approx_sampled_models_result
+    OUTPUT_VARIABLE approx_sampled_models_stdout
+    ERROR_VARIABLE approx_sampled_models_stderr)
+
+if(NOT approx_sampled_models_result EQUAL 0)
+  message(FATAL_ERROR
+          "Approximate sampled multi-model run failed with exit code ${approx_sampled_models_result}\n"
+          "stdout:\n${approx_sampled_models_stdout}\n"
+          "stderr:\n${approx_sampled_models_stderr}")
+endif()
+
+assert_line_count("${WORKDIR}/exact-sampled-models/0.ref.tar.prf" 1152)
+assert_line_count("${WORKDIR}/exact-sampled-models/0.ref.tar.fil" 1153)
+assert_line_count("${WORKDIR}/exact-sampled-models/1.ref.tar.prf" 1152)
+assert_line_count("${WORKDIR}/exact-sampled-models/1.ref.tar.fil" 1153)
+assert_line_count("${WORKDIR}/approx-sampled-models/0.ref.tar.prf" 1152)
+assert_line_count("${WORKDIR}/approx-sampled-models/0.ref.tar.fil" 1153)
+assert_line_count("${WORKDIR}/approx-sampled-models/1.ref.tar.prf" 1152)
+assert_line_count("${WORKDIR}/approx-sampled-models/1.ref.tar.fil" 1153)
+assert_files_differ("${WORKDIR}/exact-sampled-models/0.ref.tar.prf"
+                    "${WORKDIR}/approx-sampled-models/0.ref.tar.prf")
+assert_files_differ("${WORKDIR}/exact-sampled-models/1.ref.tar.prf"
+                    "${WORKDIR}/approx-sampled-models/1.ref.tar.prf")

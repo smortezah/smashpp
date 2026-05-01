@@ -129,6 +129,7 @@ class Param {
   bool noRedun;
   bool deep;
   bool asym_region;
+  bool approxSampledModels;
   std::vector<MMPar> refMs, tarMs;
   std::string message;
   std::string param_list;
@@ -181,6 +182,7 @@ class Param {
         noRedun(false),
         deep(true),
         asym_region(false),
+        approxSampledModels(false),
         tar_guard(std::make_unique<TarGuard>()),
         ref_guard(std::make_unique<RefGuard>()) {}
 
@@ -242,6 +244,7 @@ inline auto Param::clone() const -> std::unique_ptr<Param> {
   cloned->noRedun = noRedun;
   cloned->deep = deep;
   cloned->asym_region = asym_region;
+  cloned->approxSampledModels = approxSampledModels;
   cloned->refMs = clone_model_params(refMs);
   cloned->tarMs = clone_model_params(tarMs);
   cloned->message = message;

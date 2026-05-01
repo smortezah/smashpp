@@ -169,6 +169,8 @@ void Param::parse(int argc, char**& argv) {
       if (sampleStep == 0) {
         sampleStep = 1ull;
       }
+    } else if (*i == "--approx-sampled-models") {
+      approxSampledModels = true;
     } else if (*i == "-fs" || *i == "--filter-scale") {
       manFilterScale = true;
       const auto is_filter_scale = [](std::string s) {
@@ -471,6 +473,9 @@ void Param::help() const {
       << '\n'
       << tab1 << bold("-d") << ", " << bold("--sampling-step") << " <INT>\n"
       << tab2 << std::format("sampling step. Default: {}\n", SAMPLE_STEP) << '\n'
+      << tab1 << bold("--approx-sampled-models") << '\n'
+      << tab2 << "use faster approximate sampled multi-model updates. Default: not used\n"
+      << '\n'
       << tab1 << bold("-th") << ", " << bold("--threshold") << " <FLOAT>\n"
       << tab2
       << std::format("threshold: {:.1f} to {:.1f}. Default: {:.1f}\n", MIN_THRSH, MAX_THRSH, THRSH)
