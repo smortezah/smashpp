@@ -4,10 +4,13 @@
 #ifndef SMASHPP_APPLICATION_HPP
 #define SMASHPP_APPLICATION_HPP
 
+#include <algorithm>
 #include <chrono>
 #include <format>
+#include <future>
 #include <iomanip>  // setw, setprecision
 #include <iostream>
+#include <iterator>
 #include <memory>
 #include <thread>
 
@@ -31,6 +34,10 @@ class application {
 
  private:
   void run(std::unique_ptr<Param>&);
+  auto run_mode(std::unique_ptr<Param>&, uint8_t, const std::string&, const std::string&)
+      -> std::vector<PosRow>;
+  auto run_modes_parallel(std::unique_ptr<Param>&, const std::string&, const std::string&)
+      -> std::vector<PosRow>;
   auto run_round(std::unique_ptr<Param>&, uint8_t, uint8_t, std::vector<PosRow>&, uint64_t&)
       -> uint64_t;
 
@@ -84,7 +91,6 @@ void application::exe(int argc, char* argv[]) {
 
 void application::run(std::unique_ptr<Param>& par) {
   std::vector<PosRow> pos_out;
-  uint64_t current_pos_row = 0;
 
   // FASTA/FASTQ to seq, if applicable
   prepare_data(par);
@@ -92,69 +98,20 @@ void application::run(std::unique_ptr<Param>& par) {
   std::string ref_round1 = par->ref;
   std::string tar_round1 = par->tar;
 
-  // Round 1
-  for (uint8_t run_num = 0; run_num < 2; ++run_num) {
-    auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
+  const auto append_rows = [](auto& out, auto& rows) {
+    out.insert(std::end(out), std::make_move_iterator(std::begin(rows)),
+               std::make_move_iterator(std::end(rows)));
+  };
 
-    // Round 2: old ref = new tar & old tar segments = new refs
-    if (num_seg_round1 != 0) {
-      if (par->verbose) {
-        par->message = italic("Repeat above process for each segment");
-        std::cerr << '\n' << par->message << '\n';
-      } else {
-        par->message = "[+] Repeating above process for ";
-      }
-
-      const auto name_seg_round1{gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
-      std::string tar_round2 = par->tar = par->ref;
-
-      for (uint64_t i = 0; i < num_seg_round1; ++i) {
-        if (!par->verbose) {
-          std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
-        }
-
-        std::string ref_round2 = par->ref = std::format("{}{}", name_seg_round1, i);
-
-        auto num_seg_round2 = run_round(par, 2, run_num, pos_out, current_pos_row);
-        if (par->verbose) {
-          std::cerr << '\n';
-        }
-
-        if (num_seg_round2 != 0) {
-          // Round 3
-          if (par->deep) {
-            if (par->verbose) {
-              std::cerr << "    " << italic("Deep compression") << '\n';
-            }
-
-            const auto name_seg_round2{gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-            par->tar = ref_round2;
-
-            for (uint64_t j = 0; j < num_seg_round2; ++j) {
-              par->ref = std::format("{}{}", name_seg_round2, j);
-              auto num_seg_round3 = run_round(par, 3, run_num, pos_out, current_pos_row);
-              if (par->verbose) {
-                std::cerr << "\n";
-              }
-              remove_temp_seg(par, num_seg_round3);
-            }
-          }  // Round 3
-
-          par->ref = ref_round2;
-          par->tar = tar_round2;
-          remove_temp_seg(par, num_seg_round2);
-        }
-      }
-
-      if (!par->verbose) {
-        std::cerr << "\r" << par->message << "all segments done.\n\n";
-      }
-    }  // Round 2
-
-    par->ref = ref_round1;
-    par->tar = tar_round1;
-    remove_temp_seg(par, num_seg_round1);
-  }  // Round 1
+  if (par->nthr > 1 && !par->verbose) {
+    auto rows = run_modes_parallel(par, ref_round1, tar_round1);
+    append_rows(pos_out, rows);
+  } else {
+    for (uint8_t run_num = 0; run_num < 2; ++run_num) {
+      auto rows = run_mode(par, run_num, ref_round1, tar_round1);
+      append_rows(pos_out, rows);
+    }
+  }
 
   if (!pos_out.empty()) {
     auto pos_file = std::make_unique<PositionFile>();
@@ -169,6 +126,122 @@ void application::run(std::unique_ptr<Param>& par) {
   remove_temp_seq(par);
 }
 
+std::vector<PosRow> application::run_modes_parallel(std::unique_ptr<Param>& par,
+                                                    const std::string& ref_round1,
+                                                    const std::string& tar_round1) {
+  auto regular = par->clone();
+  auto inverted = par->clone();
+  const auto regular_threads = static_cast<uint8_t>(std::max<uint32_t>(1, par->nthr / 2));
+  const auto inverted_threads =
+      static_cast<uint8_t>(std::max<uint32_t>(1, par->nthr - regular_threads));
+
+  regular->nthr = regular_threads;
+  inverted->nthr = inverted_threads;
+  regular->quiet = true;
+  inverted->quiet = true;
+
+  const auto message = std::format(
+      "[+] Running regular and inverted modes in parallel ({} + {} "
+      "threads) ",
+      regular_threads, inverted_threads);
+  std::cerr << bold("====[ REGULAR + INVERTED MODE ]=======================\n");
+  std::cerr << message << "...";
+
+  auto regular_future = std::async(
+      std::launch::async, [this, mode_par = std::move(regular), ref_round1, tar_round1]() mutable {
+        return run_mode(mode_par, 0, ref_round1, tar_round1);
+      });
+  auto inverted_future = std::async(
+      std::launch::async, [this, mode_par = std::move(inverted), ref_round1, tar_round1]() mutable {
+        return run_mode(mode_par, 1, ref_round1, tar_round1);
+      });
+
+  auto regular_rows = regular_future.get();
+  auto inverted_rows = inverted_future.get();
+
+  std::vector<PosRow> pos_out;
+  pos_out.reserve(regular_rows.size() + inverted_rows.size());
+  pos_out.insert(std::end(pos_out), std::make_move_iterator(std::begin(regular_rows)),
+                 std::make_move_iterator(std::end(regular_rows)));
+  pos_out.insert(std::end(pos_out), std::make_move_iterator(std::begin(inverted_rows)),
+                 std::make_move_iterator(std::end(inverted_rows)));
+
+  std::cerr << "\r" << message << "done.         \n\n";
+  return pos_out;
+}
+
+std::vector<PosRow> application::run_mode(std::unique_ptr<Param>& par, uint8_t run_num,
+                                          const std::string& ref_round1,
+                                          const std::string& tar_round1) {
+  std::vector<PosRow> pos_out;
+  uint64_t current_pos_row = 0;
+
+  auto num_seg_round1 = run_round(par, 1, run_num, pos_out, current_pos_row);
+
+  // Round 2: old ref = new tar & old tar segments = new refs
+  if (num_seg_round1 != 0) {
+    if (par->verbose) {
+      par->message = italic("Repeat above process for each segment");
+      if (!par->quiet) {
+        std::cerr << '\n' << par->message << '\n';
+      }
+    } else {
+      par->message = "[+] Repeating above process for ";
+    }
+
+    const auto name_seg_round1{gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
+    std::string tar_round2 = par->tar = par->ref;
+
+    for (uint64_t i = 0; i < num_seg_round1; ++i) {
+      if (!par->quiet && !par->verbose) {
+        std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
+      }
+
+      std::string ref_round2 = par->ref = std::format("{}{}", name_seg_round1, i);
+
+      auto num_seg_round2 = run_round(par, 2, run_num, pos_out, current_pos_row);
+      if (!par->quiet && par->verbose) {
+        std::cerr << '\n';
+      }
+
+      if (num_seg_round2 != 0) {
+        // Round 3
+        if (par->deep) {
+          if (!par->quiet && par->verbose) {
+            std::cerr << "    " << italic("Deep compression") << '\n';
+          }
+
+          const auto name_seg_round2{gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
+          par->tar = ref_round2;
+
+          for (uint64_t j = 0; j < num_seg_round2; ++j) {
+            par->ref = std::format("{}{}", name_seg_round2, j);
+            auto num_seg_round3 = run_round(par, 3, run_num, pos_out, current_pos_row);
+            if (!par->quiet && par->verbose) {
+              std::cerr << "\n";
+            }
+            remove_temp_seg(par, num_seg_round3);
+          }
+        }  // Round 3
+
+        par->ref = ref_round2;
+        par->tar = tar_round2;
+        remove_temp_seg(par, num_seg_round2);
+      }
+    }
+
+    if (!par->quiet && !par->verbose) {
+      std::cerr << "\r" << par->message << "all segments done.\n\n";
+    }
+  }  // Round 2
+
+  par->ref = ref_round1;
+  par->tar = tar_round1;
+  remove_temp_seg(par, num_seg_round1);
+
+  return pos_out;
+}
+
 uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
                                 std::vector<PosRow>& pos_out, uint64_t& current_pos_row) {
   par->ID = run_num;
@@ -176,13 +249,13 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
   par->tarName = file_name(par->tar);
   auto models = std::make_unique<FCM>(par);
 
-  if (par->verbose && par->showInfo) {
+  if (!par->quiet && par->verbose && par->showInfo) {
     info{}.show(par);
     par->showInfo = false;
   }
-  if (round == 1 && run_num == 0) {
+  if (!par->quiet && round == 1 && run_num == 0) {
     std::cerr << bold("====[ REGULAR MODE ]==================================\n");
-  } else if (round == 1 && run_num == 1) {
+  } else if (!par->quiet && round == 1 && run_num == 1) {
     std::cerr << bold("====[ INVERTED MODE ]=================================\n");
   }
 
@@ -209,7 +282,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
   filter->smooth_seg(pos_out, models->profileEnt, par, round, current_pos_row);
 
   if (filter->nSegs == 0) {
-    if (round == 1) {
+    if (!par->quiet && round == 1) {
       std::cerr << '\n';
     }
     return 0;  // continue;
@@ -224,7 +297,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
 
   // Ref-free compress
   if (!par->noRedun) {
-    if (par->verbose) {
+    if (!par->quiet && par->verbose) {
       if (round == 3) {
         std::cerr << "    ";
       }
@@ -239,7 +312,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
     const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
     models->selfEnt.resize(segment_views.size());
     for (uint64_t i = 0; i < segment_views.size(); ++i) {
-      if (!par->verbose && round == 1) {
+      if (!par->quiet && !par->verbose && round == 1) {
         std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
       }
 
@@ -248,7 +321,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
     }
 
     models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);
-    if (!par->verbose && round == 1) {
+    if (!par->quiet && !par->verbose && round == 1) {
       std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "the segment " : "all segments ")
                 << "done.         " << '\n';
     }

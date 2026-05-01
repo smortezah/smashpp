@@ -368,7 +368,7 @@ inline void FCM::alloc_model() {
 }
 
 void FCM::store(std::unique_ptr<Param>& par, uint8_t round) {
-  if (round == 1 || par->verbose) {
+  if (!par->quiet && (round == 1 || par->verbose)) {
     par->message = (round == 3) ? "    " : "";
     const auto model_name =
         tarSegMsg.empty() ? italic(par->refName) : italic(std::format("{}{}", tarSegMsg, tarSegID));
@@ -383,7 +383,7 @@ void FCM::store(std::unique_ptr<Param>& par, uint8_t round) {
     store_n(par);  // Multiple threads
   }
 
-  if (round == 1 || par->verbose) {
+  if (!par->quiet && (round == 1 || par->verbose)) {
     std::cerr << "\r" << par->message << "done." << '\n';
   }
 }
@@ -483,11 +483,11 @@ inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
 }
 
 void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
-  if (par->verbose) {
+  if (!par->quiet && par->verbose) {
     par->message = (round == 3) ? "    " : "";
     par->message += std::format("[+] Compressing {} ", italic(par->tarName));
   } else {
-    if (round == 1) {
+    if (!par->quiet && round == 1) {
       par->message = std::format("[+] Compressing & filtering {} ", italic(par->tarName));
       std::cerr << par->message << "...";
     }
@@ -514,7 +514,7 @@ void FCM::compress(std::unique_ptr<Param>& par, uint8_t round) {
     compress_n(par);
   }
 
-  if (par->verbose) {
+  if (!par->quiet && par->verbose) {
     std::cerr << "\r" << par->message
               << "finished. Ave. entropy = " << fixed_precision(PREC_PRF, aveEnt) << " bps."
               << '\n';
@@ -608,7 +608,7 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
       }
       ++sample_step_index;
       // prf_file << precision(PREC_PRF, entr) << '\n';
-      if (par->verbose) {
+      if (!par->quiet && par->verbose) {
         show_progress(symsNo, totalSize, par->message);
       }
     }
@@ -740,7 +740,7 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
         emit_entropy(entr);
       }
       ++sample_step_index;
-      if (par->verbose) {
+      if (!par->quiet && par->verbose) {
         show_progress(symsNo, totalSize, par->message);
       }
     }
@@ -874,7 +874,7 @@ void FCM::self_compress(std::unique_ptr<Param>& par, const SegmentView& segment,
 void FCM::self_compress(std::unique_ptr<Param>& par, const SegmentView* segment, uint64_t ID,
                         uint8_t round) {
   std::string message;
-  if (par->verbose) {
+  if (!par->quiet && par->verbose) {
     if (round == 3) {
       message = std::format("        [-] Compressing segment {} ", ID + 1);
     } else {
@@ -903,7 +903,7 @@ void FCM::self_compress(std::unique_ptr<Param>& par, const SegmentView* segment,
     self_compress_n(par, segment, ID);
   }
 
-  if (par->verbose) {
+  if (!par->quiet && par->verbose) {
     std::cerr << "\r" << message
               << "done. Ave. entropy = " << fixed_precision(PREC_PRF, selfEnt[ID]) << " bps."
               << '\n';
@@ -1004,7 +1004,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
-        if (par->verbose) {
+        if (!par->quiet && par->verbose) {
           show_progress(symsNo, totalSize, par->message);
         }
       }
@@ -1103,7 +1103,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, const SegmentView*
         const auto ent = entropy(std::begin(cp->w), std::begin(cp->probs), std::end(cp->probs));
         normalize(std::begin(cp->w), std::begin(cp->wNext), std::end(cp->wNext));
         sumEnt += ent;
-        if (par->verbose) {
+        if (!par->quiet && par->verbose) {
           show_progress(symsNo, totalSize, par->message);
         }
       }

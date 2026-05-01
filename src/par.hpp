@@ -62,6 +62,20 @@ static constexpr uint64_t MIN_TICK{1};
 static constexpr uint64_t MAX_TICK{0xffffffff};
 static constexpr uint64_t TICK{100};  // Major tick
 
+inline auto clone_model_params(const std::vector<MMPar>& models) -> std::vector<MMPar> {
+  std::vector<MMPar> clones;
+  clones.reserve(models.size());
+
+  for (const auto& model : models) {
+    clones.push_back(model);
+    if (model.child) {
+      clones.back().child = std::make_shared<STMMPar>(*model.child);
+    }
+  }
+
+  return clones;
+}
+
 class Param {
  public:
   std::string ref, tar;
@@ -70,6 +84,7 @@ class Param {
   std::string seq;
   Format format;
   bool verbose;
+  bool quiet;
   uint8_t level;
   uint32_t segSize;
   prc_t entropyN;
@@ -110,6 +125,7 @@ class Param {
   Param()  // Define Param::Param(){} in *.hpp => compile error
       : format(Format::position),
         verbose(false),
+        quiet(false),
         level(LVL),
         segSize(SSIZE),
         entropyN(ENTR_N),
@@ -143,6 +159,7 @@ class Param {
         ref_guard(std::make_unique<RefGuard>()) {}
 
   void parse(int, char**&);
+  auto clone() const -> std::unique_ptr<Param>;
   auto win_type(std::string) const -> FilterType;
   auto print_win_type() const -> std::string;
   auto filter_scale(std::string) const -> FilterScale;
@@ -154,6 +171,60 @@ class Param {
   void parseModelsPars(Iter, Iter, std::vector<MMPar>&);
   void help() const;
 };
+
+inline auto Param::clone() const -> std::unique_ptr<Param> {
+  auto cloned = std::make_unique<Param>();
+
+  cloned->ref = ref;
+  cloned->tar = tar;
+  cloned->original_ref = original_ref;
+  cloned->original_tar = original_tar;
+  cloned->refName = refName;
+  cloned->tarName = tarName;
+  cloned->seq = seq;
+  cloned->format = format;
+  cloned->verbose = verbose;
+  cloned->quiet = quiet;
+  cloned->level = level;
+  cloned->segSize = segSize;
+  cloned->entropyN = entropyN;
+  cloned->nthr = nthr;
+  cloned->filt_size = filt_size;
+  cloned->filt_type = filt_type;
+  cloned->sampleStep = sampleStep;
+  cloned->thresh = thresh;
+  cloned->man_level = man_level;
+  cloned->manWSize = manWSize;
+  cloned->manThresh = manThresh;
+  cloned->manSampleStep = manSampleStep;
+  cloned->manFilterScale = manFilterScale;
+  cloned->filterScale = filterScale;
+  cloned->saveSeq = saveSeq;
+  cloned->saveProfile = saveProfile;
+  cloned->saveFilter = saveFilter;
+  cloned->saveSegment = saveSegment;
+  cloned->saveAll = saveAll;
+  cloned->refType = refType;
+  cloned->tarType = tarType;
+  cloned->showInfo = showInfo;
+  cloned->compress = compress;
+  cloned->filter = filter;
+  cloned->segment = segment;
+  cloned->ID = ID;
+  cloned->noRedun = noRedun;
+  cloned->deep = deep;
+  cloned->asym_region = asym_region;
+  cloned->refMs = clone_model_params(refMs);
+  cloned->tarMs = clone_model_params(tarMs);
+  cloned->message = message;
+  cloned->param_list = param_list;
+  cloned->tar_guard =
+      tar_guard ? std::make_unique<TarGuard>(*tar_guard) : std::make_unique<TarGuard>();
+  cloned->ref_guard =
+      ref_guard ? std::make_unique<RefGuard>(*ref_guard) : std::make_unique<RefGuard>();
+
+  return cloned;
+}
 
 class VizParam {
  public:
