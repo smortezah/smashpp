@@ -65,3 +65,5 @@ endfunction()
 
 run_consistency(default)
 run_consistency(sampled -d 3)
+run_consistency(sampled-multi -d 3 -m 1 -th 20 -rm "1,0,0.01,0.95:2,0,0.02,0.95" -tm
+                "1,0,0.01,0.95:2,0,0.02,0.95")

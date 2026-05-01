@@ -4,6 +4,7 @@ endif()
 
 file(REMOVE_RECURSE "${WORKDIR}")
 file(MAKE_DIRECTORY "${WORKDIR}/sampled-filter")
+file(MAKE_DIRECTORY "${WORKDIR}/multi-sampled-filter")
 file(MAKE_DIRECTORY "${WORKDIR}/sampled-segment")
 file(MAKE_DIRECTORY "${WORKDIR}/large-step")
 
@@ -59,6 +60,29 @@ assert_line_count("${WORKDIR}/sampled-filter/0.ref.tar.prf" 4)
 assert_line_count("${WORKDIR}/sampled-filter/0.ref.tar.fil" 4)
 assert_line_count("${WORKDIR}/sampled-filter/1.ref.tar.prf" 4)
 assert_line_count("${WORKDIR}/sampled-filter/1.ref.tar.fil" 4)
+
+write_inputs("${WORKDIR}/multi-sampled-filter")
+execute_process(
+    COMMAND "${SMASHPP}" -n 1 -sp -sf -nr -d 3 -f 1 -th 20 -m 1
+            -rm "1,0,0.01,0.95:2,0,0.02,0.95"
+            -tm "1,0,0.01,0.95:2,0,0.02,0.95"
+            -r ref -t tar
+    WORKING_DIRECTORY "${WORKDIR}/multi-sampled-filter"
+    RESULT_VARIABLE multi_sampled_filter_result
+    OUTPUT_VARIABLE multi_sampled_filter_stdout
+    ERROR_VARIABLE multi_sampled_filter_stderr)
+
+if(NOT multi_sampled_filter_result EQUAL 0)
+  message(FATAL_ERROR
+          "Multi-model sampled filter run failed with exit code ${multi_sampled_filter_result}\n"
+          "stdout:\n${multi_sampled_filter_stdout}\n"
+          "stderr:\n${multi_sampled_filter_stderr}")
+endif()
+
+assert_line_count("${WORKDIR}/multi-sampled-filter/0.ref.tar.prf" 4)
+assert_line_count("${WORKDIR}/multi-sampled-filter/0.ref.tar.fil" 4)
+assert_line_count("${WORKDIR}/multi-sampled-filter/1.ref.tar.prf" 4)
+assert_line_count("${WORKDIR}/multi-sampled-filter/1.ref.tar.fil" 4)
 
 write_inputs("${WORKDIR}/sampled-segment")
 execute_process(
