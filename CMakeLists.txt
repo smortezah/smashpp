@@ -307,6 +307,19 @@ if(BUILD_TESTING)
   set_tests_properties(smashpp-regression-baseline PROPERTIES LABELS regression)
 
   add_test(
+      NAME smashpp-install-layout
+      COMMAND ${CMAKE_COMMAND}
+              "-DBUILD_DIR=${CMAKE_CURRENT_BINARY_DIR}"
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-install-layout"
+              "-DINSTALL_BINDIR=${CMAKE_INSTALL_BINDIR}"
+              "-DINSTALL_DOCDIR=${CMAKE_INSTALL_DOCDIR}"
+              "-DEXECUTABLE_SUFFIX=${CMAKE_EXECUTABLE_SUFFIX}"
+              "-DCONFIG=$<CONFIG>"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunInstallLayout.cmake")
+  set_tests_properties(smashpp-install-layout PROPERTIES LABELS packaging)
+
+  add_test(
       NAME smashpp-invalid-base
       COMMAND ${CMAKE_COMMAND}
               "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-invalid-base"
@@ -324,5 +337,37 @@ if(BUILD_TESTING)
 endif()
 
 install(TARGETS smashpp smashpp-inv-rep exclude_N
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(FILES README.md LICENSE DESTINATION ${CMAKE_INSTALL_DOCDIR})
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        COMPONENT Runtime)
+install(FILES README.md LICENSE
+        DESTINATION ${CMAKE_INSTALL_DOCDIR}
+        COMPONENT Documentation)
+
+set(SMASHPP_PACKAGE_VERSION "${SMASHPP_VERSION}")
+string(REGEX REPLACE "[^A-Za-z0-9_.+-]" "_" SMASHPP_PACKAGE_VERSION
+                     "${SMASHPP_PACKAGE_VERSION}")
+string(TOLOWER "${CMAKE_SYSTEM_NAME}" SMASHPP_PACKAGE_SYSTEM)
+if (CMAKE_SYSTEM_PROCESSOR)
+  string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" SMASHPP_PACKAGE_PROCESSOR)
+else()
+  set(SMASHPP_PACKAGE_PROCESSOR "unknown")
+endif()
+string(REGEX REPLACE "[^A-Za-z0-9_.+-]" "_" SMASHPP_PACKAGE_SYSTEM
+                     "${SMASHPP_PACKAGE_SYSTEM}")
+string(REGEX REPLACE "[^A-Za-z0-9_.+-]" "_" SMASHPP_PACKAGE_PROCESSOR
+                     "${SMASHPP_PACKAGE_PROCESSOR}")
+
+set(CPACK_PACKAGE_NAME "smashpp")
+set(CPACK_PACKAGE_VENDOR "Smash++")
+set(CPACK_PACKAGE_CONTACT "Morteza Hosseini <seyedmorteza.hosseini@manchester.ac.uk>")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+    "A fast utility for identifying and visualizing rearrangements in DNA sequences.")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/smortezah/smashpp")
+set(CPACK_PACKAGE_VERSION "${SMASHPP_PACKAGE_VERSION}")
+set(CPACK_PACKAGE_FILE_NAME
+    "smashpp-${SMASHPP_PACKAGE_VERSION}-${SMASHPP_PACKAGE_SYSTEM}-${SMASHPP_PACKAGE_PROCESSOR}")
+set(CPACK_PACKAGE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/packages")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_GENERATOR "TGZ;ZIP")
+set(CPACK_ARCHIVE_COMPONENT_INSTALL OFF)
+include(CPack)
