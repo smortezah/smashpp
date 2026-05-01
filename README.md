@@ -102,6 +102,7 @@ Use `smashpp --help` to print the full CLI help.
 | `-fmt`, `--format`                         | `<STRING>`     | Output format: `pos` or `json`.                                                                                          | `pos`               |
 | `-e`, `--entropy-N`                        | `<FLOAT>`      | Entropy assigned to `N` bases.                                                                                           | `2.0`               |
 | `-n`, `--num-threads`                      | `<INT>`        | Number of worker threads.                                                                                                | `4`                 |
+| `-mem`, `--max-memory`                     | `<SIZE>`       | Maximum estimated memory use. Supports `B`, `K`, `M`, `G`, and `T` suffixes; `0` disables the check.                     | Auto                |
 | `-f`, `--filter-size`                      | `<INT>`        | Filter window size.                                                                                                      | `100`               |
 | `-ft`, `--filter-type`                     | `<INT/STRING>` | Window function: `0/rectangular`, `1/hamming`, `2/hann`, `3/blackman`, `4/triangular`, `5/welch`, `6/sine`, `7/nuttall`. | `hann`              |
 | `-fs`, `--filter-scale`                    | `<STRING>`     | Filter scale: `S/small`, `M/medium`, or `L/large`.                                                                       | Auto                |
