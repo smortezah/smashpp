@@ -551,9 +551,25 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   const auto winEnd{std::end(window)};
   const auto half_wsize = (window.size() >> 1u);
   auto sum_weights{std::accumulate(winBeg, winEnd, 0.f)};
+  const auto seq_size = seq.size();
+  std::vector<float> linear_seq;
+  linear_seq.reserve(seq_size + filt_size);
+  while (linear_seq.size() < seq_size + filt_size) {
+    linear_seq.insert(std::end(linear_seq), std::begin(seq), std::end(seq));
+  }
+  const auto update_seq = [&](uint32_t pos, float value) {
+    seq[pos] = value;
+    for (auto linear_pos = static_cast<size_t>(pos); linear_pos < linear_seq.size();
+         linear_pos += seq_size) {
+      linear_seq[linear_pos] = value;
+    }
+  };
+  const auto filtered_at = [&](uint32_t pos) {
+    const auto sum = std::inner_product(winBeg, winEnd, std::begin(linear_seq) + pos, 0.f);
+    return sum / sum_weights;
+  };
 
-  auto sum = std::inner_product(std::begin(seq), std::end(seq), winBeg, 0.f);
-  auto filtered = sum / sum_weights;
+  auto filtered = filtered_at(0);
   // if (SaveFilter) filF << precision(PREC_FIL, filtered) << '\n';
   if (SaveFilter) {
     filtered_values.push_back(filtered);
@@ -565,13 +581,10 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
   // The rest
   uint32_t idx{0};
-  auto seqBeg = std::begin(seq);
   for (; profile_reader.read(entropy);) {
-    seq[idx] = entropy;
+    update_seq(idx, entropy);
     idx = (idx + 1) % filt_size;
-    sum = (std::inner_product(winBeg, winEnd - idx, seqBeg + idx, 0.f) +
-           std::inner_product(winEnd - idx, winEnd, seqBeg, 0.f));
-    filtered = sum / sum_weights;
+    filtered = filtered_at(idx);
     if (SaveFilter) {
       filtered_values.push_back(filtered);
       if (filtered_values.size() >= FILE_WRITE_BUF) {
@@ -588,11 +601,9 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   }
   // Until half of the window goes outside the array
   for (auto i = half_wsize; i--;) {
-    seq[idx] = 2.0;
+    update_seq(idx, 2.0);
     idx = (idx + 1) % filt_size;
-    sum = (std::inner_product(winBeg, winEnd - idx, seqBeg + idx, 0.f) +
-           std::inner_product(winEnd - idx, winEnd, seqBeg, 0.f));
-    filtered = sum / sum_weights;
+    filtered = filtered_at(idx);
     if (SaveFilter) {
       filtered_values.push_back(filtered);
       if (filtered_values.size() >= FILE_WRITE_BUF) {
