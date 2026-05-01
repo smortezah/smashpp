@@ -51,7 +51,7 @@ class FCM {  // Finite-context models
   void store_1(std::unique_ptr<Param>&);  // Build models one thread
   void store_n(std::unique_ptr<Param>&);  // Build models multiple threads
   template <typename Mask, typename ContIter>
-  void store_impl(std::string, Mask, ContIter);  // Fill data struct
+  void store_impl(const std::string&, Mask, ContIter);  // Fill data struct
 
   template <typename ContIter>
   void compress_1(std::unique_ptr<Param>&, ContIter);  // Compress with 1 model

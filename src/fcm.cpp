@@ -37,6 +37,11 @@ auto make_sequence_window(const std::unique_ptr<Param>& par, const SegmentView* 
   return {par->seq, 0, file_size(par->seq)};
 }
 
+auto read_file_chunk(std::ifstream& input, std::vector<char>& buffer) -> std::streamsize {
+  input.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+  return input.gcount();
+}
+
 auto read_sequence_chunk(std::ifstream& seq, std::vector<char>& buffer, uint64_t& remaining)
     -> std::streamsize {
   if (remaining == 0) {
@@ -50,6 +55,21 @@ auto read_sequence_chunk(std::ifstream& seq, std::vector<char>& buffer, uint64_t
   remaining -= static_cast<uint64_t>(bytes_read);
   return bytes_read;
 }
+
+class SampleTicker {
+ public:
+  explicit SampleTicker(uint64_t sample_step) : sample_step_(std::max<uint64_t>(sample_step, 1)) {}
+
+  auto take() -> bool {
+    const bool sample = remaining_ == 0;
+    remaining_ = sample ? sample_step_ - 1 : remaining_ - 1;
+    return sample;
+  }
+
+ private:
+  uint64_t sample_step_;
+  uint64_t remaining_{0};
+};
 }  // namespace
 
 FCM::FCM(std::unique_ptr<Param>& par)
@@ -458,13 +478,18 @@ inline void FCM::store_n(std::unique_ptr<Param>& par) {
 }
 
 template <typename Mask, typename ContIter /*Container iterator*/>
-inline void FCM::store_impl(std::string ref, Mask mask, ContIter cont) {
+inline void FCM::store_impl(const std::string& ref, Mask mask, ContIter cont) {
   std::ifstream rf(ref);
   Mask ctx = 0;
 
-  for (std::vector<char> buffer(FILE_READ_BUF, 0); rf.peek() != EOF;) {
-    rf.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + rf.gcount(); ++it) {
+  for (std::vector<char> buffer(FILE_READ_BUF, 0);;) {
+    const auto bytes_read = read_file_chunk(rf, buffer);
+    if (bytes_read == 0) {
+      break;
+    }
+
+    const auto chunk_end = std::begin(buffer) + bytes_read;
+    for (auto it = std::begin(buffer); it != chunk_end; ++it) {
       const auto c = normalize_base(*it, ref);
       if (c != '\0') {
         ctx = ((ctx & mask) << 2u) | base_code(c);
@@ -530,6 +555,8 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
     prf_file.open(gen_name(par->ID, par->ref, par->tar, Format::profile));
   }
   const auto totalSize = file_size(par->tar);
+  profileEnt.reserve(totalSize / par->sampleStep + 1);
+  const bool show_progress_enabled = !par->quiet && par->verbose;
   std::vector<prc_t> pending_profile_output;
   pending_profile_output.reserve(FILE_WRITE_BUF);
   auto write_entropies = [&]() {
@@ -544,18 +571,23 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
       pending_profile_output.push_back(rounded_entropy);
     }
   };
-  uint64_t sample_step_index = 0;
+  SampleTicker sample_ticker(par->sampleStep);
 
-  for (std::vector<char> buffer(FILE_READ_BUF, 0); tar_file.peek() != EOF;) {
-    tar_file.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + tar_file.gcount(); ++it) {
+  for (std::vector<char> buffer(FILE_READ_BUF, 0);;) {
+    const auto bytes_read = read_file_chunk(tar_file, buffer);
+    if (bytes_read == 0) {
+      break;
+    }
+
+    const auto chunk_end = std::begin(buffer) + bytes_read;
+    for (auto it = std::begin(buffer); it != chunk_end; ++it) {
       auto c = normalize_base(*it, par->tar);
       if (c == '\0') {
         continue;
       }
 
       prc_t entr;
-      bool sample_taken = (sample_step_index % par->sampleStep == 0);
+      const bool sample_taken = sample_ticker.take();
 
       if (rMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
         if (c != 'N') {
@@ -600,9 +632,8 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
         sumEnt += entr;
         emit_entropy(entr);
       }
-      ++sample_step_index;
       // prf_file << precision(PREC_PRF, entr) << '\n';
-      if (!par->quiet && par->verbose) {
+      if (show_progress_enabled) {
         show_progress(symsNo, totalSize, par->message);
       }
     }
@@ -610,7 +641,6 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
     if (save_profile && pending_profile_output.size() >= FILE_WRITE_BUF) {
       write_entropies();
       pending_profile_output.clear();
-      pending_profile_output.reserve(FILE_WRITE_BUF);
     }
   }
   if (save_profile) {
@@ -656,6 +686,8 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
     prf_file.open(gen_name(par->ID, par->ref, par->tar, Format::profile));
   }
   const auto totalSize = file_size(par->tar);
+  profileEnt.reserve(totalSize / par->sampleStep + 1);
+  const bool show_progress_enabled = !par->quiet && par->verbose;
   std::vector<prc_t> pending_profile_output;
   pending_profile_output.reserve(FILE_WRITE_BUF);
   auto write_entropies = [&]() {
@@ -670,7 +702,8 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
       pending_profile_output.push_back(rounded_entropy);
     }
   };
-  uint64_t sample_step_index = 0;
+  SampleTicker sample_ticker(par->sampleStep);
+  cp->probs.reserve(nMdl);
 
   const auto compress_n_impl = [&](auto& cp, auto cont, uint8_t& n) {
     compress_n_parent(cp, cont, n);
@@ -682,22 +715,26 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
     }
   };
 
-  for (std::vector<char> buffer(FILE_READ_BUF, 0); tar_file.peek() != EOF;) {
-    tar_file.read(buffer.data(), FILE_READ_BUF);
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + tar_file.gcount(); ++it) {
+  for (std::vector<char> buffer(FILE_READ_BUF, 0);;) {
+    const auto bytes_read = read_file_chunk(tar_file, buffer);
+    if (bytes_read == 0) {
+      break;
+    }
+
+    const auto chunk_end = std::begin(buffer) + bytes_read;
+    for (auto it = std::begin(buffer); it != chunk_end; ++it) {
       const auto c = normalize_base(*it, par->tar);
       if (c == '\0') {
         continue;
       }
 
-      bool sample_taken = (sample_step_index % par->sampleStep == 0);
+      const bool sample_taken = sample_ticker.take();
       cp->c = c;
       cp->nSym = base_code(c);
       cp->ppIt = std::begin(cp->pp);
       cp->ctxIt = std::begin(cp->ctx);
       cp->ctxIrIt = std::begin(cp->ctxIr);
       cp->probs.clear();
-      cp->probs.reserve(nMdl);
       auto tbl64_it = std::begin(tbl64);
       auto tbl32_it = std::begin(tbl32);
       auto lgtbl8_it = std::begin(lgtbl8);
@@ -733,8 +770,7 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
       if (sample_taken) {
         emit_entropy(entr);
       }
-      ++sample_step_index;
-      if (!par->quiet && par->verbose) {
+      if (show_progress_enabled) {
         show_progress(symsNo, totalSize, par->message);
       }
     }
@@ -742,7 +778,6 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
     if (save_profile && pending_profile_output.size() >= FILE_WRITE_BUF) {
       write_entropies();
       pending_profile_output.clear();
-      pending_profile_output.reserve(FILE_WRITE_BUF);
     }
   }
   if (save_profile) {
@@ -953,6 +988,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
   seqF.seekg(static_cast<std::streamoff>(seq_window.beg_pos));
   ProbPar pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, static_cast<uint8_t>(tMs[0].k << 1u)};
   const auto totalSize = seq_window.size;
+  const bool show_progress_enabled = !par->quiet && par->verbose;
   prc_t entr;
 
   for (std::vector<char> buffer(FILE_READ_BUF, 0); remaining != 0;) {
@@ -960,7 +996,9 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
     if (bytes_read == 0) {
       break;
     }
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + bytes_read; ++it) {
+
+    const auto chunk_end = std::begin(buffer) + bytes_read;
+    for (auto it = std::begin(buffer); it != chunk_end; ++it) {
       const auto c = normalize_base(*it, seq_window.source);
       if (c != '\0') {
         ++symsNo;
@@ -998,7 +1036,7 @@ inline void FCM::self_compress_1(std::unique_ptr<Param>& par, ContIter cont,
           (*cont)->update(pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
-        if (!par->quiet && par->verbose) {
+        if (show_progress_enabled) {
           show_progress(symsNo, totalSize, par->message);
         }
       }
@@ -1038,6 +1076,8 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, const SegmentView*
     }
   }
   const auto totalSize = seq_window.size;
+  const bool show_progress_enabled = !par->quiet && par->verbose;
+  cp->probs.reserve(nMdl);
   const auto self_compress_n_impl = [&](auto& cp, auto cont, uint8_t& n) {
     uint64_t valUpd = 0;
     self_compress_n_parent(cp, cont, n, valUpd);
@@ -1055,7 +1095,9 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, const SegmentView*
     if (bytes_read == 0) {
       break;
     }
-    for (auto it = std::begin(buffer); it != std::begin(buffer) + bytes_read; ++it) {
+
+    const auto chunk_end = std::begin(buffer) + bytes_read;
+    for (auto it = std::begin(buffer); it != chunk_end; ++it) {
       const auto c = normalize_base(*it, seq_window.source);
       if (c != '\0') {
         ++symsNo;
@@ -1065,7 +1107,6 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, const SegmentView*
         cp->ctxIt = std::begin(cp->ctx);
         cp->ctxIrIt = std::begin(cp->ctxIr);
         cp->probs.clear();
-        cp->probs.reserve(nMdl);
         auto tbl64_it = std::begin(tbl64);
         auto tbl32_it = std::begin(tbl32);
         auto lgtbl8_it = std::begin(lgtbl8);
@@ -1097,7 +1138,7 @@ inline void FCM::self_compress_n(std::unique_ptr<Param>& par, const SegmentView*
         const auto ent = entropy(std::begin(cp->w), std::begin(cp->probs), std::end(cp->probs));
         normalize(std::begin(cp->w), std::begin(cp->wNext), std::end(cp->wNext));
         sumEnt += ent;
-        if (!par->quiet && par->verbose) {
+        if (show_progress_enabled) {
           show_progress(symsNo, totalSize, par->message);
         }
       }
