@@ -55,15 +55,15 @@ class info {
 
  public:
   info() = default;
-  void show(std::unique_ptr<Param>&);
+  void show(const Param&);
 
  private:
-  void show_ref_FCM(std::unique_ptr<Param>&) const;
-  void show_ref_STMM(std::unique_ptr<Param>&) const;
-  void show_tar_FCM(std::unique_ptr<Param>&) const;
-  void show_tar_STMM(std::unique_ptr<Param>&) const;
-  void show_filter(std::unique_ptr<Param>&) const;
-  void show_file(std::unique_ptr<Param>&) const;
+  void show_ref_FCM(const Param&) const;
+  void show_ref_STMM(const Param&) const;
+  void show_tar_FCM(const Param&) const;
+  void show_tar_STMM(const Param&) const;
+  void show_filter(const Param&) const;
+  void show_file(const Param&) const;
 
   void rule(uint8_t, std::string&&) const;
   void toprule() const;
@@ -73,8 +73,8 @@ class info {
   void header(std::string) const;
   void info_FCM(std::vector<MMPar> const&, char) const;
   void info_STMM(std::vector<MMPar> const&, char) const;
-  void info_filter(std::unique_ptr<Param>&, char) const;
-  void info_file(std::unique_ptr<Param>&, char) const;
+  void info_filter(const Param&, char) const;
+  void info_file(const Param&, char) const;
 };
 
 void application::exe(int argc, char* argv[]) {
@@ -253,7 +253,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
   auto models = std::make_unique<FCM>(par);
 
   if (!par->quiet && par->verbose && par->showInfo) {
-    info{}.show(par);
+    info{}.show(*par);
     par->showInfo = false;
   }
   if (!par->quiet && round == 1 && run_num == 0) {
@@ -402,7 +402,7 @@ void application::remove_temp_seq(std::unique_ptr<Param>& par) {
   }
 }
 
-void info::show(std::unique_ptr<Param>& par) {
+void info::show(const Param& par) {
   show_ref_FCM(par);
   show_ref_STMM(par);
   show_tar_FCM(par);
@@ -411,10 +411,10 @@ void info::show(std::unique_ptr<Param>& par) {
   show_file(par);
 }
 
-void info::show_ref_FCM(std::unique_ptr<Param>& par) const {
+void info::show_ref_FCM(const Param& par) const {
   auto ref_FCM_row = [&](std::string lbl, char c) {
     label(lbl);
-    info_FCM(par->refMs, c);
+    info_FCM(par.refMs, c);
     std::cerr << '\n';
   };
 
@@ -423,7 +423,7 @@ void info::show_ref_FCM(std::unique_ptr<Param>& par) const {
   midrule();
   ref_FCM_row("Context size (k)", 'k');
   bool hasSketch{false};
-  for (const auto& e : par->refMs) {
+  for (const auto& e : par.refMs) {
     if (e.cont == Container::sketch_8) {
       hasSketch = true;
       break;
@@ -439,9 +439,9 @@ void info::show_ref_FCM(std::unique_ptr<Param>& par) const {
   botrule();  // cerr << '\n';
 }
 
-void info::show_ref_STMM(std::unique_ptr<Param>& par) const {
+void info::show_ref_STMM(const Param& par) const {
   bool show_rstmm = false;
-  for (const auto& model : par->refMs) {
+  for (const auto& model : par.refMs) {
     if (model.child) {
       show_rstmm = true;
       break;
@@ -453,7 +453,7 @@ void info::show_ref_STMM(std::unique_ptr<Param>& par) const {
 
   auto ref_STMM_row = [&](std::string lbl, char c) {
     label(lbl);
-    if (c != 'h') info_STMM(par->refMs, c);
+    if (c != 'h') info_STMM(par.refMs, c);
     std::cerr << '\n';
   };
 
@@ -467,10 +467,10 @@ void info::show_ref_STMM(std::unique_ptr<Param>& par) const {
   botrule();  // cerr << '\n';
 }
 
-void info::show_tar_FCM(std::unique_ptr<Param>& par) const {
+void info::show_tar_FCM(const Param& par) const {
   auto tar_FCM_row = [&](std::string lbl, char c) {
     label(lbl);
-    info_FCM(par->tarMs, c);
+    info_FCM(par.tarMs, c);
     std::cerr << '\n';
   };
 
@@ -479,7 +479,7 @@ void info::show_tar_FCM(std::unique_ptr<Param>& par) const {
   midrule();
   tar_FCM_row("Context size (k)", 'k');
   bool hasSketch = false;
-  for (const auto& e : par->tarMs) {
+  for (const auto& e : par.tarMs) {
     if (e.cont == Container::sketch_8) {
       hasSketch = true;
       break;
@@ -495,9 +495,9 @@ void info::show_tar_FCM(std::unique_ptr<Param>& par) const {
   botrule();  // cerr << '\n';
 }
 
-void info::show_tar_STMM(std::unique_ptr<Param>& par) const {
+void info::show_tar_STMM(const Param& par) const {
   bool show_tstmm = false;
-  for (const auto& model : par->tarMs) {
+  for (const auto& model : par.tarMs) {
     if (model.child) {
       show_tstmm = true;
       break;
@@ -510,7 +510,7 @@ void info::show_tar_STMM(std::unique_ptr<Param>& par) const {
   auto tar_STMM_row = [&](std::string lbl, char c) {
     label(lbl);
     if (c != 'h') {
-      info_STMM(par->tarMs, c);
+      info_STMM(par.tarMs, c);
     }
     std::cerr << '\n';
   };
@@ -525,8 +525,8 @@ void info::show_tar_STMM(std::unique_ptr<Param>& par) const {
   botrule();  // cerr << '\n';
 }
 
-void info::show_filter(std::unique_ptr<Param>& par) const {
-  if (par->compress) {
+void info::show_filter(const Param& par) const {
+  if (par.compress) {
     return;
   }
 
@@ -542,19 +542,19 @@ void info::show_filter(std::unique_ptr<Param>& par) const {
   filter_row(bold("Filter & Segment"), 'h');
   midrule();
   filter_row("Window function", 'f');
-  if (par->manFilterScale) {
+  if (par.manFilterScale) {
     filter_row("Filter scale", 's');
   }
-  if (!par->manFilterScale) {
+  if (!par.manFilterScale) {
     filter_row("Window size", 'w');
   }
-  if (par->manThresh) {
+  if (par.manThresh) {
     filter_row("Threshold", 't');
   }
   botrule();  // cerr << '\n';
 }
 
-void info::show_file(std::unique_ptr<Param>& par) const {
+void info::show_file(const Param& par) const {
   auto file_row = [&](std::string lbl, std::string s1, std::string s2) {
     label(lbl);
     if (s1.size() == 1) {
@@ -648,40 +648,40 @@ void info::info_STMM(std::vector<MMPar> const& Ms, char c) const {
   }
 }
 
-void info::info_filter(std::unique_ptr<Param>& par, char c) const {
+void info::info_filter(const Param& par, char c) const {
   std::cerr << std::setw(colWidth) << std::left;
   switch (c) {
     case 'f':
-      std::cerr << par->print_win_type();
+      std::cerr << par.print_win_type();
       break;
     case 's':
-      std::cerr << par->print_filter_scale();
+      std::cerr << par.print_filter_scale();
       break;
     case 'w':
-      std::cerr << par->filt_size;
+      std::cerr << par.filt_size;
       break;
     case 't':
-      std::cerr << par->thresh;
+      std::cerr << par.thresh;
       break;
     default:
       break;
   }
 }
 
-void info::info_file(std::unique_ptr<Param>& par, char c) const {
+void info::info_file(const Param& par, char c) const {
   std::cerr << std::setw(2 * colWidth) << std::left;
   switch (c) {
     case '1':
-      std::cerr << file_size(par->ref);
+      std::cerr << file_size(par.ref);
       break;
     case 'r':
-      std::cerr << par->refName;
+      std::cerr << par.refName;
       break;
     case '2':
-      std::cerr << file_size(par->tar);
+      std::cerr << file_size(par.tar);
       break;
     case 't':
-      std::cerr << par->tarName;
+      std::cerr << par.tarName;
       break;
     default:
       break;
