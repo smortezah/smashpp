@@ -181,6 +181,37 @@ if(BUILD_TESTING)
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
 
   add_test(
+      NAME smashpp-invalid-level-number
+      COMMAND ${CMAKE_COMMAND}
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
+              -DARG_0=-l
+              -DARG_1=abc
+              "-DEXPECTED_TEXT=level must be an integer"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+
+  add_test(
+      NAME smashpp-invalid-threshold-number
+      COMMAND ${CMAKE_COMMAND}
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
+              -DARG_0=-th
+              -DARG_1=nan
+              "-DEXPECTED_TEXT=threshold must be a finite number"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+
+  add_test(
+      NAME smashpp-viz-invalid-opacity-number
+      COMMAND ${CMAKE_COMMAND}
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
+              -DARG_0=viz
+              -DARG_1=-p
+              -DARG_2=nan
+              "-DEXPECTED_TEXT=opacity must be a finite number"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+
+  add_test(
       NAME smashpp-memory-budget
       COMMAND ${CMAKE_COMMAND}
               "-DEXECUTABLE=$<TARGET_FILE:smashpp>"

@@ -11,7 +11,9 @@
 #include <fstream>
 #include <limits>
 #include <memory>
+#include <string_view>
 #include <system_error>
+#include <type_traits>
 #include <vector>
 
 #include "check.hpp"
@@ -23,6 +25,62 @@
 #include "memory.hpp"
 #include "print.hpp"
 using namespace smashpp;
+
+namespace {
+auto strip_leading_plus(std::string_view value) -> std::string_view {
+  if (value.size() > 1 && value.front() == '+') {
+    value.remove_prefix(1);
+  }
+  return value;
+}
+
+template <typename Int>
+auto parse_integral(std::string_view value, std::string_view label) -> Int {
+  static_assert(std::is_integral_v<Int>);
+
+  Int parsed{0};
+  const auto input = strip_leading_plus(value);
+  const auto* first = input.data();
+  const auto* last = first + input.size();
+  const auto [ptr, ec] = std::from_chars(first, last, parsed);
+
+  if (input.empty() || ec == std::errc::invalid_argument || ptr != last) {
+    error(std::format("{} must be an integer.", label));
+  }
+  if (ec == std::errc::result_out_of_range) {
+    error(std::format("{} is out of range.", label));
+  }
+
+  return parsed;
+}
+
+template <typename Int>
+auto parse_integral(std::string_view value, std::string_view label, Int min, Int max) -> Int {
+  const auto parsed = parse_integral<Int>(value, label);
+  if (parsed < min || parsed > max) {
+    error(std::format("{} must be in range [{},{}].", label, min, max));
+  }
+  return parsed;
+}
+
+template <typename Float>
+auto parse_floating(std::string_view value, std::string_view label) -> Float {
+  static_assert(std::is_floating_point_v<Float>);
+
+  Float parsed{0};
+  const auto input = strip_leading_plus(value);
+  const auto* first = input.data();
+  const auto* last = first + input.size();
+  const auto [ptr, ec] = std::from_chars(first, last, parsed);
+
+  if (input.empty() || ec == std::errc::invalid_argument || ptr != last ||
+      ec == std::errc::result_out_of_range || !std::isfinite(parsed)) {
+    error(std::format("{} must be a finite number.", label));
+  }
+
+  return parsed;
+}
+}  // namespace
 
 void Param::parse(int argc, char**& argv) {
   if (argc < 2) {
@@ -88,16 +146,19 @@ void Param::parse(int argc, char**& argv) {
       tarType = file_type(tar);
     } else if (*i == "-l" || *i == "--level") {
       man_level = true;
-      level = static_cast<uint8_t>(std::stoi(require_value(i, "level", "-l <INT>")));
-      auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LVL, MAX_LVL, LVL, "Level", Interval::closed, "default", Problem::warning);
-      range->check(level);
+      auto parsed_level = parse_integral<int>(require_value(i, "level", "-l <INT>"), "level");
+      auto range = std::make_unique<ValRange<int>>(MIN_LVL, MAX_LVL, LVL, "Level", Interval::closed,
+                                                   "default", Problem::warning);
+      range->check(parsed_level);
+      level = static_cast<uint8_t>(parsed_level);
     } else if (*i == "-m" || *i == "--min-segment-size") {
-      segSize = std::stoul(require_value(i, "minimum segment size", "-m <INT>"));
+      auto parsed_seg_size = parse_integral<uint64_t>(
+          require_value(i, "minimum segment size", "-m <INT>"), "minimum segment size");
       auto range =
-          std::make_unique<ValRange<uint32_t>>(MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size",
+          std::make_unique<ValRange<uint64_t>>(MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size",
                                                Interval::closed, "default", Problem::warning);
-      range->check(segSize);
+      range->check(parsed_seg_size);
+      segSize = static_cast<uint32_t>(parsed_seg_size);
     } else if (*i == "-rm" || *i == "--reference-model") {
       man_rm = true;
       rModelsPars = require_value(i, "reference model parameters", "-rm <STRING>");
@@ -125,13 +186,15 @@ void Param::parse(int argc, char**& argv) {
       }
     } else if (*i == "-f" || *i == "--filter-size") {
       manWSize = true;
-      filt_size = static_cast<uint32_t>(std::stoi(require_value(i, "filter size", "-f <INT>")));
-      auto range = std::make_unique<ValRange<uint32_t>>(
+      auto parsed_filter_size =
+          parse_integral<uint64_t>(require_value(i, "filter size", "-f <INT>"), "filter size");
+      auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_WS, MAX_WS, WS, "Filter size", Interval::closed, "default", Problem::warning);
-      range->check(filt_size);
+      range->check(parsed_filter_size);
+      filt_size = static_cast<uint32_t>(parsed_filter_size);
     } else if (*i == "-th" || *i == "--threshold") {
       manThresh = true;
-      thresh = std::stof(require_value(i, "threshold", "-th <FLOAT>"));
+      thresh = parse_floating<float>(require_value(i, "threshold", "-th <FLOAT>"), "threshold");
       auto range =
           std::make_unique<ValRange<float>>(MIN_THRSH, MAX_THRSH, THRSH, "Threshold",
                                             Interval::open_closed, "default", Problem::warning);
@@ -148,24 +211,26 @@ void Param::parse(int argc, char**& argv) {
                                                Problem::warning, win_type(cmd), is_win_type(cmd));
       set->check(filt_type);
     } else if (*i == "-e" || *i == "--entropy-N") {
-      entropyN =
-          static_cast<prc_t>(std::stod(require_value(i, "entropy of N bases", "-e <FLOAT>")));
+      entropyN = parse_floating<prc_t>(require_value(i, "entropy of N bases", "-e <FLOAT>"),
+                                       "entropy of N bases");
       auto range =
           std::make_unique<ValRange<prc_t>>(MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases",
                                             Interval::closed, "default", Problem::warning);
       range->check(entropyN);
     } else if (*i == "-n" || *i == "--num-threads") {
-      nthr = static_cast<uint8_t>(std::stoi(require_value(i, "number of threads", "-n <INT>")));
-      auto range =
-          std::make_unique<ValRange<uint8_t>>(MIN_THRD, MAX_THRD, THRD, "Number of threads",
-                                              Interval::closed, "default", Problem::warning);
-      range->check(nthr);
+      auto parsed_nthr = parse_integral<int>(require_value(i, "number of threads", "-n <INT>"),
+                                             "number of threads");
+      auto range = std::make_unique<ValRange<int>>(MIN_THRD, MAX_THRD, THRD, "Number of threads",
+                                                   Interval::closed, "default", Problem::warning);
+      range->check(parsed_nthr);
+      nthr = static_cast<uint8_t>(parsed_nthr);
     } else if (*i == "-mem" || *i == "--max-memory") {
       manMaxMemory = true;
       maxMemory = parse_memory_size(require_value(i, "memory budget", "-mem <SIZE>"));
     } else if (*i == "-d" || *i == "--sampling-step") {
       manSampleStep = true;
-      sampleStep = std::stoull(require_value(i, "sampling step", "-d <INT>"));
+      sampleStep =
+          parse_integral<uint64_t>(require_value(i, "sampling step", "-d <INT>"), "sampling step");
       if (sampleStep == 0) {
         sampleStep = 1ull;
       }
@@ -182,33 +247,37 @@ void Param::parse(int argc, char**& argv) {
                                                        filter_scale(cmd), is_filter_scale(cmd));
       set->check(filterScale);
     } else if (*i == "-rb" || *i == "--reference-begin-guard") {
-      ref_guard->beg = static_cast<int16_t>(
-          std::stoi(require_value(i, "reference beginning guard", "-rb <INT>")));
-      auto range = std::make_unique<ValRange<int16_t>>(
+      auto parsed_guard = parse_integral<int>(
+          require_value(i, "reference beginning guard", "-rb <INT>"), "reference beginning guard");
+      auto range = std::make_unique<ValRange<int>>(
           std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0,
           "Reference beginning guard", Interval::closed, "default", Problem::warning);
-      range->check(ref_guard->beg);
+      range->check(parsed_guard);
+      ref_guard->beg = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-re" || *i == "--reference-end-guard") {
-      ref_guard->end =
-          static_cast<int16_t>(std::stoi(require_value(i, "reference ending guard", "-re <INT>")));
-      auto range = std::make_unique<ValRange<int16_t>>(
+      auto parsed_guard = parse_integral<int>(
+          require_value(i, "reference ending guard", "-re <INT>"), "reference ending guard");
+      auto range = std::make_unique<ValRange<int>>(
           std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0,
           "Reference ending guard", Interval::closed, "default", Problem::warning);
-      range->check(ref_guard->end);
+      range->check(parsed_guard);
+      ref_guard->end = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-tb" || *i == "--target-begin-guard") {
-      tar_guard->beg =
-          static_cast<int16_t>(std::stoi(require_value(i, "target beginning guard", "-tb <INT>")));
-      auto range = std::make_unique<ValRange<int16_t>>(
+      auto parsed_guard = parse_integral<int>(
+          require_value(i, "target beginning guard", "-tb <INT>"), "target beginning guard");
+      auto range = std::make_unique<ValRange<int>>(
           std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0,
           "Target beginning guard", Interval::closed, "default", Problem::warning);
-      range->check(tar_guard->beg);
+      range->check(parsed_guard);
+      tar_guard->beg = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-te" || *i == "--target-end-guard") {
-      tar_guard->end =
-          static_cast<int16_t>(std::stoi(require_value(i, "target ending guard", "-te <INT>")));
-      auto range = std::make_unique<ValRange<int16_t>>(
+      auto parsed_guard = parse_integral<int>(require_value(i, "target ending guard", "-te <INT>"),
+                                              "target ending guard");
+      auto range = std::make_unique<ValRange<int>>(
           std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 0,
           "Target ending guard", Interval::closed, "default", Problem::warning);
-      range->check(tar_guard->end);
+      range->check(parsed_guard);
+      tar_guard->end = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-ar" || *i == "--asymmetric-regions") {
       asym_region = true;
     } else if (*i == "-dp") {  // hidden option :)
@@ -299,34 +368,10 @@ template <typename Iter>
 void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
   const auto parse_integer = [](const std::string& value, const std::string& label, int64_t min,
                                 int64_t max) {
-    int64_t parsed{0};
-    const auto* first = value.data();
-    const auto* last = first + value.size();
-    const auto [ptr, ec] = std::from_chars(first, last, parsed);
-
-    if (value.empty() || ec == std::errc::invalid_argument || ptr != last) {
-      error(std::format("{} must be an integer.", label));
-    }
-    if (ec == std::errc::result_out_of_range || parsed < min || parsed > max) {
-      error(std::format("{} must be in range [{},{}].", label, min, max));
-    }
-
-    return parsed;
+    return parse_integral<int64_t>(value, label, min, max);
   };
   const auto parse_float = [](const std::string& value, const std::string& label) {
-    prc_t parsed{0.0};
-    size_t pos{0};
-    try {
-      parsed = std::stod(value, &pos);
-    } catch (const std::exception&) {
-      error(std::format("{} must be a finite number.", label));
-    }
-
-    if (pos != value.size() || !std::isfinite(parsed)) {
-      error(std::format("{} must be a finite number.", label));
-    }
-
-    return parsed;
+    return parse_floating<prc_t>(value, label);
   };
   const auto parse_context_size = [&](const std::string& value) {
     const auto parsed = parse_integer(value, "model context size", 0, 31);
@@ -676,54 +721,65 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (*i == "-tn" || *i == "--target-name") {
       tarName = require_value(i, "target name", "-tn <STRING>");
     } else if (*i == "-p" || *i == "--opacity") {
-      opacity = std::stof(require_value(i, "opacity", "-p <FLOAT>"));
+      opacity = parse_floating<float>(require_value(i, "opacity", "-p <FLOAT>"), "opacity");
       auto range = std::make_unique<ValRange<float>>(MIN_OPAC, MAX_OPAC, OPAC, "Opacity",
                                                      Interval::closed, "default", Problem::warning);
       range->check(opacity);
     } else if (*i == "-l" || *i == "--link") {
-      link = static_cast<uint8_t>(std::stoul(require_value(i, "link", "-l <INT>")));
-      auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LINK, MAX_LINK, LINK, "Link", Interval::closed, "default", Problem::warning);
-      range->check(link);
+      auto parsed_link = parse_integral<int>(require_value(i, "link", "-l <INT>"), "link");
+      auto range = std::make_unique<ValRange<int>>(MIN_LINK, MAX_LINK, LINK, "Link",
+                                                   Interval::closed, "default", Problem::warning);
+      range->check(parsed_link);
+      link = static_cast<uint8_t>(parsed_link);
     } else if (*i == "-m" || *i == "--min-block-size") {
-      min = static_cast<uint32_t>(std::stoul(require_value(i, "minimum block size", "-m <INT>")));
-      auto range = std::make_unique<ValRange<uint32_t>>(
+      auto parsed_min = parse_integral<uint64_t>(require_value(i, "minimum block size", "-m <INT>"),
+                                                 "minimum block size");
+      auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_MINP, MAX_MINP, MINP, "Min", Interval::closed, "default", Problem::warning);
-      range->check(min);
+      range->check(parsed_min);
+      min = static_cast<uint32_t>(parsed_min);
     } else if (*i == "-tc" || *i == "--total-colors") {
       man_tot_color = true;
-      auto val = std::stoi(require_value(i, "total number of colors", "-tc <INT>"));
+      auto val = parse_integral<int>(require_value(i, "total number of colors", "-tc <INT>"),
+                                     "total number of colors");
       keep_in_range(1, val, 255);
       tot_color = static_cast<uint8_t>(val);
     } else if (*i == "-rt" || *i == "--reference-tick") {
-      refTick = std::stoull(require_value(i, "reference tick", "-rt <INT>"));
+      refTick = parse_integral<uint64_t>(require_value(i, "reference tick", "-rt <INT>"),
+                                         "reference tick");
       auto range =
           std::make_unique<ValRange<uint64_t>>(MIN_TICK, MAX_TICK, TICK, "Tick hop for reference",
                                                Interval::closed, "default", Problem::warning);
       range->check(refTick);
     } else if (*i == "-tt" || *i == "--target-tick") {
-      tarTick = std::stoull(require_value(i, "target tick", "-tt <INT>"));
+      tarTick =
+          parse_integral<uint64_t>(require_value(i, "target tick", "-tt <INT>"), "target tick");
       auto range =
           std::make_unique<ValRange<uint64_t>>(MIN_TICK, MAX_TICK, TICK, "Tick hop for target",
                                                Interval::closed, "default", Problem::warning);
       range->check(tarTick);
     } else if (*i == "-th" || *i == "--tick-human-readable") {
-      tickHumanRead = (std::stoi(require_value(i, "tick human readable", "-th <INT>")) != 0);
+      tickHumanRead = (parse_integral<int>(require_value(i, "tick human readable", "-th <INT>"),
+                                           "tick human readable") != 0);
     } else if (*i == "-c" || *i == "--color") {
-      colorMode = static_cast<uint8_t>(std::stoi(require_value(i, "color mode", "-c <INT>")));
-      auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_COLOR, MAX_COLOR, COLOR, "Color", Interval::closed, "default", Problem::warning);
-      range->check(colorMode);
+      auto parsed_color =
+          parse_integral<int>(require_value(i, "color mode", "-c <INT>"), "color mode");
+      auto range = std::make_unique<ValRange<int>>(MIN_COLOR, MAX_COLOR, COLOR, "Color",
+                                                   Interval::closed, "default", Problem::warning);
+      range->check(parsed_color);
+      colorMode = static_cast<uint8_t>(parsed_color);
     } else if (*i == "-w" || *i == "--width") {
-      width = static_cast<uint32_t>(std::stoul(require_value(i, "width", "-w <INT>")));
-      auto range = std::make_unique<ValRange<uint32_t>>(
+      auto parsed_width = parse_integral<uint64_t>(require_value(i, "width", "-w <INT>"), "width");
+      auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_WDTH, MAX_WDTH, WDTH, "Width", Interval::closed, "default", Problem::warning);
-      range->check(width);
+      range->check(parsed_width);
+      width = static_cast<uint32_t>(parsed_width);
     } else if (*i == "-s" || *i == "--space") {
-      space = static_cast<uint32_t>(std::stoul(require_value(i, "space", "-s <INT>")));
-      auto range = std::make_unique<ValRange<uint32_t>>(
+      auto parsed_space = parse_integral<uint64_t>(require_value(i, "space", "-s <INT>"), "space");
+      auto range = std::make_unique<ValRange<uint64_t>>(
           MIN_SPC, MAX_SPC, SPC, "Space", Interval::closed, "default", Problem::warning);
-      range->check(space);
+      range->check(parsed_space);
+      space = static_cast<uint32_t>(parsed_space);
     } else if (*i == "-nrr" || *i == "--no-relative-redundancy") {
       showRelRedun = false;
     } else if (*i == "-nr" || *i == "--no-redundancy") {
