@@ -113,15 +113,12 @@ static auto base_code(char c) -> uint8_t {
     case 'C':
     case 'c':
       return 1;
-      break;
     case 'G':
     case 'g':
       return 2;
-      break;
     case 'T':
     case 't':
       return 3;
-      break;
   }
   return 0;
 }

@@ -113,28 +113,20 @@ inline static std::string conv_to_string(FilterType val) {
   switch (val) {
     case FilterType::rectangular:
       return "0|rectangular";
-      break;
     case FilterType::hamming:
       return "1|hamming";
-      break;
     case FilterType::hann:
       return "2|hann";
-      break;
     case FilterType::blackman:
       return "3|blackman";
-      break;
     case FilterType::triangular:
       return "4|triangular";
-      break;
     case FilterType::welch:
       return "5|welch";
-      break;
     case FilterType::sine:
       return "6|sine";
-      break;
     case FilterType::nuttall:
       return "7|nuttall";
-      break;
     default:
       return "2|hann";
   }
@@ -144,13 +136,10 @@ inline static std::string conv_to_string(FilterScale val) {
   switch (val) {
     case FilterScale::s:
       return "S|small";
-      break;
     case FilterScale::m:
       return "M|medium";
-      break;
     case FilterScale::l:
       return "L|large";
-      break;
     default:
       return "L|large";
   }
