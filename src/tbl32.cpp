@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <fstream>
+#include <limits>
 
 #include "exception.hpp"
 using namespace smashpp;
@@ -19,18 +20,22 @@ Table32::Table32(uint8_t k_) : k(k_), nRenorm(0), tot(0) {
 }
 
 void Table32::update(Table32::ctx_t ctx) {
-  if (tbl[ctx] == 0xFFFFFFFF) {  // 2^32-1
+  if (tbl[ctx] == std::numeric_limits<val_t>::max()) {
     renormalize();
   }
   ++tbl[ctx];
-  ++tot;
+  if (tot != std::numeric_limits<uint64_t>::max()) {
+    ++tot;
+  }
 }
 
 inline void Table32::renormalize() {
   for (auto& c : tbl) {
     c >>= 1;
   }
-  ++nRenorm;
+  if (nRenorm != std::numeric_limits<uint32_t>::max()) {
+    ++nRenorm;
+  }
 }
 
 auto Table32::query(Table32::ctx_t ctx) const -> Table32::val_t { return tbl[ctx]; }

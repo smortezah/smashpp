@@ -6,9 +6,18 @@
 #include <algorithm>
 #include <array>
 #include <fstream>
+#include <limits>
 
 #include "exception.hpp"
 using namespace smashpp;
+
+namespace {
+static constexpr uint8_t LOG_COUNTER_MAX{32};
+
+auto log_count(uint8_t counter) -> uint32_t {
+  return static_cast<uint32_t>(POW2minus1[std::min<uint8_t>(counter, LOG_COUNTER_MAX)]);
+}
+}  // namespace
 
 LogTable8::LogTable8(uint8_t k_) : k(k_), tot(0) {
   try {  // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
@@ -19,21 +28,28 @@ LogTable8::LogTable8(uint8_t k_) : k(k_), tot(0) {
 }
 
 void LogTable8::update(LogTable8::ctx_t ctx) {
-  if ((tot++ & POW2minus1[tbl[ctx]]) == 0) {  // x % 2^n = x & (2^n-1)
-    ++tbl[ctx];
+  auto& counter = tbl[ctx];
+  const auto event_index = tot;
+  if (tot != std::numeric_limits<uint64_t>::max()) {
+    ++tot;
+  }
+
+  if (counter >= LOG_COUNTER_MAX) {
+    return;
+  }
+  if ((event_index & POW2minus1[counter]) == 0) {  // x % 2^n = x & (2^n-1)
+    ++counter;
   }
 }
 
 auto LogTable8::query(LogTable8::ctx_t ctx) const -> LogTable8::val_t {
-  return POW2minus1[tbl[ctx]];  // POW2[tbl[ctx]] - 1
+  return log_count(tbl[ctx]);  // POW2[tbl[ctx]] - 1
 }
 
 auto LogTable8::query_counters(LogTable8::ctx_t l) const -> std::array<LogTable8::val_t, CARDIN> {
   auto row_address = &tbl[l];
-  return {static_cast<LogTable8::val_t>((1ul << *row_address) - 1ul),
-          static_cast<LogTable8::val_t>((1ul << *(row_address + 1ul)) - 1ul),
-          static_cast<LogTable8::val_t>((1ul << *(row_address + 2ul)) - 1ul),
-          static_cast<LogTable8::val_t>((1ul << *(row_address + 3ul)) - 1ul)};
+  return {log_count(*row_address), log_count(*(row_address + 1)), log_count(*(row_address + 2)),
+          log_count(*(row_address + 3))};
 }
 
 #ifdef DEBUG

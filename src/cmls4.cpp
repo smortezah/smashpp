@@ -4,7 +4,9 @@
 #include "cmls4.hpp"
 
 #include <array>
+#include <bit>
 #include <fstream>
+#include <limits>
 #include <random>
 
 #include "exception.hpp"
@@ -13,12 +15,24 @@ using namespace smashpp;
 // W=[e/eps].      0 < eps:   error factor      < 1
 // D=[ln 1/delta]. 0 < delta: error probability < 1
 CMLS4::CMLS4(uint64_t w_, uint8_t d_) : w(w_), d(d_), tot(0) {
+  if (w < 2) {
+    error("sketch width must be at least 2.");
+  }
+  if (d == 0) {
+    error("sketch depth must be greater than 0.");
+  }
+  if (w > (std::numeric_limits<uint64_t>::max() - 1ull) / d) {
+    error("sketch size is too large.");
+  }
+
+  const auto cells = d * w;
   try {
-    sk.resize((d * w + 1) >> 1u);
+    sk.resize((cells + 1ull) >> 1u);
   } catch (std::bad_alloc& b) {
     error("failed memory allocation.");
   }
-  uhashShift = static_cast<uint8_t>(G - std::floor(std::log2(w)));
+  const auto width_power = static_cast<uint8_t>(std::bit_width(w) - 1u);
+  uhashShift = static_cast<uint8_t>(G - width_power);
   ab.resize(d << 1u);
   set_a_b();
 }
@@ -36,7 +50,11 @@ void CMLS4::set_a_b() {
 
 void CMLS4::update(CMLS4::ctx_t ctx) {
   const auto c{min_log_ctr(ctx)};
-  if (!(tot++ & POW2minus1[c])) {  // Increase decision.  x % 2^n = x & (2^n-1)
+  const auto event_index = tot;
+  if (tot != std::numeric_limits<uint64_t>::max()) {
+    ++tot;
+  }
+  if (!(event_index & POW2minus1[c])) {  // Increase decision.  x % 2^n = x & (2^n-1)
     for (uint8_t i = d; i--;) {
       const auto idx = hash(i, ctx);
       if (read_cell(idx) == c) {  // Conservative update
@@ -82,7 +100,7 @@ uint64_t CMLS4::get_total() const { return tot; }
 uint64_t CMLS4::count_empty() const {
   uint64_t n{0};
   for (auto i = w * d; i--;) {
-    if (readCell(i) == 0) {
+    if (read_cell(i) == 0) {
       ++n;
     }
   }
@@ -92,8 +110,8 @@ uint64_t CMLS4::count_empty() const {
 uint8_t CMLS4::max_sk_val() const {
   uint8_t c{0};
   for (auto i = w * d; i--;) {
-    if (readCell(i) > c) {
-      c = readCell(i);
+    if (read_cell(i) > c) {
+      c = read_cell(i);
     }
   }
   return c;
@@ -105,7 +123,7 @@ void CMLS4::print() const {
     std::cerr << "d_" << static_cast<uint16_t>(i) << ":  ";
     for (uint64_t j = 0; j != w; ++j) {
       std::cerr.width(cell_width);
-      std::cerr << std::left << static_cast<uint16_t>(readCell(i * w + j));
+      std::cerr << std::left << static_cast<uint16_t>(read_cell(i * w + j));
     }
     std::cerr << '\n';
   }

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <fstream>
+#include <limits>
 
 #include "exception.hpp"
 using namespace smashpp;
@@ -18,7 +19,11 @@ Table64::Table64(uint8_t k_) : k(k_) {
   }
 }
 
-void Table64::update(Table64::ctx_t ctx) { ++tbl[ctx]; }
+void Table64::update(Table64::ctx_t ctx) {
+  if (tbl[ctx] != std::numeric_limits<val_t>::max()) {
+    ++tbl[ctx];
+  }
+}
 
 auto Table64::query(Table64::ctx_t ctx) const -> Table64::val_t { return tbl[ctx]; }
 
