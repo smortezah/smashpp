@@ -65,6 +65,8 @@ function(run_benchmark_case label)
 endfunction()
 
 run_benchmark_case(default -n 1 -nr -m 1 -th 20)
+run_benchmark_case(serial-multi -n 1 -nr -m 1 -th 20 -rm "6,0,0.01,0.95:8,0,0.02,0.95" -tm
+                   "6,0,0.01,0.95:8,0,0.02,0.95")
 run_benchmark_case(parallel -n 4 -nr -m 1 -th 20)
 run_benchmark_case(sampled-filter -n 4 -nr -d 4 -f 25 -m 1 -th 20)
 run_benchmark_case(sampled-multi -n 4 -nr -d 4 -f 25 -m 1 -th 20 -rm
