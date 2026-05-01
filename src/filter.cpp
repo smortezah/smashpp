@@ -18,7 +18,7 @@ using namespace smashpp;
 namespace {
 class ProfileReader {
  public:
-  explicit ProfileReader(const std::vector<prc_t>& profile) : profile_(profile) {}
+  explicit ProfileReader(std::span<const prc_t> profile) : profile_(profile) {}
 
   auto read(float& value) -> bool {
     if (pos_ >= profile_.size()) {
@@ -30,7 +30,7 @@ class ProfileReader {
   }
 
  private:
-  const std::vector<prc_t>& profile_;
+  std::span<const prc_t> profile_;
   size_t pos_{0};
 };
 
@@ -175,7 +175,7 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
   botrule();
 }
 
-void Filter::smooth_seg(std::vector<PosRow>& pos_out, const std::vector<prc_t>& profile,
+void Filter::smooth_seg(std::vector<PosRow>& pos_out, std::span<const prc_t> profile,
                         std::unique_ptr<Param>& par, uint8_t round, uint64_t& current_pos_row) {
   if (!par->quiet && (par->verbose || round == 1)) {
     par->message = (round == 3) ? "    " : "";
@@ -219,7 +219,7 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out, const std::vector<prc_t>& 
   }
 }
 
-void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out, const std::vector<prc_t>& profile,
+void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out, std::span<const prc_t> profile,
                              std::unique_ptr<Param>& par, uint8_t round) {
   const auto filter_name{gen_name(par->ID, par->ref, par->tar, Format::filter)};
   std::ofstream filter_file;
@@ -428,7 +428,7 @@ inline void Filter::make_nuttall(uint32_t filter_size) {
 }
 
 template <bool SaveFilter>
-inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, const std::vector<prc_t>& profile,
+inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, std::span<const prc_t> profile,
                                     std::unique_ptr<Param>& par, uint8_t round) {
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
   std::ofstream filF;
@@ -512,8 +512,8 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, const std::vec
 
 template <bool SaveFilter>
 inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
-                                        const std::vector<prc_t>& profile,
-                                        std::unique_ptr<Param>& par, uint8_t round) {
+                                        std::span<const prc_t> profile, std::unique_ptr<Param>& par,
+                                        uint8_t round) {
   const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
   std::ofstream filF;
   if constexpr (SaveFilter) {
