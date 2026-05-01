@@ -208,6 +208,14 @@ cmake --build build --target smashpp-benchmark
 The benchmark generates deterministic inputs and writes timing rows to `build/benchmarks/summary.csv`.
 Use the same compiler, build type, and machine when comparing results.
 
+To create portable release archives from the install rules, run:
+
+```sh
+cmake --build build --target package
+```
+
+The archives are written to `build/packages/`.
+
 ## Cite
 
 If you find Smash++ useful in your research, please acknowledge our work by citing:
