@@ -16,6 +16,7 @@
 #include "exception.hpp"
 #include "file.hpp"
 #include "mdlpar.hpp"
+#include "memory.hpp"
 #include "print.hpp"
 using namespace smashpp;
 
@@ -155,6 +156,9 @@ void Param::parse(int argc, char**& argv) {
           std::make_unique<ValRange<uint8_t>>(MIN_THRD, MAX_THRD, THRD, "Number of threads",
                                               Interval::closed, "default", Problem::warning);
       range->check(nthr);
+    } else if (*i == "-mem" || *i == "--max-memory") {
+      manMaxMemory = true;
+      maxMemory = parse_memory_size(require_value(i, "memory budget", "-mem <SIZE>"));
     } else if (*i == "-d" || *i == "--sampling-step") {
       manSampleStep = true;
       sampleStep = std::stoull(require_value(i, "sampling step", "-d <INT>"));
@@ -286,6 +290,21 @@ void Param::set_auto_model_par() {
 
 template <typename Iter>
 void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
+  const auto parse_context_size = [](const std::string& value) {
+    const auto context = std::stoi(value);
+    if (context < 0 || context > 31) {
+      error("model context size must be in range [0,31].");
+    }
+    return static_cast<uint8_t>(context);
+  };
+  const auto parse_width = [](const std::string& value) {
+    const auto width = std::stoull(value);
+    if (width > 63) {
+      error("sketch width exponent must be in range [0,63].");
+    }
+    return pow2(width);
+  };
+
   std::vector<std::string> mdls;
   split(begin, end, ':', mdls);
   for (const auto& e : mdls) {
@@ -294,21 +313,21 @@ void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
     split(std::begin(e), std::end(e), '/', m_tm);
     std::vector<std::string> m;
     split(std::begin(m_tm[0]), std::end(m_tm[0]), ',', m);
+    const auto context = parse_context_size(m[0]);
 
     if (m.size() == 4) {
-      if (std::stoi(m[0]) > K_MAX_LGTBL8) {
-        Ms.push_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])), W, D,
-                           static_cast<uint8_t>(std::stoi(m[1])), std::stof(m[2]),
+      if (context > K_MAX_LGTBL8) {
+        Ms.push_back(MMPar(context, W, D, static_cast<uint8_t>(std::stoi(m[1])), std::stof(m[2]),
                            std::stof(m[3])));
       } else {
-        Ms.push_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])),
-                           static_cast<uint8_t>(std::stoi(m[1])), std::stof(m[2]),
+        Ms.push_back(MMPar(context, static_cast<uint8_t>(std::stoi(m[1])), std::stof(m[2]),
                            std::stof(m[3])));
       }
     } else if (m.size() == 6) {
-      Ms.push_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])), pow2(std::stoull(m[1])),
-                         static_cast<uint8_t>(std::stoi(m[2])),
+      Ms.push_back(MMPar(context, parse_width(m[1]), static_cast<uint8_t>(std::stoi(m[2])),
                          static_cast<uint8_t>(std::stoi(m[3])), std::stof(m[4]), std::stof(m[5])));
+    } else {
+      error("incorrect model parameters.");
     }
 
     // Tolerant models
@@ -316,7 +335,7 @@ void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
       std::vector<std::string> tm;
       split(std::begin(m_tm[1]), std::end(m_tm[1]), ',', tm);
       Ms.back().child = std::make_shared<STMMPar>(
-          STMMPar(static_cast<uint8_t>(std::stoi(m[0])), static_cast<uint8_t>(std::stoi(tm[0])),
+          STMMPar(context, static_cast<uint8_t>(std::stoi(tm[0])),
                   static_cast<uint8_t>(std::stoi(tm[1])), std::stof(tm[2]), std::stof(tm[3])));
     }
   }
@@ -365,6 +384,10 @@ void Param::help() const {
       << '\n'
       << tab1 << bold("-n") << ", " << bold("--num-threads") << " <INT>\n"
       << tab2 << std::format("number of threads: {} to {}. Default: {}\n", MIN_THRD, MAX_THRD, THRD)
+      << '\n'
+      << tab1 << bold("-mem") << ", " << bold("--max-memory") << " <SIZE>\n"
+      << tab2 << "maximum estimated memory use. Supports B/K/M/G/T suffixes.\n"
+      << tab2 << "Default: 80% of physical memory when detectable; 0 disables the check\n"
       << '\n'
       << tab1 << bold("-f") << ", " << bold("--filter-size") << " <INT>\n"
       << tab2 << std::format("filter size: {} to {}. Default: {}\n", MIN_WS, MAX_WS, WS) << '\n'
@@ -492,28 +515,20 @@ std::string Param::print_win_type() const {
   switch (filt_type) {
     case FilterType::rectangular:
       return "Rectangular";
-      break;
     case FilterType::hamming:
       return "Hamming";
-      break;
     case FilterType::hann:
       return "Hann";
-      break;
     case FilterType::blackman:
       return "Blackman";
-      break;
     case FilterType::triangular:
       return "Triangular";
-      break;
     case FilterType::welch:
       return "Welch";
-      break;
     case FilterType::sine:
       return "Sine";
-      break;
     case FilterType::nuttall:
       return "Nuttall";
-      break;
     default:
       return "Rectangular";
   }
@@ -535,13 +550,10 @@ std::string Param::print_filter_scale() const {
   switch (filterScale) {
     case FilterScale::s:
       return "Small";
-      break;
     case FilterScale::m:
       return "Medium";
-      break;
     case FilterScale::l:
       return "Large";
-      break;
     default:
       return "Medium";
   }

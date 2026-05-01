@@ -62,6 +62,19 @@ static constexpr uint64_t MIN_TICK{1};
 static constexpr uint64_t MAX_TICK{0xffffffff};
 static constexpr uint64_t TICK{100};  // Major tick
 
+inline auto model_container(const MMPar& model) -> Container {
+  if (model.k > K_MAX_LGTBL8) {
+    return Container::sketch_8;
+  }
+  if (model.k > K_MAX_TBL32) {
+    return Container::log_table_8;
+  }
+  if (model.k > K_MAX_TBL64) {
+    return Container::table_32;
+  }
+  return Container::table_64;
+}
+
 inline auto clone_model_params(const std::vector<MMPar>& models) -> std::vector<MMPar> {
   std::vector<MMPar> clones;
   clones.reserve(models.size());
@@ -85,6 +98,8 @@ class Param {
   Format format;
   bool verbose;
   bool quiet;
+  bool manMaxMemory;
+  uint64_t maxMemory;
   uint8_t level;
   uint32_t segSize;
   prc_t entropyN;
@@ -126,6 +141,8 @@ class Param {
       : format(Format::position),
         verbose(false),
         quiet(false),
+        manMaxMemory(false),
+        maxMemory(0),
         level(LVL),
         segSize(SSIZE),
         entropyN(ENTR_N),
@@ -185,6 +202,8 @@ inline auto Param::clone() const -> std::unique_ptr<Param> {
   cloned->format = format;
   cloned->verbose = verbose;
   cloned->quiet = quiet;
+  cloned->manMaxMemory = manMaxMemory;
+  cloned->maxMemory = maxMemory;
   cloned->level = level;
   cloned->segSize = segSize;
   cloned->entropyN = entropyN;

@@ -18,6 +18,7 @@
 #include "fcm.hpp"
 #include "file.hpp"
 #include "filter.hpp"
+#include "memory.hpp"
 #include "naming.hpp"
 #include "output.hpp"
 #include "par.hpp"
@@ -97,6 +98,8 @@ void application::run(std::unique_ptr<Param>& par) {
 
   std::string ref_round1 = par->ref;
   std::string tar_round1 = par->tar;
+  const auto concurrent_modes = (par->nthr > 1 && !par->verbose) ? 2ull : 1ull;
+  enforce_memory_budget(*par, concurrent_modes);
 
   const auto append_rows = [](auto& out, auto& rows) {
     out.insert(std::end(out), std::make_move_iterator(std::begin(rows)),
