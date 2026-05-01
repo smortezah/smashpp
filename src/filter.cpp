@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <format>
+#include <memory>
 #include <numeric>
 
 #include "file.hpp"
@@ -34,19 +35,19 @@ class ProfileReader {
   size_t pos_{0};
 };
 
-auto make_segment(std::unique_ptr<Param>& par, uint8_t round, uint64_t total_size)
+auto make_segment(const Param& par, uint8_t round, uint64_t total_size)
     -> std::shared_ptr<Segment> {
   auto seg = std::make_shared<Segment>();
-  seg->thresh = par->thresh;
-  seg->minSize = par->segSize;
+  seg->thresh = par.thresh;
+  seg->minSize = par.segSize;
   seg->round = round;
-  seg->sample_step = par->sampleStep;
+  seg->sample_step = par.sampleStep;
   seg->totalSize = total_size;
 
   if (round == 2) {
-    seg->set_guards(par->ref_guard.beg, par->ref_guard.end);
+    seg->set_guards(par.ref_guard.beg, par.ref_guard.end);
   } else if (round == 1 || round == 3) {
-    seg->set_guards(par->tar_guard.beg, par->tar_guard.end);
+    seg->set_guards(par.tar_guard.beg, par.tar_guard.end);
   }
 
   return seg;
@@ -55,16 +56,16 @@ auto make_segment(std::unique_ptr<Param>& par, uint8_t round, uint64_t total_siz
 
 Filter::Filter() : nSegs(0) {}
 
-Filter::Filter(std::unique_ptr<Param>& par) : nSegs(0), filt_type(par->filt_type) {
+Filter::Filter(const Param& par) : nSegs(0), filt_type(par.filt_type) {
   set_filt_size(par);
-  if (!par->quiet && (par->filter || par->segment) && par->verbose) {
+  if (!par.quiet && (par.filter || par.segment) && par.verbose) {
     show_info(par);
   }
 }
 
-inline void Filter::set_filt_size(std::unique_ptr<Param>& par) {
-  if (par->manFilterScale) {
-    switch (par->filterScale) {
+inline void Filter::set_filt_size(const Param& par) {
+  if (par.manFilterScale) {
+    switch (par.filterScale) {
       case FilterScale::s:
         filt_size = 45;
         break;
@@ -76,13 +77,13 @@ inline void Filter::set_filt_size(std::unique_ptr<Param>& par) {
         break;
     }
   } else {
-    filt_size = is_odd(par->filt_size) ? par->filt_size : par->filt_size + 1;
+    filt_size = is_odd(par.filt_size) ? par.filt_size : par.filt_size + 1;
   }
 
   window.resize(filt_size);
 }
 
-inline void Filter::show_info(std::unique_ptr<Param>& par) const {
+inline void Filter::show_info(const Param& par) const {
   constexpr uint8_t lblWidth = 19;
   constexpr uint8_t colWidth = 8;
   constexpr uint8_t tblWidth = 60;  // static_cast<uint8_t>(lblWidth+Ms.size()*colWidth);
@@ -104,16 +105,16 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
     std::cerr << std::setw(colWidth) << std::left;
     switch (c) {
       case 'f':
-        std::cerr << par->print_win_type();
+        std::cerr << par.print_win_type();
         break;
       case 's':
-        std::cerr << par->print_filter_scale();
+        std::cerr << par.print_filter_scale();
         break;
       case 'w':
         std::cerr << filt_size;
         break;
       case 't':
-        std::cerr << par->thresh;
+        std::cerr << par.thresh;
         break;
       default:
         break;
@@ -124,16 +125,16 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
     std::cerr << std::setw(2 * colWidth) << std::left;
     switch (c) {
       case '1':
-        std::cerr << file_size(par->ref);
+        std::cerr << file_size(par.ref);
         break;
       case 'r':
-        std::cerr << par->refName;
+        std::cerr << par.refName;
         break;
       case '2':
-        std::cerr << file_size(par->tar);
+        std::cerr << file_size(par.tar);
         break;
       case 't':
-        std::cerr << par->tarName;
+        std::cerr << par.tarName;
         break;
       default:
         break;
@@ -146,13 +147,13 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
   midrule();
   label("Window function");
   filter_vals('f');
-  if (par->manFilterScale || !par->manWSize) {
+  if (par.manFilterScale || !par.manWSize) {
     label("Filter scale");
     filter_vals('s');
   }
   label("Window size");
   filter_vals('w');
-  if (par->manThresh) {
+  if (par.manThresh) {
     label("Threshold");
     filter_vals('t');
   }
@@ -175,11 +176,11 @@ inline void Filter::show_info(std::unique_ptr<Param>& par) const {
   botrule();
 }
 
-void Filter::smooth_seg(std::vector<PosRow>& pos_out, std::span<const prc_t> profile,
-                        std::unique_ptr<Param>& par, uint8_t round, uint64_t& current_pos_row) {
-  if (!par->quiet && (par->verbose || round == 1)) {
-    par->message = (round == 3) ? "    " : "";
-    par->message += std::format("[+] Filtering {} ", italic(par->tarName));
+void Filter::smooth_seg(std::vector<PosRow>& pos_out, std::span<const prc_t> profile, Param& par,
+                        uint8_t round, uint64_t& current_pos_row) {
+  if (!par.quiet && (par.verbose || round == 1)) {
+    par.message = (round == 3) ? "    " : "";
+    par.message += std::format("[+] Filtering {} ", italic(par.tarName));
   }
 
   if (profile.empty()) {
@@ -188,11 +189,11 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out, std::span<const prc_t> pro
 
   if (window.size() != 1) {
     if (filt_type == FilterType::rectangular) {
-      (par->saveFilter || par->saveAll) ? smooth_seg_rect<true>(pos_out, profile, par, round)
-                                        : smooth_seg_rect<false>(pos_out, profile, par, round);
+      (par.saveFilter || par.saveAll) ? smooth_seg_rect<true>(pos_out, profile, par, round)
+                                      : smooth_seg_rect<false>(pos_out, profile, par, round);
     } else {
-      (par->saveFilter || par->saveAll) ? smooth_seg_non_rect<true>(pos_out, profile, par, round)
-                                        : smooth_seg_non_rect<false>(pos_out, profile, par, round);
+      (par.saveFilter || par.saveAll) ? smooth_seg_non_rect<true>(pos_out, profile, par, round)
+                                      : smooth_seg_non_rect<false>(pos_out, profile, par, round);
     }
   } else {
     smooth_seg_win1(pos_out, profile, par, round);
@@ -200,51 +201,51 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out, std::span<const prc_t> pro
 
   for (uint64_t i = current_pos_row, j = 0; i != current_pos_row + nSegs; ++i, ++j) {
     pos_out.at(i).round = round;
-    pos_out.at(i).run_num = par->ID;
-    pos_out.at(i).ref = par->ref;
-    pos_out.at(i).tar = par->tar;
+    pos_out.at(i).run_num = par.ID;
+    pos_out.at(i).ref = par.ref;
+    pos_out.at(i).tar = par.tar;
     pos_out.at(i).seg_num = j;
   }
 
-  if (!par->saveAll && !par->saveProfile) {
-    remove((gen_name(par->ID, par->refName, par->tarName, Format::profile)).c_str());
+  if (!par.saveAll && !par.saveProfile) {
+    remove((gen_name(par.ID, par.refName, par.tarName, Format::profile)).c_str());
   }
-  if (!par->saveAll && !par->saveFilter) {
-    remove((gen_name(par->ID, par->refName, par->tarName, Format::filter)).c_str());
+  if (!par.saveAll && !par.saveFilter) {
+    remove((gen_name(par.ID, par.refName, par.tarName, Format::filter)).c_str());
   }
 
-  if (!par->quiet && (par->verbose || round == 1)) {
-    std::cerr << "\r" << par->message << "done => " << nSegs << " segment"
-              << (nSegs == 1 ? "" : "s") << '\n';
+  if (!par.quiet && (par.verbose || round == 1)) {
+    std::cerr << "\r" << par.message << "done => " << nSegs << " segment" << (nSegs == 1 ? "" : "s")
+              << '\n';
   }
 }
 
 void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out, std::span<const prc_t> profile,
-                             std::unique_ptr<Param>& par, uint8_t round) {
-  const auto filter_name{gen_name(par->ID, par->ref, par->tar, Format::filter)};
+                             const Param& par, uint8_t round) {
+  const auto filter_name{gen_name(par.ID, par.ref, par.tar, Format::filter)};
   std::ofstream filter_file;
-  if (par->saveFilter || par->saveAll) {
+  if (par.saveFilter || par.saveAll) {
     filter_file.open(filter_name);
   }
 
   ProfileReader profile_reader(profile);
 
-  auto seg = make_segment(par, round, file_size(par->tar));
+  auto seg = make_segment(par, round, file_size(par.tar));
   auto filtered{0.f};
   uint64_t symsNo{0};
 
   for (; profile_reader.read(filtered);) {
-    if (par->saveFilter || par->saveAll) {
+    if (par.saveFilter || par.saveAll) {
       filter_file << precision(PREC_FIL, filtered) << '\n';
     }
     seg->partition(pos_out, filtered);
     ++seg->pos;
-    if (!par->quiet && par->verbose) {
-      show_progress(++symsNo, seg->totalSize, par->message);
+    if (!par.quiet && par.verbose) {
+      show_progress(++symsNo, seg->totalSize, par.message);
     }
   }
 
-  if (par->saveFilter || par->saveAll) {
+  if (par.saveFilter || par.saveAll) {
     filter_file.close();
   }
   seg->finalize_partition(pos_out);
@@ -429,15 +430,15 @@ inline void Filter::make_nuttall(uint32_t filter_size) {
 
 template <bool SaveFilter>
 inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, std::span<const prc_t> profile,
-                                    std::unique_ptr<Param>& par, uint8_t round) {
-  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
+                                    const Param& par, uint8_t round) {
+  const auto filterName{gen_name(par.ID, par.ref, par.tar, Format::filter)};
   std::ofstream filF;
   if constexpr (SaveFilter) {
     filF.open(filterName);
   }
 
   ProfileReader profile_reader(profile);
-  auto seg = make_segment(par, round, file_size(par->tar));
+  auto seg = make_segment(par, round, file_size(par.tar));
 
   std::vector<float> seq;
   seq.reserve(filt_size);
@@ -465,8 +466,8 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, std::span<cons
     filF << precision(PREC_FIL, filtered) << '\n';
   }
   seg->partition(pos_out, filtered);
-  if (!par->quiet && par->verbose) {
-    show_progress(++symsNo, seg->totalSize, par->message);
+  if (!par.quiet && par.verbose) {
+    show_progress(++symsNo, seg->totalSize, par.message);
   }
 
   // The rest
@@ -481,8 +482,8 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, std::span<cons
     seg->partition(pos_out, filtered);
     seq[idx] = entropy;
     idx = (idx + 1) % filt_size;
-    if (!par->quiet && par->verbose) {
-      show_progress(++symsNo, seg->totalSize, par->message);
+    if (!par.quiet && par.verbose) {
+      show_progress(++symsNo, seg->totalSize, par.message);
     }
   }
   // Until half of the window goes outside the array
@@ -495,13 +496,13 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, std::span<cons
     ++seg->pos;
     seg->partition(pos_out, filtered);
     idx = (idx + 1) % filt_size;
-    if (!par->quiet && par->verbose) {
-      show_progress(++symsNo, seg->totalSize, par->message);
+    if (!par.quiet && par.verbose) {
+      show_progress(++symsNo, seg->totalSize, par.message);
     }
   }
   seg->finalize_partition(pos_out);
-  if (!par->quiet && par->verbose) {
-    show_progress(++symsNo, seg->totalSize, par->message);
+  if (!par.quiet && par.verbose) {
+    show_progress(++symsNo, seg->totalSize, par.message);
   }
 
   if constexpr (SaveFilter) {
@@ -512,16 +513,16 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, std::span<cons
 
 template <bool SaveFilter>
 inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
-                                        std::span<const prc_t> profile, std::unique_ptr<Param>& par,
+                                        std::span<const prc_t> profile, const Param& par,
                                         uint8_t round) {
-  const auto filterName{gen_name(par->ID, par->ref, par->tar, Format::filter)};
+  const auto filterName{gen_name(par.ID, par.ref, par.tar, Format::filter)};
   std::ofstream filF;
   if constexpr (SaveFilter) {
     filF.open(filterName);
   }
 
   ProfileReader profile_reader(profile);
-  auto seg = make_segment(par, round, file_size(par->tar));
+  auto seg = make_segment(par, round, file_size(par.tar));
   std::vector<float> filtered_values;
   filtered_values.reserve(FILE_WRITE_BUF);
   auto write_filtered_values = [&]() {
@@ -575,8 +576,8 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     filtered_values.push_back(filtered);
   }
   seg->partition(pos_out, filtered);
-  if (!par->quiet && par->verbose) {
-    show_progress(++symsNo, seg->totalSize, par->message);
+  if (!par.quiet && par.verbose) {
+    show_progress(++symsNo, seg->totalSize, par.message);
   }
 
   // The rest
@@ -595,8 +596,8 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     }
     ++seg->pos;
     seg->partition(pos_out, filtered);
-    if (!par->quiet && par->verbose) {
-      show_progress(++symsNo, seg->totalSize, par->message);
+    if (!par.quiet && par.verbose) {
+      show_progress(++symsNo, seg->totalSize, par.message);
     }
   }
   // Until half of the window goes outside the array
@@ -614,16 +615,16 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
     }
     ++seg->pos;
     seg->partition(pos_out, filtered);
-    if (!par->quiet && par->verbose) {
-      show_progress(++symsNo, seg->totalSize, par->message);
+    if (!par.quiet && par.verbose) {
+      show_progress(++symsNo, seg->totalSize, par.message);
     }
   }
   seg->finalize_partition(pos_out);
   if constexpr (SaveFilter) {
     write_filtered_values();
   }
-  if (!par->quiet && par->verbose) {
-    show_progress(++symsNo, seg->totalSize, par->message);
+  if (!par.quiet && par.verbose) {
+    show_progress(++symsNo, seg->totalSize, par.message);
   }
 
   if constexpr (SaveFilter) {
