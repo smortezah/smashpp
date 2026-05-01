@@ -5,6 +5,7 @@ endif()
 file(REMOVE_RECURSE "${WORKDIR}")
 file(MAKE_DIRECTORY "${WORKDIR}/sampled-filter")
 file(MAKE_DIRECTORY "${WORKDIR}/multi-sampled-filter")
+file(MAKE_DIRECTORY "${WORKDIR}/non-rect-filter")
 file(MAKE_DIRECTORY "${WORKDIR}/sampled-segment")
 file(MAKE_DIRECTORY "${WORKDIR}/large-step")
 
@@ -36,6 +37,17 @@ function(assert_file_size file expected)
   file(SIZE "${file}" size)
   if(NOT size EQUAL expected)
     message(FATAL_ERROR "Expected ${file} to have ${expected} bytes, got ${size}.")
+  endif()
+endfunction()
+
+function(assert_file_content file expected)
+  if(NOT EXISTS "${file}")
+    message(FATAL_ERROR "Expected file was not created: ${file}")
+  endif()
+
+  file(READ "${file}" content)
+  if(NOT content STREQUAL expected)
+    message(FATAL_ERROR "Expected ${file} content to match the non-rectangular filter baseline.")
   endif()
 endfunction()
 
@@ -83,6 +95,88 @@ assert_line_count("${WORKDIR}/multi-sampled-filter/0.ref.tar.prf" 4)
 assert_line_count("${WORKDIR}/multi-sampled-filter/0.ref.tar.fil" 4)
 assert_line_count("${WORKDIR}/multi-sampled-filter/1.ref.tar.prf" 4)
 assert_line_count("${WORKDIR}/multi-sampled-filter/1.ref.tar.fil" 4)
+
+set(non_rect_seq "ACGTACGTACGTACGTACGTACGTACGT")
+file(WRITE "${WORKDIR}/non-rect-filter/ref" "${non_rect_seq}")
+file(WRITE "${WORKDIR}/non-rect-filter/tar" "${non_rect_seq}")
+execute_process(
+    COMMAND "${SMASHPP}" -n 1 -sp -sf -nr -dp -f 5 -ft hann -m 1 -th 20
+            -rm "1,0,0.01,0.95" -tm "1,0,0.01,0.95"
+            -r ref -t tar
+    WORKING_DIRECTORY "${WORKDIR}/non-rect-filter"
+    RESULT_VARIABLE non_rect_filter_result
+    OUTPUT_VARIABLE non_rect_filter_stdout
+    ERROR_VARIABLE non_rect_filter_stderr)
+
+if(NOT non_rect_filter_result EQUAL 0)
+  message(FATAL_ERROR
+          "Non-rectangular filter baseline run failed with exit code ${non_rect_filter_result}\n"
+          "stdout:\n${non_rect_filter_stdout}\n"
+          "stderr:\n${non_rect_filter_stderr}")
+endif()
+
+set(expected_regular_filter [=[2.11
+1.43
+0.488
+0.0328
+0.033
+0.0757
+0.0327
+0.0063
+0.033
+0.0759
+0.0328
+0.00653
+0.033
+0.0757
+0.0756
+0.033
+0.0759
+0.0757
+0.0327
+0.0063
+0.0759
+0.0757
+0.0327
+0.0063
+0.033
+0.0757
+0.0327
+0.282
+1
+]=])
+set(expected_inverted_filter [=[1.08
+0.362
+0.0368
+0.0368
+0.0864
+0.0368
+0.00616
+0.0368
+0.0864
+0.0864
+0.0368
+0.0864
+0.0864
+0.0368
+0.00616
+0.0864
+0.0864
+0.0368
+0.00616
+0.0368
+0.0864
+0.0368
+0.00616
+0.0368
+0.0864
+0.0368
+0.00616
+0.282
+1
+]=])
+assert_file_content("${WORKDIR}/non-rect-filter/0.ref.tar.fil" "${expected_regular_filter}")
+assert_file_content("${WORKDIR}/non-rect-filter/1.ref.tar.fil" "${expected_inverted_filter}")
 
 write_inputs("${WORKDIR}/sampled-segment")
 execute_process(
