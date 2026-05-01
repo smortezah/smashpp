@@ -44,9 +44,9 @@ auto make_segment(std::unique_ptr<Param>& par, uint8_t round, uint64_t total_siz
   seg->totalSize = total_size;
 
   if (round == 2) {
-    seg->set_guards(par->ref_guard->beg, par->ref_guard->end);
+    seg->set_guards(par->ref_guard.beg, par->ref_guard.end);
   } else if (round == 1 || round == 3) {
-    seg->set_guards(par->tar_guard->beg, par->tar_guard->end);
+    seg->set_guards(par->tar_guard.beg, par->tar_guard.end);
   }
 
   return seg;

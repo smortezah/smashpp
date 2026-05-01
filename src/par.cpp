@@ -248,7 +248,7 @@ void Param::parse(int argc, char**& argv) {
                           0, "Reference beginning guard", Interval::closed, "default",
                           Problem::warning);
       range.check(parsed_guard);
-      ref_guard->beg = static_cast<int16_t>(parsed_guard);
+      ref_guard.beg = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-re" || *i == "--reference-end-guard") {
       auto parsed_guard = parse_integral<int>(
           require_value(i, "reference ending guard", "-re <INT>"), "reference ending guard");
@@ -256,7 +256,7 @@ void Param::parse(int argc, char**& argv) {
                           0, "Reference ending guard", Interval::closed, "default",
                           Problem::warning);
       range.check(parsed_guard);
-      ref_guard->end = static_cast<int16_t>(parsed_guard);
+      ref_guard.end = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-tb" || *i == "--target-begin-guard") {
       auto parsed_guard = parse_integral<int>(
           require_value(i, "target beginning guard", "-tb <INT>"), "target beginning guard");
@@ -264,14 +264,14 @@ void Param::parse(int argc, char**& argv) {
                           0, "Target beginning guard", Interval::closed, "default",
                           Problem::warning);
       range.check(parsed_guard);
-      tar_guard->beg = static_cast<int16_t>(parsed_guard);
+      tar_guard.beg = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-te" || *i == "--target-end-guard") {
       auto parsed_guard = parse_integral<int>(require_value(i, "target ending guard", "-te <INT>"),
                                               "target ending guard");
       ValRange<int> range(std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(),
                           0, "Target ending guard", Interval::closed, "default", Problem::warning);
       range.check(parsed_guard);
-      tar_guard->end = static_cast<int16_t>(parsed_guard);
+      tar_guard.end = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-ar" || *i == "--asymmetric-regions") {
       asym_region = true;
     } else if (*i == "-dp") {  // hidden option :)
@@ -522,26 +522,26 @@ void Param::help() const {
       << tab1 << bold("-rb") << ", " << bold("--reference-begin-guard") << " <INT>\n"
       << tab2
       << std::format("reference begin guard: {} to {}. Default: {}\n",
-                     std::numeric_limits<decltype(ref_guard->beg)>::min(),
-                     std::numeric_limits<decltype(ref_guard->beg)>::max(), ref_guard->beg)
+                     std::numeric_limits<decltype(ref_guard.beg)>::min(),
+                     std::numeric_limits<decltype(ref_guard.beg)>::max(), ref_guard.beg)
       << '\n'
       << tab1 << bold("-re") << ", " << bold("--reference-end-guard") << " <INT>\n"
       << tab2
       << std::format("reference ending guard: {} to {}. Default: {}\n",
-                     std::numeric_limits<decltype(ref_guard->end)>::min(),
-                     std::numeric_limits<decltype(ref_guard->end)>::max(), ref_guard->end)
+                     std::numeric_limits<decltype(ref_guard.end)>::min(),
+                     std::numeric_limits<decltype(ref_guard.end)>::max(), ref_guard.end)
       << '\n'
       << tab1 << bold("-tb") << ", " << bold("--target-begin-guard") << " <INT>\n"
       << tab2
       << std::format("target begin guard: {} to {}. Default: {}\n",
-                     std::numeric_limits<decltype(tar_guard->beg)>::min(),
-                     std::numeric_limits<decltype(tar_guard->beg)>::max(), tar_guard->beg)
+                     std::numeric_limits<decltype(tar_guard.beg)>::min(),
+                     std::numeric_limits<decltype(tar_guard.beg)>::max(), tar_guard.beg)
       << '\n'
       << tab1 << bold("-te") << ", " << bold("--target-end-guard") << " <INT>\n"
       << tab2
       << std::format("target ending guard: {} to {}. Default: {}\n",
-                     std::numeric_limits<decltype(tar_guard->end)>::min(),
-                     std::numeric_limits<decltype(tar_guard->end)>::max(), tar_guard->end)
+                     std::numeric_limits<decltype(tar_guard.end)>::min(),
+                     std::numeric_limits<decltype(tar_guard.end)>::max(), tar_guard.end)
       << '\n'
       << tab1 << bold("-ar") << ", " << bold("--asymmetric-regions") << '\n'
       << tab2 << "consider asymmetric regions. Default: not used\n"

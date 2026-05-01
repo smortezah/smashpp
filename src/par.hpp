@@ -144,8 +144,8 @@ class Param {
     int16_t end;
     RefGuard() : beg(0), end(0) {}
   };
-  std::unique_ptr<TarGuard> tar_guard;
-  std::unique_ptr<RefGuard> ref_guard;
+  TarGuard tar_guard;
+  RefGuard ref_guard;
 
   Param()  // Define Param::Param(){} in *.hpp => compile error
       : format(Format::position),
@@ -182,9 +182,7 @@ class Param {
         noRedun(false),
         deep(true),
         asym_region(false),
-        approxSampledModels(false),
-        tar_guard(std::make_unique<TarGuard>()),
-        ref_guard(std::make_unique<RefGuard>()) {}
+        approxSampledModels(false) {}
 
   void parse(int, char**&);
   auto clone() const -> std::unique_ptr<Param>;
@@ -249,10 +247,8 @@ inline auto Param::clone() const -> std::unique_ptr<Param> {
   cloned->tarMs = clone_model_params(tarMs);
   cloned->message = message;
   cloned->param_list = param_list;
-  cloned->tar_guard =
-      tar_guard ? std::make_unique<TarGuard>(*tar_guard) : std::make_unique<TarGuard>();
-  cloned->ref_guard =
-      ref_guard ? std::make_unique<RefGuard>(*ref_guard) : std::make_unique<RefGuard>();
+  cloned->tar_guard = tar_guard;
+  cloned->ref_guard = ref_guard;
 
   return cloned;
 }
