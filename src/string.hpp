@@ -5,6 +5,7 @@
 #define SMASHPP_STRING_HPP
 
 #include <format>
+#include <string_view>
 
 #include "number.hpp"
 #include "par.hpp"
@@ -12,49 +13,49 @@
 namespace smashpp {
 static constexpr uint8_t TEXTWIDTH{65};
 
-inline std::string bold(const std::string& text) {
+[[nodiscard]] inline std::string bold(std::string_view text) {
 #ifdef _WIN32
-  return text;
+  return std::string{text};
 #else
   return std::format("\033[1m{}\033[0m", text);
 #endif
 }
 
-inline std::string faint(const std::string& text) {
+[[nodiscard]] inline std::string faint(std::string_view text) {
 #ifdef _WIN32
-  return text;
+  return std::string{text};
 #else
   return std::format("\033[2m{}\033[0m", text);
 #endif
 }
 
-inline std::string italic(const std::string& text) {
+[[nodiscard]] inline std::string italic(std::string_view text) {
 #ifdef _WIN32
-  return text;
+  return std::string{text};
 #else
   return std::format("\033[3m{}\033[0m", text);
 #endif
 }
 
-inline std::string underline(const std::string& text) {
+[[nodiscard]] inline std::string underline(std::string_view text) {
 #ifdef _WIN32
-  return text;
+  return std::string{text};
 #else
   return std::format("\033[4m{}\033[0m", text);
 #endif
 }
 
-inline std::string highlight(const std::string& text) {
+[[nodiscard]] inline std::string highlight(std::string_view text) {
 #ifdef _WIN32
-  return text;
+  return std::string{text};
 #else
   return std::format("\033[7m{}\033[0m", text);
 #endif
 }
 
-inline std::string bold_red(const std::string& text) {
+[[nodiscard]] inline std::string bold_red(std::string_view text) {
 #ifdef _WIN32
-  return text;
+  return std::string{text};
 #else
   return std::format("\033[1m\033[38;5;1m{}\033[0m", text);
 #endif
@@ -103,13 +104,13 @@ inline static void show_progress(ValuePos pos, Value total) {
 }
 
 template <typename ValuePos, typename Value>
-inline static void show_progress(ValuePos pos, Value total, const std::string& msg) {
+inline static void show_progress(ValuePos pos, Value total, std::string_view msg) {
   if (total > 100 && pos % (total / 100) == 0) {
     std::cerr << std::format("{}[{}%]\r", msg, static_cast<int>((pos * 100) / total));
   }
 }
 
-inline static std::string conv_to_string(FilterType val) {
+[[nodiscard]] inline static std::string conv_to_string(FilterType val) {
   switch (val) {
     case FilterType::rectangular:
       return "0|rectangular";
@@ -132,7 +133,7 @@ inline static std::string conv_to_string(FilterType val) {
   }
 }
 
-inline static std::string conv_to_string(FilterScale val) {
+[[nodiscard]] inline static std::string conv_to_string(FilterScale val) {
   switch (val) {
     case FilterScale::s:
       return "S|small";
@@ -145,7 +146,7 @@ inline static std::string conv_to_string(FilterScale val) {
   }
 }
 
-inline static std::string human_readable(uint64_t bytes, uint8_t precision = 0) {
+[[nodiscard]] inline static std::string human_readable(uint64_t bytes, uint8_t precision = 0) {
   const uint64_t KB_div = pow2(10);
   const uint64_t MB_div = pow2(20);
   const uint64_t GB_div = pow2(30);
@@ -168,14 +169,15 @@ inline static std::string human_readable(uint64_t bytes, uint8_t precision = 0) 
 }
 
 // Outside-computer science
-inline static std::string human_readable_non_cs(uint64_t bytes, uint8_t precision = 0) {
+[[nodiscard]] inline static std::string human_readable_non_cs(uint64_t bytes,
+                                                              uint8_t precision = 0) {
   const uint64_t Kb_div{POW10[3]};
   const uint64_t Mb_div{POW10[6]};
   const uint64_t Gb_div{POW10[9]};
   const uint64_t Tb_div{POW10[12]};
   const auto prec{static_cast<int>(precision)};
 
-  const auto out = [=](std::string unit, uint64_t div) {
+  const auto out = [=](std::string_view unit, uint64_t div) {
     if (static_cast<float>(bytes / div) == static_cast<float>(bytes) / div) {
       return std::format("{:.0f} {}", static_cast<float>(bytes) / div, unit);
     } else {

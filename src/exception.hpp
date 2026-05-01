@@ -10,10 +10,6 @@
 #include "string.hpp"
 
 namespace smashpp {
-extern void wrap_text(std::string&);
-extern std::string bold(const std::string&);
-extern std::string bold_red(const std::string&);
-
 // "inline" is a MUST -- not to get "multiple definition of ..." error
 inline void error(std::string&& msg) {
   std::string message = std::format("Error: {}", msg);

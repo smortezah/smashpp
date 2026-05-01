@@ -16,12 +16,12 @@ namespace smashpp {
 void error(std::string&&);  // To avoid circular dependency
 
 template <typename Input>
-inline static bool is_uint8_t(const Input& in) {
+[[nodiscard]] inline static bool is_uint8_t(const Input& in) {
   return typeid(in) == typeid(uint8_t);
 }
 
 template <typename Value>
-inline static bool is_odd(Value val) {
+[[nodiscard]] inline static bool is_odd(Value val) {
   if (val < 0) {
     error(std::format("\"{}\" is a negative number.", val));
   }
@@ -30,13 +30,13 @@ inline static bool is_odd(Value val) {
 }
 
 template <typename T>
-inline static auto pow2(T base) {  // Must be inline
+[[nodiscard]] inline static auto pow2(T base) {  // Must be inline
   return std::pow(base, static_cast<T>(2));
 }
 
 // From http://martin.ankerl.com/2007/10/04/
 // optimized-pow-approximation-for-java-and-c-c/
-inline static double Power(double base, double exponent) {
+[[nodiscard]] inline static double Power(double base, double exponent) {
   union {
     double d;
     int x[2];
@@ -56,7 +56,7 @@ inline static void keep_in_range(MinVal min, Val& val, MaxVal max) {
 }
 
 template <class T, class U>
-inline static std::string precision(T prec, U value) {
+[[nodiscard]] inline static std::string precision(T prec, U value) {
   if constexpr (std::is_floating_point_v<U>) {
     return std::format("{:.{}g}", value, static_cast<int>(prec));
   } else {
@@ -65,7 +65,7 @@ inline static std::string precision(T prec, U value) {
 }
 
 template <class T, class U>
-inline static std::string fixed_precision(T prec, U value) {
+[[nodiscard]] inline static std::string fixed_precision(T prec, U value) {
   if constexpr (std::is_floating_point_v<U>) {
     return std::format("{:.{}f}", value, static_cast<int>(prec));
   } else {
@@ -73,21 +73,21 @@ inline static std::string fixed_precision(T prec, U value) {
   }
 }
 
-inline static uint8_t num_digits(uint64_t number) {
+[[nodiscard]] inline static uint8_t num_digits(uint64_t number) {
   return number == 0 ? 1 : std::log10(static_cast<double>(number)) + 1;
 }
 
 template <typename T>
-inline static std::string thousands_sep(T number) {
+[[nodiscard]] inline static std::string thousands_sep(T number) {
   return std::format("{}", number);
 }
 
-inline static double round_to_prec(double value, double precision = 1.0) {
+[[nodiscard]] inline static double round_to_prec(double value, double precision = 1.0) {
   const auto reciprocal = 1.0 / precision;
   return std::ceil(value * reciprocal) / reciprocal;
 }
 
-inline static float tick_round(float lowerBound, float upperBound, uint8_t n_ranges) {
+[[nodiscard]] inline static float tick_round(float lowerBound, float upperBound, uint8_t n_ranges) {
   // Round fraction in range [0.1, 1)
   const auto round_frac = [=](float value) -> float {
     if (value >= 0.100 && value <= 0.125) {
@@ -124,7 +124,8 @@ inline static float tick_round(float lowerBound, float upperBound, uint8_t n_ran
 }
 
 template <typename Int>
-inline static Int map_interval(Int in_first, Int in_last, Int out_first, Int out_last, Int value) {
+[[nodiscard]] inline static Int map_interval(Int in_first, Int in_last, Int out_first, Int out_last,
+                                             Int value) {
   if (in_last == in_first) {
     return out_first;
   } else if (in_last == out_last && in_first == out_first) {

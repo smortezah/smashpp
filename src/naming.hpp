@@ -5,13 +5,14 @@
 #define SMASHPP_NAMING_HPP
 
 #include <format>
+#include <string_view>
 
 #include "def.hpp"
 #include "file.hpp"
 
 namespace smashpp {
-inline static std::string gen_name(uint32_t ID, std::string ref, std::string tar,
-                                   const Format& frmt) {
+[[nodiscard]] inline static std::string gen_name(uint32_t ID, std::string_view ref,
+                                                 std::string_view tar, const Format& frmt) {
   const auto refName{file_name(ref)};
   const auto tarName{file_name(tar)};
   switch (frmt) {
@@ -30,7 +31,8 @@ inline static std::string gen_name(uint32_t ID, std::string ref, std::string tar
   }
 }
 
-inline static std::string gen_name(std::string ref, std::string tar, const Format& frmt) {
+[[nodiscard]] inline static std::string gen_name(std::string_view ref, std::string_view tar,
+                                                 const Format& frmt) {
   const auto refName{file_name(ref)};
   const auto tarName{file_name(tar)};
   switch (frmt) {

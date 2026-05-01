@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iterator>
 #include <sstream>
+#include <string_view>
 
 #include "exception.hpp"
 #include "par.hpp"
@@ -37,11 +38,11 @@ inline static void ignore_this_line(std::ifstream& fs) {
   fs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-inline static bool is_sequence_space(char c) {
+[[nodiscard]] inline static bool is_sequence_space(char c) {
   return c == '\n' || c == '\r' || c == ' ' || c == '\t';
 }
 
-inline static std::string char_label(char c) {
+[[nodiscard]] inline static std::string char_label(char c) {
   switch (c) {
     case '\n':
       return "\\n";
@@ -54,7 +55,7 @@ inline static std::string char_label(char c) {
   }
 }
 
-inline static char normalize_base(char c, const std::string& source) {
+[[nodiscard]] inline static char normalize_base(char c, std::string_view source) {
   switch (c) {
     case 'A':
     case 'a':
@@ -103,7 +104,7 @@ inline static char normalize_base(char c, const std::string& source) {
   return '\0';
 }
 
-inline static void check_file(std::string name) {  // Must be inline
+inline static void check_file(const std::string& name) {  // Must be inline
   std::ifstream f(name);
   if (!f) {
     f.close();
@@ -122,7 +123,7 @@ inline static void check_file(std::string name) {  // Must be inline
   }
 }
 
-inline static bool file_is_empty(std::string name) {
+[[nodiscard]] inline static bool file_is_empty(const std::string& name) {
   std::ifstream f(name);
   bool foundChar{false};
 
@@ -136,25 +137,25 @@ inline static bool file_is_empty(std::string name) {
   return !foundChar;
 }
 
-inline static std::string file_name(std::string str) {
+[[nodiscard]] inline static std::string file_name(std::string_view str) {
   const auto found = str.find_last_of("/\\");
-  return str.substr(found + 1);
+  return std::string{str.substr(found + 1)};
 }
 
-inline static std::string file_name_no_ext(std::string str) {
+[[nodiscard]] inline static std::string file_name_no_ext(std::string_view str) {
   auto found = str.find_last_of("/\\");
-  const std::string file_name = str.substr(found + 1);
+  const auto file_name = str.substr(found + 1);
   found = file_name.find_last_of(".");
-  return file_name.substr(0, found);
+  return std::string{file_name.substr(0, found)};
 }
 
-inline static uint64_t file_size(std::string name) {
+[[nodiscard]] inline static uint64_t file_size(const std::string& name) {
   check_file(name);
   std::ifstream f(name, std::ifstream::ate | std::ifstream::binary);
   return static_cast<uint64_t>(f.tellg());
 }
 
-inline static uint64_t file_lines(std::string name) {
+[[nodiscard]] inline static uint64_t file_lines(const std::string& name) {
   std::ifstream f(name);
   f.unsetf(std::ios_base::skipws);  // New lines will be skipped unless we stop it
   return static_cast<uint64_t>(
