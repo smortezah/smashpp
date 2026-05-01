@@ -218,6 +218,14 @@ if(BUILD_TESTING)
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunParallelConsistency.cmake")
 
   add_test(
+      NAME smashpp-sampling-filter-consistency
+      COMMAND ${CMAKE_COMMAND}
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-sampling-filter-consistency"
+              "-DSMASHPP=$<TARGET_FILE:smashpp>"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunSamplingFilterConsistency.cmake")
+
+  add_test(
       NAME smashpp-invalid-base
       COMMAND ${CMAKE_COMMAND}
               "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-invalid-base"
