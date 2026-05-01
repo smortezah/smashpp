@@ -55,6 +55,8 @@ option(SMASHPP_ENABLE_SANITIZERS
 option(SMASHPP_ENABLE_UNSAFE_FAST_MATH
        "Enable aggressive GNU floating-point optimizations." OFF)
 option(BUILD_TESTING "Enable the Smash++ test suite." ON)
+set(SMASHPP_BENCHMARK_RUNS "3" CACHE STRING
+    "Number of repetitions for the smashpp-benchmark target.")
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
@@ -134,6 +136,18 @@ if (SMASHPP_ENABLE_UNSAFE_FAST_MATH AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
       PRIVATE -ffast-math -fno-math-errno -funsafe-math-optimizations
               -ffinite-math-only)
 endif()
+
+add_custom_target(
+    smashpp-benchmark
+    COMMAND ${CMAKE_COMMAND}
+            "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/benchmarks"
+            "-DSMASHPP=$<TARGET_FILE:smashpp>"
+            "-DRUNS=${SMASHPP_BENCHMARK_RUNS}"
+            -P
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunBenchmarkSuite.cmake"
+    DEPENDS smashpp
+    USES_TERMINAL
+    COMMENT "Running Smash++ benchmark suite")
 
 if(BUILD_TESTING)
   enable_testing()
@@ -280,6 +294,17 @@ if(BUILD_TESTING)
               "-DSMASHPP=$<TARGET_FILE:smashpp>"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunSamplingFilterConsistency.cmake")
+
+  add_test(
+      NAME smashpp-regression-baseline
+      COMMAND ${CMAKE_COMMAND}
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-regression-baseline"
+              "-DSMASHPP=$<TARGET_FILE:smashpp>"
+              "-DREF=${CMAKE_CURRENT_SOURCE_DIR}/example/ref"
+              "-DTAR=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunRegressionBaseline.cmake")
+  set_tests_properties(smashpp-regression-baseline PROPERTIES LABELS regression)
 
   add_test(
       NAME smashpp-invalid-base
