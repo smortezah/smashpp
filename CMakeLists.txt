@@ -181,6 +181,62 @@ if(BUILD_TESTING)
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
 
   add_test(
+      NAME smashpp-invalid-model-ir
+      COMMAND ${CMAKE_COMMAND}
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
+              -DARG_0=-r
+              "-DARG_1=${CMAKE_CURRENT_SOURCE_DIR}/example/ref"
+              -DARG_2=-t
+              "-DARG_3=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
+              -DARG_4=-rm
+              "-DARG_5=1,3,0.01,0.95"
+              "-DEXPECTED_TEXT=inverted repeat mode must be in range"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+
+  add_test(
+      NAME smashpp-invalid-model-alpha
+      COMMAND ${CMAKE_COMMAND}
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
+              -DARG_0=-r
+              "-DARG_1=${CMAKE_CURRENT_SOURCE_DIR}/example/ref"
+              -DARG_2=-t
+              "-DARG_3=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
+              -DARG_4=-rm
+              "-DARG_5=1,0,0,0.95"
+              "-DEXPECTED_TEXT=model alpha must be greater than 0"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+
+  add_test(
+      NAME smashpp-invalid-sketch-width
+      COMMAND ${CMAKE_COMMAND}
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
+              -DARG_0=-r
+              "-DARG_1=${CMAKE_CURRENT_SOURCE_DIR}/example/ref"
+              -DARG_2=-t
+              "-DARG_3=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
+              -DARG_4=-rm
+              "-DARG_5=20,0,5,0,0.01,0.95"
+              "-DEXPECTED_TEXT=sketch width exponent must be in range"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+
+  add_test(
+      NAME smashpp-invalid-sketch-depth
+      COMMAND ${CMAKE_COMMAND}
+              "-DEXECUTABLE=$<TARGET_FILE:smashpp>"
+              -DARG_0=-r
+              "-DARG_1=${CMAKE_CURRENT_SOURCE_DIR}/example/ref"
+              -DARG_2=-t
+              "-DARG_3=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
+              -DARG_4=-rm
+              "-DARG_5=20,10,0,0,0.01,0.95"
+              "-DEXPECTED_TEXT=sketch depth must be in range"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+
+  add_test(
       NAME smashpp-example-smoke
       COMMAND ${CMAKE_COMMAND}
               "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-example-smoke"
