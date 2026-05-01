@@ -60,6 +60,8 @@ class FCM {  // Finite-context models
   void compress_n_parent(std::unique_ptr<CompressPar>&, ContIter, uint8_t) const;
   template <typename ContIter>
   void compress_n_child(std::unique_ptr<CompressPar>&, ContIter, uint8_t) const;
+  void compress_n_parent_context(std::unique_ptr<CompressPar>&) const;
+  void compress_n_child_context(std::unique_ptr<CompressPar>&) const;
 
   void self_compress(std::unique_ptr<Param>&, const SegmentView*, uint64_t, uint8_t);
   void self_compress_alloc();

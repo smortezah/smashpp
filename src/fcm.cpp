@@ -655,8 +655,9 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
 }
 
 void FCM::compress_n(std::unique_ptr<Param>& par) {
-  uint64_t symsNo{0};  // No. syms in target file, except \n
-  prc_t sumEnt{0};     // Sum of entropies = sum(log_2 P(s|c^t))
+  uint64_t symsNo{0};         // Sampled symbols
+  uint64_t processedSyms{0};  // No. syms in target file, except \n
+  prc_t sumEnt{0};            // Sum of sampled entropies = sum(log_2 P(s|c^t))
   auto cp = std::make_unique<CompressPar>();
   const auto nMdl = static_cast<uint8_t>(rMs.size()) + rTMsSize;
   cp->nMdl = nMdl;
@@ -714,6 +715,16 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
       compress_n_child(cp, cont, ++n);
     }
   };
+  const auto compress_n_context_impl = [&](auto& cp, uint8_t& n) {
+    compress_n_parent_context(cp);
+    if (cp->mm.child) {
+      ++cp->ppIt;
+      ++cp->ctxIt;
+      ++cp->ctxIrIt;
+      compress_n_child_context(cp);
+      ++n;
+    }
+  };
 
   for (std::vector<char> buffer(FILE_READ_BUF, 0);;) {
     const auto bytes_read = read_file_chunk(tar_file, buffer);
@@ -728,6 +739,7 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
         continue;
       }
 
+      ++processedSyms;
       const bool sample_taken = sample_ticker.take();
       cp->c = c;
       cp->nSym = base_code(c);
@@ -743,19 +755,23 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
       uint8_t n = 0;  // Counter for the models
       for (const auto& mm : rMs) {
         cp->mm = mm;
-        switch (mm.cont) {
-          case Container::sketch_8:
-            compress_n_impl(cp, cmls4_it++, n);
-            break;
-          case Container::log_table_8:
-            compress_n_impl(cp, lgtbl8_it++, n);
-            break;
-          case Container::table_32:
-            compress_n_impl(cp, tbl32_it++, n);
-            break;
-          case Container::table_64:
-            compress_n_impl(cp, tbl64_it++, n);
-            break;
+        if (sample_taken) {
+          switch (mm.cont) {
+            case Container::sketch_8:
+              compress_n_impl(cp, cmls4_it++, n);
+              break;
+            case Container::log_table_8:
+              compress_n_impl(cp, lgtbl8_it++, n);
+              break;
+            case Container::table_32:
+              compress_n_impl(cp, tbl32_it++, n);
+              break;
+            case Container::table_64:
+              compress_n_impl(cp, tbl64_it++, n);
+              break;
+          }
+        } else {
+          compress_n_context_impl(cp, n);
         }
         ++n;
         ++cp->ppIt;
@@ -763,15 +779,15 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
         ++cp->ctxIrIt;
       }
 
-      const auto entr = entropy(std::begin(cp->w), std::begin(cp->probs), std::end(cp->probs));
-      normalize(std::begin(cp->w), std::begin(cp->wNext), std::end(cp->wNext));
-      ++symsNo;
-      sumEnt += entr;
       if (sample_taken) {
+        const auto entr = entropy(std::begin(cp->w), std::begin(cp->probs), std::end(cp->probs));
+        normalize(std::begin(cp->w), std::begin(cp->wNext), std::end(cp->wNext));
+        ++symsNo;
+        sumEnt += entr;
         emit_entropy(entr);
       }
       if (show_progress_enabled) {
-        show_progress(symsNo, totalSize, par->message);
+        show_progress(processedSyms, totalSize, par->message);
       }
     }
 
@@ -788,7 +804,7 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
   if (save_profile) {
     prf_file.close();
   }
-  aveEnt = sumEnt / symsNo;
+  aveEnt = symsNo == 0 ? 0 : sumEnt / symsNo;
 }
 
 template <typename ContIter>
@@ -887,6 +903,32 @@ inline void FCM::compress_n_child(std::unique_ptr<CompressPar>& cp, ContIter con
       correct_stmm(cp, std::begin(f));
     }
     cp->wNext[n] = weight_next(cp->w[n], cp->mm.child->gamma, prb);
+    update_ctx_ir2(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
+  }
+}
+
+void FCM::compress_n_parent_context(std::unique_ptr<CompressPar>& cp) const {
+  if (cp->mm.ir == 0) {
+    cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
+    update_ctx_ir0(*cp->ctxIt, cp->ppIt);
+  } else if (cp->mm.ir == 1) {
+    cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
+    update_ctx_ir1(*cp->ctxIrIt, cp->ppIt);
+  } else if (cp->mm.ir == 2) {
+    cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);
+    update_ctx_ir2(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
+  }
+}
+
+void FCM::compress_n_child_context(std::unique_ptr<CompressPar>& cp) const {
+  if (cp->mm.child->ir == 0) {
+    cp->ppIt->config_ir0(cp->c, *cp->ctxIt);
+    update_ctx_ir0(*cp->ctxIt, cp->ppIt);
+  } else if (cp->mm.child->ir == 1) {
+    cp->ppIt->config_ir1(cp->c, *cp->ctxIrIt);
+    update_ctx_ir1(*cp->ctxIrIt, cp->ppIt);
+  } else if (cp->mm.child->ir == 2) {
+    cp->ppIt->config_ir2(cp->c, *cp->ctxIt, *cp->ctxIrIt);
     update_ctx_ir2(*cp->ctxIt, *cp->ctxIrIt, cp->ppIt);
   }
 }
