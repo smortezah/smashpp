@@ -651,12 +651,12 @@ auto Filter::extract_seg(std::vector<PosRow>& pos_out, uint8_t round, uint8_t ru
       segments.push_back({row.tar, row.beg_pos, size});
 
       if (write_files) {
-        auto subseq = std::make_unique<SubSeq>();
-        subseq->inName = row.tar;
+        SubSeq subseq;
+        subseq.inName = row.tar;
         const auto seg{gen_name(row.run_num, row.ref, row.tar, Format::segment)};
-        subseq->outName = std::format("{}{}", seg, seg_idx);
-        subseq->begPos = row.beg_pos;
-        subseq->size = static_cast<std::streamsize>(size);
+        subseq.outName = std::format("{}{}", seg, seg_idx);
+        subseq.begPos = row.beg_pos;
+        subseq.size = static_cast<std::streamsize>(size);
         extract_subseq(subseq);
       }
       ++seg_idx;

@@ -28,10 +28,10 @@ class FCM {  // Finite-context models
   std::string tarSegMsg;
 
   explicit FCM(const Param&);
-  void store(std::unique_ptr<Param>&, uint8_t);  // Build FCM
-  void compress(std::unique_ptr<Param>&, uint8_t);
-  void self_compress(std::unique_ptr<Param>&, uint64_t, uint8_t);
-  void self_compress(std::unique_ptr<Param>&, const SegmentView&, uint64_t, uint8_t);
+  void store(Param&, uint8_t);  // Build FCM
+  void compress(Param&, uint8_t);
+  void self_compress(const Param&, uint64_t, uint8_t);
+  void self_compress(const Param&, const SegmentView&, uint64_t, uint8_t);
   void aggregate_slf_ent(std::vector<PosRow>&, uint8_t, uint8_t, std::string, bool) const;
 
  private:
@@ -48,29 +48,29 @@ class FCM {  // Finite-context models
   void show_info(std::unique_ptr<Param>&) const;  // Show inputs info on the screen
   void alloc_model();                             // Allocate memory to models
 
-  void store_1(std::unique_ptr<Param>&);  // Build models one thread
-  void store_n(std::unique_ptr<Param>&);  // Build models multiple threads
-  void store_all_1(const std::string&);   // Build multiple models in one pass
+  void store_1(const Param&);            // Build models one thread
+  void store_n(const Param&);            // Build models multiple threads
+  void store_all_1(const std::string&);  // Build multiple models in one pass
   template <typename Mask, typename ContIter>
   void store_impl(const std::string&, Mask, ContIter);  // Fill data struct
 
   template <typename ContIter>
-  void compress_1(std::unique_ptr<Param>&, ContIter);  // Compress with 1 model
-  void compress_n(std::unique_ptr<Param>&);            // Compress with n Models
+  void compress_1(const Param&, ContIter);  // Compress with 1 model
+  void compress_n(const Param&);            // Compress with n Models
   template <typename ContIter>
-  void compress_n_parent(std::unique_ptr<CompressPar>&, ContIter, uint8_t) const;
+  void compress_n_parent(CompressPar&, ContIter, uint8_t) const;
   template <typename ContIter>
-  void compress_n_child(std::unique_ptr<CompressPar>&, ContIter, uint8_t) const;
-  void compress_n_parent_context(std::unique_ptr<CompressPar>&) const;
-  void compress_n_child_context(std::unique_ptr<CompressPar>&) const;
+  void compress_n_child(CompressPar&, ContIter, uint8_t) const;
+  void compress_n_parent_context(CompressPar&) const;
+  void compress_n_child_context(CompressPar&) const;
 
-  void self_compress(std::unique_ptr<Param>&, const SegmentView*, uint64_t, uint8_t);
+  void self_compress(const Param&, const SegmentView*, uint64_t, uint8_t);
   void self_compress_alloc();
   template <typename ContIter>
-  void self_compress_1(std::unique_ptr<Param>&, ContIter, const SegmentView*, uint64_t);
-  void self_compress_n(std::unique_ptr<Param>&, const SegmentView*, uint64_t);
+  void self_compress_1(const Param&, ContIter, const SegmentView*, uint64_t);
+  void self_compress_n(const Param&, const SegmentView*, uint64_t);
   template <typename ContIter>
-  void self_compress_n_parent(std::unique_ptr<CompressPar>&, ContIter, uint8_t, uint64_t&) const;
+  void self_compress_n_parent(CompressPar&, ContIter, uint8_t, uint64_t&) const;
 
   template <typename OutT, typename ContIter>
   auto freqs_ir0(ContIter, uint64_t) const -> std::array<OutT, CARDIN>;
@@ -80,7 +80,7 @@ class FCM {  // Finite-context models
   auto freqs_ir2(ContIter, ProbParIter) const -> std::array<OutT, CARDIN>;
   auto weight_next(prc_t, prc_t, prc_t) const -> prc_t;
   template <typename FreqIter>
-  void correct_stmm(std::unique_ptr<CompressPar>&, FreqIter) const;
+  void correct_stmm(CompressPar&, FreqIter) const;
 #ifdef ARRAY_HISTORY
   template <typename History, typename Value>
   void update_hist_stmm(History&, Value) const;

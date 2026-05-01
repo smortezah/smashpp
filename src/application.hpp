@@ -34,13 +34,10 @@ class application {
   void exe(int, char**);
 
  private:
-  void run(std::unique_ptr<Param>&);
-  auto run_mode(std::unique_ptr<Param>&, uint8_t, const std::string&, const std::string&)
-      -> std::vector<PosRow>;
-  auto run_modes_parallel(std::unique_ptr<Param>&, const std::string&, const std::string&)
-      -> std::vector<PosRow>;
-  auto run_round(std::unique_ptr<Param>&, uint8_t, uint8_t, std::vector<PosRow>&, uint64_t&)
-      -> uint64_t;
+  void run(Param&);
+  auto run_mode(Param&, uint8_t, const std::string&, const std::string&) -> std::vector<PosRow>;
+  auto run_modes_parallel(Param&, const std::string&, const std::string&) -> std::vector<PosRow>;
+  auto run_round(Param&, uint8_t, uint8_t, std::vector<PosRow>&, uint64_t&) -> uint64_t;
 
   void prepare_data(Param&);
   void remove_temp_seg(Param&, uint64_t);
@@ -84,29 +81,29 @@ void application::exe(int argc, char* argv[]) {
     auto paint = std::make_unique<VizPaint>();
     paint->plot(vizpar);
   } else {
-    auto par = std::make_unique<Param>();
-    par->parse(argc, argv);
+    Param par;
+    par.parse(argc, argv);
     run(par);
   }
 }
 
-void application::run(std::unique_ptr<Param>& par) {
+void application::run(Param& par) {
   std::vector<PosRow> pos_out;
 
   // FASTA/FASTQ to seq, if applicable
-  prepare_data(*par);
+  prepare_data(par);
 
-  std::string ref_round1 = par->ref;
-  std::string tar_round1 = par->tar;
-  const auto concurrent_modes = (par->nthr > 1 && !par->verbose) ? 2ull : 1ull;
-  enforce_memory_budget(*par, concurrent_modes);
+  std::string ref_round1 = par.ref;
+  std::string tar_round1 = par.tar;
+  const auto concurrent_modes = (par.nthr > 1 && !par.verbose) ? 2ull : 1ull;
+  enforce_memory_budget(par, concurrent_modes);
 
   const auto append_rows = [](auto& out, auto& rows) {
     out.insert(std::end(out), std::make_move_iterator(std::begin(rows)),
                std::make_move_iterator(std::end(rows)));
   };
 
-  if (par->nthr > 1 && !par->verbose) {
+  if (par.nthr > 1 && !par.verbose) {
     auto rows = run_modes_parallel(par, ref_round1, tar_round1);
     append_rows(pos_out, rows);
   } else {
@@ -117,31 +114,30 @@ void application::run(std::unique_ptr<Param>& par) {
   }
 
   if (!pos_out.empty()) {
-    auto pos_file = std::make_unique<PositionFile>();
-    pos_file->param_list = par->param_list;
-    pos_file->info->ref = file_name(par->original_ref.empty() ? par->ref : par->original_ref);
-    pos_file->info->ref_size = file_size(par->ref);
-    pos_file->info->tar = file_name(par->original_tar.empty() ? par->tar : par->original_tar);
-    pos_file->info->tar_size = file_size(par->tar);
-    pos_file->dump(pos_out, par->asym_region, par->format);
+    PositionFile pos_file;
+    pos_file.param_list = par.param_list;
+    pos_file.info->ref = file_name(par.original_ref.empty() ? par.ref : par.original_ref);
+    pos_file.info->ref_size = file_size(par.ref);
+    pos_file.info->tar = file_name(par.original_tar.empty() ? par.tar : par.original_tar);
+    pos_file.info->tar_size = file_size(par.tar);
+    pos_file.dump(pos_out, par.asym_region, par.format);
   }
 
-  remove_temp_seq(*par);
+  remove_temp_seq(par);
 }
 
-std::vector<PosRow> application::run_modes_parallel(std::unique_ptr<Param>& par,
-                                                    const std::string& ref_round1,
+std::vector<PosRow> application::run_modes_parallel(Param& par, const std::string& ref_round1,
                                                     const std::string& tar_round1) {
-  auto regular = par->clone();
-  auto inverted = par->clone();
-  const auto regular_threads = static_cast<uint8_t>(std::max<uint32_t>(1, par->nthr / 2));
+  auto regular = par.clone();
+  auto inverted = par.clone();
+  const auto regular_threads = static_cast<uint8_t>(std::max<uint32_t>(1, par.nthr / 2));
   const auto inverted_threads =
-      static_cast<uint8_t>(std::max<uint32_t>(1, par->nthr - regular_threads));
+      static_cast<uint8_t>(std::max<uint32_t>(1, par.nthr - regular_threads));
 
-  regular->nthr = regular_threads;
-  inverted->nthr = inverted_threads;
-  regular->quiet = true;
-  inverted->quiet = true;
+  regular.nthr = regular_threads;
+  inverted.nthr = inverted_threads;
+  regular.quiet = true;
+  inverted.quiet = true;
 
   const auto message = std::format(
       "[+] Running regular and inverted modes in parallel ({} + {} "
@@ -173,7 +169,7 @@ std::vector<PosRow> application::run_modes_parallel(std::unique_ptr<Param>& par,
   return pos_out;
 }
 
-std::vector<PosRow> application::run_mode(std::unique_ptr<Param>& par, uint8_t run_num,
+std::vector<PosRow> application::run_mode(Param& par, uint8_t run_num,
                                           const std::string& ref_round1,
                                           const std::string& tar_round1) {
   std::vector<PosRow> pos_out;
@@ -183,93 +179,93 @@ std::vector<PosRow> application::run_mode(std::unique_ptr<Param>& par, uint8_t r
 
   // Round 2: old ref = new tar & old tar segments = new refs
   if (num_seg_round1 != 0) {
-    if (par->verbose) {
-      par->message = italic("Repeat above process for each segment");
-      if (!par->quiet) {
-        std::cerr << '\n' << par->message << '\n';
+    if (par.verbose) {
+      par.message = italic("Repeat above process for each segment");
+      if (!par.quiet) {
+        std::cerr << '\n' << par.message << '\n';
       }
     } else {
-      par->message = "[+] Repeating above process for ";
+      par.message = "[+] Repeating above process for ";
     }
 
-    const auto name_seg_round1{gen_name(par->ID, ref_round1, tar_round1, Format::segment)};
-    std::string tar_round2 = par->tar = par->ref;
+    const auto name_seg_round1{gen_name(par.ID, ref_round1, tar_round1, Format::segment)};
+    std::string tar_round2 = par.tar = par.ref;
 
     for (uint64_t i = 0; i < num_seg_round1; ++i) {
-      if (!par->quiet && !par->verbose) {
-        std::cerr << "\r" << par->message << "segment " << i + 1 << " ... ";
+      if (!par.quiet && !par.verbose) {
+        std::cerr << "\r" << par.message << "segment " << i + 1 << " ... ";
       }
 
-      std::string ref_round2 = par->ref = std::format("{}{}", name_seg_round1, i);
+      std::string ref_round2 = par.ref = std::format("{}{}", name_seg_round1, i);
 
       auto num_seg_round2 = run_round(par, 2, run_num, pos_out, current_pos_row);
-      if (!par->quiet && par->verbose) {
+      if (!par.quiet && par.verbose) {
         std::cerr << '\n';
       }
 
       if (num_seg_round2 != 0) {
         // Round 3
-        if (par->deep) {
-          if (!par->quiet && par->verbose) {
+        if (par.deep) {
+          if (!par.quiet && par.verbose) {
             std::cerr << "    " << italic("Deep compression") << '\n';
           }
 
-          const auto name_seg_round2{gen_name(par->ID, ref_round2, tar_round2, Format::segment)};
-          par->tar = ref_round2;
+          const auto name_seg_round2{gen_name(par.ID, ref_round2, tar_round2, Format::segment)};
+          par.tar = ref_round2;
 
           for (uint64_t j = 0; j < num_seg_round2; ++j) {
-            par->ref = std::format("{}{}", name_seg_round2, j);
+            par.ref = std::format("{}{}", name_seg_round2, j);
             auto num_seg_round3 = run_round(par, 3, run_num, pos_out, current_pos_row);
-            if (!par->quiet && par->verbose) {
+            if (!par.quiet && par.verbose) {
               std::cerr << "\n";
             }
-            remove_temp_seg(*par, num_seg_round3);
+            remove_temp_seg(par, num_seg_round3);
           }
         }  // Round 3
 
-        par->ref = ref_round2;
-        par->tar = tar_round2;
-        remove_temp_seg(*par, num_seg_round2);
+        par.ref = ref_round2;
+        par.tar = tar_round2;
+        remove_temp_seg(par, num_seg_round2);
       }
     }
 
-    if (!par->quiet && !par->verbose) {
-      std::cerr << "\r" << par->message << "all segments done.\n\n";
+    if (!par.quiet && !par.verbose) {
+      std::cerr << "\r" << par.message << "all segments done.\n\n";
     }
   }  // Round 2
 
-  par->ref = ref_round1;
-  par->tar = tar_round1;
-  remove_temp_seg(*par, num_seg_round1);
+  par.ref = ref_round1;
+  par.tar = tar_round1;
+  remove_temp_seg(par, num_seg_round1);
 
   return pos_out;
 }
 
-uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint8_t run_num,
+uint64_t application::run_round(Param& par, uint8_t round, uint8_t run_num,
                                 std::vector<PosRow>& pos_out, uint64_t& current_pos_row) {
-  par->ID = run_num;
-  par->refName = file_name(par->ref);
-  par->tarName = file_name(par->tar);
-  auto models = std::make_unique<FCM>(*par);
+  par.ID = run_num;
+  par.refName = file_name(par.ref);
+  par.tarName = file_name(par.tar);
+  FCM models{par};
 
-  if (!par->quiet && par->verbose && par->showInfo) {
-    info{}.show(*par);
-    par->showInfo = false;
+  if (!par.quiet && par.verbose && par.showInfo) {
+    info{}.show(par);
+    par.showInfo = false;
   }
-  if (!par->quiet && round == 1 && run_num == 0) {
+  if (!par.quiet && round == 1 && run_num == 0) {
     std::cerr << bold("====[ REGULAR MODE ]==================================\n");
-  } else if (!par->quiet && round == 1 && run_num == 1) {
+  } else if (!par.quiet && round == 1 && run_num == 1) {
     std::cerr << bold("====[ INVERTED MODE ]=================================\n");
   }
 
   // Make all IRs consistent
-  for (auto& ref_model : models->rMs) {
+  for (auto& ref_model : models.rMs) {
     ref_model.ir = run_num;
     if (ref_model.child) {
       ref_model.child->ir = run_num;
     }
   }
-  for (auto& tar_model : models->tMs) {
+  for (auto& tar_model : models.tMs) {
     tar_model.ir = run_num;
     if (tar_model.child) {
       tar_model.child->ir = run_num;
@@ -277,61 +273,61 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
   }
 
   // Build models and Compress
-  models->store(par, round);
-  models->compress(par, round);
+  models.store(par, round);
+  models.compress(par, round);
 
   // Filter and segment
-  auto filter = std::make_unique<Filter>(*par);
-  filter->smooth_seg(pos_out, models->profileEnt, *par, round, current_pos_row);
+  Filter filter{par};
+  filter.smooth_seg(pos_out, models.profileEnt, par, round, current_pos_row);
 
-  if (filter->nSegs == 0) {
-    if (!par->quiet && round == 1) {
+  if (filter.nSegs == 0) {
+    if (!par.quiet && round == 1) {
       std::cerr << '\n';
     }
     return 0;  // continue;
   }
   const auto need_segment_files =
-      par->saveAll || par->saveSegment || round == 1 || (round == 2 && par->deep);
+      par.saveAll || par.saveSegment || round == 1 || (round == 2 && par.deep);
   const auto segment_views =
-      filter->extract_seg(pos_out, round, run_num, par->ref, need_segment_files);
-  if (segment_views.size() != filter->nSegs) {
+      filter.extract_seg(pos_out, round, run_num, par.ref, need_segment_files);
+  if (segment_views.size() != filter.nSegs) {
     error("failed to prepare segment views.");
   }
 
   // Ref-free compress
-  if (!par->noRedun) {
-    if (!par->quiet && par->verbose) {
+  if (!par.noRedun) {
+    if (!par.quiet && par.verbose) {
       if (round == 3) {
         std::cerr << "    ";
       }
-      std::cerr << "[+] Reference-free compression of the segment"
-                << (filter->nSegs == 1 ? "" : "s") << '\n';
+      std::cerr << "[+] Reference-free compression of the segment" << (filter.nSegs == 1 ? "" : "s")
+                << '\n';
     } else {
       if (round == 1) {
-        par->message = "[+] Ref-free compression of ";
+        par.message = "[+] Ref-free compression of ";
       }
     }
 
-    const auto seg{gen_name(par->ID, par->ref, par->tar, Format::segment)};
-    models->selfEnt.resize(segment_views.size());
+    const auto seg{gen_name(par.ID, par.ref, par.tar, Format::segment)};
+    models.selfEnt.resize(segment_views.size());
     for (uint64_t i = 0; i < segment_views.size(); ++i) {
-      if (!par->quiet && !par->verbose && round == 1) {
-        std::cerr << "\r" << par->message << "segment " << i + 1 << " ...";
+      if (!par.quiet && !par.verbose && round == 1) {
+        std::cerr << "\r" << par.message << "segment " << i + 1 << " ...";
       }
 
-      par->seq = std::format("{}{}", seg, i);
-      models->self_compress(par, segment_views.at(i), i, round);
+      par.seq = std::format("{}{}", seg, i);
+      models.self_compress(par, segment_views.at(i), i, round);
     }
 
-    models->aggregate_slf_ent(pos_out, round, run_num, par->ref, par->noRedun);
-    if (!par->quiet && !par->verbose && round == 1) {
-      std::cerr << "\r" << par->message << (filter->nSegs == 1 ? "the segment " : "all segments ")
+    models.aggregate_slf_ent(pos_out, round, run_num, par.ref, par.noRedun);
+    if (!par.quiet && !par.verbose && round == 1) {
+      std::cerr << "\r" << par.message << (filter.nSegs == 1 ? "the segment " : "all segments ")
                 << "done.         " << '\n';
     }
   }
 
-  current_pos_row += filter->nSegs;
-  return filter->nSegs;
+  current_pos_row += filter.nSegs;
+  return filter.nSegs;
 }
 
 void application::prepare_data(Param& par) {

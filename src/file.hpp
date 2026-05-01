@@ -163,18 +163,18 @@ inline static void check_file(const std::string& name) {  // Must be inline
 }
 
 // Must be inline
-inline static void extract_subseq(std::unique_ptr<SubSeq>& subseq) {
-  if (subseq->size <= 0) {
+inline static void extract_subseq(const SubSeq& subseq) {
+  if (subseq.size <= 0) {
     return;
   }
 
-  std::ifstream in_file(subseq->inName);
-  std::ofstream out_file(subseq->outName);
+  std::ifstream in_file(subseq.inName);
+  std::ofstream out_file(subseq.outName);
 
-  in_file.seekg(subseq->begPos);
-  std::vector<char> buffer(static_cast<uint64_t>(subseq->size), 0);
-  in_file.read(buffer.data(), subseq->size);
-  out_file.write(buffer.data(), subseq->size);
+  in_file.seekg(subseq.begPos);
+  std::vector<char> buffer(static_cast<uint64_t>(subseq.size), 0);
+  in_file.read(buffer.data(), subseq.size);
+  out_file.write(buffer.data(), subseq.size);
 
   in_file.close();
   out_file.close();
