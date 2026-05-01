@@ -191,6 +191,23 @@ cd example
 
 If `smashpp` is already on your `PATH`, you can drop the `../dist/bin/` prefix.
 
+## Testing and Benchmarks
+
+After configuring and building from source, run the regression suite with:
+
+```sh
+ctest --test-dir build --output-on-failure
+```
+
+For local performance checks, run the benchmark target:
+
+```sh
+cmake --build build --target smashpp-benchmark
+```
+
+The benchmark generates deterministic inputs and writes timing rows to `build/benchmarks/summary.csv`.
+Use the same compiler, build type, and machine when comparing results.
+
 ## Cite
 
 If you find Smash++ useful in your research, please acknowledge our work by citing:
