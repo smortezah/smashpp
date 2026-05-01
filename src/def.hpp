@@ -90,6 +90,8 @@ struct PosRow {
         seg_num(row.seg_num),
         round(row.round) {}
 
+  PosRow& operator=(const PosRow& row) = default;
+
   // Test
   void show() const {
     std::cerr << int(round) << ' ' << int(run_num) << ' ' << seg_num << ' ' << ref << ' ' << tar
