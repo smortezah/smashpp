@@ -50,6 +50,7 @@ class FCM {  // Finite-context models
 
   void store_1(std::unique_ptr<Param>&);  // Build models one thread
   void store_n(std::unique_ptr<Param>&);  // Build models multiple threads
+  void store_all_1(const std::string&);   // Build multiple models in one pass
   template <typename Mask, typename ContIter>
   void store_impl(const std::string&, Mask, ContIter);  // Fill data struct
 

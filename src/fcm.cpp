@@ -70,6 +70,8 @@ class SampleTicker {
   uint64_t sample_step_;
   uint64_t remaining_{0};
 };
+
+auto context_mask(uint8_t k) -> uint64_t { return (1ull << (2u * k)) - 1ull; }
 }  // namespace
 
 FCM::FCM(std::unique_ptr<Param>& par)
@@ -403,6 +405,11 @@ void FCM::store(std::unique_ptr<Param>& par, uint8_t round) {
 }
 
 inline void FCM::store_1(std::unique_ptr<Param>& par) {
+  if (rMs.size() > 1) {
+    store_all_1(par->ref);
+    return;
+  }
+
   auto tbl64_iter = std::begin(tbl64);
   auto tbl32_iter = std::begin(tbl32);
   auto lgtbl8_iter = std::begin(lgtbl8);
@@ -424,6 +431,74 @@ inline void FCM::store_1(std::unique_ptr<Param>& par) {
         break;
       default:
         break;
+    }
+  }
+}
+
+void FCM::store_all_1(const std::string& ref) {
+  struct StoreCursor {
+    Container cont;
+    uint64_t mask;
+    uint64_t ctx;
+    size_t index;
+  };
+
+  std::vector<StoreCursor> cursors;
+  cursors.reserve(rMs.size());
+  size_t tbl64_idx{0};
+  size_t tbl32_idx{0};
+  size_t lgtbl8_idx{0};
+  size_t cmls4_idx{0};
+
+  for (const auto& m : rMs) {
+    switch (m.cont) {
+      case Container::sketch_8:
+        cursors.push_back({m.cont, context_mask(m.k), 0, cmls4_idx++});
+        break;
+      case Container::log_table_8:
+        cursors.push_back({m.cont, context_mask(m.k), 0, lgtbl8_idx++});
+        break;
+      case Container::table_64:
+        cursors.push_back({m.cont, context_mask(m.k), 0, tbl64_idx++});
+        break;
+      case Container::table_32:
+        cursors.push_back({m.cont, context_mask(m.k), 0, tbl32_idx++});
+        break;
+    }
+  }
+
+  std::ifstream rf(ref);
+  for (std::vector<char> buffer(FILE_READ_BUF, 0);;) {
+    const auto bytes_read = read_file_chunk(rf, buffer);
+    if (bytes_read == 0) {
+      break;
+    }
+
+    const auto chunk_end = std::begin(buffer) + bytes_read;
+    for (auto it = std::begin(buffer); it != chunk_end; ++it) {
+      const auto c = normalize_base(*it, ref);
+      if (c == '\0') {
+        continue;
+      }
+
+      const auto code = base_code(c);
+      for (auto& cursor : cursors) {
+        cursor.ctx = ((cursor.ctx & cursor.mask) << 2u) | code;
+        switch (cursor.cont) {
+          case Container::sketch_8:
+            cmls4[cursor.index]->update(cursor.ctx);
+            break;
+          case Container::log_table_8:
+            lgtbl8[cursor.index]->update(static_cast<uint32_t>(cursor.ctx));
+            break;
+          case Container::table_64:
+            tbl64[cursor.index]->update(static_cast<uint32_t>(cursor.ctx));
+            break;
+          case Container::table_32:
+            tbl32[cursor.index]->update(static_cast<uint32_t>(cursor.ctx));
+            break;
+        }
+      }
     }
   }
 }
