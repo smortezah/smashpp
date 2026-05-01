@@ -5,9 +5,13 @@
 
 #include <algorithm>
 #include <array>
+#include <charconv>
+#include <cmath>
 #include <format>
 #include <fstream>
+#include <limits>
 #include <memory>
+#include <system_error>
 #include <vector>
 
 #include "check.hpp"
@@ -291,53 +295,118 @@ void Param::set_auto_model_par() {
 
 template <typename Iter>
 void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
-  const auto parse_context_size = [](const std::string& value) {
-    const auto context = std::stoi(value);
-    if (context < 0 || context > 31) {
-      error("model context size must be in range [0,31].");
+  const auto parse_integer = [](const std::string& value, const std::string& label, int64_t min,
+                                int64_t max) {
+    int64_t parsed{0};
+    const auto* first = value.data();
+    const auto* last = first + value.size();
+    const auto [ptr, ec] = std::from_chars(first, last, parsed);
+
+    if (value.empty() || ec == std::errc::invalid_argument || ptr != last) {
+      error(std::format("{} must be an integer.", label));
     }
-    return static_cast<uint8_t>(context);
+    if (ec == std::errc::result_out_of_range || parsed < min || parsed > max) {
+      error(std::format("{} must be in range [{},{}].", label, min, max));
+    }
+
+    return parsed;
   };
-  const auto parse_width = [](const std::string& value) {
-    const auto width = std::stoull(value);
-    if (width > 63) {
-      error("sketch width exponent must be in range [0,63].");
+  const auto parse_float = [](const std::string& value, const std::string& label) {
+    prc_t parsed{0.0};
+    size_t pos{0};
+    try {
+      parsed = std::stod(value, &pos);
+    } catch (const std::exception&) {
+      error(std::format("{} must be a finite number.", label));
     }
-    return pow2(width);
+
+    if (pos != value.size() || !std::isfinite(parsed)) {
+      error(std::format("{} must be a finite number.", label));
+    }
+
+    return parsed;
+  };
+  const auto parse_context_size = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "model context size", 0, 31);
+    return static_cast<uint8_t>(parsed);
+  };
+  const auto parse_width = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "sketch width exponent", 1, 63);
+    return pow2(static_cast<uint64_t>(parsed));
+  };
+  const auto parse_depth = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "sketch depth", 1, 255);
+    return static_cast<uint8_t>(parsed);
+  };
+  const auto parse_ir = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "inverted repeat mode", 0, 2);
+    return static_cast<uint8_t>(parsed);
+  };
+  const auto parse_threshold = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "tolerant model threshold", 0, 255);
+    return static_cast<uint8_t>(parsed);
+  };
+  const auto parse_alpha = [&](const std::string& value, const std::string& label) {
+    const auto parsed = parse_float(value, label);
+    if (parsed <= 0.0) {
+      error(std::format("{} must be greater than 0.", label));
+    }
+    return parsed;
+  };
+  const auto parse_gamma = [&](const std::string& value, const std::string& label) {
+    const auto parsed = parse_float(value, label);
+    if (parsed < 0.0 || parsed > 1.0) {
+      error(std::format("{} must be in range [0,1].", label));
+    }
+    return parsed;
   };
 
   std::vector<std::string> mdls;
   split(begin, end, ':', mdls);
   for (const auto& e : mdls) {
+    if (e.empty()) {
+      error("incorrect model parameters.");
+    }
+
     // Markov and tolerant models
     std::vector<std::string> m_tm;
     split(std::begin(e), std::end(e), '/', m_tm);
+    if (m_tm.size() > 2 || m_tm[0].empty()) {
+      error("incorrect model parameters.");
+    }
+
     std::vector<std::string> m;
     split(std::begin(m_tm[0]), std::end(m_tm[0]), ',', m);
+    if (m.size() != 4 && m.size() != 6) {
+      error("incorrect model parameters.");
+    }
     const auto context = parse_context_size(m[0]);
 
     if (m.size() == 4) {
+      const auto ir = parse_ir(m[1]);
+      const auto alpha = parse_alpha(m[2], "model alpha");
+      const auto gamma = parse_gamma(m[3], "model gamma");
       if (context > K_MAX_LGTBL8) {
-        Ms.push_back(MMPar(context, W, D, static_cast<uint8_t>(std::stoi(m[1])), std::stof(m[2]),
-                           std::stof(m[3])));
+        Ms.emplace_back(context, W, D, ir, alpha, gamma);
       } else {
-        Ms.push_back(MMPar(context, static_cast<uint8_t>(std::stoi(m[1])), std::stof(m[2]),
-                           std::stof(m[3])));
+        Ms.emplace_back(context, ir, alpha, gamma);
       }
-    } else if (m.size() == 6) {
-      Ms.push_back(MMPar(context, parse_width(m[1]), static_cast<uint8_t>(std::stoi(m[2])),
-                         static_cast<uint8_t>(std::stoi(m[3])), std::stof(m[4]), std::stof(m[5])));
     } else {
-      error("incorrect model parameters.");
+      Ms.emplace_back(context, parse_width(m[1]), parse_depth(m[2]), parse_ir(m[3]),
+                      parse_alpha(m[4], "model alpha"), parse_gamma(m[5], "model gamma"));
     }
 
     // Tolerant models
     if (m_tm.size() == 2) {
       std::vector<std::string> tm;
       split(std::begin(m_tm[1]), std::end(m_tm[1]), ',', tm);
-      Ms.back().child = std::make_shared<STMMPar>(
-          STMMPar(context, static_cast<uint8_t>(std::stoi(tm[0])),
-                  static_cast<uint8_t>(std::stoi(tm[1])), std::stof(tm[2]), std::stof(tm[3])));
+      if (tm.size() != 4) {
+        error("incorrect tolerant model parameters.");
+      }
+
+      Ms.back().child = std::make_shared<STMMPar>(context, parse_threshold(tm[0]), parse_ir(tm[1]),
+                                                  parse_alpha(tm[2], "tolerant model alpha"),
+                                                  parse_gamma(tm[3], "tolerant model gamma"));
     }
   }
 }
