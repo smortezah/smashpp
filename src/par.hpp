@@ -75,6 +75,15 @@ inline auto model_container(const MMPar& model) -> Container {
   return Container::table_64;
 }
 
+inline auto sampled_count(uint64_t size, uint64_t sample_step) -> uint64_t {
+  if (size == 0) {
+    return 0;
+  }
+
+  const auto step = sample_step == 0 ? 1 : sample_step;
+  return (size - 1) / step + 1;
+}
+
 inline auto clone_model_params(const std::vector<MMPar>& models) -> std::vector<MMPar> {
   std::vector<MMPar> clones;
   clones.reserve(models.size());

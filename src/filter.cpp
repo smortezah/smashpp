@@ -29,21 +29,6 @@ class ProfileReader {
     return true;
   }
 
-  void skip_consumed_lines(uint64_t count) {
-    if (count == 0) {
-      return;
-    }
-
-    const auto skip = count - 1;
-    if (skip > profile_.size() - pos_) {
-      pos_ = profile_.size();
-    } else {
-      pos_ += skip;
-    }
-  }
-
-  auto lines() const -> uint64_t { return static_cast<uint64_t>(profile_.size()); }
-
  private:
   const std::vector<prc_t>& profile_;
   size_t pos_{0};
@@ -243,17 +228,17 @@ void Filter::smooth_seg_win1(std::vector<PosRow>& pos_out, const std::vector<prc
   }
 
   ProfileReader profile_reader(profile);
-  const auto jump_lines = [&]() { profile_reader.skip_consumed_lines(par->sampleStep); };
 
-  auto seg = make_segment(par, round, profile_reader.lines());
+  auto seg = make_segment(par, round, file_size(par->tar));
   auto filtered{0.f};
   uint64_t symsNo{0};
 
-  for (; profile_reader.read(filtered); jump_lines()) {
+  for (; profile_reader.read(filtered);) {
     if (par->saveFilter || par->saveAll) {
       filter_file << precision(PREC_FIL, filtered) << '\n';
     }
     seg->partition(pos_out, filtered);
+    ++seg->pos;
     if (!par->quiet && par->verbose) {
       show_progress(++symsNo, seg->totalSize, par->message);
     }
@@ -452,8 +437,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, const std::vec
   }
 
   ProfileReader profile_reader(profile);
-  auto seg = make_segment(par, round, profile_reader.lines());
-  const auto jump_lines = [&]() { profile_reader.skip_consumed_lines(par->sampleStep); };
+  auto seg = make_segment(par, round, file_size(par->tar));
 
   std::vector<float> seq;
   seq.reserve(filt_size);
@@ -464,7 +448,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, const std::vec
   // First value
   {
     auto i = (filt_size >> 1u) + 1;
-    for (; i-- && profile_reader.read(entropy); jump_lines()) {
+    for (; i-- && profile_reader.read(entropy);) {
       seq.push_back(entropy);
       sum += entropy;
     }
@@ -487,7 +471,7 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, const std::vec
 
   // The rest
   uint32_t idx{0};
-  for (; profile_reader.read(entropy); jump_lines()) {
+  for (; profile_reader.read(entropy);) {
     sum += entropy - seq[idx];
     filtered = sum / filt_size;
     if (SaveFilter) {
@@ -538,9 +522,6 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
 
   ProfileReader profile_reader(profile);
   auto seg = make_segment(par, round, file_size(par->tar));
-  const auto jump_lines = [&]() {
-    // for (uint64_t i = par->sampleStep; i--;) ignore_this_line(prfF);
-  };
   std::vector<float> filtered_values;
   filtered_values.reserve(FILE_WRITE_BUF);
   auto write_filtered_values = [&]() {
@@ -557,7 +538,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   // First value
   {
     auto i = (filt_size >> 1u) + 1;
-    for (; i-- && profile_reader.read(entropy); jump_lines()) {
+    for (; i-- && profile_reader.read(entropy);) {
       seq.push_back(entropy);
     }
     auto num_ent_exist = (filt_size >> 1u) + 1 - i;
@@ -585,7 +566,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   // The rest
   uint32_t idx{0};
   auto seqBeg = std::begin(seq);
-  for (; profile_reader.read(entropy); jump_lines()) {
+  for (; profile_reader.read(entropy);) {
     seq[idx] = entropy;
     idx = (idx + 1) % filt_size;
     sum = (std::inner_product(winBeg, winEnd - idx, seqBeg + idx, 0.f) +

@@ -555,7 +555,7 @@ void FCM::compress_1(std::unique_ptr<Param>& par, ContIter cont) {
     prf_file.open(gen_name(par->ID, par->ref, par->tar, Format::profile));
   }
   const auto totalSize = file_size(par->tar);
-  profileEnt.reserve(totalSize / par->sampleStep + 1);
+  profileEnt.reserve(sampled_count(totalSize, par->sampleStep));
   const bool show_progress_enabled = !par->quiet && par->verbose;
   std::vector<prc_t> pending_profile_output;
   pending_profile_output.reserve(FILE_WRITE_BUF);
@@ -686,7 +686,7 @@ void FCM::compress_n(std::unique_ptr<Param>& par) {
     prf_file.open(gen_name(par->ID, par->ref, par->tar, Format::profile));
   }
   const auto totalSize = file_size(par->tar);
-  profileEnt.reserve(totalSize / par->sampleStep + 1);
+  profileEnt.reserve(sampled_count(totalSize, par->sampleStep));
   const bool show_progress_enabled = !par->quiet && par->verbose;
   std::vector<prc_t> pending_profile_output;
   pending_profile_output.reserve(FILE_WRITE_BUF);

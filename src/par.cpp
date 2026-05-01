@@ -251,7 +251,8 @@ void Param::parse(int argc, char**& argv) {
     sampleStep = static_cast<uint64_t>(std::ceil(min_ref_tar / 5000.0));
   }
 
-  keep_in_range(1ull, filt_size, std::min(file_size(ref), file_size(tar)) / sampleStep);
+  const auto max_filter_size = sampled_count(std::min(file_size(ref), file_size(tar)), sampleStep);
+  keep_in_range(1ull, filt_size, max_filter_size);
 }
 
 void Param::set_auto_model_par() {

@@ -215,7 +215,7 @@ inline auto model_set_memory_bytes(const std::vector<MMPar>& models) -> uint64_t
 }
 
 inline auto profile_memory_bytes(const Param& par) -> uint64_t {
-  const auto samples = file_size(par.tar) / par.sampleStep + 1;
+  const auto samples = sampled_count(file_size(par.tar), par.sampleStep);
   return saturating_mul(samples, sizeof(prc_t));
 }
 
@@ -227,7 +227,7 @@ inline auto filtered_memory_bytes(const Param& par) -> uint64_t {
     return 0;
   }
 
-  const auto samples = file_size(par.tar) / par.sampleStep + 1;
+  const auto samples = sampled_count(file_size(par.tar), par.sampleStep);
   return saturating_mul(samples, sizeof(float));
 }
 
