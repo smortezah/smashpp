@@ -74,8 +74,8 @@ class SampleTicker {
 auto context_mask(uint8_t k) -> uint64_t { return (1ull << (2u * k)) - 1ull; }
 }  // namespace
 
-FCM::FCM(std::unique_ptr<Param>& par)
-    : aveEnt(static_cast<prc_t>(0)), rMs(par->refMs), tarSegID(0), entropyN(par->entropyN) {
+FCM::FCM(const Param& par)
+    : aveEnt(static_cast<prc_t>(0)), rMs(par.refMs), tarSegID(0), entropyN(par.entropyN) {
   set_cont(rMs);
   rTMsSize = 0;
   for (const auto& e : rMs) {
@@ -84,7 +84,7 @@ FCM::FCM(std::unique_ptr<Param>& par)
     }
   }
 
-  tMs = par->tarMs;
+  tMs = par.tarMs;
   set_cont(tMs);
   tTMsSize = 0;
   for (const auto& e : tMs) {

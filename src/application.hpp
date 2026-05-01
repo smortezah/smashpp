@@ -250,7 +250,7 @@ uint64_t application::run_round(std::unique_ptr<Param>& par, uint8_t round, uint
   par->ID = run_num;
   par->refName = file_name(par->ref);
   par->tarName = file_name(par->tar);
-  auto models = std::make_unique<FCM>(par);
+  auto models = std::make_unique<FCM>(*par);
 
   if (!par->quiet && par->verbose && par->showInfo) {
     info{}.show(*par);

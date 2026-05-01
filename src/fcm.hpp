@@ -27,7 +27,7 @@ class FCM {  // Finite-context models
   uint64_t tarSegID;
   std::string tarSegMsg;
 
-  explicit FCM(std::unique_ptr<Param>&);
+  explicit FCM(const Param&);
   void store(std::unique_ptr<Param>&, uint8_t);  // Build FCM
   void compress(std::unique_ptr<Param>&, uint8_t);
   void self_compress(std::unique_ptr<Param>&, uint64_t, uint8_t);
