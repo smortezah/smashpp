@@ -76,15 +76,7 @@ FCM::FCM(std::unique_ptr<Param>& par)
 
 inline void FCM::set_cont(std::vector<MMPar>& Ms) {
   for (auto& m : Ms) {
-    if (m.k > K_MAX_LGTBL8) {
-      m.cont = Container::sketch_8;
-    } else if (m.k > K_MAX_TBL32) {
-      m.cont = Container::log_table_8;
-    } else if (m.k > K_MAX_TBL64) {
-      m.cont = Container::table_32;
-    } else {
-      m.cont = Container::table_64;
-    }
+    m.cont = model_container(m);
   }
 }
 
@@ -140,7 +132,8 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
   const auto info_STMM = [&](const std::vector<MMPar>& Ms, char c) {
     for (const auto& e : Ms) {
       std::cerr << std::setw(colWidth) << std::left;
-      if (e.child) switch (c) {
+      if (e.child) {
+        switch (c) {
           case 't':
             std::cerr << static_cast<int>(e.child->thresh);
             break;
@@ -156,8 +149,9 @@ inline void FCM::show_info(std::unique_ptr<Param>& par) const {
           default:
             break;
         }
-      else
+      } else {
         std::cerr << '-';
+      }
     }
   };
   const auto info_filter = [&](char c) {
