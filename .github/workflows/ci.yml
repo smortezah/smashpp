@@ -54,6 +54,9 @@ jobs:
     - name: Test
       run: ctest --test-dir ${{env.BUILD}} -C ${{env.BUILD_TYPE}} --output-on-failure --parallel ${{env.PARALLEL}}
 
+    - name: Package
+      run: cmake --build ${{env.BUILD}} --target package --config ${{env.BUILD_TYPE}}
+
     - name: Install
       if: runner.os != 'Windows'
       run: cmake --install ${{env.BUILD}} --prefix ${{env.INSTALL}} --config ${{env.BUILD_TYPE}}
