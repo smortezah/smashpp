@@ -639,10 +639,9 @@ void FCM::compress_1(const Param& par, ContIter cont) {
     }
   };
   auto emit_entropy = [&](prc_t entropy) {
-    const auto rounded_entropy = static_cast<prc_t>(std::stod(precision(PREC_PRF, entropy)));
-    profileEnt.push_back(rounded_entropy);
+    profileEnt.push_back(entropy);
     if (save_profile) {
-      pending_profile_output.push_back(rounded_entropy);
+      pending_profile_output.push_back(entropy);
     }
   };
   SampleTicker sample_ticker(par.sampleStep);
@@ -771,10 +770,9 @@ void FCM::compress_n(const Param& par) {
     }
   };
   auto emit_entropy = [&](prc_t entropy) {
-    const auto rounded_entropy = static_cast<prc_t>(std::stod(precision(PREC_PRF, entropy)));
-    profileEnt.push_back(rounded_entropy);
+    profileEnt.push_back(entropy);
     if (save_profile) {
-      pending_profile_output.push_back(rounded_entropy);
+      pending_profile_output.push_back(entropy);
     }
   };
   SampleTicker sample_ticker(par.sampleStep);
