@@ -107,6 +107,7 @@ Use `smashpp --help` to print the full CLI help.
 | `-ft`, `--filter-type`                     | `<INT/STRING>` | Window function: `0/rectangular`, `1/hamming`, `2/hann`, `3/blackman`, `4/triangular`, `5/welch`, `6/sine`, `7/nuttall`. | `hann`              |
 | `-fs`, `--filter-scale`                    | `<STRING>`     | Filter scale: `S/small`, `M/medium`, or `L/large`.                                                                       | Auto                |
 | `-d`, `--sampling-step`                    | `<INT>`        | Sampling step.                                                                                                           | Auto                |
+| `--approx-sampled-models`                  | `-`            | Use faster approximate updates between sampled positions in multi-model runs.                                            | Disabled            |
 | `-th`, `--threshold`                       | `<FLOAT>`      | Segmentation threshold.                                                                                                  | `1.5`               |
 | `-rb`, `--reference-begin-guard`           | `<INT>`        | Reference begin guard.                                                                                                   | `0`                 |
 | `-re`, `--reference-end-guard`             | `<INT>`        | Reference end guard.                                                                                                     | `0`                 |
@@ -139,6 +140,14 @@ Custom model strings use the form `k,[w,d,]ir,a,g/t,ir,a,g:...`.
 | `a`   | Estimator.                                                                       |
 | `g`   | Forgetting factor in the range `0.0` to `1.0`.                                   |
 | `t`   | Threshold for the number of substitutions in a tolerant model.                   |
+
+### Output Compatibility
+
+Smash++ output is deterministic for the same executable, options, input files, and platform. Profile files saved with `-sp` or `-sa` still serialize entropy values using the profile precision shown by the program, but filtering and segmentation use full-precision entropy internally.
+
+Because of that, `.fil`, `.pos`, and `.json` output may differ slightly from older Smash++ releases in the final decimal places or in threshold-adjacent segment boundaries. These differences are deterministic and come from avoiding an older round-to-text-and-parse-back step in the compression hot path.
+
+`--approx-sampled-models` is opt-in. It speeds up sampled multi-model runs by updating only contexts between sampled positions, so its `.prf`, `.fil`, `.pos`, and `.json` output should be treated as an approximate mode rather than byte-compatible output with the default model update path.
 
 ### Visualizer Options
 
