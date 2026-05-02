@@ -175,11 +175,17 @@ add_custom_target(
 if(BUILD_TESTING)
   enable_testing()
 
+  function(smashpp_label_test test_name)
+    set_tests_properties(${test_name} PROPERTIES LABELS "${ARGN}")
+  endfunction()
+
   add_test(NAME smashpp-help COMMAND $<TARGET_FILE:smashpp> --help)
   set_tests_properties(smashpp-help PROPERTIES PASS_REGULAR_EXPRESSION "SYNOPSIS")
+  smashpp_label_test(smashpp-help cli)
 
   add_test(NAME smashpp-version COMMAND $<TARGET_FILE:smashpp> --version)
   set_tests_properties(smashpp-version PROPERTIES PASS_REGULAR_EXPRESSION "Smash\\+\\+ .+")
+  smashpp_label_test(smashpp-version cli)
 
   add_test(
       NAME smashpp-version-override
@@ -190,10 +196,11 @@ if(BUILD_TESTING)
               "-DCONFIG=$<CONFIG>"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunVersionOverride.cmake")
-  set_tests_properties(smashpp-version-override PROPERTIES LABELS packaging)
+  smashpp_label_test(smashpp-version-override packaging version)
 
   add_test(NAME smashpp-viz-help COMMAND $<TARGET_FILE:smashpp> viz --help)
   set_tests_properties(smashpp-viz-help PROPERTIES PASS_REGULAR_EXPRESSION "SYNOPSIS")
+  smashpp_label_test(smashpp-viz-help cli viz)
 
   add_test(
       NAME smashpp-missing-format
@@ -203,6 +210,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=output format not specified"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-missing-format cli validation)
 
   add_test(
       NAME smashpp-viz-missing-output
@@ -213,6 +221,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=output image name not specified"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-viz-missing-output cli validation viz)
 
   add_test(
       NAME smashpp-invalid-level-number
@@ -223,6 +232,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=level must be an integer"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-invalid-level-number validation)
 
   add_test(
       NAME smashpp-invalid-threshold-number
@@ -233,6 +243,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=threshold must be a finite number"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-invalid-threshold-number validation)
 
   add_test(
       NAME smashpp-viz-invalid-opacity-number
@@ -244,6 +255,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=opacity must be a finite number"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-viz-invalid-opacity-number validation viz)
 
   add_test(
       NAME smashpp-memory-budget
@@ -258,6 +270,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=estimated peak memory"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-memory-budget validation)
 
   add_test(
       NAME smashpp-invalid-model-ir
@@ -272,6 +285,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=inverted repeat mode must be in range"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-invalid-model-ir validation)
 
   add_test(
       NAME smashpp-invalid-model-alpha
@@ -286,6 +300,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=model alpha must be greater than 0"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-invalid-model-alpha validation)
 
   add_test(
       NAME smashpp-invalid-sketch-width
@@ -300,6 +315,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=sketch width exponent must be in range"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-invalid-sketch-width validation)
 
   add_test(
       NAME smashpp-invalid-sketch-depth
@@ -314,6 +330,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=sketch depth must be in range"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-invalid-sketch-depth validation)
 
   add_test(
       NAME smashpp-example-smoke
@@ -324,6 +341,7 @@ if(BUILD_TESTING)
               "-DTAR=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunSmashppSmoke.cmake")
+  smashpp_label_test(smashpp-example-smoke smoke)
 
   add_test(
       NAME helper-tools-smoke
@@ -333,6 +351,7 @@ if(BUILD_TESTING)
               "-DINV_REP=$<TARGET_FILE:smashpp-inv-rep>"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunHelperToolsSmoke.cmake")
+  smashpp_label_test(helper-tools-smoke smoke)
 
   add_test(
       NAME smashpp-input-normalization
@@ -341,6 +360,7 @@ if(BUILD_TESTING)
               "-DSMASHPP=$<TARGET_FILE:smashpp>"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunInputNormalization.cmake")
+  smashpp_label_test(smashpp-input-normalization compatibility normalization)
 
   add_test(
       NAME smashpp-parallel-consistency
@@ -351,6 +371,7 @@ if(BUILD_TESTING)
               "-DTAR=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunParallelConsistency.cmake")
+  smashpp_label_test(smashpp-parallel-consistency compatibility)
 
   add_test(
       NAME smashpp-sampling-filter-consistency
@@ -359,6 +380,7 @@ if(BUILD_TESTING)
               "-DSMASHPP=$<TARGET_FILE:smashpp>"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunSamplingFilterConsistency.cmake")
+  smashpp_label_test(smashpp-sampling-filter-consistency compatibility)
 
   add_test(
       NAME smashpp-regression-baseline
@@ -369,7 +391,7 @@ if(BUILD_TESTING)
               "-DTAR=${CMAKE_CURRENT_SOURCE_DIR}/example/tar"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunRegressionBaseline.cmake")
-  set_tests_properties(smashpp-regression-baseline PROPERTIES LABELS regression)
+  smashpp_label_test(smashpp-regression-baseline compatibility regression)
 
   add_test(
       NAME smashpp-benchmark-suite-smoke
@@ -379,7 +401,7 @@ if(BUILD_TESTING)
               "-DBENCHMARK_SCRIPT=${CMAKE_CURRENT_SOURCE_DIR}/tests/RunBenchmarkSuite.cmake"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunBenchmarkSuiteSmoke.cmake")
-  set_tests_properties(smashpp-benchmark-suite-smoke PROPERTIES LABELS benchmark)
+  smashpp_label_test(smashpp-benchmark-suite-smoke benchmark)
 
   add_test(
       NAME smashpp-install-layout
@@ -392,7 +414,7 @@ if(BUILD_TESTING)
               "-DCONFIG=$<CONFIG>"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunInstallLayout.cmake")
-  set_tests_properties(smashpp-install-layout PROPERTIES LABELS packaging)
+  smashpp_label_test(smashpp-install-layout packaging)
 
   add_test(
       NAME smashpp-invalid-base
@@ -401,6 +423,7 @@ if(BUILD_TESTING)
               "-DSMASHPP=$<TARGET_FILE:smashpp>"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunInvalidBaseFailure.cmake")
+  smashpp_label_test(smashpp-invalid-base normalization validation)
 
   add_test(
       NAME smashpp-inv-rep-usage
@@ -409,6 +432,7 @@ if(BUILD_TESTING)
               "-DEXPECTED_TEXT=Usage: smashpp-inv-rep"
               -P
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/ExpectCommandFailure.cmake")
+  smashpp_label_test(smashpp-inv-rep-usage cli)
 endif()
 
 install(TARGETS smashpp smashpp-inv-rep exclude_N

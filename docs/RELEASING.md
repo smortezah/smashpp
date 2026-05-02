@@ -35,7 +35,7 @@ ctest --preset strict
 
 If OpenMP availability is being tested separately, keep one strict warning build with the default options and one with `-DSMASHPP_ENABLE_OPENMP=OFF`.
 
-The GitHub release workflow enforces strict warnings for Linux and macOS package builds. CI also validates MSVC strict warnings on Windows, but Windows package builds use the normal warning level until that coverage is promoted to release enforcement.
+The GitHub release workflow uses the checked-in strict preset for Linux, macOS, and Windows package builds.
 
 ## 3. Run Tests
 
@@ -46,6 +46,14 @@ ctest --test-dir build-release --output-on-failure --parallel 8
 ```
 
 The expected result is all tests passing. Do not update baselines during release unless the output change is intentional and documented.
+
+For focused preflight checks, use the test labels:
+
+```sh
+ctest --preset strict -L compatibility
+ctest --preset strict -L packaging
+ctest --preset benchmark-smoke
+```
 
 ## 4. Check Packaging
 
@@ -59,6 +67,8 @@ dist-release/bin/smashpp --help
 ```
 
 On Windows, use `dist-release\bin\smashpp.exe` for the smoke checks.
+
+Release workflow assets include `.sha256` checksum sidecars for each archive.
 
 ## 5. Compare Performance
 

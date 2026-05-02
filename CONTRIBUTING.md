@@ -38,10 +38,13 @@ ctest --test-dir build/release --output-on-failure --parallel 8
 When changing packaging, versioning, benchmarks, or normalization behavior, also run the focused tests that cover that area:
 
 ```sh
-ctest --test-dir build/release -L packaging --output-on-failure
-ctest --test-dir build/release -L benchmark --output-on-failure
-ctest --test-dir build/release -R "normalization|invalid-base" --output-on-failure
+ctest --preset strict -L packaging
+ctest --preset strict -L validation
+ctest --preset strict -L compatibility
+ctest --preset benchmark-smoke
 ```
+
+Useful test labels include `cli`, `validation`, `normalization`, `compatibility`, `regression`, `benchmark`, and `packaging`.
 
 ## Benchmarks
 
@@ -81,4 +84,3 @@ Before asking for review, make sure:
 - benchmark changes include baseline comparison data
 - output-format or compatibility changes are documented
 - release or packaging changes update `docs/RELEASING.md` when needed
-
