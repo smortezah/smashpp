@@ -227,7 +227,7 @@ cmake -S . -B build -DSMASHPP_BENCHMARK_BASELINE=/path/to/other/smashpp
 cmake --build build --target smashpp-benchmark
 ```
 
-The benchmark generates deterministic small and large inputs and writes timing rows to `build/benchmarks/summary.csv`. The default large benchmark input is 256 MiB per file. Override the generated input sizes with byte counts when you need a shorter smoke run or a larger production check:
+The benchmark generates deterministic small and large inputs and writes timing rows to `build/benchmarks/summary.csv`. When a baseline executable is configured, it also writes `build/benchmarks/comparison.csv` with median timings and speedups for each scenario. The default large benchmark input is 256 MiB per file. Override the generated input sizes with byte counts when you need a shorter smoke run or a larger production check:
 
 ```sh
 cmake -S . -B build \
