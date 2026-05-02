@@ -64,12 +64,12 @@ jobs:
     - name: Build, test, and install
       if: runner.os != 'Windows'
       env:
-        BUILD_DIR: ${{github.workspace}}/build-release
+        BUILD_DIR: ${{github.workspace}}/build/strict
         INSTALL_DIR: ${{github.workspace}}/release-dist
       run: |
-        cmake -S "$GITHUB_WORKSPACE" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" -DSMASHPP_STRICT_WARNINGS=ON
-        cmake --build "$BUILD_DIR" --parallel "$PARALLEL" --config "$BUILD_TYPE"
-        ctest --test-dir "$BUILD_DIR" -C "$BUILD_TYPE" --output-on-failure --parallel "$PARALLEL"
+        cmake --preset strict -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR"
+        cmake --build --preset strict --parallel "$PARALLEL"
+        ctest --preset strict --parallel "$PARALLEL"
         cmake --install "$BUILD_DIR" --config "$BUILD_TYPE"
         "$INSTALL_DIR/bin/smashpp" -V
 
@@ -77,10 +77,12 @@ jobs:
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
-        $buildDir = Join-Path $env:GITHUB_WORKSPACE "build-release"
+        $buildDir = Join-Path $env:GITHUB_WORKSPACE "build/strict"
         $installDir = Join-Path $env:GITHUB_WORKSPACE "release-dist"
-        .\install.ps1 -BuildDir $buildDir -BuildType $env:BUILD_TYPE -Prefix $installDir -Parallel $env:PARALLEL
-        ctest --test-dir $buildDir -C $env:BUILD_TYPE --output-on-failure --parallel $env:PARALLEL
+        cmake --preset strict "-DCMAKE_INSTALL_PREFIX=$installDir"
+        cmake --build --preset strict --parallel $env:PARALLEL
+        ctest --preset strict --parallel $env:PARALLEL
+        cmake --install $buildDir --config $env:BUILD_TYPE
         $smashpp = Join-Path $installDir "bin/smashpp.exe"
         & $smashpp -V
 
@@ -95,8 +97,12 @@ jobs:
         archive_name="${{steps.meta.outputs.archive_base}}.tar.gz"
         archive_path="$RUNNER_TEMP/$archive_name"
         tar -C "$INSTALL_DIR" -czf "$archive_path" .
+        checksum_path="$RUNNER_TEMP/${archive_name}.sha256"
+        checksum="$(shasum -a 256 "$archive_path" | awk '{print $1}')"
+        printf '%s  %s\n' "$checksum" "$archive_name" > "$checksum_path"
         echo "archive_name=${archive_name}" >> "$GITHUB_OUTPUT"
         echo "archive_path=${archive_path}" >> "$GITHUB_OUTPUT"
+        echo "checksum_path=${checksum_path}" >> "$GITHUB_OUTPUT"
 
     - name: Package artifact (Windows)
       if: runner.os == 'Windows'
@@ -110,14 +116,20 @@ jobs:
           Remove-Item $archivePath -Force
         }
         Compress-Archive -Path (Join-Path $installDir '*') -DestinationPath $archivePath -Force
+        $checksumPath = Join-Path $env:RUNNER_TEMP "$archiveName.sha256"
+        $hash = (Get-FileHash -Algorithm SHA256 $archivePath).Hash.ToLowerInvariant()
+        "$hash  $archiveName" | Set-Content -NoNewline -Path $checksumPath
         "archive_name=$archiveName" >> $env:GITHUB_OUTPUT
         "archive_path=$archivePath" >> $env:GITHUB_OUTPUT
+        "checksum_path=$checksumPath" >> $env:GITHUB_OUTPUT
 
     - name: Upload packaged artifact
       uses: actions/upload-artifact@v4
       with:
         name: ${{steps.package_unix.outputs.archive_name || steps.package_windows.outputs.archive_name}}
-        path: ${{steps.package_unix.outputs.archive_path || steps.package_windows.outputs.archive_path}}
+        path: |
+          ${{steps.package_unix.outputs.archive_path || steps.package_windows.outputs.archive_path}}
+          ${{steps.package_unix.outputs.checksum_path || steps.package_windows.outputs.checksum_path}}
         if-no-files-found: error
 
   draft-release:
@@ -146,3 +158,4 @@ jobs:
         files: |
           release-assets/*.tar.gz
           release-assets/*.zip
+          release-assets/*.sha256

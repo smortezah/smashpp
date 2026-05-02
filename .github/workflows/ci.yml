@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 env:
-  BUILD: ${{github.workspace}}/build
+  BUILD: ${{github.workspace}}/build/release
   INSTALL: ${{github.workspace}}/install
   BUILD_TYPE: Release
   PARALLEL: 8
@@ -44,27 +44,25 @@ jobs:
       run: cmake --version
 
     - name: Configure CMake
-      if: runner.os != 'Windows'
-      run: cmake -S ${{github.workspace}} -B ${{env.BUILD}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake --preset release
 
     - name: Build
-      if: runner.os != 'Windows'
-      run: cmake --build ${{env.BUILD}} --parallel ${{env.PARALLEL}} --config ${{env.BUILD_TYPE}}
-
-    - name: Install with PowerShell wrapper
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: .\install.ps1 -BuildDir $env:BUILD -BuildType $env:BUILD_TYPE -Prefix $env:INSTALL -Parallel $env:PARALLEL
+      run: cmake --build --preset release --parallel ${{env.PARALLEL}}
 
     - name: Test
-      run: ctest --test-dir ${{env.BUILD}} -C ${{env.BUILD_TYPE}} --output-on-failure --parallel ${{env.PARALLEL}}
+      run: ctest --preset release --parallel ${{env.PARALLEL}}
 
     - name: Package
-      run: cmake --build ${{env.BUILD}} --target package --config ${{env.BUILD_TYPE}}
+      run: cmake --build --preset release --target package --parallel ${{env.PARALLEL}}
 
     - name: Install
       if: runner.os != 'Windows'
       run: cmake --install ${{env.BUILD}} --prefix ${{env.INSTALL}} --config ${{env.BUILD_TYPE}}
+
+    - name: Install (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: cmake --install $env:BUILD --prefix $env:INSTALL --config $env:BUILD_TYPE
 
     - name: Smoke installed CLI
       if: runner.os != 'Windows'
@@ -81,8 +79,6 @@ jobs:
     name: Strict Warnings (Windows)
     runs-on: windows-latest
     env:
-      BUILD: ${{github.workspace}}/build-windows-strict
-      BUILD_TYPE: Release
       PARALLEL: 8
 
     steps:
@@ -98,20 +94,18 @@ jobs:
       run: cmake --version
 
     - name: Configure CMake
-      run: cmake -S ${{github.workspace}} -B ${{env.BUILD}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSMASHPP_STRICT_WARNINGS=ON
+      run: cmake --preset strict
 
     - name: Build
-      run: cmake --build ${{env.BUILD}} --parallel ${{env.PARALLEL}} --config ${{env.BUILD_TYPE}}
+      run: cmake --build --preset strict --parallel ${{env.PARALLEL}}
 
     - name: Test
-      run: ctest --test-dir ${{env.BUILD}} -C ${{env.BUILD_TYPE}} --output-on-failure --parallel ${{env.PARALLEL}}
+      run: ctest --preset strict --parallel ${{env.PARALLEL}}
 
   sanitizers:
     name: Sanitizers (Linux)
     runs-on: ubuntu-latest
     env:
-      BUILD: ${{github.workspace}}/build-sanitizers
-      BUILD_TYPE: RelWithDebInfo
       PARALLEL: 8
       ASAN_OPTIONS: detect_leaks=1:strict_string_checks=1
       UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
@@ -132,15 +126,10 @@ jobs:
       env:
         CC: clang
         CXX: clang++
-      run: >
-        cmake -S ${{github.workspace}} -B ${{env.BUILD}}
-        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        -DSMASHPP_ENABLE_OPENMP=OFF
-        -DSMASHPP_STRICT_WARNINGS=ON
-        -DSMASHPP_ENABLE_SANITIZERS=ON
+      run: cmake --preset sanitizers
 
     - name: Build
-      run: cmake --build ${{env.BUILD}} --parallel ${{env.PARALLEL}} --config ${{env.BUILD_TYPE}}
+      run: cmake --build --preset sanitizers --parallel ${{env.PARALLEL}}
 
     - name: Test
-      run: ctest --test-dir ${{env.BUILD}} -C ${{env.BUILD_TYPE}} --output-on-failure --parallel ${{env.PARALLEL}}
+      run: ctest --preset sanitizers --parallel ${{env.PARALLEL}}
