@@ -29,6 +29,11 @@ static constexpr float PI{3.14159265f};
 extern void error(std::string&&);
 static constexpr char INVALID_BASE{'\1'};
 
+/// Builds the byte normalization lookup used while scanning sequence files.
+///
+/// Canonical bases are uppercased, IUPAC ambiguity bases are treated as `N`, whitespace returns
+/// `\0` so callers can skip it, and every other byte is marked invalid for a later diagnostic that
+/// includes the source file name.
 [[nodiscard]] constexpr auto make_base_normalization_lookup() {
   std::array<char, 256> lookup{};
 
@@ -87,6 +92,10 @@ inline static void ignore_this_line(std::ifstream& fs) {
   }
 }
 
+/// Normalizes a sequence byte for compression and model construction.
+///
+/// \return `A`, `C`, `G`, `T`, or `N` for sequence symbols, `\0` for ignored whitespace. Invalid
+/// bytes report an error using `source` for context.
 [[nodiscard]] inline static char normalize_base(char c, std::string_view source) {
   const auto normalized = BASE_NORMALIZATION_LOOKUP[static_cast<unsigned char>(c)];
   if (normalized != INVALID_BASE) {

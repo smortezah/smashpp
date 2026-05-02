@@ -108,7 +108,10 @@ struct SegmentView {
   uint64_t size;
 };
 
-// Function
+/// Builds the byte-to-symbol lookup used by the compression hot path.
+///
+/// Smash++ encodes A/C/G/T as 0/1/2/3. Unknown or already-normalized ambiguity bases map to A/0
+/// here because callers must normalize sequence bytes first.
 [[nodiscard]] constexpr auto make_base_code_lookup() {
   std::array<uint8_t, 256> lookup{};
   lookup[static_cast<unsigned char>('C')] = 1;
@@ -122,6 +125,7 @@ struct SegmentView {
 
 inline constexpr auto BASE_CODE_LOOKUP = make_base_code_lookup();
 
+/// Returns the 2-bit code for a normalized DNA base.
 [[nodiscard]] static auto base_code(char c) -> uint8_t {
   return BASE_CODE_LOOKUP[static_cast<unsigned char>(c)];
 }

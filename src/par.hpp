@@ -75,7 +75,11 @@ inline auto model_container(const MMPar& model) -> Container {
   return Container::table_64;
 }
 
-inline auto sampled_count(uint64_t size, uint64_t sample_step) -> uint64_t {
+/// Returns how many sequence positions survive a sampling step.
+///
+/// A step of 0 is normalized to 1 by callers, but this helper also guards the value because it is
+/// used for allocation sizing in the compression path.
+[[nodiscard]] inline auto sampled_count(uint64_t size, uint64_t sample_step) -> uint64_t {
   if (size == 0) {
     return 0;
   }
@@ -84,7 +88,13 @@ inline auto sampled_count(uint64_t size, uint64_t sample_step) -> uint64_t {
   return (size - 1) / step + 1;
 }
 
-inline auto clone_model_params(const std::vector<MMPar>& models) -> std::vector<MMPar> {
+/// Deep-copies model parameters, including substitutive child models.
+///
+/// `MMPar::child` uses shared ownership for convenient optional storage, but worker parameter
+/// copies must not share child state because compression mutates STMM history while processing
+/// symbols.
+[[nodiscard]] inline auto clone_model_params(const std::vector<MMPar>& models)
+    -> std::vector<MMPar> {
   std::vector<MMPar> clones;
   clones.reserve(models.size());
 
@@ -129,6 +139,11 @@ class Param {
   bool noRedun;
   bool deep;
   bool asym_region;
+  /// Opt-in faster sampled multi-model mode.
+  ///
+  /// When false, multi-model compression still updates probabilities and model weights for every
+  /// symbol and only samples what is emitted. When true, unsampled positions update only contexts,
+  /// trading exact model evolution for speed on sampled profiles.
   bool approxSampledModels;
   std::vector<MMPar> refMs, tarMs;
   std::string message;

@@ -14,9 +14,18 @@
 #include "tbl64.hpp"
 
 namespace smashpp {
-static constexpr uint8_t PREC_PRF{3};  // Precisions - floats in Inf. prof
+/// Significant digits used when serializing entropy profile values.
+///
+/// Compression and filtering keep full `prc_t` precision; rounding happens only when profile values
+/// are written to `.prf` files.
+static constexpr uint8_t PREC_PRF{3};
 static constexpr char TAR_ALT_N{'T'};  // Alter. to Ns in target file
 
+/// Coordinates finite-context model storage, compression, and self-compression.
+///
+/// The reference models are built by `store()`, then `compress()` fills `profileEnt` for filtering
+/// and segmentation. `profileEnt` intentionally stores full-precision entropy values even when
+/// saved `.prf` output is rounded.
 class FCM {  // Finite-context models
  public:
   prc_t aveEnt;
@@ -29,6 +38,7 @@ class FCM {  // Finite-context models
 
   explicit FCM(const Param&);
   void store(Param&, uint8_t);  // Build FCM
+  /// Compresses the target and fills `profileEnt` according to `Param::sampleStep`.
   void compress(Param&, uint8_t);
   void self_compress(const Param&, uint64_t, uint8_t);
   void self_compress(const Param&, const SegmentView&, uint64_t, uint8_t);
@@ -56,7 +66,11 @@ class FCM {  // Finite-context models
 
   template <typename ContIter>
   void compress_1(const Param&, ContIter);  // Compress with 1 model
-  void compress_n(const Param&);            // Compress with n Models
+  /// Compresses with multiple models and adaptive mixture weights.
+  ///
+  /// Default sampled runs still evolve every model on every symbol for backward compatibility.
+  /// `--approx-sampled-models` switches unsampled symbols to a cheaper context-only update.
+  void compress_n(const Param&);
   template <typename ContIter>
   void compress_n_parent(CompressPar&, ContIter, uint8_t) const;
   template <typename ContIter>

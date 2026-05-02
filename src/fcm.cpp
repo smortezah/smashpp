@@ -57,6 +57,7 @@ auto read_sequence_chunk(std::ifstream& seq, std::vector<char>& buffer, uint64_t
 
 class SampleTicker {
  public:
+  /// Returns true for the first symbol and then every `sample_step` symbols.
   explicit SampleTicker(uint64_t sample_step) : sample_step_(std::max<uint64_t>(sample_step, 1)) {}
 
   auto take() -> bool {
@@ -638,6 +639,7 @@ void FCM::compress_1(const Param& par, ContIter cont) {
       prf_file << precision(PREC_PRF, e) << '\n';
     }
   };
+  // Keep filtering on full-precision entropy; only `.prf` serialization rounds.
   auto emit_entropy = [&](prc_t entropy) {
     profileEnt.push_back(entropy);
     if (save_profile) {
@@ -769,6 +771,7 @@ void FCM::compress_n(const Param& par) {
       prf_file << precision(PREC_PRF, e) << '\n';
     }
   };
+  // Keep filtering on full-precision entropy; only `.prf` serialization rounds.
   auto emit_entropy = [&](prc_t entropy) {
     profileEnt.push_back(entropy);
     if (save_profile) {
@@ -815,6 +818,9 @@ void FCM::compress_n(const Param& par) {
       const bool sample_taken = sample_ticker.take();
       cp.c = c;
       cp.nSym = base_code(c);
+      // Exact sampled mode updates mixture weights for every symbol. The approximate mode keeps
+      // contexts current between samples but skips the probability queries and weight updates that
+      // dominate multi-model cost.
       const bool approximate_update = par.approxSampledModels && !sample_taken;
       cp.ppIt = std::begin(cp.pp);
       cp.ctxIt = std::begin(cp.ctx);
