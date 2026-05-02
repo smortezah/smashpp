@@ -414,7 +414,7 @@ endif()
 install(TARGETS smashpp smashpp-inv-rep exclude_N
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         COMPONENT Runtime)
-install(FILES README.md LICENSE docs/RELEASING.md
+install(FILES README.md CONTRIBUTING.md LICENSE docs/RELEASING.md
         DESTINATION ${CMAKE_INSTALL_DOCDIR}
         COMPONENT Documentation)
 
