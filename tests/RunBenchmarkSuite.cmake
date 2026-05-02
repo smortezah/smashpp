@@ -10,24 +10,71 @@ endif()
 if(NOT DEFINED BASELINE_SMASHPP)
   set(BASELINE_SMASHPP "")
 endif()
+if(NOT DEFINED SMALL_BYTES)
+  set(SMALL_BYTES 131072)
+endif()
+if(NOT DEFINED LARGE_BYTES)
+  set(LARGE_BYTES 268435456)
+endif()
 
 file(REMOVE_RECURSE "${WORKDIR}")
 file(MAKE_DIRECTORY "${WORKDIR}")
 
-function(write_input_set label ref_repeats tar_prefix_repeats tar_suffix_repeats)
+function(size_to_repeats label size_bytes out_ref_repeats out_tar_prefix_repeats
+         out_tar_suffix_repeats)
+  if(size_bytes LESS 16)
+    message(FATAL_ERROR "${label} benchmark size must be at least 16 bytes.")
+  endif()
+
+  math(EXPR remainder "${size_bytes} % 16")
+  if(NOT remainder EQUAL 0)
+    message(FATAL_ERROR
+            "${label} benchmark size must be divisible by 16 bytes.")
+  endif()
+
+  math(EXPR ref_repeats "${size_bytes} / 16")
+  math(EXPR tar_prefix_repeats "${ref_repeats} / 2")
+  math(EXPR tar_suffix_repeats "${ref_repeats} - ${tar_prefix_repeats}")
+
+  set(${out_ref_repeats} "${ref_repeats}" PARENT_SCOPE)
+  set(${out_tar_prefix_repeats} "${tar_prefix_repeats}" PARENT_SCOPE)
+  set(${out_tar_suffix_repeats} "${tar_suffix_repeats}" PARENT_SCOPE)
+endfunction()
+
+function(write_repeated path unit repeats)
+  set(remaining "${repeats}")
+  set(chunk_repeats 65536)
+
+  while(remaining GREATER 0)
+    if(remaining GREATER chunk_repeats)
+      set(current_repeats "${chunk_repeats}")
+    else()
+      set(current_repeats "${remaining}")
+    endif()
+
+    string(REPEAT "${unit}" "${current_repeats}" chunk)
+    file(APPEND "${path}" "${chunk}")
+    math(EXPR remaining "${remaining} - ${current_repeats}")
+  endwhile()
+endfunction()
+
+function(write_input_set label size_bytes)
   set(input_dir "${WORKDIR}/input-${label}")
   file(MAKE_DIRECTORY "${input_dir}")
 
-  string(REPEAT "ACGTGATTACACCGTA" "${ref_repeats}" ref_seq)
-  string(REPEAT "TGCACGTAATCGACGT" "${tar_prefix_repeats}" tar_prefix)
-  string(REPEAT "ACGTGATTACACCGTA" "${tar_suffix_repeats}" tar_suffix)
+  size_to_repeats("${label}" "${size_bytes}" ref_repeats tar_prefix_repeats
+                  tar_suffix_repeats)
+  message(STATUS "Writing ${label} benchmark input files: ${size_bytes} bytes each")
 
-  file(WRITE "${input_dir}/ref" "${ref_seq}")
-  file(WRITE "${input_dir}/tar" "${tar_prefix}${tar_suffix}")
+  file(WRITE "${input_dir}/ref" "")
+  write_repeated("${input_dir}/ref" "ACGTGATTACACCGTA" "${ref_repeats}")
+  file(WRITE "${input_dir}/tar" "")
+  write_repeated("${input_dir}/tar" "TGCACGTAATCGACGT" "${tar_prefix_repeats}")
+  write_repeated("${input_dir}/tar" "ACGTGATTACACCGTA" "${tar_suffix_repeats}")
 endfunction()
 
-write_input_set(small 8192 4096 4096)
-write_input_set(large 524288 262144 262144)
+write_input_set(small "${SMALL_BYTES}")
+write_input_set(large "${LARGE_BYTES}")
 
 set(benchmark_labels current)
 set(benchmark_executables "${SMASHPP}")

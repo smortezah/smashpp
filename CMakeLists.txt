@@ -61,6 +61,10 @@ set(SMASHPP_BENCHMARK_RUNS "3" CACHE STRING
     "Number of repetitions for the smashpp-benchmark target.")
 set(SMASHPP_BENCHMARK_BASELINE "" CACHE FILEPATH
     "Optional baseline smashpp executable for benchmark comparisons.")
+set(SMASHPP_BENCHMARK_SMALL_BYTES "131072" CACHE STRING
+    "Size in bytes for each small benchmark input file.")
+set(SMASHPP_BENCHMARK_LARGE_BYTES "268435456" CACHE STRING
+    "Size in bytes for each large benchmark input file. Default: 256 MiB.")
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
@@ -160,6 +164,8 @@ add_custom_target(
             "-DSMASHPP=$<TARGET_FILE:smashpp>"
             "-DBASELINE_SMASHPP=${SMASHPP_BENCHMARK_BASELINE}"
             "-DRUNS=${SMASHPP_BENCHMARK_RUNS}"
+            "-DSMALL_BYTES=${SMASHPP_BENCHMARK_SMALL_BYTES}"
+            "-DLARGE_BYTES=${SMASHPP_BENCHMARK_LARGE_BYTES}"
             -P
             "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunBenchmarkSuite.cmake"
     DEPENDS smashpp

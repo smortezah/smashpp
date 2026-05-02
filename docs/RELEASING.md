@@ -61,7 +61,7 @@ cmake -S . -B build-bench \
 cmake --build build-bench --target smashpp-benchmark --parallel 8
 ```
 
-Review `build-bench/benchmarks/summary.csv`. Use the same machine, compiler, build type, and OpenMP setting for both executables. For large-input confidence, also run at least one manual benchmark on an input larger than the built-in benchmark data.
+Review `build-bench/benchmarks/summary.csv`. The default large benchmark input is 256 MiB per file; override `SMASHPP_BENCHMARK_LARGE_BYTES` if a release needs a shorter smoke run or a larger stress run. Use the same machine, compiler, build type, input sizes, and OpenMP setting for both executables.
 
 ## 6. Check Output Compatibility
 
