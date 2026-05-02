@@ -27,6 +27,8 @@ cmake --build build-release --parallel 8
 
 If OpenMP availability is being tested separately, keep one strict warning build with the default options and one with `-DSMASHPP_ENABLE_OPENMP=OFF`.
 
+The GitHub release workflow enforces strict warnings for Linux and macOS package builds. Windows package builds use the normal warning level until MSVC warning-as-error coverage is verified separately.
+
 ## 3. Run Tests
 
 Run the full regression suite:
