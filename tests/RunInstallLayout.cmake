@@ -46,6 +46,7 @@ require_installed_file("${inv_rep}" "smashpp-inv-rep executable")
 require_installed_file("${exclude_n}" "exclude_N executable")
 require_installed_file("${doc_dir}/README.md" "README")
 require_installed_file("${doc_dir}/LICENSE" "license")
+require_installed_file("${doc_dir}/RELEASING.md" "release checklist")
 
 execute_process(
     COMMAND "${smashpp}" -V
