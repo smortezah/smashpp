@@ -181,6 +181,17 @@ if(BUILD_TESTING)
   add_test(NAME smashpp-version COMMAND $<TARGET_FILE:smashpp> --version)
   set_tests_properties(smashpp-version PROPERTIES PASS_REGULAR_EXPRESSION "Smash\\+\\+ .+")
 
+  add_test(
+      NAME smashpp-version-override
+      COMMAND ${CMAKE_COMMAND}
+              "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-version-override"
+              "-DEXECUTABLE_SUFFIX=${CMAKE_EXECUTABLE_SUFFIX}"
+              "-DCONFIG=$<CONFIG>"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunVersionOverride.cmake")
+  set_tests_properties(smashpp-version-override PROPERTIES LABELS packaging)
+
   add_test(NAME smashpp-viz-help COMMAND $<TARGET_FILE:smashpp> viz --help)
   set_tests_properties(smashpp-viz-help PROPERTIES PASS_REGULAR_EXPRESSION "SYNOPSIS")
 
