@@ -13,7 +13,7 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   BUILD_TYPE: Release
@@ -23,6 +23,8 @@ jobs:
   package:
     name: Package (${{matrix.name}})
     runs-on: ${{matrix.os}}
+    permissions:
+      contents: read
     strategy:
       matrix:
         include:
@@ -41,6 +43,7 @@ jobs:
       uses: actions/checkout@v6
       with:
         fetch-depth: 0
+        persist-credentials: false
         ref: ${{inputs.tag || github.ref}}
 
     - name: Install CMake 4
@@ -121,6 +124,8 @@ jobs:
     name: Draft release
     needs: package
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Download packaged artifacts
