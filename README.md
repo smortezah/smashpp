@@ -208,6 +208,12 @@ After configuring and building from source, run the regression suite with:
 ctest --test-dir build --output-on-failure
 ```
 
+To make warnings fail the build in local development or CI, configure with:
+
+```sh
+cmake -S . -B build -DSMASHPP_STRICT_WARNINGS=ON
+```
+
 For local performance checks, run the benchmark target:
 
 ```sh

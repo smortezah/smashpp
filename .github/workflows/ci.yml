@@ -100,6 +100,7 @@ jobs:
         cmake -S ${{github.workspace}} -B ${{env.BUILD}}
         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         -DSMASHPP_ENABLE_OPENMP=OFF
+        -DSMASHPP_STRICT_WARNINGS=ON
         -DSMASHPP_ENABLE_SANITIZERS=ON
 
     - name: Build

@@ -52,6 +52,8 @@ message(STATUS "Smash++ version: ${SMASHPP_VERSION}")
 option(SMASHPP_ENABLE_OPENMP "Enable OpenMP support when available." ON)
 option(SMASHPP_ENABLE_SANITIZERS
        "Enable address and undefined behavior sanitizers." OFF)
+option(SMASHPP_STRICT_WARNINGS
+       "Treat Smash++ compiler warnings as errors." OFF)
 option(SMASHPP_ENABLE_UNSAFE_FAST_MATH
        "Enable aggressive GNU floating-point optimizations." OFF)
 option(BUILD_TESTING "Enable the Smash++ test suite." ON)
@@ -77,6 +79,18 @@ function(smashpp_configure_target target_name)
     target_compile_options(${target_name} PRIVATE /W4)
   else()
     target_compile_options(${target_name} PRIVATE -Wall -Wextra)
+  endif()
+
+  if (SMASHPP_STRICT_WARNINGS)
+    if (MSVC)
+      target_compile_options(${target_name} PRIVATE /WX /permissive-)
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+      target_compile_options(${target_name} PRIVATE -Wpedantic -Werror)
+    else()
+      message(WARNING
+              "SMASHPP_STRICT_WARNINGS is not configured for "
+              "${CMAKE_CXX_COMPILER_ID}; using baseline warnings only.")
+    endif()
   endif()
 
   if (SMASHPP_ENABLE_SANITIZERS)
