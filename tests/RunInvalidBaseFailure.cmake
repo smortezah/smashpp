@@ -32,3 +32,17 @@ if(NOT command_output MATCHES "invalid base")
           "stdout:\n${smashpp_stdout}\n"
           "stderr:\n${smashpp_stderr}")
 endif()
+
+if(NOT command_output MATCHES "invalid base \"Z\"")
+  message(FATAL_ERROR
+          "Expected invalid base error to include the invalid byte.\n"
+          "stdout:\n${smashpp_stdout}\n"
+          "stderr:\n${smashpp_stderr}")
+endif()
+
+if(NOT command_output MATCHES "ref\\.seq")
+  message(FATAL_ERROR
+          "Expected invalid base error to include the source file.\n"
+          "stdout:\n${smashpp_stdout}\n"
+          "stderr:\n${smashpp_stderr}")
+endif()
