@@ -57,6 +57,8 @@ option(SMASHPP_ENABLE_UNSAFE_FAST_MATH
 option(BUILD_TESTING "Enable the Smash++ test suite." ON)
 set(SMASHPP_BENCHMARK_RUNS "3" CACHE STRING
     "Number of repetitions for the smashpp-benchmark target.")
+set(SMASHPP_BENCHMARK_BASELINE "" CACHE FILEPATH
+    "Optional baseline smashpp executable for benchmark comparisons.")
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
@@ -142,6 +144,7 @@ add_custom_target(
     COMMAND ${CMAKE_COMMAND}
             "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/benchmarks"
             "-DSMASHPP=$<TARGET_FILE:smashpp>"
+            "-DBASELINE_SMASHPP=${SMASHPP_BENCHMARK_BASELINE}"
             "-DRUNS=${SMASHPP_BENCHMARK_RUNS}"
             -P
             "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunBenchmarkSuite.cmake"

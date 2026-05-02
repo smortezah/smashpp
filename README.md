@@ -205,8 +205,14 @@ For local performance checks, run the benchmark target:
 cmake --build build --target smashpp-benchmark
 ```
 
-The benchmark generates deterministic inputs and writes timing rows to `build/benchmarks/summary.csv`.
-Use the same compiler, build type, and machine when comparing results.
+To compare against another executable configure with:
+
+```sh
+cmake -S . -B build -DSMASHPP_BENCHMARK_BASELINE=/path/to/other/smashpp
+cmake --build build --target smashpp-benchmark
+```
+
+The benchmark generates deterministic small and large inputs and writes timing rows to `build/benchmarks/summary.csv`. Use the same compiler, build type, and machine when comparing results.
 
 To create portable release archives from the install rules, run:
 
