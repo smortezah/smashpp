@@ -1,0 +1,128 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 0,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Default optimized build.",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Debug build for local development.",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "strict",
+      "displayName": "Strict Warnings",
+      "description": "Release build with compiler warnings treated as errors.",
+      "binaryDir": "${sourceDir}/build/strict",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "SMASHPP_STRICT_WARNINGS": "ON"
+      }
+    },
+    {
+      "name": "sanitizers",
+      "displayName": "Sanitizers",
+      "description": "RelWithDebInfo build with ASan/UBSan and OpenMP disabled.",
+      "binaryDir": "${sourceDir}/build/sanitizers",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "SMASHPP_ENABLE_OPENMP": "OFF",
+        "SMASHPP_ENABLE_SANITIZERS": "ON",
+        "SMASHPP_STRICT_WARNINGS": "ON"
+      }
+    },
+    {
+      "name": "benchmark-smoke",
+      "displayName": "Benchmark Smoke",
+      "description": "Tiny benchmark inputs for checking benchmark harness behavior.",
+      "binaryDir": "${sourceDir}/build/benchmark-smoke",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "SMASHPP_BENCHMARK_RUNS": "1",
+        "SMASHPP_BENCHMARK_SMALL_BYTES": "32768",
+        "SMASHPP_BENCHMARK_LARGE_BYTES": "1048576"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "configuration": "Release"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "strict",
+      "configurePreset": "strict",
+      "configuration": "Release"
+    },
+    {
+      "name": "sanitizers",
+      "configurePreset": "sanitizers",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "benchmark-smoke",
+      "configurePreset": "benchmark-smoke",
+      "configuration": "Release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "strict",
+      "configurePreset": "strict",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "sanitizers",
+      "configurePreset": "sanitizers",
+      "configuration": "RelWithDebInfo",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "benchmark-smoke",
+      "configurePreset": "benchmark-smoke",
+      "configuration": "Release",
+      "filter": {
+        "include": {
+          "name": "smashpp-benchmark-suite-smoke"
+        }
+      },
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

@@ -214,6 +214,14 @@ To make warnings fail the build in local development or CI, configure with:
 cmake -S . -B build -DSMASHPP_STRICT_WARNINGS=ON
 ```
 
+The repository also includes CMake presets for common maintainer workflows:
+
+```sh
+cmake --preset strict
+cmake --build --preset strict
+ctest --preset strict
+```
+
 For local performance checks, run the benchmark target:
 
 ```sh
@@ -254,6 +262,10 @@ If you find Smash++ useful in your research, please acknowledge our work by citi
 ## Issues
 
 If you encounter an [issue](https://github.com/smortezah/smashpp/issues), please let us know.
+
+## Contributing
+
+Development workflow, testing, benchmarking, and pull request guidance are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

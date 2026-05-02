@@ -25,6 +25,14 @@ cmake -S . -B build-release \
 cmake --build build-release --parallel 8
 ```
 
+Or use the checked-in preset:
+
+```sh
+cmake --preset strict
+cmake --build --preset strict
+ctest --preset strict
+```
+
 If OpenMP availability is being tested separately, keep one strict warning build with the default options and one with `-DSMASHPP_ENABLE_OPENMP=OFF`.
 
 The GitHub release workflow enforces strict warnings for Linux and macOS package builds. CI also validates MSVC strict warnings on Windows, but Windows package builds use the normal warning level until that coverage is promoted to release enforcement.
