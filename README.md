@@ -222,6 +222,14 @@ cmake --build --preset strict
 ctest --preset strict
 ```
 
+Focused test labels are available for narrower checks, for example:
+
+```sh
+ctest --preset strict -L compatibility
+ctest --preset strict -L packaging
+ctest --preset benchmark-smoke
+```
+
 For local performance checks, run the benchmark target:
 
 ```sh
