@@ -361,6 +361,16 @@ if(BUILD_TESTING)
   set_tests_properties(smashpp-regression-baseline PROPERTIES LABELS regression)
 
   add_test(
+      NAME smashpp-benchmark-suite-smoke
+      COMMAND ${CMAKE_COMMAND}
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-benchmark-suite-smoke"
+              "-DSMASHPP=$<TARGET_FILE:smashpp>"
+              "-DBENCHMARK_SCRIPT=${CMAKE_CURRENT_SOURCE_DIR}/tests/RunBenchmarkSuite.cmake"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunBenchmarkSuiteSmoke.cmake")
+  set_tests_properties(smashpp-benchmark-suite-smoke PROPERTIES LABELS benchmark)
+
+  add_test(
       NAME smashpp-install-layout
       COMMAND ${CMAKE_COMMAND}
               "-DBUILD_DIR=${CMAKE_CURRENT_BINARY_DIR}"
