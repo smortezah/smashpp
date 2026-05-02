@@ -5,6 +5,7 @@
 #define SMASHPP_FILE_HPP
 
 #include <algorithm>
+#include <array>
 #include <format>
 #include <fstream>
 #include <iterator>
@@ -26,6 +27,37 @@ using json = nlohmann::ordered_json;
 namespace smashpp {
 static constexpr float PI{3.14159265f};
 extern void error(std::string&&);
+static constexpr char INVALID_BASE{'\1'};
+
+[[nodiscard]] constexpr auto make_base_normalization_lookup() {
+  std::array<char, 256> lookup{};
+
+  for (auto& value : lookup) {
+    value = INVALID_BASE;
+  }
+
+  lookup[static_cast<unsigned char>('A')] = 'A';
+  lookup[static_cast<unsigned char>('a')] = 'A';
+  lookup[static_cast<unsigned char>('C')] = 'C';
+  lookup[static_cast<unsigned char>('c')] = 'C';
+  lookup[static_cast<unsigned char>('G')] = 'G';
+  lookup[static_cast<unsigned char>('g')] = 'G';
+  lookup[static_cast<unsigned char>('T')] = 'T';
+  lookup[static_cast<unsigned char>('t')] = 'T';
+
+  for (const auto base : {'N', 'n', 'R', 'r', 'Y', 'y', 'S', 's', 'W', 'w', 'K',
+                          'k', 'M', 'm', 'B', 'b', 'D', 'd', 'H', 'h', 'V', 'v'}) {
+    lookup[static_cast<unsigned char>(base)] = 'N';
+  }
+
+  for (const auto space : {'\n', '\r', ' ', '\t'}) {
+    lookup[static_cast<unsigned char>(space)] = '\0';
+  }
+
+  return lookup;
+}
+
+inline constexpr auto BASE_NORMALIZATION_LOOKUP = make_base_normalization_lookup();
 
 struct SubSeq {
   std::string inName;
@@ -56,48 +88,9 @@ inline static void ignore_this_line(std::ifstream& fs) {
 }
 
 [[nodiscard]] inline static char normalize_base(char c, std::string_view source) {
-  switch (c) {
-    case 'A':
-    case 'a':
-      return 'A';
-    case 'C':
-    case 'c':
-      return 'C';
-    case 'G':
-    case 'g':
-      return 'G';
-    case 'T':
-    case 't':
-      return 'T';
-    case 'N':
-    case 'n':
-    case 'R':
-    case 'r':
-    case 'Y':
-    case 'y':
-    case 'S':
-    case 's':
-    case 'W':
-    case 'w':
-    case 'K':
-    case 'k':
-    case 'M':
-    case 'm':
-    case 'B':
-    case 'b':
-    case 'D':
-    case 'd':
-    case 'H':
-    case 'h':
-    case 'V':
-    case 'v':
-      return 'N';
-    default:
-      break;
-  }
-
-  if (is_sequence_space(c)) {
-    return '\0';
+  const auto normalized = BASE_NORMALIZATION_LOOKUP[static_cast<unsigned char>(c)];
+  if (normalized != INVALID_BASE) {
+    return normalized;
   }
 
   error(std::format("invalid base \"{}\" in \"{}\".", char_label(c), source));

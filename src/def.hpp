@@ -6,6 +6,7 @@
 #ifndef SMASHPP_DEF_HPP
 #define SMASHPP_DEF_HPP
 
+#include <array>
 #include <chrono>
 #include <iomanip>  // setw, setprecision
 #include <iostream>
@@ -108,19 +109,21 @@ struct SegmentView {
 };
 
 // Function
-static auto base_code(char c) -> uint8_t {
-  switch (c) {
-    case 'C':
-    case 'c':
-      return 1;
-    case 'G':
-    case 'g':
-      return 2;
-    case 'T':
-    case 't':
-      return 3;
-  }
-  return 0;
+[[nodiscard]] constexpr auto make_base_code_lookup() {
+  std::array<uint8_t, 256> lookup{};
+  lookup[static_cast<unsigned char>('C')] = 1;
+  lookup[static_cast<unsigned char>('c')] = 1;
+  lookup[static_cast<unsigned char>('G')] = 2;
+  lookup[static_cast<unsigned char>('g')] = 2;
+  lookup[static_cast<unsigned char>('T')] = 3;
+  lookup[static_cast<unsigned char>('t')] = 3;
+  return lookup;
+}
+
+inline constexpr auto BASE_CODE_LOOKUP = make_base_code_lookup();
+
+[[nodiscard]] static auto base_code(char c) -> uint8_t {
+  return BASE_CODE_LOOKUP[static_cast<unsigned char>(c)];
 }
 
 // Metaprogram
