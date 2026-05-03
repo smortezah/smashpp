@@ -1,8 +1,9 @@
 # Smash++
 
-[![Anaconda-Server Badge](https://anaconda.org/bioconda/smashpp/badges/version.svg)](https://anaconda.org/bioconda/smashpp)
+[![Anaconda version](https://anaconda.org/bioconda/smashpp/badges/version.svg)](https://anaconda.org/bioconda/smashpp)
+[![Anaconda downloads](https://anaconda.org/bioconda/smashpp/badges/downloads.svg)](https://anaconda.org/bioconda/smashpp)
 [![CI](https://github.com/smortezah/smashpp/actions/workflows/ci.yml/badge.svg)](https://github.com/smortezah/smashpp/actions/workflows/ci.yml)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 Smash++ is a fast utility for identifying and visualizing rearrangements in DNA sequences.
 
