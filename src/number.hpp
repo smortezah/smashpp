@@ -48,10 +48,14 @@ template <typename T>
 
 template <typename Val, typename MinVal, typename MaxVal>
 inline static void keep_in_range(MinVal min, Val& val, MaxVal max) {
-  if (val < min) {
-    val = min;
-  } else if (val > max) {
-    val = max;
+  using Common = std::common_type_t<Val, MinVal, MaxVal>;
+  const auto min_common = static_cast<Common>(min);
+  const auto max_common = static_cast<Common>(max);
+  const auto val_common = static_cast<Common>(val);
+  if (val_common < min_common) {
+    val = static_cast<Val>(min_common);
+  } else if (val_common > max_common) {
+    val = static_cast<Val>(max_common);
   }
 }
 
