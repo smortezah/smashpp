@@ -147,10 +147,10 @@ inline static void show_progress(ValuePos pos, Value total, std::string_view msg
 }
 
 [[nodiscard]] inline static std::string human_readable(uint64_t bytes, uint8_t precision = 0) {
-  const uint64_t KB_div = pow2(10);
-  const uint64_t MB_div = pow2(20);
-  const uint64_t GB_div = pow2(30);
-  const uint64_t TB_div = pow2(40);
+  constexpr uint64_t KB_div{1ull << 10u};
+  constexpr uint64_t MB_div{1ull << 20u};
+  constexpr uint64_t GB_div{1ull << 30u};
+  constexpr uint64_t TB_div{1ull << 40u};
   const auto prec{static_cast<int>(precision)};
 
   if (bytes >= TB_div) {
