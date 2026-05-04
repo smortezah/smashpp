@@ -5,12 +5,16 @@
 
 #include <algorithm>
 #include <array>
+#include <cctype>
+#include <cerrno>
 #include <charconv>
 #include <cmath>
+#include <cstdlib>
 #include <format>
 #include <fstream>
 #include <limits>
 #include <memory>
+#include <string>
 #include <string_view>
 #include <system_error>
 #include <type_traits>
@@ -67,17 +71,20 @@ template <typename Float>
 auto parse_floating(std::string_view value, std::string_view label) -> Float {
   static_assert(std::is_floating_point_v<Float>);
 
-  Float parsed{0};
   const auto input = strip_leading_plus(value);
-  const auto* first = input.data();
-  const auto* last = first + input.size();
-  const auto [ptr, ec] = std::from_chars(first, last, parsed);
-
-  if (input.empty() || ec == std::errc::invalid_argument || ptr != last ||
-      ec == std::errc::result_out_of_range || !std::isfinite(parsed)) {
+  if (input.empty() || std::isspace(static_cast<unsigned char>(input.front()))) {
     error(std::format("{} must be a finite number.", label));
   }
 
+  const std::string text{input};
+  char* end = nullptr;
+  errno = 0;
+  const auto parsed_long = std::strtold(text.c_str(), &end);
+  const auto parsed = static_cast<Float>(parsed_long);
+
+  if (end != text.c_str() + text.size() || errno == ERANGE || !std::isfinite(parsed)) {
+    error(std::format("{} must be a finite number.", label));
+  }
   return parsed;
 }
 }  // namespace
