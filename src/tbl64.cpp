@@ -14,7 +14,7 @@ using namespace smashpp;
 Table64::Table64(uint8_t k_) : k(k_) {
   try {  // 4<<2k = 4*2^2k = 4*4^k = 4^(k+1)
     tbl.resize(4ull << (k << 1u));
-  } catch (std::bad_alloc& b) {
+  } catch (const std::bad_alloc&) {
     error("failed memory allocation.");
   }
 }
