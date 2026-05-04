@@ -97,10 +97,9 @@ void PositionFile::stream_pos_impl(std::string& out, const std::vector<OutRowAux
     prc_t left_ent = 0.0, left_self_ent = 0.0, right_ent = 0.0, right_self_ent = 0.0;
 
     // Left hand side
-    if (row.pos2.beg_pos == 0 && row.pos2.end_pos == 0 && row.pos2.ent == 0 &&
-        row.pos2.self_ent == 0) {
-      out += std::format("{}\t{}\t{}\t{}\tF\n", DBLANK, DBLANK, DBLANK, DBLANK);
-    } else {
+    const bool has_left = !(row.pos2.beg_pos == 0 && row.pos2.end_pos == 0 && row.pos2.ent == 0 &&
+                            row.pos2.self_ent == 0);
+    if (has_left) {
       left_beg = row.pos2.beg_pos;
       left_end = row.pos2.end_pos;
       left_ent = row.pos2.ent;
@@ -130,13 +129,16 @@ void PositionFile::stream_pos_impl(std::string& out, const std::vector<OutRowAux
       right_self_ent = row.pos1.self_ent;
     }
 
-    auto publish = [](auto left_beg, auto left_end, auto left_ent, auto left_self_ent,
-                      auto right_beg, auto right_end, auto right_ent,
-                      auto right_self_ent) -> std::string {
+    const auto left_beg_out = has_left ? std::format("{}", left_beg) : std::format("{}", DBLANK);
+    const auto left_end_out = has_left ? std::format("{}", left_end) : std::format("{}", DBLANK);
+    const auto left_ent_out =
+        has_left ? fixed_precision(PREC_POS, left_ent) : std::format("{}", DBLANK);
+    const auto left_self_ent_out =
+        has_left ? fixed_precision(PREC_POS, left_self_ent) : std::format("{}", DBLANK);
+    auto publish = [&]() -> std::string {
       return std::format(
-          "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n", left_beg, left_end,
-          fixed_precision(PREC_POS, left_ent), fixed_precision(PREC_POS, left_self_ent), right_beg,
-          right_end, fixed_precision(PREC_POS, right_ent),
+          "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n", left_beg_out, left_end_out, left_ent_out,
+          left_self_ent_out, right_beg, right_end, fixed_precision(PREC_POS, right_ent),
           fixed_precision(PREC_POS, right_self_ent), (right_beg < right_end ? "F" : "T"));
     };
     const auto abs_diff = [](uint64_t lhs, uint64_t rhs) {
@@ -145,15 +147,15 @@ void PositionFile::stream_pos_impl(std::string& out, const std::vector<OutRowAux
     const auto right_span = abs_diff(right_end, right_beg);
     const auto left_span = abs_diff(left_end, left_beg);
 
-    if (!asym_region) {
+    if (!has_left) {
+      out += publish();
+    } else if (!asym_region) {
       if (right_span < left_span * 1.5 && right_span > left_span * 0.5) {
-        out += publish(left_beg, left_end, left_ent, left_self_ent, right_beg, right_end, right_ent,
-                       right_self_ent);
+        out += publish();
       }
     } else {
       if (left_end != 0) {
-        out += publish(left_beg, left_end, left_ent, left_self_ent, right_beg, right_end, right_ent,
-                       right_self_ent);
+        out += publish();
       }
     }
   }
