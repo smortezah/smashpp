@@ -715,7 +715,7 @@ void FCM::compress_1(const Param& par, ContIter cont) {
           entr = entropyN;
         }
         update_ctx_ir1(ctxIr, &prob_par);
-      } else if (rMs[0].ir == 2) {
+      } else {
         if (c != 'N') {
           prob_par.config_ir2(c, ctx, ctxIr);
           if (sample_taken) {
