@@ -10,6 +10,7 @@
 #include <fstream>
 #include <numeric>  // std::accumulate
 #include <thread>
+#include <type_traits>
 
 #include "check.hpp"
 #include "container.hpp"
@@ -72,6 +73,35 @@ class SampleTicker {
 };
 
 auto context_mask(uint8_t k) -> uint64_t { return (1ull << (2u * k)) - 1ull; }
+
+auto context_mask32(uint8_t k) -> uint32_t { return static_cast<uint32_t>(context_mask(k)); }
+
+template <typename Model>
+auto model_context(uint64_t ctx) {
+  if constexpr (std::is_same_v<Model, CMLS4>) {
+    return ctx;
+  } else {
+    return static_cast<uint32_t>(ctx);
+  }
+}
+
+template <typename ContIter>
+auto query_model(ContIter cont, uint64_t ctx) {
+  using Model = std::remove_cvref_t<decltype(**cont)>;
+  return (*cont)->query(model_context<Model>(ctx));
+}
+
+template <typename ContIter>
+auto query_model_counters(ContIter cont, uint64_t ctx) {
+  using Model = std::remove_cvref_t<decltype(**cont)>;
+  return (*cont)->query_counters(model_context<Model>(ctx));
+}
+
+template <typename ContIter>
+void update_model(ContIter cont, uint64_t ctx) {
+  using Model = std::remove_cvref_t<decltype(**cont)>;
+  (*cont)->update(model_context<Model>(ctx));
+}
 }  // namespace
 
 FCM::FCM(const Param& par)
@@ -418,16 +448,16 @@ inline void FCM::store_1(const Param& par) {
   for (const auto& m : rMs) {  // Mask: 1<<2k - 1 = 4^k - 1
     switch (m.cont) {
       case Container::log_table_8:
-        store_impl(par.ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/, lgtbl8_iter++);
+        store_impl(par.ref, context_mask32(m.k), lgtbl8_iter++);
         break;
       case Container::sketch_8:
-        store_impl(par.ref, (1ull << (2 * m.k)) - 1ull /*Mask 64*/, cmls4_iter++);
+        store_impl(par.ref, context_mask(m.k), cmls4_iter++);
         break;
       case Container::table_64:
-        store_impl(par.ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/, tbl64_iter++);
+        store_impl(par.ref, context_mask32(m.k), tbl64_iter++);
         break;
       case Container::table_32:
-        store_impl(par.ref, (1ul << (2 * m.k)) - 1ul /*Mask 32*/, tbl32_iter++);
+        store_impl(par.ref, context_mask32(m.k), tbl32_iter++);
         break;
       default:
         break;
@@ -519,19 +549,16 @@ inline void FCM::store_n(const Param& par) {
                         (1ull << (2 * rMs[i].k)) - 1ull, cmls4_iter++);
         break;
       case Container::log_table_8:
-        thrd[i % vThrSz] =
-            std::thread(&FCM::store_impl<uint32_t, decltype(lgtbl8_iter)>, this, std::cref(par.ref),
-                        (1ul << (2 * rMs[i].k)) - 1ul, lgtbl8_iter++);
+        thrd[i % vThrSz] = std::thread(&FCM::store_impl<uint32_t, decltype(lgtbl8_iter)>, this,
+                                       std::cref(par.ref), context_mask32(rMs[i].k), lgtbl8_iter++);
         break;
       case Container::table_64:
-        thrd[i % vThrSz] =
-            std::thread(&FCM::store_impl<uint32_t, decltype(tbl64_iter)>, this, std::cref(par.ref),
-                        (1ul << (2 * rMs[i].k)) - 1ul, tbl64_iter++);
+        thrd[i % vThrSz] = std::thread(&FCM::store_impl<uint32_t, decltype(tbl64_iter)>, this,
+                                       std::cref(par.ref), context_mask32(rMs[i].k), tbl64_iter++);
         break;
       case Container::table_32:
-        thrd[i % vThrSz] =
-            std::thread(&FCM::store_impl<uint32_t, decltype(tbl32_iter)>, this, std::cref(par.ref),
-                        (1ul << (2 * rMs[i].k)) - 1ul, tbl32_iter++);
+        thrd[i % vThrSz] = std::thread(&FCM::store_impl<uint32_t, decltype(tbl32_iter)>, this,
+                                       std::cref(par.ref), context_mask32(rMs[i].k), tbl32_iter++);
         break;
       default:
         break;
@@ -568,7 +595,7 @@ inline void FCM::store_impl(const std::string& ref, Mask mask, ContIter cont) {
       const auto c = normalize_base(*it, ref);
       if (c != '\0') {
         ctx = ((ctx & mask) << 2u) | base_code(c);
-        (*cont)->update(ctx);
+        update_model(cont, ctx);
       }
     }
   }
@@ -1130,7 +1157,7 @@ inline void FCM::self_compress_1(const Param& par, ContIter cont, const SegmentV
             entr = entropyN;
           }
           sumEnt += entr;
-          (*cont)->update(pp.l | pp.numSym);
+          update_model(cont, pp.l | pp.numSym);
           update_ctx_ir0(ctx, &pp);
         } else if (tMs[0].ir == 1) {
           pp.config_ir1(c, ctxIr);
@@ -1141,7 +1168,7 @@ inline void FCM::self_compress_1(const Param& par, ContIter cont, const SegmentV
             entr = entropyN;
           }
           sumEnt += entr;
-          (*cont)->update((pp.revNumSym << pp.shl) | pp.r);
+          update_model(cont, (static_cast<uint64_t>(pp.revNumSym) << pp.shl) | pp.r);
           update_ctx_ir1(ctxIr, &pp);
         } else if (tMs[0].ir == 2) {
           pp.config_ir2(c, ctx, ctxIr);
@@ -1152,7 +1179,7 @@ inline void FCM::self_compress_1(const Param& par, ContIter cont, const SegmentV
             entr = entropyN;
           }
           sumEnt += entr;
-          (*cont)->update(pp.l | pp.numSym);
+          update_model(cont, pp.l | pp.numSym);
           update_ctx_ir2(ctx, ctxIr, &pp);
         }
         if (show_progress_enabled) {
@@ -1205,7 +1232,7 @@ inline void FCM::self_compress_n(const Param& par, const SegmentView* segment, u
       ++cp.ctxIrIt;
       compress_n_child(cp, cont, ++n);
     }
-    (*cont)->update(valUpd);
+    update_model(cont, valUpd);
   };
 
   for (std::vector<char> buffer(FILE_READ_BUF, 0); remaining != 0;) {
@@ -1293,7 +1320,7 @@ inline void FCM::self_compress_n_parent(CompressPar& cp, ContIter cont, uint8_t 
     }
     cp.probs.push_back(prb);
     cp.wNext[n] = weight_next(cp.w[n], cp.mm.gamma, prb);
-    valUpd = (cp.ppIt->revNumSym << cp.ppIt->shl) | cp.ppIt->r;
+    valUpd = (static_cast<uint64_t>(cp.ppIt->revNumSym) << cp.ppIt->shl) | cp.ppIt->r;
     update_ctx_ir1(*cp.ctxIrIt, cp.ppIt);
   } else if (cp.mm.ir == 2) {
     cp.ppIt->config_ir2(cp.c, *cp.ctxIt, *cp.ctxIrIt);
@@ -1323,24 +1350,26 @@ void FCM::aggregate_slf_ent(std::vector<PosRow>& pos_out, uint8_t round, uint8_t
 
 template <typename OutT, typename ContIter>
 auto FCM::freqs_ir0(ContIter cont, uint64_t l) const -> std::array<OutT, CARDIN> {
-  return (*cont)->query_counters(l);
+  return query_model_counters(cont, l);
 }
 
 template <typename OutT, typename ContIter>
 auto FCM::freqs_ir1(ContIter cont, uint64_t shl, uint64_t r) const -> std::array<OutT, CARDIN> {
-  return {static_cast<OutT>((*cont)->query((3ull << shl) | r)),
-          static_cast<OutT>((*cont)->query((2ull << shl) | r)),
-          static_cast<OutT>((*cont)->query((1ull << shl) | r)),
-          static_cast<OutT>((*cont)->query(r))};
+  return {static_cast<OutT>(query_model(cont, (3ull << shl) | r)),
+          static_cast<OutT>(query_model(cont, (2ull << shl) | r)),
+          static_cast<OutT>(query_model(cont, (1ull << shl) | r)),
+          static_cast<OutT>(query_model(cont, r))};
 }
 
 template <typename OutT, typename ContIter, typename ProbParIter>
 auto FCM::freqs_ir2(ContIter cont, ProbParIter pp) const -> std::array<OutT, CARDIN> {
   return {
-      static_cast<OutT>((*cont)->query(pp->l) + (*cont)->query((3ull << pp->shl) | pp->r)),
-      static_cast<OutT>((*cont)->query(pp->l | 1ull) + (*cont)->query((2ull << pp->shl) | pp->r)),
-      static_cast<OutT>((*cont)->query(pp->l | 2ull) + (*cont)->query((1ull << pp->shl) | pp->r)),
-      static_cast<OutT>((*cont)->query(pp->l | 3ull) + (*cont)->query(pp->r))};
+      static_cast<OutT>(query_model(cont, pp->l) + query_model(cont, (3ull << pp->shl) | pp->r)),
+      static_cast<OutT>(query_model(cont, pp->l | 1ull) +
+                        query_model(cont, (2ull << pp->shl) | pp->r)),
+      static_cast<OutT>(query_model(cont, pp->l | 2ull) +
+                        query_model(cont, (1ull << pp->shl) | pp->r)),
+      static_cast<OutT>(query_model(cont, pp->l | 3ull) + query_model(cont, pp->r))};
 }
 
 inline prc_t FCM::weight_next(prc_t w, prc_t g, prc_t p) const { return Power(w, g) * p; }
@@ -1460,11 +1489,11 @@ inline void FCM::update_ctx_ir0(uint64_t& ctx, ProbParIter pp) const {
 
 template <typename ProbParIter>
 inline void FCM::update_ctx_ir1(uint64_t& ctxIr, ProbParIter pp) const {
-  ctxIr = (pp->revNumSym << pp->shl) | pp->r;
+  ctxIr = (static_cast<uint64_t>(pp->revNumSym) << pp->shl) | pp->r;
 }
 
 template <typename ProbParIter>
 inline void FCM::update_ctx_ir2(uint64_t& ctx, uint64_t& ctxIr, ProbParIter pp) const {
   ctx = (pp->l & pp->mask) | pp->numSym;
-  ctxIr = (pp->revNumSym << pp->shl) | pp->r;
+  ctxIr = (static_cast<uint64_t>(pp->revNumSym) << pp->shl) | pp->r;
 }
