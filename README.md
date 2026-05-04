@@ -1,7 +1,9 @@
 # Smash++
 
+[![Anaconda version](https://anaconda.org/bioconda/smashpp/badges/version.svg)](https://anaconda.org/bioconda/smashpp)
+[![Anaconda downloads](https://anaconda.org/bioconda/smashpp/badges/downloads.svg)](https://anaconda.org/bioconda/smashpp)
 [![CI](https://github.com/smortezah/smashpp/actions/workflows/ci.yml/badge.svg)](https://github.com/smortezah/smashpp/actions/workflows/ci.yml)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 Smash++ is a fast utility for identifying and visualizing rearrangements in DNA sequences.
 
@@ -101,10 +103,12 @@ Use `smashpp --help` to print the full CLI help.
 | `-fmt`, `--format`                         | `<STRING>`     | Output format: `pos` or `json`.                                                                                          | `pos`               |
 | `-e`, `--entropy-N`                        | `<FLOAT>`      | Entropy assigned to `N` bases.                                                                                           | `2.0`               |
 | `-n`, `--num-threads`                      | `<INT>`        | Number of worker threads.                                                                                                | `4`                 |
+| `-mem`, `--max-memory`                     | `<SIZE>`       | Maximum estimated memory use. Supports `B`, `K`, `M`, `G`, and `T` suffixes; `0` disables the check.                     | Auto                |
 | `-f`, `--filter-size`                      | `<INT>`        | Filter window size.                                                                                                      | `100`               |
 | `-ft`, `--filter-type`                     | `<INT/STRING>` | Window function: `0/rectangular`, `1/hamming`, `2/hann`, `3/blackman`, `4/triangular`, `5/welch`, `6/sine`, `7/nuttall`. | `hann`              |
 | `-fs`, `--filter-scale`                    | `<STRING>`     | Filter scale: `S/small`, `M/medium`, or `L/large`.                                                                       | Auto                |
 | `-d`, `--sampling-step`                    | `<INT>`        | Sampling step.                                                                                                           | Auto                |
+| `--approx-sampled-models`                  | `-`            | Use faster approximate updates between sampled positions in multi-model runs.                                            | Disabled            |
 | `-th`, `--threshold`                       | `<FLOAT>`      | Segmentation threshold.                                                                                                  | `1.5`               |
 | `-rb`, `--reference-begin-guard`           | `<INT>`        | Reference begin guard.                                                                                                   | `0`                 |
 | `-re`, `--reference-end-guard`             | `<INT>`        | Reference end guard.                                                                                                     | `0`                 |
@@ -137,6 +141,14 @@ Custom model strings use the form `k,[w,d,]ir,a,g/t,ir,a,g:...`.
 | `a`   | Estimator.                                                                       |
 | `g`   | Forgetting factor in the range `0.0` to `1.0`.                                   |
 | `t`   | Threshold for the number of substitutions in a tolerant model.                   |
+
+### Output Compatibility
+
+Smash++ output is deterministic for the same executable, options, input files, and platform. Profile files saved with `-sp` or `-sa` still serialize entropy values using the profile precision shown by the program, but filtering and segmentation use full-precision entropy internally.
+
+Because of that, `.fil`, `.pos`, and `.json` output may differ slightly from older Smash++ releases in the final decimal places or in threshold-adjacent segment boundaries. These differences are deterministic and come from avoiding an older round-to-text-and-parse-back step in the compression hot path.
+
+`--approx-sampled-models` is opt-in. It speeds up sampled multi-model runs by updating only contexts between sampled positions, so its `.prf`, `.fil`, `.pos`, and `.json` output should be treated as an approximate mode rather than byte-compatible output with the default model update path.
 
 ### Visualizer Options
 
@@ -189,6 +201,67 @@ cd example
 
 If `smashpp` is already on your `PATH`, you can drop the `../dist/bin/` prefix.
 
+## Testing and Benchmarks
+
+After configuring and building from source, run the regression suite with:
+
+```sh
+ctest --test-dir build --output-on-failure
+```
+
+To make warnings fail the build in local development or CI, configure with:
+
+```sh
+cmake -S . -B build -DSMASHPP_STRICT_WARNINGS=ON
+```
+
+The repository also includes CMake presets for common maintainer workflows:
+
+```sh
+cmake --preset strict
+cmake --build --preset strict
+ctest --preset strict
+```
+
+Focused test labels are available for narrower checks, for example:
+
+```sh
+ctest --preset strict -L compatibility
+ctest --preset strict -L packaging
+ctest --preset benchmark-smoke
+```
+
+For local performance checks, run the benchmark target:
+
+```sh
+cmake --build build --target smashpp-benchmark
+```
+
+To compare against another executable configure with:
+
+```sh
+cmake -S . -B build -DSMASHPP_BENCHMARK_BASELINE=/path/to/other/smashpp
+cmake --build build --target smashpp-benchmark
+```
+
+The benchmark generates deterministic small and large inputs and writes timing rows to `build/benchmarks/summary.csv`. When a baseline executable is configured, it also writes `build/benchmarks/comparison.csv` with median timings and speedups for each scenario. The default large benchmark input is 256 MiB per file. Override the generated input sizes with byte counts when you need a shorter smoke run or a larger production check:
+
+```sh
+cmake -S . -B build \
+  -DSMASHPP_BENCHMARK_SMALL_BYTES=131072 \
+  -DSMASHPP_BENCHMARK_LARGE_BYTES=268435456
+```
+
+Use the same compiler, build type, input sizes, and machine when comparing results.
+
+To create portable release archives from the install rules, run:
+
+```sh
+cmake --build build --target package
+```
+
+The archives are written to `build/packages/`.
+
 ## Cite
 
 If you find Smash++ useful in your research, please acknowledge our work by citing:
@@ -198,6 +271,10 @@ If you find Smash++ useful in your research, please acknowledge our work by citi
 ## Issues
 
 If you encounter an [issue](https://github.com/smortezah/smashpp/issues), please let us know.
+
+## Contributing
+
+Development workflow, testing, benchmarking, and pull request guidance are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

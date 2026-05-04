@@ -1,5 +1,5 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_VIZPAINT_HPP
 #define SMASHPP_VIZPAINT_HPP
@@ -32,8 +32,8 @@ struct Position {
   uint64_t start;
   uint8_t n_color;
 
-  Position(int64_t br, int64_t er, prc_t nr, prc_t sr, int64_t bt, int64_t et,
-           prc_t nt, prc_t st, char _inv, uint64_t s)
+  Position(int64_t br, int64_t er, prc_t nr, prc_t sr, int64_t bt, int64_t et, prc_t nt, prc_t st,
+           char _inv, uint64_t s)
       : begRef(br),
         endRef(er),
         begTar(bt),
@@ -96,9 +96,7 @@ struct LegendPlot {
   std::vector<std::unique_ptr<Text>> text;
 
   LegendPlot()
-      : labelShift(10),
-        rect(std::make_unique<Rectangle>()),
-        path(std::make_unique<Path>()) {}
+      : labelShift(10), rect(std::make_unique<Rectangle>()), path(std::make_unique<Path>()) {}
 };
 
 class VizPaint {
@@ -113,8 +111,7 @@ class VizPaint {
   float maxSize;
   std::unique_ptr<SVG> svg;
 
-  VizPaint()
-      : svg(std::make_unique<SVG>()), ratio(1), plottable(true) {}
+  VizPaint() : svg(std::make_unique<SVG>()), ratio(1), plottable(true) {}
   void plot(std::unique_ptr<VizParam>&);
 
  private:
@@ -136,10 +133,8 @@ class VizPaint {
   auto make_color(uint8_t, uint8_t) const -> std::string;
   auto nrc_color(double, uint32_t) const -> std::string;
   auto redun_color(double, uint32_t) const -> std::string;
-  auto seq_gradient(std::ofstream&, std::string, std::string) const
-      -> std::string;
-  auto periph_gradient(std::ofstream&, std::string, std::string) const
-      -> std::string;
+  auto seq_gradient(std::ofstream&, std::string, std::string) const -> std::string;
+  auto periph_gradient(std::ofstream&, std::string, std::string) const -> std::string;
   template <typename Value>
   auto get_point(Value) const -> double;
   auto get_index(double point) const -> uint64_t;
@@ -148,40 +143,30 @@ class VizPaint {
                     std::unique_ptr<VizParam>&) const;
   void plot_seq_tar(std::ofstream&, const std::vector<Position>::iterator&,
                     std::unique_ptr<VizParam>&, bool) const;
-  void plot_periph(std::ofstream&, std::unique_ptr<Rectangle>&, bool, char,
-                   uint8_t) const;
-  void plot_periph(std::ofstream&, std::unique_ptr<Cylinder>&, bool, char,
-                   uint8_t) const;
+  void plot_periph(std::ofstream&, std::unique_ptr<Rectangle>&, bool, char, uint8_t) const;
+  void plot_periph(std::ofstream&, std::unique_ptr<Cylinder>&, bool, char, uint8_t) const;
   void plot_connector(std::ofstream&, const std::vector<Position>::iterator&,
                       std::unique_ptr<VizParam>&, bool) const;
   void plot_title(std::ofstream&, std::string, std::string, bool) const;
   void plot_legend(std::ofstream&, std::unique_ptr<VizParam>&, int64_t) const;
   void set_legend_rect(std::unique_ptr<LegendPlot>&, char) const;
   void plot_legend_gradient(std::ofstream&, std::unique_ptr<LegendPlot>&) const;
-  void plot_legend_text_horiz(std::ofstream&,
-                              std::unique_ptr<LegendPlot>&) const;
-  void plot_legend_path_horiz(std::ofstream&,
-                              std::unique_ptr<LegendPlot>&) const;
-  void plot_legend_text_vert(std::ofstream&,
-                             std::unique_ptr<LegendPlot>&) const;
-  void plot_legend_path_vert(std::ofstream&,
-                             std::unique_ptr<LegendPlot>&) const;
+  void plot_legend_text_horiz(std::ofstream&, std::unique_ptr<LegendPlot>&) const;
+  void plot_legend_path_horiz(std::ofstream&, std::unique_ptr<LegendPlot>&) const;
+  void plot_legend_text_vert(std::ofstream&, std::unique_ptr<LegendPlot>&) const;
+  void plot_legend_path_vert(std::ofstream&, std::unique_ptr<LegendPlot>&) const;
   auto tspan(uint32_t, int64_t) const -> std::string;
   auto tspan(uint32_t, std::string) const -> std::string;
   void sort_merge(std::string&) const;
   void save_n_pos(std::string) const;
-  void read_pos(std::ifstream&, std::vector<Position>&,
-                std::unique_ptr<VizParam>&) const;
-  void make_posNode(const std::vector<Position>&, std::unique_ptr<VizParam>&,
-                    std::string&&);
-  void plot_pos(std::ofstream&, std::ifstream&, std::vector<Position>&,
-                std::unique_ptr<VizParam>&);
+  void read_pos(std::ifstream&, std::vector<Position>&, std::unique_ptr<VizParam>&) const;
+  void make_posNode(const std::vector<Position>&, std::unique_ptr<VizParam>&, std::string&&);
+  void plot_pos(std::ofstream&, std::ifstream&, std::vector<Position>&, std::unique_ptr<VizParam>&);
   void plot_pos_horizontal(std::ofstream&, std::unique_ptr<PosPlot>&) const;
   void plot_pos_vertical(std::ofstream&, std::unique_ptr<PosPlot>&) const;
   void plot_Ns(std::ofstream&, float, bool) const;
   void plot_seq_borders(std::ofstream&, bool) const;
-  void print_log(bool, std::string, uint64_t, uint64_t, uint64_t, uint64_t,
-                 uint64_t) const;
+  void print_log(bool, std::string, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t) const;
   void set_n_color(std::vector<Position>&);
 };
 }  // namespace smashpp

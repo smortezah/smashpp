@@ -1,7 +1,9 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #include "vizpaint.hpp"
+
+#include <format>
 
 #include "exception.hpp"
 #include "file.hpp"
@@ -14,7 +16,9 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   std::ofstream fPlot(p->image);
 
   read_matadata(fPos, p);
-  if (p->verbose) show_info(p);
+  if (p->verbose) {
+    show_info(p);
+  }
 
   std::cerr << "Plotting ...\r";
 
@@ -24,7 +28,9 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   plot_background(fPlot);
 
   // If min is set to default, reset to base max proportion
-  if (p->min == 0) p->min = static_cast<uint32_t>(maxSize / 100);
+  if (p->min == 0) {
+    p->min = static_cast<uint32_t>(maxSize / 100);
+  }
 
   // Read positions from file and Print them
   std::vector<Position> pos;
@@ -35,8 +41,11 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
 
   // Set total number of colors to be used
   if (!p->man_tot_color) {
-    for (const auto& pos_line : pos)
-      if (pos_line.n_color > p->tot_color) p->tot_color = pos_line.n_color;
+    for (const auto& pos_line : pos) {
+      if (pos_line.n_color > p->tot_color) {
+        p->tot_color = pos_line.n_color;
+      }
+    }
   }
 
   // Plot
@@ -45,9 +54,8 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   uint64_t n_inverse{0};
   uint64_t n_inverseSolo{0};
   uint64_t n_ignored{0};
-  std::sort(
-      std::begin(pos), std::end(pos),
-      [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
+  std::sort(std::begin(pos), std::end(pos),
+            [](const Position& l, const Position& r) { return l.begRef > r.begRef; });
 
   for (auto e = std::begin(pos); e != std::end(pos); ++e) {
     if (std::abs(e->endTar - e->begTar) <= p->min) {
@@ -55,8 +63,9 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
       continue;
     }
 
-    if (e->begRef == DBLANK)
+    if (e->begRef == DBLANK) {
       e->endTar > e->begTar ? ++n_regularSolo : ++n_inverseSolo;
+    }
 
     if (e->endTar > e->begTar) {
       if (p->regular) {
@@ -82,23 +91,24 @@ void VizPaint::plot(std::unique_ptr<VizParam>& p) {
   }
   fPos.seekg(std::ios::beg);
 
-  if (p->showN) plot_Ns(fPlot, p->opacity, p->vertical);
+  if (p->showN) {
+    plot_Ns(fPlot, p->opacity, p->vertical);
+  }
   plot_seq_borders(fPlot, p->vertical);
   plot_title(fPlot, ref, tar, p->vertical);
   plot_legend(fPlot, p, std::max(n_refBases, n_tarBases));
-  print_log(p->stat, p->image, n_regular, n_regularSolo, n_inverse,
-            n_inverseSolo, n_ignored);
+  print_log(p->stat, p->image, n_regular, n_regularSolo, n_inverse, n_inverseSolo, n_ignored);
 
   svg->print_tailer(fPlot);
   fPos.close();
   fPlot.close();
 
-  if (n_regular + n_regularSolo + n_inverse + n_inverseSolo == 0)
+  if (n_regular + n_regularSolo + n_inverse + n_inverseSolo == 0) {
     remove((p->image).c_str());
+  }
 }
 
-inline void VizPaint::read_matadata(std::ifstream& fPos,
-                                    std::unique_ptr<VizParam>& p) {
+inline void VizPaint::read_matadata(std::ifstream& fPos, std::unique_ptr<VizParam>& p) {
   auto format = p->posFile.substr(p->posFile.find_last_of(".") + 1);
   json j;
 
@@ -106,21 +116,25 @@ inline void VizPaint::read_matadata(std::ifstream& fPos,
     j = json::parse(fPos);
     fPos.seekg(std::ios::beg);
   } else {
-    std::stringstream ss;
-    for (std::string line; std::getline(fPos, line) && (line[0] == '#') &&
-                           (fPos.peek() == '#');) {
-      ss << line << '\n';
+    std::string metadata;
+    for (std::string line; std::getline(fPos, line) && (line[0] == '#') && (fPos.peek() == '#');) {
+      metadata += std::format("{}\n", line);
     }
-    j = parse_pos_metadata(ss.str());
+    j = parse_pos_metadata(metadata);
   }
 
-  if (j["watermark"] != POS_WATERMARK)
+  if (j["watermark"] != POS_WATERMARK) {
     error("unknown file format for positions.");
+  }
 
   ref = j["reference"];
   tar = j["target"];
-  if (!p->refName.empty()) ref = p->refName;
-  if (!p->tarName.empty()) tar = p->tarName;
+  if (!p->refName.empty()) {
+    ref = p->refName;
+  }
+  if (!p->tarName.empty()) {
+    tar = p->tarName;
+  }
 
   n_refBases = std::stoull(j["reference_size"].get<std::string>());
   n_tarBases = std::stoull(j["target_size"].get<std::string>());
@@ -130,21 +144,22 @@ inline void VizPaint::show_info(std::unique_ptr<VizParam>& p) const {
   const uint8_t lblWidth{18};
   const uint8_t colWidth{8};
   uint8_t tblWidth{58};
-  if (std::max(n_refBases, n_tarBases) > 999999)
+  if (std::max(n_refBases, n_tarBases) > 999999) {
     tblWidth = static_cast<uint8_t>(lblWidth + 4 * colWidth);
-  else
+  } else {
     tblWidth = static_cast<uint8_t>(lblWidth + 3 * colWidth);
+  }
 
   const auto rule = [](uint8_t n, std::string s) {
-    for (auto i = n / s.size(); i--;) std::cerr << s;
+    for (auto i = n / s.size(); i--;) {
+      std::cerr << s;
+    }
     std::cerr << '\n';
   };
   const auto toprule = [&]() { rule(tblWidth, "~"); };
   const auto midrule = [&]() { rule(tblWidth, "~"); };
   const auto botrule = [&]() { rule(tblWidth, " "); };
-  const auto label = [=](std::string s) {
-    std::cerr << std::setw(lblWidth) << std::left << s;
-  };
+  const auto label = [=](std::string s) { std::cerr << std::setw(lblWidth) << std::left << s; };
   const auto header = [=](std::string s) {
     std::cerr << std::setw(2 * colWidth) << std::left << s;
   };
@@ -279,15 +294,12 @@ std::string VizPaint::rgb_color(uint32_t start) const {
 
 std::string VizPaint::make_color(uint8_t n_color, uint8_t tot_color) const {
   const auto out_idx =
-      (n_color > tot_color)
-          ? map_interval<uint8_t>(1, n_color, 1, tot_color, n_color)
-          : n_color;
+      (n_color > tot_color) ? map_interval<uint8_t>(1, n_color, 1, tot_color, n_color) : n_color;
   const auto hue{static_cast<uint8_t>(out_idx * 360 / (tot_color + 1) + 15)};
   return to_hex(HSV(hue));
 }
 
-inline std::string VizPaint::nrc_color(double entropy,
-                                       uint32_t colorMode) const {
+inline std::string VizPaint::nrc_color(double entropy, uint32_t colorMode) const {
   keep_in_range(0.0, entropy, 2.0);
 #ifdef EXTEND
   // return heatmap_color(entropy/2 * (width+space+width));
@@ -305,8 +317,7 @@ inline std::string VizPaint::nrc_color(double entropy,
   return "";
 }
 
-inline std::string VizPaint::redun_color(double entropy,
-                                         uint32_t colorMode) const {
+inline std::string VizPaint::redun_color(double entropy, uint32_t colorMode) const {
   keep_in_range(0.0, entropy, 2.0);
 #ifdef EXTEND
   // return heatmap_color(entropy/2 * (width+space+width));
@@ -314,28 +325,26 @@ inline std::string VizPaint::redun_color(double entropy,
   return nrc_color(entropy, colorMode);
 }
 
-inline std::string VizPaint::seq_gradient(std::ofstream& fPlot,
-                                          std::string color,
+inline std::string VizPaint::seq_gradient(std::ofstream& fPlot, std::string color,
                                           std::string id) const {
   auto grad = std::make_unique<LinearGradient>();
-  grad->id = "grad" + id;
+  grad->id = std::format("grad{}", id);
   grad->add_stop("0%", color);
   grad->add_stop("50%", tint(color, 0.5));
   grad->add_stop("100%", color);
   grad->plot(fPlot);
 
-  return "url(#" + grad->id + ")";
+  return std::format("url(#{})", grad->id);
 }
 
-inline std::string VizPaint::periph_gradient(std::ofstream& fPlot,
-                                             std::string color,
+inline std::string VizPaint::periph_gradient(std::ofstream& fPlot, std::string color,
                                              std::string id) const {
   auto grad = std::make_unique<LinearGradient>();
-  grad->id = "grad" + id;
+  grad->id = std::format("grad{}", id);
   grad->add_stop("100%", color);
   grad->plot(fPlot);
 
-  return "url(#" + grad->id + ")";
+  return std::format("url(#{})", grad->id);
 }
 
 template <typename Value>
@@ -357,8 +366,7 @@ inline void VizPaint::plot_background(std::ofstream& f) const {
   rect->plot(f);
 }
 
-inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
-                                   const std::vector<Position>::iterator& e,
+inline void VizPaint::plot_seq_ref(std::ofstream& fPlot, const std::vector<Position>::iterator& e,
                                    std::unique_ptr<VizParam>& p) const {
   if (e->begRef != DBLANK) {
     auto rect = std::make_unique<Rectangle>();
@@ -373,35 +381,29 @@ inline void VizPaint::plot_seq_ref(std::ofstream& fPlot,
     } else {
       rect->x = x + get_point(e->begRef);
       rect->y = y + seqWidth;
-      rect->transform = "rotate(-90 " + std::to_string(rect->x) + " " +
-                        std::to_string(rect->y) + ")";
+      rect->transform = std::format("rotate(-90 {:f} {:f})", rect->x, rect->y);
     }
-    rect->id = std::to_string(rect->x) + std::to_string(rect->y);
-    rect->fill =
-        seq_gradient(fPlot, make_color(e->n_color, p->tot_color), rect->id);
+    rect->id = std::format("{:f}{:f}", rect->x, rect->y);
+    rect->fill = seq_gradient(fPlot, make_color(e->n_color, p->tot_color), rect->id);
     rect->plot(fPlot);
 
     if (p->showRelRedun) {
       rect->id += "NRC";
-      rect->fill =
-          periph_gradient(fPlot, nrc_color(e->entRef, p->colorMode), rect->id);
+      rect->fill = periph_gradient(fPlot, nrc_color(e->entRef, p->colorMode), rect->id);
       rect->stroke = rect->fill;
       plot_periph(fPlot, rect, p->vertical, 'r', 0);
     }
     if (p->showRedun) {
       rect->id += "Redun";
-      rect->fill = periph_gradient(fPlot, redun_color(e->selfRef, p->colorMode),
-                                   rect->id);
+      rect->fill = periph_gradient(fPlot, redun_color(e->selfRef, p->colorMode), rect->id);
       rect->stroke = rect->fill;
       plot_periph(fPlot, rect, p->vertical, 'r', uint8_t(p->showRelRedun));
     }
   }
 }
 
-inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
-                                   const std::vector<Position>::iterator& e,
-                                   std::unique_ptr<VizParam>& p,
-                                   bool inverted) const {
+inline void VizPaint::plot_seq_tar(std::ofstream& fPlot, const std::vector<Position>::iterator& e,
+                                   std::unique_ptr<VizParam>& p, bool inverted) const {
   auto rect = std::make_unique<Rectangle>();
   rect->width = seqWidth;
   rect->stroke_width = 0.75;
@@ -413,68 +415,63 @@ inline void VizPaint::plot_seq_tar(std::ofstream& fPlot,
   } else {
     rect->x = !inverted ? x + get_point(e->begTar) : x + get_point(e->endTar);
     rect->y = y + 2 * seqWidth + innerSpace;
-    rect->transform = "rotate(-90 " + std::to_string(rect->x) + " " +
-                      std::to_string(rect->y) + ")";
+    rect->transform = std::format("rotate(-90 {:f} {:f})", rect->x, rect->y);
   }
-  rect->id = std::to_string(rect->x) + std::to_string(rect->y);
+  rect->id = std::format("{:f}{:f}", rect->x, rect->y);
   if (e->begRef == DBLANK) {
     rect->fill = "black";
     rect->stroke = "white";
   } else {
-    rect->fill =
-        seq_gradient(fPlot, make_color(e->n_color, p->tot_color), rect->id);
+    rect->fill = seq_gradient(fPlot, make_color(e->n_color, p->tot_color), rect->id);
     rect->stroke = rect->fill;
   }
 
   if (!inverted) {
     rect->plot(fPlot);
   } else {
-    if (e->begRef == DBLANK)
+    if (e->begRef == DBLANK) {
       rect->plot_ir(fPlot, "WavyWhite");
-    else
-      rect->plot_ir(fPlot, "Wavy",
-                    shade(make_color(e->n_color, p->tot_color), 0.33));
+    } else {
+      rect->plot_ir(fPlot, "Wavy", shade(make_color(e->n_color, p->tot_color), 0.33));
+    }
   }
 
   if (p->showRelRedun) {
     rect->id += "NRC";
-    rect->fill =
-        periph_gradient(fPlot, nrc_color(e->entTar, p->colorMode), rect->id);
+    rect->fill = periph_gradient(fPlot, nrc_color(e->entTar, p->colorMode), rect->id);
     rect->stroke = rect->fill;
     plot_periph(fPlot, rect, p->vertical, 't', 0);
   }
   if (p->showRedun) {
     rect->id += "Redun";
-    rect->fill =
-        periph_gradient(fPlot, redun_color(e->selfTar, p->colorMode), rect->id);
+    rect->fill = periph_gradient(fPlot, redun_color(e->selfTar, p->colorMode), rect->id);
     rect->stroke = rect->fill;
     plot_periph(fPlot, rect, p->vertical, 't', uint8_t(p->showRelRedun));
   }
 }
 
-inline void VizPaint::plot_periph(std::ofstream& f,
-                                  std::unique_ptr<Rectangle>& rect,
-                                  bool vertical, char RefTar,
-                                  uint8_t showRelRedun) const {
+inline void VizPaint::plot_periph(std::ofstream& f, std::unique_ptr<Rectangle>& rect, bool vertical,
+                                  char RefTar, uint8_t showRelRedun) const {
   const auto mainOriginX{rect->x};
   const auto mainWidth{rect->width};
   const auto mainStrokeWidth{rect->stroke_width};
   const auto mainRy{rect->ry};
 
   if (RefTar == 'r') {
-    if (vertical)
-      rect->x = rect->x - TITLE_SPACE / 2 -
-                (1 + showRelRedun) * (periphWidth + SPACE_TUNE);
-    else
+    if (vertical) {
+      rect->x = rect->x - TITLE_SPACE / 2 - (1 + showRelRedun) * (periphWidth + SPACE_TUNE);
+    } else {
       rect->x = rect->x + rect->width + TITLE_SPACE + SPACE_TUNE +
                 showRelRedun * (periphWidth + SPACE_TUNE);
+    }
   } else {
-    if (vertical)
+    if (vertical) {
       rect->x = rect->x + rect->width + TITLE_SPACE / 2 + SPACE_TUNE +
                 showRelRedun * (SPACE_TUNE + periphWidth);
-    else
+    } else {
       rect->x = rect->x - (periphWidth + TITLE_SPACE + SPACE_TUNE +
                            showRelRedun * (SPACE_TUNE + periphWidth));
+    }
   }
   rect->width = periphWidth;
   rect->stroke_width *= 1.5;
@@ -487,29 +484,28 @@ inline void VizPaint::plot_periph(std::ofstream& f,
   rect->ry = mainRy;
 }
 
-inline void VizPaint::plot_periph(std::ofstream& f,
-                                  std::unique_ptr<Cylinder>& cylinder,
-                                  bool vertical, char RefTar,
-                                  uint8_t showRelRedun) const {
+inline void VizPaint::plot_periph(std::ofstream& f, std::unique_ptr<Cylinder>& cylinder,
+                                  bool vertical, char RefTar, uint8_t showRelRedun) const {
   const auto mainOriginX{cylinder->x};
   const auto mainWidth{cylinder->width};
   const auto mainStrokeWidth{cylinder->stroke_width};
   const auto mainRy{cylinder->ry};
 
   if (RefTar == 'r') {
-    if (vertical)
-      cylinder->x = cylinder->x - TITLE_SPACE / 2 -
-                    (1 + showRelRedun) * (periphWidth + SPACE_TUNE);
-    else
+    if (vertical) {
+      cylinder->x = cylinder->x - TITLE_SPACE / 2 - (1 + showRelRedun) * (periphWidth + SPACE_TUNE);
+    } else {
       cylinder->x = cylinder->x + cylinder->width + TITLE_SPACE + SPACE_TUNE +
                     showRelRedun * (periphWidth + SPACE_TUNE);
+    }
   } else {
-    if (vertical)
-      cylinder->x = cylinder->x + cylinder->width + TITLE_SPACE / 2 +
-                    SPACE_TUNE + showRelRedun * (SPACE_TUNE + periphWidth);
-    else
+    if (vertical) {
+      cylinder->x = cylinder->x + cylinder->width + TITLE_SPACE / 2 + SPACE_TUNE +
+                    showRelRedun * (SPACE_TUNE + periphWidth);
+    } else {
       cylinder->x = cylinder->x - (periphWidth + TITLE_SPACE + SPACE_TUNE +
                                    showRelRedun * (SPACE_TUNE + periphWidth));
+    }
   }
   cylinder->width = periphWidth;
   cylinder->stroke_width *= 2;
@@ -522,10 +518,8 @@ inline void VizPaint::plot_periph(std::ofstream& f,
   cylinder->ry = mainRy;
 }
 
-inline void VizPaint::plot_connector(std::ofstream& fPlot,
-                                     const std::vector<Position>::iterator& e,
-                                     std::unique_ptr<VizParam>& par,
-                                     bool ir) const {
+inline void VizPaint::plot_connector(std::ofstream& fPlot, const std::vector<Position>::iterator& e,
+                                     std::unique_ptr<VizParam>& par, bool ir) const {
   auto poly = std::make_unique<Polygon>();
   auto line = std::make_unique<Line>();
   poly->stroke_width = 0.3;
@@ -533,21 +527,19 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
 
   switch (par->link) {
     case 1:
-      if (par->vertical)
-        poly->points =
-            poly->point(x + seqWidth, y + get_point(e->begRef)) +
-            poly->point(x + seqWidth, y + get_point(e->endRef)) +
-            poly->point(x + seqWidth + innerSpace, y + get_point(e->endTar)) +
-            poly->point(x + seqWidth + innerSpace, y + get_point(e->begTar));
-      else
-        poly->points =
-            poly->point(x + get_point(e->begRef), y + seqWidth) +
-            poly->point(x + get_point(e->endRef), y + seqWidth) +
-            poly->point(x + get_point(e->endTar), y + seqWidth + innerSpace) +
-            poly->point(x + get_point(e->begTar), y + seqWidth + innerSpace);
+      if (par->vertical) {
+        poly->points = poly->point(x + seqWidth, y + get_point(e->begRef)) +
+                       poly->point(x + seqWidth, y + get_point(e->endRef)) +
+                       poly->point(x + seqWidth + innerSpace, y + get_point(e->endTar)) +
+                       poly->point(x + seqWidth + innerSpace, y + get_point(e->begTar));
+      } else {
+        poly->points = poly->point(x + get_point(e->begRef), y + seqWidth) +
+                       poly->point(x + get_point(e->endRef), y + seqWidth) +
+                       poly->point(x + get_point(e->endTar), y + seqWidth + innerSpace) +
+                       poly->point(x + get_point(e->begTar), y + seqWidth + innerSpace);
+      }
       poly->stroke = poly->fill = make_color(e->n_color, par->tot_color);
-      poly->stroke_opacity = 
-      poly->fill_opacity = 0.2 * par->opacity;
+      poly->stroke_opacity = poly->fill_opacity = 0.2 * par->opacity;
       poly->plot(fPlot);
       break;
     case 2:
@@ -555,15 +547,13 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
         line->x1 = x + seqWidth;
         line->y1 = y + get_point(e->begRef + (e->endRef - e->begRef) / 2.0);
         line->x2 = x + seqWidth + innerSpace;
-        line->y2 =
-            ir ? y + get_point(e->endTar + (e->begTar - e->endTar) / 2.0)
-               : y + get_point(e->begTar + (e->endTar - e->begTar) / 2.0);
+        line->y2 = ir ? y + get_point(e->endTar + (e->begTar - e->endTar) / 2.0)
+                      : y + get_point(e->begTar + (e->endTar - e->begTar) / 2.0);
       } else {
         line->x1 = x + get_point(e->begRef + (e->endRef - e->begRef) / 2.0);
         line->y1 = y + seqWidth;
-        line->x2 =
-            ir ? x + get_point(e->endTar + (e->begTar - e->endTar) / 2.0)
-               : x + get_point(e->begTar + (e->endTar - e->begTar) / 2.0);
+        line->x2 = ir ? x + get_point(e->endTar + (e->begTar - e->endTar) / 2.0)
+                      : x + get_point(e->begTar + (e->endTar - e->begTar) / 2.0);
         line->y2 = y + seqWidth + innerSpace;
       }
       line->stroke = make_color(e->n_color, par->tot_color);
@@ -574,15 +564,13 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
         line->x1 = x + seqWidth;
         line->y1 = y + get_point(e->begRef + (e->endRef - e->begRef) / 2.0);
         line->x2 = x + seqWidth + innerSpace;
-        line->y2 =
-            ir ? y + get_point(e->endTar + (e->begTar - e->endTar) / 2.0)
-               : y + get_point(e->begTar + (e->endTar - e->begTar) / 2.0);
+        line->y2 = ir ? y + get_point(e->endTar + (e->begTar - e->endTar) / 2.0)
+                      : y + get_point(e->begTar + (e->endTar - e->begTar) / 2.0);
       } else {
         line->x1 = x + get_point(e->begRef + (e->endRef - e->begRef) / 2.0);
         line->y1 = y + seqWidth;
-        line->x2 =
-            ir ? x + get_point(e->endTar + (e->begTar - e->endTar) / 2.0)
-               : x + get_point(e->begTar + (e->endTar - e->begTar) / 2.0);
+        line->x2 = ir ? x + get_point(e->endTar + (e->begTar - e->endTar) / 2.0)
+                      : x + get_point(e->begTar + (e->endTar - e->begTar) / 2.0);
         line->y2 = y + seqWidth + innerSpace;
       }
       line->stroke = ir ? "green" : "black";
@@ -647,8 +635,8 @@ inline void VizPaint::plot_connector(std::ofstream& fPlot,
   }
 }
 
-inline void VizPaint::plot_title(std::ofstream& f, std::string ref,
-                                 std::string tar, bool vertical) const {
+inline void VizPaint::plot_title(std::ofstream& f, std::string ref, std::string tar,
+                                 bool vertical) const {
   auto text = std::make_unique<Text>();
   text->font_weight = "bold";
   text->font_size = 9;
@@ -658,8 +646,7 @@ inline void VizPaint::plot_title(std::ofstream& f, std::string ref,
     text->y = y - 0.6 * TITLE_SPACE;
 
     const auto charSpace{5};
-    const bool tooClose{(innerSpace -
-                             std::abs(ref.size() * charSpace - seqWidth) / 2 -
+    const bool tooClose{(innerSpace - std::abs(ref.size() * charSpace - seqWidth) / 2 -
                              std::abs(tar.size() * charSpace - seqWidth) / 2 <
                          15)};
 
@@ -691,10 +678,11 @@ inline void VizPaint::plot_title(std::ofstream& f, std::string ref,
   }
 }
 
-inline void VizPaint::plot_legend(std::ofstream& f,
-                                  std::unique_ptr<VizParam>& p,
+inline void VizPaint::plot_legend(std::ofstream& f, std::unique_ptr<VizParam>& p,
                                   int64_t maxWidth) const {
-  if (!p->showRelRedun && !p->showRedun) return;
+  if (!p->showRelRedun && !p->showRedun) {
+    return;
+  }
 
   auto legend = std::make_unique<LegendPlot>();
   legend->maxWidth = maxWidth;
@@ -704,13 +692,15 @@ inline void VizPaint::plot_legend(std::ofstream& f,
   legend->colorMode = p->colorMode;
 
   legend->text.push_back(std::make_unique<Text>());  // Numbers
-  if (legend->showRelRedun && !legend->showRedun)
+  if (legend->showRelRedun && !legend->showRedun) {
     legend->text.push_back(std::make_unique<Text>());  // NRC
-  else if (!legend->showRelRedun && legend->showRedun)
+  } else if (!legend->showRelRedun && legend->showRedun) {
     legend->text.push_back(std::make_unique<Text>());  // Redun
-  else if (legend->showRelRedun && legend->showRedun)
-    for (uint8_t i = 0; i != 2; ++i)
+  } else if (legend->showRelRedun && legend->showRedun) {
+    for (uint8_t i = 0; i != 2; ++i) {
       legend->text.push_back(std::make_unique<Text>());  // NRC + Redun
+    }
+  }
 
   if (legend->vertical) {
     set_legend_rect(legend, 'h');
@@ -725,8 +715,7 @@ inline void VizPaint::plot_legend(std::ofstream& f,
   }
 }
 
-inline void VizPaint::set_legend_rect(std::unique_ptr<LegendPlot>& legend,
-                                      char direction) const {
+inline void VizPaint::set_legend_rect(std::unique_ptr<LegendPlot>& legend, char direction) const {
   if (direction == 'h' || direction == 'H') {
     legend->rect->height = 11;
     legend->rect->x = x - TITLE_SPACE / 2;
@@ -736,13 +725,12 @@ inline void VizPaint::set_legend_rect(std::unique_ptr<LegendPlot>& legend,
     legend->rect->width = 15;
     legend->rect->x = x + get_point(legend->maxWidth) + 40;
     legend->rect->y = y - TITLE_SPACE - SPACE_TUNE;
-    legend->rect->height =
-        2 * (TITLE_SPACE + SPACE_TUNE) + 2 * seqWidth + innerSpace;
+    legend->rect->height = 2 * (TITLE_SPACE + SPACE_TUNE) + 2 * seqWidth + innerSpace;
   }
 }
 
-inline void VizPaint::plot_legend_gradient(
-    std::ofstream& f, std::unique_ptr<LegendPlot>& legend) const {
+inline void VizPaint::plot_legend_gradient(std::ofstream& f,
+                                           std::unique_ptr<LegendPlot>& legend) const {
   std::vector<std::string> colorset;
   switch (legend->colorMode) {
     case 0:
@@ -757,7 +745,7 @@ inline void VizPaint::plot_legend_gradient(
     default:
       error("undefined color mode.");
   }
-  auto id{std::to_string(legend->rect->x) + std::to_string(legend->rect->y)};
+  auto id{std::format("{:f}{:f}", legend->rect->x, legend->rect->y)};
 
   auto grad = std::make_unique<LinearGradient>();
   if (legend->vertical) {
@@ -771,21 +759,21 @@ inline void VizPaint::plot_legend_gradient(
     grad->x2 = "0%";
     grad->y2 = "0%";
   }
-  grad->id = "grad" + id;
-  for (uint8_t i = 0; i != colorset.size(); ++i)
-    grad->add_stop(std::to_string(i * 100 / (colorset.size() - 1)) + "%",
-                   colorset[i]);
+  grad->id = std::format("grad{}", id);
+  for (uint8_t i = 0; i != colorset.size(); ++i) {
+    grad->add_stop(std::format("{}%", i * 100 / (colorset.size() - 1)), colorset[i]);
+  }
   grad->plot(f);
 
   legend->rect->stroke = "black";
   legend->rect->stroke_width = 0.5;
   legend->rect->rx = legend->rect->ry = 2;
-  legend->rect->fill = "url(#grad" + id + ")";
+  legend->rect->fill = std::format("url(#grad{})", id);
   legend->rect->plot(f);
 }
 
-inline void VizPaint::plot_legend_text_horiz(
-    std::ofstream& f, std::unique_ptr<LegendPlot>& legend) const {
+inline void VizPaint::plot_legend_text_horiz(std::ofstream& f,
+                                             std::unique_ptr<LegendPlot>& legend) const {
   for (auto& e : legend->text) {
     e->text_anchor = "middle";
     e->font_size = 8;
@@ -794,48 +782,47 @@ inline void VizPaint::plot_legend_text_horiz(
   if (legend->showRelRedun && !legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width / 2;
     if (innerSpace > 55) {
-      legend->text[1]->y = legend->rect->y - legend->labelShift +
-                           VERT_MIDDLE * legend->text[1]->font_size;
+      legend->text[1]->y =
+          legend->rect->y - legend->labelShift + VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative Redundancy";
       legend->text[1]->plot(f);
     } else {
-      legend->text[1]->y = legend->rect->y - legend->labelShift - 10 +
-                           VERT_MIDDLE * legend->text[1]->font_size;
+      legend->text[1]->y =
+          legend->rect->y - legend->labelShift - 10 + VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative";
       legend->text[1]->plot(f);
-      legend->text[1]->y = legend->rect->y - legend->labelShift +
-                           VERT_MIDDLE * legend->text[1]->font_size;
+      legend->text[1]->y =
+          legend->rect->y - legend->labelShift + VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Redundancy";
       legend->text[1]->plot(f);
     }
   } else if (!legend->showRelRedun && legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width / 2;
-    legend->text[1]->y = legend->rect->y - legend->labelShift +
-                         VERT_MIDDLE * legend->text[1]->font_size;
+    legend->text[1]->y =
+        legend->rect->y - legend->labelShift + VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->Label = "Redundancy";
     legend->text[1]->plot(f);
   } else if (legend->showRelRedun && legend->showRedun) {
     legend->text[1]->x = legend->rect->x + legend->rect->width / 2;
     if (innerSpace > 55) {
-      legend->text[1]->y = legend->rect->y - legend->labelShift +
-                           VERT_MIDDLE * legend->text[1]->font_size;
+      legend->text[1]->y =
+          legend->rect->y - legend->labelShift + VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative Redundancy";
       legend->text[1]->plot(f);
     } else {
-      legend->text[1]->y = legend->rect->y - legend->labelShift - 10 +
-                           VERT_MIDDLE * legend->text[1]->font_size;
+      legend->text[1]->y =
+          legend->rect->y - legend->labelShift - 10 + VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Relative";
       legend->text[1]->plot(f);
-      legend->text[1]->y = legend->rect->y - legend->labelShift +
-                           VERT_MIDDLE * legend->text[1]->font_size;
+      legend->text[1]->y =
+          legend->rect->y - legend->labelShift + VERT_MIDDLE * legend->text[1]->font_size;
       legend->text[1]->Label = "Redundancy";
       legend->text[1]->plot(f);
     }
 
     // Redundancy
     legend->text[2]->x = legend->rect->x + legend->rect->width / 2;
-    legend->text[2]->y = legend->rect->y + legend->rect->height +
-                         legend->labelShift +
+    legend->text[2]->y = legend->rect->y + legend->rect->height + legend->labelShift +
                          VERT_MIDDLE * legend->text[2]->font_size;
     legend->text[2]->Label = "Redundancy";
     legend->text[2]->plot(f);
@@ -869,198 +856,183 @@ inline void VizPaint::plot_legend_text_horiz(
       legend->text[0]->text_anchor = "middle";
       legend->text[0]->y = legend->rect->y + legend->rect->height / 2;
       legend->text[0]->x = legend->rect->x + legend->rect->width / 4 * i;
-      if (legend->colorMode == 1 && i == 3) legend->text[0]->fill = "white";
-      legend->text[0]->Label = string_format("%.1f", i * 0.5);
+      if (legend->colorMode == 1 && i == 3) {
+        legend->text[0]->fill = "white";
+      }
+      legend->text[0]->Label = std::format("{:.1f}", i * 0.5);
       legend->text[0]->plot(f);
     }
   }
 }
 
-inline void VizPaint::plot_legend_path_horiz(
-    std::ofstream& f, std::unique_ptr<LegendPlot>& legend) const {
+inline void VizPaint::plot_legend_path_horiz(std::ofstream& f,
+                                             std::unique_ptr<LegendPlot>& legend) const {
   legend->path->stroke = "black";
   legend->path->stroke_width = 0.5;
   legend->path->stroke_dasharray = "8 4";
 
   if (legend->showRelRedun && !legend->showRedun) {
     float X1RelRedun = x - (TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth);
-    float X2RelRedun = x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 +
-                       SPACE_TUNE + 0.5 * periphWidth;
+    float X2RelRedun =
+        x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth;
     // Left wing
     if (lastPos.size() == 2) {
-      if (innerSpace < 20)
+      if (innerSpace < 20) {
         legend->path->d =
             legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
-            legend->path->V(legend->text[1]->y - 8 -
-                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->V(legend->text[1]->y - 8 - VERT_MIDDLE * legend->text[1]->font_size) +
             legend->path->H((X1RelRedun + X2RelRedun) / 2 - 25);
-      else if (innerSpace > 55)
+      } else if (innerSpace > 55) {
         legend->path->d =
             legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
-            legend->path->V(legend->text[1]->y -
-                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->V(legend->text[1]->y - VERT_MIDDLE * legend->text[1]->font_size) +
             legend->path->H((X1RelRedun + X2RelRedun) / 2 - 50);
-      else
+      } else {
         legend->path->d =
             legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
-            legend->path->V(legend->text[1]->y - 5 -
-                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->V(legend->text[1]->y - 5 - VERT_MIDDLE * legend->text[1]->font_size) +
             legend->path->H((X1RelRedun + X2RelRedun) / 2 - 32);
+      }
       legend->path->plot(f);
     }
     // Right wing
-    if (innerSpace < 20)
+    if (innerSpace < 20) {
       legend->path->d =
           legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
-          legend->path->V(legend->text[1]->y - 8 -
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->V(legend->text[1]->y - 8 - VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->H((X1RelRedun + X2RelRedun) / 2 + 25);
-    else if (innerSpace > 55)
+    } else if (innerSpace > 55) {
       legend->path->d =
           legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
-          legend->path->V(legend->text[1]->y -
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->V(legend->text[1]->y - VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->H((X1RelRedun + X2RelRedun) / 2 + 50);
-    else
+    } else {
       legend->path->d =
           legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
-          legend->path->V(legend->text[1]->y - 5 -
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->V(legend->text[1]->y - 5 - VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->H((X1RelRedun + X2RelRedun) / 2 + 32);
+    }
     legend->path->plot(f);
   } else if (!legend->showRelRedun && legend->showRedun) {
     float X1Redun = x - (TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth);
-    float X2Redun = x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 +
-                    SPACE_TUNE + 0.5 * periphWidth;
+    float X2Redun =
+        x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth;
     // Left wing
     if (lastPos.size() == 2) {
       legend->path->d =
           legend->path->M(X1Redun, y + get_point(lastPos[0])) +
-          legend->path->V(legend->text[1]->y -
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->V(legend->text[1]->y - VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->H((X1Redun + X2Redun) / 2 - 32);
       legend->path->plot(f);
     }
     // Right wing
     legend->path->d =
         legend->path->M(X2Redun, y + get_point(lastPos[1])) +
-        legend->path->V(legend->text[1]->y -
-                        VERT_MIDDLE * legend->text[1]->font_size) +
+        legend->path->V(legend->text[1]->y - VERT_MIDDLE * legend->text[1]->font_size) +
         legend->path->H((X1Redun + X2Redun) / 2 + 32);
     legend->path->plot(f);
   } else if (legend->showRelRedun && legend->showRedun) {
     float X1RelRedun = x - (TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth);
-    float X2RelRedun = x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 +
-                       SPACE_TUNE + 0.5 * periphWidth;
+    float X2RelRedun =
+        x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 + SPACE_TUNE + 0.5 * periphWidth;
     // Left wing
     if (lastPos.size() == 2) {
-      if (innerSpace < 20)
+      if (innerSpace < 20) {
         legend->path->d =
             legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
-            legend->path->V(legend->text[1]->y - 8 -
-                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->V(legend->text[1]->y - 8 - VERT_MIDDLE * legend->text[1]->font_size) +
             legend->path->H((X1RelRedun + X2RelRedun) / 2 - 25);
-      else if (innerSpace > 55)
+      } else if (innerSpace > 55) {
         legend->path->d =
             legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
-            legend->path->V(legend->text[1]->y -
-                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->V(legend->text[1]->y - VERT_MIDDLE * legend->text[1]->font_size) +
             legend->path->H((X1RelRedun + X2RelRedun) / 2 - 50);
-      else
+      } else {
         legend->path->d =
             legend->path->M(X1RelRedun, y + get_point(lastPos[0])) +
-            legend->path->V(legend->text[1]->y - 5 -
-                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->V(legend->text[1]->y - 5 - VERT_MIDDLE * legend->text[1]->font_size) +
             legend->path->H((X1RelRedun + X2RelRedun) / 2 - 32);
+      }
       legend->path->plot(f);
     }
     // Right wing
-    if (innerSpace < 20)
+    if (innerSpace < 20) {
       legend->path->d =
           legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
-          legend->path->V(legend->text[1]->y - 8 -
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->V(legend->text[1]->y - 8 - VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->H((X1RelRedun + X2RelRedun) / 2 + 25);
-    else if (innerSpace > 55)
+    } else if (innerSpace > 55) {
       legend->path->d =
           legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
-          legend->path->V(legend->text[1]->y -
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->V(legend->text[1]->y - VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->H((X1RelRedun + X2RelRedun) / 2 + 50);
-    else
+    } else {
       legend->path->d =
           legend->path->M(X2RelRedun, y + get_point(lastPos[1])) +
-          legend->path->V(legend->text[1]->y - 5 -
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->V(legend->text[1]->y - 5 - VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->H((X1RelRedun + X2RelRedun) / 2 + 32);
+    }
     legend->path->plot(f);
 
     // Redundancy
     float X1Redun = x - (TITLE_SPACE / 2 + 2 * SPACE_TUNE + 1.5 * periphWidth);
-    float X2Redun = x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 +
-                    2 * SPACE_TUNE + 1.5 * periphWidth;
+    float X2Redun =
+        x + 2 * seqWidth + innerSpace + TITLE_SPACE / 2 + 2 * SPACE_TUNE + 1.5 * periphWidth;
     // Left wing
     if (lastPos.size() == 2) {
       legend->path->d =
           legend->path->M(X1Redun, y + get_point(lastPos[0])) +
-          legend->path->V(legend->text[2]->y -
-                          VERT_MIDDLE * legend->text[2]->font_size) +
+          legend->path->V(legend->text[2]->y - VERT_MIDDLE * legend->text[2]->font_size) +
           legend->path->H((X1Redun + X2Redun) / 2 - 32);
       legend->path->plot(f);
     }
     // Right wing
     legend->path->d =
         legend->path->M(X2Redun, y + get_point(lastPos[1])) +
-        legend->path->V(legend->text[2]->y -
-                        VERT_MIDDLE * legend->text[2]->font_size) +
+        legend->path->V(legend->text[2]->y - VERT_MIDDLE * legend->text[2]->font_size) +
         legend->path->H((X1Redun + X2Redun) / 2 + 32);
     legend->path->plot(f);
   }
 }
 
-inline void VizPaint::plot_legend_text_vert(
-    std::ofstream& f, std::unique_ptr<LegendPlot>& legend) const {
+inline void VizPaint::plot_legend_text_vert(std::ofstream& f,
+                                            std::unique_ptr<LegendPlot>& legend) const {
   for (auto& e : legend->text) {
     e->text_anchor = "middle";
     e->font_size = 8;
   }
 
   if (legend->showRelRedun && !legend->showRedun) {
-    legend->text[1]->x = legend->rect->x - legend->labelShift -
-                         VERT_MIDDLE * legend->text[1]->font_size;
+    legend->text[1]->x =
+        legend->rect->x - legend->labelShift - VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height / 2;
-    legend->text[1]->transform = "rotate(90 " +
-                                 std::to_string(legend->text[1]->x) + " " +
-                                 std::to_string(legend->text[1]->y) + ")";
+    legend->text[1]->transform =
+        std::format("rotate(90 {:f} {:f})", legend->text[1]->x, legend->text[1]->y);
     legend->text[1]->Label = "Relative Redundancy";
     legend->text[1]->plot(f);
   } else if (!legend->showRelRedun && legend->showRedun) {
-    legend->text[1]->x = legend->rect->x - legend->labelShift -
-                         VERT_MIDDLE * legend->text[1]->font_size;
+    legend->text[1]->x =
+        legend->rect->x - legend->labelShift - VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height / 2;
-    legend->text[1]->transform = "rotate(90 " +
-                                 std::to_string(legend->text[1]->x) + " " +
-                                 std::to_string(legend->text[1]->y) + ")";
+    legend->text[1]->transform =
+        std::format("rotate(90 {:f} {:f})", legend->text[1]->x, legend->text[1]->y);
     legend->text[1]->Label = "Redundancy";
     legend->text[1]->plot(f);
   } else if (legend->showRelRedun && legend->showRedun) {
-    legend->text[1]->x = legend->rect->x - legend->labelShift -
-                         VERT_MIDDLE * legend->text[1]->font_size;
+    legend->text[1]->x =
+        legend->rect->x - legend->labelShift - VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[1]->y = legend->rect->y + legend->rect->height / 2;
-    legend->text[1]->transform = "rotate(90 " +
-                                 std::to_string(legend->text[1]->x) + " " +
-                                 std::to_string(legend->text[1]->y) + ")";
+    legend->text[1]->transform =
+        std::format("rotate(90 {:f} {:f})", legend->text[1]->x, legend->text[1]->y);
     legend->text[1]->Label = "Relative Redundancy";
     legend->text[1]->plot(f);
 
     // Redundancy
-    legend->text[2]->x = legend->rect->x + legend->rect->width +
-                         legend->labelShift -
+    legend->text[2]->x = legend->rect->x + legend->rect->width + legend->labelShift -
                          VERT_MIDDLE * legend->text[1]->font_size;
     legend->text[2]->y = legend->rect->y + legend->rect->height / 2;
-    legend->text[2]->transform = "rotate(90 " +
-                                 std::to_string(legend->text[2]->x) + " " +
-                                 std::to_string(legend->text[2]->y) + ")";
+    legend->text[2]->transform =
+        std::format("rotate(90 {:f} {:f})", legend->text[2]->x, legend->text[2]->y);
     legend->text[2]->Label = "Redundancy";
     legend->text[2]->plot(f);
   }
@@ -1085,38 +1057,35 @@ inline void VizPaint::plot_legend_text_vert(
   for (uint8_t i = 1; i != 4; ++i) {
     legend->text[0]->text_anchor = "middle";
     legend->text[0]->x = legend->rect->x + legend->rect->width / 2;
-    legend->text[0]->y =
-        legend->rect->y + legend->rect->height - legend->rect->height * i / 4;
-    if (legend->colorMode == 1 && i == 3) legend->text[0]->fill = "white";
-    legend->text[0]->Label = string_format("%.1f", i * 0.5);
+    legend->text[0]->y = legend->rect->y + legend->rect->height - legend->rect->height * i / 4;
+    if (legend->colorMode == 1 && i == 3) {
+      legend->text[0]->fill = "white";
+    }
+    legend->text[0]->Label = std::format("{:.1f}", i * 0.5);
     legend->text[0]->plot(f);
   }
 }
 
-inline void VizPaint::plot_legend_path_vert(
-    std::ofstream& f, std::unique_ptr<LegendPlot>& legend) const {
+inline void VizPaint::plot_legend_path_vert(std::ofstream& f,
+                                            std::unique_ptr<LegendPlot>& legend) const {
   legend->path->stroke = "black";
   legend->path->stroke_width = 0.5;
   legend->path->stroke_dasharray = "8 4";
 
   if (legend->showRelRedun && !legend->showRedun) {
     float Y1RelRedun = y - (TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth);
-    float Y2RelRedun = y + 2 * seqWidth + innerSpace + TITLE_SPACE +
-                       SPACE_TUNE + 0.5 * periphWidth;
+    float Y2RelRedun = y + 2 * seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth;
     // Top wing
     if (lastPos.size() == 2) {
       if (innerSpace < 31) {
-        legend->path->d =
-            legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
-            legend->path->H(legend->text[1]->x -
-                            1.5 * legend->text[1]->font_size) +
-            legend->path->V(Y1RelRedun + TITLE_SPACE) +
-            legend->path->h(legend->text[1]->font_size);
+        legend->path->d = legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
+                          legend->path->H(legend->text[1]->x - 1.5 * legend->text[1]->font_size) +
+                          legend->path->V(Y1RelRedun + TITLE_SPACE) +
+                          legend->path->h(legend->text[1]->font_size);
       } else {
         legend->path->d =
             legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
-            legend->path->H(legend->text[1]->x +
-                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->H(legend->text[1]->x + VERT_MIDDLE * legend->text[1]->font_size) +
             legend->path->V((Y1RelRedun + Y2RelRedun) / 2 - 47);
       }
       legend->path->plot(f);
@@ -1124,56 +1093,47 @@ inline void VizPaint::plot_legend_path_vert(
     // Bottom wing
     if (innerSpace < 31) {
       legend->path->d = legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
-                        legend->path->H(legend->text[1]->x -
-                                        1.5 * legend->text[1]->font_size) +
+                        legend->path->H(legend->text[1]->x - 1.5 * legend->text[1]->font_size) +
                         legend->path->V(Y2RelRedun - TITLE_SPACE) +
                         legend->path->h(legend->text[1]->font_size);
     } else {
       legend->path->d =
           legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
-          legend->path->H(legend->text[1]->x +
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->H(legend->text[1]->x + VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->V((Y1RelRedun + Y2RelRedun) / 2 + 47);
     }
     legend->path->plot(f);
   } else if (!legend->showRelRedun && legend->showRedun) {
     float Y1Redun = y - (TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth);
-    float Y2Redun = y + 2 * seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE +
-                    0.5 * periphWidth;
+    float Y2Redun = y + 2 * seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth;
     // Top wing
     if (lastPos.size() == 2) {
       legend->path->d =
           legend->path->M(x + get_point(lastPos[0]), Y1Redun) +
-          legend->path->H(legend->text[1]->x +
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->H(legend->text[1]->x + VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->V((Y1Redun + Y2Redun) / 2 - 30);
       legend->path->plot(f);
     }
     // Bottom wing
     legend->path->d =
         legend->path->M(x + get_point(lastPos[1]), Y2Redun) +
-        legend->path->H(legend->text[1]->x +
-                        VERT_MIDDLE * legend->text[1]->font_size) +
+        legend->path->H(legend->text[1]->x + VERT_MIDDLE * legend->text[1]->font_size) +
         legend->path->V((Y1Redun + Y2Redun) / 2 + 30);
     legend->path->plot(f);
   } else if (legend->showRelRedun && legend->showRedun) {
     float Y1RelRedun = y - (TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth);
-    float Y2RelRedun = y + 2 * seqWidth + innerSpace + TITLE_SPACE +
-                       SPACE_TUNE + 0.5 * periphWidth;
+    float Y2RelRedun = y + 2 * seqWidth + innerSpace + TITLE_SPACE + SPACE_TUNE + 0.5 * periphWidth;
     // Top wing
     if (lastPos.size() == 2) {
       if (innerSpace < 31) {
-        legend->path->d =
-            legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
-            legend->path->H(legend->text[1]->x -
-                            1.5 * legend->text[1]->font_size) +
-            legend->path->V(Y1RelRedun + TITLE_SPACE) +
-            legend->path->h(legend->text[1]->font_size);
+        legend->path->d = legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
+                          legend->path->H(legend->text[1]->x - 1.5 * legend->text[1]->font_size) +
+                          legend->path->V(Y1RelRedun + TITLE_SPACE) +
+                          legend->path->h(legend->text[1]->font_size);
       } else {
         legend->path->d =
             legend->path->M(x + get_point(lastPos[0]), Y1RelRedun) +
-            legend->path->H(legend->text[1]->x +
-                            VERT_MIDDLE * legend->text[1]->font_size) +
+            legend->path->H(legend->text[1]->x + VERT_MIDDLE * legend->text[1]->font_size) +
             legend->path->V((Y1RelRedun + Y2RelRedun) / 2 - 47);
       }
       legend->path->plot(f);
@@ -1181,57 +1141,54 @@ inline void VizPaint::plot_legend_path_vert(
     // Bottom wing
     if (innerSpace < 31) {
       legend->path->d = legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
-                        legend->path->H(legend->text[1]->x -
-                                        1.5 * legend->text[1]->font_size) +
+                        legend->path->H(legend->text[1]->x - 1.5 * legend->text[1]->font_size) +
                         legend->path->V(Y2RelRedun - TITLE_SPACE) +
                         legend->path->h(legend->text[1]->font_size);
     } else {
       legend->path->d =
           legend->path->M(x + get_point(lastPos[1]), Y2RelRedun) +
-          legend->path->H(legend->text[1]->x +
-                          VERT_MIDDLE * legend->text[1]->font_size) +
+          legend->path->H(legend->text[1]->x + VERT_MIDDLE * legend->text[1]->font_size) +
           legend->path->V((Y1RelRedun + Y2RelRedun) / 2 + 47);
     }
     legend->path->plot(f);
 
     // Redundancy
     float Y1Redun = y - (TITLE_SPACE + 2 * SPACE_TUNE + 1.5 * periphWidth);
-    float Y2Redun = y + 2 * seqWidth + innerSpace + TITLE_SPACE +
-                    2 * SPACE_TUNE + 1.5 * periphWidth;
+    float Y2Redun =
+        y + 2 * seqWidth + innerSpace + TITLE_SPACE + 2 * SPACE_TUNE + 1.5 * periphWidth;
     // Top wing
     if (lastPos.size() == 2) {
       legend->path->d =
           legend->path->M(x + get_point(lastPos[0]), Y1Redun) +
-          legend->path->H(legend->text[2]->x +
-                          VERT_MIDDLE * legend->text[2]->font_size) +
+          legend->path->H(legend->text[2]->x + VERT_MIDDLE * legend->text[2]->font_size) +
           legend->path->V((Y1Redun + Y2Redun) / 2 - 30);
       legend->path->plot(f);
     }
     // Bottom wing
     legend->path->d =
         legend->path->M(x + get_point(lastPos[1]), Y2Redun) +
-        legend->path->H(legend->text[2]->x +
-                        VERT_MIDDLE * legend->text[2]->font_size) +
+        legend->path->H(legend->text[2]->x + VERT_MIDDLE * legend->text[2]->font_size) +
         legend->path->V((Y1Redun + Y2Redun) / 2 + 30);
     legend->path->plot(f);
   }
 }
 
 inline std::string VizPaint::tspan(uint32_t start, int64_t pos) const {
-  return "<tspan id=\"" + std::to_string(start) +
-         "\" style=\"fill:" + rgb_color(start) + "\">" + std::to_string(pos) +
-         ", </tspan>\n";
+  return std::format("<tspan id=\"{}\" style=\"fill:{}\">{}, </tspan>\n", start, rgb_color(start),
+                     pos);
 }
 
 inline std::string VizPaint::tspan(uint32_t start, std::string pos) const {
-  return "<tspan id=\"" + std::to_string(start) +
-         "\" style=\"fill:" + rgb_color(start) + "\">" + pos + ", </tspan>\n";
+  return std::format("<tspan id=\"{}\" style=\"fill:{}\">{}, </tspan>\n", start, rgb_color(start),
+                     pos);
 }
 
 inline void VizPaint::sort_merge(std::string& s) const {
   std::istringstream stream(s);
   std::vector<std::string> vLine;
-  for (std::string gl; std::getline(stream, gl);) vLine.push_back(gl);
+  for (std::string gl; std::getline(stream, gl);) {
+    vLine.push_back(gl);
+  }
 
   if (vLine.size() == 1) {
     s.erase(s.find(", "), 2);
@@ -1274,25 +1231,25 @@ inline void VizPaint::sort_merge(std::string& s) const {
   uint64_t leftOver = vEnv.size();
   for (auto it = std::begin(vEnv); it < std::end(vEnv) - 1;) {
     if (it->id == (it + 1)->id) {
-      s += tspan(it->id, std::to_string(it->pos) + "-" +
-                             std::to_string((it + 1)->pos)) +
-           "\n";
+      s += std::format("{}\n", tspan(it->id, std::format("{}-{}", it->pos, (it + 1)->pos)));
       leftOver -= 2;
       it += 2;
     } else {
-      s += it->line + "\n";
+      s += std::format("{}\n", it->line);
       leftOver -= 1;
       it += 1;
     }
   }
-  if (leftOver == 1) s += vEnv.back().line + "\n";
+  if (leftOver == 1) {
+    s += std::format("{}\n", vEnv.back().line);
+  }
 
   s.erase(s.find_last_of(", <") - 2, 2);
 }
 
 inline void VizPaint::save_n_pos(std::string filePath) const {
   std::ifstream inFile(filePath);
-  std::ofstream NFile(file_name(filePath) + "." + FMT_N);
+  std::ofstream NFile(std::format("{}.{}", file_name(filePath), FMT_N));
   uint64_t pos{0};
   uint64_t beg{0};
   uint64_t num{0};
@@ -1329,36 +1286,36 @@ inline void VizPaint::read_pos(std::ifstream& fPos, std::vector<Position>& pos,
     for (const auto& record : j["positions"]) {
       rbeg = std::stol(record["reference_begin"].get<std::string>());
       rend = std::stol(record["reference_end"].get<std::string>());
-      rrelrdn =
-          std::stod(record["reference_relative_redundancy"].get<std::string>());
+      rrelrdn = std::stod(record["reference_relative_redundancy"].get<std::string>());
       rrdn = std::stod(record["reference_redundancy"].get<std::string>());
       tbeg = std::stol(record["target_begin"].get<std::string>());
       tend = std::stol(record["target_end"].get<std::string>());
-      trelrdn =
-          std::stod(record["target_relative_redundancy"].get<std::string>());
+      trelrdn = std::stod(record["target_relative_redundancy"].get<std::string>());
       trdn = std::stod(record["target_redundancy"].get<std::string>());
       inv = record["inverted"].get<std::string>()[0];
-      const auto pos_record = Position(rbeg, rend, rrelrdn, rrdn, tbeg, tend,
-                                       trelrdn, trdn, inv, par->start);
+      const auto pos_record =
+          Position(rbeg, rend, rrelrdn, rrdn, tbeg, tend, trelrdn, trdn, inv, par->start);
       pos.push_back(pos_record);
 
-      if ((trelrdn == DBLANK) && (trdn == DBLANK)) par->showRedun = false;
+      if ((trelrdn == DBLANK) && (trdn == DBLANK)) {
+        par->showRedun = false;
+      }
     }
   } else {
-    for (; fPos >> rbeg >> rend >> rrelrdn >> rrdn >> tbeg >> tend >> trelrdn >>
-           trdn >> inv;
+    for (; fPos >> rbeg >> rend >> rrelrdn >> rrdn >> tbeg >> tend >> trelrdn >> trdn >> inv;
          ++par->start) {
-      const auto pos_record = Position(rbeg, rend, rrelrdn, rrdn, tbeg, tend,
-                                       trelrdn, trdn, inv, par->start);
+      const auto pos_record =
+          Position(rbeg, rend, rrelrdn, rrdn, tbeg, tend, trelrdn, trdn, inv, par->start);
       pos.push_back(pos_record);
 
-      if ((trelrdn == DBLANK) && (trdn == DBLANK)) par->showRedun = false;
+      if ((trelrdn == DBLANK) && (trdn == DBLANK)) {
+        par->showRedun = false;
+      }
     }
   }
 }
 
-inline void VizPaint::make_posNode(const std::vector<Position>& pos,
-                                   std::unique_ptr<VizParam>& par,
+inline void VizPaint::make_posNode(const std::vector<Position>& pos, std::unique_ptr<VizParam>& par,
                                    std::string&& type) {
   nodes.clear();
   nodes.reserve(2 * pos.size());
@@ -1369,28 +1326,25 @@ inline void VizPaint::make_posNode(const std::vector<Position>& pos,
         nodes.push_back(PosNode(e.begRef, 'b', e.start));
         nodes.push_back(PosNode(e.endRef, 'e', e.start));
       } else if (type == "tar") {
-        nodes.push_back(
-            PosNode(e.begTar, e.endTar > e.begTar ? 'b' : 'e', e.start));
-        nodes.push_back(
-            PosNode(e.endTar, e.endTar > e.begTar ? 'e' : 'b', e.start));
+        nodes.push_back(PosNode(e.begTar, e.endTar > e.begTar ? 'b' : 'e', e.start));
+        nodes.push_back(PosNode(e.endTar, e.endTar > e.begTar ? 'e' : 'b', e.start));
       }
     }
   }
 
   std::sort(std::begin(nodes), std::end(nodes),
-            [](const PosNode& l, const PosNode& r) {
-              return l.position < r.position;
-            });
+            [](const PosNode& l, const PosNode& r) { return l.position < r.position; });
 
   plottable = static_cast<bool>(nodes.size());
-  if (!plottable) return;
+  if (!plottable) {
+    return;
+  }
 
   lastPos.push_back(nodes.back().position);
 }
 
 inline void VizPaint::plot_pos(std::ofstream& fPlot, std::ifstream& fPos,
-                               std::vector<Position>& pos,
-                               std::unique_ptr<VizParam>& p) {
+                               std::vector<Position>& pos, std::unique_ptr<VizParam>& p) {
   read_pos(fPos, pos, p);
   auto posPlot = std::make_unique<PosPlot>();
   posPlot->vertical = p->vertical;
@@ -1403,57 +1357,61 @@ inline void VizPaint::plot_pos(std::ofstream& fPlot, std::ifstream& fPos,
   make_posNode(pos, p, "ref");
   posPlot->n_bases = n_refBases;
   posPlot->plotRef = true;
-  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
-                    : plot_pos_horizontal(fPlot, posPlot);
+  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot) : plot_pos_horizontal(fPlot, posPlot);
 
   make_posNode(pos, p, "tar");
   posPlot->n_bases = n_tarBases;
   posPlot->plotRef = false;
-  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot)
-                    : plot_pos_horizontal(fPlot, posPlot);
+  posPlot->vertical ? plot_pos_vertical(fPlot, posPlot) : plot_pos_horizontal(fPlot, posPlot);
 
-  if (!plottable) exit("No plottable position.\n");
+  if (!plottable) {
+    exit("No plottable position.\n");
+  }
 }
 
-inline void VizPaint::plot_pos_horizontal(
-    std::ofstream& f, std::unique_ptr<PosPlot>& posPlot) const {
+inline void VizPaint::plot_pos_horizontal(std::ofstream& f,
+                                          std::unique_ptr<PosPlot>& posPlot) const {
   posPlot->tickLabelSkip = 7;
 
   auto line = std::make_unique<Line>();
   line->stroke_width = posPlot->majorStrokeWidth;
   line->x1 = x;
   line->x2 = x + get_point(posPlot->n_bases) + 0.5 * line->stroke_width;
-  if (posPlot->plotRef)
-    line->y1 = line->y2 =
-        y - TITLE_SPACE - posPlot->vertSkip -
-        (uint8_t(posPlot->showRelRedun) + uint8_t(posPlot->showRedun)) *
-            (SPACE_TUNE + periphWidth) -
-        posPlot->majorTickSize;
-  else
-    line->y1 = line->y2 =
-        y + 2 * seqWidth + innerSpace + TITLE_SPACE + posPlot->vertSkip +
-        (uint8_t(posPlot->showRelRedun) + uint8_t(posPlot->showRedun)) *
-            (SPACE_TUNE + periphWidth) +
-        posPlot->majorTickSize;
+  if (posPlot->plotRef) {
+    line->y1 = line->y2 = y - TITLE_SPACE - posPlot->vertSkip -
+                          (uint8_t(posPlot->showRelRedun) + uint8_t(posPlot->showRedun)) *
+                              (SPACE_TUNE + periphWidth) -
+                          posPlot->majorTickSize;
+  } else {
+    line->y1 = line->y2 = y + 2 * seqWidth + innerSpace + TITLE_SPACE + posPlot->vertSkip +
+                          (uint8_t(posPlot->showRelRedun) + uint8_t(posPlot->showRedun)) *
+                              (SPACE_TUNE + periphWidth) +
+                          posPlot->majorTickSize;
+  }
 
   auto text = std::make_unique<Text>();
   // Print 0 b
   text->font_size = 7;
   text->text_anchor = "start";
   text->x = line->x1 - 1.5;
-  if (posPlot->plotRef)
+  if (posPlot->plotRef) {
     text->y = line->y1 - posPlot->tickLabelSkip;
-  else
-    text->y = line->y1 + posPlot->tickLabelSkip +
-              VERT_BOTTOM * text->font_size /*font-size of rest*/;
+  } else {
+    text->y =
+        line->y1 + posPlot->tickLabelSkip + VERT_BOTTOM * text->font_size /*font-size of rest*/;
+  }
   text->Label = "0 b";
   text->plot(f);
 
   float majorTick{tick_round(0, posPlot->n_bases, posPlot->n_ranges)};
   if (posPlot->plotRef) {
-    if (posPlot->refTick != 0) majorTick = posPlot->refTick;
+    if (posPlot->refTick != 0) {
+      majorTick = posPlot->refTick;
+    }
   } else {
-    if (posPlot->tarTick != 0) majorTick = posPlot->tarTick;
+    if (posPlot->tarTick != 0) {
+      majorTick = posPlot->tarTick;
+    }
   }
   float minorTick{majorTick / posPlot->n_subranges};
 
@@ -1465,33 +1423,34 @@ inline void VizPaint::plot_pos_horizontal(
     }
 
     // Major ticks
-    if (static_cast<uint64_t>(std::round(pos)) %
-            static_cast<uint64_t>(majorTick) ==
-        0) {
+    if (static_cast<uint64_t>(std::round(pos)) % static_cast<uint64_t>(majorTick) == 0) {
       // Line
-      line->y2 = posPlot->plotRef ? line->y1 + posPlot->majorTickSize
-                                  : line->y1 - posPlot->majorTickSize;
+      line->y2 =
+          posPlot->plotRef ? line->y1 + posPlot->majorTickSize : line->y1 - posPlot->majorTickSize;
       line->stroke_width = posPlot->majorStrokeWidth;
       line->plot(f);
 
       // Text
       text->x = line->x1;
-      if (posPlot->plotRef)
+      if (posPlot->plotRef) {
         text->y = line->y1 - posPlot->tickLabelSkip;
-      else
-        text->y =
-            line->y1 + posPlot->tickLabelSkip + VERT_BOTTOM * text->font_size;
+      } else {
+        text->y = line->y1 + posPlot->tickLabelSkip + VERT_BOTTOM * text->font_size;
+      }
       text->font_weight = "normal";
       text->text_anchor = "middle";
-      if (posPlot->tickHumanRead)
+      if (posPlot->tickHumanRead) {
         text->Label = human_readable_non_cs(uint64_t(std::round(pos)), 1);
-      else
-        text->Label = std::to_string(uint64_t(std::round(pos)));
-      if (pos != 0.0f) text->plot(f);
+      } else {
+        text->Label = std::format("{}", uint64_t(std::round(pos)));
+      }
+      if (pos != 0.0f) {
+        text->plot(f);
+      }
     } else {  // Minor ticks
       const auto temp = line->y1;
-      line->y1 = posPlot->plotRef ? line->y2 - posPlot->minorTickSize
-                                  : line->y2 + posPlot->minorTickSize;
+      line->y1 =
+          posPlot->plotRef ? line->y2 - posPlot->minorTickSize : line->y2 + posPlot->minorTickSize;
       line->stroke_width = posPlot->minorStrokeWidth;
       line->plot(f);
       line->y1 = temp;
@@ -1499,37 +1458,38 @@ inline void VizPaint::plot_pos_horizontal(
   }
 }
 
-inline void VizPaint::plot_pos_vertical(
-    std::ofstream& f, std::unique_ptr<PosPlot>& posPlot) const {
+inline void VizPaint::plot_pos_vertical(std::ofstream& f, std::unique_ptr<PosPlot>& posPlot) const {
   posPlot->tickLabelSkip = 5;
 
   auto line = std::make_unique<Line>();
   line->stroke_width = posPlot->majorStrokeWidth;
   line->y1 = y;
   line->y2 = y + get_point(posPlot->n_bases) + 0.5 * line->stroke_width;
-  const auto showLegend =
-      static_cast<uint8_t>(posPlot->showRelRedun || posPlot->showRedun);
-  const auto visibleBars = static_cast<uint8_t>(posPlot->showRelRedun) +
-                           static_cast<uint8_t>(posPlot->showRedun);
-  if (posPlot->plotRef)
-    line->x1 = line->x2 =
-        x - showLegend * TITLE_SPACE / 2 -
-        visibleBars * (SPACE_TUNE + periphWidth) -
-        posPlot->vertSkip - posPlot->majorTickSize;
-  else
-    line->x1 = line->x2 =
-        x + 2 * seqWidth + innerSpace + showLegend * TITLE_SPACE / 2 +
-        posPlot->vertSkip + visibleBars * (SPACE_TUNE + periphWidth) +
-        posPlot->majorTickSize;
+  const auto showLegend = static_cast<uint8_t>(posPlot->showRelRedun || posPlot->showRedun);
+  const auto visibleBars =
+      static_cast<uint8_t>(posPlot->showRelRedun) + static_cast<uint8_t>(posPlot->showRedun);
+  if (posPlot->plotRef) {
+    line->x1 = line->x2 = x - showLegend * TITLE_SPACE / 2 -
+                          visibleBars * (SPACE_TUNE + periphWidth) - posPlot->vertSkip -
+                          posPlot->majorTickSize;
+  } else {
+    line->x1 = line->x2 = x + 2 * seqWidth + innerSpace + showLegend * TITLE_SPACE / 2 +
+                          posPlot->vertSkip + visibleBars * (SPACE_TUNE + periphWidth) +
+                          posPlot->majorTickSize;
+  }
 
   auto text = std::make_unique<Text>();
   text->font_size = 7;
 
   float majorTick{tick_round(0, posPlot->n_bases, posPlot->n_ranges)};
   if (posPlot->plotRef) {
-    if (posPlot->refTick != 0) majorTick = posPlot->refTick;
+    if (posPlot->refTick != 0) {
+      majorTick = posPlot->refTick;
+    }
   } else {
-    if (posPlot->tarTick != 0) majorTick = posPlot->tarTick;
+    if (posPlot->tarTick != 0) {
+      majorTick = posPlot->tarTick;
+    }
   }
   float minorTick{majorTick / posPlot->n_subranges};
 
@@ -1541,29 +1501,29 @@ inline void VizPaint::plot_pos_vertical(
     }
 
     // Major ticks
-    if (static_cast<uint64_t>(round(pos)) % static_cast<uint64_t>(majorTick) ==
-        0) {
+    if (static_cast<uint64_t>(round(pos)) % static_cast<uint64_t>(majorTick) == 0) {
       // Line
-      line->x2 = posPlot->plotRef ? line->x1 + posPlot->majorTickSize
-                                  : line->x1 - posPlot->majorTickSize;
+      line->x2 =
+          posPlot->plotRef ? line->x1 + posPlot->majorTickSize : line->x1 - posPlot->majorTickSize;
       line->stroke_width = posPlot->majorStrokeWidth;
       line->plot(f);
 
       // Text
-      text->x = posPlot->plotRef ? line->x1 - posPlot->tickLabelSkip
-                                 : line->x1 + posPlot->tickLabelSkip;
+      text->x =
+          posPlot->plotRef ? line->x1 - posPlot->tickLabelSkip : line->x1 + posPlot->tickLabelSkip;
       text->y = line->y1 + VERT_MIDDLE * text->font_size;
       text->font_weight = "normal";
       text->text_anchor = posPlot->plotRef ? "end" : "start";
-      if (posPlot->tickHumanRead)
+      if (posPlot->tickHumanRead) {
         text->Label = human_readable_non_cs(uint64_t(std::round(pos)), 1);
-      else
-        text->Label = std::to_string(uint64_t(std::round(pos)));
+      } else {
+        text->Label = std::format("{}", uint64_t(std::round(pos)));
+      }
       text->plot(f);
     } else {  // Minor ticks
       const auto temp = line->x1;
-      line->x1 = posPlot->plotRef ? line->x2 - posPlot->minorTickSize
-                                  : line->x2 + posPlot->minorTickSize;
+      line->x1 =
+          posPlot->plotRef ? line->x2 - posPlot->minorTickSize : line->x2 + posPlot->minorTickSize;
       line->stroke_width = posPlot->minorStrokeWidth;
       line->plot(f);
       line->x1 = temp;
@@ -1571,11 +1531,11 @@ inline void VizPaint::plot_pos_vertical(
   }
 }
 
-//TODO modify
-inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity,
-                              bool vertical) const {
+// TODO modify
+inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity, bool vertical) const {
   save_n_pos(ref);
-  std::ifstream refFile(file_name(ref) + "." + FMT_N);
+  const auto ref_n_file = std::format("{}.{}", file_name(ref), FMT_N);
+  std::ifstream refFile(ref_n_file);
 
   for (int64_t beg, end; refFile >> beg >> end;) {
     auto cylinder = std::make_unique<Cylinder>();
@@ -1590,18 +1550,18 @@ inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity,
     } else {
       cylinder->x = x + get_point(beg);
       cylinder->y = y + seqWidth;
-      cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
-                            std::to_string(cylinder->y) + ")";
+      cylinder->transform = std::format("rotate(-90 {:f} {:f})", cylinder->x, cylinder->y);
     }
-    cylinder->id = std::to_string(cylinder->x) + std::to_string(cylinder->y);
+    cylinder->id = std::format("{:f}{:f}", cylinder->x, cylinder->y);
     cylinder->plot(fPlot);
   }
 
   refFile.close();
-  remove((file_name(ref) + "." + FMT_N).c_str());
+  remove(ref_n_file.c_str());
 
   save_n_pos(tar);
-  std::ifstream tarFile(file_name(tar) + "." + FMT_N);
+  const auto tar_n_file = std::format("{}.{}", file_name(tar), FMT_N);
+  std::ifstream tarFile(tar_n_file);
 
   for (int64_t beg, end; tarFile >> beg >> end;) {
     auto cylinder = std::make_unique<Cylinder>();
@@ -1616,15 +1576,14 @@ inline void VizPaint::plot_Ns(std::ofstream& fPlot, float opacity,
     } else {
       cylinder->x = x + get_point(beg);
       cylinder->y = y + 2 * seqWidth + innerSpace;
-      cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
-                            std::to_string(cylinder->y) + ")";
+      cylinder->transform = std::format("rotate(-90 {:f} {:f})", cylinder->x, cylinder->y);
     }
-    cylinder->id = std::to_string(cylinder->x) + std::to_string(cylinder->y);
+    cylinder->id = std::format("{:f}{:f}", cylinder->x, cylinder->y);
     cylinder->plot(fPlot);
   }
 
   tarFile.close();
-  remove((file_name(tar) + "." + FMT_N).c_str());
+  remove(tar_n_file.c_str());
 }
 
 inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
@@ -1633,7 +1592,7 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   cylinder->stroke_width = 1;
 
   auto path = std::make_unique<Path>();
-  path->id = "rhs" + std::to_string(x) + std::to_string(y);
+  path->id = std::format("rhs{:f}{:f}", x, y);
   path->fill = path->stroke = "white";
   path->fill_opacity = path->stroke_opacity = 1.0;
   path->stroke_width = cylinder->stroke_width;
@@ -1646,23 +1605,18 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   } else {
     cylinder->x = x;
     cylinder->y = y + seqWidth;
-    cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
-                          std::to_string(cylinder->y) + ")";
+    cylinder->transform = std::format("rotate(-90 {:f} {:f})", cylinder->x, cylinder->y);
   }
   // cylinder->stroke_dasharray = "8 3";
   path->stroke_dasharray = cylinder->stroke_dasharray;
   path->transform = cylinder->transform;
-  path->d =
-      path->M(cylinder->x, cylinder->y + cylinder->height - cylinder->ry) +
-      path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, cylinder->width, 0) +
-      path->v(cylinder->ry) + path->h(-cylinder->width) +
-      path->v(-cylinder->ry) + path->z();
+  path->d = path->M(cylinder->x, cylinder->y + cylinder->height - cylinder->ry) +
+            path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, cylinder->width, 0) +
+            path->v(cylinder->ry) + path->h(-cylinder->width) + path->v(-cylinder->ry) + path->z();
   path->plot(f);
-  path->d =
-      path->M(cylinder->x + cylinder->width, cylinder->y + cylinder->ry) +
-      path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, -cylinder->width, 0) +
-      path->v(-cylinder->ry) + path->h(cylinder->width) +
-      path->v(cylinder->ry) + path->z();
+  path->d = path->M(cylinder->x + cylinder->width, cylinder->y + cylinder->ry) +
+            path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, -cylinder->width, 0) +
+            path->v(-cylinder->ry) + path->h(cylinder->width) + path->v(cylinder->ry) + path->z();
   path->plot(f);
   cylinder->plot(f);
 
@@ -1674,51 +1628,53 @@ inline void VizPaint::plot_seq_borders(std::ofstream& f, bool vertical) const {
   } else {
     cylinder->x = x;
     cylinder->y = y + 2 * seqWidth + innerSpace;
-    cylinder->transform = "rotate(-90 " + std::to_string(cylinder->x) + " " +
-                          std::to_string(cylinder->y) + ")";
+    cylinder->transform = std::format("rotate(-90 {:f} {:f})", cylinder->x, cylinder->y);
   }
   path->stroke_dasharray = cylinder->stroke_dasharray;
   path->transform = cylinder->transform;
-  path->d =
-      path->M(cylinder->x, cylinder->y + cylinder->height - cylinder->ry) +
-      path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, cylinder->width, 0) +
-      path->v(cylinder->ry) + path->h(-cylinder->width) +
-      path->v(-cylinder->ry) + path->z();
+  path->d = path->M(cylinder->x, cylinder->y + cylinder->height - cylinder->ry) +
+            path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, cylinder->width, 0) +
+            path->v(cylinder->ry) + path->h(-cylinder->width) + path->v(-cylinder->ry) + path->z();
   path->plot(f);
-  path->d =
-      path->M(cylinder->x + cylinder->width, cylinder->y + cylinder->ry) +
-      path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, -cylinder->width, 0) +
-      path->v(-cylinder->ry) + path->h(cylinder->width) +
-      path->v(cylinder->ry) + path->z();
+  path->d = path->M(cylinder->x + cylinder->width, cylinder->y + cylinder->ry) +
+            path->a(cylinder->width / 2, cylinder->ry, 0, 0, 0, -cylinder->width, 0) +
+            path->v(-cylinder->ry) + path->h(cylinder->width) + path->v(cylinder->ry) + path->z();
   path->plot(f);
   cylinder->plot(f);
 }
 
-inline void VizPaint::print_log(bool stat, std::string image,
-                                uint64_t n_regular, uint64_t n_regularSolo,
-                                uint64_t n_inverse, uint64_t n_inverseSolo,
+inline void VizPaint::print_log(bool stat, std::string image, uint64_t n_regular,
+                                uint64_t n_regularSolo, uint64_t n_inverse, uint64_t n_inverseSolo,
                                 uint64_t n_ignored) const {
   if (stat) {
     std::string stat_file_name = STAT_NAME;
     if (image != IMAGE) {
       std::string temp = image;
       temp.erase(std::end(temp) - 4, std::end(temp));
-      stat_file_name = temp + ".csv";
+      stat_file_name = std::format("{}.csv", temp);
     }
 
     std::ofstream stat_file(stat_file_name);
     stat_file << "Regular,RegularSolo,Inverted,InvertedSolo,Ignored\n";
-    stat_file << n_regular << ',' << n_regularSolo << ',' << n_inverse << ','
-              << n_inverseSolo << ',' << n_ignored << '\n';
+    stat_file << n_regular << ',' << n_regularSolo << ',' << n_inverse << ',' << n_inverseSolo
+              << ',' << n_ignored << '\n';
     stat_file.close();
   }
 
   // Count '+' signs needed
   uint8_t n_pluses{0};
-  if (n_regular != 0) ++n_pluses;
-  if (n_regularSolo != 0) ++n_pluses;
-  if (n_inverse != 0) ++n_pluses;
-  if (n_inverseSolo != 0) ++n_pluses;
+  if (n_regular != 0) {
+    ++n_pluses;
+  }
+  if (n_regularSolo != 0) {
+    ++n_pluses;
+  }
+  if (n_inverse != 0) {
+    ++n_pluses;
+  }
+  if (n_inverseSolo != 0) {
+    ++n_pluses;
+  }
 
   if (n_pluses != 0) {
     --n_pluses;
@@ -1749,15 +1705,11 @@ inline void VizPaint::print_log(bool stat, std::string image,
       std::cerr << n_inverseSolo << " solo inverted";
     }
 
-    std::cerr << " region"
-              << (n_regular + n_regularSolo + n_inverse + n_inverseSolo > 1
-                      ? "s"
-                      : "")
+    std::cerr << " region" << (n_regular + n_regularSolo + n_inverse + n_inverseSolo > 1 ? "s" : "")
               << ".\n";
 
     if (n_ignored != 0)
-      std::cerr << "Ignored " << n_ignored << " region"
-                << (n_ignored > 1 ? "s" : "") << ".\n";
+      std::cerr << "Ignored " << n_ignored << " region" << (n_ignored > 1 ? "s" : "") << ".\n";
     std::cerr << '\n';
   } else {
     exit("No plottable position.\n");
@@ -1771,15 +1723,14 @@ void VizPaint::set_n_color(std::vector<Position>& pos) {
 
   for (auto& p : pos) {
     const auto tar_pos = std::make_pair(p.begTar, p.endTar);
-    const auto found = std::find(std::begin(history_tar_pos),
-                                 std::end(history_tar_pos), tar_pos);
+    const auto found = std::find(std::begin(history_tar_pos), std::end(history_tar_pos), tar_pos);
     if (found == std::end(history_tar_pos)) {
       p.n_color = ++color_number;
       history_tar_pos.push_back(std::make_pair(p.begTar, p.endTar));
       history_n_color.push_back(p.n_color);
     } else {
-      const auto n_color_idx = static_cast<int64_t>(
-          std::distance(std::begin(history_tar_pos), found));
+      const auto n_color_idx =
+          static_cast<int64_t>(std::distance(std::begin(history_tar_pos), found));
       p.n_color = history_n_color[n_color_idx];
     }
   }

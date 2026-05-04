@@ -1,11 +1,12 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_CONTAINER_HPP
 #define SMASHPP_CONTAINER_HPP
 
-#include <numeric>
 #include <algorithm>
+#include <numeric>
+
 #include "par.hpp"
 
 namespace smashpp {
@@ -15,7 +16,9 @@ inline void split(InIter first, InIter last, char delim, Vec& vOut) {
   while (true) {
     InIter found = std::find(first, last, delim);
     vOut.push_back(std::string(first, found));
-    if (found == last) break;
+    if (found == last) {
+      break;
+    }
     first = ++found;
   }
 }
@@ -31,8 +34,9 @@ template <typename VecIter>  // Number of ones in a bool array
 static uint8_t pop_count(VecIter first, uint8_t len) {
   uint8_t n{0};
   for (auto last = first + len; last-- != first;) {
-    if (*last == true)  // 1u instead of "true"
+    if (*last == true) {  // 1u instead of "true"
       ++n;
+    }
   }
   return n;
 }
@@ -40,30 +44,38 @@ static uint8_t pop_count(VecIter first, uint8_t len) {
 template <typename Digit>
 inline static uint8_t pop_count(Digit d) {  // Number of ones in a digit
   uint8_t n{0};
-  for (; d; ++n) d &= d - 1;  // First impl. Kernighan. Clear the LSB set
+  // First impl. Kernighan. Clear the LSB set
+  for (; d; ++n) {
+    d &= d - 1;
+  }
   return n;
 }
 #endif
 
 template <typename Iter, typename Value>
 inline static bool are_all(Iter first, Value val) {
-  return std::all_of(first, first + CARDIN, [val](uint64_t i) {
-    return i == static_cast<uint64_t>(val);
-  });
+  return std::all_of(first, first + CARDIN,
+                     [val](uint64_t i) { return i == static_cast<uint64_t>(val); });
 }
 
 template <typename Iter>
 inline static bool has_multi_max(Iter first) {
   auto last{first + CARDIN};
-  for (const auto max_pos = std::max_element(first, last); last-- != first;)
-    if (*last == *max_pos && last != max_pos) return true;
+  for (const auto max_pos = std::max_element(first, last); last-- != first;) {
+    if (*last == *max_pos && last != max_pos) {
+      return true;
+    }
+  }
   return false;
 }
 
 template <typename Iter, typename PosIter>
 inline static bool has_multi_max(Iter first, PosIter maxPos) {
-  for (auto last = first + CARDIN; last-- != first;)
-    if (*last == *maxPos && last != maxPos) return true;
+  for (auto last = first + CARDIN; last-- != first;) {
+    if (*last == *maxPos && last != maxPos) {
+      return true;
+    }
+  }
   return false;
 }
 
@@ -75,14 +87,15 @@ inline static uint8_t best_sym(Iter first) {
 template <typename Iter>
 inline static uint8_t best_sym_abs(Iter first) {
   const auto max_pos = std::max_element(first, first + CARDIN);
-  return static_cast<uint8_t>(has_multi_max(first, max_pos) ? 255
-                                                            : max_pos - first);
+  return static_cast<uint8_t>(has_multi_max(first, max_pos) ? 255 : max_pos - first);
 }
 
 template <typename OutIter, typename InIter>
 inline static void normalize(OutIter oFirst, InIter iFirst, InIter iLast) {
   const auto sumInv = prc_t(1) / std::accumulate(iFirst, iLast, prc_t(0));
-  for (; iFirst != iLast; ++iFirst, ++oFirst) *oFirst = *iFirst * sumInv;
+  for (; iFirst != iLast; ++iFirst, ++oFirst) {
+    *oFirst = *iFirst * sumInv;
+  }
 }
 }  // namespace smashpp
 

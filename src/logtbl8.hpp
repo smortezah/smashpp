@@ -1,5 +1,5 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_LOGTABLE8_HPP
 #define SMASHPP_LOGTABLE8_HPP
@@ -28,7 +28,7 @@ class LogTable8 {
 #ifdef DEBUG
   void dump(std::ofstream&) const;
   void load(std::ifstream&) const;
-  auto get_total() const -> uint64_t;  // Total count of all items in the table
+  auto get_total() const -> uint64_t;    // Total count of all items in the table
   auto count_empty() const -> uint64_t;  // Number of empty cells in the table
   auto max_tbl_val() const -> uint32_t;
   void print() const;

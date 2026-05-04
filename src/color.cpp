@@ -1,31 +1,37 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
-#include "exception.hpp"
 #include "color.hpp"
-#include "string.hpp"
 
 #include <algorithm>
 #include <cctype>
+#include <format>
+
+#include "exception.hpp"
+#include "string.hpp"
 
 namespace smashpp {
 // Global functions
 bool is_hex(std::string color) {
-  if (color.front() != '#' || color.size() != 7) return false;
+  if (color.front() != '#' || color.size() != 7) {
+    return false;
+  }
 
-  for (auto ch : color.substr(1))
-    if (!std::isxdigit(static_cast<unsigned char>(ch))) return false;
+  for (auto ch : color.substr(1)) {
+    if (!std::isxdigit(static_cast<unsigned char>(ch))) {
+      return false;
+    }
+  }
 
   return true;
 }
 
 std::string to_hex(const RGB& color) {
-  return string_format("#%X%X%X", color.r, color.g, color.b);
+  return std::format("#{:02X}{:02X}{:02X}", static_cast<unsigned>(color.r),
+                     static_cast<unsigned>(color.g), static_cast<unsigned>(color.b));
 }
 
-std::string to_hex(const HSV& color) {
-  return to_hex(to_rgb(color));
-}
+std::string to_hex(const HSV& color) { return to_hex(to_rgb(color)); }
 
 RGB to_rgb(std::string color) {
   if (is_hex(color)) {
@@ -33,20 +39,21 @@ RGB to_rgb(std::string color) {
                std::stoi(color.substr(3, 2), 0, 16 /*base*/),
                std::stoi(color.substr(5, 2), 0, 16 /*base*/));
   } else {
-    if (color == "black")
+    if (color == "black") {
       return RGB(0, 0, 0);
-    else if (color == "white")
+    } else if (color == "white") {
       return RGB(255, 255, 255);
-    else if (color == "grey")
+    } else if (color == "grey") {
       return RGB(128, 128, 128);
-    else if (color == "red")
+    } else if (color == "red") {
       return RGB(255, 0, 0);
-    else if (color == "green")
+    } else if (color == "green") {
       return RGB(0, 255, 0);
-    else if (color == "blue")
+    } else if (color == "blue") {
       return RGB(0, 0, 255);
-    else
-      error("color \"" + color + "\" undefined");
+    } else {
+      error(std::format("color \"{}\" undefined", color));
+    }
   }
   return RGB();
 }
@@ -61,10 +68,8 @@ RGB to_rgb(const HSV& hsv) {
   const auto region = static_cast<uint8_t>(hsv.h / 43);
   const auto remainder = static_cast<uint8_t>((hsv.h - region * 43) * 6);
   const auto p = static_cast<uint8_t>((hsv.v * (255 - hsv.s)) >> 8);
-  const auto q =
-      static_cast<uint8_t>((hsv.v * (255 - ((hsv.s * remainder) >> 8))) >> 8);
-  const auto t = static_cast<uint8_t>(
-      (hsv.v * (255 - ((hsv.s * (255 - remainder)) >> 8))) >> 8);
+  const auto q = static_cast<uint8_t>((hsv.v * (255 - ((hsv.s * remainder) >> 8))) >> 8);
+  const auto t = static_cast<uint8_t>((hsv.v * (255 - ((hsv.s * (255 - remainder)) >> 8))) >> 8);
 
   switch (region) {
     case 0:
@@ -112,20 +117,19 @@ HSV to_hsv(const RGB& rgb) {
     return hsv;
   }
 
-  hsv.s = static_cast<uint8_t>(
-      255 * static_cast<uint16_t>((rgbMax - rgbMin) / hsv.v));
+  hsv.s = static_cast<uint8_t>(255 * static_cast<uint16_t>((rgbMax - rgbMin) / hsv.v));
   if (hsv.s == 0) {
     hsv.h = 0;
     return hsv;
   }
 
-  if (rgbMax == rgb.r)
+  if (rgbMax == rgb.r) {
     hsv.h = static_cast<uint8_t>(43 * (rgb.g - rgb.b) / (rgbMax - rgbMin));
-  else if (rgbMax == rgb.g)
+  } else if (rgbMax == rgb.g) {
     hsv.h = static_cast<uint8_t>(85 + 43 * (rgb.b - rgb.r) / (rgbMax - rgbMin));
-  else
-    hsv.h =
-        static_cast<uint8_t>(171 + 43 * (rgb.r - rgb.g) / (rgbMax - rgbMin));
+  } else {
+    hsv.h = static_cast<uint8_t>(171 + 43 * (rgb.r - rgb.g) / (rgbMax - rgbMin));
+  }
 
   return hsv;
 }
@@ -136,25 +140,19 @@ RGB alpha_blend(const RGB& color1, const RGB& color2, float alpha) {
              static_cast<uint8_t>(color1.b + (color2.b - color1.b) * alpha));
 }
 
-RGB shade(const RGB& color, float alpha) {
-  return alpha_blend(color, to_rgb("black"), alpha);
-}
+RGB shade(const RGB& color, float alpha) { return alpha_blend(color, to_rgb("black"), alpha); }
 
 std::string shade(std::string color, float alpha) {
   return to_hex(alpha_blend(to_rgb(color), to_rgb("black"), alpha));
 }
 
-RGB tint(const RGB& color, float alpha) {
-  return alpha_blend(color, to_rgb("white"), alpha);
-}
+RGB tint(const RGB& color, float alpha) { return alpha_blend(color, to_rgb("white"), alpha); }
 
 std::string tint(std::string color, float alpha) {
   return to_hex(alpha_blend(to_rgb(color), to_rgb("white"), alpha));
 }
 
-RGB tone(const RGB& color, float alpha) {
-  return alpha_blend(color, to_rgb("grey"), alpha);
-}
+RGB tone(const RGB& color, float alpha) { return alpha_blend(color, to_rgb("grey"), alpha); }
 
 std::string tone(std::string color, float alpha) {
   return to_hex(alpha_blend(to_rgb(color), to_rgb("grey"), alpha));

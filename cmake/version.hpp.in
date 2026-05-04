@@ -1,0 +1,10 @@
+#ifndef SMASHPP_VERSION_HPP
+#define SMASHPP_VERSION_HPP
+
+#include <string>
+
+namespace smashpp {
+inline const std::string VERSION = "@SMASHPP_VERSION@";
+}  // namespace smashpp
+
+#endif  // SMASHPP_VERSION_HPP

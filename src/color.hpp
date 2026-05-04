@@ -1,5 +1,5 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_COLOR_HPP
 #define SMASHPP_COLOR_HPP
@@ -38,8 +38,7 @@ class RGB : public Color {
 
   RGB() = default;
   RGB(uint8_t r_, uint8_t g_, uint8_t b_) : r(r_), g(g_), b(b_) {}
-  explicit RGB(std::string color)
-      : r(to_rgb(color).r), g(to_rgb(color).g), b(to_rgb(color).b) {}
+  explicit RGB(std::string color) : r(to_rgb(color).r), g(to_rgb(color).g), b(to_rgb(color).b) {}
 };
 
 class HSV : public Color {
@@ -53,4 +52,4 @@ class HSV : public Color {
 };
 }  // namespace smashpp
 
-#endif  //SMASHPP_COLOR_HPP
+#endif  // SMASHPP_COLOR_HPP

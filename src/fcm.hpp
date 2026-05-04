@@ -1,5 +1,5 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_FCM_HPP
 #define SMASHPP_FCM_HPP
@@ -14,24 +14,35 @@
 #include "tbl64.hpp"
 
 namespace smashpp {
-static constexpr uint8_t PREC_PRF{3};  // Precisions - floats in Inf. prof
+/// Significant digits used when serializing entropy profile values.
+///
+/// Compression and filtering keep full `prc_t` precision; rounding happens only when profile values
+/// are written to `.prf` files.
+static constexpr uint8_t PREC_PRF{3};
 static constexpr char TAR_ALT_N{'T'};  // Alter. to Ns in target file
 
+/// Coordinates finite-context model storage, compression, and self-compression.
+///
+/// The reference models are built by `store()`, then `compress()` fills `profileEnt` for filtering
+/// and segmentation. `profileEnt` intentionally stores full-precision entropy values even when
+/// saved `.prf` output is rounded.
 class FCM {  // Finite-context models
  public:
   prc_t aveEnt;
+  std::vector<prc_t> profileEnt;
   std::vector<prc_t> selfEnt;
   std::vector<MMPar> rMs;  // Ref Markov models
   std::vector<MMPar> tMs;  // Tar Markov models
   uint64_t tarSegID;
   std::string tarSegMsg;
 
-  explicit FCM(std::unique_ptr<Param>&);
-  void store(std::unique_ptr<Param>&, uint8_t);  // Build FCM
-  void compress(std::unique_ptr<Param>&, uint8_t);
-  void self_compress(std::unique_ptr<Param>&, uint64_t, uint8_t);
-  void aggregate_slf_ent(std::vector<PosRow>&, uint8_t, uint8_t, std::string,
-                         bool) const;
+  explicit FCM(const Param&);
+  void store(Param&, uint8_t);  // Build FCM
+  /// Compresses the target and fills `profileEnt` according to `Param::sampleStep`.
+  void compress(Param&, uint8_t);
+  void self_compress(const Param&, uint64_t, uint8_t);
+  void self_compress(const Param&, const SegmentView&, uint64_t, uint8_t);
+  void aggregate_slf_ent(std::vector<PosRow>&, uint8_t, uint8_t, std::string, bool) const;
 
  private:
   std::vector<std::unique_ptr<Table64>> tbl64;
@@ -44,42 +55,46 @@ class FCM {  // Finite-context models
   uint8_t tTMsSize;
 
   void set_cont(std::vector<MMPar>&);
-  void show_info(
-      std::unique_ptr<Param>&) const;  // Show inputs info on the screen
-  void alloc_model();                  // Allocate memory to models
+  void show_info(std::unique_ptr<Param>&) const;  // Show inputs info on the screen
+  void alloc_model();                             // Allocate memory to models
 
-  void store_1(std::unique_ptr<Param>&);  // Build models one thread
-  void store_n(std::unique_ptr<Param>&);  // Build models multiple threads
+  void store_1(const Param&);            // Build models one thread
+  void store_n(const Param&);            // Build models multiple threads
+  void store_all_1(const std::string&);  // Build multiple models in one pass
   template <typename Mask, typename ContIter>
-  void store_impl(std::string, Mask, ContIter);  // Fill data struct
+  void store_impl(const std::string&, Mask, ContIter);  // Fill data struct
 
   template <typename ContIter>
-  void compress_1(std::unique_ptr<Param>&, ContIter);  // Compress with 1 model
-  void compress_n(std::unique_ptr<Param>&);            // Compress with n Models
+  void compress_1(const Param&, ContIter);  // Compress with 1 model
+  /// Compresses with multiple models and adaptive mixture weights.
+  ///
+  /// Default sampled runs still evolve every model on every symbol for backward compatibility.
+  /// `--approx-sampled-models` switches unsampled symbols to a cheaper context-only update.
+  void compress_n(const Param&);
   template <typename ContIter>
-  void compress_n_parent(std::unique_ptr<CompressPar>&, ContIter,
-                         uint8_t) const;
+  void compress_n_parent(CompressPar&, ContIter, uint8_t) const;
   template <typename ContIter>
-  void compress_n_child(std::unique_ptr<CompressPar>&, ContIter, uint8_t) const;
+  void compress_n_child(CompressPar&, ContIter, uint8_t) const;
+  void compress_n_parent_context(CompressPar&) const;
+  void compress_n_child_context(CompressPar&) const;
 
+  void self_compress(const Param&, const SegmentView*, uint64_t, uint8_t);
   void self_compress_alloc();
   template <typename ContIter>
-  void self_compress_1(std::unique_ptr<Param>&, ContIter, uint64_t);
-  void self_compress_n(std::unique_ptr<Param>&, uint64_t);
+  void self_compress_1(const Param&, ContIter, const SegmentView*, uint64_t);
+  void self_compress_n(const Param&, const SegmentView*, uint64_t);
   template <typename ContIter>
-  void self_compress_n_parent(std::unique_ptr<CompressPar>&, ContIter, uint8_t,
-                              uint64_t&) const;
+  void self_compress_n_parent(CompressPar&, ContIter, uint8_t, uint64_t&) const;
 
   template <typename OutT, typename ContIter>
   auto freqs_ir0(ContIter, uint64_t) const -> std::array<OutT, CARDIN>;
   template <typename OutT, typename ContIter>
-  auto freqs_ir1(ContIter, uint64_t, uint64_t) const
-      -> std::array<OutT, CARDIN>;
+  auto freqs_ir1(ContIter, uint64_t, uint64_t) const -> std::array<OutT, CARDIN>;
   template <typename OutT, typename ContIter, typename ProbParIter>
   auto freqs_ir2(ContIter, ProbParIter) const -> std::array<OutT, CARDIN>;
   auto weight_next(prc_t, prc_t, prc_t) const -> prc_t;
   template <typename FreqIter>
-  void correct_stmm(std::unique_ptr<CompressPar>&, FreqIter) const;
+  void correct_stmm(CompressPar&, FreqIter) const;
 #ifdef ARRAY_HISTORY
   template <typename History, typename Value>
   void update_hist_stmm(History&, Value) const;

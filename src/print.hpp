@@ -1,15 +1,24 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_PRINT_HPP
 #define SMASHPP_PRINT_HPP
 
+#include <algorithm>
 #include <iostream>
+#include <limits>
 #include <string>
 
 #include "string.hpp"
 
 namespace smashpp {
+namespace detail {
+[[nodiscard]] inline auto column_width(const std::string& text) -> uint8_t {
+  return static_cast<uint8_t>(std::min(
+      text.size() + 1, static_cast<std::string::size_type>(std::numeric_limits<uint8_t>::max())));
+}
+}  // namespace detail
+
 class Column {
  public:
   Align align;
@@ -20,9 +29,8 @@ class Column {
   Column() = default;
   Column(Align align_, uint8_t width_, std::string text_)
       : align(align_), width(width_), text(text_) {}
-  Column(uint8_t width_, std::string text_)
-      : Column(Align::left, width_, text_) {}
-  explicit Column(std::string text_) : Column(text_.size() + 1, text_) {}
+  Column(uint8_t width_, std::string text_) : Column(Align::left, width_, text_) {}
+  explicit Column(std::string text_) : Column(detail::column_width(text_), text_) {}
 };
 
 class Row {

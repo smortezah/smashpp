@@ -1,12 +1,13 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_SEGMENT_HPP
 #define SMASHPP_SEGMENT_HPP
 
 #include <fstream>
-#include "par.hpp"
+
 #include "number.hpp"
+#include "par.hpp"
 
 namespace smashpp {
 class Segment {

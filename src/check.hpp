@@ -1,10 +1,12 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_CHECKHPP
 #define SMASHPP_CHECKHPP
 
+#include <format>
 #include <stdexcept>
+#include <type_traits>
 
 #include "exception.hpp"
 
@@ -13,8 +15,8 @@ template <typename Value>
 class ValRange {
  public:
   ValRange() = default;
-  ValRange(Value min_, Value max_, Value d_, std::string&& l_, Interval i_,
-           std::string&& m_, Problem p_)
+  ValRange(Value min_, Value max_, Value d_, std::string&& l_, Interval i_, std::string&& m_,
+           Problem p_)
       : min(min_),
         max(max_),
         def(d_),
@@ -40,45 +42,46 @@ class ValRange {
 
 template <typename Value>
 void ValRange<Value>::check(Value& val) {
-  bool isFloat = std::is_floating_point<Value>::value;
+  const auto format_value = [](Value value) {
+    if constexpr (std::is_floating_point_v<Value>) {
+      return std::format("{:.1f}", value);
+    } else {
+      return std::format("{}", value);
+    }
+  };
 
   const auto append_msg = [&](std::string&& msg) {
-    message = "\"" + label + "\" not in valid range " + msg;
-    if (initMode == "default")
-      message += "Default value " +
-                 (isFloat ? string_format("%.1f", def) : std::to_string(def)) +
-                 " been set.";
-    else if (initMode == "auto")
+    message = std::format("\"{}\" not in valid range {}", label, msg);
+    if (initMode == "default") {
+      message += std::format("Default value {} been set.", format_value(def));
+    } else if (initMode == "auto") {
       message += "Will be automatically modified.";
+    }
     message += "\n";
   };
-  const auto create_message = [this, &append_msg, isFloat](char open,
-                                                           char close) {
+  const auto create_message = [this, &append_msg, &format_value](char open, char close) {
     inRange = false;
-    auto s =
-        std::string(1, open) +
-        (isFloat
-             ? (string_format("%.1f", min) + "," + string_format("%.1f", max))
-             : (std::to_string(min) + "," + std::to_string(max))) +
-        std::string(1, close) + ". ";
+    auto s = std::format("{}{},{}{}. ", open, format_value(min), format_value(max), close);
     append_msg(std::move(s));
   };
 
-  if (criterion == Interval::closed && (val > max || val < min))
+  if (criterion == Interval::closed && (val > max || val < min)) {
     create_message('[', ']');
-  else if (criterion == Interval::closed_open && (val >= max || val < min))
+  } else if (criterion == Interval::closed_open && (val >= max || val < min)) {
     create_message('[', ')');
-  else if (criterion == Interval::open_closed && (val > max || val <= min))
+  } else if (criterion == Interval::open_closed && (val > max || val <= min)) {
     create_message('(', ']');
-  else if (criterion == Interval::open && (val >= max || val <= min))
+  } else if (criterion == Interval::open && (val >= max || val <= min)) {
     create_message('(', ')');
+  }
 
   if (!inRange) {
     val = def;
-    if (problem == Problem::warning)
+    if (problem == Problem::warning) {
       warning(std::move(message));
-    else if (problem == Problem::error)
+    } else if (problem == Problem::error) {
       error(std::move(message));
+    }
   }
 }
 
@@ -86,8 +89,8 @@ template <typename Value>
 class ValSet {
  public:
   ValSet() = default;
-  ValSet(const std::vector<Value>& set_, Value d_, std::string&& l_,
-         std::string&& m_, Problem p_, Value c_, bool i)
+  ValSet(const std::vector<Value>& set_, Value d_, std::string&& l_, std::string&& m_, Problem p_,
+         Value c_, bool i)
       : set(set_),
         cmd(c_),
         def(d_),
@@ -118,24 +121,27 @@ void ValSet<Value>::check(Value& val) {
 
   val = def;
   const auto append_msg = [&](std::string&& msg) {
-    message = "\"" + label + "\" not in valid set " + msg;
-    if (initMode == "default")
-      message += "Default value " + conv_to_string(def) + " been set.";
-    else if (initMode == "auto")
+    message = std::format("\"{}\" not in valid set {}", label, msg);
+    if (initMode == "default") {
+      message += std::format("Default value {} been set.", conv_to_string(def));
+    } else if (initMode == "auto") {
       message += "Will be automatically modified.";
+    }
     message += "\n";
   };
 
   std::string msg = "{";
-  for (auto it = begin(set); it != end(set) - 1; ++it)
-    msg += conv_to_string(*it) + ", ";
-  msg += conv_to_string(set.back()) + "}. ";
+  for (auto it = begin(set); it != end(set) - 1; ++it) {
+    msg += std::format("{}, ", conv_to_string(*it));
+  }
+  msg += std::format("{}}}. ", conv_to_string(set.back()));
 
   append_msg(std::move(msg));
-  if (problem == Problem::warning)
+  if (problem == Problem::warning) {
     warning(std::move(message));
-  else if (problem == Problem::error)
+  } else if (problem == Problem::error) {
     error(std::move(message));
+  }
 }
 }  // namespace smashpp
 

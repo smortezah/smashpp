@@ -1,5 +1,5 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_PAR_HPP
 #define SMASHPP_PAR_HPP
@@ -23,19 +23,19 @@ static constexpr prc_t ENTR_N{2.0};
 static constexpr uint32_t MIN_WS{1};
 static constexpr uint32_t MAX_WS{0xffffffff};  // 2^32 - 1
 static constexpr uint32_t WS{100};
-static constexpr auto FT{FilterType::hann};         // Window type -- filter
+static constexpr auto FT{FilterType::hann};  // Window type -- filter
 static constexpr auto SAMPLE_STEP{1ull};
 static constexpr float MIN_THRSH{0};
 static constexpr float MAX_THRSH{20};
 static constexpr float THRSH{1.5};
-static constexpr uint8_t K_MAX_TBL64{11};   // Max ctx table 64     (128 MB mem)
-static constexpr uint8_t K_MAX_TBL32{13};   // Max ctx table 32     (1   GB mem)
-static constexpr uint8_t K_MAX_LGTBL8{14};  // Max ctx log table 8  (1   GB mem)
-static constexpr uint64_t W{2 << 29ull};    // Width of CML sketch
-static constexpr uint8_t D{5};              // Depth of CML sketch
-static const std::string LBL_BAK{"_bk"};    // Label  - backup files
+static constexpr uint8_t K_MAX_TBL64{11};             // Max ctx table 64     (128 MB mem)
+static constexpr uint8_t K_MAX_TBL32{13};             // Max ctx table 32     (1   GB mem)
+static constexpr uint8_t K_MAX_LGTBL8{14};            // Max ctx log table 8  (1   GB mem)
+static constexpr uint64_t W{2 << 29ull};              // Width of CML sketch
+static constexpr uint8_t D{5};                        // Depth of CML sketch
+static const std::string LBL_BAK{"_bk"};              // Label  - backup files
 static const std::string POS_WATERMARK{"##SMASH++"};  // Hdr of pos file
-static constexpr size_t FILE_READ_BUF{8 * 1024};  // 8K
+static constexpr size_t FILE_READ_BUF{8 * 1024};      // 8K
 static constexpr size_t FILE_WRITE_BUF{8 * 1024};
 static const std::string IMAGE{"map.svg"};
 
@@ -60,15 +60,65 @@ static constexpr uint32_t MIN_MINP{1};
 static constexpr uint32_t MAX_MINP{0xffffffff};  // 2^32 - 1
 static constexpr uint64_t MIN_TICK{1};
 static constexpr uint64_t MAX_TICK{0xffffffff};
-static constexpr uint64_t TICK{100};             // Major tick
+static constexpr uint64_t TICK{100};  // Major tick
+
+inline auto model_container(const MMPar& model) -> Container {
+  if (model.k > K_MAX_LGTBL8) {
+    return Container::sketch_8;
+  }
+  if (model.k > K_MAX_TBL32) {
+    return Container::log_table_8;
+  }
+  if (model.k > K_MAX_TBL64) {
+    return Container::table_32;
+  }
+  return Container::table_64;
+}
+
+/// Returns how many sequence positions survive a sampling step.
+///
+/// A step of 0 is normalized to 1 by callers, but this helper also guards the value because it is
+/// used for allocation sizing in the compression path.
+[[nodiscard]] inline auto sampled_count(uint64_t size, uint64_t sample_step) -> uint64_t {
+  if (size == 0) {
+    return 0;
+  }
+
+  const auto step = sample_step == 0 ? 1 : sample_step;
+  return (size - 1) / step + 1;
+}
+
+/// Deep-copies model parameters, including substitutive child models.
+///
+/// `MMPar::child` uses shared ownership for convenient optional storage, but worker parameter
+/// copies must not share child state because compression mutates STMM history while processing
+/// symbols.
+[[nodiscard]] inline auto clone_model_params(const std::vector<MMPar>& models)
+    -> std::vector<MMPar> {
+  std::vector<MMPar> clones;
+  clones.reserve(models.size());
+
+  for (const auto& model : models) {
+    clones.push_back(model);
+    if (model.child) {
+      clones.back().child = std::make_shared<STMMPar>(*model.child);
+    }
+  }
+
+  return clones;
+}
 
 class Param {
  public:
   std::string ref, tar;
+  std::string original_ref, original_tar;
   std::string refName, tarName;
   std::string seq;
   Format format;
   bool verbose;
+  bool quiet;
+  bool manMaxMemory;
+  uint64_t maxMemory;
   uint8_t level;
   uint32_t segSize;
   prc_t entropyN;
@@ -89,6 +139,12 @@ class Param {
   bool noRedun;
   bool deep;
   bool asym_region;
+  /// Opt-in faster sampled multi-model mode.
+  ///
+  /// When false, multi-model compression still updates probabilities and model weights for every
+  /// symbol and only samples what is emitted. When true, unsampled positions update only contexts,
+  /// trading exact model evolution for speed on sampled profiles.
+  bool approxSampledModels;
   std::vector<MMPar> refMs, tarMs;
   std::string message;
   std::string param_list;
@@ -103,12 +159,15 @@ class Param {
     int16_t end;
     RefGuard() : beg(0), end(0) {}
   };
-  std::unique_ptr<TarGuard> tar_guard;
-  std::unique_ptr<RefGuard> ref_guard;
+  TarGuard tar_guard;
+  RefGuard ref_guard;
 
   Param()  // Define Param::Param(){} in *.hpp => compile error
       : format(Format::position),
         verbose(false),
+        quiet(false),
+        manMaxMemory(false),
+        maxMemory(0),
         level(LVL),
         segSize(SSIZE),
         entropyN(ENTR_N),
@@ -138,10 +197,10 @@ class Param {
         noRedun(false),
         deep(true),
         asym_region(false),
-        tar_guard(std::make_unique<TarGuard>()),
-        ref_guard(std::make_unique<RefGuard>()) {}
+        approxSampledModels(false) {}
 
   void parse(int, char**&);
+  [[nodiscard]] auto clone() const -> Param;
   auto win_type(std::string) const -> FilterType;
   auto print_win_type() const -> std::string;
   auto filter_scale(std::string) const -> FilterScale;
@@ -153,6 +212,61 @@ class Param {
   void parseModelsPars(Iter, Iter, std::vector<MMPar>&);
   void help() const;
 };
+
+inline auto Param::clone() const -> Param {
+  Param cloned;
+
+  cloned.ref = ref;
+  cloned.tar = tar;
+  cloned.original_ref = original_ref;
+  cloned.original_tar = original_tar;
+  cloned.refName = refName;
+  cloned.tarName = tarName;
+  cloned.seq = seq;
+  cloned.format = format;
+  cloned.verbose = verbose;
+  cloned.quiet = quiet;
+  cloned.manMaxMemory = manMaxMemory;
+  cloned.maxMemory = maxMemory;
+  cloned.level = level;
+  cloned.segSize = segSize;
+  cloned.entropyN = entropyN;
+  cloned.nthr = nthr;
+  cloned.filt_size = filt_size;
+  cloned.filt_type = filt_type;
+  cloned.sampleStep = sampleStep;
+  cloned.thresh = thresh;
+  cloned.man_level = man_level;
+  cloned.manWSize = manWSize;
+  cloned.manThresh = manThresh;
+  cloned.manSampleStep = manSampleStep;
+  cloned.manFilterScale = manFilterScale;
+  cloned.filterScale = filterScale;
+  cloned.saveSeq = saveSeq;
+  cloned.saveProfile = saveProfile;
+  cloned.saveFilter = saveFilter;
+  cloned.saveSegment = saveSegment;
+  cloned.saveAll = saveAll;
+  cloned.refType = refType;
+  cloned.tarType = tarType;
+  cloned.showInfo = showInfo;
+  cloned.compress = compress;
+  cloned.filter = filter;
+  cloned.segment = segment;
+  cloned.ID = ID;
+  cloned.noRedun = noRedun;
+  cloned.deep = deep;
+  cloned.asym_region = asym_region;
+  cloned.approxSampledModels = approxSampledModels;
+  cloned.refMs = clone_model_params(refMs);
+  cloned.tarMs = clone_model_params(tarMs);
+  cloned.message = message;
+  cloned.param_list = param_list;
+  cloned.tar_guard = tar_guard;
+  cloned.ref_guard = ref_guard;
+
+  return cloned;
+}
 
 class VizParam {
  public:

@@ -1,10 +1,9 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_OUTPUT_HPP
 #define SMASHPP_OUTPUT_HPP
 
-#include <sstream>
 #include "naming.hpp"
 
 namespace smashpp {
@@ -34,11 +33,9 @@ class PositionFile {
   void dump(const std::vector<PosRow>&, bool, Format);
 
  private:
-  auto stream_pos(std::ostringstream&, const std::vector<PosRow>&, bool) const
-      -> std::ostringstream&;
+  auto stream_pos(std::string&, const std::vector<PosRow>&, bool) const -> std::string&;
   auto pos_pairs(const std::vector<PosRow>&) const -> std::vector<OutRowAux>;
-  void stream_pos_impl(std::ostringstream&, const std::vector<OutRowAux>&,
-                       bool) const;
+  void stream_pos_impl(std::string&, const std::vector<OutRowAux>&, bool) const;
 };
 }  // namespace smashpp
 

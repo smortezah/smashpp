@@ -1,14 +1,17 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #ifndef SMASHPP_SVG_HPP
 #define SMASHPP_SVG_HPP
 
-#include "par.hpp"
+#include <fstream>
+#include <memory>
+
 #include "exception.hpp"
 #include "number.hpp"
+#include "par.hpp"
 
-namespace smashpp {  
+namespace smashpp {
 static constexpr uint8_t PREC_VIZ{2};  // Precision
 
 class SVG {
@@ -20,10 +23,8 @@ class SVG {
   std::string viewBox;
 
   SVG() : width(0.0f), height(0.0f), viewBox("0 0 100% 100%") {}
-  auto attr(std::string, float, bool = false, std::string = "") const
-      -> std::string;
-  auto attr(std::string, const std::string&, bool = false,
-            std::string = "") const -> std::string;
+  auto attr(std::string, float, bool = false, std::string = "") const -> std::string;
+  auto attr(std::string, const std::string&, bool = false, std::string = "") const -> std::string;
   auto begin_elem(std::string) const -> std::string;
   auto mid_elem() const -> std::string;
   auto end_elem(std::string) const -> std::string;
@@ -40,7 +41,6 @@ class Stop : public SVG {
 
   Stop() : stop_opacity(1) {}
   void plot(std::ofstream&) const;
-  void plot(std::stringstream&) const;
 };
 
 class LinearGradient : public SVG {
@@ -172,10 +172,8 @@ class Path : public SVG {
   auto q(float, float, float, float) const -> std::string;
   auto T(float, float) const -> std::string;
   auto t(float, float) const -> std::string;
-  auto A(float, float, float, uint8_t, uint8_t, float, float) const
-      -> std::string;
-  auto a(float, float, float, uint8_t, uint8_t, float, float) const
-      -> std::string;
+  auto A(float, float, float, uint8_t, uint8_t, float, float) const -> std::string;
+  auto a(float, float, float, uint8_t, uint8_t, float, float) const -> std::string;
   auto Z() const -> std::string;
   auto z() const -> std::string;
   void plot(std::ofstream&) const;
@@ -230,7 +228,7 @@ class Rectangle : public SVG {
 
   Rectangle() : rx(1.0f), ry(1.0f), fill_opacity(OPAC), stroke_opacity(1.0f) {}
   void plot(std::ofstream&) const;
-  void plot_ir(std::ofstream&, std::string = "Wavy", std::string="");
+  void plot_ir(std::ofstream&, std::string = "Wavy", std::string = "");
 };
 
 class Polygon : public SVG {
@@ -386,4 +384,4 @@ inline std::string path_shadow(std::ofstream& file) {
 }
 }  // namespace smashpp
 
-#endif // SMASHPP_SVG_HPP
+#endif  // SMASHPP_SVG_HPP

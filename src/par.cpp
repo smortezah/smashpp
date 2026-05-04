@@ -1,12 +1,23 @@
-// Smash++
-// Morteza Hosseini    mhosayny@gmail.com
+// SPDX-FileCopyrightText: 2018-2026 Morteza Hosseini
+// SPDX-License-Identifier: GPL-3.0-only
 
 #include "par.hpp"
 
 #include <algorithm>
 #include <array>
+#include <cctype>
+#include <cerrno>
+#include <charconv>
+#include <cmath>
+#include <cstdlib>
+#include <format>
 #include <fstream>
+#include <limits>
 #include <memory>
+#include <string>
+#include <string_view>
+#include <system_error>
+#include <type_traits>
 #include <vector>
 
 #include "check.hpp"
@@ -15,8 +26,68 @@
 #include "exception.hpp"
 #include "file.hpp"
 #include "mdlpar.hpp"
+#include "memory.hpp"
 #include "print.hpp"
 using namespace smashpp;
+
+namespace {
+auto strip_leading_plus(std::string_view value) -> std::string_view {
+  if (value.size() > 1 && value.front() == '+') {
+    value.remove_prefix(1);
+  }
+  return value;
+}
+
+template <typename Int>
+auto parse_integral(std::string_view value, std::string_view label) -> Int {
+  static_assert(std::is_integral_v<Int>);
+
+  Int parsed{0};
+  const auto input = strip_leading_plus(value);
+  const auto* first = input.data();
+  const auto* last = first + input.size();
+  const auto [ptr, ec] = std::from_chars(first, last, parsed);
+
+  if (input.empty() || ec == std::errc::invalid_argument || ptr != last) {
+    error(std::format("{} must be an integer.", label));
+  }
+  if (ec == std::errc::result_out_of_range) {
+    error(std::format("{} is out of range.", label));
+  }
+
+  return parsed;
+}
+
+template <typename Int>
+auto parse_integral(std::string_view value, std::string_view label, Int min, Int max) -> Int {
+  const auto parsed = parse_integral<Int>(value, label);
+  if (parsed < min || parsed > max) {
+    error(std::format("{} must be in range [{},{}].", label, min, max));
+  }
+  return parsed;
+}
+
+template <typename Float>
+auto parse_floating(std::string_view value, std::string_view label) -> Float {
+  static_assert(std::is_floating_point_v<Float>);
+
+  const auto input = strip_leading_plus(value);
+  if (input.empty() || std::isspace(static_cast<unsigned char>(input.front()))) {
+    error(std::format("{} must be a finite number.", label));
+  }
+
+  const std::string text{input};
+  char* end = nullptr;
+  errno = 0;
+  const auto parsed_long = std::strtold(text.c_str(), &end);
+  const auto parsed = static_cast<Float>(parsed_long);
+
+  if (end != text.c_str() + text.size() || errno == ERANGE || !std::isfinite(parsed)) {
+    error(std::format("{} must be a finite number.", label));
+  }
+  return parsed;
+}
+}  // namespace
 
 void Param::parse(int argc, char**& argv) {
   if (argc < 2) {
@@ -26,12 +97,14 @@ void Param::parse(int argc, char**& argv) {
 
   std::vector<std::string> vArgs;
   vArgs.reserve(static_cast<uint64_t>(argc));
-  for (int i = 0; i != argc; ++i)
+  for (int i = 0; i != argc; ++i) {
     vArgs.push_back(static_cast<std::string>(argv[i]));
+  }
 
   // Save the list of parameters for writing into position file
-  for (auto iter = std::begin(vArgs) + 1; iter != std::end(vArgs); ++iter)
+  for (auto iter = std::begin(vArgs) + 1; iter != std::end(vArgs); ++iter) {
     param_list += *iter + ' ';
+  }
   param_list.pop_back();
 
   auto looks_like_option = [](const std::string& value) {
@@ -40,8 +113,9 @@ void Param::parse(int argc, char**& argv) {
   };
   auto require_value = [&](auto& iter, const std::string& label,
                            const std::string& usage) -> std::string {
-    if (iter + 1 == std::end(vArgs) || looks_like_option(*(iter + 1)))
-      error(label + " not specified. Use \"" + usage + "\".");
+    if (iter + 1 == std::end(vArgs) || looks_like_option(*(iter + 1))) {
+      error(std::format("{} not specified. Use \"{}\".", label, usage));
+    }
     return *++iter;
   };
 
@@ -55,52 +129,53 @@ void Param::parse(int argc, char**& argv) {
       help();
       throw EXIT_SUCCESS;
     } else if (*i == "-V" || *i == "--version") {
-      std::cerr << "Smash++ " << VERSION << "\n";
+      std::cerr << std::format("Smash++ {}\n", VERSION);
       throw EXIT_SUCCESS;
     } else if (*i == "-v" || *i == "--verbose") {
       verbose = true;
     } else if (*i == "-ll" || *i == "--list-levels") {
       std::cerr << "Level  Model parameters" << '\n';
-      for (size_t i = 0; i != LEVEL.size(); ++i)
-        std::cerr << "[ " << i << " ]  " << LEVEL[i] << '\n';
+      for (size_t level_idx = 0; level_idx != LEVEL.size(); ++level_idx) {
+        std::cerr << std::format("[ {} ]  {}\n", level_idx, LEVEL[level_idx]);
+      }
       throw EXIT_SUCCESS;
     } else if (*i == "-r" || *i == "--reference") {
       ref = require_value(i, "reference file", "-r <fileName>");
+      original_ref = ref;
       check_file(ref);
       refName = file_name(ref);
       refType = file_type(ref);
     } else if (*i == "-t" || *i == "--target") {
       tar = require_value(i, "target file", "-t <fileName>");
+      original_tar = tar;
       check_file(tar);
       tarName = file_name(tar);
       tarType = file_type(tar);
     } else if (*i == "-l" || *i == "--level") {
       man_level = true;
-      level = static_cast<uint8_t>(
-          std::stoi(require_value(i, "level", "-l <INT>")));
-      auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LVL, MAX_LVL, LVL, "Level", Interval::closed, "default",
-          Problem::warning);
-      range->check(level);
+      auto parsed_level = parse_integral<int>(require_value(i, "level", "-l <INT>"), "level");
+      ValRange<int> range(MIN_LVL, MAX_LVL, LVL, "Level", Interval::closed, "default",
+                          Problem::warning);
+      range.check(parsed_level);
+      level = static_cast<uint8_t>(parsed_level);
     } else if (*i == "-m" || *i == "--min-segment-size") {
-      segSize = std::stoul(
-          require_value(i, "minimum segment size", "-m <INT>"));
-      auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size", Interval::closed,
-          "default", Problem::warning);
-      range->check(segSize);
+      auto parsed_seg_size = parse_integral<uint64_t>(
+          require_value(i, "minimum segment size", "-m <INT>"), "minimum segment size");
+      ValRange<uint64_t> range(MIN_SSIZE, MAX_SSIZE, SSIZE, "Minimum segment size",
+                               Interval::closed, "default", Problem::warning);
+      range.check(parsed_seg_size);
+      segSize = static_cast<uint32_t>(parsed_seg_size);
     } else if (*i == "-rm" || *i == "--reference-model") {
       man_rm = true;
-      rModelsPars =
-          require_value(i, "reference model parameters", "-rm <STRING>");
-      if (rModelsPars.empty() || rModelsPars.front() == '-')
+      rModelsPars = require_value(i, "reference model parameters", "-rm <STRING>");
+      if (rModelsPars.empty() || rModelsPars.front() == '-') {
         error("incorrect reference model parameters.");
-      else
+      } else {
         parseModelsPars(std::begin(rModelsPars), std::end(rModelsPars), refMs);
+      }
     } else if (*i == "-fmt" || *i == "--format") {
       auto format_ = require_value(i, "output format", "-fmt <STRING>");
-      std::transform(std::begin(format_), std::end(format_),
-                     std::begin(format_), ::tolower);
+      std::transform(std::begin(format_), std::end(format_), std::begin(format_), ::tolower);
       if (format_ == "pos") {  // default
       } else if (format_ == "json") {
         format = Format::json;
@@ -109,103 +184,101 @@ void Param::parse(int argc, char**& argv) {
       }
     } else if (*i == "-tm" || *i == "--target-model") {
       man_tm = true;
-      tModelsPars =
-          require_value(i, "target model parameters", "-tm <STRING>");
-      if (tModelsPars.empty() || tModelsPars.front() == '-')
+      tModelsPars = require_value(i, "target model parameters", "-tm <STRING>");
+      if (tModelsPars.empty() || tModelsPars.front() == '-') {
         error("incorrect target model parameters.");
-      else
+      } else {
         parseModelsPars(std::begin(tModelsPars), std::end(tModelsPars), tarMs);
+      }
     } else if (*i == "-f" || *i == "--filter-size") {
       manWSize = true;
-      filt_size = static_cast<uint32_t>(
-          std::stoi(require_value(i, "filter size", "-f <INT>")));
-      auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_WS, MAX_WS, WS, "Filter size", Interval::closed, "default",
-          Problem::warning);
-      range->check(filt_size);
+      auto parsed_filter_size =
+          parse_integral<uint64_t>(require_value(i, "filter size", "-f <INT>"), "filter size");
+      ValRange<uint64_t> range(MIN_WS, MAX_WS, WS, "Filter size", Interval::closed, "default",
+                               Problem::warning);
+      range.check(parsed_filter_size);
+      filt_size = static_cast<uint32_t>(parsed_filter_size);
     } else if (*i == "-th" || *i == "--threshold") {
       manThresh = true;
-      thresh = std::stof(require_value(i, "threshold", "-th <FLOAT>"));
-      auto range = std::make_unique<ValRange<float>>(
-          MIN_THRSH, MAX_THRSH, THRSH, "Threshold", Interval::open_closed,
-          "default", Problem::warning);
-      range->check(thresh);
+      thresh = parse_floating<float>(require_value(i, "threshold", "-th <FLOAT>"), "threshold");
+      ValRange<float> range(MIN_THRSH, MAX_THRSH, THRSH, "Threshold", Interval::open_closed,
+                            "default", Problem::warning);
+      range.check(thresh);
     } else if (*i == "-ft" || *i == "--filter-type") {
       const auto is_win_type = [](std::string t) {
-        return (t == "0" || t == "rectangular" || t == "1" || t == "hamming" ||
-                t == "2" || t == "hann" || t == "3" || t == "blackman" ||
-                t == "4" || t == "triangular" || t == "5" || t == "welch" ||
-                t == "6" || t == "sine" || t == "7" || t == "nuttall");
+        return (t == "0" || t == "rectangular" || t == "1" || t == "hamming" || t == "2" ||
+                t == "hann" || t == "3" || t == "blackman" || t == "4" || t == "triangular" ||
+                t == "5" || t == "welch" || t == "6" || t == "sine" || t == "7" || t == "nuttall");
       };
-      const std::string cmd{
-          require_value(i, "filter type", "-ft <INT/STRING>")};
-      auto set = std::make_unique<ValSet<FilterType>>(
-          SET_WTYPE, FT, "Window type", "default", Problem::warning,
-          win_type(cmd), is_win_type(cmd));
-      set->check(filt_type);
+      const std::string cmd{require_value(i, "filter type", "-ft <INT/STRING>")};
+      ValSet<FilterType> set(SET_WTYPE, FT, "Window type", "default", Problem::warning,
+                             win_type(cmd), is_win_type(cmd));
+      set.check(filt_type);
     } else if (*i == "-e" || *i == "--entropy-N") {
-      entropyN = static_cast<prc_t>(
-          std::stod(require_value(i, "entropy of N bases", "-e <FLOAT>")));
-      auto range = std::make_unique<ValRange<prc_t>>(
-          MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases",
-          Interval::closed, "default", Problem::warning);
-      range->check(entropyN);
+      entropyN = parse_floating<prc_t>(require_value(i, "entropy of N bases", "-e <FLOAT>"),
+                                       "entropy of N bases");
+      ValRange<prc_t> range(MIN_ENTR_N, MAX_ENTR_N, ENTR_N, "Entropy of N bases", Interval::closed,
+                            "default", Problem::warning);
+      range.check(entropyN);
     } else if (*i == "-n" || *i == "--num-threads") {
-      nthr = static_cast<uint8_t>(
-          std::stoi(require_value(i, "number of threads", "-n <INT>")));
-      auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_THRD, MAX_THRD, THRD, "Number of threads", Interval::closed,
-          "default", Problem::warning);
-      range->check(nthr);
+      auto parsed_nthr = parse_integral<int>(require_value(i, "number of threads", "-n <INT>"),
+                                             "number of threads");
+      ValRange<int> range(MIN_THRD, MAX_THRD, THRD, "Number of threads", Interval::closed,
+                          "default", Problem::warning);
+      range.check(parsed_nthr);
+      nthr = static_cast<uint8_t>(parsed_nthr);
+    } else if (*i == "-mem" || *i == "--max-memory") {
+      manMaxMemory = true;
+      maxMemory = parse_memory_size(require_value(i, "memory budget", "-mem <SIZE>"));
     } else if (*i == "-d" || *i == "--sampling-step") {
       manSampleStep = true;
-      sampleStep = std::stoull(
-          require_value(i, "sampling step", "-d <INT>"));
-      if (sampleStep == 0) sampleStep = 1ull;
+      sampleStep =
+          parse_integral<uint64_t>(require_value(i, "sampling step", "-d <INT>"), "sampling step");
+      if (sampleStep == 0) {
+        sampleStep = 1ull;
+      }
+    } else if (*i == "--approx-sampled-models") {
+      approxSampledModels = true;
     } else if (*i == "-fs" || *i == "--filter-scale") {
       manFilterScale = true;
       const auto is_filter_scale = [](std::string s) {
-        return (s == "S" || s == "small" || s == "M" || s == "medium" ||
-                s == "L" || s == "large");
+        return (s == "S" || s == "small" || s == "M" || s == "medium" || s == "L" || s == "large");
       };
-      const std::string cmd{
-          require_value(i, "filter scale", "-fs <STRING>")};
-      auto set = std::make_unique<ValSet<FilterScale>>(
-          SET_FSCALE, filterScale, "Filter scale", "default", Problem::warning,
-          filter_scale(cmd), is_filter_scale(cmd));
-      set->check(filterScale);
+      const std::string cmd{require_value(i, "filter scale", "-fs <STRING>")};
+      ValSet<FilterScale> set(SET_FSCALE, filterScale, "Filter scale", "default", Problem::warning,
+                              filter_scale(cmd), is_filter_scale(cmd));
+      set.check(filterScale);
     } else if (*i == "-rb" || *i == "--reference-begin-guard") {
-      ref_guard->beg = static_cast<int16_t>(
-          std::stoi(require_value(i, "reference beginning guard", "-rb <INT>")));
-      auto range = std::make_unique<ValRange<int16_t>>(
-          std::numeric_limits<int16_t>::min(),
-          std::numeric_limits<int16_t>::max(), 0, "Reference beginning guard",
-          Interval::closed, "default", Problem::warning);
-      range->check(ref_guard->beg);
+      auto parsed_guard = parse_integral<int>(
+          require_value(i, "reference beginning guard", "-rb <INT>"), "reference beginning guard");
+      ValRange<int> range(std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(),
+                          0, "Reference beginning guard", Interval::closed, "default",
+                          Problem::warning);
+      range.check(parsed_guard);
+      ref_guard.beg = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-re" || *i == "--reference-end-guard") {
-      ref_guard->end = static_cast<int16_t>(
-          std::stoi(require_value(i, "reference ending guard", "-re <INT>")));
-      auto range = std::make_unique<ValRange<int16_t>>(
-          std::numeric_limits<int16_t>::min(),
-          std::numeric_limits<int16_t>::max(), 0, "Reference ending guard",
-          Interval::closed, "default", Problem::warning);
-      range->check(ref_guard->end);
+      auto parsed_guard = parse_integral<int>(
+          require_value(i, "reference ending guard", "-re <INT>"), "reference ending guard");
+      ValRange<int> range(std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(),
+                          0, "Reference ending guard", Interval::closed, "default",
+                          Problem::warning);
+      range.check(parsed_guard);
+      ref_guard.end = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-tb" || *i == "--target-begin-guard") {
-      tar_guard->beg = static_cast<int16_t>(
-          std::stoi(require_value(i, "target beginning guard", "-tb <INT>")));
-      auto range = std::make_unique<ValRange<int16_t>>(
-          std::numeric_limits<int16_t>::min(),
-          std::numeric_limits<int16_t>::max(), 0, "Target beginning guard",
-          Interval::closed, "default", Problem::warning);
-      range->check(tar_guard->beg);
+      auto parsed_guard = parse_integral<int>(
+          require_value(i, "target beginning guard", "-tb <INT>"), "target beginning guard");
+      ValRange<int> range(std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(),
+                          0, "Target beginning guard", Interval::closed, "default",
+                          Problem::warning);
+      range.check(parsed_guard);
+      tar_guard.beg = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-te" || *i == "--target-end-guard") {
-      tar_guard->end = static_cast<int16_t>(
-          std::stoi(require_value(i, "target ending guard", "-te <INT>")));
-      auto range = std::make_unique<ValRange<int16_t>>(
-          std::numeric_limits<int16_t>::min(),
-          std::numeric_limits<int16_t>::max(), 0, "Target ending guard",
-          Interval::closed, "default", Problem::warning);
-      range->check(tar_guard->end);
+      auto parsed_guard = parse_integral<int>(require_value(i, "target ending guard", "-te <INT>"),
+                                              "target ending guard");
+      ValRange<int> range(std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(),
+                          0, "Target ending guard", Interval::closed, "default", Problem::warning);
+      range.check(parsed_guard);
+      tar_guard.end = static_cast<int16_t>(parsed_guard);
     } else if (*i == "-ar" || *i == "--asymmetric-regions") {
       asym_region = true;
     } else if (*i == "-dp") {  // hidden option :)
@@ -229,20 +302,19 @@ void Param::parse(int argc, char**& argv) {
   const bool has_t{has(std::begin(vArgs), std::end(vArgs), "-t")};
   const bool has_target{has(std::begin(vArgs), std::end(vArgs), "--target")};
   const bool has_r{has(std::begin(vArgs), std::end(vArgs), "-r")};
-  const bool has_reference{
-      has(std::begin(vArgs), std::end(vArgs), "--reference")};
-  if (!has_t && !has_target)
+  const bool has_reference{has(std::begin(vArgs), std::end(vArgs), "--reference")};
+  if (!has_t && !has_target) {
     error("target file not specified. Use \"-t <fileName>\".");
-  else if (!has_r && !has_reference)
+  } else if (!has_r && !has_reference) {
     error("reference file not specified. Use \"-r <fileName>\".");
+  }
 
   if (!man_rm && !man_tm) {
     if (!man_level) {
       set_auto_model_par();
     } else {
       parseModelsPars(std::begin(LEVEL[level]), std::end(LEVEL[level]), refMs);
-      parseModelsPars(std::begin(REFFREE_LEVEL[level]),
-                      std::end(REFFREE_LEVEL[level]), tarMs);
+      parseModelsPars(std::begin(REFFREE_LEVEL[level]), std::end(REFFREE_LEVEL[level]), tarMs);
     }
   } else if (!man_rm && man_tm) {
     refMs = tarMs;
@@ -255,8 +327,8 @@ void Param::parse(int argc, char**& argv) {
     sampleStep = static_cast<uint64_t>(std::ceil(min_ref_tar / 5000.0));
   }
 
-  keep_in_range(1ull, filt_size,
-                std::min(file_size(ref), file_size(tar)) / sampleStep);
+  const auto max_filter_size = sampled_count(std::min(file_size(ref), file_size(tar)), sampleStep);
+  keep_in_range(1ull, filt_size, max_filter_size);
 }
 
 void Param::set_auto_model_par() {
@@ -265,27 +337,29 @@ void Param::set_auto_model_par() {
   const uint32_t small{300 * 1024};        // 300 K
   const uint32_t medium{1024 * 1024};      // 1 M
   const uint32_t large{10 * 1024 * 1024};  // 10 M
-  std::array<std::string, 4> par{"11,0,0.01,0.95", "13,0,0.008,0.95",
-                                 "18,0,0.002,0.95", "20,0,0.002,0.95"};
+  std::array<std::string, 4> par{"11,0,0.01,0.95", "13,0,0.008,0.95", "18,0,0.002,0.95",
+                                 "20,0,0.002,0.95"};
   std::string ref_par, tar_par;
 
-  if (ref_size < small)
+  if (ref_size < small) {
     ref_par = par[0];
-  else if (ref_size < medium)
+  } else if (ref_size < medium) {
     ref_par = par[1];
-  else if (ref_size < large)
+  } else if (ref_size < large) {
     ref_par = par[2];
-  else
+  } else {
     ref_par = par[3];
+  }
 
-  if (tar_size < small)
+  if (tar_size < small) {
     tar_par = par[0];
-  else if (tar_size < medium)
+  } else if (tar_size < medium) {
     tar_par = par[1];
-  else if (tar_size < large)
+  } else if (tar_size < large) {
     tar_par = par[2];
-  else
+  } else {
     tar_par = par[3];
+  }
 
   parseModelsPars(std::begin(ref_par), std::end(ref_par), refMs);
   parseModelsPars(std::begin(tar_par), std::end(tar_par), tarMs);
@@ -293,41 +367,94 @@ void Param::set_auto_model_par() {
 
 template <typename Iter>
 void Param::parseModelsPars(Iter begin, Iter end, std::vector<MMPar>& Ms) {
+  const auto parse_integer = [](const std::string& value, const std::string& label, int64_t min,
+                                int64_t max) {
+    return parse_integral<int64_t>(value, label, min, max);
+  };
+  const auto parse_float = [](const std::string& value, const std::string& label) {
+    return parse_floating<prc_t>(value, label);
+  };
+  const auto parse_context_size = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "model context size", 0, 31);
+    return static_cast<uint8_t>(parsed);
+  };
+  const auto parse_width = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "sketch width exponent", 1, 63);
+    return pow2(static_cast<uint64_t>(parsed));
+  };
+  const auto parse_depth = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "sketch depth", 1, 255);
+    return static_cast<uint8_t>(parsed);
+  };
+  const auto parse_ir = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "inverted repeat mode", 0, 2);
+    return static_cast<uint8_t>(parsed);
+  };
+  const auto parse_threshold = [&](const std::string& value) {
+    const auto parsed = parse_integer(value, "tolerant model threshold", 0, 255);
+    return static_cast<uint8_t>(parsed);
+  };
+  const auto parse_alpha = [&](const std::string& value, const std::string& label) {
+    const auto parsed = parse_float(value, label);
+    if (parsed <= 0.0) {
+      error(std::format("{} must be greater than 0.", label));
+    }
+    return parsed;
+  };
+  const auto parse_gamma = [&](const std::string& value, const std::string& label) {
+    const auto parsed = parse_float(value, label);
+    if (parsed < 0.0 || parsed > 1.0) {
+      error(std::format("{} must be in range [0,1].", label));
+    }
+    return parsed;
+  };
+
   std::vector<std::string> mdls;
   split(begin, end, ':', mdls);
   for (const auto& e : mdls) {
+    if (e.empty()) {
+      error("incorrect model parameters.");
+    }
+
     // Markov and tolerant models
     std::vector<std::string> m_tm;
     split(std::begin(e), std::end(e), '/', m_tm);
+    if (m_tm.size() > 2 || m_tm[0].empty()) {
+      error("incorrect model parameters.");
+    }
+
     std::vector<std::string> m;
     split(std::begin(m_tm[0]), std::end(m_tm[0]), ',', m);
+    if (m.size() != 4 && m.size() != 6) {
+      error("incorrect model parameters.");
+    }
+    const auto context = parse_context_size(m[0]);
 
     if (m.size() == 4) {
-      if (std::stoi(m[0]) > K_MAX_LGTBL8)
-        Ms.push_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])), W, D,
-                           static_cast<uint8_t>(std::stoi(m[1])),
-                           std::stof(m[2]), std::stof(m[3])));
-      else
-        Ms.push_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])),
-                           static_cast<uint8_t>(std::stoi(m[1])),
-                           std::stof(m[2]), std::stof(m[3])));
-    } else if (m.size() == 6) {
-      Ms.push_back(MMPar(static_cast<uint8_t>(std::stoi(m[0])),
-                         pow2(std::stoull(m[1])),
-                         static_cast<uint8_t>(std::stoi(m[2])),
-                         static_cast<uint8_t>(std::stoi(m[3])), std::stof(m[4]),
-                         std::stof(m[5])));
+      const auto ir = parse_ir(m[1]);
+      const auto alpha = parse_alpha(m[2], "model alpha");
+      const auto gamma = parse_gamma(m[3], "model gamma");
+      if (context > K_MAX_LGTBL8) {
+        Ms.emplace_back(context, W, D, ir, alpha, gamma);
+      } else {
+        Ms.emplace_back(context, ir, alpha, gamma);
+      }
+    } else {
+      Ms.emplace_back(context, parse_width(m[1]), parse_depth(m[2]), parse_ir(m[3]),
+                      parse_alpha(m[4], "model alpha"), parse_gamma(m[5], "model gamma"));
     }
 
     // Tolerant models
     if (m_tm.size() == 2) {
       std::vector<std::string> tm;
       split(std::begin(m_tm[1]), std::end(m_tm[1]), ',', tm);
-      Ms.back().child = std::make_shared<STMMPar>(
-          STMMPar(static_cast<uint8_t>(std::stoi(m[0])),
-                  static_cast<uint8_t>(std::stoi(tm[0])),
-                  static_cast<uint8_t>(std::stoi(tm[1])), std::stof(tm[2]),
-                  std::stof(tm[3])));
+      if (tm.size() != 4) {
+        error("incorrect tolerant model parameters.");
+      }
+
+      Ms.back().child = std::make_shared<STMMPar>(context, parse_threshold(tm[0]), parse_ir(tm[1]),
+                                                  parse_alpha(tm[2], "tolerant model alpha"),
+                                                  parse_gamma(tm[3], "tolerant model gamma"));
     }
   }
 }
@@ -358,35 +485,31 @@ void Param::help() const {
       << '\n'
       << "    " << italic("Optional") << ":\n"
       << tab1 << bold("-l") << ", " << bold("--level") << " <INT>\n"
-      << tab2 << "level of compression: " << std::to_string(MIN_LVL) << " to "
-      << std::to_string(MAX_LVL) << ". Default: " << std::to_string(LVL) << '\n'
+      << tab2 << std::format("level of compression: {} to {}. Default: {}\n", MIN_LVL, MAX_LVL, LVL)
       << '\n'
       << tab1 << bold("-m") << ", " << bold("--min-segment-size") << " <INT>\n"
-      << tab2 << "minimum segment size: " << std::to_string(MIN_SSIZE) << " to "
-      << std::to_string(MAX_SSIZE) << ". Default: " << std::to_string(SSIZE)
-      << '\n'
+      << tab2
+      << std::format("minimum segment size: {} to {}. Default: {}\n", MIN_SSIZE, MAX_SSIZE, SSIZE)
       << '\n'
       << tab1 << bold("-fmt") << ", " << bold("--format") << " <STRING>\n"
-      << tab2
-      << "format of the output (position) file: {pos, json}.\n"
+      << tab2 << "format of the output (position) file: {pos, json}.\n"
       << tab2 << "Default: pos\n"
       << '\n'
       << tab1 << bold("-e") << ", " << bold("--entropy-N") << " <FLOAT>\n"
-      << tab2 << "entropy of 'N's: " << string_format("%.1f", MIN_ENTR_N)
-      << " to " << string_format("%.1f", MAX_ENTR_N)
-      << ". Default: " << string_format("%.1f", ENTR_N) << '\n'
+      << tab2
+      << std::format("entropy of 'N's: {:.1f} to {:.1f}. Default: {:.1f}\n", MIN_ENTR_N, MAX_ENTR_N,
+                     ENTR_N)
       << '\n'
       << tab1 << bold("-n") << ", " << bold("--num-threads") << " <INT>\n"
-      << tab2 << "number of threads: " << std::to_string(MIN_THRD) << " to "
-      << std::to_string(MAX_THRD) << ". Default: " << std::to_string(THRD)
+      << tab2 << std::format("number of threads: {} to {}. Default: {}\n", MIN_THRD, MAX_THRD, THRD)
       << '\n'
+      << tab1 << bold("-mem") << ", " << bold("--max-memory") << " <SIZE>\n"
+      << tab2 << "maximum estimated memory use. Supports B/K/M/G/T suffixes.\n"
+      << tab2 << "Default: 80% of physical memory when detectable; 0 disables the check\n"
       << '\n'
       << tab1 << bold("-f") << ", " << bold("--filter-size") << " <INT>\n"
-      << tab2 << "filter size: " << std::to_string(MIN_WS) << " to "
-      << std::to_string(MAX_WS) << ". Default: " << std::to_string(WS) << '\n'
-      << '\n'
-      << tab1 << bold("-ft") << ", " << bold("--filter-type")
-      << " <INT/STRING>\n"
+      << tab2 << std::format("filter size: {} to {}. Default: {}\n", MIN_WS, MAX_WS, WS) << '\n'
+      << tab1 << bold("-ft") << ", " << bold("--filter-type") << " <INT/STRING>\n"
       << tab2 << "filter type (windowing function): {0/rectangular,\n"
       << tab2 << "1/hamming, 2/hann, 3/blackman, 4/triangular, 5/welch,\n"
       << tab2 << "6/sine, 7/nuttall}. Default: hann\n"
@@ -395,44 +518,37 @@ void Param::help() const {
       << tab2 << "filter scale: {S/small, M/medium, L/large}\n"
       << '\n'
       << tab1 << bold("-d") << ", " << bold("--sampling-step") << " <INT>\n"
-      << tab2 << "sampling step. Default: " << std::to_string(SAMPLE_STEP)
-      << '\n'
+      << tab2 << std::format("sampling step. Default: {}\n", SAMPLE_STEP) << '\n'
+      << tab1 << bold("--approx-sampled-models") << '\n'
+      << tab2 << "use faster approximate sampled multi-model updates. Default: not used\n"
       << '\n'
       << tab1 << bold("-th") << ", " << bold("--threshold") << " <FLOAT>\n"
-      << tab2 << "threshold: " << string_format("%.1f", MIN_THRSH) << " to "
-      << string_format("%.1f", MAX_THRSH)
-      << ". Default: " << string_format("%.1f", THRSH) << '\n'
+      << tab2
+      << std::format("threshold: {:.1f} to {:.1f}. Default: {:.1f}\n", MIN_THRSH, MAX_THRSH, THRSH)
       << '\n'
-      << tab1 << bold("-rb") << ", " << bold("--reference-begin-guard")
-      << " <INT>\n"
-      << tab2 << "reference begin guard: "
-      << std::to_string(std::numeric_limits<decltype(ref_guard->beg)>::min())
-      << " to " + std::to_string(
-                      std::numeric_limits<decltype(ref_guard->beg)>::max())
-      << ". Default: " << std::to_string(ref_guard->beg) << '\n'
+      << tab1 << bold("-rb") << ", " << bold("--reference-begin-guard") << " <INT>\n"
+      << tab2
+      << std::format("reference begin guard: {} to {}. Default: {}\n",
+                     std::numeric_limits<decltype(ref_guard.beg)>::min(),
+                     std::numeric_limits<decltype(ref_guard.beg)>::max(), ref_guard.beg)
       << '\n'
-      << tab1 << bold("-re") << ", " << bold("--reference-end-guard")
-      << " <INT>\n"
-      << tab2 << "reference ending guard: "
-      << std::to_string(std::numeric_limits<decltype(ref_guard->end)>::min())
-      << " to "
-      << std::to_string(std::numeric_limits<decltype(ref_guard->end)>::max())
-      << ". Default: " << std::to_string(ref_guard->end) << '\n'
+      << tab1 << bold("-re") << ", " << bold("--reference-end-guard") << " <INT>\n"
+      << tab2
+      << std::format("reference ending guard: {} to {}. Default: {}\n",
+                     std::numeric_limits<decltype(ref_guard.end)>::min(),
+                     std::numeric_limits<decltype(ref_guard.end)>::max(), ref_guard.end)
       << '\n'
-      << tab1 << bold("-tb") << ", " << bold("--target-begin-guard")
-      << " <INT>\n"
-      << tab2 << "target begin guard: "
-      << std::to_string(std::numeric_limits<decltype(tar_guard->beg)>::min())
-      << " to " + std::to_string(
-                      std::numeric_limits<decltype(tar_guard->beg)>::max())
-      << ". Default: " << std::to_string(tar_guard->beg) << '\n'
+      << tab1 << bold("-tb") << ", " << bold("--target-begin-guard") << " <INT>\n"
+      << tab2
+      << std::format("target begin guard: {} to {}. Default: {}\n",
+                     std::numeric_limits<decltype(tar_guard.beg)>::min(),
+                     std::numeric_limits<decltype(tar_guard.beg)>::max(), tar_guard.beg)
       << '\n'
       << tab1 << bold("-te") << ", " << bold("--target-end-guard") << " <INT>\n"
-      << tab2 << "target ending guard: "
-      << std::to_string(std::numeric_limits<decltype(tar_guard->end)>::min())
-      << " to "
-      << std::to_string(std::numeric_limits<decltype(tar_guard->end)>::max())
-      << ". Default: " << std::to_string(tar_guard->end) << '\n'
+      << tab2
+      << std::format("target ending guard: {} to {}. Default: {}\n",
+                     std::numeric_limits<decltype(tar_guard.end)>::min(),
+                     std::numeric_limits<decltype(tar_guard.end)>::max(), tar_guard.end)
       << '\n'
       << tab1 << bold("-ar") << ", " << bold("--asymmetric-regions") << '\n'
       << tab2 << "consider asymmetric regions. Default: not used\n"
@@ -455,23 +571,19 @@ void Param::help() const {
       << tab1 << bold("-ss") << ", " << bold("--save-segmented") << '\n'
       << tab2 << "save segmented files (*.s[i]). Default: not used\n"
       << '\n'
-      << tab1 << bold("-sa") << ", "
-      << bold("--save-profile-filtered-segmented") << '\n'
+      << tab1 << bold("-sa") << ", " << bold("--save-profile-filtered-segmented") << '\n'
       << tab2 << "save profile, filetered and segmented files.\n"
       << tab2 << "Default: not used\n"
       << '\n'
-      << tab1 << bold("-rm") << ", " << bold("--reference-model") << "  "
-      << italic("k") << ",[" << italic("w") << "," << italic("d") << ",]ir,"
-      << italic("a") << "," << italic("g") << "/" << italic("t") << ",ir,"
-      << italic("a") << "," << italic("g") << ":...\n"
-      << tab1 << bold("-tm") << ", " << bold("--target-model") << "     "
-      << italic("k") << ",[" << italic("w") << "," << italic("d") << ",]ir,"
-      << italic("a") << "," << italic("g") << "/" << italic("t") << ",ir,"
-      << italic("a") << "," << italic("g") << ":...\n"
+      << tab1 << bold("-rm") << ", " << bold("--reference-model") << "  " << italic("k") << ",["
+      << italic("w") << "," << italic("d") << ",]ir," << italic("a") << "," << italic("g") << "/"
+      << italic("t") << ",ir," << italic("a") << "," << italic("g") << ":...\n"
+      << tab1 << bold("-tm") << ", " << bold("--target-model") << "     " << italic("k") << ",["
+      << italic("w") << "," << italic("d") << ",]ir," << italic("a") << "," << italic("g") << "/"
+      << italic("t") << ",ir," << italic("a") << "," << italic("g") << ":...\n"
       << tab2 << "parameters of models\n"
       << tab3 << "<INT>  " << italic("k") << ":  context size\n"
-      << tab3 << "<INT>  " << italic("w")
-      << ":  width of sketch in log2 form,\n"
+      << tab3 << "<INT>  " << italic("w") << ":  width of sketch in log2 form,\n"
       << tab3 << "           e.g., set 10 for w=2^10=1024\n"
       << tab3 << "<INT>  " << italic("d") << ":  depth of sketch\n"
       << tab3 << "<INT>  " << italic("ir") << ": inverted repeat: {0, 1, 2}\n"
@@ -479,10 +591,8 @@ void Param::help() const {
       << tab3 << "           1: inverted, solely\n"
       << tab3 << "           2: both regular and inverted\n"
       << tab2 << "  <FLOAT>  " << italic("a") << ":  estimator\n"
-      << tab2 << "  <FLOAT>  " << italic("g")
-      << ":  forgetting factor: 0.0 to 1.0\n"
-      << tab3 << "<INT>  " << italic("t")
-      << ":  threshold (number of substitutions)\n"
+      << tab2 << "  <FLOAT>  " << italic("g") << ":  forgetting factor: 0.0 to 1.0\n"
+      << tab3 << "<INT>  " << italic("t") << ":  threshold (number of substitutions)\n"
       << '\n'
       << tab1 << bold("-ll") << ", " << bold("--list-levels") << '\n'
       << tab2 << "list of compression levels\n"
@@ -497,83 +607,74 @@ void Param::help() const {
       << tab2 << "show version\n"
       << '\n'
       << bold("AUTHOR") << '\n'
-      << tab1 << "Morteza Hosseini      mhosayny@gmail.com\n";
+      << tab1 << "Morteza Hosseini      seyedmorteza.hosseini@manchester.ac.uk\n";
 }
 
 FilterType Param::win_type(std::string t) const {
-  if (t == "0" || t == "rectangular")
+  if (t == "0" || t == "rectangular") {
     return FilterType::rectangular;
-  else if (t == "1" || t == "hamming")
+  } else if (t == "1" || t == "hamming") {
     return FilterType::hamming;
-  else if (t == "2" || t == "hann")
+  } else if (t == "2" || t == "hann") {
     return FilterType::hann;
-  else if (t == "3" || t == "blackman")
+  } else if (t == "3" || t == "blackman") {
     return FilterType::blackman;
-  else if (t == "4" || t == "triangular")
+  } else if (t == "4" || t == "triangular") {
     return FilterType::triangular;
-  else if (t == "5" || t == "welch")
+  } else if (t == "5" || t == "welch") {
     return FilterType::welch;
-  else if (t == "6" || t == "sine")
+  } else if (t == "6" || t == "sine") {
     return FilterType::sine;
-  else if (t == "7" || t == "nuttall")
+  } else if (t == "7" || t == "nuttall") {
     return FilterType::nuttall;
-  else
+  } else {
     return FilterType::hann;
+  }
 }
 
 std::string Param::print_win_type() const {
   switch (filt_type) {
     case FilterType::rectangular:
       return "Rectangular";
-      break;
     case FilterType::hamming:
       return "Hamming";
-      break;
     case FilterType::hann:
       return "Hann";
-      break;
     case FilterType::blackman:
       return "Blackman";
-      break;
     case FilterType::triangular:
       return "Triangular";
-      break;
     case FilterType::welch:
       return "Welch";
-      break;
     case FilterType::sine:
       return "Sine";
-      break;
     case FilterType::nuttall:
       return "Nuttall";
-      break;
     default:
       return "Rectangular";
   }
 }
 
 FilterScale Param::filter_scale(std::string s) const {
-  if (s == "S" || s == "small")
+  if (s == "S" || s == "small") {
     return FilterScale::s;
-  else if (s == "M" || s == "medium")
+  } else if (s == "M" || s == "medium") {
     return FilterScale::m;
-  else if (s == "L" || s == "large")
+  } else if (s == "L" || s == "large") {
     return FilterScale::l;
-  else
+  } else {
     return FilterScale::m;
+  }
 }
 
 std::string Param::print_filter_scale() const {
   switch (filterScale) {
     case FilterScale::s:
       return "Small";
-      break;
     case FilterScale::m:
       return "Medium";
-      break;
     case FilterScale::l:
       return "Large";
-      break;
     default:
       return "Medium";
   }
@@ -587,17 +688,18 @@ void VizParam::parse(int argc, char**& argv) {
 
   std::vector<std::string> vArgs;
   vArgs.reserve(static_cast<uint64_t>(argc));
-  for (int i = 0; i != argc; ++i)
+  for (int i = 0; i != argc; ++i) {
     vArgs.push_back(static_cast<std::string>(argv[i]));
-
+  }
   auto looks_like_option = [](const std::string& value) {
     return value.size() > 1 && value.front() == '-' &&
            !((value[1] >= '0' && value[1] <= '9') || value[1] == '.');
   };
   auto require_value = [&](auto& iter, const std::string& label,
                            const std::string& usage) -> std::string {
-    if (iter + 1 == std::end(vArgs) || looks_like_option(*(iter + 1)))
-      error(label + " not specified. Use \"" + usage + "\".");
+    if (iter + 1 == std::end(vArgs) || looks_like_option(*(iter + 1))) {
+      error(std::format("{} not specified. Use \"{}\".", label, usage));
+    }
     return *++iter;
   };
 
@@ -611,7 +713,7 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (*i == "-v" || *i == "--verbose") {
       verbose = true;
     } else if (*i == "-V" || *i == "--version") {
-      std::cerr << "Smash++ " << VERSION << "\n";
+      std::cerr << std::format("Smash++ {}\n", VERSION);
       throw EXIT_SUCCESS;
     } else if (*i == "-o" || *i == "--output") {
       image = require_value(i, "output image name", "-o <SVG_FILE>");
@@ -620,69 +722,63 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (*i == "-tn" || *i == "--target-name") {
       tarName = require_value(i, "target name", "-tn <STRING>");
     } else if (*i == "-p" || *i == "--opacity") {
-      opacity = std::stof(require_value(i, "opacity", "-p <FLOAT>"));
-      auto range = std::make_unique<ValRange<float>>(
-          MIN_OPAC, MAX_OPAC, OPAC, "Opacity", Interval::closed, "default",
-          Problem::warning);
-      range->check(opacity);
+      opacity = parse_floating<float>(require_value(i, "opacity", "-p <FLOAT>"), "opacity");
+      ValRange<float> range(MIN_OPAC, MAX_OPAC, OPAC, "Opacity", Interval::closed, "default",
+                            Problem::warning);
+      range.check(opacity);
     } else if (*i == "-l" || *i == "--link") {
-      link =
-          static_cast<uint8_t>(std::stoul(require_value(i, "link", "-l <INT>")));
-      auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_LINK, MAX_LINK, LINK, "Link", Interval::closed, "default",
-          Problem::warning);
-      range->check(link);
+      auto parsed_link = parse_integral<int>(require_value(i, "link", "-l <INT>"), "link");
+      ValRange<int> range(MIN_LINK, MAX_LINK, LINK, "Link", Interval::closed, "default",
+                          Problem::warning);
+      range.check(parsed_link);
+      link = static_cast<uint8_t>(parsed_link);
     } else if (*i == "-m" || *i == "--min-block-size") {
-      min = static_cast<uint32_t>(
-          std::stoul(require_value(i, "minimum block size", "-m <INT>")));
-      auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_MINP, MAX_MINP, MINP, "Min", Interval::closed, "default",
-          Problem::warning);
-      range->check(min);
+      auto parsed_min = parse_integral<uint64_t>(require_value(i, "minimum block size", "-m <INT>"),
+                                                 "minimum block size");
+      ValRange<uint64_t> range(MIN_MINP, MAX_MINP, MINP, "Min", Interval::closed, "default",
+                               Problem::warning);
+      range.check(parsed_min);
+      min = static_cast<uint32_t>(parsed_min);
     } else if (*i == "-tc" || *i == "--total-colors") {
       man_tot_color = true;
-      auto val =
-          std::stoi(require_value(i, "total number of colors", "-tc <INT>"));
+      auto val = parse_integral<int>(require_value(i, "total number of colors", "-tc <INT>"),
+                                     "total number of colors");
       keep_in_range(1, val, 255);
       tot_color = static_cast<uint8_t>(val);
     } else if (*i == "-rt" || *i == "--reference-tick") {
-      refTick = std::stoull(
-          require_value(i, "reference tick", "-rt <INT>"));
-      auto range = std::make_unique<ValRange<uint64_t>>(
-          MIN_TICK, MAX_TICK, TICK, "Tick hop for reference", Interval::closed,
-          "default", Problem::warning);
-      range->check(refTick);
+      refTick = parse_integral<uint64_t>(require_value(i, "reference tick", "-rt <INT>"),
+                                         "reference tick");
+      ValRange<uint64_t> range(MIN_TICK, MAX_TICK, TICK, "Tick hop for reference", Interval::closed,
+                               "default", Problem::warning);
+      range.check(refTick);
     } else if (*i == "-tt" || *i == "--target-tick") {
       tarTick =
-          std::stoull(require_value(i, "target tick", "-tt <INT>"));
-      auto range = std::make_unique<ValRange<uint64_t>>(
-          MIN_TICK, MAX_TICK, TICK, "Tick hop for target", Interval::closed,
-          "default", Problem::warning);
-      range->check(tarTick);
+          parse_integral<uint64_t>(require_value(i, "target tick", "-tt <INT>"), "target tick");
+      ValRange<uint64_t> range(MIN_TICK, MAX_TICK, TICK, "Tick hop for target", Interval::closed,
+                               "default", Problem::warning);
+      range.check(tarTick);
     } else if (*i == "-th" || *i == "--tick-human-readable") {
-      tickHumanRead =
-          (std::stoi(require_value(i, "tick human readable", "-th <INT>")) != 0);
+      tickHumanRead = (parse_integral<int>(require_value(i, "tick human readable", "-th <INT>"),
+                                           "tick human readable") != 0);
     } else if (*i == "-c" || *i == "--color") {
-      colorMode =
-          static_cast<uint8_t>(std::stoi(require_value(i, "color mode", "-c <INT>")));
-      auto range = std::make_unique<ValRange<uint8_t>>(
-          MIN_COLOR, MAX_COLOR, COLOR, "Color", Interval::closed, "default",
-          Problem::warning);
-      range->check(colorMode);
+      auto parsed_color =
+          parse_integral<int>(require_value(i, "color mode", "-c <INT>"), "color mode");
+      ValRange<int> range(MIN_COLOR, MAX_COLOR, COLOR, "Color", Interval::closed, "default",
+                          Problem::warning);
+      range.check(parsed_color);
+      colorMode = static_cast<uint8_t>(parsed_color);
     } else if (*i == "-w" || *i == "--width") {
-      width = static_cast<uint32_t>(
-          std::stoul(require_value(i, "width", "-w <INT>")));
-      auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_WDTH, MAX_WDTH, WDTH, "Width", Interval::closed, "default",
-          Problem::warning);
-      range->check(width);
+      auto parsed_width = parse_integral<uint64_t>(require_value(i, "width", "-w <INT>"), "width");
+      ValRange<uint64_t> range(MIN_WDTH, MAX_WDTH, WDTH, "Width", Interval::closed, "default",
+                               Problem::warning);
+      range.check(parsed_width);
+      width = static_cast<uint32_t>(parsed_width);
     } else if (*i == "-s" || *i == "--space") {
-      space = static_cast<uint32_t>(
-          std::stoul(require_value(i, "space", "-s <INT>")));
-      auto range = std::make_unique<ValRange<uint32_t>>(
-          MIN_SPC, MAX_SPC, SPC, "Space", Interval::closed, "default",
-          Problem::warning);
-      range->check(space);
+      auto parsed_space = parse_integral<uint64_t>(require_value(i, "space", "-s <INT>"), "space");
+      ValRange<uint64_t> range(MIN_SPC, MAX_SPC, SPC, "Space", Interval::closed, "default",
+                               Problem::warning);
+      range.check(parsed_space);
+      space = static_cast<uint32_t>(parsed_space);
     } else if (*i == "-nrr" || *i == "--no-relative-redundancy") {
       showRelRedun = false;
     } else if (*i == "-nr" || *i == "--no-redundancy") {
@@ -698,15 +794,17 @@ void VizParam::parse(int argc, char**& argv) {
     } else if (*i == "-stat" || *i == "--statistics") {
       stat = true;
     } else if (!i->empty() && i->front() != '-') {
-      if (!posFile.empty())
+      if (!posFile.empty()) {
         error("multiple position files specified for visualization.");
+      }
       posFile = *i;
     } else {
-      error("unknown option \"" + *i + "\".");
+      error(std::format("unknown option \"{}\".", *i));
     }
   }
-  if (posFile.empty())
+  if (posFile.empty()) {
     error("position file not specified. Use \"smashpp viz <POS_FILE>\".");
+  }
 }
 
 void VizParam::help() const {
@@ -727,15 +825,13 @@ void VizParam::help() const {
       << '\n'
       << bold("OPTIONS") << '\n'
       << "    " << italic("Required") << ":\n"
-      << tab1
-      << "<POS_FILE>    position file generated by Smash++ (*.pos/*.json)\n"
+      << tab1 << "<POS_FILE>    position file generated by Smash++ (*.pos/*.json)\n"
       << '\n'
       << "    " << italic("Optional") << ":\n"
       << tab1 << bold("-o") << ", " << bold("--output") << " <SVG_FILE>\n"
       << tab2 << "output image name (*.svg). Default: map.svg\n"
       << '\n'
-      << tab1 << bold("-rn") << ", " << bold("--reference-name")
-      << " <STRING>\n"
+      << tab1 << bold("-rn") << ", " << bold("--reference-name") << " <STRING>\n"
       << tab2 << "reference name shown on output. If it has spaces, use\n"
       << tab2 << "double quotes, e.g. \"Seq label\". Default: the name in\n"
       << tab2 << "the header of position file\n"
@@ -744,56 +840,43 @@ void VizParam::help() const {
       << tab2 << "target name shown on output\n"
       << '\n'
       << tab1 << bold("-l") << ", " << bold("--link") << " <INT>\n"
-      << tab2 << "type of the link between maps: " << std::to_string(MIN_LINK)
-      << " to " << std::to_string(MAX_LINK)
-      << ". Default: " << std::to_string(link) << '\n'
+      << tab2
+      << std::format("type of the link between maps: {} to {}. Default: {}\n", MIN_LINK, MAX_LINK,
+                     link)
       << '\n'
       << tab1 << bold("-c") << ", " << bold("--color") << " <INT>\n"
-      << tab2 << "color mode: {" << std::to_string(MIN_COLOR) << ", "
-      << std::to_string(MAX_COLOR)
-      << "}. Default: " << std::to_string(colorMode) << '\n'
+      << tab2
+      << std::format("color mode: {{{}, {}}}. Default: {}\n", MIN_COLOR, MAX_COLOR, colorMode)
       << '\n'
       << tab1 << bold("-p") << ", " << bold("--opacity") << " <FLOAT>\n"
-      << tab2 << "opacity: " << string_format("%.1f", MIN_OPAC) << " to "
-      << string_format("%.1f", MAX_OPAC)
-      << ". Default: " << string_format("%.1f", opacity) << '\n'
+      << tab2
+      << std::format("opacity: {:.1f} to {:.1f}. Default: {:.1f}\n", MIN_OPAC, MAX_OPAC, opacity)
       << '\n'
       << tab1 << bold("-w") << ", " << bold("--width") << " <INT>\n"
-      << tab2 << "width of the sequence: " << std::to_string(MIN_WDTH) << " to "
-      << std::to_string(MAX_WDTH) << ". Default: " << std::to_string(width)
-      << '\n'
+      << tab2
+      << std::format("width of the sequence: {} to {}. Default: {}\n", MIN_WDTH, MAX_WDTH, width)
       << '\n'
       << tab1 << bold("-s") << ", " << bold("--space") << " <INT>\n"
-      << tab2 << "space between sequences: " << std::to_string(MIN_SPC)
-      << " to " << std::to_string(MAX_SPC)
-      << ". Default: " << std::to_string(space) << '\n'
+      << tab2
+      << std::format("space between sequences: {} to {}. Default: {}\n", MIN_SPC, MAX_SPC, space)
       << '\n'
       << tab1 << bold("-tc") << ", " << bold("--total-colors") << " <INT>\n"
       << tab2 << "total number of colors: 1 to 255\n"
       << '\n'
       << tab1 << bold("-rt") << ", " << bold("--reference-tick") << " <INT>\n"
-      << tab2 << "reference tick: " << std::to_string(MIN_TICK) << " to "
-      << std::to_string(MAX_TICK) << '\n'
-      << '\n'
+      << tab2 << std::format("reference tick: {} to {}\n", MIN_TICK, MAX_TICK) << '\n'
       << tab1 << bold("-tt") << ", " << bold("--target-tick") << " <INT>\n"
-      << tab2 << "target tick: " << std::to_string(MIN_TICK) << " to "
-      << std::to_string(MAX_TICK) << '\n'
-      << '\n'
-      << tab1 << bold("-th") << ", " << bold("--tick-human-readable")
-      << " <INT>\n"
+      << tab2 << std::format("target tick: {} to {}\n", MIN_TICK, MAX_TICK) << '\n'
+      << tab1 << bold("-th") << ", " << bold("--tick-human-readable") << " <INT>\n"
       << tab2 << "tick human readable: {0: false, 1: true}. Default: "
-      << std::to_string(tickHumanRead) << '\n'
-      << '\n'
+      << std::format("{}\n", static_cast<int>(tickHumanRead)) << '\n'
       << tab1 << bold("-m") << ", " << bold("--min-block-size") << " <INT>\n"
-      << tab2 << "minimum block size: " << std::to_string(MIN_MINP) << " to "
-      << std::to_string(MAX_MINP) << ". Default: " << std::to_string(min)
-      << '\n'
+      << tab2 << std::format("minimum block size: {} to {}. Default: {}\n", MIN_MINP, MAX_MINP, min)
       << '\n'
       << tab1 << bold("-vv") << ", " << bold("--vertical-view") << '\n'
       << tab2 << "vertical view. Default: not used\n"
       << '\n'
-      << tab1 << bold("-nrr") << ", " << bold("--no-relative-redundancy")
-      << '\n'
+      << tab1 << bold("-nrr") << ", " << bold("--no-relative-redundancy") << '\n'
       << tab2 << "do not show relative redundancy (relative complexity).\n"
       << tab2 << "Default: not used\n"
       << '\n'
