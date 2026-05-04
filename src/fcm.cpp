@@ -688,7 +688,7 @@ void FCM::compress_1(const Param& par, ContIter cont) {
         continue;
       }
 
-      prc_t entr;
+      prc_t entr{entropyN};
       const bool sample_taken = sample_ticker.take();
 
       if (rMs[0].ir == 0) {  // Branch prediction: 1 miss, totalSize-1 hits
@@ -1135,7 +1135,7 @@ inline void FCM::self_compress_1(const Param& par, ContIter cont, const SegmentV
   ProbPar pp{tMs[0].alpha, ctxIr /* mask: 1<<2k-1=4^k-1 */, static_cast<uint8_t>(tMs[0].k << 1u)};
   const auto totalSize = seq_window.size;
   const bool show_progress_enabled = !par.quiet && par.verbose;
-  prc_t entr;
+  prc_t entr{entropyN};
 
   for (std::vector<char> buffer(FILE_READ_BUF, 0); remaining != 0;) {
     const auto bytes_read = read_sequence_chunk(seqF, buffer, remaining);
