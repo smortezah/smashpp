@@ -135,8 +135,8 @@ void Param::parse(int argc, char**& argv) {
       verbose = true;
     } else if (*i == "-ll" || *i == "--list-levels") {
       std::cerr << "Level  Model parameters" << '\n';
-      for (size_t i = 0; i != LEVEL.size(); ++i) {
-        std::cerr << std::format("[ {} ]  {}\n", i, LEVEL[i]);
+      for (size_t level_idx = 0; level_idx != LEVEL.size(); ++level_idx) {
+        std::cerr << std::format("[ {} ]  {}\n", level_idx, LEVEL[level_idx]);
       }
       throw EXIT_SUCCESS;
     } else if (*i == "-r" || *i == "--reference") {
