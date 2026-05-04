@@ -27,7 +27,7 @@ bool is_hex(std::string color) {
 }
 
 std::string to_hex(const RGB& color) {
-  return std::format("#{:X}{:X}{:X}", static_cast<unsigned>(color.r),
+  return std::format("#{:02X}{:02X}{:02X}", static_cast<unsigned>(color.r),
                      static_cast<unsigned>(color.g), static_cast<unsigned>(color.b));
 }
 
