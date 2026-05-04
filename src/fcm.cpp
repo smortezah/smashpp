@@ -761,7 +761,7 @@ void FCM::compress_n(const Param& par) {
   uint64_t processedSyms{0};  // No. syms in target file, except \n
   prc_t sumEnt{0};            // Sum of entropies = sum(log_2 P(s|c^t))
   CompressPar cp;
-  const auto nMdl = static_cast<uint8_t>(rMs.size()) + rTMsSize;
+  const auto nMdl = static_cast<uint8_t>(rMs.size() + rTMsSize);
   cp.nMdl = nMdl;
   // Ctx, Mir (int) sliding through the dataset
   cp.ctx.resize(nMdl);  // Fill with zeros (resize)
@@ -1048,12 +1048,12 @@ void FCM::self_compress(const Param& par, const SegmentView& segment, uint64_t I
 }
 
 void FCM::self_compress(const Param& par, const SegmentView* segment, uint64_t ID, uint8_t round) {
-  std::string message;
+  std::string progress_message;
   if (!par.quiet && par.verbose) {
     if (round == 3) {
-      message = std::format("        [-] Compressing segment {} ", ID + 1);
+      progress_message = std::format("        [-] Compressing segment {} ", ID + 1);
     } else {
-      message = std::format("    [-] Compressing segment {} ", ID + 1);
+      progress_message = std::format("    [-] Compressing segment {} ", ID + 1);
     }
   }
 
@@ -1079,7 +1079,7 @@ void FCM::self_compress(const Param& par, const SegmentView* segment, uint64_t I
   }
 
   if (!par.quiet && par.verbose) {
-    std::cerr << "\r" << message
+    std::cerr << "\r" << progress_message
               << "done. Ave. entropy = " << fixed_precision(PREC_PRF, selfEnt[ID]) << " bps."
               << '\n';
   }
