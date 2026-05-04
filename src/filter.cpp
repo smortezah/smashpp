@@ -201,7 +201,7 @@ void Filter::smooth_seg(std::vector<PosRow>& pos_out, std::span<const prc_t> pro
 
   for (uint64_t i = current_pos_row, j = 0; i != current_pos_row + nSegs; ++i, ++j) {
     pos_out.at(i).round = round;
-    pos_out.at(i).run_num = par.ID;
+    pos_out.at(i).run_num = static_cast<uint8_t>(par.ID);
     pos_out.at(i).ref = par.ref;
     pos_out.at(i).tar = par.tar;
     pos_out.at(i).seg_num = j;
@@ -454,11 +454,11 @@ inline void Filter::smooth_seg_rect(std::vector<PosRow>& pos_out, std::span<cons
       sum += entropy;
     }
     auto num_ent_exist = (filt_size >> 1u) + 1 - i;
-    seq.insert(std::begin(seq), num_ent_exist - 1, 2.0);
-    sum += (num_ent_exist - 1) * 2.0;
+    seq.insert(std::begin(seq), num_ent_exist - 1, 2.0f);
+    sum += static_cast<float>(num_ent_exist - 1) * 2.0f;
   }
 
-  filt_size = seq.size();
+  filt_size = static_cast<uint32_t>(seq.size());
   const auto half_wsize{filt_size >> 1u};
 
   auto filtered = sum / filt_size;
@@ -543,10 +543,10 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
       seq.push_back(entropy);
     }
     auto num_ent_exist = (filt_size >> 1u) + 1 - i;
-    seq.insert(std::begin(seq), num_ent_exist - 1, 2.0);
+    seq.insert(std::begin(seq), num_ent_exist - 1, 2.0f);
   }
 
-  make_window(seq.size());
+  make_window(static_cast<uint32_t>(seq.size()));
 
   const auto winBeg{std::begin(window)};
   const auto winEnd{std::end(window)};
@@ -602,7 +602,7 @@ inline void Filter::smooth_seg_non_rect(std::vector<PosRow>& pos_out,
   }
   // Until half of the window goes outside the array
   for (auto i = half_wsize; i--;) {
-    update_seq(idx, 2.0);
+    update_seq(idx, 2.0f);
     idx = (idx + 1) % filt_size;
     filtered = filtered_at(idx);
     if (SaveFilter) {

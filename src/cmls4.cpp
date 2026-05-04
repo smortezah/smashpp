@@ -28,7 +28,7 @@ CMLS4::CMLS4(uint64_t w_, uint8_t d_) : w(w_), d(d_), tot(0) {
   const auto cells = d * w;
   try {
     sk.resize((cells + 1ull) >> 1u);
-  } catch (std::bad_alloc& b) {
+  } catch (const std::bad_alloc&) {
     error("failed memory allocation.");
   }
   const auto width_power = static_cast<uint8_t>(std::bit_width(w) - 1u);
