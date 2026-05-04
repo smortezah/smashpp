@@ -74,7 +74,12 @@ template <class T, class U>
 }
 
 [[nodiscard]] inline static uint8_t num_digits(uint64_t number) {
-  return number == 0 ? 1 : std::log10(static_cast<double>(number)) + 1;
+  uint8_t digits{1};
+  while (number >= 10) {
+    number /= 10;
+    ++digits;
+  }
+  return digits;
 }
 
 template <typename T>
@@ -91,36 +96,36 @@ template <typename T>
   // Round fraction in range [0.1, 1)
   const auto round_frac = [=](float value) -> float {
     if (value >= 0.100 && value <= 0.125) {
-      return 0.1;
+      return 0.1f;
     } else if (value <= 0.225) {
-      return 0.2;
+      return 0.2f;
     } else if (value <= 0.275) {
-      return 0.25;
+      return 0.25f;
     } else if (value <= 0.325) {
-      return 0.3;
+      return 0.3f;
     } else if (value <= 0.425) {
-      return 0.4;
+      return 0.4f;
     } else if (value <= 0.525) {
-      return 0.5;
+      return 0.5f;
     } else if (value <= 0.625) {
-      return 0.6;
+      return 0.6f;
     } else if (value <= 0.725) {
-      return 0.7;
+      return 0.7f;
     } else if (value <= 0.775) {
-      return 0.75;
+      return 0.75f;
     } else if (value <= 0.825) {
-      return 0.8;
+      return 0.8f;
     } else if (value <= 0.925) {
-      return 0.9;
+      return 0.9f;
     }
 
-    return 1.0;
+    return 1.0f;
   };
 
   float tick{(upperBound - lowerBound) / n_ranges};
-  auto div{POW10[num_digits(tick)]};
+  auto div{POW10[num_digits(static_cast<uint64_t>(tick))]};
   float frac{tick / div};
-  return round_frac(frac) * div;
+  return round_frac(frac) * static_cast<float>(div);
 }
 
 template <typename Int>
@@ -133,7 +138,7 @@ template <typename Int>
   }
 
   const auto slope{static_cast<double>(out_last - out_first) / (in_last - in_first)};
-  return std::round(out_first + slope * (value - in_first));
+  return static_cast<Int>(std::round(out_first + slope * (value - in_first)));
 }
 }  // namespace smashpp
 
