@@ -87,7 +87,7 @@ function(smashpp_configure_target target_name)
 
   if (SMASHPP_STRICT_WARNINGS)
     if (MSVC)
-      target_compile_options(${target_name} PRIVATE /WX /permissive-)
+      target_compile_options(${target_name} PRIVATE /permissive-)
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
       target_compile_options(${target_name} PRIVATE -Wpedantic -Werror)
     else()

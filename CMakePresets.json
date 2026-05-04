@@ -27,7 +27,7 @@
     {
       "name": "strict",
       "displayName": "Strict Warnings",
-      "description": "Release build with compiler warnings treated as errors.",
+      "description": "Release build with strict compiler warnings; Clang and GNU warnings are treated as errors.",
       "binaryDir": "${sourceDir}/build/strict",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
