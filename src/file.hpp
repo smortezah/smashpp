@@ -351,6 +351,7 @@ inline static json parse_pos_metadata(const std::string& pos) {
 
 inline static std::string pos2json(const std::string& pos_content) {
   json j = parse_pos_metadata(pos_content);
+  j["positions"] = json::array();
   std::istringstream iss(pos_content);
 
   for (std::string line; std::getline(iss, line);) {

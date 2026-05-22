@@ -26,9 +26,7 @@ void PositionFile::dump(const std::vector<PosRow>& pos_out, bool asym_region, Fo
 std::string& PositionFile::stream_pos(std::string& out, const std::vector<PosRow>& pos_out,
                                       bool asym_region) const {
   auto out_aux = pos_pairs(pos_out);
-  if (!out_aux.empty()) {
-    stream_pos_impl(out, out_aux, asym_region);
-  }
+  stream_pos_impl(out, out_aux, asym_region);
   return out;
 }
 

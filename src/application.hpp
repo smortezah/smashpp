@@ -15,6 +15,7 @@
 #include <thread>
 
 #include "container.hpp"
+#include "exception.hpp"
 #include "fcm.hpp"
 #include "file.hpp"
 #include "filter.hpp"
@@ -113,15 +114,20 @@ void application::run(Param& par) {
     }
   }
 
-  if (!pos_out.empty()) {
-    PositionFile pos_file;
-    pos_file.param_list = par.param_list;
-    pos_file.info->ref = file_name(par.original_ref.empty() ? par.ref : par.original_ref);
-    pos_file.info->ref_size = file_size(par.ref);
-    pos_file.info->tar = file_name(par.original_tar.empty() ? par.tar : par.original_tar);
-    pos_file.info->tar_size = file_size(par.tar);
-    pos_file.dump(pos_out, par.asym_region, par.format);
+  if (pos_out.empty() && !par.quiet) {
+    warning("no similar regions passed the current segmentation settings. For chromosome-scale "
+            "or more divergent genomes, try increasing -th/--threshold, reducing "
+            "-m/--min-segment-size, using -fs/--filter-scale L, or lowering "
+            "-d/--sampling-step.");
   }
+
+  PositionFile pos_file;
+  pos_file.param_list = par.param_list;
+  pos_file.info->ref = file_name(par.original_ref.empty() ? par.ref : par.original_ref);
+  pos_file.info->ref_size = file_size(par.ref);
+  pos_file.info->tar = file_name(par.original_tar.empty() ? par.tar : par.original_tar);
+  pos_file.info->tar_size = file_size(par.tar);
+  pos_file.dump(pos_out, par.asym_region, par.format);
 
   remove_temp_seq(par);
 }

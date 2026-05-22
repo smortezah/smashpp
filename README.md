@@ -150,6 +150,17 @@ Because of that, `.fil`, `.pos`, and `.json` output may differ slightly from old
 
 `--approx-sampled-models` is opt-in. It speeds up sampled multi-model runs by updating only contexts between sampled positions, so its `.prf`, `.fil`, `.pos`, and `.json` output should be treated as an approximate mode rather than byte-compatible output with the default model update path.
 
+### Troubleshooting zero segments
+
+If Smash++ finishes with `0 segments` in both regular and inverted modes, it still writes an empty
+output file. For chromosome-scale or more divergent genome comparisons, the first tuning knobs to try
+are:
+
+- increase `-th` / `--threshold`
+- reduce `-m` / `--min-segment-size`
+- use `-fs L` / `--filter-scale L` for broader smoothing
+- lower `-d` / `--sampling-step` for finer resolution
+
 ### Visualizer Options
 
 Use `smashpp viz --help` to print the full CLI help.
