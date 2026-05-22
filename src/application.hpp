@@ -29,6 +29,11 @@
 #include "vizpaint.hpp"
 
 namespace smashpp {
+constexpr auto NO_SEGMENTS_GUIDANCE =
+    "no similar regions passed the current segmentation settings. For chromosome-scale or more "
+    "divergent genomes, try increasing -th/--threshold, reducing -m/--min-segment-size, using "
+    "-fs/--filter-scale L, or lowering -d/--sampling-step.";
+
 class application {
  public:
   application() = default;
@@ -115,10 +120,7 @@ void application::run(Param& par) {
   }
 
   if (pos_out.empty() && !par.quiet) {
-    warning("no similar regions passed the current segmentation settings. For chromosome-scale "
-            "or more divergent genomes, try increasing -th/--threshold, reducing "
-            "-m/--min-segment-size, using -fs/--filter-scale L, or lowering "
-            "-d/--sampling-step.");
+    warning(std::string(NO_SEGMENTS_GUIDANCE));
   }
 
   PositionFile pos_file;
