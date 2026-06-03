@@ -394,6 +394,15 @@ if(BUILD_TESTING)
   smashpp_label_test(smashpp-regression-baseline compatibility regression)
 
   add_test(
+      NAME smashpp-no-segments-guidance
+      COMMAND ${CMAKE_COMMAND}
+              "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-no-segments-guidance"
+              "-DSMASHPP=$<TARGET_FILE:smashpp>"
+              -P
+              "${CMAKE_CURRENT_SOURCE_DIR}/tests/RunNoSegmentsGuidance.cmake")
+  smashpp_label_test(smashpp-no-segments-guidance compatibility regression)
+
+  add_test(
       NAME smashpp-benchmark-suite-smoke
       COMMAND ${CMAKE_COMMAND}
               "-DWORKDIR=${CMAKE_CURRENT_BINARY_DIR}/tests/smashpp-benchmark-suite-smoke"
