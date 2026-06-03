@@ -165,7 +165,7 @@ See the [Large and eukaryotic genomes](#large-and-eukaryotic-genomes) section be
 
 ### Large and eukaryotic genomes
 
-Smash++ was originally benchmarked on viral and bacterial genomes (kilobytes to low megabytes). When comparing large eukaryotic assemblies — for example human vs. chimpanzee — the automatic sampling step grows proportionally to file size (`ceil(min(ref_size, tar_size) / 5000)`), which can reduce resolution to the point where no segments survive filtering and thresholding.
+Smash++ was originally benchmarked on viral and bacterial genomes (kilobytes to low megabytes). When comparing large eukaryotic assemblies — for example human vs. chimpanzee — the automatic sampling step grows proportionally to file size in bytes (`ceil(min(ref_bytes, tar_bytes) / 5000)`), which can reduce resolution to the point where no segments survive filtering and thresholding.
 
 **Recommended workflow:**
 
@@ -197,7 +197,7 @@ Smash++ was originally benchmarked on viral and bacterial genomes (kilobytes to 
        -tm "20,10,5,0,0.002,0.95"
    ```
 
-   Here `w=10` means a sketch width of $2^{10} = 1024$ buckets with depth `d=5`.
+   Here `w=10` means a sketch width of 2^10 = 1024 buckets with depth `d=5`.
 
 5. **A practical starting point** for chromosome-to-chromosome eukaryotic comparison:
 
