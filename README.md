@@ -161,6 +161,53 @@ are:
 - use `-fs L` / `--filter-scale L` for broader smoothing
 - lower `-d` / `--sampling-step` for finer resolution
 
+See the [Large and eukaryotic genomes](#large-and-eukaryotic-genomes) section below for additional guidance on multi-gigabyte inputs.
+
+### Large and eukaryotic genomes
+
+Smash++ was originally benchmarked on viral and bacterial genomes (kilobytes to low megabytes). When comparing large eukaryotic assemblies — for example human vs. chimpanzee — the automatic sampling step grows proportionally to file size (`ceil(min(ref_size, tar_size) / 5000)`), which can reduce resolution to the point where no segments survive filtering and thresholding.
+
+**Recommended workflow:**
+
+1. **Compare individual chromosomes** rather than whole-genome FASTA files. Concatenated multi-chromosome files add cross-chromosome noise and inflate the auto-sampling step:
+
+   ```sh
+   # Extract chr1 from each assembly, then compare
+   smashpp -r human_chr1.fa -t chimp_chr1.fa
+   smashpp viz -o chr1_map.svg human_chr1.fa.chimp_chr1.fa.pos
+   ```
+
+2. **Lower the sampling step** for multi-megabyte or gigabyte inputs so that the profile retains enough resolution:
+
+   ```sh
+   smashpp -r ref_chr.fa -t tar_chr.fa -d 50
+   ```
+
+3. **Raise the segmentation threshold** — eukaryotic genomes contain more repetitive and divergent background, so a threshold of `1.5` (the default) may be too strict:
+
+   ```sh
+   smashpp -r ref_chr.fa -t tar_chr.fa -th 2.5
+   ```
+
+4. **Use sketch-based models with explicit width** for memory-efficient processing of large chromosomes. The 6-field model format `k,w,d,ir,a,g` lets you control the sketch size:
+
+   ```sh
+   smashpp -r ref_chr.fa -t tar_chr.fa \
+       -rm "20,10,5,0,0.002,0.95" \
+       -tm "20,10,5,0,0.002,0.95"
+   ```
+
+   Here `w=10` means a sketch width of $2^{10} = 1024$ buckets with depth `d=5`.
+
+5. **A practical starting point** for chromosome-to-chromosome eukaryotic comparison:
+
+   ```sh
+   smashpp -r human_chr1.fa -t chimp_chr1.fa \
+       -l 0 -m 500 -th 2.5 -fs L -d 50 -n 8
+   ```
+
+   Adjust `-th` and `-m` based on the expected divergence between the species.
+
 ### Visualizer Options
 
 Use `smashpp viz --help` to print the full CLI help.

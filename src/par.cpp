@@ -334,11 +334,12 @@ void Param::parse(int argc, char**& argv) {
 void Param::set_auto_model_par() {
   const auto ref_size{file_size(ref)};
   const auto tar_size{file_size(tar)};
-  const uint32_t small{300 * 1024};        // 300 K
-  const uint32_t medium{1024 * 1024};      // 1 M
-  const uint32_t large{10 * 1024 * 1024};  // 10 M
-  std::array<std::string, 4> par{"11,0,0.01,0.95", "13,0,0.008,0.95", "18,0,0.002,0.95",
-                                 "20,0,0.002,0.95"};
+  const uint32_t small{300 * 1024};          // 300 K
+  const uint32_t medium{1024 * 1024};        // 1 M
+  const uint32_t large{10 * 1024 * 1024};    // 10 M
+  const uint64_t xlarge{100 * 1024 * 1024};  // 100 M
+  std::array<std::string, 5> par{"11,0,0.01,0.95", "13,0,0.008,0.95", "18,0,0.002,0.95",
+                                 "20,0,0.002,0.95", "14,0,0.005,0.95:6,0,0.1,0.95"};
   std::string ref_par, tar_par;
 
   if (ref_size < small) {
@@ -347,8 +348,10 @@ void Param::set_auto_model_par() {
     ref_par = par[1];
   } else if (ref_size < large) {
     ref_par = par[2];
-  } else {
+  } else if (ref_size < xlarge) {
     ref_par = par[3];
+  } else {
+    ref_par = par[4];
   }
 
   if (tar_size < small) {
@@ -357,8 +360,10 @@ void Param::set_auto_model_par() {
     tar_par = par[1];
   } else if (tar_size < large) {
     tar_par = par[2];
-  } else {
+  } else if (tar_size < xlarge) {
     tar_par = par[3];
+  } else {
+    tar_par = par[4];
   }
 
   parseModelsPars(std::begin(ref_par), std::end(ref_par), refMs);
